@@ -8,6 +8,7 @@
     <DockerfileContext>..\..</DockerfileContext>
     <Authors>NHSD</Authors>
     <Product>NHSD.GPIT.BuyingCatalogue</Product>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
