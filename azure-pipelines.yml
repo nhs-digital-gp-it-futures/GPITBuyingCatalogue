@@ -1,19 +1,113 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+variables:
+  - name: dockerVersion
+    value: '19.03.5'
+  - name: dotnetVersion
+    value: '5.0.x'
+  - name: MSBUILDSINGLELOADCONTEXT
+    value: '1'
+  - group: dev-acr-secrets
 
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+pr:
+- main
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs:
+- job: version
+  displayName: Work out Version
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UseGitVersion@5
+    displayName: gitversion
+    inputs:
+      versionSpec: '5.x'
+  - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
+    name: setVersionStep
+  - script: echo semVer $(setVersionStep.semVer)
+    name: echovar
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- job: dockerBuildAndPush
+  displayName: Run Unit & Integration tests and build & push docker containers to the acr
+  variables:
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+  dependsOn: version
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use DotNet $(dotnetVersion)'
+    inputs:
+      version: $(dotnetVersion)
+      includePreviewVersions: false
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run dotnet restore'
+    inputs:
+      command: restore
+      projects: '**/*Tests.csproj'
+      feedsToUse: config
+      nugetConfigPath: 'NuGet.config'
+      arguments: '-v n'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run dotnet build'
+    inputs:
+      command: build
+      projects: '**/*Tests.csproj'
+      arguments: '--no-restore'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run unit tests'
+    inputs:
+      command: test
+      projects: '**/*UnitTests.csproj'
+      arguments: '-v n --no-build --collect "Code coverage"'
+
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: $(dockerVersion)
+
+  - script: docker-compose up --build -d
+    displayName: 'Docker up'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Integration tests'
+    inputs:
+      command: test
+      projects: '**/*IntegrationTests.csproj'
+      arguments: '-v n --no-build'
+
+  - script: docker-compose logs
+    displayName: 'Docker Logs'
+    condition: failed()
+
+  - script: docker-compose down -v
+    displayName: 'Docker down'
+
+  - task: DockerCompose@0
+    displayName: 'Build: Dev'
+    condition: succeeded()
+    inputs:
+      containerregistrytype: 'Azure Container Registry'
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+      dockerComposeFile: '**/docker-compose.yml'
+      action: 'Build services'
+      additionalImageTags: '$(semVer)'
+      includeSourceTags: true
+
+  - task: DockerCompose@0
+    displayName: 'Push: Dev'
+    condition: succeeded()
+    inputs:
+      containerregistrytype: 'Azure Container Registry'
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+      dockerComposeFile: '**/docker-compose.yml'
+      action: 'Push services'
+      additionalImageTags: '$(semVer)'
+      includeSourceTags: true
+
