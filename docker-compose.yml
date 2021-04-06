@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  nhsd.gpit.buyingcatalogue.webapp:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/nhsdgpitbuyingcataloguewebapp:${TAG:-latest}
+    container_name: nhsdgpitbuyingcataloguewebapp
+    build:
+      context: .
+      dockerfile: src/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile
