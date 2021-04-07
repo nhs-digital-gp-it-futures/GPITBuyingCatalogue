@@ -1,0 +1,51 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Buying Catalogue log in";
+    ViewData["PageDescription"] = "Enter your details to place a new order or complete an order you’ve already started.";
+}
+
+<div class="nhsuk-width-container">
+    <main class="nhsuk-main-wrapper">
+        <div data-test-id="login-page">
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
+                    <div data-test-id="error-summary" nhs-validation-summary title="There is a problem"></div>
+                    <h1 data-test-id="page-title" class="nhsuk-heading-xl nhsuk-u-margin-bottom-2">@ViewData["Title"]</h1>
+                    <h2 data-test-id="page-description" class="nhsuk-heading-s nhsuk-u-margin-bottom-5">@ViewData["PageDescription"]</h2>
+
+                    <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        <h3 id="error-message-header" class="nhsuk-error-message">@Model.Error</h3>
+                        <div class="nhsuk-form-group">
+                            <label class="nhsuk-label" asp-for="EmailAddress">
+                                Email
+                            </label>
+                            <span id="error-message-email" asp-validation-for="EmailAddress" class="nhsuk-error-message"></span>
+                            <input class="nhsuk-input" asp-for="EmailAddress" type="text">
+                        </div>
+                        <div class="nhsuk-form-group">
+                            <label class="nhsuk-label" asp-for="Password">
+                                Password
+                            </label>
+                            <span id="error-message-password" asp-validation-for="Password" class="nhsuk-error-message"></span>
+                            <input class="nhsuk-input" asp-for="Password" autocomplete="off">
+                        </div>
+                        <div>
+                            <a data-test-id="forgot-password-link" asp-controller="Account" asp-action="ForgotPassword" asp-route-returnUrl="@ViewData["ReturnUrl"]">
+                                Forgot password?
+                            </a>
+                        </div>
+                        <button class="nhsuk-button nhsuk-u-padding-left-9 nhsuk-u-padding-right-9 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-3" type="submit" data-test-id="login-submit-button">
+                            Log in
+                        </button>
+                        <div>
+                            <a data-test-id="request-account-link" asp-action="Registration" asp-route-returnUrl="@Model.ReturnUrl">
+                                Don&#39;t have an account? Request one now
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

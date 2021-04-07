@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -19,9 +20,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+#if DEBUG
+        public IActionResult TestLinks()
         {
+            return View();
+        }
+#endif
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error(int? statusCode)
+        {
+            if (statusCode.HasValue && statusCode == 404 )
+            {
+                var feature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+                ViewData["BadUrl"] = $"Incorrect url {feature?.OriginalPath}";
+                return View("PageNotFound");
+            }
+
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
