@@ -1,0 +1,16 @@
+.bc-c-global-alert {
+  background-color: $color_nhsuk-yellow;
+  padding: nhsuk-spacing(4) 0;
+
+  h2 {
+    font-size: 24px;
+    line-height: 1.33333;
+    margin: 0;
+  }
+
+  p {
+    font-size: 19px;
+    margin-bottom: 0;
+    margin-top: nhsuk-spacing(2);
+  }
+}
