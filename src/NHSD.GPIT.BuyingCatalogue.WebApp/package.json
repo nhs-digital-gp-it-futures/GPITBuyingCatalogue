@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "govuk-frontend": "^3.11.0",
-    "nhsuk-frontend": "^3.1.0"
+    "nhsuk-frontend": "5.0.0"
   },
   "devDependencies": {
     "del": "^4.1.1",
