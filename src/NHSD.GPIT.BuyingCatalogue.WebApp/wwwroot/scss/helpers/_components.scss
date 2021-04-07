@@ -1,0 +1,13 @@
+caption {
+  @include nhsuk-typography-responsive(24);
+
+  border-bottom: 2px solid $color_nhsuk-grey-3;
+  font-weight: bold;
+  margin: nhsuk-spacing(3) 0;
+  padding-bottom: nhsuk-spacing(3);
+  text-align: left;
+}
+
+.summary-footer tr:first-child td {
+  border-top: .8px solid $color_nhsuk-grey-4;
+}

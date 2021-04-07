@@ -18,9 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.W
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{593A5286-F85C-46A1-AE0C-400A53847DD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests", "tests\NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests\NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.csproj", "{405586F3-B228-43FC-B875-D15B4476D301}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests", "tests\NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests\NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.csproj", "{405586F3-B228-43FC-B875-D15B4476D301}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.WebApp.IntegrationTests", "tests\NHSD.GPIT.BuyingCatalogue.WebApp.IntegrationTests\NHSD.GPIT.BuyingCatalogue.WebApp.IntegrationTests.csproj", "{72CE1F54-FDDE-4762-8973-7BC9D2485B20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.WebApp.IntegrationTests", "tests\NHSD.GPIT.BuyingCatalogue.WebApp.IntegrationTests\NHSD.GPIT.BuyingCatalogue.WebApp.IntegrationTests.csproj", "{72CE1F54-FDDE-4762-8973-7BC9D2485B20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
