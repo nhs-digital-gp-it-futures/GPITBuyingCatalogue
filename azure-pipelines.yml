@@ -15,7 +15,7 @@ pr:
 
 jobs:
 - job: version
-  displayName: Work out Version
+  displayName: Work out version
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -29,7 +29,7 @@ jobs:
     name: echovar
 
 - job: dockerBuildAndPush
-  displayName: Run Unit & Integration tests and build & push docker containers to the acr
+  displayName: Run unit & integration tests and build & push docker containers to the ACR
   variables:
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   dependsOn: version
@@ -74,14 +74,14 @@ jobs:
     displayName: 'Docker up'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Run Integration tests'
+    displayName: 'Run integration tests'
     inputs:
       command: test
       projects: '**/*IntegrationTests.csproj'
       arguments: '-v n --no-build'
 
   - script: docker-compose logs
-    displayName: 'Docker Logs'
+    displayName: 'Docker logs'
     condition: failed()
 
   - script: docker-compose down -v
