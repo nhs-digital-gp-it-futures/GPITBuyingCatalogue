@@ -106,21 +106,6 @@ a {
 .ie8 a:focus {
   outline: 1px dotted #212b32; }
 
-.nhsuk-link--no-visited-state:link {
-  color: #005eb8; }
-
-.nhsuk-link--no-visited-state:visited {
-  color: #005eb8; }
-
-.nhsuk-link--no-visited-state:hover {
-  color: #7C2855; }
-
-.nhsuk-link--no-visited-state:active {
-  color: #002f5c; }
-
-.nhsuk-link--no-visited-state:focus {
-  color: #212b32; }
-
 /* ==========================================================================
    ELEMENTS / #PAGE
    ========================================================================== */
@@ -160,6 +145,8 @@ body {
    ========================================================================== */
 /**
  * 1. Force `<table>`s to be full-width by default.
+ * 2. Captions are used to improve accessibility,
+ *    but we do not need them visually displayed.
  */
 table {
   margin-bottom: 40px;
@@ -219,20 +206,18 @@ th {
   font-weight: 600; }
 
 caption {
-  font-weight: 600;
-  font-size: 18px;
-  font-size: 1.125rem;
-  line-height: 1.55556;
-  text-align: left; }
-  @media (min-width: 40.0625em) {
-    caption {
-      font-size: 22px;
-      font-size: 1.375rem;
-      line-height: 1.45455; } }
-  @media print {
-    caption {
-      font-size: 18pt;
-      line-height: 1.15; } }
+  -webkit-clip-path: inset(50%);
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+  /* [2] */ }
 
 .nhsuk-form-group {
   margin-bottom: 16px; }
@@ -2194,13 +2179,13 @@ b {
   .nhsuk-breadcrumb__item:last-child {
     background: none; }
 
+.nhsuk-breadcrumb__link:focus:hover {
+  color: #212b32; }
+
 .nhsuk-breadcrumb__link:visited {
   color: #005eb8; }
   .nhsuk-breadcrumb__link:visited:hover {
     color: #7C2855; }
-
-.nhsuk-breadcrumb__link:focus:hover {
-  color: #212b32; }
 
 .nhsuk-breadcrumb__back {
   font-weight: 400;
@@ -2434,146 +2419,6 @@ b {
   outline: 1px dotted #212b32; }
 
 /* ==========================================================================
-   COMPONENTS / #CARD
-   ========================================================================== */
-/**
- * 1. Is needed for the :active top positioning.
- * 2. Border is used to create a divider between the white content
- *    box and an image.
- * 3. Creates the 'pressed down' effect when clicked.
- * 4. Removes padding-top from headings directly after the card group.
- * 5. Includes the border width to achieve the correct left alignment.
- * 6. Stops the heading from spanning the full width of the card.
- * 7. Removes padding top for the feature heading positioning.
- */
-.nhsuk-card {
-  margin-bottom: 40px;
-  background: #ffffff;
-  border: 1px solid #d8dde0;
-  position: relative;
-  /* [1] */
-  width: 100%; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-card {
-      margin-bottom: 48px; } }
-
-.nhsuk-card__img {
-  border-bottom: 1px solid #f0f4f5;
-  /* [2] */
-  display: block;
-  width: 100%; }
-  @media print {
-    .nhsuk-card__img {
-      display: none; } }
-
-.nhsuk-card__content {
-  padding: 24px;
-  position: relative; }
-  .nhsuk-card__content > *:first-child {
-    margin-top: 0; }
-  .nhsuk-card__content > *:last-child {
-    margin-bottom: 0; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-card__content {
-      padding: 32px; } }
-
-.nhsuk-card__heading,
-.nhsuk-card__metadata,
-.nhsuk-card__description {
-  margin-bottom: 16px; }
-
-/* Clickable card
-  ========================================================================== */
-.nhsuk-card--clickable {
-  border-bottom-width: 4px; }
-  .nhsuk-card--clickable:hover, .nhsuk-card--clickable:active {
-    cursor: pointer; }
-    .nhsuk-card--clickable:hover .nhsuk-card__heading a,
-    .nhsuk-card--clickable:hover .nhsuk-card__link, .nhsuk-card--clickable:active .nhsuk-card__heading a,
-    .nhsuk-card--clickable:active .nhsuk-card__link {
-      color: #7C2855;
-      text-decoration: none; }
-      .nhsuk-card--clickable:hover .nhsuk-card__heading a:focus,
-      .nhsuk-card--clickable:hover .nhsuk-card__link:focus, .nhsuk-card--clickable:active .nhsuk-card__heading a:focus,
-      .nhsuk-card--clickable:active .nhsuk-card__link:focus {
-        color: #212b32; }
-  .nhsuk-card--clickable:hover {
-    border-color: #aeb7bd; }
-  .nhsuk-card--clickable:active {
-    border-color: #aeb7bd;
-    bottom: -1px;
-    /* [3] */ }
-
-/* Card group
-  ========================================================================== */
-/**
-* Card group allows you to have a row of cards.
-*
-* Flexbox is used to make each card in a row the same height.
-*/
-.nhsuk-card-group {
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-  padding: 0; }
-  @media (max-width: 48.0525em) {
-    .nhsuk-card-group {
-      margin-bottom: 40px; } }
-  .nhsuk-card-group + h2,
-  .nhsuk-card-group + .nhsuk-heading-l,
-  .nhsuk-card-group + h3,
-  .nhsuk-card-group + .nhsuk-heading-m {
-    padding-top: 0;
-    /* [4] */ }
-
-.nhsuk-card-group__item {
-  display: flex;
-  list-style-type: none;
-  margin-bottom: 0; }
-  @media (max-width: 48.0525em) {
-    .nhsuk-card-group__item {
-      flex: 0 0 100%; } }
-  .nhsuk-card-group__item .nhsuk-card {
-    margin-bottom: 32px; }
-  @media (max-width: 48.0525em) {
-    .nhsuk-card-group__item .nhsuk-card {
-      margin-bottom: 16px; }
-    .nhsuk-card-group__item:last-child .nhsuk-card {
-      margin-bottom: 0; } }
-
-/* Card feature
-  ========================================================================== */
-.nhsuk-card--feature {
-  margin-top: 40px; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-card--feature {
-      margin-top: 48px; } }
-
-.nhsuk-card__heading--feature {
-  background: #005eb8;
-  color: #ffffff;
-  display: inline-block;
-  left: -25px;
-  /* [5] */
-  margin-bottom: 8px;
-  margin-right: -24px;
-  /* [6] */
-  padding: 8px 24px;
-  position: relative;
-  top: -8px; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-card__heading--feature {
-      left: -33px;
-      /* [5] */
-      margin-right: -32px;
-      /* [6] */
-      padding: 8px 32px;
-      top: -16px; } }
-
-.nhsuk-card__content--feature {
-  padding-top: 0 !important; }
-
-/* ==========================================================================
    COMPONENTS / #CARE-CARD
    ========================================================================== */
 /**
@@ -2613,17 +2458,8 @@ b {
       page-break-inside: avoid; } }
 
 .nhsuk-care-card__heading-container {
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-bottom: 16px;
-  padding-top: 16px;
+  padding: 16px 24px;
   position: relative; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-care-card__heading-container {
-      padding-left: 32px; } }
-  @media (min-width: 40.0625em) {
-    .nhsuk-care-card__heading-container {
-      padding-right: 32px; } }
 
 .nhsuk-care-card__arrow {
   bottom: -10px;
@@ -2641,10 +2477,6 @@ b {
   @media print {
     .nhsuk-care-card__arrow {
       display: none; } }
-  @media (min-width: 40.0625em) {
-    .nhsuk-care-card__arrow {
-      left: 38px;
-      /* [4] */ } }
   .nhsuk-care-card__arrow:before, .nhsuk-care-card__arrow:after {
     border: solid 32px #005eb8;
     /* [3] */
@@ -2682,27 +2514,13 @@ b {
         color: #212b32; } }
 
 .nhsuk-care-card__content {
-  padding-bottom: 24px;
-  padding-left: 24px;
-  padding-right: 24px;
   background-color: #ffffff;
-  border: 1px solid #d8dde0;
-  border-top: 0;
-  padding-top: 32px;
+  padding: 32px 24px 24px;
   /* [5] */ }
   .nhsuk-care-card__content > *:first-child {
     margin-top: 0; }
   .nhsuk-care-card__content > *:last-child {
     margin-bottom: 0; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-care-card__content {
-      padding-bottom: 32px; } }
-  @media (min-width: 40.0625em) {
-    .nhsuk-care-card__content {
-      padding-left: 32px; } }
-  @media (min-width: 40.0625em) {
-    .nhsuk-care-card__content {
-      padding-right: 32px; } }
   @media (min-width: 40.0625em) {
     .nhsuk-care-card__content {
       padding-bottom: 32px;
@@ -2748,7 +2566,6 @@ b {
 
 .nhsuk-care-card--immediate .nhsuk-care-card__content {
   background-color: #212b32;
-  border: 0;
   color: #ffffff; }
   .nhsuk-care-card--immediate .nhsuk-care-card__content a {
     color: #ffffff;
@@ -2861,7 +2678,10 @@ b {
  */
 .nhsuk-checkboxes__input:focus + .nhsuk-checkboxes__label::before {
   border: 4px solid #212b32;
-  box-shadow: 0 0 0 4px #ffeb3b; }
+  box-shadow: 0 0 0 4px #ffeb3b;
+  outline: 4px solid transparent;
+  /* 1 */
+  outline-offset: 4px; }
 
 /* Selected state */
 .nhsuk-checkboxes__input:checked + .nhsuk-checkboxes__label::after {
@@ -2992,7 +2812,6 @@ b {
  * 4. Only underline the text, not the arrow
  * 5. Remove the default details marker so we can style our own consistently and
  *    ensure it displays in Firefox
- * 6. Custom padding to left align the details text with the summary
  */
 .nhsuk-details {
   color: #212b32;
@@ -3076,12 +2895,14 @@ b {
   border-left: 4px solid #d8dde0;
   margin-top: 8px;
   padding: 16px;
-  padding-left: 20px;
-  /* [6] */ }
+  padding-left: 24px; }
   .nhsuk-details__text > *:first-child {
     margin-top: 0; }
   .nhsuk-details__text > *:last-child {
     margin-bottom: 0; }
+  .nhsuk-details__text p {
+    margin-bottom: 24px;
+    margin-top: 0; }
 
 /**
  * Expander variation.
@@ -3095,11 +2916,7 @@ b {
  *    margin between them so they sit together.
  */
 .nhsuk-expander {
-  background-color: #ffffff;
-  border: 1px solid #d8dde0;
-  border-bottom-width: 4px; }
-  .nhsuk-expander:hover {
-    border-color: #aeb7bd; }
+  background-color: #ffffff; }
   .nhsuk-expander .nhsuk-details__summary {
     background-color: #ffffff;
     border-top: 4px solid transparent;
@@ -3120,15 +2937,15 @@ b {
         color: #212b32;
         outline: 4px solid transparent;
         text-decoration: none;
-        background: #ffeb3b url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__plus' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='002f5c'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M12 8v8M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
+        background: #ffeb3b url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__plus' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='002f5c'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M12 8v8M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
         background-size: 32px 32px; }
   .nhsuk-expander .nhsuk-details__summary-text {
-    background: url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__plus' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23005eb8'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M12 8v8M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
+    background: url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__plus' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23005eb8'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M12 8v8M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
     background-size: 32px 32px;
     color: #005eb8;
     cursor: pointer;
     display: inline-block;
-    padding: 4px 4px 4px 38px;
+    padding: 8px 8px 8px 38px;
     position: relative; }
   .nhsuk-expander .nhsuk-details__text {
     padding-bottom: 16px;
@@ -3151,18 +2968,18 @@ b {
       .nhsuk-expander .nhsuk-details__text {
         padding-top: 0; } }
 
-.nhsuk-expander[open] {
-  border-bottom-width: 1px; }
-  .nhsuk-expander[open] .nhsuk-details__summary:focus .nhsuk-details__summary-text {
-    background: #ffeb3b url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__minus' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='002f5c'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
-    /* [3] */
-    background-size: 32px 32px; }
-  .nhsuk-expander[open] .nhsuk-details__summary:focus:hover .nhsuk-details__summary-text {
-    text-decoration: none; }
-  .nhsuk-expander[open] .nhsuk-details__summary-text {
-    background: url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__minus' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23005eb8'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
-    /* [3] */
-    background-size: 32px 32px; }
+.nhsuk-expander[open] .nhsuk-details__summary:focus .nhsuk-details__summary-text {
+  background: #ffeb3b url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__minus' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='002f5c'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
+  /* [3] */
+  background-size: 32px 32px; }
+
+.nhsuk-expander[open] .nhsuk-details__summary:focus:hover .nhsuk-details__summary-text {
+  text-decoration: none; }
+
+.nhsuk-expander[open] .nhsuk-details__summary-text {
+  background: url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__minus' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23005eb8'%3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
+  /* [3] */
+  background-size: 32px 32px; }
 
 .nhsuk-expander-group {
   /* [4] */
@@ -3200,7 +3017,6 @@ b {
   padding: 24px;
   background-color: #ffffff;
   color: #212b32;
-  border: 1px solid #d8dde0;
   padding-top: 0 !important;
   /* [1] */ }
   .nhsuk-do-dont-list > *:first-child {
@@ -3228,7 +3044,7 @@ b {
   background-color: #005eb8;
   color: #ffffff;
   display: inline-block;
-  margin: 0 0 8px -33px;
+  margin: 0 0 8px -32px;
   padding: 8px 32px;
   position: relative;
   top: -16px;
@@ -3244,7 +3060,7 @@ b {
       line-height: 1.15; } }
   @media (max-width: 40.0525em) {
     .nhsuk-do-dont-list__label {
-      margin-left: -25px;
+      margin-left: -24px;
       margin-right: 0;
       padding: 8px 24px;
       top: -8px; } }
@@ -3618,8 +3434,6 @@ b {
  * 16. Use non variable colour to follow NHS England guidelines on logo colour
  * 17. On print stylesheets remove the header link
  * 18. Remove random top margin in Safari
- * 19. Align close icon with nav item arrow icons
- * 20. Add nhsuk-spacing(9) to align right and left main nav with header
  */
 /* ==========================================================================
    COMPONENTS / #HEADER / #AUTOCOMPLETE
@@ -3633,13 +3447,9 @@ b {
    * 6. Drop shadow on search suggestions dopdown box, custom spread and blur
    * 7. Z-index to bring the dropdown to the front
    * 8. No current spacing at 12px so using this value
-   * 9. Z-index to being search box to the front for focus state style
-   * 10. Custom padding to stop text jumping on focus
 */
 .autocomplete-container {
-  display: inline-block;
-  z-index: 1;
-  /* [9] */ }
+  display: inline-block; }
   @media (max-width: 40.0525em) {
     .autocomplete-container {
       display: inline;
@@ -3669,12 +3479,10 @@ b {
     width: 100%;
     /* [3] */ }
     .autocomplete__input:focus {
-      border: 4px solid #212b32;
-      box-shadow: 0 0 0 4px #ffeb3b;
+      border: 4px solid #ffeb3b;
+      box-shadow: inset 0 0 0 4px #212b32;
       outline: 4px solid transparent;
-      outline-offset: 4px;
-      padding: 0 13px;
-      /* [10] */ } }
+      outline-offset: 4px; } }
 
 @media (min-width: 40.0625em) {
   /* duplicate of .nhsuk-search__input in _header.scss, for non javascript version */
@@ -3694,12 +3502,10 @@ b {
     width: 200px;
     /* [3] */ }
     .autocomplete__input:focus {
-      border: 2px solid #212b32;
-      box-shadow: 0 0 0 4px #ffeb3b;
+      border: 1px solid #ffeb3b;
+      box-shadow: inset 0 0 0 4px #ffeb3b;
       outline: 4px solid transparent;
-      outline-offset: 4px;
-      padding: 0 11px;
-      /* [10] */ }
+      outline-offset: 4px; }
     .autocomplete__input::placeholder {
       color: #768692;
       font-size: 16px; } }
@@ -3843,10 +3649,10 @@ b {
   display: block; }
   .nhsuk-header__link:hover .nhsuk-logo {
     box-shadow: 0 0 0 4px #003d78; }
-  .nhsuk-header__link:focus {
-    box-shadow: none; }
-    .nhsuk-header__link:focus .nhsuk-logo {
-      box-shadow: 0 0 0 4px #ffeb3b, 0 4px 0 4px #212b32; }
+  .nhsuk-header__link:focus .nhsuk-logo {
+    box-shadow: 0 0 0 4px #ffeb3b; }
+  .nhsuk-header__link:focus:hover .nhsuk-logo {
+    box-shadow: 0 0 0 4px #ffeb3b; }
   @media print {
     .nhsuk-header__link:after {
       content: '';
@@ -3922,7 +3728,7 @@ b {
     outline: 4px solid transparent;
     /* 1 */
     outline-offset: 4px;
-    box-shadow: 0 0 0 2px #ffeb3b, 0 4px 0 2px #212b32; }
+    box-shadow: none; }
     .nhsuk-header__search-toggle:focus .nhsuk-icon {
       fill: #212b32; }
 
@@ -4008,7 +3814,8 @@ b {
       cursor: pointer; }
     .nhsuk-search__submit:focus {
       background-color: #ffeb3b;
-      box-shadow: 0 -4px #ffeb3b, 0 4px #212b32;
+      border-bottom: 4px solid #212b32;
+      box-shadow: inset 0 0 0 4px #ffeb3b;
       outline: 4px solid transparent;
       outline-offset: 4px; }
       .nhsuk-search__submit:focus:hover {
@@ -4017,6 +3824,10 @@ b {
           fill: #212b32; }
       .nhsuk-search__submit:focus .nhsuk-icon {
         fill: #212b32; }
+    .nhsuk-search__submit:active {
+      background-color: #00401e; }
+      .nhsuk-search__submit:active .nhsuk-icon {
+        fill: #ffffff; }
   .nhsuk-search__close {
     background-color: transparent;
     border: 0;
@@ -4024,9 +3835,7 @@ b {
     height: 40px;
     padding: 0;
     width: 40px;
-    margin-left: 8px;
-    margin-right: -8px;
-    /* [19] */
+    margin-left: 16px;
     margin-top: 8px; }
     .nhsuk-search__close .nhsuk-icon__close {
       fill: #005eb8;
@@ -4085,6 +3894,10 @@ b {
     /* [2] */
     line-height: inherit;
     outline: none;
+    padding-left: 9px;
+    /* [7] */
+    padding-top: 2px;
+    /* [7] */
     width: 44px;
     /* [2] */ }
     .nhsuk-search__submit .nhsuk-icon__search {
@@ -4097,7 +3910,6 @@ b {
       /* [4] */ }
     .nhsuk-search__submit:hover {
       background-color: #003d78;
-      border: 1px solid #ffffff;
       cursor: pointer; }
       .nhsuk-search__submit:hover .nhsuk-icon__search {
         fill: #ffffff; }
@@ -4109,7 +3921,7 @@ b {
       outline: 4px solid transparent;
       /* 1 */
       outline-offset: 4px;
-      box-shadow: 0 -2px #ffeb3b, 0 4px #212b32; }
+      box-shadow: none; }
       .nhsuk-search__submit:focus .nhsuk-icon {
         fill: #212b32; }
     .nhsuk-search__submit:active {
@@ -4187,7 +3999,7 @@ b {
     outline: 4px solid transparent;
     /* 1 */
     outline-offset: 4px;
-    box-shadow: 0 0 0 2px #ffeb3b, 0 4px 0 2px #212b32; }
+    box-shadow: none; }
     .nhsuk-header__menu-toggle:focus .nhsuk-icon {
       fill: #212b32; }
 
@@ -4236,7 +4048,7 @@ b {
   width: 40px;
   overflow: hidden;
   position: absolute;
-  right: 8px;
+  right: 16px;
   top: 8px;
   white-space: nowrap; }
   .nhsuk-header__navigation-close .nhsuk-icon__close {
@@ -4291,18 +4103,14 @@ b {
     position: absolute;
     right: 4px;
     top: 11px; }
-  .nhsuk-header__navigation-link:visited {
-    color: #005eb8; }
-    @media (min-width: 61.875em) {
-      .nhsuk-header__navigation-link:visited {
-        color: #ffffff; } }
+  @media (min-width: 61.875em) {
+    .nhsuk-header__navigation-link:visited {
+      color: #ffffff; } }
   .nhsuk-header__navigation-link:hover {
+    background-color: #003d78;
     box-shadow: none;
-    color: #005eb8;
+    color: #ffffff;
     text-decoration: underline; }
-    @media (min-width: 61.875em) {
-      .nhsuk-header__navigation-link:hover {
-        color: #ffffff; } }
     .nhsuk-header__navigation-link:hover .nhsuk-icon__chevron-right {
       fill: #005eb8; }
   .nhsuk-header__navigation-link:active, .nhsuk-header__navigation-link:focus {
@@ -4316,8 +4124,6 @@ b {
     .nhsuk-header__navigation-link:active:hover, .nhsuk-header__navigation-link:focus:hover {
       background-color: #ffeb3b;
       color: #212b32; }
-      .nhsuk-header__navigation-link:active:hover .nhsuk-icon__chevron-right, .nhsuk-header__navigation-link:focus:hover .nhsuk-icon__chevron-right {
-        fill: #212b32; }
     .nhsuk-header__navigation-link:active:visited, .nhsuk-header__navigation-link:focus:visited {
       background-color: #ffeb3b;
       color: #212b32; }
@@ -4336,7 +4142,7 @@ b {
     background-color: #005eb8;
     display: block;
     margin: 0 auto;
-    max-width: 1024px; }
+    max-width: 960px; }
   .nhsuk-header__navigation-list {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     display: -ms-flexbox;
@@ -4355,7 +4161,12 @@ b {
       display: none; }
   .nhsuk-header__navigation-link {
     color: #ffffff;
-    line-height: normal; } }
+    line-height: normal; }
+    .nhsuk-header__navigation-link:active {
+      background-color: #002f5c;
+      color: #f0f4f5; }
+    .nhsuk-header__navigation-link:hover, .nhsuk-header__navigation-link:active, .nhsuk-header__navigation-link.is-active {
+      background-color: #004b93; } }
 
 /**
  * Internet Explorer >= 9 specific styles
@@ -4446,15 +4257,15 @@ b {
   line-height: 1.5;
   text-decoration: none; }
   .nhsuk-header__transactional-service-name--link:visited {
-    color: #ffffff; }
-  .nhsuk-header__transactional-service-name--link:hover {
-    color: #ffffff;
-    text-decoration: none; }
+    color: #f0f4f5; }
   .nhsuk-header__transactional-service-name--link:focus {
     color: #212b32;
     outline: 4px solid transparent;
     outline-offset: 4px;
-    text-decoration: none; }
+    text-decoration: underline; }
+  .nhsuk-header__transactional-service-name--link:hover {
+    color: #7C2855;
+    text-decoration: underline; }
   .nhsuk-header__transactional-service-name--link:active {
     color: #002f5c; }
   @media (min-width: 40.0625em) {
@@ -4467,7 +4278,11 @@ b {
       font-size: 14pt;
       line-height: 1.15; } }
   .nhsuk-header__transactional-service-name--link:hover {
-    text-decoration: underline; }
+    color: #ffffff; }
+  .nhsuk-header__transactional-service-name--link:focus {
+    text-decoration: none; }
+    .nhsuk-header__transactional-service-name--link:focus:hover {
+      color: #212b32; }
 
 .nhsuk-header--transactional .nhsuk-header__link {
   height: 32px;
@@ -4499,12 +4314,10 @@ b {
       text-decoration: underline; }
   .nhsuk-header__link--service:focus {
     background: #ffeb3b;
-    box-shadow: 0 0 0 4px #ffeb3b, 0 4px 0 4px #212b32; }
+    box-shadow: 0 0 0 4px #ffeb3b; }
     .nhsuk-header__link--service:focus .nhsuk-header__service-name {
       color: #212b32;
       text-decoration: none; }
-    .nhsuk-header__link--service:focus .nhsuk-logo {
-      box-shadow: none; }
 
 .nhsuk-header__service-name {
   font-weight: 400;
@@ -4527,6 +4340,12 @@ b {
   @media (min-width: 61.875em) {
     .nhsuk-header__service-name {
       padding-left: 16px; } }
+  @media (max-width: 48.0525em) {
+    .nhsuk-header__service-name {
+      font-size: 16px; } }
+  @media (max-width: 450px) {
+    .nhsuk-header__service-name {
+      font-size: 14px; } }
 
 .nhsuk-header__logo--only {
   max-width: 100%; }
@@ -4536,7 +4355,6 @@ b {
       align-items: center;
       display: flex;
       margin-bottom: 0;
-      max-width: 270px;
       width: auto; }
     .nhsuk-header__logo--only .nhsuk-header__service-name {
       padding-left: 16px; } }
@@ -4549,20 +4367,17 @@ b {
   text-decoration: none;
   width: auto; }
   .nhsuk-header--organisation .nhsuk-header__link:hover {
-    color: #ffffff;
-    text-decoration: underline; }
+    box-shadow: 0 1px 0 0 #ffffff; }
     .nhsuk-header--organisation .nhsuk-header__link:hover .nhsuk-logo {
       box-shadow: none; }
   .nhsuk-header--organisation .nhsuk-header__link:focus {
     background: #ffeb3b;
-    box-shadow: 0 0 0 4px #ffeb3b, 0 4px 0 4px #212b32; }
+    box-shadow: 0 0 0 4px #ffeb3b; }
     .nhsuk-header--organisation .nhsuk-header__link:focus .nhsuk-organisation-name,
     .nhsuk-header--organisation .nhsuk-header__link:focus .nhsuk-organisation-descriptor {
       color: #212b32; }
     .nhsuk-header--organisation .nhsuk-header__link:focus .nhsuk-logo {
       box-shadow: none; }
-    .nhsuk-header--organisation .nhsuk-header__link:focus:hover {
-      text-decoration: none; }
 
 .nhsuk-header--organisation .nhsuk-header__logo .nhsuk-logo {
   height: 32px;
@@ -4635,36 +4450,38 @@ b {
 
 .nhsuk-header--white {
   background-color: #ffffff; }
+  .nhsuk-header--white .nhsuk-header__link:hover .nhsuk-logo {
+    box-shadow: none; }
+  .nhsuk-header--white .nhsuk-header__link:focus .nhsuk-logo {
+    box-shadow: 4px 0 0 0 #ffeb3b, -4px 0 0 0 #ffeb3b, -4px 0 0 #ffeb3b, 0 0 0 4px #ffeb3b, 0 4px 0 4px #212b32; }
   .nhsuk-header--white .nhsuk-logo .nhsuk-logo__background {
     fill: #005eb8; }
   .nhsuk-header--white .nhsuk-logo .nhsuk-logo__text {
     fill: #ffffff; }
-  .nhsuk-header--white .nhsuk-header__link:hover {
-    color: #212b32;
-    text-decoration: underline; }
-    .nhsuk-header--white .nhsuk-header__link:hover .nhsuk-organisation-descriptor {
-      color: #212b32; }
   .nhsuk-header--white .nhsuk-search__submit {
     background-color: #005eb8; }
     .nhsuk-header--white .nhsuk-search__submit .nhsuk-icon__search {
       fill: #ffffff; }
     .nhsuk-header--white .nhsuk-search__submit:hover {
-      background-color: #004b93;
-      border-color: #004b93; }
+      background-color: #004b93; }
     .nhsuk-header--white .nhsuk-search__submit:focus {
       background-color: #ffeb3b; }
+      @media (min-width: 40.0625em) {
+        .nhsuk-header--white .nhsuk-search__submit:focus {
+          border: 1px solid #212b32; } }
       .nhsuk-header--white .nhsuk-search__submit:focus .nhsuk-icon__search {
         fill: #212b32; }
   .nhsuk-header--white .autocomplete__input,
   .nhsuk-header--white .nhsuk-search__input {
-    border: 1px solid #aeb7bd; }
+    border: 1px solid #aeb7bd;
+    border-right: 0; }
     .nhsuk-header--white .autocomplete__input:focus,
     .nhsuk-header--white .nhsuk-search__input:focus {
-      border: 2px solid #212b32; }
+      border: 1px solid #212b32; }
       @media (max-width: 40.0525em) {
         .nhsuk-header--white .autocomplete__input:focus,
         .nhsuk-header--white .nhsuk-search__input:focus {
-          border: 4px solid #212b32; } }
+          border: 4px solid #ffeb3b; } }
   .nhsuk-header--white .nhsuk-header__search-toggle,
   .nhsuk-header--white .nhsuk-header__menu-toggle {
     border-color: #005eb8;
@@ -4675,7 +4492,9 @@ b {
     .nhsuk-header--white .nhsuk-header__search-toggle.is-active, .nhsuk-header--white .nhsuk-header__search-toggle:hover,
     .nhsuk-header--white .nhsuk-header__menu-toggle.is-active,
     .nhsuk-header--white .nhsuk-header__menu-toggle:hover {
-      border-color: #004b93;
+      background-color: #005eb8;
+      border-color: #005eb8;
+      box-shadow: none;
       color: #ffffff; }
       .nhsuk-header--white .nhsuk-header__search-toggle.is-active .nhsuk-icon, .nhsuk-header--white .nhsuk-header__search-toggle:hover .nhsuk-icon,
       .nhsuk-header--white .nhsuk-header__menu-toggle.is-active .nhsuk-icon,
@@ -4683,7 +4502,15 @@ b {
         fill: #ffffff; }
     .nhsuk-header--white .nhsuk-header__search-toggle:focus,
     .nhsuk-header--white .nhsuk-header__menu-toggle:focus {
-      color: #212b32; }
+      background-color: #ffeb3b;
+      border: 0;
+      box-shadow: 0 4px 0 0 #212b32;
+      color: #212b32;
+      outline: 4px solid transparent;
+      /* 1 */
+      outline-offset: 4px;
+      border: 1px solid #212b32 !important;
+      box-shadow: none; }
       .nhsuk-header--white .nhsuk-header__search-toggle:focus .nhsuk-icon,
       .nhsuk-header--white .nhsuk-header__menu-toggle:focus .nhsuk-icon {
         fill: #212b32; }
@@ -4702,14 +4529,24 @@ b {
   .nhsuk-header--white .nhsuk-header__service-name {
     color: #212b32; }
 
+.nhsuk-header--organisation.nhsuk-header--white .nhsuk-header__link:hover {
+  box-shadow: 0 1px 0 0 #005eb8; }
+
+.nhsuk-header--organisation.nhsuk-header--white .nhsuk-header__link:focus {
+  box-shadow: 0 4px 0 0 #212b32; }
+  .nhsuk-header--organisation.nhsuk-header--white .nhsuk-header__link:focus .nhsuk-logo {
+    box-shadow: none; }
+
 .nhsuk-header--white-nav .nhsuk-header__navigation {
   background-color: #ffffff; }
   .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-list {
-    border-top: 1px solid #f0f4f5; }
+    border-top: 1px solid #d8dde0; }
   .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-link {
     color: #005eb8; }
     .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-link:visited {
       color: #005eb8; }
+    .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-link:hover, .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-link:active, .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-link.is-active {
+      background-color: transparent; }
     .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-link:focus {
       color: #212b32; }
       .nhsuk-header--white-nav .nhsuk-header__navigation .nhsuk-header__navigation-link:focus:hover {
@@ -5024,11 +4861,11 @@ b {
       font-size: 14pt;
       line-height: 1.15; } }
   .nhsuk-input:focus {
-    border: 2px solid #212b32;
-    box-shadow: inset 0 0 0 2px;
-    outline: 4px solid #ffeb3b;
+    border: 4px solid #212b32;
+    box-shadow: 0 0 0 4px #ffeb3b;
+    outline: 4px solid transparent;
     /* 1 */
-    outline-offset: 0; }
+    outline-offset: 4px; }
 
 .nhsuk-input::-webkit-outer-spin-button,
 .nhsuk-input::-webkit-inner-spin-button {
@@ -5077,8 +4914,8 @@ b {
   /* [2] */
   margin-bottom: 40px;
   margin-top: 40px;
-  padding: 16px;
-  border-left: 8px solid #005eb8; }
+  border-left: 12px solid #005eb8;
+  padding: 16px; }
   .nhsuk-inset-text > *:first-child {
     margin-top: 0; }
   .nhsuk-inset-text > *:last-child {
@@ -5089,9 +4926,6 @@ b {
   @media (min-width: 40.0625em) {
     .nhsuk-inset-text {
       margin-top: 48px; } }
-  @media (min-width: 40.0625em) {
-    .nhsuk-inset-text {
-      padding: 24px; } }
   @media print {
     .nhsuk-inset-text {
       border-color: #212b32; } }
@@ -5582,6 +5416,293 @@ b {
       line-height: 1.2; } }
 
 /* ==========================================================================
+   COMPONENTS / #PANEL
+   ========================================================================== */
+.nhsuk-panel {
+  margin-bottom: 40px;
+  margin-top: 40px;
+  padding: 24px;
+  background-color: #ffffff;
+  color: #212b32;
+  width: 100%; }
+  .nhsuk-panel > *:first-child {
+    margin-top: 0; }
+  .nhsuk-panel > *:last-child {
+    margin-bottom: 0; }
+  @media (min-width: 40.0625em) {
+    .nhsuk-panel {
+      margin-bottom: 48px; } }
+  @media (min-width: 40.0625em) {
+    .nhsuk-panel {
+      margin-top: 48px; } }
+  @media (min-width: 40.0625em) {
+    .nhsuk-panel {
+      padding: 32px; } }
+  @media print {
+    .nhsuk-panel {
+      border: 1px solid #212b32;
+      page-break-inside: avoid; } }
+
+/* Panel colour variant
+   ========================================================================== */
+.nhsuk-panel--grey {
+  background-color: #f0f4f5; }
+
+/* Panel with label
+   ========================================================================== */
+.nhsuk-panel-with-label {
+  margin-bottom: 40px;
+  margin-top: 40px;
+  padding: 24px;
+  background-color: #ffffff;
+  color: #212b32;
+  padding-top: 0 !important; }
+  .nhsuk-panel-with-label > *:first-child {
+    margin-top: 0; }
+  .nhsuk-panel-with-label > *:last-child {
+    margin-bottom: 0; }
+  @media (min-width: 40.0625em) {
+    .nhsuk-panel-with-label {
+      margin-bottom: 48px; } }
+  @media (min-width: 40.0625em) {
+    .nhsuk-panel-with-label {
+      margin-top: 48px; } }
+  @media (min-width: 40.0625em) {
+    .nhsuk-panel-with-label {
+      padding: 32px; } }
+  @media print {
+    .nhsuk-panel-with-label {
+      border: 1px solid #212b32;
+      page-break-inside: avoid; } }
+
+.nhsuk-panel-with-label__label {
+  font-size: 20px;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  background-color: #005eb8;
+  color: #ffffff;
+  display: inline-block;
+  margin: 0 0 8px -32px;
+  padding: 8px 32px;
+  position: relative;
+  top: -16px; }
+  @media (min-width: 40.0625em) {
+    .nhsuk-panel-with-label__label {
+      font-size: 24px;
+      font-size: 1.5rem;
+      line-height: 1.33333; } }
+  @media print {
+    .nhsuk-panel-with-label__label {
+      font-size: 18pt;
+      line-height: 1.15; } }
+  @media (max-width: 40.0525em) {
+    .nhsuk-panel-with-label__label {
+      margin-left: -24px;
+      margin-right: 0;
+      padding: 8px 24px;
+      top: -8px; } }
+  @media print {
+    .nhsuk-panel-with-label__label {
+      background: none;
+      color: #212b32;
+      top: 0; } }
+  @media print {
+    .nhsuk-panel-with-label__label {
+      color: #212b32;
+      fill: #212b32; }
+      .nhsuk-panel-with-label__label:active, .nhsuk-panel-with-label__label:focus, .nhsuk-panel-with-label__label:visited {
+        color: #212b32; } }
+
+/* Panel group
+   ========================================================================== */
+/**
+ * Panel group allows you to have a row of panels.
+ *
+ * 1. Flexbox is used to make each panel in a row the same height.
+ */
+.nhsuk-panel-group {
+  display: flex;
+  flex-wrap: wrap;
+  /* [1] */
+  margin-bottom: 32px; }
+  @media (max-width: 48.0525em) {
+    .nhsuk-panel-group {
+      margin-bottom: 24px; } }
+
+.nhsuk-panel-group__item {
+  display: flex;
+  /* [1] */ }
+  @media (max-width: 48.0525em) {
+    .nhsuk-panel-group__item {
+      flex: 0 0 100%; } }
+  @media (max-width: 48.0525em) {
+    .nhsuk-panel-group__item {
+      margin-bottom: 24px; }
+      .nhsuk-panel-group__item:last-child {
+        margin-bottom: 0; } }
+  .nhsuk-panel-group__item .nhsuk-panel {
+    margin-bottom: 0;
+    margin-top: 0; }
+
+/* ==========================================================================
+   COMPONENTS / #PROMO
+   ========================================================================== */
+/**
+ * 1. Extra margin is added to compensate for the box-shadow.
+ * 2. Box shadow size is set within settings/_globals.scss.
+ * 3. Makes the <a> fill the height of it's parent container.
+ * 4. Is needed for the :active top positioning.
+ * 5. Removes default <a> text underline from all elements.
+ * 6. Adds text underline to promo heading.
+ * 7. Creates the 'pressed down' effect when clicked.
+ * 8. Border is used to create a divider between the white content
+ *    box and an image.
+ */
+.nhsuk-promo {
+  margin-bottom: 36px;
+  /* [1] */
+  width: 100%; }
+
+.nhsuk-promo__link-wrapper {
+  background-color: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 0 0 #d8dde0;
+  /* [2] */
+  display: block;
+  height: 100%;
+  /* [3] */
+  position: relative;
+  /* [4] */
+  text-decoration: none;
+  /* [5] */ }
+  .nhsuk-promo__link-wrapper:hover {
+    background-color: #ffffff;
+    color: #005eb8; }
+    .nhsuk-promo__link-wrapper:hover .nhsuk-promo__heading {
+      color: #7C2855; }
+  .nhsuk-promo__link-wrapper:focus {
+    background-color: #ffffff;
+    box-shadow: 0 4px 0 0 #d8dde0; }
+    .nhsuk-promo__link-wrapper:focus .nhsuk-promo__heading {
+      background-color: #ffeb3b;
+      box-shadow: 0 -2px #ffeb3b, 0 4px #212b32;
+      color: #212b32;
+      outline: 4px solid transparent;
+      text-decoration: none; }
+  .nhsuk-promo__link-wrapper:active {
+    background-color: #ffffff;
+    /* [7] */
+    box-shadow: none;
+    top: 4px;
+    /* [7] */ }
+    .nhsuk-promo__link-wrapper:active .nhsuk-promo__heading {
+      background: none;
+      box-shadow: none; }
+  .nhsuk-promo__link-wrapper:hover .nhsuk-promo__heading, .nhsuk-promo__link-wrapper:active .nhsuk-promo__heading {
+    text-decoration: none; }
+
+.nhsuk-promo__img {
+  border-bottom: 1px solid #f0f4f5;
+  /* [8] */
+  display: block;
+  width: 100%; }
+  @media print {
+    .nhsuk-promo__img {
+      display: none; } }
+
+.nhsuk-promo__heading {
+  font-weight: 600;
+  font-size: 20px;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  display: inline-block;
+  margin-bottom: 16px;
+  text-decoration: underline; }
+  @media (min-width: 40.0625em) {
+    .nhsuk-promo__heading {
+      font-size: 24px;
+      font-size: 1.5rem;
+      line-height: 1.33333; } }
+  @media print {
+    .nhsuk-promo__heading {
+      font-size: 18pt;
+      line-height: 1.15; } }
+
+.nhsuk-promo__content {
+  padding: 24px; }
+  .nhsuk-promo__content > *:first-child {
+    margin-top: 0; }
+  .nhsuk-promo__content > *:last-child {
+    margin-bottom: 0; }
+  @media (min-width: 40.0625em) {
+    .nhsuk-promo__content {
+      padding: 32px; } }
+
+.nhsuk-promo__description {
+  color: #4c6272; }
+
+/* Promo size variant
+   ========================================================================== */
+/**
+ * Promo small reduces the size of the text heading and description.
+ */
+.nhsuk-promo--small .nhsuk-promo__heading {
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.5; }
+  @media (min-width: 40.0625em) {
+    .nhsuk-promo--small .nhsuk-promo__heading {
+      font-size: 19px;
+      font-size: 1.1875rem;
+      line-height: 1.47368; } }
+  @media print {
+    .nhsuk-promo--small .nhsuk-promo__heading {
+      font-size: 14pt;
+      line-height: 1.15; } }
+
+.nhsuk-promo--small .nhsuk-promo__description {
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.71429; }
+  @media (min-width: 40.0625em) {
+    .nhsuk-promo--small .nhsuk-promo__description {
+      font-size: 16px;
+      font-size: 1rem;
+      line-height: 1.5; } }
+  @media print {
+    .nhsuk-promo--small .nhsuk-promo__description {
+      font-size: 14pt;
+      line-height: 1.2; } }
+
+/* Promo group
+   ========================================================================== */
+/**
+ * Promo group allows you to have a row of promos.
+ *
+ * Flexbox is used to make each promo in a row the same height.
+ */
+.nhsuk-promo-group {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 36px; }
+  @media (max-width: 48.0525em) {
+    .nhsuk-promo-group {
+      margin-bottom: 28px; } }
+
+.nhsuk-promo-group__item {
+  display: flex; }
+  @media (max-width: 48.0525em) {
+    .nhsuk-promo-group__item {
+      flex: 0 0 100%; } }
+  @media (max-width: 48.0525em) {
+    .nhsuk-promo-group__item {
+      margin-bottom: 28px; }
+      .nhsuk-promo-group__item:last-child {
+        margin-bottom: 0; } }
+  .nhsuk-promo-group__item .nhsuk-promo {
+    margin-bottom: 0; }
+
+/* ==========================================================================
    COMPONENTS/ #RADIOS
    ========================================================================== */
 /**
@@ -5672,7 +5793,10 @@ b {
  */
 .nhsuk-radios__input:focus + .nhsuk-radios__label::before {
   border: 4px solid #212b32;
-  box-shadow: 0 0 0 4px #ffeb3b; }
+  box-shadow: 0 0 0 4px #ffeb3b;
+  outline: 4px solid transparent;
+  /* 1 */
+  outline-offset: 4px; }
 
 /* Selected state */
 .nhsuk-radios__input:checked + .nhsuk-radios__label::after {
@@ -5775,11 +5899,11 @@ b {
       font-size: 14pt;
       line-height: 1.15; } }
   .nhsuk-select:focus {
-    border: 2px solid #212b32;
-    box-shadow: inset 0 0 0 2px;
-    outline: 4px solid #ffeb3b;
+    border: 4px solid #212b32;
+    box-shadow: 0 0 0 4px #ffeb3b;
+    outline: 4px solid transparent;
     /* 1 */
-    outline-offset: 0; }
+    outline-offset: 4px; }
 
 .nhsuk-select option:active,
 .nhsuk-select option:checked,
@@ -5864,8 +5988,7 @@ b {
 .nhsuk-summary-list__value,
 .nhsuk-summary-list__actions {
   margin: 0;
-  /* [2] */
-  vertical-align: top; }
+  /* [2] */ }
   @media (min-width: 40.0625em) {
     .nhsuk-summary-list__key,
     .nhsuk-summary-list__value,
@@ -5942,25 +6065,6 @@ b {
 /* ==========================================================================
    COMPONENTS / #TABLE
    ========================================================================== */
-/**
- * Table container is used to ensure the table does not break the container.
- *
- * 1. Margin is removed so there isn't double spacing.
- */
-.nhsuk-table-container {
-  margin-bottom: 40px;
-  display: block;
-  -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow-x: auto;
-  width: 100%; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-table-container {
-      margin-bottom: 48px; } }
-  .nhsuk-table-container .nhsuk-table {
-    margin: 0;
-    /* [1] */ }
-
 /* Table row hover
 ========================================================================== */
 /**
@@ -5980,7 +6084,6 @@ b {
   padding: 24px;
   background-color: #ffffff;
   color: #212b32;
-  border: 1px solid #d8dde0;
   padding-top: 0 !important; }
   .nhsuk-table__panel-with-heading-tab > *:first-child {
     margin-top: 0; }
@@ -5999,7 +6102,7 @@ b {
     .nhsuk-table__panel-with-heading-tab {
       border: 1px solid #212b32;
       page-break-inside: avoid; } }
-  .nhsuk-table__panel-with-heading-tab .nhsuk-table-container,
+  .nhsuk-table__panel-with-heading-tab .nhsuk-table-responsive,
   .nhsuk-table__panel-with-heading-tab .nhsuk-table {
     margin: 0;
     /* [1] */ }
@@ -6011,7 +6114,7 @@ b {
   background-color: #005eb8;
   color: #ffffff;
   display: inline-block;
-  margin: 0 0 8px -33px;
+  margin: 0 0 8px -32px;
   padding: 8px 32px;
   position: relative;
   top: -16px; }
@@ -6026,7 +6129,7 @@ b {
       line-height: 1.15; } }
   @media (max-width: 40.0525em) {
     .nhsuk-table__heading-tab {
-      margin-left: -25px;
+      margin-left: -24px;
       margin-right: 0;
       padding: 8px 24px;
       top: -8px; } }
@@ -6039,84 +6142,23 @@ b {
 /* Responsive table
 ========================================================================== */
 /**
- * 1. Hiding the thead on mobile
- * 2. Displaying the thead on desktop
- * 3. Removing default screen reader behaviour
- * 4. Assigning role of table-row on desktop to give default screen reader behaviour
- * 5. Using justify content to space out elements in the row on mobile
- * 6. Assigning a minimum width in case of black cell
- * 7. Aligning content to the right on mobile
- * 8. Aligning mobile header to left to split it from the data
- * 9. Hiding mobile specific header from desktop view
+ * Responsive table is used to ensure the table does not break the container.
+ *
+ * 1. Margin is removed so there isn't double spacing.
  */
 .nhsuk-table-responsive {
-  margin-bottom: 0;
+  margin-bottom: 40px;
+  display: block;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow-x: auto;
   width: 100%; }
-  .nhsuk-table-responsive thead {
-    -webkit-clip-path: inset(50%);
-    border: 0;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
+  @media (min-width: 40.0625em) {
+    .nhsuk-table-responsive {
+      margin-bottom: 48px; } }
+  .nhsuk-table-responsive .nhsuk-table {
     margin: 0;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
     /* [1] */ }
-    @media (min-width: 48.0625em) {
-      .nhsuk-table-responsive thead {
-        -webkit-clip-path: initial;
-        clip: auto;
-        clip-path: initial;
-        display: table-header-group;
-        height: auto;
-        overflow: auto;
-        position: relative;
-        width: auto;
-        /* [2] */ } }
-  .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table-responsive__heading {
-    font-weight: 600;
-    padding-right: 16px;
-    text-align: left;
-    /* [8] */ }
-    @media (min-width: 48.0625em) {
-      .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table-responsive__heading {
-        display: none;
-        /* [9] */ } }
-  .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row {
-    display: block;
-    /* [3] */
-    margin-bottom: 24px; }
-    .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row:last-child {
-      margin-bottom: 0; }
-    @media (min-width: 48.0625em) {
-      .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row {
-        display: table-row;
-        /* [4] */ } }
-    .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row th {
-      text-align: right; }
-      @media (min-width: 48.0625em) {
-        .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row th {
-          text-align: left; } }
-    .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row td {
-      display: block;
-      display: flex;
-      justify-content: space-between;
-      /* [5] */
-      min-width: 1px;
-      /* [6] */ }
-      @media (min-width: 48.0625em) {
-        .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row td {
-          display: table-cell; } }
-      @media (max-width: 48.0525em) {
-        .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row td {
-          padding-right: 0;
-          text-align: right;
-          /* [7] */ }
-          .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row td:last-child {
-            border-bottom: 3px solid #d8dde0; } }
 
 /* Numeric tables
 ========================================================================== */
@@ -6126,92 +6168,6 @@ b {
 .nhsuk-table__header--numeric,
 .nhsuk-table__cell--numeric {
   text-align: right; }
-
-/* ==========================================================================
-   #TAG
-   ========================================================================== */
-.nhsuk-tag {
-  font-weight: 600;
-  font-size: 14px;
-  font-size: 0.875rem;
-  line-height: 1;
-  background-color: #0055a6;
-  border: 1px solid #0055a6;
-  color: #ffffff;
-  display: inline-block;
-  outline: 2px solid transparent;
-  outline-offset: -2px;
-  padding-bottom: 4px;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  text-decoration: none; }
-  @media (min-width: 40.0625em) {
-    .nhsuk-tag {
-      font-size: 16px;
-      font-size: 1rem;
-      line-height: 1; } }
-  @media print {
-    .nhsuk-tag {
-      font-size: 14pt;
-      line-height: 1; } }
-
-/* Colour variants
-  ========================================================================== */
-.nhsuk-tag--white {
-  background-color: #ffffff;
-  border-color: #212b32;
-  color: #212b32; }
-
-.nhsuk-tag--grey {
-  background-color: #dbe0e3;
-  border-color: #354550;
-  color: #354550; }
-
-.nhsuk-tag--green {
-  background-color: #cce5d8;
-  border-color: #004c23;
-  color: #004c23; }
-
-.nhsuk-tag--aqua-green {
-  background-color: #ccedeb;
-  border-color: #00524d;
-  color: #00524d; }
-
-.nhsuk-tag--blue {
-  background-color: #ccdff1;
-  border-color: #004281;
-  color: #004281; }
-
-.nhsuk-tag--purple {
-  background-color: #d6cce3;
-  border-color: #240050;
-  color: #240050; }
-
-.nhsuk-tag--pink {
-  background-color: #efd3e3;
-  border-color: #57133a;
-  color: #57133a; }
-
-.nhsuk-tag--red {
-  background-color: #f7d4d1;
-  border-color: #6b140e;
-  color: #6b140e; }
-
-.nhsuk-tag--orange {
-  background-color: #ffdc8e;
-  border-color: #4d3708;
-  color: #4d3708; }
-
-.nhsuk-tag--yellow {
-  background-color: #fff59d;
-  border-color: #4d4712;
-  color: #4d4712; }
-
-/* Remove tag border
-  ========================================================================== */
-.nhsuk-tag--no-border {
-  border: 0; }
 
 /* ==========================================================================
    COMPONENTS/ #TEXTAREA
@@ -6240,11 +6196,11 @@ b {
       font-size: 14pt;
       line-height: 1.15; } }
   .nhsuk-textarea:focus {
-    border: 2px solid #212b32;
-    box-shadow: inset 0 0 0 2px;
-    outline: 4px solid #ffeb3b;
+    border: 4px solid #212b32;
+    box-shadow: 0 0 0 4px #ffeb3b;
+    outline: 4px solid transparent;
     /* 1 */
-    outline-offset: 0; }
+    outline-offset: 4px; }
 
 .nhsuk-textarea--error {
   border: 4px solid #d5281b; }
@@ -6262,7 +6218,6 @@ b {
   padding: 24px;
   background-color: #fff9c4;
   color: #212b32;
-  border: 1px solid #ffeb3b;
   padding-top: 0 !important;
   /* [1] */ }
   .nhsuk-warning-callout > *:first-child {
@@ -6290,7 +6245,7 @@ b {
   background-color: #ffeb3b;
   color: #212b32;
   display: inline-block;
-  margin: 0 0 8px -33px;
+  margin: 0 0 8px -32px;
   padding: 8px 32px;
   position: relative;
   top: -16px;
@@ -6306,7 +6261,7 @@ b {
       line-height: 1.15; } }
   @media (max-width: 40.0525em) {
     .nhsuk-warning-callout__label {
-      margin-left: -25px;
+      margin-left: -24px;
       margin-right: 0;
       padding: 8px 24px;
       top: -8px; } }
@@ -11134,9 +11089,6 @@ body {
   font-size: 16px;
   font-size: 1rem; }
 
-.bc-lh-r {
-  line-height: 1.5; }
-
 .bc-bg--grey-4 {
   background-color: #d8dde0; }
 
@@ -11149,11 +11101,11 @@ body {
 .bc-t-font-color--white {
   color: #ffffff; }
 
-.bc-list-none {
-  list-style: none; }
+.bc-flex-container {
+  display: flex; }
 
-.bc-margin-left {
-  margin-left: 10px; }
+.bc-align-items-center {
+  align-items: center; }
 
 .bc-u-text-align-right {
   text-align: right; }
@@ -11199,33 +11151,13 @@ body {
       float: left;
       width: 20%; } }
 
-caption {
-  font-size: 20px;
-  font-size: 1.25rem;
-  line-height: 1.4;
-  border-bottom: 2px solid #aeb7bd;
-  font-weight: bold;
-  margin: 16px 0;
-  padding-bottom: 16px;
-  text-align: left; }
-  @media (min-width: 40.0625em) {
-    caption {
-      font-size: 24px;
-      font-size: 1.5rem;
-      line-height: 1.33333; } }
-  @media print {
-    caption {
-      font-size: 18pt;
-      line-height: 1.15; } }
+.bc-c-title {
+  border-bottom: 2px solid #005eb8;
+  margin: 0 0 16px; }
 
-.summary-footer tr:first-child td {
-  border-top: 0.8px solid #d8dde0; }
-
-.bc-flex-container {
-  display: flex; }
-
-.bc-align-items-center {
-  align-items: center; }
+.bc-c-section-box-border {
+  background-color: #ffffff;
+  border: 5px solid #005eb8; }
 
 .bc-c-global-alert {
   background-color: #ffeb3b;
@@ -11238,3 +11170,26 @@ caption {
     font-size: 19px;
     margin-bottom: 0;
     margin-top: 8px; }
+
+.bc-c-tag, .bc-c-tag-foundation, .bc-c-tag-beta {
+  background-color: #005eb8;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 4px 16px; }
+
+.bc-c-tag-outline {
+  background-color: transparent;
+  border: 2px solid #005eb8;
+  color: #005eb8;
+  display: inline-block;
+  padding: 4px 16px; }
+
+.bc-c-tag-foundation {
+  background: none;
+  border: solid 2px #005eb8;
+  color: #005eb8;
+  display: inline-block; }
+
+.bc-c-tag-beta {
+  float: left;
+  margin: 8px 16px 0; }

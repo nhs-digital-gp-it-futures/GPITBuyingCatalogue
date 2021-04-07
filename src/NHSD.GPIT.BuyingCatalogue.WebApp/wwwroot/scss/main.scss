@@ -10,13 +10,8 @@
 @import './helpers/alignment';
 @import './helpers/borders';
 @import './helpers/sizing';
-@import './helpers/components';
-@import './helpers/flexbox';
 
 // Application styles
 @import 'app';
 @import 'covid19';
-
-
-
-
+@import 'tag';

@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "govuk-frontend": "3.11.0",
-    "nhsuk-frontend": "4.1.0"
+    "govuk-frontend": "^3.11.0",
+    "nhsuk-frontend": "^3.1.0"
   },
   "devDependencies": {
     "del": "^4.1.1",
