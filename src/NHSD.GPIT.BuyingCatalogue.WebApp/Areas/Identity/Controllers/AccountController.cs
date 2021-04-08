@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
@@ -13,11 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
     {
         private readonly ILogger<AccountController> _logger;
         private readonly SignInManager<AspNetUser> _signInManager;
+        private readonly IPasswordService _passwordService;
+        private readonly IPasswordResetCallback _passwordResetCallback;
 
-        public AccountController(ILogger<AccountController> logger, SignInManager<AspNetUser> signInManager)
+        public AccountController(ILogger<AccountController> logger, SignInManager<AspNetUser> signInManager, IPasswordService passwordService, IPasswordResetCallback passwordResetCallback)
         {
             _logger = logger;
             _signInManager = signInManager;
+            _passwordService = passwordService;
+            _passwordResetCallback = passwordResetCallback;
         }
 
         [HttpGet]
@@ -89,15 +96,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             {
                 return View(viewModel);
             }
+            
+            var resetToken = await _passwordService.GeneratePasswordResetTokenAsync(viewModel.EmailAddress);
+            if (resetToken is null)
+                return RedirectToAction(nameof(ForgotPasswordLinkSent));
 
-            // MJRTODO
-            //var resetToken = await passwordService.GeneratePasswordResetTokenAsync(viewModel.EmailAddress);
-            //if (resetToken is null)
-            //    return RedirectToAction(nameof(ForgotPasswordLinkSent));
-
-            //await passwordService.SendResetEmailAsync(
-            //    resetToken.User,
-            //    passwordResetCallback.GetPasswordResetCallback(resetToken));
+            await _passwordService.SendResetEmailAsync(
+                resetToken.User,
+                _passwordResetCallback.GetPasswordResetCallback(resetToken));
 
             return RedirectToAction(nameof(ForgotPasswordLinkSent));
         }
@@ -108,17 +114,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return View();
         }
 
-
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string email, string token)
-        {
-            // MJRTODO
-            //var isValid = await passwordService.IsValidPasswordResetTokenAsync(email, token);
+        {            
+            var isValid = await _passwordService.IsValidPasswordResetTokenAsync(email, token);
 
-            //if (!isValid)
-            //{
-            //    return RedirectToAction(nameof(ResetPasswordExpired));
-            //}
+            if (!isValid)
+            {
+                return RedirectToAction(nameof(ResetPasswordExpired));
+            }
 
             return View(new ResetPasswordViewModel { Email = email, Token = token });
         }
@@ -136,34 +140,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             {
                 return View(viewModel);
             }
+            
+            var res = await _passwordService.ResetPasswordAsync(viewModel.Email, viewModel.Token, viewModel.Password);
+            if (res.Succeeded)
+            {
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
 
-            // MJRTODO
-            //var res = await passwordService.ResetPasswordAsync(viewModel.Email, viewModel.Token, viewModel.Password);
-            //if (res.Succeeded)
-            //{
-            //    return RedirectToAction(nameof(ResetPasswordConfirmation));
-            //}
+            var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
+            if (invalidPasswordError is not null)
+            {
+                ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), invalidPasswordError.Description);
+                return View(viewModel);
+            }
 
-            //var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
-            //if (invalidPasswordError is not null)
-            //{
-            //    ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), invalidPasswordError.Description);
-            //    return View(viewModel);
-            //}
+            var invalidTokenError = res.Errors.FirstOrDefault(error => error.Code == IPasswordService.InvalidTokenCode);
+            if (invalidTokenError is not null)
+            {
+                return RedirectToAction(nameof(ResetPasswordExpired));
+            }
 
-            //var invalidTokenError = res.Errors.FirstOrDefault(error => error.Code == PasswordService.InvalidTokenCode);
-            //if (invalidTokenError is not null)
-            //{
-            //    return RedirectToAction(nameof(ResetPasswordExpired));
-            //}
-
-            //throw new InvalidOperationException(
-            //    $"Unexpected errors whilst resetting password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
-
-            return RedirectToAction(nameof(ResetPasswordConfirmation)); // MJRTODO - Remove once above is done
-
+            throw new InvalidOperationException(
+                $"Unexpected errors whilst resetting password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");            
         }
-
 
         [HttpGet]
         public IActionResult ResetPasswordConfirmation()

@@ -1,4 +1,6 @@
 using System;
+using MailKit;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +11,11 @@ using Microsoft.Extensions.Hosting;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.Services.Email;
+using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -33,6 +40,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ConfigureIdentity(services);
 
             ConfigureCookie(services);
+
+
+            // MJRTODO - Is this even required?? Looks like an ID4 thing
+            var issuerUrl = Configuration.GetValue<string>("issuerUrl");
+            var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
+            services.AddSingleton(issuerSettings);
+
+
+            var passwordResetSettings = Configuration.GetSection("passwordReset").Get<PasswordResetSettings>();
+            services.AddSingleton(passwordResetSettings);
+            
+            services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
+
+            var allowInvalidCertificate = Configuration.GetValue<bool>("AllowInvalidCertificate");
+            var smtpSettings = Configuration.GetSection("SmtpServer").Get<SmtpSettings>();
+            smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
+            //services.AddEmailClient(smtpSettings);
+
+
+            services.AddSingleton(smtpSettings);
+    services.AddScoped<IMailTransport, SmtpClient>();
+    services.AddTransient<IEmailService, MailKitEmailService>();
+
+            
+
+            // MJRTODO - what is this??
+            //services.AddHealthChecks(connectionString)
+            //    .AddSmtpHealthCheck(smtpSettings);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,7 +138,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 o.Lockout.MaxFailedAccessAttempts = 6;
             })
                .AddEntityFrameworkStores<UsersDbContext>()
-               .AddDefaultTokenProviders();
+                               //.AddDefaultTokenProviders();
+                               .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
+                .AddPasswordValidator<PasswordValidator>();
         }
 
         private void ConfigureCookie(IServiceCollection services)
