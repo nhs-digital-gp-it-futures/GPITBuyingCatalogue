@@ -40,9 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ConfigureIdentity(services);
 
             ConfigureCookie(services);
-
-
-            // MJRTODO - Is this even required?? Looks like an ID4 thing
+            
             var issuerUrl = Configuration.GetValue<string>("issuerUrl");
             var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
             services.AddSingleton(issuerSettings);
@@ -57,19 +55,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             var allowInvalidCertificate = Configuration.GetValue<bool>("AllowInvalidCertificate");
             var smtpSettings = Configuration.GetSection("SmtpServer").Get<SmtpSettings>();
             smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
-            //services.AddEmailClient(smtpSettings);
-
 
             services.AddSingleton(smtpSettings);
-    services.AddScoped<IMailTransport, SmtpClient>();
-    services.AddTransient<IEmailService, MailKitEmailService>();
+            services.AddScoped<IMailTransport, SmtpClient>();
+            services.AddTransient<IEmailService, MailKitEmailService>();
 
-            
+
 
             // MJRTODO - what is this??
             //services.AddHealthChecks(connectionString)
             //    .AddSmtpHealthCheck(smtpSettings);
 
+
+            var disabledErrorMessage = Configuration.GetSection("disabledErrorMessage").Get<DisabledErrorMessageSettings>();
+            services.AddSingleton(disabledErrorMessage);
+
+
+            var publicBrowseSettings = Configuration.GetSection("publicBrowse").Get<PublicBrowseSettings>();
+            services.AddSingleton(publicBrowseSettings);
+
+
+            services.AddAuthorization(options =>
+            { 
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));                
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,10 +146,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 o.Lockout.MaxFailedAccessAttempts = 6;
             })
-               .AddEntityFrameworkStores<UsersDbContext>()
-                               //.AddDefaultTokenProviders();
-                               .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
-                .AddPasswordValidator<PasswordValidator>();
+            .AddEntityFrameworkStores<UsersDbContext>()                               
+            .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
+            .AddPasswordValidator<PasswordValidator>();
         }
 
         private void ConfigureCookie(IServiceCollection services)
@@ -148,11 +156,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "user-session";
-                options.LoginPath = "/Account/Login";
-                options.LogoutPath = "/Account/Logout";
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
                 options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always; // MJRTODO - Confirm
                 options.ExpireTimeSpan = TimeSpan.FromSeconds(1000); // MJRTODO - Config
-                options.AccessDeniedPath = "/404";
+                options.AccessDeniedPath = "/404"; // MJRTODO - don't like this
             });
 
             services.AddAntiforgery(options => options.Cookie.Name = "antiforgery");

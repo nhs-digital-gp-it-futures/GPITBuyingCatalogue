@@ -4,14 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
     public sealed class PasswordValidator : IPasswordValidator<AspNetUser>
     {
         public const string InvalidPasswordCode = "InvalidPassword";
-        internal const string PasswordConditionsNotMet = "The password you’ve entered does not meet the criteria";
+        public const string PasswordConditionsNotMet = "The password you’ve entered does not meet the criteria";
 
         public Task<IdentityResult> ValidateAsync(UserManager<AspNetUser> manager, AspNetUser user, string password)
         {

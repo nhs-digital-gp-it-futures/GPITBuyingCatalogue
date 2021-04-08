@@ -14,6 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
     [Area("Identity")]
     public class AccountController : Controller
     {
+        public const string SignInErrorMessage = "Enter a valid email address and password";
+
+        public const string UserDisabledErrorMessageTemplate = @"There is a problem accessing your account.
+
+Contact the account administrator at: {0} or call {1}";
+
+
+
         private readonly ILogger<AccountController> _logger;
         private readonly SignInManager<AspNetUser> _signInManager;
         private readonly IPasswordService _passwordService;

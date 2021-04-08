@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.ServiceContracts\NHSD.GPIT.BuyingCatalogue.ServiceContracts.csproj" />
+    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Test.Framework\NHSD.GPIT.BuyingCatalogue.Test.Framework.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
+    [Authorize]
     [Area("Order")]
     public class OrganisationController : Controller
     {
@@ -14,7 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         public IActionResult Index()
-        {            
+        {
+            if (!User.IsBuyer())
+                return View("NotBuyer");
+
             return View();
         }
 

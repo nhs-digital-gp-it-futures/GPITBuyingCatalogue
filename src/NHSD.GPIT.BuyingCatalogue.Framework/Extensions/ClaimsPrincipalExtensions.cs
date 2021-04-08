@@ -16,6 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             return GetClaimValue(user, "userDisplayName");
         }
 
+        public static bool IsAdmin(this ClaimsPrincipal user)
+        {
+            return GetClaimValue(user, "IsAdmin").Equals("True");
+        }
+        public static bool IsBuyer(this ClaimsPrincipal user)
+        {
+            return GetClaimValue(user, "IsBuyer").Equals("True");
+        }
+
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)
         {
             var claim = user.Claims.FirstOrDefault(x => x.Type.Equals(claimType, StringComparison.InvariantCultureIgnoreCase));

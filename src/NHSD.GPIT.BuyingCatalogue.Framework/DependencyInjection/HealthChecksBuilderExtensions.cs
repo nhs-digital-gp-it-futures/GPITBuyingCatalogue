@@ -1,10 +1,9 @@
-﻿using HealthChecks.Network.Core;
+﻿using System;
+using System.Collections.Generic;
+using HealthChecks.Network.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using System;
-using System.Collections.Generic;
-
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
 {

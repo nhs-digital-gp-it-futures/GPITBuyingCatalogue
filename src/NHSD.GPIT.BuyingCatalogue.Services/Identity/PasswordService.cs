@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     /// </summary>
     public sealed class PasswordService : IPasswordService
     {
-        internal const string InvalidTokenCode = "InvalidToken";
+        public const string InvalidTokenCode = "InvalidToken";
 
         private readonly IEmailService emailService;
         private readonly IdentityOptions identityOptions = new();
