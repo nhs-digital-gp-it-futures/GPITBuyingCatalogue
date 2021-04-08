@@ -7,12 +7,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 
-//using Microsoft.AspNetCore.Identity;
-//using NHSD.BuyingCatalogue.EmailClient;
-//using NHSD.BuyingCatalogue.Identity.Api.Extensions;
-//using NHSD.BuyingCatalogue.Identity.Api.Models;
-//using NHSD.BuyingCatalogue.Identity.Api.Settings;
-
 namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
 {
     /// <summary>

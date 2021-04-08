@@ -71,10 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(disabledErrorMessage);
 
 
-            var publicBrowseSettings = Configuration.GetSection("publicBrowse").Get<PublicBrowseSettings>();
-            services.AddSingleton(publicBrowseSettings);
-
-
             services.AddAuthorization(options =>
             { 
                 options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));                
