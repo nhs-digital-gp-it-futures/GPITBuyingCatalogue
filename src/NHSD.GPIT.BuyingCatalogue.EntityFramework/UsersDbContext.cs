@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 
@@ -6,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
+    [ExcludeFromCodeCoverage]
     public partial class UsersDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
     {
         public UsersDbContext()

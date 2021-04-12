@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             
             services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(identityConnectionString));
 
-            healthCheckBuilder.AddDatabaseHealthChecks(identityConnectionString);
+            healthCheckBuilder.AddDatabaseHealthCheck(identityConnectionString);
         }
 
         private static void ConfigureIdentity(IServiceCollection services)

@@ -1,8 +1,11 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
     /// <summary>
     /// SMTP authentication settings.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class SmtpAuthenticationSettings
     {
         /// <summary>

@@ -51,13 +51,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
             return healthChecksBuilder;
         }
 
-        public static IHealthChecksBuilder AddDatabaseHealthChecks(this IHealthChecksBuilder healthChecksBuilder, string connectionString)
+        public static IHealthChecksBuilder AddDatabaseHealthCheck(this IHealthChecksBuilder healthChecksBuilder, string connectionString)
         {
+            if (healthChecksBuilder is null)
+                throw new ArgumentNullException(nameof(healthChecksBuilder));
+
             if (connectionString is null)
                 throw new ArgumentNullException(nameof(connectionString));
 
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new ArgumentException();
             
-
             healthChecksBuilder.AddCheck(
                     "self",
                     () => HealthCheckResult.Healthy(),

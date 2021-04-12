@@ -1,8 +1,11 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
     /// <summary>
     /// SMTP server settings.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class SmtpSettings
     {
         /// <summary>
