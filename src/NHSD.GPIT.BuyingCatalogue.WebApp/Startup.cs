@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
@@ -16,6 +17,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -39,37 +43,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             ConfigureIdentity(services);
 
-            ConfigureCookie(services);
+            ConfigureCookies(services);
             
             var issuerUrl = Configuration.GetValue<string>("issuerUrl");
             var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
             services.AddSingleton(issuerSettings);
 
-
             var passwordResetSettings = Configuration.GetSection("passwordReset").Get<PasswordResetSettings>();
-            services.AddSingleton(passwordResetSettings);
-            
+            services.AddSingleton(passwordResetSettings);            
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
 
             var allowInvalidCertificate = Configuration.GetValue<bool>("AllowInvalidCertificate");
             var smtpSettings = Configuration.GetSection("SmtpServer").Get<SmtpSettings>();
             smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
-
             services.AddSingleton(smtpSettings);
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();
-
-
-
-            // MJRTODO - what is this??
-            //services.AddHealthChecks(connectionString)
-            //    .AddSmtpHealthCheck(smtpSettings);
-
+            
+            var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
+            services.AddHealthChecks(identityConnectionString).AddSmtpHealthCheck(smtpSettings);
 
             var disabledErrorMessage = Configuration.GetSection("disabledErrorMessage").Get<DisabledErrorMessageSettings>();
             services.AddSingleton(disabledErrorMessage);
-
 
             services.AddAuthorization(options =>
             { 
@@ -113,6 +109,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
+                {
+                    Predicate = healthCheckRegistration => healthCheckRegistration.Tags.Contains(HealthCheckTags.Live),
+                });
+
+                endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
+                {
+                    Predicate = healthCheckRegistration => healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready),
+                });
             });
         }
 
@@ -138,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 o.Password.RequireLowercase = false;
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequireUppercase = false;
-                o.Password.RequiredLength = 12;
+                o.Password.RequiredLength = 10;
                 o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 o.Lockout.MaxFailedAccessAttempts = 6;
             })
@@ -147,15 +153,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             .AddPasswordValidator<PasswordValidator>();
         }
 
-        private void ConfigureCookie(IServiceCollection services)
+        private void ConfigureCookies(IServiceCollection services)
         {
+            var cookieExpiration = Configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "user-session";
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
-                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always; // MJRTODO - Confirm
-                options.ExpireTimeSpan = TimeSpan.FromSeconds(1000); // MJRTODO - Config
+                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+                options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
+                options.SlidingExpiration = cookieExpiration.SlidingExpiration;
                 options.AccessDeniedPath = "/404"; // MJRTODO - don't like this
             });
 
