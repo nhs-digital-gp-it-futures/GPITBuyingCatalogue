@@ -17,7 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 
         public string ReturnUrl { get; set; }
 
-        public string Error { get; set; }        
+        public string Error { get; set; }
+
+        public string DisabledError { get; set; }
 
         public static class ErrorMessages
         {

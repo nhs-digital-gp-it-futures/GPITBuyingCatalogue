@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 
@@ -24,15 +26,19 @@ Contact the account administrator at: {0} or call {1}";
 
         private readonly ILogger<AccountController> _logger;
         private readonly SignInManager<AspNetUser> _signInManager;
+        private readonly UserManager<AspNetUser> _userManager;
         private readonly IPasswordService _passwordService;
         private readonly IPasswordResetCallback _passwordResetCallback;
+        private readonly DisabledErrorMessageSettings _disabledErrorMessageSettings;
 
-        public AccountController(ILogger<AccountController> logger, SignInManager<AspNetUser> signInManager, IPasswordService passwordService, IPasswordResetCallback passwordResetCallback)
+        public AccountController(ILogger<AccountController> logger, SignInManager<AspNetUser> signInManager, UserManager<AspNetUser> userManager, IPasswordService passwordService, IPasswordResetCallback passwordResetCallback, DisabledErrorMessageSettings disabledErrorMessageSettings)
         {
             _logger = logger;
             _signInManager = signInManager;
+            _userManager = userManager;
             _passwordService = passwordService;
             _passwordResetCallback = passwordResetCallback;
+            _disabledErrorMessageSettings = disabledErrorMessageSettings;
         }
 
         [HttpGet]
@@ -59,6 +65,21 @@ Contact the account administrator at: {0} or call {1}";
 
             if (signinResult.Succeeded)
             {
+                var user = await _userManager.FindByEmailAsync(viewModel.EmailAddress);
+
+                if(user.Disabled)
+                {
+                    var disabledErrorFormat = string.Format(
+                        CultureInfo.CurrentCulture,
+                        UserDisabledErrorMessageTemplate,
+                        _disabledErrorMessageSettings.EmailAddress,
+                        _disabledErrorMessageSettings.PhoneNumber);
+
+                    ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
+
+                    return View(viewModel);
+                }
+
                 if (string.IsNullOrWhiteSpace(viewModel.ReturnUrl))
                     return Redirect("~/");
 
