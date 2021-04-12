@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,11 +79,27 @@
             </div>
             <div class="nhsuk-header__content" id="content-header">
                 <div data-test-id="login-logout-component" class="bc-c-login-logout ">
-                    <span data-test-id="logged-out" class="bc-u-display-inline-block">
-                        <a data-test-id="login-link" class="nhsuk-header__link bc-u-display-inline" href="~/Identity/Account/Login" aria-label="Log in">
-                            Log in
-                        </a>
-                    </span>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <span data-test-id="logged-in" class="bc-u-display-inline-block">
+                            <span data-test-id="logged-in-text">
+                                Logged in as: @User.GetUserDisplayName() for @User.GetPrimaryOrganisationName()
+                            </span>
+                            <a data-test-id="logout-link" class="nhsuk-header__link bc-u-display-inline nhsuk-u-margin-left-4" href="~/Identity/Account/Logout" aria-label="Log out">
+                                Log out
+                            </a>
+                        </span>
+                    }
+                    else
+                    {
+                        <span data-test-id="logged-out" class="bc-u-display-inline-block">
+                            <a data-test-id="login-link" class="nhsuk-header__link bc-u-display-inline" href="~/Identity/Account/Login" aria-label="Log in">
+                                Log in
+                            </a>
+                        </span>
+                    }
+
                 </div>
             </div>
         </div>

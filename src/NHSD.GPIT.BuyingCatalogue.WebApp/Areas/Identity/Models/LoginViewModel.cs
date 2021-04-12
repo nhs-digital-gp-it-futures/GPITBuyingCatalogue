@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
@@ -16,13 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 
         public string ReturnUrl { get; set; }
 
-        public string Error { get; set; }
+        public string Error { get; set; }        
 
-        internal static class ErrorMessages
+        public static class ErrorMessages
         {
-            internal const string EmailAddressRequired = "Enter your email address";
-            internal const string EmailAddressInvalid = "Enter a valid email address";
-            internal const string PasswordRequired = "Enter your password";
+            public const string EmailAddressRequired = "Enter your email address";
+            public const string EmailAddressInvalid = "Enter a valid email address";
+            public const string PasswordRequired = "Enter your password";
         }
     }
 }

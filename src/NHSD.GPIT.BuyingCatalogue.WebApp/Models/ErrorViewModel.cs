@@ -1,5 +1,3 @@
-using System;
-
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
     public class ErrorViewModel
