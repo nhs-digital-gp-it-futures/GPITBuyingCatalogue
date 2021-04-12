@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
@@ -19,10 +20,10 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private const string IdentityDbConnectionEnvironmentVariable = "ID_DB_CONNECTION";
@@ -39,38 +40,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddControllersWithViews();
 
-            ConfigureDbContexts(services);
+            var healthChecksBuilder = services.AddHealthChecks();
+
+            ConfigureDbContexts(services, healthChecksBuilder);
 
             ConfigureIdentity(services);
 
             ConfigureCookies(services);
-            
-            var issuerUrl = Configuration.GetValue<string>("issuerUrl");
-            var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
-            services.AddSingleton(issuerSettings);
 
-            var passwordResetSettings = Configuration.GetSection("passwordReset").Get<PasswordResetSettings>();
-            services.AddSingleton(passwordResetSettings);            
-            services.AddScoped<IPasswordService, PasswordService>();
-            services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
+            ConfigureIssuer(services);
 
-            var allowInvalidCertificate = Configuration.GetValue<bool>("AllowInvalidCertificate");
-            var smtpSettings = Configuration.GetSection("SmtpServer").Get<SmtpSettings>();
-            smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
-            services.AddSingleton(smtpSettings);
-            services.AddScoped<IMailTransport, SmtpClient>();
-            services.AddTransient<IEmailService, MailKitEmailService>();
-            
-            var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
-            services.AddHealthChecks(identityConnectionString).AddSmtpHealthCheck(smtpSettings);
+            ConfigurePasswordReset(services);
 
-            var disabledErrorMessage = Configuration.GetSection("disabledErrorMessage").Get<DisabledErrorMessageSettings>();
-            services.AddSingleton(disabledErrorMessage);
+            ConfigureEmail(services, healthChecksBuilder);
 
-            services.AddAuthorization(options =>
-            { 
-                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));                
-            });
+            ConfigureDisabledErrorMessage(services);
+
+            ConfigureAuthorization(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,7 +77,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                OnPrepareResponse = (context) =>
+                {
+                    context.Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+                }
+            });
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers["X-Frame-Options"] = "DENY";
+                context.Response.Headers["X-Xss-Protection"] = "1; mode=block";
+                context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+                context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+                context.Response.Headers["Pragma"] = "no-cache";
+                await next().ConfigureAwait(false);
+            });
 
             app.UseRouting();
 
@@ -122,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
         }
 
-        private void ConfigureDbContexts(IServiceCollection services)
+        private void ConfigureDbContexts(IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
         {
             var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
 
@@ -132,6 +134,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             }
             
             services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(identityConnectionString));
+
+            healthCheckBuilder.AddDatabaseHealthChecks(identityConnectionString);
         }
 
         private static void ConfigureIdentity(IServiceCollection services)
@@ -169,6 +173,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
 
             services.AddAntiforgery(options => options.Cookie.Name = "antiforgery");
+        }
+
+        private void ConfigureIssuer(IServiceCollection services)
+        {
+            var issuerUrl = Configuration.GetValue<string>("issuerUrl");
+            var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
+            services.AddSingleton(issuerSettings);
+        }
+
+        private void ConfigurePasswordReset(IServiceCollection services)
+        {
+            var passwordResetSettings = Configuration.GetSection("passwordReset").Get<PasswordResetSettings>();
+            services.AddSingleton(passwordResetSettings);
+            services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
+        }
+
+        private void ConfigureEmail(IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
+        {
+            var allowInvalidCertificate = Configuration.GetValue<bool>("AllowInvalidCertificate");
+            var smtpSettings = Configuration.GetSection("SmtpServer").Get<SmtpSettings>();
+            smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
+            services.AddSingleton(smtpSettings);
+            services.AddScoped<IMailTransport, SmtpClient>();
+            services.AddTransient<IEmailService, MailKitEmailService>();
+            healthCheckBuilder.AddSmtpHealthCheck(smtpSettings);
+        }
+
+        private void ConfigureDisabledErrorMessage(IServiceCollection services)
+        {
+            var disabledErrorMessage = Configuration.GetSection("disabledErrorMessage").Get<DisabledErrorMessageSettings>();
+            services.AddSingleton(disabledErrorMessage);
+        }
+
+        private void ConfigureAuthorization(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));
+            });
         }
     }
 }

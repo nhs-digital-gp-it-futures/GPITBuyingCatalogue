@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using HealthChecks.Network.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Contains extension methods to <see cref="IHealthChecksBuilder"/> for configuring SMTP health checks.
+    /// Contains extension methods to <see cref="IHealthChecksBuilder"/> for configuring health checks.
     /// </summary>
     public static class HealthChecksBuilderExtensions
     {
@@ -46,6 +47,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
                 HealthStatus.Degraded,
                 tags ?? HealthCheck.DefaultTags,
                 timeout ?? HealthCheck.DefaultTimeout);
+
+            return healthChecksBuilder;
+        }
+
+        public static IHealthChecksBuilder AddDatabaseHealthChecks(this IHealthChecksBuilder healthChecksBuilder, string connectionString)
+        {
+            if (connectionString is null)
+                throw new ArgumentNullException(nameof(connectionString));
+
+            
+
+            healthChecksBuilder.AddCheck(
+                    "self",
+                    () => HealthCheckResult.Healthy(),
+                    new[] { HealthCheckTags.Live })
+                .AddSqlServer(
+                    connectionString,
+                    "SELECT 1;",
+                    "db",
+                    HealthStatus.Unhealthy,
+                    new[] { HealthCheckTags.Ready },
+                    TimeSpan.FromSeconds(10));
 
             return healthChecksBuilder;
         }
