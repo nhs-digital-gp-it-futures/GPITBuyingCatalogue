@@ -14,15 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
         [Compare("Password", ErrorMessage = ErrorMessages.PasswordMismatch)]
         [DisplayName("Confirm password")]
         public string ConfirmPassword { get; set; }
-
+        
         public string Email { get; set; }
 
         public string Token { get; set; }
 
-        private static class ErrorMessages
+        public static class ErrorMessages
         {
-            internal const string PasswordRequired = "Enter a password";
-            internal const string PasswordMismatch = "Passwords do not match";
+            public const string PasswordRequired = "Enter a password";
+            public const string PasswordMismatch = "Passwords do not match";
         }
     }
 }

@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
@@ -20,6 +22,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class AccountControllerTests
     {
+        #region Constructor Tests
+
+        [Test]
+        public static void Constructor_AllServicesPresent_Success()
+        {            
+            new AccountController(
+                Mock.Of<ILogger<AccountController>>(),
+                CreateDefaultMockSignInManager(),
+                CreateDefaultMockUserManager(),
+                Mock.Of<IPasswordService>(),
+                Mock.Of<IPasswordResetCallback>(),
+                new DisabledErrorMessageSettings()
+            );
+        }
+
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {            
@@ -44,6 +61,144 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 Mock.Of<IPasswordResetCallback>(),
                 new DisabledErrorMessageSettings()
                 ));
+        }
+
+        [Test]
+        public static void Constructor_NullUserManager_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new AccountController(
+                    Mock.Of<ILogger<AccountController>>(),
+                    CreateDefaultMockSignInManager(),
+                    null,
+                    Mock.Of<IPasswordService>(),
+                    Mock.Of<IPasswordResetCallback>(),
+                    new DisabledErrorMessageSettings()
+                ));
+        }
+
+        [Test]
+        public static void Constructor_NullPasswordService_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new AccountController(
+                    Mock.Of<ILogger<AccountController>>(),
+                    CreateDefaultMockSignInManager(),
+                    CreateDefaultMockUserManager(),
+                    null,
+                    Mock.Of<IPasswordResetCallback>(),
+                    new DisabledErrorMessageSettings()
+                ));
+        }
+
+        [Test]
+        public static void Constructor_NullPasswordResetCallback_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new AccountController(
+                    Mock.Of<ILogger<AccountController>>(),
+                    CreateDefaultMockSignInManager(),
+                    CreateDefaultMockUserManager(),
+                    Mock.Of<IPasswordService>(),
+                    null,
+                    new DisabledErrorMessageSettings()
+                ));
+        }
+
+        [Test]
+        public static void Constructor_NullDisabledErrorSettings_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new AccountController(
+                    Mock.Of<ILogger<AccountController>>(),
+                    CreateDefaultMockSignInManager(),
+                    CreateDefaultMockUserManager(),
+                    Mock.Of<IPasswordService>(),
+                    Mock.Of<IPasswordResetCallback>(),
+                    null
+                ));
+        }
+
+        #endregion
+
+        [Test]
+        public static void Get_Login_ReturnsDefaultViewWithReturnUrlSet()
+        {
+            var controller = CreateValidController();
+
+            var result = controller.Login("ReturnLink");
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+            Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(LoginViewModel)));
+            Assert.AreEqual("ReturnLink", ((LoginViewModel)((ViewResult)result).Model).ReturnUrl);
+        }
+
+        [Test]
+        public static void Get_Registration_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+
+            var result = controller.Registration();
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+        }
+
+        [Test]
+        public static void Get_ForgotPassword_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+
+            var result = controller.ForgotPassword();
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+        }
+
+        [Test]
+        public static void Get_ForgotPasswordLinkSent_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+
+            var result = controller.ForgotPasswordLinkSent();
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+        }
+
+        [Test]
+        public static void Get_ResetPasswordConfirmation_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+
+            var result = controller.ResetPasswordConfirmation();
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+        }
+
+        [Test]
+        public static void Get_ResetPasswordExpired_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+
+            var result = controller.ResetPasswordExpired();
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+        }
+
+        private static AccountController CreateValidController()
+        {
+            return new AccountController(
+                Mock.Of<ILogger<AccountController>>(),
+                CreateDefaultMockSignInManager(),
+                CreateDefaultMockUserManager(),
+                Mock.Of<IPasswordService>(),
+                Mock.Of<IPasswordResetCallback>(),
+                new DisabledErrorMessageSettings()
+            );
         }
 
         private static UserManager<AspNetUser> CreateDefaultMockUserManager()

@@ -22,8 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
 Contact the account administrator at: {0} or call {1}";
 
-
-
         private readonly ILogger<AccountController> _logger;
         private readonly SignInManager<AspNetUser> _signInManager;
         private readonly UserManager<AspNetUser> _userManager;

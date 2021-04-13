@@ -23,6 +23,7 @@
     <Folder Include="Areas\Marketing\Models\" />
     <Folder Include="Areas\Order\Models\" />
     <Folder Include="Areas\Solutions\Models\" />
+    <Folder Include="Models\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 

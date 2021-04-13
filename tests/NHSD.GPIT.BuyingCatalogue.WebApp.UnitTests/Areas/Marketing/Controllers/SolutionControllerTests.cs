@@ -29,13 +29,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static void Get_Preview_ReturnsViewResult()
+        public static void Get_Preview_ReturnsDefaultView()
         {
             var controller = new SolutionController(Mock.Of<ILogger<SolutionController>>());
 
             var result = controller.Preview("123");
 
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
         }
     }
 }

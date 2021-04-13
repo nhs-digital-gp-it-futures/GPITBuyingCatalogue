@@ -19,13 +19,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Test]
-        public static void Get_Index_ReturnsViewResult()
+        public static void Get_Index_ReturnsDefaultView()
         {
             var controller = new GuideController(Mock.Of<ILogger<GuideController>>());
 
             var result = controller.Index();
             
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
         }
     }
 }

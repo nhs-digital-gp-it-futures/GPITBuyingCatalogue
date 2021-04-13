@@ -19,13 +19,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Test]
-        public static void Get_Index_ReturnsViewResult()
+        public static void Get_Index_ReturnsDefaultView()
         {
             var controller = new VaccinationsController(Mock.Of<ILogger<VaccinationsController>>());
 
             var result = controller.Index();
             
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
         }
     }
 }

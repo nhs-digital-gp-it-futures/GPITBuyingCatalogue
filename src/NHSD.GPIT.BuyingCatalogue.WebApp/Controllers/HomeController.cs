@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
@@ -38,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 return View("PageNotFound");
             }
 
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 }

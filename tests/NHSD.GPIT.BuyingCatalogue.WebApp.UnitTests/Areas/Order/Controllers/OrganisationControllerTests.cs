@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,6 +18,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new OrganisationController(null));
+        }
+
+        [Test]
+        public static void Get_Index_NotBuyer_ReturnsNotBuyerView()
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{    
+                new Claim("IsAdmin", "True"),                
+            }, "mock"));
+
+            var controller = new OrganisationController(Mock.Of<ILogger<OrganisationController>>());
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+
+            var result = controller.Index();
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.AreEqual("NotBuyer", ((ViewResult)result).ViewName);
+        }
+
+        [Test]
+        public static void Get_Index_Buyer_ReturnsDefaultView()
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{
+                new Claim("IsBuyer", "True"),                
+            }, "mock"));
+
+            var controller = new OrganisationController(Mock.Of<ILogger<OrganisationController>>());
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+
+            var result = controller.Index();
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
         }
 
         [Test]
