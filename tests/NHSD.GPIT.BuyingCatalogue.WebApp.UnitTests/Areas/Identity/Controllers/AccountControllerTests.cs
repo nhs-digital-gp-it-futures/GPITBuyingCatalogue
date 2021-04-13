@@ -135,6 +135,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Test]
+        public static void Post_Login_NullModel_ThrowsException()
+        {
+            var controller = CreateValidController();
+            
+            Assert.ThrowsAsync<ArgumentNullException>(() =>
+              controller.Login((LoginViewModel)null)
+             );
+        }
+
+        [Test]
+        public static async Task Post_Login_InvalidModelState_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+            controller.ModelState.AddModelError("test", "test");
+
+            var result = await controller.Login(new LoginViewModel());
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+            Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(LoginViewModel)));
+        }
+
+        [Test]
+        public static async Task Get_Logout_WhenNotLoggedIn_RedirectsHome()
+        {
+            var controller = CreateValidController();
+
+            var result = await controller.Logout();
+
+            Assert.That(result, Is.InstanceOf(typeof(LocalRedirectResult)));
+            Assert.AreEqual("~/", ((LocalRedirectResult)result).Url);            
+        }
+
+        [Test]
         public static void Get_Registration_ReturnsDefaultView()
         {
             var controller = CreateValidController();
@@ -157,6 +191,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Test]
+        public static void Post_ForgotPassword_NullModel_ThrowsException()
+        {
+            var controller = CreateValidController();
+
+            Assert.ThrowsAsync<ArgumentNullException>(() =>
+              controller.ForgotPassword((ForgotPasswordViewModel)null)
+             );
+        }
+
+        [Test]
+        public static async Task Post_ForgotPassword_InvalidModelState_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+            controller.ModelState.AddModelError("test", "test");
+
+            var result = await controller.ForgotPassword(new ForgotPasswordViewModel());
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+            Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(ForgotPasswordViewModel)));
+        }
+
+        [Test]
         public static void Get_ForgotPasswordLinkSent_ReturnsDefaultView()
         {
             var controller = CreateValidController();
@@ -166,6 +223,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }
+
+        [Test]
+        public static void Post_ResetPassword_NullModel_ThrowsException()
+        {
+            var controller = CreateValidController();
+
+            Assert.ThrowsAsync<ArgumentNullException>(() =>
+              controller.ResetPassword((ResetPasswordViewModel)null)
+             );
+        }
+
+        [Test]
+        public static async Task Post_ResetPassword_InvalidModelState_ReturnsDefaultView()
+        {
+            var controller = CreateValidController();
+            controller.ModelState.AddModelError("test", "test");
+
+            var result = await controller.ResetPassword(new ResetPasswordViewModel());
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsNull(((ViewResult)result).ViewName);
+            Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(ResetPasswordViewModel)));
+        }
+
 
         [Test]
         public static void Get_ResetPasswordConfirmation_ReturnsDefaultView()
