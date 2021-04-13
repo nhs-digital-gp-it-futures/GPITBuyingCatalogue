@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
@@ -14,11 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
         [Required(ErrorMessage = ErrorMessages.PasswordRequired)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
+        
         public string ReturnUrl { get; set; }
 
         public string Error { get; set; }
-
+        
         public string DisabledError { get; set; }
 
         public static class ErrorMessages

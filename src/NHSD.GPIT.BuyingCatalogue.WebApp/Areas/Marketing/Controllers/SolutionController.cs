@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
@@ -10,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         
         public SolutionController(ILogger<SolutionController> logger)
         {
-            _logger = logger;            
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [Route("Marketing/Supplier/Solution/{id}")]

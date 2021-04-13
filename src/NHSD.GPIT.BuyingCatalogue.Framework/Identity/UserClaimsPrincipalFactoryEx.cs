@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
             IOptions<IdentityOptions> optionsAccessor,
             ILogger<UserClaimsPrincipalFactoryEx<TUser>> logger) : base(userManager, optionsAccessor)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(TUser user)

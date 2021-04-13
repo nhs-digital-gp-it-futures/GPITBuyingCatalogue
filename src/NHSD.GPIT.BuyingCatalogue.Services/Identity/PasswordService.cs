@@ -122,8 +122,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
             var user = await userManager.FindByEmailAsync(emailAddress);
             return await userManager.ResetPasswordAsync(user, token, newPassword);
         }
-
-
-
     }
 }

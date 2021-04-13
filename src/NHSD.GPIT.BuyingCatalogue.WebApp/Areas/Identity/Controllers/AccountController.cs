@@ -22,8 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
 Contact the account administrator at: {0} or call {1}";
 
-
-
         private readonly ILogger<AccountController> _logger;
         private readonly SignInManager<AspNetUser> _signInManager;
         private readonly UserManager<AspNetUser> _userManager;
@@ -33,12 +31,12 @@ Contact the account administrator at: {0} or call {1}";
 
         public AccountController(ILogger<AccountController> logger, SignInManager<AspNetUser> signInManager, UserManager<AspNetUser> userManager, IPasswordService passwordService, IPasswordResetCallback passwordResetCallback, DisabledErrorMessageSettings disabledErrorMessageSettings)
         {
-            _logger = logger;
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _passwordService = passwordService;
-            _passwordResetCallback = passwordResetCallback;
-            _disabledErrorMessageSettings = disabledErrorMessageSettings;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
+            _passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
+            _disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
         }
 
         [HttpGet]

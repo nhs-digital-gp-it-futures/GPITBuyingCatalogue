@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
     [Parallelizable(ParallelScope.All)]
     internal static class HealthChecksBuilderExtensionsTests
     {
+        #region SmtpHealthCheck Tests
+
         [Test]
         public static void AddSmtpHealthCheck_NullHealthChecksBuilder_ThrowsArgumentNullException()
         {
@@ -194,6 +196,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
             healthCheckArguments.Timeout.Should().Be(timeout);
         }
 
+        #endregion
+
+        #region DatabaseHealthCheck Tests
+
+        [Test]
+        public static void AddDatabaseHealthCheck_NullHealthChecksBuilder_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => HealthChecksBuilderExtensions.AddDatabaseHealthCheck(null!, "connection string"));
+        }
+
+        [Test]
+        public static void AddDatabaseHealthCheck_NullConnectionString_ThrowsArgumentNullException()
+        {
+            var builder = Mock.Of<IHealthChecksBuilder>();
+
+            Assert.Throws<ArgumentNullException>(() => HealthChecksBuilderExtensions.AddDatabaseHealthCheck(builder, null!));
+        }
+
+        [Test]
+        public static void AddDatabaseHealthCheck_EmptyConnectionString_ThrowsArgumentException()
+        {
+            var builder = Mock.Of<IHealthChecksBuilder>();
+
+            Assert.Throws<ArgumentException>(() => HealthChecksBuilderExtensions.AddDatabaseHealthCheck(builder, " "));
+        }
+
+        #endregion
+
         private static void AddSmtpHealthCheckCallback(
             HealthCheckRegistration registration,
             out AddSmtpHealthCheckArguments arguments)
@@ -225,6 +255,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
             internal ICollection<string> Tags { get; init; }
 
             internal TimeSpan? Timeout { get; init; }
-        }
+        }      
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.TagHelpers
 {
+    [ExcludeFromCodeCoverage]
     [HtmlTargetElement(TagHelperConstants.Div, Attributes = TagHelperName)]
     public sealed class ValidationSummaryTagHelper : TagHelper
     {

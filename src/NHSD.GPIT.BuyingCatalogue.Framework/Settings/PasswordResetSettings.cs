@@ -1,10 +1,12 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
     /// <summary>
     /// Password reset settings.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class PasswordResetSettings
     {
         /// <summary>
