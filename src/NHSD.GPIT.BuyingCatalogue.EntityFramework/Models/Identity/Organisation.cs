@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity
-{
-    [ExcludeFromCodeCoverage]
+{    
     public partial class Organisation
     {
         public Guid OrganisationId { get; set; }

@@ -1,4 +1,6 @@
 ﻿using System;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -11,6 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class OrganisationsControllerTests
     {
+        [Test]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(OrganisationsController).Should().BeDecoratedWith<AuthorizeAttribute>(x => x.Policy == "AdminOnly");
+            typeof(OrganisationsController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Admin");
+        }
+
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {
