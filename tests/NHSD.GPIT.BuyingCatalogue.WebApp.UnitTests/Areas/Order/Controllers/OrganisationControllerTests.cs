@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,6 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class OrganisationControllerTests
     {
+        [Test]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(OrganisationController).Should().BeDecoratedWith<AuthorizeAttribute>();
+            typeof(OrganisationController).Should().BeDecoratedWith<AreaAttribute>(x=> x.RouteValue == "Order");
+        }
+
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {

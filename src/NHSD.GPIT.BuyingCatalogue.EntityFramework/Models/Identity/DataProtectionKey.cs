@@ -1,10 +1,7 @@
 ﻿#nullable disable
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity
-{
-    [ExcludeFromCodeCoverage]
+{    
     public partial class DataProtectionKey
     {
         public int Id { get; set; }

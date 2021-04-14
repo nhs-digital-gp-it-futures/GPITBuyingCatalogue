@@ -20,6 +20,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Services;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -27,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     public class Startup
     {
         private const string IdentityDbConnectionEnvironmentVariable = "ID_DB_CONNECTION";
+        private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
 
         public Startup(IConfiguration configuration)
         {
@@ -57,6 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ConfigureDisabledErrorMessage(services);
 
             ConfigureAuthorization(services);
+
+            ServicesStartup.Configure(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,13 +130,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         private void ConfigureDbContexts(IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
         {
+            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
+            {
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
+            }
+
             var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
 
             if (string.IsNullOrWhiteSpace(identityConnectionString))
             {
                 throw new InvalidOperationException($"Environment variable '{IdentityDbConnectionEnvironmentVariable}' must be set for the database connection string");
             }
-            
+
+            services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
             services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(identityConnectionString));
 
             healthCheckBuilder.AddDatabaseHealthCheck(identityConnectionString);
