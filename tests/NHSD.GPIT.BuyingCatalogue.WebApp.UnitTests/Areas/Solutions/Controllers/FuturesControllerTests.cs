@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             };
 
             var mockSolutionsService = new Mock<ISolutionsService>();
-            mockSolutionsService.Setup(x => x.GetFoundationSolutions()).ReturnsAsync(solutions);
+            mockSolutionsService.Setup(x => x.GetFuturesFoundationSolutions()).ReturnsAsync(solutions);
             
             var controller = new FuturesController(Mock.Of<ILogger<FuturesController>>(),
                 mockSolutionsService.Object);

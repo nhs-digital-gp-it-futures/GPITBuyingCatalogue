@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         public async Task<IActionResult> Foundation()
         {
-            var foundationSolutions = await _solutionsService.GetFoundationSolutions();
+            var foundationSolutions = await _solutionsService.GetFuturesFoundationSolutions();
 
             var model = new SolutionsModel { Solutions = foundationSolutions };
 

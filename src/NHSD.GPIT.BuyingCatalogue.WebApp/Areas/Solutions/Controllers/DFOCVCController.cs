@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
@@ -8,15 +11,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     public class DFOCVCController : Controller
     {
         private readonly ILogger<DFOCVCController> _logger;
-        
-        public DFOCVCController(ILogger<DFOCVCController> logger)
+        private readonly ISolutionsService _solutionsService;
+
+        public DFOCVCController(ILogger<DFOCVCController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));
         }
 
-        public IActionResult Index()
-        {                                    
-            return View();
+        public async Task<IActionResult> Index()
+        {
+            var foundationSolutions = await _solutionsService.GetDFOCVCSolutions();
+
+            var model = new SolutionsModel { Solutions = foundationSolutions };
+
+            return View(model);            
         }        
     }
 }

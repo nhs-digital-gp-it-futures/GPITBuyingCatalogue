@@ -21,17 +21,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<List<CatalogueItem>> GetFoundationSolutions()
+        public async Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
             var foundationSolutions = await _dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.PublishedStatus.Name == "Published" && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation))
+                .Where(x => x.PublishedStatus.Name == "Published" 
+                    && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
+                    && x.Solution.FrameworkSolutions.Any( x=> x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
 
             return foundationSolutions;
+        }
+
+        public async Task<List<CatalogueItem>> GetDFOCVCSolutions()
+        {
+            var dfocvcSolutions = await _dbContext.CatalogueItems
+                .Include(x => x.Solution)
+                .ThenInclude(x => x.SolutionCapabilities)
+                .ThenInclude(x => x.Capability)
+                .Include(x => x.Supplier)
+                .Where(x => x.PublishedStatus.Name == "Published"                    
+                    && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
+                .ToListAsync();
+
+            return dfocvcSolutions;
         }
     }
 }
