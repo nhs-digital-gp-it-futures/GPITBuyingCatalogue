@@ -5,6 +5,7 @@ using OpenQA.Selenium.Remote;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
 {
@@ -14,10 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
 
         public BrowserFactory(string browser)
         {
+            GridRunning = GetGridStatus();
             Driver = GetBrowser(browser);
         }
 
         public IWebDriver Driver { get; }
+
+        public bool GridRunning { get; private set; }
 
         private static IWebDriver GetLocalChromeDriver()
         {
@@ -43,11 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             return new RemoteWebDriver(new Uri(hubURL), options);
         }
 
-        private static IWebDriver GetBrowser(string browser)
+        private IWebDriver GetBrowser(string browser)
         {
             IWebDriver driver;
 
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached || !GridRunning)
             {
                 driver = GetLocalChromeDriver();
             }
@@ -62,6 +66,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             }
 
             return driver;
+        }
+
+        private static bool GetGridStatus()
+        {
+            var requestUri = new Uri("http://localhost:4444/grid/console");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.AllowAutoRedirect = false; // find out if this site is up and don't follow a redirector
+            request.Method = "GET";
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                // do something with response.Headers to find out information about the request
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

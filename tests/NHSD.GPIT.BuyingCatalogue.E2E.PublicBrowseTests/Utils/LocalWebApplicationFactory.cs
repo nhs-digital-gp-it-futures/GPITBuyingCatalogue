@@ -43,9 +43,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
 
             RootUri = host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
 
-            Driver = new BrowserFactory(Browser).Driver;
+            var browserFactory = new BrowserFactory(Browser);
+            Driver = browserFactory.Driver;
 
-            if (!Browser.Contains("local") && !Debugger.IsAttached)
+            if (!Browser.Contains("local") && !Debugger.IsAttached && browserFactory.GridRunning)
             {
                 RootUri = RootUri.Replace("localhost", "host.docker.internal");
             }
