@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<CatalogueItem> GetSolution(string id);
 
         Task<List<CatalogueItem>> GetDFOCVCSolutions();
-
-        // MJRTODO - Refine to Futures and move to its own service
+        
         Task<List<Capability>> GetFuturesCapabilities();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,6 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class DFOCVCControllerTests
     {
+        [Test]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(DFOCVCController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Solutions");
+        }
+
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {

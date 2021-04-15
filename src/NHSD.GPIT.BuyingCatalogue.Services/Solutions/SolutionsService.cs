@@ -44,12 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType.Name == "Solution" && x.PublishedStatus.Name == "Published"                    
+                .Where(x => x.CatalogueItemType.Name == "Solution" 
+                    && x.PublishedStatus.Name == "Published"                    
                     && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
-
-            // MJRTODO - This is naff - should be part of the above query
-
+            
+            // TODO - Refactor this. Should be posible to include in the above expression
             if(capabilities?.Length > 0)
             {
                 var filteredSolutions = new List<CatalogueItem>();
@@ -86,8 +86,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(x => x.Supplier)                
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.FrameworkSolutions)
+                .ThenInclude(x => x.Framework)
                 .Include(x => x.Solution)
-                .ThenInclude(x=>x.MarketingContacts)
+                .ThenInclude(x => x.MarketingContacts)
                 .Where(x => x.CatalogueItemId == id)        
                 .FirstAsync();
 
@@ -101,7 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType.Name == "Solution" && x.PublishedStatus.Name == "Published"                    
+                .Where(x => x.CatalogueItemType.Name == "Solution" 
+                    && x.PublishedStatus.Name == "Published"                    
                     && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
                 .ToListAsync();
 

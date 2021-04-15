@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class OrganisationsControllerTests
-    {
+    { 
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));
         }
     
-        [Route("Solutions/Futures/{id}")]
+        [Route("solutions/futures/{id}")]
         public async Task <IActionResult> SolutionDetail(string id)
         {
             var solution = await _solutionsService.GetSolution(id);
@@ -30,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(model);
         }
 
-        [Route("Solutions/Futures/Foundation/{id}")]
+        [Route("solutions/futures/foundation/{id}")]
         public async Task<IActionResult> FoundationSolutionDetail(string id)
         {
             var solution = await _solutionsService.GetSolution(id);
@@ -40,8 +39,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View("SolutionDetail", model);
         }
 
-        [Route("Solutions/DFOCVC/{id}")]
+        [Route("solutions/dfocvc/{id}")]
         public async Task<IActionResult> DVOCVCSolutionDetail(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new SolutionDetailModel(solution);
+
+            return View("SolutionDetail", model);
+        }
+
+        [Route("solutions/preview/{id}")]
+        public async Task<IActionResult> PreviewSolutionDetail(string id)
         {
             var solution = await _solutionsService.GetSolution(id);
 

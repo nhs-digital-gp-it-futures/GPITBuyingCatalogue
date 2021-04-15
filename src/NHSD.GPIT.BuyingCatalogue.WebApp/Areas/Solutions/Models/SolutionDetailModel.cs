@@ -12,12 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             DecodeFeatures();
             PopulateContactInformation();
+            PopulateFrameworks();
         }
 
         public CatalogueItem CatalogueItem { get; private set; }
 
         public string[] Features { get; private set; }
 
+        public string Frameworks { get; private set; }
 
         public string ContactName { get; private set; }
 
@@ -45,6 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 PhoneNumber = contact.PhoneNumber;
                 EmailAddress = contact.Email;
             }
+        }
+
+        private void PopulateFrameworks()
+        {
+            Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework.ShortName));
         }
     }
 }
