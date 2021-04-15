@@ -35,5 +35,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
                 return false;
             }
         }
+
+        internal bool BuyersGuideTileDisplayed()
+        {
+            try
+            {
+                Driver.FindElement(Objects.HomepageObjects.BuyersGuideTile);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal bool OrderFormTileDisplayed()
+        {
+            try
+            {
+                Driver.FindElement(Objects.HomepageObjects.OrderingTile);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

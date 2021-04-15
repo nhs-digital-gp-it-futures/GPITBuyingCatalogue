@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils;
-using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
@@ -22,6 +21,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
         internal void TilesTests_DFOCVCFrameworkTileDisplayed()
         {
             Pages.HomePageActions.DFOCVCTileDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        internal void TilesTests_BuyersGuideTileDisplayed()
+        {
+            Pages.HomePageActions.BuyersGuideTileDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        internal void TilesTests_OrderFormTileDisplayed()
+        {
+            Pages.HomePageActions.OrderFormTileDisplayed().Should().BeTrue();
         }
     }
 }
