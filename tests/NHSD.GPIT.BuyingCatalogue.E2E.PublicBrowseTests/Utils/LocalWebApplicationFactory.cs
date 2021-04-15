@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.WebApp;
+using OpenQA.Selenium;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
 
         private readonly IWebHost host;
         private readonly string DbName;
+
+        internal IWebDriver Driver { get; }
 
         // Need to find a better way of doing this
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=buyingcatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
@@ -33,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             host = CreateWebHostBuilder().Build();
             host.Start();
             RootUri = host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
+            Driver = new BrowserFactory("chrome-local").Driver;
         }
 
         public string RootUri { get; private set; }
@@ -76,6 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
         [ExcludeFromCodeCoverage]
         protected override void Dispose(bool disposing)
         {
+            Driver?.Quit();
             base.Dispose(disposing);
             if (disposing)
             {

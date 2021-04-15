@@ -5,7 +5,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
 {
-    public sealed class TilesTests : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class TilesTests : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public TilesTests(LocalWebApplicationFactory factory) 
             :base(factory)
@@ -22,11 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
         internal void TilesTests_DFOCVCFrameworkTileDisplayed()
         {
             Pages.HomePageActions.DFOCVCTileDisplayed().Should().BeTrue();
-        }
-
-        public void Dispose()
-        {
-            driver?.Quit();
         }
     }
 }

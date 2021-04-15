@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
             this.factory = factory;
-            driver = new BrowserFactory("chrome-local").Driver;
+            driver = factory.Driver;
             uri = new Uri(factory.RootUri);
             driver.Navigate().GoToUrl(new Uri(uri, urlArea));
             Pages = new Pages(this.driver).PageActions;
