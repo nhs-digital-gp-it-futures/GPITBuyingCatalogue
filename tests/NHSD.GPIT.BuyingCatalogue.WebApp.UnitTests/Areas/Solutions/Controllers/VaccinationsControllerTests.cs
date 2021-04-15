@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -11,6 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class VaccinationsControllerTests
     {
+        [Test]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(VaccinationsController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Solutions");
+        }
+
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {

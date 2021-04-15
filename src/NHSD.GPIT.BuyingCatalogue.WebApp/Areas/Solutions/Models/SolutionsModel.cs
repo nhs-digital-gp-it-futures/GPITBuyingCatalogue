@@ -5,6 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SolutionsModel
     {
-        public List<CatalogueItem> Solutions { get; set; }
+        public List<CatalogueItem> CatalogueItems { get; set; }
     }
 }
