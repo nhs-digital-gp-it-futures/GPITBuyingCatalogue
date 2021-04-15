@@ -29,7 +29,7 @@
 
     <div data-test-id="solution-cards" class="nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-7">
 
-        @foreach (var solution in Model.Solutions)
+        @foreach (var solution in Model.CatalogueItems)
         {
             <div class="nhsuk-u-padding-bottom-5 nhsuk-u-padding-top-7 bc-t-border-top--blue" data-test-id="solution-card">
                 <div class="nhsuk-grid-row">
@@ -38,7 +38,7 @@
                         <div data-test-id="solution-card-foundation" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Foundation Solution Set</div>
 
                         <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                            <a href="~/Solutions/Foundation/@solution.CatalogueItemId">
+                            <a href="~/Solutions/Futures/Foundation/@solution.CatalogueItemId">
                                 @solution.Name
                             </a>
                         </h3>
@@ -52,7 +52,7 @@
                         </p>
 
                         <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                            <a href="~/Solutions/Foundation/@solution.CatalogueItemId">View this solution<span class="nhsuk-u-visually-hidden"> for Write on Time</span></a>
+                            <a href="~/Solutions/Futures/Foundation/@solution.CatalogueItemId">View this solution<span class="nhsuk-u-visually-hidden"> for Write on Time</span></a>
                         </div>
                     </div>
 

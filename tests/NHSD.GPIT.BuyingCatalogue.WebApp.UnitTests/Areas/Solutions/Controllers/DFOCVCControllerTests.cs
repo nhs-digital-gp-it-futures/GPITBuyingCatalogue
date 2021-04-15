@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(SolutionsModel)));
-            Assert.AreEqual(2, ((SolutionsModel)((ViewResult)result).Model).Solutions.Count);
+            Assert.AreEqual(2, ((SolutionsModel)((ViewResult)result).Model).CatalogueItems.Count);
         }
     }
 }

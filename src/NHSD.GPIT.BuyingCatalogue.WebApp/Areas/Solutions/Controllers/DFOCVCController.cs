@@ -21,9 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var foundationSolutions = await _solutionsService.GetDFOCVCSolutions();
+            var solutions = await _solutionsService.GetDFOCVCSolutions();
 
-            var model = new SolutionsModel { Solutions = foundationSolutions };
+            var model = new SolutionsModel { CatalogueItems = solutions };
 
             return View(model);            
         }        

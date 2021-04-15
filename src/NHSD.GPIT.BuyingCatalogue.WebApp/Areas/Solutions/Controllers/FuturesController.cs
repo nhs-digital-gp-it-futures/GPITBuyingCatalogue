@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,23 +25,67 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View();
         }
 
+        [Route("Solutions/Futures/Foundation")]
         public async Task<IActionResult> Foundation()
         {
-            var foundationSolutions = await _solutionsService.GetFuturesFoundationSolutions();
+            var solutions = await _solutionsService.GetFuturesFoundationSolutions();
 
-            var model = new SolutionsModel { Solutions = foundationSolutions };
+            var model = new SolutionsModel { CatalogueItems = solutions };
 
             return View(model);            
         }
 
-        public IActionResult CapabilitiesSelector()
+        [Route("Solutions/Futures/CapabilitiesSelector")]
+        public async Task<IActionResult> CapabilitiesSelector()
+        {
+            var model = new CapabilitiesModel();
+
+            var capabilities = await _solutionsService.GetFuturesCapabilities();
+
+            int half = capabilities.Count / 2;
+            
+            model.LeftCapabilities = capabilities.Take(half)
+                .Select(o => new CapabilityModel { CapabilityName = o.Name, CapabilityRef = o.CapabilityRef, Checked = false })
+                .ToArray();
+
+            model.RightCapabilities = capabilities.Skip(half)
+                .Select(o => new CapabilityModel { CapabilityName = o.Name, CapabilityRef = o.CapabilityRef, Checked = false })
+                .ToArray();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Solutions/Futures/CapabilitiesSelector")]
+        public IActionResult CapabilitiesSelector(CapabilitiesModel model)
+        {
+            var selected = model.LeftCapabilities.Where(x => x.Checked).Union(model.RightCapabilities.Where(x => x.Checked));
+
+            var queryString = string.Join("-", selected.Select(x => x.CapabilityRef));
+
+            return RedirectToAction("SearchResults", new { capabilities = queryString });
+        }
+
+        [Route("Solutions/Futures/Compare")]
+        public IActionResult Compare()
         {
             return View();
         }
 
-        public IActionResult Compare()
+        [Route("Solutions/Futures/SearchResults")]
+        public async Task <IActionResult> SearchResults(string capabilities)
         {
-            return View();
+            string[] splitCapabilities = new string[0];
+
+            if(!string.IsNullOrWhiteSpace(capabilities))
+                splitCapabilities = capabilities.Split('-', StringSplitOptions.RemoveEmptyEntries);
+
+            var foundationSolutions = await _solutionsService.GetFuturesSolutionsByCapabilities(splitCapabilities);
+
+            var model = new SolutionsModel { CatalogueItems = foundationSolutions };
+
+            return View(model);
         }
     }
 }

@@ -20,20 +20,78 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-
+        
         public async Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
             var foundationSolutions = await _dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(x => x.PublishedStatus.Name == "Published" 
+                .Include(x => x.Supplier)                
+                .Where(x => x.CatalogueItemType.Name == "Solution"
+                    && x.PublishedStatus.Name == "Published" 
                     && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
                     && x.Solution.FrameworkSolutions.Any( x=> x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
 
             return foundationSolutions;
+        }
+
+        public async Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities)
+        {
+            var solutions = await _dbContext.CatalogueItems
+                .Include(x => x.Solution)
+                .ThenInclude(x => x.SolutionCapabilities)
+                .ThenInclude(x => x.Capability)
+                .Include(x => x.Supplier)
+                .Where(x => x.CatalogueItemType.Name == "Solution" && x.PublishedStatus.Name == "Published"                    
+                    && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+                .ToListAsync();
+
+            // MJRTODO - This is naff - should be part of the above query
+
+            if(capabilities?.Length > 0)
+            {
+                var filteredSolutions = new List<CatalogueItem>();
+
+                foreach( var solution in solutions )
+                {
+                    bool matched = true;
+
+                    foreach( var capability in capabilities )
+                    {
+                        if( !solution.Solution.SolutionCapabilities.Any(x=>x.Capability.CapabilityRef == capability ))
+                        {
+                            matched = false;
+                            break;
+                        }
+                    }
+
+                    if (matched)
+                        filteredSolutions.Add(solution);
+                }
+
+                solutions = filteredSolutions;
+            }
+
+            return solutions;
+        }
+
+        public async Task<CatalogueItem> GetSolution(string id)
+        {
+            var solution = await _dbContext.CatalogueItems
+                .Include(x => x.Solution)
+                .ThenInclude(x => x.SolutionCapabilities)
+                .ThenInclude(x => x.Capability)                
+                .Include(x => x.Supplier)                
+                .Include(x => x.Solution)
+                .ThenInclude(x => x.FrameworkSolutions)
+                .Include(x => x.Solution)
+                .ThenInclude(x=>x.MarketingContacts)
+                .Where(x => x.CatalogueItemId == id)        
+                .FirstAsync();
+
+            return solution;
         }
 
         public async Task<List<CatalogueItem>> GetDFOCVCSolutions()
@@ -43,11 +101,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.PublishedStatus.Name == "Published"                    
+                .Where(x => x.CatalogueItemType.Name == "Solution" && x.PublishedStatus.Name == "Published"                    
                     && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
                 .ToListAsync();
 
             return dfocvcSolutions;
+        }
+
+        public async Task<List<Capability>> GetFuturesCapabilities()
+        {
+            var capabilities = await _dbContext.Capabilities.Where(x=>x.Category.Name == "GP IT Futures").OrderBy(x=>x.Name).ToListAsync();
+
+            return capabilities;
         }
     }
 }
