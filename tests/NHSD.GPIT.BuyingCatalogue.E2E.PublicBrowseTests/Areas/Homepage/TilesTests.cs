@@ -34,5 +34,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
         {
             Pages.HomePageActions.OrderFormTileDisplayed().Should().BeTrue();
         }
+
+        [Fact]
+        internal void TilesTests_ClickBuyersGuideTile()
+        {
+            Pages.HomePageActions.ClickBuyersGuideTile();
+            Pages.CommonActions.PageTitle().Should().ContainEquivalentOf("Buyer’s Guide");
+        }
+
+        [Fact]
+        internal void TilesTests_ClickDFOCVCTile()
+        {
+            Pages.HomePageActions.ClickDFOCVCTile();
+            Pages.CommonActions.PageTitle().Should().ContainEquivalentOf("DFOCVC framework - results");
+        }
     }
 }

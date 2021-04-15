@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=buyingcatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string ID_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueUsers;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
 
-        private const string Browser = "chrome-local";
+        private const string Browser = "chrome";
 
         public LocalWebApplicationFactory()
         {

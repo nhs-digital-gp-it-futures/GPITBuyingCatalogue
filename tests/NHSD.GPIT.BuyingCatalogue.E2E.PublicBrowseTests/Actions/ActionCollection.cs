@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
 {
     internal sealed class ActionCollection
     {
+        internal BuyersGuideActions BuyersGuideActions { get; set; }
+        internal CommonActions CommonActions { get; set; }
         internal HomepageActions HomePageActions { get; set; }
     }
 }

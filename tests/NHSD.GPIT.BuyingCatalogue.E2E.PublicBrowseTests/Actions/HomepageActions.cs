@@ -61,5 +61,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
                 return false;
             }
         }
+
+        internal void ClickDFOCVCTile()
+        {
+            Driver.FindElement(Objects.HomepageObjects.DFOCVCFrameworkTile).Click();
+        }
+
+        internal void ClickBuyersGuideTile()
+        {
+            Driver.FindElement(Objects.HomepageObjects.BuyersGuideTile).Click();
+        }
     }
 }
