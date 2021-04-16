@@ -22,6 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class AccountControllerTests
     {
+        [Test]
+        public static void ClassIsCorrectlyDecorated()
+        {            
+            typeof(AccountController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Identity");
+        }
+
         #region Constructor Tests
 
         [Test]

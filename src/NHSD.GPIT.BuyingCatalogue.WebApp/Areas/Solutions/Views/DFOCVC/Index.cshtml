@@ -1,4 +1,5 @@
-﻿@{
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
+@{
     ViewData["Title"] = "DFOCVC framework - results";
 }
 
@@ -13,124 +14,64 @@
                 Go back
             </a>
         </div>
-
     </div>
-
 
     <div class="nhsuk-grid-row" data-test-id="general-description">
         <div class="nhsuk-grid-column-two-thirds">
-
             <h1 class="nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3">DFOCVC framework - results</h1>
-
-
             <p class="nhsuk-heading-l nhsuk-u-font-size-22">These are the online and video consultation Catalogue Solutions available on the DFOCVC framework.</p>
-
         </div>
     </div>
 
-
-
-
     <div data-test-id="solution-cards" class="nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-7">
 
+        @foreach (var solution in Model.CatalogueItems)
+        {
+            <div class="nhsuk-u-padding-bottom-5 nhsuk-u-padding-top-7 bc-t-border-top--blue" data-test-id="solution-card">
+                <div class="nhsuk-grid-row">
+                    <div class="nhsuk-grid-column-two-thirds">
 
+                        <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
+                            <a href="~/solutions/dfocvc/@solution.CatalogueItemId">
+                                @solution.Name
+                            </a>
+                        </h3>
 
-        <div class="nhsuk-u-padding-bottom-5 nhsuk-u-padding-top-7 bc-t-border-top--blue" data-test-id="solution-card">
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
+                        <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
+                            @solution.Supplier.Name
+                        </h4>
 
+                        <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
+                            @solution.Solution.Summary
+                        </p>
 
-
-                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                        <a href="/solutions/dfocvc001/99999-01">
-                            DFOCVC Online Consultation
-                        </a>
-                    </h3>
-
-                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
-                        NotEmis Health
-                    </h4>
-
-                    <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
-                        Summary - DFOCVC.
-                    </p>
-
-                    <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a href="/solutions/dfocvc001/99999-01">View this solution<span class="nhsuk-u-visually-hidden"> for DFOCVC Online Consultation</span></a>
-                    </div>
-                </div>
-
-                <div class="nhsuk-grid-column-one-third" data-test-id="solution-card-capability-list">
-
-                    <div data-test-id="capability-list">
-                        <h5 class="nhsuk-u-font-size-22">Capabilities met</h5>
-                        <ul>
-
-                            <li data-test-id="capability-list-item" class="nhsuk-u-font-size-16">
-                                Online Consultation
-                            </li>
-
-                        </ul>
+                        <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
+                            <a href="~/solutions/dfocvc/@solution.CatalogueItemId">View this solution<span class="nhsuk-u-visually-hidden"> for DFOCVC Online Consultation</span></a>
+                        </div>
                     </div>
 
+                    <div class="nhsuk-grid-column-one-third" data-test-id="solution-card-capability-list">
+
+                        <div data-test-id="capability-list">
+                            <h5 class="nhsuk-u-font-size-22">Capabilities met</h5>
+                            <ul>
+                                @foreach (var capability in solution.Solution.SolutionCapabilities)
+                                {
+                                    <li data-test-id="capability-list-item" class="nhsuk-u-font-size-16">
+                                        @capability.Capability.Name
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
-
-
-
-
-
-
-        <div class="nhsuk-u-padding-bottom-5 nhsuk-u-padding-top-7 bc-t-border-top--blue" data-test-id="solution-card">
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
-
-
-
-                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                        <a href="/solutions/dfocvc001/99999-02">
-                            GPIT DFOCVC Online Consultation
-                        </a>
-                    </h3>
-
-                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
-                        NotEmis Health
-                    </h4>
-
-                    <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
-                        Summary - GPIT DFOCVC.
-                    </p>
-
-                    <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a href="/solutions/dfocvc001/99999-02">View this solution<span class="nhsuk-u-visually-hidden"> for GPIT DFOCVC Online Consultation</span></a>
-                    </div>
-                </div>
-
-                <div class="nhsuk-grid-column-one-third" data-test-id="solution-card-capability-list">
-
-                    <div data-test-id="capability-list">
-                        <h5 class="nhsuk-u-font-size-22">Capabilities met</h5>
-                        <ul>
-
-                            <li data-test-id="capability-list-item" class="nhsuk-u-font-size-16">
-                                Video Consultation
-                            </li>
-
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-
-
+        }
 
         <div class="bc-t-border-top--blue" />
     </div>
 </div>
-
 
 
 
