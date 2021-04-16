@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
     {
         private const string LocalhostBaseAddress = "https://localhost";
 
-        private readonly IWebHost host;
+        private IWebHost host;
         private readonly string DbName;
 
         internal IWebDriver Driver { get; }
@@ -35,11 +36,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             
             DbName = Guid.NewGuid().ToString();
 
-            Environment.SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
-            Environment.SetEnvironmentVariable(nameof(ID_DB_CONNECTION), BC_DB_CONNECTION);
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(BC_DB_CONNECTION))))
+            {
+                Environment.SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
+            }
 
-            host = CreateWebHostBuilder().Build();
-            host.Start();
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(ID_DB_CONNECTION))))
+            {
+                Environment.SetEnvironmentVariable(nameof(ID_DB_CONNECTION), BC_DB_CONNECTION);
+            }
+
+            CreateServer(CreateWebHostBuilder());
 
             RootUri = host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
 
@@ -50,6 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             {
                 RootUri = RootUri.Replace("localhost", "host.docker.internal");
             }
+        }
+
+        protected override TestServer CreateServer(IWebHostBuilder builder)
+        {
+            host = CreateWebHostBuilder().Build();
+            host.Start();
+            return new TestServer(CreateWebHostBuilder().UseStartup<Startup>());
         }
 
         public string RootUri { get; private set; }

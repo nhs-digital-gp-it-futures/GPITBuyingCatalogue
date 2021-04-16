@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using static System.Net.WebRequestMethods;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
 {
@@ -73,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             var requestUri = new Uri("http://localhost:4444/grid/console");
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.AllowAutoRedirect = false; // find out if this site is up and don't follow a redirector
-            request.Method = "GET";
+            request.Method = Http.Get;
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();

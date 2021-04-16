@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
                 BuyersGuideActions = new BuyersGuideActions(driver),
                 CommonActions = new CommonActions(driver),
                 HomePageActions = new HomepageActions(driver),
+                SolutionsActions = new SolutionsActions(driver),
             };
         }
 

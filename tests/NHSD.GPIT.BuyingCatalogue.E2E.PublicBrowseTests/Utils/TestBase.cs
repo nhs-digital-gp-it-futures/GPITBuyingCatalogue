@@ -3,8 +3,10 @@ using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions;
 using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils;
 using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
+namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
 {
     public abstract class TestBase
     {
@@ -12,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
 
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
+            client = factory.CreateClient();
             this.factory = factory;
             driver = factory.Driver;
             uri = new Uri(factory.RootUri);
@@ -19,13 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Homepage
             Pages = new Pages(this.driver).PageActions;
         }
 
-        internal TDbContext GetContext<TDbContext>()
+        internal IEnumerable<TDbContext> GetContext<TDbContext>()
         {
-            var scopedServices = factory.Server.Host.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopedServices.CreateScope();
-            return scope.ServiceProvider.GetService<TDbContext>();
+            var serviceScopeFactory = (IServiceScopeFactory)factory.Services.GetService<IServiceScopeFactory>();
+
+            var scope = serviceScopeFactory.CreateScope();
+
+            return scope.ServiceProvider.GetServices<TDbContext>();
+
+            //var scopedServices = factory.Services.GetRequiredService<TDbContext>();
+            //
+            //return scopedServices;
         }
 
+        private readonly HttpClient client;
         protected readonly LocalWebApplicationFactory factory;
         protected readonly IWebDriver driver;
 
