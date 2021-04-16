@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
@@ -22,13 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             Pages = new Pages(this.driver).PageActions;
         }
 
-        internal IEnumerable<TDbContext> GetContext<TDbContext>()
+        internal TDbContext GetContext<TDbContext>()
         {
             var serviceScopeFactory = (IServiceScopeFactory)factory.Services.GetService<IServiceScopeFactory>();
 
             var scope = serviceScopeFactory.CreateScope();
 
-            return scope.ServiceProvider.GetServices<TDbContext>();
+            return scope.ServiceProvider.GetServices<TDbContext>().First();
 
             //var scopedServices = factory.Services.GetRequiredService<TDbContext>();
             //

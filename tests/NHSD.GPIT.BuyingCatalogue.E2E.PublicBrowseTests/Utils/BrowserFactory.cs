@@ -26,10 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
 
         private static IWebDriver GetLocalChromeDriver()
         {
-            var options = new ChromeOptions();
-            options.AddArguments("start-maximized", "no-sandbox", "auto-open-devtools-for-tabs", "ignore-certificate-errors");
-
-            return new ChromeDriver(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory), options);
+            return new ChromeDriver(
+                Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory),
+                GetChromeOptions(!Debugger.IsAttached));
         }
 
         private static IWebDriver GetChromeDriver(string hubURL)
@@ -93,6 +92,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             {
                 return false;
             }
+        }
+
+        private static ChromeOptions GetChromeOptions(bool headless)
+        {
+            var options = new ChromeOptions();
+
+            if (headless)
+            {
+                options.AddArguments("headless", "window-size=1920,1080", "no-sandbox", "ignore-certificate-errors");
+            }
+            else
+            {
+                options.AddArguments("start-maximized", "no-sandbox", "auto-open-devtools-for-tabs", "ignore-certificate-errors");
+            }
+
+            return options;
         }
     }
 }
