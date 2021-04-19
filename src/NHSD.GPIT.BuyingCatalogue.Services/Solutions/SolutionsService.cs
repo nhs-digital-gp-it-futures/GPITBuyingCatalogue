@@ -116,5 +116,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             return capabilities;
         }
+
+        public async Task SaveSolutionDescription(string id, string summary, string description, string link)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.Summary = summary;
+            solution.FullDescription = description;
+            solution.AboutUrl = link;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveSolutionFeatures(string id, string featuresJson)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.Features = featuresJson;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveIntegrationLink(string id, string integrationLink)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.IntegrationsUrl = integrationLink;
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
