@@ -32,7 +32,7 @@
         <form method="post">
 
 
-
+            <input type="hidden" asp-for="@Model.Id" />
 
 
 
@@ -74,7 +74,7 @@
                                 </div>
 
 
-                                <textarea class="govuk-textarea govuk-js-character-count" id="summary" name="summary" rows="5" aria-describedby="summary-info summary-hint"></textarea>
+                                <textarea class="govuk-textarea govuk-js-character-count" id="summary" name="summary" rows="5" aria-describedby="summary-info summary-hint">@Model.Summary</textarea>
                             </div>
 
                             <div id="summary-info" class="govuk-hint govuk-character-count__message" aria-live="polite">

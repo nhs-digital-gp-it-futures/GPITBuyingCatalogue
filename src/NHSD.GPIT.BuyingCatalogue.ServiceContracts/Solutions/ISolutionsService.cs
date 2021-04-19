@@ -21,5 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task SaveSolutionFeatures(string id, string featuresJson);
 
         Task SaveIntegrationLink(string id, string integrationLink);
+
+        Task SaveImplementationDetail(string id, string detail);
+
+        Task SaveRoadmap(string id, string roadmap);
     }
 }

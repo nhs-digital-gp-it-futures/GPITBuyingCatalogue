@@ -33,7 +33,7 @@
 
 
 
-
+            <input type="hidden" asp-for="@Model.Id" />
 
 
 
@@ -74,7 +74,7 @@
                                 </div>
 
 
-                                <textarea class="govuk-textarea govuk-js-character-count" id="description" name="description" rows="5" aria-describedby="description-info description-hint"></textarea>
+                                <textarea class="govuk-textarea govuk-js-character-count" id="description" name="description" rows="5" aria-describedby="description-info description-hint">@Model.Description</textarea>
                             </div>
 
                             <div id="description-info" class="govuk-hint govuk-character-count__message" aria-live="polite">

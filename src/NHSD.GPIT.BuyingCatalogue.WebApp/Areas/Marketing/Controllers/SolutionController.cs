@@ -116,6 +116,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [HttpPost("marketing/supplier/solution/{id}/section/implementation-timescales")]
+        public async Task<IActionResult> ImplementationTimescales(ImplementationTimescalesModel model)
+        {
+            await _solutionsService.SaveImplementationDetail(model.Id, model.Description);
+
+            return RedirectToAction("Index", new { id = model.Id });
+        }
+
         [HttpGet("marketing/supplier/solution/{id}/section/roadmap")]
         public async Task<IActionResult> Roadmap(string id)
         {
@@ -126,6 +134,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [HttpPost("marketing/supplier/solution/{id}/section/roadmap")]
+        public async Task<IActionResult> Roadmap(RoadmapModel model)
+        {
+            await _solutionsService.SaveRoadmap(model.Id, model.Summary);
 
+            return RedirectToAction("Index", new { id = model.Id });
+        }
     }
 }

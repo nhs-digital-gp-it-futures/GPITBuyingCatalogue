@@ -145,5 +145,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task SaveImplementationDetail(string id, string detail)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.ImplementationDetail = detail;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveRoadmap(string id, string roadmap)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.RoadMap = roadmap;
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
