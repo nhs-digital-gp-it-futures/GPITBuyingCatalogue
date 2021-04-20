@@ -1,0 +1,206 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.FeaturesModel;
+@{
+    ViewData["Title"] = "Browser-based application - connectivity and resolution";
+}
+
+
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+        <div data-test-id="section-back-link">
+            <div class="nhsuk-back-link">
+                <a class="nhsuk-back-link__link" href="../">
+                    <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                    </svg>
+                    Return to all sections
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <div class="nhsuk-grid-column-two-thirds">
+
+
+        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
+            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Browser-based application – connectivity and resolution</h1>
+            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know the connection speed and screen resolution needed to use your Catalogue Solution.</h2>
+            <div data-test-id="section-additional-advice">
+
+            </div>
+        </div>
+
+        <form method="post">
+
+
+
+
+
+
+
+
+            <div data-test-id="section-question-combobox-options" class="nhsuk-u-margin-bottom-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div data-test-id="question-minimum-connection-speed">
+
+                    <div data-test-id="combobox-options">
+
+                        <div class="nhsuk-form-group">
+                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="minimum-connection-speed">
+                                Connection speed
+                            </label>
+                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="minimum-connection-speed-hint">
+                                Select the minimum bandwidth required for your Catalogue Solution to function.
+                            </div>
+                            <select class="nhsuk-select" id="minimum-connection-speed" name="minimum-connection-speed" aria-describedby="minimum-connection-speed-hint">
+                                <option value="">Please select</option>
+                                <option value="0.5Mbps">0.5Mbps</option>
+                                <option value="1Mbps">1Mbps</option>
+                                <option value="1.5Mbps">1.5Mbps</option>
+                                <option value="2Mbps">2Mbps</option>
+                                <option value="3Mbps">3Mbps</option>
+                                <option value="5Mbps">5Mbps</option>
+                                <option value="8Mbps">8Mbps</option>
+                                <option value="10Mbps">10Mbps</option>
+                                <option value="15Mbps">15Mbps</option>
+                                <option value="20Mbps">20Mbps</option>
+                                <option value="30Mbps">30Mbps</option>
+                                <option value="Higher than 30Mbps">Higher than 30Mbps</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+            <div data-test-id="section-question-combobox-options" class="nhsuk-u-margin-bottom-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div data-test-id="question-minimum-desktop-resolution">
+
+                    <div data-test-id="combobox-options">
+
+                        <div class="nhsuk-form-group">
+                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="minimum-desktop-resolution">
+                                Screen resolution and aspect ratio (optional)
+                            </label>
+                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="minimum-desktop-resolution-hint">
+                                Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function on desktop.
+                            </div>
+                            <select class="nhsuk-select" id="minimum-desktop-resolution" name="minimum-desktop-resolution" aria-describedby="minimum-desktop-resolution-hint">
+                                <option value="">Please select</option>
+                                <option value="16:9 - 640 x 360">16:9 - 640 x 360</option>
+                                <option value="4:3 - 800 x 600">4:3 - 800 x 600</option>
+                                <option value="4:3 - 1024 x 768">4:3 - 1024 x 768</option>
+                                <option value="16:9 - 1280 x 720">16:9 - 1280 x 720</option>
+                                <option value="16:10 - 1280 x 800">16:10 - 1280 x 800</option>
+                                <option value="5:4 - 1280 x 1024">5:4 - 1280 x 1024</option>
+                                <option value="16:9 - 1360 x 768">16:9 - 1360 x 768</option>
+                                <option value="16:9 - 1366 x 768">16:9 - 1366 x 768</option>
+                                <option value="16:10 - 1440 x 900">16:10 - 1440 x 900</option>
+                                <option value="16:9 - 1536 x 864">16:9 - 1536 x 864</option>
+                                <option value="16:9 - 1600 x 900">16:9 - 1600 x 900</option>
+                                <option value="16:10 - 1680 x 1050">16:10 - 1680 x 1050</option>
+                                <option value="16:9 - 1920 x 1080">16:9 - 1920 x 1080</option>
+                                <option value="16:10 - 1920 x 1200">16:10 - 1920 x 1200</option>
+                                <option value="16:9 - 2048 x 1152">16:9 - 2048 x 1152</option>
+                                <option value="21:9 - 2560 x 1080">21:9 - 2560 x 1080</option>
+                                <option value="16:9 - 2560 x 1440">16:9 - 2560 x 1440</option>
+                                <option value="21:9 - 3440 x 1440">21:9 - 3440 x 1440</option>
+                                <option value="16:9 - 3840 x 2160">16:9 - 3840 x 2160</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
+
+
+
+
+
+
+
+
+
+
+                <button class="nhsuk-button" type="submit">
+                    Save and return
+                </button>
+
+
+
+            </div>
+        </form>
+
+    </div>
+</div>

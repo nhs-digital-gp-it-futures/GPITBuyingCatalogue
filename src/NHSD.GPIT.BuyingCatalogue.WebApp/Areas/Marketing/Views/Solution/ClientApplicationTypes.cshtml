@@ -1,0 +1,177 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationTypesModel;
+@{
+    ViewData["Title"] = "Client application type";
+}
+
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+        <div data-test-id="section-back-link">
+            <div class="nhsuk-back-link">
+                <a class="nhsuk-back-link__link" href="../">
+                    <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                    </svg>
+                    Return to all sections
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <div class="nhsuk-grid-column-two-thirds">
+
+
+        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
+            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Client application type</h1>
+            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know which types of application will work with your Catalogue Solution.</h2>
+            <div data-test-id="section-additional-advice">
+
+            </div>
+        </div>
+
+        <form method="post">
+
+
+
+
+
+
+
+
+            <div data-test-id="section-question-checkbox-options" class="nhsuk-u-margin-bottom-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div id="client-application-types" data-test-id="question-client-application-types">
+
+                    <div data-test-id="checkbox-options">
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="nhsuk-form-group">
+
+                            <fieldset class="nhsuk-fieldset" aria-describedby="client-application-types-hint">
+                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                    Client application types supported
+                                </legend>
+
+                                <div class="nhsuk-hint nhsuk-u-margin-bottom-3 nhsuk-u-margin-top-0" id="client-application-types-hint">
+                                    Select at least one client application type. You’ll need to provide further information for each type you select.
+                                </div>
+
+
+                                <div class="nhsuk-checkboxes">
+
+
+
+
+
+
+                                    <div class="nhsuk-checkboxes__item">
+                                        <input class="nhsuk-checkboxes__input" id="client-application-types-1" name="client-application-types" type="checkbox" value="browser-based">
+                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="client-application-types-1">
+                                            Browser-based
+                                        </label>
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <div class="nhsuk-checkboxes__item">
+                                        <input class="nhsuk-checkboxes__input" id="client-application-types-2" name="client-application-types" type="checkbox" value="native-mobile">
+                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="client-application-types-2">
+                                            Native mobile or tablet
+                                        </label>
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <div class="nhsuk-checkboxes__item">
+                                        <input class="nhsuk-checkboxes__input" id="client-application-types-3" name="client-application-types" type="checkbox" value="native-desktop">
+                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="client-application-types-3">
+                                            Native desktop
+                                        </label>
+                                    </div>
+
+
+
+                                </div>
+                            </fieldset>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
+
+
+
+
+
+
+
+
+
+
+                <button class="nhsuk-button" type="submit">
+                    Save and return
+                </button>
+
+
+
+            </div>
+        </form>
+
+    </div>
+</div>

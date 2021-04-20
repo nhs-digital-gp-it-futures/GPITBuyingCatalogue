@@ -141,5 +141,250 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             return RedirectToAction("Index", new { id = model.Id });
         }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/client-application-types")]
+        public async Task<IActionResult> ClientApplicationTypes(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new ClientApplicationTypesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/browser-based")]
+        public async Task<IActionResult> BrowserBased(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile")]
+        public async Task<IActionResult> NativeMobile(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop")]
+        public async Task<IActionResult> NativeDesktop(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        #region Browser Based Sections
+
+        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/supported-browsers")]
+        public async Task<IActionResult> BrowserBasedSupportedBrowsers(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/mobile-first-approach")]
+        public async Task<IActionResult> BrowserBasedMobileFirstApproach(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/plug-ins-or-extensions")]
+        public async Task<IActionResult> BrowserBasedPlugInsOrExtensions(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/connectivity-and-resolution")]
+        public async Task<IActionResult> BrowserBasedConnectivityAndResolution(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/hardware-requirements")]
+        public async Task<IActionResult> BrowserBasedHardwareRequirements(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/additional-information")]
+        public async Task<IActionResult> BrowserBasedAdditionalInformation(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region Native Mobile or Table Sections
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/operating-systems")]
+        public async Task<IActionResult> NativeMobileOperatingSystems(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/mobile-first-approach")]
+        public async Task<IActionResult> NativeMobileMobileFirstApproach(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/connectivity")]
+        public async Task<IActionResult> NativeMobileConnectivity(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/memory-and-storage")]
+        public async Task<IActionResult> NativeMobileMemoryAndStorage(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/third-party")]
+        public async Task<IActionResult> NativeMobileThirdParty(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/hardware-requirements")]
+        public async Task<IActionResult> NativeMobileHardwareRequirements(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/additional-information")]
+        public async Task<IActionResult> NativeMobileAdditionalInformation(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+
+        #endregion
+
+        #region Hosting Type
+
+        [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-public-cloud")]
+        public async Task<IActionResult> HostingTypePublicCloud(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-private-cloud")]
+        public async Task<IActionResult> HostingTypePrivateCloud(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-hybrid")]
+        public async Task<IActionResult> HostingTypeHybrid(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+
+        [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-on-premise")]
+        public async Task<IActionResult> HostingTypeOnPremise(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+
+        #endregion
+
+        [HttpGet("marketing/supplier/solution/{id}/section/about-supplier")]
+        public async Task<IActionResult> AboutSupplier(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/contact-details")]
+        public async Task<IActionResult> ContactDetails(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
     }
 }
