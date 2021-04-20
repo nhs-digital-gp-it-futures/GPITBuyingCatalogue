@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("preview", "solutions", new { id = id });
         }
 
+        #region About Catalogue Solution
+
         [HttpGet("marketing/supplier/solution/{id}/section/solution-description")]
         public async Task<IActionResult> SolutionDescription(string id)
         {
@@ -142,6 +144,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("Index", new { id = model.Id });
         }
 
+        #endregion
+
+        #region Client Application Type
+
         [HttpGet("marketing/supplier/solution/{id}/section/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
         {
@@ -181,6 +187,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             return View(model);
         }
+
+        #endregion
 
         #region Browser Based Sections
 
@@ -246,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
         #endregion
 
-        #region Native Mobile or Table Sections
+        #region Native Mobile or Tablet Sections
 
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/operating-systems")]
         public async Task<IActionResult> NativeMobileOperatingSystems(string id)
@@ -321,6 +329,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
         #endregion
 
+        #region Native Desktop
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/operating-systems")]
+        public async Task<IActionResult> NativeDesktopOperatingSystems(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/connectivity")]
+        public async Task<IActionResult> NativeDesktopConnectivity(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/memory-and-storage")]
+        public async Task<IActionResult> NativeDesktopMemoryAndStorage(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/third-party")]
+        public async Task<IActionResult> NativeDesktopThirdParty(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/hardware-requirements")]
+        public async Task<IActionResult> NativeDesktopHardwareRequirements(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/additional-information")]
+        public async Task<IActionResult> NativeDesktopAdditionalInformation(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new FeaturesModel(solution);
+
+            return View(model);
+        }
+
+        #endregion
+
         #region Hosting Type
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-public-cloud")]
@@ -367,6 +439,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
         #endregion
 
+        #region About Organisation
+
         [HttpGet("marketing/supplier/solution/{id}/section/about-supplier")]
         public async Task<IActionResult> AboutSupplier(string id)
         {
@@ -386,5 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             return View(model);
         }
+
+        #endregion
     }
 }
