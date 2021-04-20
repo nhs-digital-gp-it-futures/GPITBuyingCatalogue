@@ -1,0 +1,52 @@
+﻿using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using System;
+using System.Linq;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
+{
+    public class NativeDesktopModel
+    { 
+        public NativeDesktopModel(CatalogueItem catalogueItem)
+        {
+            Id = catalogueItem.CatalogueItemId;
+            ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
+        }
+
+        public string Id { get; set; }
+
+        private ClientApplication ClientApplication { get; set; }
+
+        public string SupportedOperatingSystemsStatus
+        {
+            get { return "TODO"; }
+        }
+
+        public string ConnectivityStatus
+        {
+            get { return "TODO"; }
+        }
+
+        public string MemoryStatus
+        {
+            get { return "TODO"; }
+        }
+
+        public string ThirdPartyStatus
+        {
+            get { return "TODO"; }
+        }
+
+        public string HardwareRequirementsStatus
+        {
+            get { return "TODO"; }
+        }
+
+        public string AdditionalInformationStatus
+        {
+            get { return "TODO"; }
+        }
+
+    }
+}

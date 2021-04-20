@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.FeaturesModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingTypePublicCloudModel;
 @{
     ViewData["Title"] = "Hosting type - public cloud";
 }
@@ -20,7 +20,6 @@
     </div>
     <div class="nhsuk-grid-column-two-thirds">
 
-
         <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
             <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Hosting type – public cloud</h1>
             <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Provide information to buyers about how your Catalogue Solution can be hosted.</h2>
@@ -30,9 +29,7 @@
         </div>
 
         <form method="post">
-
-
-
+            <input type="hidden" asp-for="@Model.Id" />
 
 
 
@@ -63,7 +60,7 @@
 
 
                             <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="summary">
+                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.PublicCloud.Summary">
                                     Summary (optional)
                                 </label>
 
@@ -74,7 +71,7 @@
                                 </div>
 
 
-                                <textarea class="govuk-textarea govuk-js-character-count" id="summary" name="summary" rows="5" aria-describedby="summary-info summary-hint">Summary description</textarea>
+                                <textarea class="govuk-textarea govuk-js-character-count" rows="5" aria-describedby="summary-info summary-hint" asp-for="@Model.PublicCloud.Summary"></textarea>
                             </div>
 
                             <div id="summary-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
@@ -139,7 +136,7 @@
                             <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="link-hint">
                                 Provide a URL to a page that gives buyers further information about the public cloud hosting requirements for your Catalogue Solution.
                             </div>
-                            <input class="nhsuk-input" id="link" name="link" type="text" value="External URL link" aria-describedby="link-hint">
+                            <input class="nhsuk-input" type="text" asp-for="@Model.PublicCloud.Link" aria-describedby="link-hint">
                         </div>
 
                     </div>
@@ -211,22 +208,14 @@
                                     Use the checkbox if end user devices must be connected to HSCN/N3 in order to use your Catalogue Solution.
                                 </div>
 
-
                                 <div class="nhsuk-checkboxes">
 
-
-
-
-
-
                                     <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="requires-hscn-1" name="requires-hscn" type="checkbox" value="End user devices must be connected to HSCN/N3">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="requires-hscn-1">
+                                        <input class="nhsuk-checkboxes__input"  type="checkbox" asp-for="@Model.RequiresHscnChecked">
+                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.RequiresHscnChecked">
                                             Yes, devices must be connected to HSCN/N3
                                         </label>
                                     </div>
-
-
 
                                 </div>
                             </fieldset>

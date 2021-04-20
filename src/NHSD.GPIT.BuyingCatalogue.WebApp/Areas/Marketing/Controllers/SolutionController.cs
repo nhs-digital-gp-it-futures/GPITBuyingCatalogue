@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("preview", "solutions", new { id = id });
         }
 
-        #region About Catalogue Solution
+        #region About Catalogue Solution DONE
 
         [HttpGet("marketing/supplier/solution/{id}/section/solution-description")]
         public async Task<IActionResult> SolutionDescription(string id)
@@ -158,12 +158,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [HttpPost("marketing/supplier/solution/{id}/section/client-application-types")]
+        public async Task<IActionResult> ClientApplicationTypes(ClientApplicationTypesModel model)
+        {
+            var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
+
+            clientApplication.ClientApplicationTypes.Clear();
+
+            if (model.BrowserBased) clientApplication.ClientApplicationTypes.Add("browser-based");
+            if (model.NativeMobile) clientApplication.ClientApplicationTypes.Add("native-mobile");
+            if (model.NativeDesktop) clientApplication.ClientApplicationTypes.Add("native-desktop");
+
+            await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
+            
+            return RedirectToAction("Index", new { id = model.SolutionId });
+        }
+
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based")]
         public async Task<IActionResult> BrowserBased(string id)
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new BrowserBasedModel(solution);
 
             return View(model);
         }
@@ -173,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new NativeMobileModel(solution);
 
             return View(model);
         }
@@ -183,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new NativeDesktopModel(solution);
 
             return View(model);
         }
@@ -400,9 +416,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new HostingTypePublicCloudModel(solution);
 
             return View(model);
+        }
+
+        [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-public-cloud")]
+        public async Task<IActionResult> HostingTypePublicCloud(HostingTypePublicCloudModel model)
+        {
+            var hosting = await _solutionsService.GetHosting(model.Id);
+
+            hosting.PublicCloud = model.PublicCloud;
+
+            await _solutionsService.SaveHosting(model.Id, hosting);
+
+            return RedirectToAction("Index", new { id = model.Id });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-private-cloud")]
@@ -410,9 +438,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new HostingTypePrivateCloudModel(solution);
 
             return View(model);
+        }
+
+        [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-private-cloud")]
+        public async Task<IActionResult> HostingTypePrivateCloud(HostingTypePrivateCloudModel model)
+        {
+            var hosting = await _solutionsService.GetHosting(model.Id);
+
+            hosting.PrivateCloud = model.PrivateCloud;
+
+            await _solutionsService.SaveHosting(model.Id, hosting);
+
+            return RedirectToAction("Index", new { id = model.Id });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-hybrid")]
@@ -420,9 +460,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new HostingTypeHybridModel(solution);
 
             return View(model);
+        }
+
+        [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-hybrid")]
+        public async Task<IActionResult> HostingTypeHybrid(HostingTypeHybridModel model)
+        {
+            var hosting = await _solutionsService.GetHosting(model.Id);
+
+            hosting.HybridHostingType = model.HybridHostingType;
+
+            await _solutionsService.SaveHosting(model.Id, hosting);
+
+            return RedirectToAction("Index", new { id = model.Id });
         }
 
 
@@ -431,9 +483,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new HostingTypeOnPremiseModel(solution);
 
             return View(model);
+        }
+
+        [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-on-premise")]
+        public async Task<IActionResult> HostingTypeOnPremise(HostingTypeOnPremiseModel model)
+        {
+            var hosting = await _solutionsService.GetHosting(model.Id);
+
+            hosting.OnPremise = model.OnPremise;
+
+            await _solutionsService.SaveHosting(model.Id, hosting);
+
+            return RedirectToAction("Index", new { id = model.Id });
         }
 
 

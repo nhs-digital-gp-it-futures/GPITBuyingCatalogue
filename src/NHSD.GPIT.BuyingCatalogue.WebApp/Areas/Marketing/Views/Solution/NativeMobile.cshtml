@@ -1,8 +1,7 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.FeaturesModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobileModel;
 @{
     ViewData["Title"] = "Native mobile or tablet application - all sections";
 }
-
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -15,30 +14,22 @@
                     Return to all sections
                 </a>
             </div>
-
         </div>
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-
         <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
             <h1 data-test-id="sub-dashboard-title" class="nhsuk-u-margin-bottom-3">Native mobile or tablet application – all sections</h1>
             <h2 data-test-id="sub-dashboard-main-advice" class="nhsuk-u-font-size-22">Provide information about your native mobile or tablet Catalogue Solution.</h2>
             <div data-test-id="sub-dashboard-additional-advice">
-
             </div>
         </div>
-
     </div>
     <div class="nhsuk-grid-column-full">
-
-
-
         <div data-test-id="dashboard-sectionGroup-native-mobile-sections" class="nhsuk-u-padding-bottom-7">
             <div class="bc-c-title">
                 <h2 class="nhsuk-u-font-size-24">
                     Native mobile or tablet sections
                 </h2>
-
                 <div class="nhsuk-grid-row">
                     <div class="nhsuk-grid-column-two-thirds">
                         <p>
@@ -46,203 +37,123 @@
                         </p>
                     </div>
                 </div>
-
             </div>
             <ul class="bc-c-section-list__items">
 
-
                 <div id="native-mobile-operating-systems" data-test-id="dashboard-section-native-mobile-operating-systems">
-
                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                         <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-
                             <a href="native-mobile/operating-systems">
                                 Supported operating systems
                             </a>
-
                         </div>
-
-
                         <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                             <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
                         </span>
                         <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                            INCOMPLETE
+                            @Model.SupportedOperatingSystemsStatus
                         </strong>
-
                     </li>
-
-
-
                 </div>
 
-
-
                 <div id="native-mobile-first" data-test-id="dashboard-section-native-mobile-first">
-
                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                         <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-
                             <a href="native-mobile/mobile-first-approach">
                                 Mobile first approach
                             </a>
-
                         </div>
-
-
                         <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                             <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
                         </span>
                         <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                            INCOMPLETE
+                            @Model.MobileFirstApproachStatus
                         </strong>
-
                     </li>
-
-
-
                 </div>
-
-
 
                 <div id="native-mobile-connection-details" data-test-id="dashboard-section-native-mobile-connection-details">
 
                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                         <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-
                             <a href="native-mobile/connectivity">
                                 Connectivity
                             </a>
-
                         </div>
-
-
                         <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                             <p class="nhsuk-u-margin-bottom-0">Optional</p>
                         </span>
                         <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                            INCOMPLETE
+                            @Model.ConnectivityStatus
                         </strong>
-
                     </li>
-
-
-
                 </div>
 
-
-
                 <div id="native-mobile-memory-and-storage" data-test-id="dashboard-section-native-mobile-memory-and-storage">
-
                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                         <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-
                             <a href="native-mobile/memory-and-storage">
                                 Memory and storage
                             </a>
-
                         </div>
-
-
                         <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                             <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
                         </span>
                         <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                            INCOMPLETE
+                            @Model.MemoryAndStorageStatus
                         </strong>
-
                     </li>
-
-
-
                 </div>
 
-
-
                 <div id="native-mobile-third-party" data-test-id="dashboard-section-native-mobile-third-party">
-
                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                         <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-
                             <a href="native-mobile/third-party">
                                 Third-party components and device capabilities
                             </a>
-
                         </div>
-
-
                         <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                             <p class="nhsuk-u-margin-bottom-0">Optional</p>
                         </span>
                         <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                            INCOMPLETE
+                            @Model.ThirdPartyStatus
                         </strong>
-
                     </li>
-
-
-
                 </div>
 
-
-
                 <div id="native-mobile-hardware-requirements" data-test-id="dashboard-section-native-mobile-hardware-requirements">
-
                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                         <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-
                             <a href="native-mobile/hardware-requirements">
                                 Hardware requirements
                             </a>
-
                         </div>
-
-
                         <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                             <p class="nhsuk-u-margin-bottom-0">Optional</p>
                         </span>
                         <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                            INCOMPLETE
+                            @Model.HardwareRequirementsStatus
                         </strong>
-
                     </li>
-
-
-
                 </div>
 
-
-
                 <div id="native-mobile-additional-information" data-test-id="dashboard-section-native-mobile-additional-information">
-
                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                         <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-
                             <a href="native-mobile/additional-information">
                                 Additional information
                             </a>
-
                         </div>
-
-
                         <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                             <p class="nhsuk-u-margin-bottom-0">Optional</p>
                         </span>
                         <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                            INCOMPLETE
+                            @Model.AdditionalInformationStatus
                         </strong>
-
                     </li>
-
-
-
                 </div>
-
 
             </ul>
         </div>
-
-
-
     </div>
 </div>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -160,6 +161,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
 
             solution.RoadMap = roadmap;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<ClientApplication> GetClientApplication(string solutionId)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+
+            var clientApplication = JsonConvert.DeserializeObject<ClientApplication>(solution.ClientApplication);
+
+            return clientApplication;
+        }
+
+        public async Task SaveClientApplication(string solutionId, ClientApplication clientApplication)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+
+            var json = JsonConvert.SerializeObject(clientApplication);
+
+            solution.ClientApplication = json;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Hosting> GetHosting(string solutionId)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+
+            var hosting = JsonConvert.DeserializeObject<Hosting>(solution.Hosting);
+
+            return hosting;
+        }
+
+        public async Task SaveHosting(string solutionId, Hosting hosting)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+
+            var json = JsonConvert.SerializeObject(hosting);
+
+            solution.Hosting = json;
 
             await _dbContext.SaveChangesAsync();
         }

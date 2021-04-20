@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
@@ -13,9 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             //DecodeFeatures();
             //PopulateContactInformation();
             //PopulateFrameworks();
+            DecodeClientApplication();
         }
 
         public CatalogueItem CatalogueItem { get; private set; }
+
+        public ClientApplication ClientApplication { get; private set; }
 
         public string SolutionDescriptionStatus
         {
@@ -62,6 +66,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             }
         }
 
+        public string ClientApplicationTypeStatus
+        {
+            get
+            {
+                return ClientApplication.ClientApplicationTypes.Any() ? "COMPLETE" : "INCOMPLETE";
+            }
+        }
         //public string[] Features { get; private set; }
 
         //public string Frameworks { get; private set; }
@@ -98,5 +109,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
         //{
         //    Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework.ShortName));
         //}
+
+        private void DecodeClientApplication()
+        {
+            ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(CatalogueItem.Solution.ClientApplication);
+        }
     }
 }

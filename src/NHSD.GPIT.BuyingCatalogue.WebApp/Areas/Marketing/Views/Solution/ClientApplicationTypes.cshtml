@@ -31,47 +31,13 @@
 
         <form method="post">
 
-
-
-
-
-
-
+            <input type="hidden" asp-for="@Model.SolutionId" />
 
             <div data-test-id="section-question-checkbox-options" class="nhsuk-u-margin-bottom-6">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                 <div id="client-application-types" data-test-id="question-client-application-types">
 
                     <div data-test-id="checkbox-options">
-
-
-
-
-
-
-
-
-
-
 
                         <div class="nhsuk-form-group">
 
@@ -84,50 +50,28 @@
                                     Select at least one client application type. You’ll need to provide further information for each type you select.
                                 </div>
 
-
                                 <div class="nhsuk-checkboxes">
 
-
-
-
-
-
                                     <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="client-application-types-1" name="client-application-types" type="checkbox" value="browser-based">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="client-application-types-1">
+                                        <input class="nhsuk-checkboxes__input" type="checkbox" asp-for="@Model.BrowserBased">
+                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.BrowserBased">
                                             Browser-based
                                         </label>
                                     </div>
 
-
-
-
-
-
-
-
                                     <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="client-application-types-2" name="client-application-types" type="checkbox" value="native-mobile">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="client-application-types-2">
+                                        <input class="nhsuk-checkboxes__input" type="checkbox" asp-for="@Model.NativeMobile">
+                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.NativeMobile">
                                             Native mobile or tablet
                                         </label>
                                     </div>
 
-
-
-
-
-
-
-
                                     <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="client-application-types-3" name="client-application-types" type="checkbox" value="native-desktop">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="client-application-types-3">
+                                        <input class="nhsuk-checkboxes__input" type="checkbox" asp-for="@Model.NativeDesktop">
+                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.NativeDesktop">
                                             Native desktop
                                         </label>
                                     </div>
-
-
 
                                 </div>
                             </fieldset>
@@ -139,37 +83,12 @@
 
                 </div>
 
-
-
-
-
-
             </div>
 
-
-
-
-
-
-
-
             <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-
-
-
-
-
-
-
-
-
-
                 <button class="nhsuk-button" type="submit">
                     Save and return
                 </button>
-
-
-
             </div>
         </form>
 

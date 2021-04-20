@@ -25,5 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task SaveImplementationDetail(string id, string detail);
 
         Task SaveRoadmap(string id, string roadmap);
+
+        Task<ClientApplication> GetClientApplication(string solutionId);
+
+        Task SaveClientApplication(string solutionId, ClientApplication clientApplication);
+
+        Task<Hosting> GetHosting(string solutionId);
+
+        Task SaveHosting(string solutionId, Hosting hosting);
     }
 }
