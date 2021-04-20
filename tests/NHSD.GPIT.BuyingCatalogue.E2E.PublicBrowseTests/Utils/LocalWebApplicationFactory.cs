@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -13,13 +12,13 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     public class LocalWebApplicationFactory : WebApplicationFactory<Startup>
     {
         private const string LocalhostBaseAddress = "https://localhost";
 
-        private IWebHost host;
+        private readonly IWebHost host;
         private readonly string DbName;
 
         internal IWebDriver Driver { get; }
@@ -45,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             {
                 Environment.SetEnvironmentVariable(nameof(ID_DB_CONNECTION), BC_DB_CONNECTION);
             }
-
-            CreateServer(CreateWebHostBuilder());
+            host = CreateWebHostBuilder().Build();
+            host.Start();
 
             RootUri = host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
 
@@ -59,19 +58,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             }
         }
 
-        protected override TestServer CreateServer(IWebHostBuilder builder)
-        {
-            host = CreateWebHostBuilder().Build();
-            host.Start();
-            return new TestServer(CreateWebHostBuilder().UseStartup<Startup>());
-        }
-
         public string RootUri { get; private set; }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>());
-            
+            builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
                 var descriptor = services.SingleOrDefault(
@@ -92,14 +84,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
 
-                var appDb = scopedServices.GetRequiredService<BuyingCatalogueDbContext>();
+                var bcDb = scopedServices.GetRequiredService<BuyingCatalogueDbContext>();
 
-                appDb.Database.EnsureCreated();
+                bcDb.Database.EnsureCreated();
 
-                // TODO: Seed database with test data here
+                try
+                {
+                    BuyingCatalogueSeedData.Initialize(bcDb);
+                }
+                catch
+                {
+                    // figure out error logging here
+                }
             });
 
-            builder.UseStartup<Startup>();
+            
             builder.UseUrls($"{LocalhostBaseAddress}:{new Random().Next(10000, 50000)}");
             return builder;
         }

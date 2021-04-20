@@ -1,7 +1,8 @@
-﻿using OpenQA.Selenium;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions;
+using OpenQA.Selenium;
 using System;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
     internal sealed class HomepageActions : ActionBase
     {
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
         {
             try
             {
-                Driver.FindElement(Objects.HomepageObjects.GpitFrameworkTile);
+                Driver.FindElement(Objects.PublicBrowse.HomepageObjects.GpitFrameworkTile);
                 return true;
             }
             catch
@@ -27,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
         {
             try
             {
-                Driver.FindElement(Objects.HomepageObjects.DFOCVCFrameworkTile);
+                Driver.FindElement(Objects.PublicBrowse.HomepageObjects.DFOCVCFrameworkTile);
                 return true;
             }
             catch
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
         {
             try
             {
-                Driver.FindElement(Objects.HomepageObjects.BuyersGuideTile);
+                Driver.FindElement(Objects.PublicBrowse.HomepageObjects.BuyersGuideTile);
                 return true;
             }
             catch
@@ -53,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
         {
             try
             {
-                Driver.FindElement(Objects.HomepageObjects.OrderingTile);
+                Driver.FindElement(Objects.PublicBrowse.HomepageObjects.OrderingTile);
                 return true;
             }
             catch
@@ -64,12 +65,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
 
         internal void ClickDFOCVCTile()
         {
-            Driver.FindElement(Objects.HomepageObjects.DFOCVCFrameworkTile).Click();
+            Driver.FindElement(Objects.PublicBrowse.HomepageObjects.DFOCVCFrameworkTile).Click();
         }
 
         internal void ClickBuyersGuideTile()
         {
-            Driver.FindElement(Objects.HomepageObjects.BuyersGuideTile).Click();
+            Driver.FindElement(Objects.PublicBrowse.HomepageObjects.BuyersGuideTile).Click();
         }
     }
 }

@@ -1,11 +1,6 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Objects
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
 {
     internal sealed class CustomBy : By
     {

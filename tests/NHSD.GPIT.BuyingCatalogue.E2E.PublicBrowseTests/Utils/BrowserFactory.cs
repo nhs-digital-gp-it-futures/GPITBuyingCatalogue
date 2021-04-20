@@ -8,7 +8,7 @@ using System.IO;
 using System.Net;
 using static System.Net.WebRequestMethods;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     internal sealed class BrowserFactory
     {

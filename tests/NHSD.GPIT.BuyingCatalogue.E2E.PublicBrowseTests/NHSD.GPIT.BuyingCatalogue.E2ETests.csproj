@@ -11,9 +11,9 @@
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.5" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="89.0.4389.2300" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="90.0.4430.2400" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.EntityFramework\NHSD.GPIT.BuyingCatalogue.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.WebApp\NHSD.GPIT.BuyingCatalogue.WebApp.csproj" />
   </ItemGroup>
 
