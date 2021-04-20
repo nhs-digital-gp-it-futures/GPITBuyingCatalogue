@@ -204,5 +204,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<Supplier> GetSupplier(string supplierId)
+        {
+            var supplier = await _dbContext.Suppliers.SingleAsync(x => x.Id == supplierId);
+
+            return supplier;
+        }
+
+        public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
+        {
+            var supplier = await _dbContext.Suppliers.SingleAsync(x => x.Id == supplierId);
+
+            supplier.Summary = description;
+            supplier.SupplierUrl = link;
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

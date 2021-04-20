@@ -33,5 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<Hosting> GetHosting(string solutionId);
 
         Task SaveHosting(string solutionId, Hosting hosting);
+
+        Task<Supplier> GetSupplier(string supplierId);
+
+        Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link);
     }
 }

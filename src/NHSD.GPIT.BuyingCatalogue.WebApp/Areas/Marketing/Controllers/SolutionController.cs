@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
         #endregion
 
-        #region Client Application Type
+        #region Client Application Type CONTROLLER AND PAGES DONE - MODELS NEED WORK
 
         [HttpGet("marketing/supplier/solution/{id}/section/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
@@ -409,7 +409,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
         #endregion
 
-        #region Hosting Type
+        #region Hosting Type DONE
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-public-cloud")]
         public async Task<IActionResult> HostingTypePublicCloud(string id)
@@ -510,9 +510,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new AboutSupplierModel(solution);
 
             return View(model);
+        }
+
+        [HttpPost("marketing/supplier/solution/{id}/section/about-supplier")]
+        public async Task<IActionResult> AboutSupplier(AboutSupplierModel model)
+        {            
+            await _solutionsService.SaveSupplierDescriptionAndLink(model.SupplierId, model.Description, model.Link);
+
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/contact-details")]
