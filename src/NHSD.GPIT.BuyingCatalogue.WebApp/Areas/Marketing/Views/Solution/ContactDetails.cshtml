@@ -42,6 +42,8 @@
 
                 <div data-test-id="multi-question-questions">
 
+                    <input type="hidden" asp-for="@Model.Contact1.Id" />
+
                     <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
                         <div data-test-id="question-contact-1[first-name]">
                             <div data-test-id="text-field-input">
@@ -118,10 +120,10 @@
                         <div data-test-id="question-contact-1[email-address]">
                             <div data-test-id="text-field-input">
                                 <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact1.EmailAddress">
+                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact1.Email">
                                         Email address
                                     </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact1.EmailAddress">
+                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact1.Email">
                                 </div>
                             </div>
                             <div data-test-id="text-field-footer">
@@ -147,6 +149,8 @@
                 </span>
 
                 <div data-test-id="multi-question-questions">
+
+                    <input type="hidden" asp-for="@Model.Contact2.Id" />
 
                     <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
                         <div data-test-id="question-contact-2[first-name]">
@@ -224,10 +228,10 @@
                         <div data-test-id="question-contact-2[email-address]">
                             <div data-test-id="text-field-input">
                                 <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact2.EmailAddress">
+                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact2.Email">
                                         Email address
                                     </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact2.EmailAddress">
+                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact2.Email">
                                 </div>
                             </div>
                             <div data-test-id="text-field-footer">

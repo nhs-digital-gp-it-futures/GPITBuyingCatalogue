@@ -71,6 +71,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             }
         }
 
+        public string AboutSupplierStatus
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(CatalogueItem.Supplier.SupplierUrl) && string.IsNullOrWhiteSpace(CatalogueItem.Supplier.Summary))
+                    return "INCOMPLETE";
+
+                return "COMPLETE";
+            }
+        }
+
+        public string ContactDetailsStatus
+        {
+            get
+            {
+                return CatalogueItem.Solution.MarketingContacts.Any() ? "COMPLETE" : "INCOMPLETE";
+            }
+        }
+
         private void DecodeClientApplication()
         {
             if (!string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.ClientApplication))

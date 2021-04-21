@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
@@ -7,38 +8,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
     { 
         public ContactDetailsModel()
         {
-            Contact1 = new Contact();
-            Contact2 = new Contact();
+            Contact1 = new MarketingContact();
+            Contact2 = new MarketingContact();
         }
 
         public ContactDetailsModel(CatalogueItem catalogueItem)
         {
             SolutionId = catalogueItem.CatalogueItemId;
+
+            var allContacts = catalogueItem.Solution.MarketingContacts.ToArray();
+
+            if (allContacts.Length > 0)
+                Contact1 = allContacts[0];
+            else
+                Contact1 = new MarketingContact();
+
+            if (allContacts.Length > 1)
+                Contact2 = allContacts[1];
+            else
+                Contact2 = new MarketingContact();
         }
 
         public string SolutionId { get; set; }
 
-        public Contact Contact1 { get; set; }
+        public MarketingContact Contact1 { get; set; }
 
-        public Contact Contact2 { get; set; }
-    }
-
-    public class Contact
-    {
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Department { get; set; }
-
-        public string PhoneNumber { get; set; }
-
-        [EmailAddress(ErrorMessage = ErrorMessages.EmailAddressInvalid)]
-        public string EmailAddress { get; set; }
-    }
-
-    public static class ErrorMessages
-    {        
-        public const string EmailAddressInvalid = "Enter a valid email address";        
+        public MarketingContact Contact2 { get; set; }
     }
 }

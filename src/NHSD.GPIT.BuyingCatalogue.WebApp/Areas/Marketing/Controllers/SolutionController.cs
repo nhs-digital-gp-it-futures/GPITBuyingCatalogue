@@ -531,7 +531,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
-
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-on-premise")]
         public async Task<IActionResult> HostingTypeOnPremise(string id)
         {
@@ -560,10 +559,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
-
         #endregion
 
-        #region About Organisation
+        #region About Organisation DONE
 
         [HttpGet("marketing/supplier/solution/{id}/section/about-supplier")]
         public async Task<IActionResult> AboutSupplier(string id)
@@ -608,9 +606,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            //var solution = await _solutionsService.GetSolution(id);
-
-            //            var model = new ContactDetailsModel(solution);
+            await _solutionsService.SaveSupplierContacts(model.SolutionId, model.Contact1, model.Contact2);
 
             return RedirectToAction("Index", new { id = model.SolutionId });
         }

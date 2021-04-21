@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -226,6 +227,61 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             supplier.SupplierUrl = link;
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveSupplierContacts(string solutionId, MarketingContact contact1, MarketingContact contact2)
+        {
+            contact1.SolutionId = solutionId;
+            contact1.LastUpdated = DateTime.UtcNow;
+            contact2.SolutionId = solutionId;
+            contact2.LastUpdated = DateTime.UtcNow;
+
+            var marketingContacts = await _dbContext.MarketingContacts.Where(x => x.SolutionId == solutionId).ToArrayAsync();
+
+            if(!marketingContacts.Any())
+            {
+                if(!contact1.IsEmpty()) _dbContext.MarketingContacts.Add(contact1);
+                if(!contact2.IsEmpty()) _dbContext.MarketingContacts.Add(contact2);
+            }
+            else
+            {
+                for (int i = 0; i < marketingContacts.Length; i++)
+                {
+                    if (marketingContacts[i].Id == contact1.Id)
+                    {
+                        if (contact1.IsEmpty())
+                            _dbContext.MarketingContacts.Remove(marketingContacts[i]);
+                        else
+                            UpdateContact(contact1, marketingContacts[i]);
+                    }
+                    else if (marketingContacts[i].Id == contact2.Id)
+                    {
+                        if (contact2.IsEmpty())
+                            _dbContext.MarketingContacts.Remove(marketingContacts[i]);
+                        else
+                            UpdateContact(contact2, marketingContacts[i]);
+                    }
+                }
+
+                if(contact1.Id == default && !contact1.IsEmpty())
+                    _dbContext.MarketingContacts.Add(contact1);
+
+                if (contact2.Id == default && !contact2.IsEmpty())
+                    _dbContext.MarketingContacts.Add(contact2);
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+
+        private void UpdateContact(MarketingContact sourceContact, MarketingContact targetContact)
+        {
+            targetContact.FirstName = sourceContact.FirstName;
+            targetContact.LastName = sourceContact.LastName;
+            targetContact.Department = sourceContact.Department;
+            targetContact.PhoneNumber = sourceContact.PhoneNumber;
+            targetContact.Email = sourceContact.Email;
+            targetContact.LastUpdated = sourceContact.LastUpdated;
         }
     }
 }
