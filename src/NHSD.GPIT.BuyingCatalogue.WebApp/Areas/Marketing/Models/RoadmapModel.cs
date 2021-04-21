@@ -10,10 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public RoadmapModel(CatalogueItem catalogueItem)
         {
+            SolutionId = catalogueItem.CatalogueItemId;
             Summary = catalogueItem.Solution.RoadMap;
         }
 
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
         public string Summary { get; set; }
     }
 }

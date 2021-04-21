@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using System;
-using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
@@ -14,11 +12,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public HostingTypeHybridModel(CatalogueItem catalogueItem)
         {
-            Id = catalogueItem.CatalogueItemId;
-            HybridHostingType = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting).HybridHostingType;            
+            SolutionId = catalogueItem.CatalogueItemId;
+
+            if (!string.IsNullOrWhiteSpace(catalogueItem.Solution.Hosting))
+                HybridHostingType = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting).HybridHostingType;
+            else
+                HybridHostingType = new HybridHostingType();
         }
 
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
 
         public HybridHostingType HybridHostingType { get; set; }
 

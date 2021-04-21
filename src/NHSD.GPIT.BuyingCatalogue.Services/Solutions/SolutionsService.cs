@@ -169,7 +169,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
 
-            var clientApplication = JsonConvert.DeserializeObject<ClientApplication>(solution.ClientApplication);
+            var clientApplication = new ClientApplication();
+
+            if (!string.IsNullOrWhiteSpace(solution.ClientApplication))
+                clientApplication = JsonConvert.DeserializeObject<ClientApplication>(solution.ClientApplication);
 
             return clientApplication;
         }
@@ -189,7 +192,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
 
-            var hosting = JsonConvert.DeserializeObject<Hosting>(solution.Hosting);
+            var hosting = new Hosting();
+
+            if (!string.IsNullOrWhiteSpace(solution.Hosting))
+                hosting = JsonConvert.DeserializeObject<Hosting>(solution.Hosting);
 
             return hosting;
         }

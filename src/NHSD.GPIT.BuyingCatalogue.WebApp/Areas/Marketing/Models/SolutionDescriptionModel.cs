@@ -10,13 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public SolutionDescriptionModel(CatalogueItem catalogueItem)
         {
-            Id = catalogueItem.CatalogueItemId;
+            SolutionId = catalogueItem.CatalogueItemId;
             Summary = catalogueItem.Solution.Summary;
             Description = catalogueItem.Solution.FullDescription;
             Link = catalogueItem.Solution.AboutUrl;            
         }
       
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
 
         public string Summary { get; set; }
 

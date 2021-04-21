@@ -11,9 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
         {
             CatalogueItem = catalogueItem;
 
-            //DecodeFeatures();
-            //PopulateContactInformation();
-            //PopulateFrameworks();
             DecodeClientApplication();
         }
 
@@ -73,46 +70,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
                 return ClientApplication.ClientApplicationTypes.Any() ? "COMPLETE" : "INCOMPLETE";
             }
         }
-        //public string[] Features { get; private set; }
-
-        //public string Frameworks { get; private set; }
-
-        //public string ContactName { get; private set; }
-
-        //public string Department { get; private set; }
-
-        //public string PhoneNumber { get; private set; }
-
-        //public string EmailAddress { get; private set; }
-
-        //private void DecodeFeatures()
-        //{
-        //    Features = new string[0];
-
-        //    if(!string.IsNullOrWhiteSpace(CatalogueItem.Solution.Features))
-        //        Features = JsonConvert.DeserializeObject<string[]>(CatalogueItem.Solution.Features);
-        //}
-
-        //private void PopulateContactInformation()
-        //{
-        //    if( CatalogueItem.Solution.MarketingContacts.Any())
-        //    {
-        //        var contact = CatalogueItem.Solution.MarketingContacts.First();
-        //        ContactName = $"{contact.FirstName} {contact.LastName}";
-        //        Department = contact.Department;
-        //        PhoneNumber = contact.PhoneNumber;
-        //        EmailAddress = contact.Email;
-        //    }
-        //}
-
-        //private void PopulateFrameworks()
-        //{
-        //    Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework.ShortName));
-        //}
 
         private void DecodeClientApplication()
         {
-            ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(CatalogueItem.Solution.ClientApplication);
+            if (!string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.ClientApplication))
+                ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(CatalogueItem.Solution.ClientApplication);
+            else
+                ClientApplication = new ClientApplication();
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
+    [ExcludeFromCodeCoverage]
     public class ClientApplication
     {
         public HashSet<string> ClientApplicationTypes { get; set; } = new();

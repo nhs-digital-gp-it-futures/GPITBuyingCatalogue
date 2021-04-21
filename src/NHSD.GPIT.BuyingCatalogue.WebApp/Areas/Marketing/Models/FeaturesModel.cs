@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public FeaturesModel(CatalogueItem catalogueItem)
         {
+            SolutionId = catalogueItem.CatalogueItemId;
+
             var features = new string[0];
 
             if (!string.IsNullOrWhiteSpace(catalogueItem.Solution.Features))
@@ -30,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             }
         }
 
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
 
         public string Listing1 { get; set; }
         public string Listing2 { get; set; }

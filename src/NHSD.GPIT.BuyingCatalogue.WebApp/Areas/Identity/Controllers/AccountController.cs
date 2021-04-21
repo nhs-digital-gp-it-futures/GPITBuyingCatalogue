@@ -51,11 +51,9 @@ Contact the account administrator at: {0} or call {1}";
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            if (viewModel is null)
-            {
+            if (viewModel is null)            
                 throw new ArgumentNullException(nameof(viewModel));
-            }
-
+            
             if (!ModelState.IsValid)
                 return View(viewModel);
 

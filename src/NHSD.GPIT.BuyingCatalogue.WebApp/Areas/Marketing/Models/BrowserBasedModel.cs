@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using System;
 using System.Linq;
+
+// MJRTODO - Test this with a record without anything in it - null check...
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
@@ -10,22 +11,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
     { 
         public BrowserBasedModel(CatalogueItem catalogueItem)
         {
-            Id = catalogueItem.CatalogueItemId;
-            ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
+            SolutionId = catalogueItem.CatalogueItemId;
+
+            if (!string.IsNullOrWhiteSpace(catalogueItem?.Solution?.ClientApplication))
+                ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
+            else
+                ClientApplication = new ClientApplication();
         }
 
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
 
         private ClientApplication ClientApplication { get; set; }
 
         public string SupportedBrowsersStatus
         {
-            get { return "TODO"; }
+            get { return ClientApplication.BrowsersSupported.Any() ? "COMPLETE" : "INCOMPLETE"; }
         }
 
         public string MobileFirstApproachStatus
         {
-            get { return "TODO"; }
+            // MJRTODO - Is this a 3 state checkbox in the current UI?
+            get { return ClientApplication.MobileFirstDesign.HasValue ? "COMPLETE" : "INCOMPLETE"; }
         }
 
         public string PlugInsStatus

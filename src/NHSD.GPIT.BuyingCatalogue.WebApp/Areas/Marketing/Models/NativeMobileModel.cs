@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using System;
-using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
@@ -10,11 +8,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
     { 
         public NativeMobileModel(CatalogueItem catalogueItem)
         {
-            Id = catalogueItem.CatalogueItemId;
-            ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
+            SolutionId = catalogueItem.CatalogueItemId;
+
+            if (!string.IsNullOrWhiteSpace(catalogueItem?.Solution?.ClientApplication))
+                ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
+            else
+                ClientApplication = new ClientApplication();
         }
 
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
 
         private ClientApplication ClientApplication { get; set; }
 

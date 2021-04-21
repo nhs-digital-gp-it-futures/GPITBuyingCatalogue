@@ -10,10 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public IntegrationsModel(CatalogueItem catalogueItem)
         {
+            SolutionId = catalogueItem.CatalogueItemId;
             Link = catalogueItem.Solution.IntegrationsUrl;
         }
 
-        public string Id { get; set; }
+        public string SolutionId { get; set; }
         public string Link { get; set; }
     }
 }

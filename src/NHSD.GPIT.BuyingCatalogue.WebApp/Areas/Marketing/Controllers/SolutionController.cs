@@ -51,10 +51,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
         [HttpPost("marketing/supplier/solution/{id}/section/solution-description")]
         public async Task<IActionResult> SolutionDescription(SolutionDescriptionModel model)
-        {            
-            await _solutionsService.SaveSolutionDescription(model.Id, model.Summary, model.Description, model.Link);
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
-            return RedirectToAction("Index", new { id = model.Id });
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _solutionsService.SaveSolutionDescription(model.SolutionId, model.Summary, model.Description, model.Link);
+
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/features")]
@@ -70,6 +76,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/features")]
         public async Task<IActionResult> Features(FeaturesModel model)
         {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
             var features = new List<string>();
 
             if (!string.IsNullOrEmpty(model.Listing1)) features.Add(model.Listing1);
@@ -85,9 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var jsonFeatures = JsonConvert.SerializeObject(features);
 
-            await _solutionsService.SaveSolutionFeatures(model.Id, jsonFeatures);
+            await _solutionsService.SaveSolutionFeatures(model.SolutionId, jsonFeatures);
 
-            return RedirectToAction("Index", new { id = model.Id });
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/integrations")]
@@ -103,9 +115,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/integrations")]
         public async Task<IActionResult> Integrations(IntegrationsModel model)
         {
-            await _solutionsService.SaveIntegrationLink(model.Id, model.Link);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
-            return RedirectToAction("Index", new { id = model.Id });
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _solutionsService.SaveIntegrationLink(model.SolutionId, model.Link);
+
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/implementation-timescales")]
@@ -121,9 +139,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(ImplementationTimescalesModel model)
         {
-            await _solutionsService.SaveImplementationDetail(model.Id, model.Description);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
-            return RedirectToAction("Index", new { id = model.Id });
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _solutionsService.SaveImplementationDetail(model.SolutionId, model.Description);
+
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/roadmap")]
@@ -139,9 +163,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/roadmap")]
         public async Task<IActionResult> Roadmap(RoadmapModel model)
         {
-            await _solutionsService.SaveRoadmap(model.Id, model.Summary);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
-            return RedirectToAction("Index", new { id = model.Id });
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _solutionsService.SaveRoadmap(model.SolutionId, model.Summary);
+
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         #endregion
@@ -161,6 +191,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(ClientApplicationTypesModel model)
         {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
 
             clientApplication.ClientApplicationTypes.Clear();
@@ -424,13 +460,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-public-cloud")]
         public async Task<IActionResult> HostingTypePublicCloud(HostingTypePublicCloudModel model)
         {
-            var hosting = await _solutionsService.GetHosting(model.Id);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var hosting = await _solutionsService.GetHosting(model.SolutionId);
 
             hosting.PublicCloud = model.PublicCloud;
 
-            await _solutionsService.SaveHosting(model.Id, hosting);
+            await _solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", new { id = model.Id });
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-private-cloud")]
@@ -446,13 +488,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-private-cloud")]
         public async Task<IActionResult> HostingTypePrivateCloud(HostingTypePrivateCloudModel model)
         {
-            var hosting = await _solutionsService.GetHosting(model.Id);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var hosting = await _solutionsService.GetHosting(model.SolutionId);
 
             hosting.PrivateCloud = model.PrivateCloud;
 
-            await _solutionsService.SaveHosting(model.Id, hosting);
+            await _solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", new { id = model.Id });
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-hybrid")]
@@ -468,13 +516,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-hybrid")]
         public async Task<IActionResult> HostingTypeHybrid(HostingTypeHybridModel model)
         {
-            var hosting = await _solutionsService.GetHosting(model.Id);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var hosting = await _solutionsService.GetHosting(model.SolutionId);
 
             hosting.HybridHostingType = model.HybridHostingType;
 
-            await _solutionsService.SaveHosting(model.Id, hosting);
+            await _solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", new { id = model.Id });
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
 
@@ -491,13 +545,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-on-premise")]
         public async Task<IActionResult> HostingTypeOnPremise(HostingTypeOnPremiseModel model)
         {
-            var hosting = await _solutionsService.GetHosting(model.Id);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var hosting = await _solutionsService.GetHosting(model.SolutionId);
 
             hosting.OnPremise = model.OnPremise;
 
-            await _solutionsService.SaveHosting(model.Id, hosting);
+            await _solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", new { id = model.Id });
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
 
@@ -517,7 +577,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
         [HttpPost("marketing/supplier/solution/{id}/section/about-supplier")]
         public async Task<IActionResult> AboutSupplier(AboutSupplierModel model)
-        {            
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
             await _solutionsService.SaveSupplierDescriptionAndLink(model.SupplierId, model.Description, model.Link);
 
             return RedirectToAction("Index", new { id = model.SolutionId });
@@ -528,9 +594,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new ContactDetailsModel(solution);
 
             return View(model);
+        }
+
+        [HttpPost("marketing/supplier/solution/{id}/section/contact-details")]
+        public async Task<IActionResult> ContactDetails(ContactDetailsModel model)
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            //var solution = await _solutionsService.GetSolution(id);
+
+            //            var model = new ContactDetailsModel(solution);
+
+            return RedirectToAction("Index", new { id = model.SolutionId });
         }
 
         #endregion
