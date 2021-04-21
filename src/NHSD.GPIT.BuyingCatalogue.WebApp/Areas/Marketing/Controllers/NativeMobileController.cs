@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new DeviceModel(solution);
 
             return View(model);
         }
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new DeviceModel(solution);
 
             return View(model);
         }
@@ -44,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new DeviceModel(solution);
 
             return View(model);
         }
@@ -54,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new DeviceModel(solution);
 
             return View(model);
         }
@@ -64,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new DeviceModel(solution);
 
             return View(model);
         }
@@ -74,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new DeviceModel(solution);
 
             return View(model);
         }
@@ -84,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new DeviceModel(solution);
 
             return View(model);
         }                      

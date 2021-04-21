@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
     public class HostingTypePrivateCloudModel
     {

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
 {
     public class ContactDetailsModel
     { 

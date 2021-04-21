@@ -2,7 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
     public class NativeDesktopModel
     { 

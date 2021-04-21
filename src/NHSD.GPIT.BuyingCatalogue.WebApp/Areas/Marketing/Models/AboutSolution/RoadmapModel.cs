@@ -1,6 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
     public class RoadmapModel
     {
