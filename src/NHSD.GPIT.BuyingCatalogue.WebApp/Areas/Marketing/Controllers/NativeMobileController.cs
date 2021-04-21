@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
@@ -23,6 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/operating-systems")]
         public async Task<IActionResult> NativeMobileOperatingSystems(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -33,6 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/mobile-first-approach")]
         public async Task<IActionResult> NativeMobileMobileFirstApproach(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -43,6 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/connectivity")]
         public async Task<IActionResult> NativeMobileConnectivity(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -53,6 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/memory-and-storage")]
         public async Task<IActionResult> NativeMobileMemoryAndStorage(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -63,6 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/third-party")]
         public async Task<IActionResult> NativeMobileThirdParty(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -73,6 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/hardware-requirements")]
         public async Task<IActionResult> NativeMobileHardwareRequirements(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -83,6 +100,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/additional-information")]
         public async Task<IActionResult> NativeMobileAdditionalInformation(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);

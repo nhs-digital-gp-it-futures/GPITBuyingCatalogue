@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
@@ -25,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/solution-description")]
         public async Task<IActionResult> SolutionDescription(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new SolutionDescriptionModel(solution);
@@ -49,6 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/features")]
         public async Task<IActionResult> Features(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new FeaturesModel(solution);
@@ -88,6 +93,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/integrations")]
         public async Task<IActionResult> Integrations(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new IntegrationsModel(solution);
@@ -112,6 +120,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new ImplementationTimescalesModel(solution);
@@ -136,6 +147,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/roadmap")]
         public async Task<IActionResult> Roadmap(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new RoadmapModel(solution);

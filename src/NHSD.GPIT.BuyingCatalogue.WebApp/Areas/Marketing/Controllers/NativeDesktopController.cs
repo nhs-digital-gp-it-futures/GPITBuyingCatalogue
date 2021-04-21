@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
@@ -25,6 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/operating-systems")]
         public async Task<IActionResult> NativeDesktopOperatingSystems(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -35,6 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/connectivity")]
         public async Task<IActionResult> NativeDesktopConnectivity(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -45,6 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/memory-and-storage")]
         public async Task<IActionResult> NativeDesktopMemoryAndStorage(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -55,6 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/third-party")]
         public async Task<IActionResult> NativeDesktopThirdParty(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -65,6 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/hardware-requirements")]
         public async Task<IActionResult> NativeDesktopHardwareRequirements(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);
@@ -75,6 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/additional-information")]
         public async Task<IActionResult> NativeDesktopAdditionalInformation(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new DeviceModel(solution);

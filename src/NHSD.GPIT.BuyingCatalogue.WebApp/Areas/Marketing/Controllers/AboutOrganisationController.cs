@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
@@ -23,6 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/about-supplier")]
         public async Task<IActionResult> AboutSupplier(string id)
         {
+            if(string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new AboutSupplierModel(solution);
@@ -47,6 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/contact-details")]
         public async Task<IActionResult> ContactDetails(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new ContactDetailsModel(solution);

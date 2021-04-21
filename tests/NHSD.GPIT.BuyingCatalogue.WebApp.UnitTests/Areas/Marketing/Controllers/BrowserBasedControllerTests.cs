@@ -1,0 +1,102 @@
+﻿using System;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
+using NUnit.Framework;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
+{
+    [TestFixture]
+    [Parallelizable(ParallelScope.All)]
+    internal static class BrowserBasedControllerTests
+    {
+        [Test]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(BrowserBasedController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+        }
+
+        [Test]
+        public static void Constructor_NullLogging_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new BrowserBasedController(null, Mock.Of<ISolutionsService>()));
+        }
+
+        [Test]
+        public static void Constructor_NullSolutionService_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), null));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public static void Get_BrowserBasedSupportedBrowsers_InvalidId_ThrowsException(string id)
+        {
+            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedSupportedBrowsers(id));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public static void Get_BrowserBasedMobileFirstApproach_InvalidId_ThrowsException(string id)
+        {
+            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedMobileFirstApproach(id));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public static void Get_BrowserBasedPlugInsOrExtensions_InvalidId_ThrowsException(string id)
+        {
+            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedPlugInsOrExtensions(id));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public static void Get_BrowserBasedConnectivityAndResolution_InvalidId_ThrowsException(string id)
+        {
+            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedConnectivityAndResolution(id));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public static void Get_BrowserBasedHardwareRequirements_InvalidId_ThrowsException(string id)
+        {
+            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedHardwareRequirements(id));
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public static void Get_BrowserBasedAdditionalInformation_InvalidId_ThrowsException(string id)
+        {
+            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedAdditionalInformation(id));
+        }
+    }
+}
