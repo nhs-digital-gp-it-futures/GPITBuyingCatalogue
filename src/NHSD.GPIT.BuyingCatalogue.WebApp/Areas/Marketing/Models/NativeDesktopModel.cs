@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
@@ -9,11 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
         public NativeDesktopModel(CatalogueItem catalogueItem)
         {
             SolutionId = catalogueItem.CatalogueItemId;
-
-            if (!string.IsNullOrWhiteSpace(catalogueItem?.Solution?.ClientApplication))
-                ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            else
-                ClientApplication = new ClientApplication();
+            ClientApplication = catalogueItem.Solution.GetClientApplication();
         }
 
         public string SolutionId { get; set; }

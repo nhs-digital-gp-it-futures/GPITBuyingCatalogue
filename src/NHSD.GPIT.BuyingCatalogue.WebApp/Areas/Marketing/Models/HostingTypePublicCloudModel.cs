@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
@@ -14,12 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
         public HostingTypePublicCloudModel(CatalogueItem catalogueItem)
         {
             SolutionId = catalogueItem.CatalogueItemId;
-
-            if (!string.IsNullOrWhiteSpace(catalogueItem.Solution.Hosting))
-                PublicCloud = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting).PublicCloud;
-            else
-                PublicCloud = new PublicCloud();
-
+            PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
         }
 
         public string SolutionId { get; set; }

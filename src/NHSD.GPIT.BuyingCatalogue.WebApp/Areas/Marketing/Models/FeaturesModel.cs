@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
             if (!string.IsNullOrWhiteSpace(catalogueItem.Solution.Features))
             {
-                features = JsonConvert.DeserializeObject<string[]>(catalogueItem.Solution.Features);
+                features = catalogueItem.Solution.GetFeatures();
 
                 Listing1 = features.Length > 0 ? features[0] : string.Empty;
                 Listing2 = features.Length > 1 ? features[1] : string.Empty;

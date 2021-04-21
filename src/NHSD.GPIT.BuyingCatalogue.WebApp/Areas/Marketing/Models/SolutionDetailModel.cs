@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
@@ -10,8 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
         public SolutionDetailModel(CatalogueItem catalogueItem)
         {
             CatalogueItem = catalogueItem;
-
-            DecodeClientApplication();
+            ClientApplication = catalogueItem.Solution.GetClientApplication();
         }
 
         public CatalogueItem CatalogueItem { get; private set; }
@@ -32,8 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             {
                 if (string.IsNullOrWhiteSpace(CatalogueItem.Solution.Features))
                     return "INCOMPLETE";
-                
-                var features = JsonConvert.DeserializeObject<string[]>(CatalogueItem.Solution.Features);
+
+                var features = CatalogueItem.Solution.GetFeatures();
 
                 return features.Any() ? "COMPLETE" : "INCOMPLETE";
             }
@@ -88,14 +87,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             {
                 return CatalogueItem.Solution.MarketingContacts.Any() ? "COMPLETE" : "INCOMPLETE";
             }
-        }
-
-        private void DecodeClientApplication()
-        {
-            if (!string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.ClientApplication))
-                ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(CatalogueItem.Solution.ClientApplication);
-            else
-                ClientApplication = new ClientApplication();
         }
     }
 }

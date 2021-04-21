@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.FeaturesModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBasedModel;
 @{
     ViewData["Title"] = "Browser-based application - additional information";
 }
@@ -14,117 +14,46 @@
                     Return to all sections
                 </a>
             </div>
-
         </div>
     </div>
+
     <div class="nhsuk-grid-column-two-thirds">
-
-
         <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
             <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Browser-based application – additional information</h1>
             <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know any additional information about your Catalogue Solution.</h2>
             <div data-test-id="section-additional-advice">
-
             </div>
         </div>
 
         <form method="post">
 
-
-
-
-
-
-
-
             <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div data-test-id="question-additional-information">
-
                     <div data-test-id="textarea-field">
-
-
-
                         <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
-
-
                             <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="additional-information">
+                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.ClientApplication.AdditionalInformation">
                                     Additional information (optional)
                                 </label>
-
-
-
                                 <div id="additional-information-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
                                     Provide additional information about your browser-based Catalogue Solution
                                 </div>
-
-
-                                <textarea class="govuk-textarea govuk-js-character-count" id="additional-information" name="additional-information" rows="5" aria-describedby="additional-information-info additional-information-hint"></textarea>
+                                <textarea class="govuk-textarea govuk-js-character-count" rows="5" aria-describedby="additional-information-info additional-information-hint" asp-for="@Model.ClientApplication.AdditionalInformation"></textarea>
                             </div>
-
                             <div id="additional-information-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                                 You can enter up to 500 characters
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
 
-
-
-
-
-
-
-
             <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-
-
-
-
-
-
-
-
-
-
                 <button class="nhsuk-button" type="submit">
                     Save and return
                 </button>
-
-
-
             </div>
-        </form>
 
+        </form>
     </div>
 </div>

@@ -170,10 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
 
-            var clientApplication = new ClientApplication();
-
-            if (!string.IsNullOrWhiteSpace(solution.ClientApplication))
-                clientApplication = JsonConvert.DeserializeObject<ClientApplication>(solution.ClientApplication);
+            var clientApplication = solution.GetClientApplication();
 
             return clientApplication;
         }
@@ -192,13 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<Hosting> GetHosting(string solutionId)
         {
             var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
-
-            var hosting = new Hosting();
-
-            if (!string.IsNullOrWhiteSpace(solution.Hosting))
-                hosting = JsonConvert.DeserializeObject<Hosting>(solution.Hosting);
-
-            return hosting;
+            return solution.GetHosting();
         }
 
         public async Task SaveHosting(string solutionId, Hosting hosting)

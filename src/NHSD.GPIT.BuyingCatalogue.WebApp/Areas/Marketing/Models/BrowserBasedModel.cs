@@ -1,27 +1,26 @@
-﻿using Newtonsoft.Json;
+﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using System.Linq;
-
-// MJRTODO - Test this with a record without anything in it - null check...
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
     public class BrowserBasedModel
     { 
+        public BrowserBasedModel()
+        {
+            ClientApplication = new ClientApplication();
+        }
+
         public BrowserBasedModel(CatalogueItem catalogueItem)
         {
             SolutionId = catalogueItem.CatalogueItemId;
-
-            if (!string.IsNullOrWhiteSpace(catalogueItem?.Solution?.ClientApplication))
-                ClientApplication = JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            else
-                ClientApplication = new ClientApplication();
+            ClientApplication = catalogueItem.Solution.GetClientApplication();
         }
 
         public string SolutionId { get; set; }
 
-        private ClientApplication ClientApplication { get; set; }
+        public ClientApplication ClientApplication { get; set; }
 
         public string SupportedBrowsersStatus
         {

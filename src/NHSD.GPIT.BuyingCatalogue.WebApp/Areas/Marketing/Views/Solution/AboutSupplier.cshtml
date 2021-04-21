@@ -4,6 +4,7 @@
 }
 
 <div class="nhsuk-grid-row">
+
     <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
         <div data-test-id="section-back-link">
             <div class="nhsuk-back-link">
@@ -16,6 +17,7 @@
             </div>
         </div>
     </div>
+
     <div class="nhsuk-grid-column-two-thirds">
         <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
             <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">About supplier</h1>
@@ -25,107 +27,34 @@
         </div>
 
         <form method="post">
+
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.SupplierId" />
 
-
-
-
-
             <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div data-test-id="question-description">
-
                     <div data-test-id="textarea-field">
-
-
-
                         <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="1100">
-
-
                             <div class="govuk-form-group nhsuk-u-margin-bottom-2">
                                 <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Description">
                                     Description (optional)
                                 </label>
-
-
-
                                 <div id="Description-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
                                     Provide information about your organisation, for example its ethos, experience and plans for the future.
                                 </div>
-
-
                                 <textarea class="govuk-textarea govuk-js-character-count" rows="10" aria-describedby="Description-info Description-hint" asp-for="@Model.Description"></textarea>
                             </div>
-
                             <div id="Description-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                                 You can enter up to 1100 characters
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
 
-
-
-
-
-
-
-
-
-
             <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-6">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div data-test-id="question-link">
-
                     <div data-test-id="text-field-input">
-
-
                         <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
                             <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Link">
                                 Link to more information (optional)
@@ -135,60 +64,26 @@
                             </div>
                             <input class="nhsuk-input" type="text" aria-describedby="link-hint" asp-for="@Model.Link">
                         </div>
-
                     </div>
-
                     <div data-test-id="text-field-footer">
                         <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
                             (Maximum number of characters 1,000)
                         </span>
                     </div>
                 </div>
-
-
-
-
-
-
-
-
             </div>
-
-
-
-
 
             <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
                 <p class="nhsuk-u-font-size-14">If provided, this will be the default ‘supplier description’ on any listing pages for Catalogue Solutions supplied by your organisation. Any changes made will be visible across all your listing pages.</p>
             </div>
 
-
-
-
             <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-
-
-
-
-
-
-
-
-
-
                 <button class="nhsuk-button" type="submit">
                     Save and return
                 </button>
-
-
-
             </div>
         </form>
 
     </div>
 </div>
-
-
-
-

@@ -249,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new BrowserBasedModel(solution);
 
             return View(model);
         }
@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new BrowserBasedModel(solution);
 
             return View(model);
         }
@@ -269,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new BrowserBasedModel(solution);
 
             return View(model);
         }
@@ -279,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new BrowserBasedModel(solution);
 
             return View(model);
         }
@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new BrowserBasedModel(solution);
 
             return View(model);
         }
@@ -299,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         {
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new FeaturesModel(solution);
+            var model = new BrowserBasedModel(solution);
 
             return View(model);
         }
