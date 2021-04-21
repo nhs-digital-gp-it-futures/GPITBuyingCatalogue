@@ -5,9 +5,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 {
-    public class SolutionDetailModel
+    public class SolutionStatusModel
     {
-        public SolutionDetailModel(CatalogueItem catalogueItem)
+        public SolutionStatusModel(CatalogueItem catalogueItem)
         {
             CatalogueItem = catalogueItem;
             ClientApplication = catalogueItem.Solution.GetClientApplication();
