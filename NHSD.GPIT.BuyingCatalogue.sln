@@ -38,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.Test.Framework", "tests\NHSD.GPIT.BuyingCatalogue.Test.Framework\NHSD.GPIT.BuyingCatalogue.Test.Framework.csproj", "{C518EAC3-32B1-4F6C-BA6D-AAC887A649EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests", "tests\NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests\NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.csproj", "{7520A1C2-FA69-4E13-B217-62A277B51914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E2ETests", "tests\NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests\NHSD.GPIT.BuyingCatalogue.E2ETests.csproj", "{7520A1C2-FA69-4E13-B217-62A277B51914}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

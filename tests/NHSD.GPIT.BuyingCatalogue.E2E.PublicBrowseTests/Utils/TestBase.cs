@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions;
-using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     public abstract class TestBase
     {
@@ -20,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
             driver = factory.Driver;
             uri = new Uri(factory.RootUri);
             driver.Navigate().GoToUrl(new Uri(uri, urlArea));
-            Pages = new Pages(this.driver).PageActions;
+            PublicBrowsePages = new PublicBrowsePages(this.driver).PageActions;
         }
 
         internal TDbContext GetContext<TDbContext>()
@@ -40,6 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils
         protected readonly LocalWebApplicationFactory factory;
         protected readonly IWebDriver driver;
 
-        internal ActionCollection Pages { get; }
+        internal ActionCollection PublicBrowsePages { get; }
     }
 }

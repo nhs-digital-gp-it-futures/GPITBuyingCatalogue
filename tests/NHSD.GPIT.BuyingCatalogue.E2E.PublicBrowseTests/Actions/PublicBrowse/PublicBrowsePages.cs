@@ -1,10 +1,10 @@
 ﻿using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
-    public sealed class Pages
+    public sealed class PublicBrowsePages
     {
-        public Pages(IWebDriver driver)
+        public PublicBrowsePages(IWebDriver driver)
         {
             PageActions = new ActionCollection
             {
@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions
                 CommonActions = new CommonActions(driver),
                 HomePageActions = new HomepageActions(driver),
                 SolutionsActions = new SolutionsActions(driver),
+                SolutionAction = new SolutionAction(driver),
             };
         }
 

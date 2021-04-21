@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Actions;
-using NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Solutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.PublicBrowse.Areas.Solutions
 {
     public sealed class GPITFoundationTests : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
@@ -14,14 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests.Areas.Solutions
         [Fact]
         public void GpitFoundationSolutions_ListOfSolutionsDisplayed()
         {
-            Pages.SolutionsActions.ListOfSolutionsDisplayed().Should().BeTrue();
+            PublicBrowsePages.SolutionsActions.ListOfSolutionsDisplayed().Should().BeTrue();
         }
 
         [Fact]
         public void GpitFoundationSolutions_SolutionCardsDisplayRequiredSections()
         {
-            Pages.SolutionsActions.ListOfSolutionsDisplayed().Should().BeTrue();
-            var solutions = Pages.SolutionsActions.GetSolutionsInList();
+            PublicBrowsePages.SolutionsActions.ListOfSolutionsDisplayed().Should().BeTrue();
+            var solutions = PublicBrowsePages.SolutionsActions.GetSolutionsInList();
 
             foreach (var solution in solutions)
             {
