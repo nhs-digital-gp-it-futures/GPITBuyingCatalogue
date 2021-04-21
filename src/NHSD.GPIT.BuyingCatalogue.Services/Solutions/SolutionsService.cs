@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -90,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.MarketingContacts)
                 .Where(x => x.CatalogueItemId == id)        
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return solution;
         }
@@ -115,6 +117,162 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var capabilities = await _dbContext.Capabilities.Where(x=>x.Category.Name == "GP IT Futures").OrderBy(x=>x.Name).ToListAsync();
 
             return capabilities;
+        }
+
+        public async Task SaveSolutionDescription(string id, string summary, string description, string link)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.Summary = summary;
+            solution.FullDescription = description;
+            solution.AboutUrl = link;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveSolutionFeatures(string id, string featuresJson)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.Features = featuresJson;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveIntegrationLink(string id, string integrationLink)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.IntegrationsUrl = integrationLink;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveImplementationDetail(string id, string detail)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.ImplementationDetail = detail;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveRoadmap(string id, string roadmap)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+
+            solution.RoadMap = roadmap;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<ClientApplication> GetClientApplication(string solutionId)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+
+            var clientApplication = solution.GetClientApplication();
+
+            return clientApplication;
+        }
+
+        public async Task SaveClientApplication(string solutionId, ClientApplication clientApplication)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+
+            var json = JsonConvert.SerializeObject(clientApplication);
+
+            solution.ClientApplication = json;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Hosting> GetHosting(string solutionId)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+            return solution.GetHosting();
+        }
+
+        public async Task SaveHosting(string solutionId, Hosting hosting)
+        {
+            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+
+            var json = JsonConvert.SerializeObject(hosting);
+
+            solution.Hosting = json;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Supplier> GetSupplier(string supplierId)
+        {
+            var supplier = await _dbContext.Suppliers.SingleAsync(x => x.Id == supplierId);
+
+            return supplier;
+        }
+
+        public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
+        {
+            var supplier = await _dbContext.Suppliers.SingleAsync(x => x.Id == supplierId);
+
+            supplier.Summary = description;
+            supplier.SupplierUrl = link;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveSupplierContacts(string solutionId, MarketingContact contact1, MarketingContact contact2)
+        {
+            contact1.SolutionId = solutionId;
+            contact1.LastUpdated = DateTime.UtcNow;
+            contact2.SolutionId = solutionId;
+            contact2.LastUpdated = DateTime.UtcNow;
+
+            var marketingContacts = await _dbContext.MarketingContacts.Where(x => x.SolutionId == solutionId).ToArrayAsync();
+
+            if(!marketingContacts.Any())
+            {
+                if(!contact1.IsEmpty()) _dbContext.MarketingContacts.Add(contact1);
+                if(!contact2.IsEmpty()) _dbContext.MarketingContacts.Add(contact2);
+            }
+            else
+            {
+                for (int i = 0; i < marketingContacts.Length; i++)
+                {
+                    if (marketingContacts[i].Id == contact1.Id)
+                    {
+                        if (contact1.IsEmpty())
+                            _dbContext.MarketingContacts.Remove(marketingContacts[i]);
+                        else
+                            UpdateContact(contact1, marketingContacts[i]);
+                    }
+                    else if (marketingContacts[i].Id == contact2.Id)
+                    {
+                        if (contact2.IsEmpty())
+                            _dbContext.MarketingContacts.Remove(marketingContacts[i]);
+                        else
+                            UpdateContact(contact2, marketingContacts[i]);
+                    }
+                }
+
+                if(contact1.Id == default && !contact1.IsEmpty())
+                    _dbContext.MarketingContacts.Add(contact1);
+
+                if (contact2.Id == default && !contact2.IsEmpty())
+                    _dbContext.MarketingContacts.Add(contact2);
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+
+        private void UpdateContact(MarketingContact sourceContact, MarketingContact targetContact)
+        {
+            targetContact.FirstName = sourceContact.FirstName;
+            targetContact.LastName = sourceContact.LastName;
+            targetContact.Department = sourceContact.Department;
+            targetContact.PhoneNumber = sourceContact.PhoneNumber;
+            targetContact.Email = sourceContact.Email;
+            targetContact.LastUpdated = sourceContact.LastUpdated;
         }
     }
 }

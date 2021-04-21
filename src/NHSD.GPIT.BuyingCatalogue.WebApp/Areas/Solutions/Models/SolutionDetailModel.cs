@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -9,8 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public SolutionDetailModel(CatalogueItem catalogueItem)
         {
             CatalogueItem = catalogueItem;
-
-            DecodeFeatures();
+            Features = catalogueItem.Solution.GetFeatures();            
             PopulateContactInformation();
             PopulateFrameworks();
         }
@@ -28,14 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string PhoneNumber { get; private set; }
 
         public string EmailAddress { get; private set; }
-
-        private void DecodeFeatures()
-        {
-            Features = new string[0];
-
-            if(!string.IsNullOrWhiteSpace(CatalogueItem.Solution.Features))
-                Features = JsonConvert.DeserializeObject<string[]>(CatalogueItem.Solution.Features);
-        }
 
         private void PopulateContactInformation()
         {

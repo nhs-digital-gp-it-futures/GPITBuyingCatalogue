@@ -1,0 +1,102 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution.IntegrationsModel;
+@{
+    ViewData["Title"] = "Catalogue Solution integrations";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+        <div data-test-id="section-back-link">
+            <div class="nhsuk-back-link">
+                <a class="nhsuk-back-link__link" href="~/marketing/supplier/solution/@Model.SolutionId">
+                    <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                    </svg>
+                    Return to all sections
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <div class="nhsuk-grid-column-two-thirds">
+
+
+        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
+            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Catalogue Solution integrations</h1>
+            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Describe any systems your Catalogue Solution integrates with to exchange data.</h2>
+            <div data-test-id="section-additional-advice">
+
+            </div>
+        </div>
+
+        <form method="post">
+
+            <input type="hidden" asp-for="@Model.SolutionId" />
+
+            <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-6">
+
+                <div data-test-id="question-link">
+
+                    <div data-test-id="text-field-input">
+
+                        <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="link">
+                                Link to supplier asserted integrations (optional)
+                            </label>
+                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="link-hint">
+                                Provide a URL to a page that gives information about your own integrations. They may only allow your Catalogue Solution to partially integrate with other systems.
+                            </div>
+                            <input class="nhsuk-input" id="link" name="link" type="text" aria-describedby="link-hint" value="@Model.Link">
+                        </div>
+
+                    </div>
+
+                    <div data-test-id="text-field-footer">
+                        <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                            (Maximum number of characters 1,000)
+                        </span>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+            <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
+                <span class="nhsuk-u-visually-hidden">Information: </span>
+                <p class="nhsuk-u-font-size-14">If you are providing a URL, it must link to a page detailing all the supplier asserted integrations for your Catalogue Solution. It’s your responsibility to keep this page up-to-date.</p>
+            </div>
+
+
+
+
+            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
+
+
+
+
+
+
+
+
+
+
+                <button class="nhsuk-button" type="submit">
+                    Save and return
+                </button>
+
+
+
+            </div>
+        </form>
+
+    </div>
+</div>
