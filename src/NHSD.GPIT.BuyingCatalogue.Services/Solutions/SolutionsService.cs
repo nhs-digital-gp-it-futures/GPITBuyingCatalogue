@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.MarketingContacts)
                 .Where(x => x.CatalogueItemId == id)        
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return solution;
         }

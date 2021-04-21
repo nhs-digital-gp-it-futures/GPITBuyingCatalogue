@@ -49,6 +49,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View("SolutionDetail", model);
         }
 
+        [Route("solutions/vaccinations/{id}")]
+        public async Task<IActionResult> VaccinationsSolutionDetail(string id)
+        {
+            var solution = await _solutionsService.GetSolution(id);
+
+            var model = new SolutionDetailModel(solution);
+
+            return View("SolutionDetail", model);
+        }
+
         [Route("solutions/preview/{id}")]
         public async Task<IActionResult> PreviewSolutionDetail(string id)
         {
