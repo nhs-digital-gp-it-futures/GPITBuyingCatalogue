@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 
@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Area("Marketing")]
     public class ClientApplicationTypeController : Controller
     {
-        private readonly ILogger<ClientApplicationTypeController> _logger;
+        private readonly ILogWrapper<ClientApplicationTypeController> _logger;
         private readonly ISolutionsService _solutionsService;
 
-        public ClientApplicationTypeController(ILogger<ClientApplicationTypeController> logger, ISolutionsService solutionsService)
+        public ClientApplicationTypeController(ILogWrapper<ClientApplicationTypeController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));

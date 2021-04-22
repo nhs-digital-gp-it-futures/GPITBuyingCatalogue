@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NUnit.Framework;
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), null));
+                _ = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), null));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_BrowserBasedSupportedBrowsers_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedSupportedBrowsers(id));
         }
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_BrowserBasedMobileFirstApproach_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedMobileFirstApproach(id));
         }
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_BrowserBasedPlugInsOrExtensions_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedPlugInsOrExtensions(id));
         }
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_BrowserBasedConnectivityAndResolution_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedConnectivityAndResolution(id));
         }
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_BrowserBasedHardwareRequirements_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedHardwareRequirements(id));
         }
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_BrowserBasedAdditionalInformation_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogger<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedAdditionalInformation(id));
         }

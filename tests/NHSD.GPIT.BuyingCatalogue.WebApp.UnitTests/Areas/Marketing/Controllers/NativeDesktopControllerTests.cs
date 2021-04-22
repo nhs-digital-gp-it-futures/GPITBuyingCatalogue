@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
@@ -33,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new NativeDesktopController(Mock.Of<ILogger<NativeDesktopController>>(), null));
+                _ = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), null));
         }
 
         [Test]
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_NativeDesktopOperatingSystems_InvalidId_ThrowsException(string id)
         {
-            var controller = new NativeDesktopController(Mock.Of<ILogger<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
+            var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopOperatingSystems(id));
         }
@@ -53,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_NativeDesktopConnectivity_InvalidId_ThrowsException(string id)
         {
-            var controller = new NativeDesktopController(Mock.Of<ILogger<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
+            var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopConnectivity(id));
         }
@@ -64,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_NativeDesktopMemoryAndStorage_InvalidId_ThrowsException(string id)
         {
-            var controller = new NativeDesktopController(Mock.Of<ILogger<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
+            var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopMemoryAndStorage(id));
         }
@@ -75,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_NativeDesktopThirdParty_InvalidId_ThrowsException(string id)
         {
-            var controller = new NativeDesktopController(Mock.Of<ILogger<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
+            var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopThirdParty(id));
         }
@@ -86,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_NativeDesktopHardwareRequirements_InvalidId_ThrowsException(string id)
         {
-            var controller = new NativeDesktopController(Mock.Of<ILogger<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
+            var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopHardwareRequirements(id));
         }
@@ -97,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_NativeDesktopAdditionalInformation_InvalidId_ThrowsException(string id)
         {
-            var controller = new NativeDesktopController(Mock.Of<ILogger<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
+            var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopAdditionalInformation(id));
         }

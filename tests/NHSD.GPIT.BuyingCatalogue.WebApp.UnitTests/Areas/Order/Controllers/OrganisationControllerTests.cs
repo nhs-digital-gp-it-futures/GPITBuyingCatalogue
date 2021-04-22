@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NUnit.Framework;
 
@@ -36,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim("IsAdmin", "True"),                
             }, "mock"));
 
-            var controller = new OrganisationController(Mock.Of<ILogger<OrganisationController>>());
+            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() { User = user }
@@ -55,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim("IsBuyer", "True"),                
             }, "mock"));
 
-            var controller = new OrganisationController(Mock.Of<ILogger<OrganisationController>>());
+            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() { User = user }
@@ -70,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Test]
         public static void Get_NewOrder_ReturnsViewResult()
         {
-            var controller = new OrganisationController(Mock.Of<ILogger<OrganisationController>>());
+            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
 
             var result = controller.NewOrder();
             

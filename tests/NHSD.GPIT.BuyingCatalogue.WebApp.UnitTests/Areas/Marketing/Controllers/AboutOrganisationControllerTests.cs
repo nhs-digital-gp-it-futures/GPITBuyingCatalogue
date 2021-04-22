@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutOrganisationController(Mock.Of<ILogger<AboutOrganisationController>>(), null));
+                _ = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(), null));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_AboutSupplier_InvalidId_ThrowsException(string id)
         {
-            var controller = new AboutOrganisationController(Mock.Of<ILogger<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.AboutSupplier(id));
         }
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_AboutSupplier_NullModel_ThrowsException()
         {
-            var controller = new AboutOrganisationController(Mock.Of<ILogger<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.AboutSupplier((AboutSupplierModel)null));
         }
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_ContactDetails_InvalidId_ThrowsException(string id)
         {
-            var controller = new AboutOrganisationController(Mock.Of<ILogger<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ContactDetails(id));
         }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_ContactDetails_NullModel_ThrowsException()
         {
-            var controller = new AboutOrganisationController(Mock.Of<ILogger<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.ContactDetails((ContactDetailsModel)null));
         }

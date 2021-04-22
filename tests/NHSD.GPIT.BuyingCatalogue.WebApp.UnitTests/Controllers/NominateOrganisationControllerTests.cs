@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NUnit.Framework;
 
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new NominateOrganisationController(Mock.Of<ILogger<NominateOrganisationController>>());
+            var controller = new NominateOrganisationController(Mock.Of<ILogWrapper<NominateOrganisationController>>());
 
             var result = controller.Index();
             

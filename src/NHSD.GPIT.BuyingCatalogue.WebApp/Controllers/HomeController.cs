@@ -1,15 +1,15 @@
 ﻿using System;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogWrapper<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogWrapper<HomeController> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

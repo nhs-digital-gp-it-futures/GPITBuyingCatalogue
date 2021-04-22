@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 
@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Area("Marketing")]
     public class NativeMobileController : Controller
     {
-        private readonly ILogger<NativeMobileController> _logger;
+        private readonly ILogWrapper<NativeMobileController> _logger;
         private readonly ISolutionsService _solutionsService;
 
-        public NativeMobileController(ILogger<NativeMobileController> logger, ISolutionsService solutionsService)
+        public NativeMobileController(ILogWrapper<NativeMobileController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));

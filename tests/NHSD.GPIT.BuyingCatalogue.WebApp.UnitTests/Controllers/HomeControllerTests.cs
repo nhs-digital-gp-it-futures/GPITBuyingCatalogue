@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NUnit.Framework;
 
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new HomeController(Mock.Of<ILogger<HomeController>>());
+            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
             var result = controller.Index();
             
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_TestLinks_ReturnsDefaultView()
         {
-            var controller = new HomeController(Mock.Of<ILogger<HomeController>>());
+            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
             var result = controller.TestLinks();
 
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_Error500_ReturnsDefaultErrorView()
         {
-            var controller = new HomeController(Mock.Of<ILogger<HomeController>>());
+            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
             var result = controller.Error(500);
 
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_ErrorNullStatus_ReturnsDefaultErrorView()
         {
-            var controller = new HomeController(Mock.Of<ILogger<HomeController>>());
+            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
             var result = controller.Error(null);
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_Error404_ReturnsPageNotFound()
         {
-            var controller = new HomeController(Mock.Of<ILogger<HomeController>>());
+            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
             IFeatureCollection features = new FeatureCollection();            
             features.Set<IStatusCodeReExecuteFeature>(new StatusCodeReExecuteFeature { OriginalPath = "BAD" });

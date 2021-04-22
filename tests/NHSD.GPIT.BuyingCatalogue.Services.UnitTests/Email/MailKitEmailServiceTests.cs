@@ -11,6 +11,7 @@ using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             new MailKitEmailService(
                 mockTransport.Object,
                 new SmtpSettings(),
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             mockTransport.Object.ServerCertificateValidationCallback.Should().BeNull();
         }
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             new MailKitEmailService(
                 mockTransport.Object,
                 new SmtpSettings { AllowInvalidCertificate = true },
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             var callback = mockTransport.Object.ServerCertificateValidationCallback;
 
@@ -70,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             Assert.Throws<ArgumentNullException>(() => new MailKitEmailService(
                 null!,
                 new SmtpSettings(),
-                Mock.Of<ILogger<MailKitEmailService>>()));
+                Mock.Of<ILogWrapper<MailKitEmailService>>()));
         }
 
         [Test]
@@ -80,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             Assert.Throws<ArgumentNullException>(() => new MailKitEmailService(
                 Mock.Of<IMailTransport>(),
                 null!,
-                Mock.Of<ILogger<MailKitEmailService>>()));
+                Mock.Of<ILogWrapper<MailKitEmailService>>()));
         }
 
         [Test]
@@ -101,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 settings,
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             await service.SendEmailAsync(new EmailMessage(BasicTemplate, SingleRecipient));
 
@@ -131,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 new SmtpSettings(),
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             Assert.ThrowsAsync<ServiceNotAuthenticatedException>(async () => await service.SendEmailAsync(message));
 
@@ -158,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 new SmtpSettings(),
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             Assert.ThrowsAsync<ServiceNotConnectedException>(async () => await service.SendEmailAsync(message));
 
@@ -175,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var emailService = new MailKitEmailService(
                 Mock.Of<IMailTransport>(),
                 new SmtpSettings(),
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             Assert.ThrowsAsync<ArgumentNullException>(async () => await emailService.SendEmailAsync(null!));
         }
@@ -198,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 settings,
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             await service.SendEmailAsync(new EmailMessage(BasicTemplate, SingleRecipient));
 
@@ -218,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 settings,
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             await service.SendEmailAsync(new EmailMessage(BasicTemplate, SingleRecipient));
 
@@ -238,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 settings,
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             var subject = Guid.NewGuid().ToString();
             var template = BasicTemplate with { Subject = subject };
@@ -263,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 settings,
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             var template = BasicTemplate with { Subject = null };
 
@@ -287,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             var service = new MailKitEmailService(
                 mockTransport.Object,
                 settings,
-                Mock.Of<ILogger<MailKitEmailService>>());
+                Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             await service.SendEmailAsync(new EmailMessage(BasicTemplate, SingleRecipient));
 
@@ -301,7 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         [Test]
         public static void SendEmailAsync_Exception_LogsError()
         {
-            var mockLogger = new Mock<ILogger<MailKitEmailService>>();
+            var mockLogger = new Mock<ILogWrapper<MailKitEmailService>>();
             var mockTransport = new Mock<IMailTransport>();
             mockTransport.Setup(
                 t => t.SendAsync(
@@ -318,14 +319,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 mockLogger.Object);
 
             Assert.ThrowsAsync<SmtpFailedRecipientException>(async () => await service.SendEmailAsync(message));
-            mockLogger.Verify(
-                x => x.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => true),
-                    It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-                Times.Once);
+
+            mockLogger.Verify(x => x.LogError(It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()),Times.Once);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), null));
+                _ = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), null));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_HostingTypePublicCloud_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HostingTypePublicCloud(id));
         }
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_HostingTypePublicCloud_NullModel_ThrowsException()
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.HostingTypePublicCloud((HostingTypePublicCloudModel)null));
         }
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_HostingTypePrivateCloud_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HostingTypePrivateCloud(id));
         }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_HostingTypePrivateCloud_NullModel_ThrowsException()
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.HostingTypePrivateCloud((HostingTypePrivateCloudModel)null));
         }
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_HostingTypeHybrid_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HostingTypeHybrid(id));
         }
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_HostingTypeHybrid_NullModel_ThrowsException()
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.HostingTypeHybrid((HostingTypeHybridModel)null));
         }
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_HostingTypeOnPremise_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HostingTypeOnPremise(id));
         }
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_HostingTypeOnPremise_NullModel_ThrowsException()
         {
-            var controller = new HostingTypeController(Mock.Of<ILogger<HostingTypeController>>(), Mock.Of<ISolutionsService>());
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.HostingTypeOnPremise((HostingTypeOnPremiseModel)null));
         }

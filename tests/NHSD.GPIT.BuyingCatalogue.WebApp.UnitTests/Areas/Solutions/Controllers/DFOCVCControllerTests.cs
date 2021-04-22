@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static void Constructor_NullSolutionsService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new DFOCVCController(Mock.Of<ILogger<DFOCVCController>>(),
+                _ = new DFOCVCController(Mock.Of<ILogWrapper<DFOCVCController>>(),
                 null));
         }
 
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(x => x.GetDFOCVCSolutions()).ReturnsAsync(solutions);
 
-            var controller = new DFOCVCController(Mock.Of<ILogger<DFOCVCController>>(),
+            var controller = new DFOCVCController(Mock.Of<ILogWrapper<DFOCVCController>>(),
                 mockSolutionsService.Object);
 
             var result = await controller.Index();

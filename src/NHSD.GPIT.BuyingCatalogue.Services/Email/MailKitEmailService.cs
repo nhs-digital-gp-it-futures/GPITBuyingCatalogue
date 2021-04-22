@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using MailKit;
-using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
     public sealed class MailKitEmailService : IEmailService
     {
         private readonly IMailTransport client;
-        private readonly ILogger<MailKitEmailService> logger;
+        private readonly ILogWrapper<MailKitEmailService> logger;
         private readonly SmtpSettings settings;
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
             "Security",
             "CA5359:Do Not Disable Certificate Validation",
             Justification = "Certificate validation only disabled when specified in configuration (for use in test environments only)")]
-        public MailKitEmailService(IMailTransport client, SmtpSettings settings, ILogger<MailKitEmailService> logger)
+        public MailKitEmailService(IMailTransport client, SmtpSettings settings, ILogWrapper<MailKitEmailService> logger)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.settings = settings ?? throw new ArgumentNullException(nameof(client));

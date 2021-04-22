@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(Mock.Of<ILogger<SolutionController>>(), null));
+                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), null));
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_Index_InvalidId_ThrowsException(string id)
         {
-            var controller = new SolutionController(Mock.Of<ILogger<SolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Index(id));
         }
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             mockService.Setup(x => x.GetSolution(It.IsAny<string>())).ReturnsAsync(new CatalogueItem { Solution = new Solution(), Supplier = new Supplier() });
 
-            var controller = new SolutionController(Mock.Of<ILogger<SolutionController>>(), mockService.Object);
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockService.Object);
 
             var result = await controller.Index("123");
 
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_Preview_InvalidId_ThrowsException(string id)
         {
-            var controller = new SolutionController(Mock.Of<ILogger<SolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.Throws<ArgumentException>(() => controller.Preview(id));
         }
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Get_Preview_RedirectsToPreview()
         {
-            var controller = new SolutionController(Mock.Of<ILogger<SolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());
 
             var result = controller.Preview("123");
 

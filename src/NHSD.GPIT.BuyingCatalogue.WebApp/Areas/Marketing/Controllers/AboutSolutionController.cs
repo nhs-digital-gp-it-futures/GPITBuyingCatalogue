@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 
@@ -12,10 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Area("Marketing")]
     public class AboutSolutionController : Controller
     {
-        private readonly ILogger<AboutSolutionController> _logger;
+        private readonly ILogWrapper<AboutSolutionController> _logger;
         private readonly ISolutionsService _solutionsService;
 
-        public AboutSolutionController(ILogger<AboutSolutionController> logger, ISolutionsService solutionsService)
+        public AboutSolutionController(ILogWrapper<AboutSolutionController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));

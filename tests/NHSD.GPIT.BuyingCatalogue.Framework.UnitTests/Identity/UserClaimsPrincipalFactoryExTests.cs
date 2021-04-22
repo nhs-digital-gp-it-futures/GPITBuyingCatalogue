@@ -3,11 +3,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             var factory = new UserClaimsPrincipalFactoryEx<AspNetUser>(
                 userManager.Object,
                 options.Object,
-                Mock.Of<ILogger<UserClaimsPrincipalFactoryEx<AspNetUser>>>());
+                Mock.Of<ILogWrapper<UserClaimsPrincipalFactoryEx<AspNetUser>>>());
 
             var principal = await factory.CreateAsync(user);
 

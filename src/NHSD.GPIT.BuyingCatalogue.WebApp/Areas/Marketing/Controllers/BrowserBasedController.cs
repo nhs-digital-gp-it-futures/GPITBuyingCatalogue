@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 
@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Area("Marketing")]
     public class BrowserBasedController : Controller
     {
-        private readonly ILogger<BrowserBasedController> _logger;
+        private readonly ILogWrapper<BrowserBasedController> _logger;
         private readonly ISolutionsService _solutionsService;
 
-        public BrowserBasedController(ILogger<BrowserBasedController> logger, ISolutionsService solutionsService)
+        public BrowserBasedController(ILogWrapper<BrowserBasedController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));

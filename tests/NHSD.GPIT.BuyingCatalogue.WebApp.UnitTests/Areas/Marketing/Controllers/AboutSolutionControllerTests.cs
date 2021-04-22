@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), null));
+                _ = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), null));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_SolutionDescription_InvalidId_ThrowsException(string id)
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.SolutionDescription(id));
         }
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
         public static void Post_SolutionDescription_NullModel_ThrowsException()
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.SolutionDescription((SolutionDescriptionModel)null));
         }
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_Features_InvalidId_ThrowsException(string id)
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Features(id));
         }
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_Features_NullModel_ThrowsException()
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.Features((FeaturesModel)null));
         }
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_Integrations_InvalidId_ThrowsException(string id)
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Integrations(id));
         }
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_Integrations_NullModel_ThrowsException()
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.Integrations((IntegrationsModel)null));
         }
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_ImplementationTimescales_InvalidId_ThrowsException(string id)
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ImplementationTimescales(id));
         }
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_ImplementationTimescales_NullModel_ThrowsException()
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.ImplementationTimescales((ImplementationTimescalesModel)null));
         }
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCase(" ")]
         public static void Get_Roadmap_InvalidId_ThrowsException(string id)
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Roadmap(id));
         }
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Post_Roadmap_NullModel_ThrowsException()
         {
-            var controller = new AboutSolutionController(Mock.Of<ILogger<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.Roadmap((RoadmapModel)null));
         }
