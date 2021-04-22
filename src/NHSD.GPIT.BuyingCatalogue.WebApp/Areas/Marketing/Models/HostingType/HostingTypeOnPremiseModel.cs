@@ -2,10 +2,11 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypeOnPremiseModel
+    public class HostingTypeOnPremiseModel : NavBaseModel
     {
         public HostingTypeOnPremiseModel()
         {
@@ -13,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public HostingTypeOnPremiseModel(CatalogueItem catalogueItem)
         {
+            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
+            BackLinkText = "Return to all sections";
+
             SolutionId = catalogueItem.CatalogueItemId;
             OnPremise = catalogueItem.Solution.GetHosting().OnPremise;          
         }

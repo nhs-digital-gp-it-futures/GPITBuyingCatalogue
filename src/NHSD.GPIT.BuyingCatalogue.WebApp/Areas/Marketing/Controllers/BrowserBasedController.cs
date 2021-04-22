@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
@@ -27,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new DeviceModel(solution);
+            var model = new SupportedBrowsersModel(solution);
 
             return View(model);
         }
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new DeviceModel(solution);
+            var model = new MobileFirstApproachModel(solution);
 
             return View(model);
         }
@@ -53,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new DeviceModel(solution);
+            var model = new PlugInsOrExtensionsModel(solution);
 
             return View(model);
         }
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new DeviceModel(solution);
+            var model = new ConnectivityAndResolutionModel(solution);
 
             return View(model);
         }
@@ -79,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new DeviceModel(solution);
+            var model = new HardwareRequirementsModel(solution);
 
             return View(model);
         }
@@ -92,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new DeviceModel(solution);
+            var model = new AdditionalInformationModel(solution);
 
             return View(model);
         }              

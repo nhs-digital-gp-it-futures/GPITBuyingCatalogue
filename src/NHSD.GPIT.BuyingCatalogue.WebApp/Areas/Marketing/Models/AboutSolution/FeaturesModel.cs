@@ -1,9 +1,10 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
-    public class FeaturesModel
+    public class FeaturesModel : NavBaseModel
     {
         public FeaturesModel()
         {
@@ -11,6 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public FeaturesModel(CatalogueItem catalogueItem)
         {
+            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
+            BackLinkText = "Return to all sections";
+
             SolutionId = catalogueItem.CatalogueItemId;
 
             var features = new string[0];

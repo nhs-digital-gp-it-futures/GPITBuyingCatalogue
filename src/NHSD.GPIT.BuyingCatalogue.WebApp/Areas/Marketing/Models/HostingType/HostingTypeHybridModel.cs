@@ -2,10 +2,11 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypeHybridModel
+    public class HostingTypeHybridModel : NavBaseModel
     {
         public HostingTypeHybridModel()
         {
@@ -13,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public HostingTypeHybridModel(CatalogueItem catalogueItem)
         {
+            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
+            BackLinkText = "Return to all sections";
+
             SolutionId = catalogueItem.CatalogueItemId;
             HybridHostingType = catalogueItem.Solution.GetHosting().HybridHostingType;
         }

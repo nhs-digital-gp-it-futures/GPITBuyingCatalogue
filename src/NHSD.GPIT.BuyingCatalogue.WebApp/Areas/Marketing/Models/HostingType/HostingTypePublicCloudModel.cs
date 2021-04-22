@@ -2,10 +2,11 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypePublicCloudModel
+    public class HostingTypePublicCloudModel : NavBaseModel
     {
         public HostingTypePublicCloudModel()
         {
@@ -14,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public HostingTypePublicCloudModel(CatalogueItem catalogueItem)
         {
+            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
+            BackLinkText = "Return to all sections";
+
             SolutionId = catalogueItem.CatalogueItemId;
             PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
         }

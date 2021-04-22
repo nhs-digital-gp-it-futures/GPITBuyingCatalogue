@@ -2,10 +2,11 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
-    public class BrowserBasedModel
+    public class BrowserBasedModel : NavBaseModel
     { 
         public BrowserBasedModel()
         {
@@ -14,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
 
         public BrowserBasedModel(CatalogueItem catalogueItem)
         {
+            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
+            BackLinkText = "Return to all sections";
+
             SolutionId = catalogueItem.CatalogueItemId;
             ClientApplication = catalogueItem.Solution.GetClientApplication();
         }

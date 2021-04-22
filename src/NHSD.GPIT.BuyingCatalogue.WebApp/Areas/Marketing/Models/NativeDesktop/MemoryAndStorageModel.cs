@@ -1,17 +1,22 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 {
-    public class DeviceModel
+    public class MemoryAndStorageModel : NavBaseModel
     {
-        public DeviceModel()
+        public MemoryAndStorageModel()
         {
         }
 
-        public DeviceModel(CatalogueItem catalogueItem)
-        {
+        public MemoryAndStorageModel(CatalogueItem catalogueItem)
+        {            
+            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop";
+            BackLinkText = "Return to all sections";
+
+
             SolutionId = catalogueItem.CatalogueItemId;
             ClientApplication = catalogueItem.Solution.GetClientApplication();
         }

@@ -1,8 +1,9 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
 {
-    public class AboutSupplierModel
+    public class AboutSupplierModel : NavBaseModel
     { 
         public AboutSupplierModel()
         {
@@ -10,6 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
 
         public AboutSupplierModel(CatalogueItem catalogueItem)
         {
+            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
+            BackLinkText = "Return to all sections";
+
             SolutionId = catalogueItem.CatalogueItemId;
             SupplierId = catalogueItem.Supplier.Id;
             Description = catalogueItem.Supplier.Summary;
