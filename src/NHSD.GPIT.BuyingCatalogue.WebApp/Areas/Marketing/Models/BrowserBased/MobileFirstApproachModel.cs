@@ -12,11 +12,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
         public MobileFirstApproachModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {            
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
+
+            if (ClientApplication.MobileFirstDesign.HasValue)
+                MobileFirstApproach = ClientApplication.MobileFirstDesign.GetValueOrDefault() ? "Yes" : "No";
         }
 
         public override bool? IsComplete
         {
             get { return ClientApplication.MobileFirstDesign; }
-        }        
+        }
+
+        public string MobileFirstApproach { get; set; }
     }
 }

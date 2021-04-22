@@ -9,324 +9,81 @@
     </div>
     <div class="nhsuk-grid-column-two-thirds">
 
-
         <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
             <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Browser-based application – supported browsers</h1>
             <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know which types of browser will work with your Catalogue Solution.</h2>
             <div data-test-id="section-additional-advice">
-
             </div>
         </div>
 
         <form method="post">
 
-
-
-
-
-
-
+            <input type="hidden" asp-for="@Model.SolutionId" />
 
             <div data-test-id="section-question-checkbox-options" class="nhsuk-u-margin-bottom-6">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div id="supported-browsers" data-test-id="question-supported-browsers">
-
                     <div data-test-id="checkbox-options">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <div class="nhsuk-form-group">
-
                             <fieldset class="nhsuk-fieldset" aria-describedby="supported-browsers-hint">
                                 <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
                                     Supported browser types
                                 </legend>
-
                                 <div class="nhsuk-hint nhsuk-u-margin-bottom-3 nhsuk-u-margin-top-0" id="supported-browsers-hint">
                                     Select all the types of browser that are supported by your Catalogue Solution.
                                 </div>
-
-
                                 <div class="nhsuk-checkboxes">
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-1" name="supported-browsers" type="checkbox" value="Google Chrome">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-1">
-                                            Google Chrome
-                                        </label>
-                                    </div>
-
-
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-2" name="supported-browsers" type="checkbox" value="Microsoft Edge">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-2">
-                                            Microsoft Edge
-                                        </label>
-                                    </div>
-
-
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-3" name="supported-browsers" type="checkbox" value="Mozilla Firefox">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-3">
-                                            Mozilla Firefox
-                                        </label>
-                                    </div>
-
-
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-4" name="supported-browsers" type="checkbox" value="Opera">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-4">
-                                            Opera
-                                        </label>
-                                    </div>
-
-
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-5" name="supported-browsers" type="checkbox" value="Safari">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-5">
-                                            Safari
-                                        </label>
-                                    </div>
-
-
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-6" name="supported-browsers" type="checkbox" value="Chromium">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-6">
-                                            Chromium
-                                        </label>
-                                    </div>
-
-
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-7" name="supported-browsers" type="checkbox" value="Internet Explorer 11">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-7">
-                                            Internet Explorer 11
-                                        </label>
-                                    </div>
-
-
-
-
-
-
-
-
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" id="supported-browsers-8" name="supported-browsers" type="checkbox" value="Internet Explorer 10">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="supported-browsers-8">
-                                            Internet Explorer 10
-                                        </label>
-                                    </div>
-
-
-
+                                    @for (var i = 0; i < Model.Browsers.Length; i++)
+                                    {
+                                        <div class="nhsuk-checkboxes__item">
+                                            <input class="nhsuk-checkboxes__input" type="checkbox" asp-for="@Model.Browsers[i].Checked" />
+                                            <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.Browsers[i].Checked">@Model.Browsers[i].BrowserName</label>
+                                            <input type="hidden" asp-for="@Model.Browsers[i].BrowserName" />
+                                        </div>
+                                    }
                                 </div>
                             </fieldset>
-
-
                         </div>
-
                     </div>
-
                 </div>
-
-
-
-
-
-
             </div>
 
-
-
-
-
-
-
-
-
-
             <div data-test-id="section-question-radiobutton-options" class="nhsuk-u-margin-bottom-6">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div id="mobile-responsive" data-test-id="question-mobile-responsive">
-
                     <div data-test-id="radiobutton-options">
-
-
-
-
-
-
-
-
-
                         <div class="nhsuk-form-group">
-
                             <fieldset class="nhsuk-fieldset" aria-describedby="mobile-responsive-hint">
                                 <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
                                     Mobile responsive
                                 </legend>
-
                                 <div class="nhsuk-hint nhsuk-u-margin-bottom-3 nhsuk-u-margin-top-0" id="mobile-responsive-hint">
                                     Does the design of your Catalogue Solution adapt for use on mobile or tablet devices?
                                 </div>
-
                                 <div class="nhsuk-radios">
-
                                     <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="mobile-responsive-1" name="mobile-responsive" type="radio" value="Yes">
+                                        <input class="nhsuk-radios__input" asp-for="@Model.MobileResponsive" type="radio" value="Yes">
                                         <label class="nhsuk-label nhsuk-radios__label" for="mobile-responsive-1">
                                             Yes
                                         </label>
                                     </div>
-
-
                                     <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="mobile-responsive-2" name="mobile-responsive" type="radio" value="No">
+                                        <input class="nhsuk-radios__input" asp-for="@Model.MobileResponsive" type="radio" value="No">
                                         <label class="nhsuk-label nhsuk-radios__label" for="mobile-responsive-2">
                                             No
                                         </label>
                                     </div>
-
                                 </div>
                             </fieldset>
-
                         </div>
-
                     </div>
-
                 </div>
-
-
-
-
             </div>
 
-
-
-
-
-
-
-
             <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-
-
-
-
-
-
-
-
-
-
                 <button class="nhsuk-button" type="submit">
                     Save and return
                 </button>
-
-
-
             </div>
-        </form>
 
+        </form>
     </div>
 </div>

@@ -11,12 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         public AdditionalInformationModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {            
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";                                    
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
+
+            AdditionalInformation = ClientApplication.AdditionalInformation;
         }
 
         public override bool? IsComplete
         {
             get { return !string.IsNullOrWhiteSpace(ClientApplication.AdditionalInformation); }
-        }                
+        }      
+        
+        public string AdditionalInformation { get; set; }
     }
 }

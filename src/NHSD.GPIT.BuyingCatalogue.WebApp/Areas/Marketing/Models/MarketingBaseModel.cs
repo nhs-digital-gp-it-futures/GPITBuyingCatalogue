@@ -11,9 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
         {
             BackLinkText = "Return to all sections";
             CatalogueItem = catalogueItem;
-            ClientApplication = CatalogueItem.Solution.GetClientApplication();
-            SolutionId = catalogueItem?.CatalogueItemId;
-            SupplierId = catalogueItem.Supplier.Id;
+            ClientApplication = CatalogueItem?.Solution?.GetClientApplication();
+            SolutionId = CatalogueItem?.CatalogueItemId;
+            SupplierId = CatalogueItem?.Supplier?.Id;
         }
 
         public abstract bool? IsComplete { get; }
