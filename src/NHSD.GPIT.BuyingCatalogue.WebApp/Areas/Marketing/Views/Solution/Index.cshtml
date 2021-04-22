@@ -8,16 +8,16 @@
         <div class="nhsuk-grid-column-two-thirds">
         </div>
         <div class="nhsuk-grid-column-two-thirds">
-            <div data-test-id="supplier-name-tag" class="bc-c-tag nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-5 bc-c-tag-outline">@Model.CatalogueItem.Supplier.Name</div>
+            <div data-test-id="supplier-name-tag" class="bc-c-tag nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-5 bc-c-tag-outline">@Model.SupplierName</div>
             <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-                <h1 data-test-id="dashboard-title" class="nhsuk-u-margin-bottom-3">@Model.CatalogueItem.Name listing page - all sections</h1>
+                <h1 data-test-id="dashboard-title" class="nhsuk-u-margin-bottom-3">@Model.CatalogueItemName listing page - all sections</h1>
                 <h2 data-test-id="dashboard-main-advice" class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-5">Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs.</h2>
                 <div data-test-id="dashboard-additional-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
                     <span class="nhsuk-u-visually-hidden">Information: </span>
                     <p class="nhsuk-u-font-size-14">Provide as much information as possible for buyers. You can save your progress at any point, but a Catalogue Solution listing page cannot be published until all mandatory fields have been completed.</p>
                 </div>
                 <div data-test-id="dashboard-preview-button">
-                    <a class="nhsuk-button nhsuk-button--secondary" href="~/solutions/preview/100000-001" draggable="false">
+                    <a class="nhsuk-button nhsuk-button--secondary" href="~/solutions/preview/@Model.SolutionId" draggable="false">
                         Preview your page
                     </a>
                 </div>
@@ -44,7 +44,7 @@
                     <div id="solution-description" data-test-id="dashboard-section-solution-description">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/solution-description">
+                                <a href="@Model.SolutionId/section/solution-description">
                                     Solution description
                                 </a>
                             </div>
@@ -55,13 +55,12 @@
                                 @Model.SolutionDescriptionStatus
                             </strong>
                         </li>
-
                     </div>
 
                     <div id="features" data-test-id="dashboard-section-features">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/features">
+                                <a href="@Model.SolutionId/section/features">
                                     Features
                                 </a>
                             </div>
@@ -77,7 +76,7 @@
                     <div id="integrations" data-test-id="dashboard-section-integrations">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/integrations">
+                                <a href="@Model.SolutionId/section/integrations">
                                     Integrations
                                 </a>
                             </div>
@@ -93,7 +92,7 @@
                     <div id="implementation-timescales" data-test-id="dashboard-section-implementation-timescales">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/implementation-timescales">
+                                <a href="@Model.SolutionId/section/implementation-timescales">
                                     Implementation timescales
                                 </a>
                             </div>
@@ -109,7 +108,7 @@
                     <div id="roadmap" data-test-id="dashboard-section-roadmap">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/roadmap">
+                                <a href="@Model.SolutionId/section/roadmap">
                                     Roadmap
                                 </a>
                             </div>
@@ -145,7 +144,7 @@
 
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/client-application-types">
+                                <a href="@Model.SolutionId/section/client-application-types">
                                     Client application type
                                 </a>
                             </div>
@@ -162,10 +161,10 @@
 
                                 <div id="browser-based" data-test-id="dashboard-sub-section-browser-based">
                                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                                        @if (Model.ClientApplication.ClientApplicationTypes.Any(x => x.Equals("browser-based", StringComparison.InvariantCultureIgnoreCase)))
+                                        @if (Model.IsBrowserBased)
                                         {
                                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                <a href="@Model.CatalogueItem.CatalogueItemId/section/browser-based">
+                                                <a href="@Model.SolutionId/section/browser-based">
                                                     Browser-based
                                                 </a>
                                             </div>
@@ -190,10 +189,10 @@
 
                                 <div id="native-mobile" data-test-id="dashboard-sub-section-native-mobile">
                                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                                        @if (Model.ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-mobile", StringComparison.InvariantCultureIgnoreCase)))
+                                        @if (Model.IsNativeMobile)
                                         {
                                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                <a href="@Model.CatalogueItem.CatalogueItemId/section/native-mobile">
+                                                <a href="@Model.SolutionId/section/native-mobile">
                                                     Native mobile or tablet
                                                 </a>
                                             </div>
@@ -218,10 +217,10 @@
 
                                 <div id="native-desktop" data-test-id="dashboard-sub-section-native-desktop">
                                     <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                                        @if (Model.ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-desktop", StringComparison.InvariantCultureIgnoreCase)))
+                                        @if (Model.IsNativeDesktop)
                                         {
                                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                <a href="@Model.CatalogueItem.CatalogueItemId/section/native-desktop">
+                                                <a href="@Model.SolutionId/section/native-desktop">
                                                     Native desktop
                                                 </a>
                                             </div>
@@ -269,7 +268,7 @@
                     <div id="hosting-type-public-cloud" data-test-id="dashboard-section-hosting-type-public-cloud">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/hosting-type-public-cloud">
+                                <a href="@Model.SolutionId/section/hosting-type-public-cloud">
                                     Public cloud
                                 </a>
                             </div>
@@ -285,7 +284,7 @@
                     <div id="hosting-type-private-cloud" data-test-id="dashboard-section-hosting-type-private-cloud">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/hosting-type-private-cloud">
+                                <a href="@Model.SolutionId/section/hosting-type-private-cloud">
                                     Private cloud
                                 </a>
                             </div>
@@ -301,7 +300,7 @@
                     <div id="hosting-type-hybrid" data-test-id="dashboard-section-hosting-type-hybrid">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/hosting-type-hybrid">
+                                <a href="@Model.SolutionId/section/hosting-type-hybrid">
                                     Hybrid
                                 </a>
                             </div>
@@ -317,7 +316,7 @@
                     <div id="hosting-type-on-premise" data-test-id="dashboard-section-hosting-type-on-premise">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/hosting-type-on-premise">
+                                <a href="@Model.SolutionId/section/hosting-type-on-premise">
                                     On premise
                                 </a>
                             </div>
@@ -352,7 +351,7 @@
                     <div id="about-supplier" data-test-id="dashboard-section-about-supplier">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/about-supplier">
+                                <a href="@Model.SolutionId/section/about-supplier">
                                     About supplier
                                 </a>
                             </div>
@@ -368,7 +367,7 @@
                     <div id="contact-details" data-test-id="dashboard-section-contact-details">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/section/contact-details">
+                                <a href="@Model.SolutionId/section/contact-details">
                                     Contact details
                                 </a>
                             </div>

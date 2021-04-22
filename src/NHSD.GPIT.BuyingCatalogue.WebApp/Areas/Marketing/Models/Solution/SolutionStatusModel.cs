@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
@@ -10,8 +11,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
     public class SolutionStatusModel : MarketingBaseModel
     {
         public SolutionStatusModel(CatalogueItem catalogueItem) : base(catalogueItem)
-        {            
-        }                
+        {
+            CatalogueItemName = CatalogueItem.Name;
+            SupplierName = CatalogueItem.Supplier.Name;
+        }            
+        
+        public string CatalogueItemName { get; set; }
+
+        public string SupplierName { get; set; }
+
+        public bool IsBrowserBased
+        {
+            get { return ClientApplication.ClientApplicationTypes.Any(x => x.Equals("browser-based", StringComparison.InvariantCultureIgnoreCase)); }
+        }
+
+        public bool IsNativeMobile
+        {
+            get { return ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-mobile", StringComparison.InvariantCultureIgnoreCase)); }
+        }
+
+        public bool IsNativeDesktop
+        {
+            get { return ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-desktop", StringComparison.InvariantCultureIgnoreCase)); }
+        }
 
         public override bool? IsComplete
         {

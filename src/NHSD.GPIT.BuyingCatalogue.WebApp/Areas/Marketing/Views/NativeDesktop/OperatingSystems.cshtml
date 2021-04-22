@@ -8,13 +8,10 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-
-
         <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
             <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Native desktop application – supported operating systems</h1>
             <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know which operating systems will work with your Catalogue Solution.</h2>
             <div data-test-id="section-additional-advice">
-
             </div>
         </div>
 
@@ -22,99 +19,33 @@
 
             <input type="hidden" asp-for="@Model.SolutionId" />
 
-
-
-
-
-
             <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div data-test-id="question-operating-systems-description">
-
                     <div data-test-id="textarea-field">
-
-
-
                         <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="1000">
-
-
                             <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="operating-systems-description">
+                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.OperatingSystemsDescription">
                                     Supported operating systems
                                 </label>
-
-
-
-                                <div id="operating-systems-description-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
+                                <div id="OperatingSystemsDescription-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
                                     Provide information on the operating systems supported by your Catalogue Solution.
                                 </div>
-
-
-                                <textarea class="govuk-textarea govuk-js-character-count" id="operating-systems-description" name="operating-systems-description" rows="5" aria-describedby="operating-systems-description-info operating-systems-description-hint"></textarea>
+                                <textarea class="govuk-textarea govuk-js-character-count" rows="5" aria-describedby="OperatingSystemsDescription-info OperatingSystemsDescription-hint" asp-for="@Model.OperatingSystemsDescription"></textarea>
                             </div>
-
-                            <div id="operating-systems-description-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                            <div id="OperatingSystemsDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                                 You can enter up to 1000 characters
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
 
-
-
-
-
-
-
-
             <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-
-
-
-
-
-
-
-
-
-
                 <button class="nhsuk-button" type="submit">
                     Save and return
                 </button>
-
-
-
             </div>
-        </form>
 
+        </form>
     </div>
 </div>
