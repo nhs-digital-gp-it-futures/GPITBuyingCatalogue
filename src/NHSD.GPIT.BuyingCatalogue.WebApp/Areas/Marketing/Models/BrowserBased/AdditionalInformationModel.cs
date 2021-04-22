@@ -14,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";                                    
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { throw new NotImplementedException(); }
+            get { return !string.IsNullOrWhiteSpace(ClientApplication.AdditionalInformation); }
         }                
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
@@ -14,9 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { throw new NotImplementedException(); }
+            get { return ClientApplication.MobileOperatingSystems?.OperatingSystems?.Any(); }
         }        
     }
 }

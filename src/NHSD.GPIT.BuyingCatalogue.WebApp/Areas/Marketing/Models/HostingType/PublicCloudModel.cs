@@ -18,9 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return !string.IsNullOrWhiteSpace(PublicCloud.Summary) ||
+                    !string.IsNullOrWhiteSpace(PublicCloud.Link) ||
+                    !string.IsNullOrWhiteSpace(PublicCloud.RequiresHscn);
+            }
         }        
 
         public PublicCloud PublicCloud { get; set; }   

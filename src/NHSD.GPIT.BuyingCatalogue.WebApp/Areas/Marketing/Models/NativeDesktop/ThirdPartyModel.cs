@@ -14,9 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-desktop";                                    
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopThirdParty?.ThirdPartyComponents) ||
+                  !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopThirdParty?.DeviceCapabilities);
+            }
         }        
     }
 }

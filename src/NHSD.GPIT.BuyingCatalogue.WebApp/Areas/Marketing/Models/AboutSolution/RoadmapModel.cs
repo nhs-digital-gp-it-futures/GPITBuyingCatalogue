@@ -14,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             Summary = CatalogueItem.Solution.RoadMap;
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution.RoadMap); }
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution?.RoadMap); }
         }
 
         public string Summary { get; set; }

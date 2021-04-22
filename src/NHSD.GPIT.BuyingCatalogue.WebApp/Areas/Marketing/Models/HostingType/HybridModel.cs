@@ -17,9 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             HybridHostingType = CatalogueItem.Solution.GetHosting().HybridHostingType;
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return !string.IsNullOrWhiteSpace(HybridHostingType.Summary) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType.Link) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType.RequiresHscn);                                                                
+            }
         }        
 
         public HybridHostingType HybridHostingType { get; set; }

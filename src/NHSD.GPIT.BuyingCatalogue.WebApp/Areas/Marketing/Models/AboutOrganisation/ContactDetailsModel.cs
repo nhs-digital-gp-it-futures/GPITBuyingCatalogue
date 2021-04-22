@@ -28,9 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
                 Contact2 = new MarketingContact();
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { return CatalogueItem.Solution.MarketingContacts.Any(); }
+            get { return CatalogueItem.Solution?.MarketingContacts?.Any(); }
         }
         
         public MarketingContact Contact1 { get; set; }

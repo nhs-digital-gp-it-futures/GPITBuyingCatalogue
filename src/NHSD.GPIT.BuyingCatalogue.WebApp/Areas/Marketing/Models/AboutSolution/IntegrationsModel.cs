@@ -14,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             Link = CatalogueItem.Solution.IntegrationsUrl;
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution.IntegrationsUrl); }
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution?.IntegrationsUrl); }
         }
         
         public string Link { get; set; }

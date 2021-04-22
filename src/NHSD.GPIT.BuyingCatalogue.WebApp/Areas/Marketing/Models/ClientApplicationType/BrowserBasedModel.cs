@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
@@ -17,40 +17,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { throw new NotImplementedException(); }
+            get 
+            { 
+                return new SupportedBrowsersModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new MobileFirstApproachModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new PlugInsOrExtensionsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new ConnectivityAndResolutionModel(CatalogueItem).IsComplete.GetValueOrDefault();                
+            }
         }
         
         public string SupportedBrowsersStatus
         {
-            get { return ClientApplication.BrowsersSupported.Any() ? "COMPLETE" : "INCOMPLETE"; }
+            get { return GetStatus(new SupportedBrowsersModel(CatalogueItem)); }
         }
 
         public string MobileFirstApproachStatus
-        {
-            // MJRTODO - Is this a 3 state checkbox in the current UI?
-            get { return ClientApplication.MobileFirstDesign.HasValue ? "COMPLETE" : "INCOMPLETE"; }
+        {            
+            get { return GetStatus(new MobileFirstApproachModel(CatalogueItem)); }
         }
 
         public string PlugInsStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new PlugInsOrExtensionsModel(CatalogueItem)); }
         }
 
         public string ConnectivityStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new ConnectivityAndResolutionModel(CatalogueItem)); }
         }
 
         public string HardwareRequirementsStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new HardwareRequirementsModel(CatalogueItem)); }
         }
 
         public string AdditionalInformationStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new AdditionalInformationModel(CatalogueItem)); }
         }
     }
 }

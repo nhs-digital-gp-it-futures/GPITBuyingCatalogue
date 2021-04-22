@@ -27,9 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             Listing10 = features.Length > 9 ? features[9] : string.Empty;
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get{ return CatalogueItem.Solution.GetFeatures().Any(); }
+            get{ return CatalogueItem.Solution?.GetFeatures().Any(); }
         }        
         
         public string Listing1 { get; set; }

@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 {
@@ -12,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
         {            
         }                
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
             get { throw new NotImplementedException(); }
         }
@@ -47,6 +48,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
             get { return GetStatus(new ClientApplicationTypesModel(CatalogueItem)); }
         }
 
+        public string PublicCloudStatus
+        {
+            get { return GetStatus(new PublicCloudModel(CatalogueItem)); }
+        }
+
+        public string PrivateCloudStatus
+        {
+            get { return GetStatus(new PrivateCloudModel(CatalogueItem)); }
+        }
+
+        public string HybridStatus
+        {
+            get { return GetStatus(new HybridModel(CatalogueItem)); }
+        }
+
+        public string OnPremisesStatus
+        {
+            get { return GetStatus(new OnPremiseModel(CatalogueItem)); }
+        }
+
         public string AboutSupplierStatus
         {
             get { return GetStatus(new AboutSupplierModel(CatalogueItem)); }
@@ -55,6 +76,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
         public string ContactDetailsStatus
         {
             get { return GetStatus(new ContactDetailsModel(CatalogueItem)); }
+        }
+
+        public string BrowserBasedStatus
+        {
+            get { return GetStatus(new BrowserBasedModel(CatalogueItem));  }
+        }
+
+        public string NativeDesktopStatus
+        {
+            get { return GetStatus(new NativeDesktopModel(CatalogueItem)); }
+        }
+
+        public string NativeMobileStatus
+        {
+            get { return GetStatus(new NativeMobileModel(CatalogueItem)); }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
@@ -10,44 +11,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                 
         }
 
-        protected override bool IsComplete
+        public override bool? IsComplete
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return new OperatingSystemsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new MobileFirstApproachModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new MemoryAndStorageModel(CatalogueItem).IsComplete.GetValueOrDefault();
+            }
         }                
 
         public string SupportedOperatingSystemsStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new OperatingSystemsModel(CatalogueItem)); }
         }
 
         public string MobileFirstApproachStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new MobileFirstApproachModel(CatalogueItem)); }
         }
 
         public string ConnectivityStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new ConnectivityModel(CatalogueItem)); }
         }
 
         public string MemoryAndStorageStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new MemoryAndStorageModel(CatalogueItem)); }
         }
 
         public string ThirdPartyStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new ThirdPartyModel(CatalogueItem)); }
         }
 
         public string HardwareRequirementsStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new HardwareRequirementsModel(CatalogueItem)); }
         }
 
         public string AdditionalInformationStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new AdditionalInformationModel(CatalogueItem)); }
         }
     }
 }
