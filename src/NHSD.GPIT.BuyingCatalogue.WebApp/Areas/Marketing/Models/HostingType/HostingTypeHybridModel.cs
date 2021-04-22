@@ -1,27 +1,26 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypeHybridModel : NavBaseModel
+    public class HostingTypeHybridModel : MarketingBaseModel
     {
-        public HostingTypeHybridModel()
+        public HostingTypeHybridModel() : base(null)
         {
         }
 
-        public HostingTypeHybridModel(CatalogueItem catalogueItem)
+        public HostingTypeHybridModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
-            BackLinkText = "Return to all sections";
-
-            SolutionId = catalogueItem.CatalogueItemId;
-            HybridHostingType = catalogueItem.Solution.GetHosting().HybridHostingType;
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
+            HybridHostingType = CatalogueItem.Solution.GetHosting().HybridHostingType;
         }
 
-        public string SolutionId { get; set; }
+        protected override bool IsComplete
+        {
+            get { throw new NotImplementedException(); }
+        }        
 
         public HybridHostingType HybridHostingType { get; set; }
 

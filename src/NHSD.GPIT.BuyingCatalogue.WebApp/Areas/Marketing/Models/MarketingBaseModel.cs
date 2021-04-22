@@ -1,0 +1,34 @@
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
+{
+    public abstract class MarketingBaseModel : NavBaseModel
+    {
+        protected MarketingBaseModel(CatalogueItem catalogueItem)
+        {
+            BackLinkText = "Return to all sections";
+            CatalogueItem = catalogueItem;
+            ClientApplication = CatalogueItem.Solution.GetClientApplication();
+            SolutionId = catalogueItem?.CatalogueItemId;
+            SupplierId = catalogueItem.Supplier.Id;
+        }
+
+        protected abstract bool IsComplete { get; }
+
+        public CatalogueItem CatalogueItem { get; set; }
+
+        public string SolutionId { get; set; }
+
+        public string SupplierId { get; set; }
+
+        public ClientApplication ClientApplication { get; set; }
+
+        protected string GetStatus(MarketingBaseModel model)
+        {
+            return model.IsComplete ? "COMPLETE" : "INCOMPLETE";
+        }
+    }
+}

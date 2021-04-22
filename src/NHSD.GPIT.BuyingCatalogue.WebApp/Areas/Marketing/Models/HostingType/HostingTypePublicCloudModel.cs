@@ -1,28 +1,27 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypePublicCloudModel : NavBaseModel
+    public class HostingTypePublicCloudModel : MarketingBaseModel
     {
-        public HostingTypePublicCloudModel()
+        public HostingTypePublicCloudModel() : base(null)
         {
             PublicCloud = new PublicCloud();
         }
 
-        public HostingTypePublicCloudModel(CatalogueItem catalogueItem)
+        public HostingTypePublicCloudModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
-            BackLinkText = "Return to all sections";
-
-            SolutionId = catalogueItem.CatalogueItemId;
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
             PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
         }
 
-        public string SolutionId { get; set; }
+        protected override bool IsComplete
+        {
+            get { throw new NotImplementedException(); }
+        }        
 
         public PublicCloud PublicCloud { get; set; }   
         

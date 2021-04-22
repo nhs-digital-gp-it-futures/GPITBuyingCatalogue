@@ -1,93 +1,60 @@
-﻿using System.Linq;
+﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 {
-    public class SolutionStatusModel : NavBaseModel
+    public class SolutionStatusModel : MarketingBaseModel
     {
-        public SolutionStatusModel(CatalogueItem catalogueItem)
+        public SolutionStatusModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        {            
+        }                
+
+        protected override bool IsComplete
         {
-            CatalogueItem = catalogueItem;
-            ClientApplication = catalogueItem.Solution.GetClientApplication();
+            get { throw new NotImplementedException(); }
         }
-
-        public CatalogueItem CatalogueItem { get; private set; }
-
-        public ClientApplication ClientApplication { get; private set; }
 
         public string SolutionDescriptionStatus
         {
-            get 
-            { 
-                return string.IsNullOrWhiteSpace(CatalogueItem.Solution.Summary) ? "INCOMPLETE" : "COMPLETE";
-            }
+            get { return GetStatus(new SolutionDescriptionModel(CatalogueItem)); }
         }
 
         public string FeaturesStatus
         {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(CatalogueItem.Solution.Features))
-                    return "INCOMPLETE";
-
-                var features = CatalogueItem.Solution.GetFeatures();
-
-                return features.Any() ? "COMPLETE" : "INCOMPLETE";
-            }
+            get { return GetStatus(new FeaturesModel(CatalogueItem)); }
         }
 
         public string IntegrationsStatus
         {
-            get
-            {
-                return string.IsNullOrWhiteSpace(CatalogueItem.Solution.IntegrationsUrl) ? "INCOMPLETE" : "COMPLETE";
-            }
+            get { return GetStatus(new IntegrationsModel(CatalogueItem)); }
         }
 
         public string ImplementationTimescalesStatus
         {
-            get
-            {
-                return string.IsNullOrWhiteSpace(CatalogueItem.Solution.ImplementationDetail) ? "INCOMPLETE" : "COMPLETE";
-            }
+            get { return GetStatus(new ImplementationTimescalesModel(CatalogueItem)); }
         }
 
         public string RoadmapStatus
         {
-            get
-            {
-                return string.IsNullOrWhiteSpace(CatalogueItem.Solution.RoadMap) ? "INCOMPLETE" : "COMPLETE";
-            }
+            get { return GetStatus(new RoadmapModel(CatalogueItem)); }
         }
 
         public string ClientApplicationTypeStatus
         {
-            get
-            {
-                return ClientApplication.ClientApplicationTypes.Any() ? "COMPLETE" : "INCOMPLETE";
-            }
+            get { return GetStatus(new ClientApplicationTypesModel(CatalogueItem)); }
         }
 
         public string AboutSupplierStatus
         {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(CatalogueItem.Supplier.SupplierUrl) && string.IsNullOrWhiteSpace(CatalogueItem.Supplier.Summary))
-                    return "INCOMPLETE";
-
-                return "COMPLETE";
-            }
+            get { return GetStatus(new AboutSupplierModel(CatalogueItem)); }
         }
 
         public string ContactDetailsStatus
         {
-            get
-            {
-                return CatalogueItem.Solution.MarketingContacts.Any() ? "COMPLETE" : "INCOMPLETE";
-            }
+            get { return GetStatus(new ContactDetailsModel(CatalogueItem)); }
         }
     }
 }

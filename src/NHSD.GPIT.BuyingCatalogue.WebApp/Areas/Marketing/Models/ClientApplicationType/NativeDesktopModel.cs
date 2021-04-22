@@ -1,24 +1,19 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
-    public class NativeDesktopModel : NavBaseModel
+    public class NativeDesktopModel : MarketingBaseModel
     { 
-        public NativeDesktopModel(CatalogueItem catalogueItem)
+        public NativeDesktopModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
-            BackLinkText = "Return to all sections";
-
-            SolutionId = catalogueItem.CatalogueItemId;
-            ClientApplication = catalogueItem.Solution.GetClientApplication();
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                                
         }
 
-        public string SolutionId { get; set; }
-
-        private ClientApplication ClientApplication { get; set; }
+        protected override bool IsComplete
+        {
+            get { throw new NotImplementedException(); }
+        }                
 
         public string SupportedOperatingSystemsStatus
         {

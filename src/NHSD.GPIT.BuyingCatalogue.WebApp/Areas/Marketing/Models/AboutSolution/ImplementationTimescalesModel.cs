@@ -1,24 +1,24 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
-    public class ImplementationTimescalesModel : NavBaseModel
+    public class ImplementationTimescalesModel : MarketingBaseModel
     {
-        public ImplementationTimescalesModel()
+        public ImplementationTimescalesModel() : base(null)
         {
         }
 
-        public ImplementationTimescalesModel(CatalogueItem catalogueItem)
+        public ImplementationTimescalesModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}";
-            BackLinkText = "Return to all sections";
-
-            SolutionId = catalogueItem.CatalogueItemId;
-            Description = catalogueItem.Solution.ImplementationDetail;
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
+            Description = CatalogueItem.Solution.ImplementationDetail;
         }
 
-        public string SolutionId { get; set; }
+        protected override bool IsComplete
+        {
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution.ImplementationDetail); }
+        }
+        
         public string Description { get; set; }
     }
 }

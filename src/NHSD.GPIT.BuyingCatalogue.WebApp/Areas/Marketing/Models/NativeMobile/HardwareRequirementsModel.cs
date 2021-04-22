@@ -1,27 +1,22 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
-    public class HardwareRequirementsModel : NavBaseModel
+    public class HardwareRequirementsModel : MarketingBaseModel
     {
-        public HardwareRequirementsModel()
+        public HardwareRequirementsModel() : base(null)
         {
         }
 
-        public HardwareRequirementsModel(CatalogueItem catalogueItem)
+        public HardwareRequirementsModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {            
-            BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-mobile";
-            BackLinkText = "Return to all sections";
-
-            SolutionId = catalogueItem.CatalogueItemId;
-            ClientApplication = catalogueItem.Solution.GetClientApplication();
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
         }
 
-        public string SolutionId { get; set; }
-
-        public ClientApplication ClientApplication { get; set; }
+        protected override bool IsComplete
+        {
+            get { throw new NotImplementedException(); }
+        }        
     }
 }
