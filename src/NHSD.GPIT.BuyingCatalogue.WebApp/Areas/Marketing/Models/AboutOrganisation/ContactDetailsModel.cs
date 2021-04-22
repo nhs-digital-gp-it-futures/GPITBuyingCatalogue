@@ -1,22 +1,21 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
 {
-    public class ContactDetailsModel
+    public class ContactDetailsModel : MarketingBaseModel
     { 
-        public ContactDetailsModel()
+        public ContactDetailsModel() : base(null)
         {
             Contact1 = new MarketingContact();
             Contact2 = new MarketingContact();
         }
 
-        public ContactDetailsModel(CatalogueItem catalogueItem)
+        public ContactDetailsModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            SolutionId = catalogueItem.CatalogueItemId;
-
-            var allContacts = catalogueItem.Solution.MarketingContacts.ToArray();
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";            
+            
+            var allContacts = CatalogueItem.Solution.MarketingContacts.ToArray();
 
             if (allContacts.Length > 0)
                 Contact1 = allContacts[0];
@@ -29,8 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
                 Contact2 = new MarketingContact();
         }
 
-        public string SolutionId { get; set; }
-
+        public override bool? IsComplete
+        {
+            get { return CatalogueItem.Solution?.MarketingContacts?.Any(); }
+        }
+        
         public MarketingContact Contact1 { get; set; }
 
         public MarketingContact Contact2 { get; set; }

@@ -1,56 +1,61 @@
-﻿using System.Linq;
+﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
-    public class BrowserBasedModel
+    public class BrowserBasedModel : MarketingBaseModel
     { 
-        public BrowserBasedModel()
+        public BrowserBasedModel() : base(null)
         {
             ClientApplication = new ClientApplication();
         }
 
-        public BrowserBasedModel(CatalogueItem catalogueItem)
+        public BrowserBasedModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            SolutionId = catalogueItem.CatalogueItemId;
-            ClientApplication = catalogueItem.Solution.GetClientApplication();
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
         }
 
-        public string SolutionId { get; set; }
-
-        public ClientApplication ClientApplication { get; set; }
-
+        public override bool? IsComplete
+        {
+            get 
+            { 
+                return new SupportedBrowsersModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new MobileFirstApproachModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new PlugInsOrExtensionsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
+                    new ConnectivityAndResolutionModel(CatalogueItem).IsComplete.GetValueOrDefault();                
+            }
+        }
+        
         public string SupportedBrowsersStatus
         {
-            get { return ClientApplication.BrowsersSupported.Any() ? "COMPLETE" : "INCOMPLETE"; }
+            get { return GetStatus(new SupportedBrowsersModel(CatalogueItem)); }
         }
 
         public string MobileFirstApproachStatus
-        {
-            // MJRTODO - Is this a 3 state checkbox in the current UI?
-            get { return ClientApplication.MobileFirstDesign.HasValue ? "COMPLETE" : "INCOMPLETE"; }
+        {            
+            get { return GetStatus(new MobileFirstApproachModel(CatalogueItem)); }
         }
 
         public string PlugInsStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new PlugInsOrExtensionsModel(CatalogueItem)); }
         }
 
         public string ConnectivityStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new ConnectivityAndResolutionModel(CatalogueItem)); }
         }
 
         public string HardwareRequirementsStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new HardwareRequirementsModel(CatalogueItem)); }
         }
 
         public string AdditionalInformationStatus
         {
-            get { return "TODO"; }
+            get { return GetStatus(new AdditionalInformationModel(CatalogueItem)); }
         }
     }
 }

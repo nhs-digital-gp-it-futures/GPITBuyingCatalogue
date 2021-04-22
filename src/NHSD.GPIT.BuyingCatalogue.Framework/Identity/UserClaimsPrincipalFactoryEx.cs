@@ -2,21 +2,21 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
     public class UserClaimsPrincipalFactoryEx<TUser> : UserClaimsPrincipalFactory<TUser> where TUser : AspNetUser
     {
-        private readonly ILogger<UserClaimsPrincipalFactoryEx<TUser>> _logger;
+        private readonly ILogWrapper<UserClaimsPrincipalFactoryEx<TUser>> _logger;
 
         public UserClaimsPrincipalFactoryEx(
             UserManager<TUser> userManager,
             IOptions<IdentityOptions> optionsAccessor,
-            ILogger<UserClaimsPrincipalFactoryEx<TUser>> logger) : base(userManager, optionsAccessor)
+            ILogWrapper<UserClaimsPrincipalFactoryEx<TUser>> logger) : base(userManager, optionsAccessor)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

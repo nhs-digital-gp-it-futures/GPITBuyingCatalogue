@@ -1,0 +1,118 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop.ConnectivityModel;
+@{
+    ViewData["Title"] = "Native desktop application - connectivity";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+        <partial name="Partials/_BackLink" model="Model" />
+    </div>
+    <div class="nhsuk-grid-column-two-thirds">
+
+
+        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
+            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Native desktop application – connectivity</h1>
+            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know about your Catalogue Solution’s connection requirements.</h2>
+            <div data-test-id="section-additional-advice">
+
+            </div>
+        </div>
+
+        <form method="post">
+
+            <input type="hidden" asp-for="@Model.SolutionId" />
+
+
+
+
+
+
+            <div data-test-id="section-question-combobox-options" class="nhsuk-u-margin-bottom-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div data-test-id="question-minimum-connection-speed">
+
+                    <div data-test-id="combobox-options">
+
+                        <div class="nhsuk-form-group">
+                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="minimum-connection-speed">
+                                Connection speed
+                            </label>
+                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="minimum-connection-speed-hint">
+                                Select the minimum bandwidth required for your Catalogue Solution to function.
+                            </div>
+                            <select class="nhsuk-select" id="minimum-connection-speed" name="minimum-connection-speed" aria-describedby="minimum-connection-speed-hint">
+                                <option value="">Please select</option>
+                                <option value="0.5Mbps">0.5Mbps</option>
+                                <option value="1Mbps">1Mbps</option>
+                                <option value="1.5Mbps">1.5Mbps</option>
+                                <option value="2Mbps">2Mbps</option>
+                                <option value="3Mbps">3Mbps</option>
+                                <option value="5Mbps">5Mbps</option>
+                                <option value="8Mbps">8Mbps</option>
+                                <option value="10Mbps">10Mbps</option>
+                                <option value="15Mbps">15Mbps</option>
+                                <option value="20Mbps">20Mbps</option>
+                                <option value="30Mbps">30Mbps</option>
+                                <option value="Higher than 30Mbps">Higher than 30Mbps</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
+
+
+
+
+
+
+
+
+
+
+                <button class="nhsuk-button" type="submit">
+                    Save and return
+                </button>
+
+
+
+            </div>
+        </form>
+
+    </div>
+</div>

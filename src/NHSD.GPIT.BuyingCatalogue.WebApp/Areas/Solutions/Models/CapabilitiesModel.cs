@@ -1,6 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class CapabilitiesModel
+    public class CapabilitiesModel : NavBaseModel
     {
         public CapabilityModel[] LeftCapabilities { get; set; }
 

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
@@ -11,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Area("Marketing")]
     public class ClientApplicationTypeController : Controller
     {
-        private readonly ILogger<ClientApplicationTypeController> _logger;
+        private readonly ILogWrapper<ClientApplicationTypeController> _logger;
         private readonly ISolutionsService _solutionsService;
 
-        public ClientApplicationTypeController(ILogger<ClientApplicationTypeController> logger, ISolutionsService solutionsService)
+        public ClientApplicationTypeController(ILogWrapper<ClientApplicationTypeController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));
@@ -23,6 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new ClientApplicationTypesModel(solution);
@@ -55,6 +57,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based")]
         public async Task<IActionResult> BrowserBased(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new BrowserBasedModel(solution);
@@ -65,6 +70,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-mobile")]
         public async Task<IActionResult> NativeMobile(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new NativeMobileModel(solution);
@@ -75,6 +83,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop")]
         public async Task<IActionResult> NativeDesktop(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException(nameof(id));
+
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new NativeDesktopModel(solution);

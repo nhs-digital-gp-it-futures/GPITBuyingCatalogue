@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NUnit.Framework;
 
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Test]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new VaccinationsController(Mock.Of<ILogger<VaccinationsController>>());
+            var controller = new VaccinationsController(Mock.Of<ILogWrapper<VaccinationsController>>());
 
             var result = controller.Index();
             

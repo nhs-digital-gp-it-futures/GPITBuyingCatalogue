@@ -1,0 +1,184 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile.MemoryAndStorageModel;
+@{
+    ViewData["Title"] = "Native mobile or tablet application - memory and storage";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+        <partial name="Partials/_BackLink" model="Model" />
+    </div>
+    <div class="nhsuk-grid-column-two-thirds">
+
+
+        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
+            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Native mobile and tablet application – memory and storage</h1>
+            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know the minimum requirements for your Catalogue Solution to function.</h2>
+            <div data-test-id="section-additional-advice">
+
+            </div>
+        </div>
+
+        <form method="post">
+
+
+
+            <input type="hidden" asp-for="@Model.SolutionId" />
+
+
+
+
+            <div data-test-id="section-question-combobox-options" class="nhsuk-u-margin-bottom-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div data-test-id="question-minimum-memory-requirement">
+
+                    <div data-test-id="combobox-options">
+
+                        <div class="nhsuk-form-group">
+                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="minimum-memory-requirement">
+                                Memory size
+                            </label>
+                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="minimum-memory-requirement-hint">
+                                Select the minimum memory size required for your Catalogue Solution to function.
+                            </div>
+                            <select class="nhsuk-select" id="minimum-memory-requirement" name="minimum-memory-requirement" aria-describedby="minimum-memory-requirement-hint">
+                                <option value="">Please select</option>
+                                <option value="256MB">256MB</option>
+                                <option value="512MB">512MB</option>
+                                <option value="1GB">1GB</option>
+                                <option value="2GB">2GB</option>
+                                <option value="4GB">4GB</option>
+                                <option value="8GB">8GB</option>
+                                <option value="16GB or higher">16GB or higher</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div data-test-id="question-storage-requirements-description">
+
+                    <div data-test-id="textarea-field">
+
+
+
+                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
+
+
+                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
+                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="storage-requirements-description">
+                                    Storage space
+                                </label>
+
+
+
+                                <div id="storage-requirements-description-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
+                                    Provide information about how much storage space a device will need to use your Catalogue Solution.
+                                </div>
+
+
+                                <textarea class="govuk-textarea govuk-js-character-count" id="storage-requirements-description" name="storage-requirements-description" rows="5" aria-describedby="storage-requirements-description-info storage-requirements-description-hint"></textarea>
+                            </div>
+
+                            <div id="storage-requirements-description-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                                You can enter up to 300 characters
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
+
+
+
+
+
+
+
+
+
+
+                <button class="nhsuk-button" type="submit">
+                    Save and return
+                </button>
+
+
+
+            </div>
+        </form>
+
+    </div>
+</div>

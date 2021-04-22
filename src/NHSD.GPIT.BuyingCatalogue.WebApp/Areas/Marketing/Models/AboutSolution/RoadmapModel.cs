@@ -2,19 +2,23 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
-    public class RoadmapModel
+    public class RoadmapModel : MarketingBaseModel
     {
-        public RoadmapModel()
+        public RoadmapModel() : base(null)
         {
         }
 
-        public RoadmapModel(CatalogueItem catalogueItem)
+        public RoadmapModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            SolutionId = catalogueItem.CatalogueItemId;
-            Summary = catalogueItem.Solution.RoadMap;
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
+            Summary = CatalogueItem.Solution.RoadMap;
         }
 
-        public string SolutionId { get; set; }
+        public override bool? IsComplete
+        {
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution?.RoadMap); }
+        }
+
         public string Summary { get; set; }
     }
 }

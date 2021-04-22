@@ -2,24 +2,24 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
 {
-    public class AboutSupplierModel
+    public class AboutSupplierModel : MarketingBaseModel
     { 
-        public AboutSupplierModel()
+        public AboutSupplierModel() : base(null)
         {
         }
 
-        public AboutSupplierModel(CatalogueItem catalogueItem)
+        public AboutSupplierModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            SolutionId = catalogueItem.CatalogueItemId;
-            SupplierId = catalogueItem.Supplier.Id;
-            Description = catalogueItem.Supplier.Summary;
-            Link = catalogueItem.Supplier.SupplierUrl;
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                                 
+            Description = CatalogueItem.Supplier.Summary;
+            Link = CatalogueItem.Supplier.SupplierUrl;
         }
 
-        public string SolutionId { get; set; }
-
-        public string SupplierId { get; set; }
-
+        public override bool? IsComplete
+        {
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Supplier?.SupplierUrl) || string.IsNullOrWhiteSpace(CatalogueItem.Supplier?.Summary); }
+        }
+                
         public string Description { get; set; }
 
         public string Link { get; set; }               

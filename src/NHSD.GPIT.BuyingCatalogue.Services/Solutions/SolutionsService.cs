@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public class SolutionsService : ISolutionsService
     {
-        private readonly ILogger<SolutionsService> _logger;
+        private readonly ILogWrapper<SolutionsService> _logger;
         private readonly BuyingCatalogueDbContext _dbContext;
 
-        public SolutionsService(ILogger<SolutionsService> logger, BuyingCatalogueDbContext dbContext)
+        public SolutionsService(ILogWrapper<SolutionsService> logger, BuyingCatalogueDbContext dbContext)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

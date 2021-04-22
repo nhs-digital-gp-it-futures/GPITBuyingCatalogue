@@ -2,19 +2,23 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
-    public class IntegrationsModel
+    public class IntegrationsModel : MarketingBaseModel
     {
-        public IntegrationsModel()
+        public IntegrationsModel() : base(null)
         {
         }
 
-        public IntegrationsModel(CatalogueItem catalogueItem)
+        public IntegrationsModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            SolutionId = catalogueItem.CatalogueItemId;
-            Link = catalogueItem.Solution.IntegrationsUrl;
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
+            Link = CatalogueItem.Solution.IntegrationsUrl;
         }
 
-        public string SolutionId { get; set; }
+        public override bool? IsComplete
+        {
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution?.IntegrationsUrl); }
+        }
+        
         public string Link { get; set; }
     }
 }

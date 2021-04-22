@@ -1,0 +1,52 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased.HardwareRequirementsModel;
+@{
+    ViewData["Title"] = "Browser-based application - hardware requirements";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+        <partial name="Partials/_BackLink" model="Model" />
+    </div>
+    <div class="nhsuk-grid-column-two-thirds">
+        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
+            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Browser-based application – hardware requirements</h1>
+            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know about any hardware requirements for your Catalogue Solution.</h2>
+            <div data-test-id="section-additional-advice">
+            </div>
+        </div>
+
+        <form method="post">
+
+            <input type="hidden" asp-for="@Model.SolutionId" />
+
+            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
+                <div data-test-id="question-hardware-requirements-description">
+                    <div data-test-id="textarea-field">
+                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
+                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="hardware-requirements-description">
+                                    Hardware requirements (optional)
+                                </label>
+                                <div id="Description-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
+                                    Provide information on any hardware that is required for your browser-based Catalogue Solution to function.
+                                </div>
+                                <textarea class="govuk-textarea govuk-js-character-count" asp-for="@Model.Description" rows="5" aria-describedby="Description-info Description-hint"></textarea>
+                            </div>
+                            <div id="Description-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                                You can enter up to 500 characters
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
+                <button class="nhsuk-button" type="submit">
+                    Save and return
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+

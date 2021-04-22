@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Linq;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
-    public class ClientApplicationTypesModel
+    public class ClientApplicationTypesModel : MarketingBaseModel
     {
-        public ClientApplicationTypesModel()
+        public ClientApplicationTypesModel() : base(null)
         {
         }
 
-        public ClientApplicationTypesModel(CatalogueItem catalogueItem)
+        public ClientApplicationTypesModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
-            SolutionId = catalogueItem.CatalogueItemId;
-
-            var clientApplication = catalogueItem.Solution.GetClientApplication();                                        
-            BrowserBased = clientApplication.ClientApplicationTypes.Any(x => x.Equals("browser-based", StringComparison.InvariantCultureIgnoreCase));
-            NativeMobile = clientApplication.ClientApplicationTypes.Any(x => x.Equals("native-mobile", StringComparison.InvariantCultureIgnoreCase));
-            NativeDesktop = clientApplication.ClientApplicationTypes.Any(x => x.Equals("native-desktop", StringComparison.InvariantCultureIgnoreCase));
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
+                        
+            BrowserBased = ClientApplication.ClientApplicationTypes.Any(x => x.Equals("browser-based", StringComparison.InvariantCultureIgnoreCase));
+            NativeMobile = ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-mobile", StringComparison.InvariantCultureIgnoreCase));
+            NativeDesktop = ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-desktop", StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public string SolutionId { get; set; }
-
+        public override bool? IsComplete
+        {
+            get { return CatalogueItem.Solution?.GetClientApplication().ClientApplicationTypes?.Any(); }
+        }
+        
         public bool BrowserBased { get; set; }
 
         public bool NativeMobile { get; set; }

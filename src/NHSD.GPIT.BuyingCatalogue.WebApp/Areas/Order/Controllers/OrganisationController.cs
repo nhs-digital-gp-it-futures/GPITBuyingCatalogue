@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -10,9 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Area("Order")]
     public class OrganisationController : Controller
     {
-        private readonly ILogger<OrganisationController> _logger;
+        private readonly ILogWrapper<OrganisationController> _logger;
         
-        public OrganisationController(ILogger<OrganisationController> logger)
+        public OrganisationController(ILogWrapper<OrganisationController> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
