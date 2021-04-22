@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/supported-browsers")]
-        public async Task<IActionResult> BrowserBasedSupportedBrowsers(string id)
+        public async Task<IActionResult> SupportedBrowsers(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/mobile-first-approach")]
-        public async Task<IActionResult> BrowserBasedMobileFirstApproach(string id)
+        public async Task<IActionResult> MobileFirstApproach(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/plug-ins-or-extensions")]
-        public async Task<IActionResult> BrowserBasedPlugInsOrExtensions(string id)
+        public async Task<IActionResult> PlugInsOrExtensions(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/connectivity-and-resolution")]
-        public async Task<IActionResult> BrowserBasedConnectivityAndResolution(string id)
+        public async Task<IActionResult> ConnectivityAndResolution(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/hardware-requirements")]
-        public async Task<IActionResult> BrowserBasedHardwareRequirements(string id)
+        public async Task<IActionResult> HardwareRequirements(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/additional-information")]
-        public async Task<IActionResult> BrowserBasedAdditionalInformation(string id)
+        public async Task<IActionResult> AdditionalInformation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));

@@ -5,17 +5,16 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypePublicCloudModel : MarketingBaseModel
+    public class HybridModel : MarketingBaseModel
     {
-        public HostingTypePublicCloudModel() : base(null)
+        public HybridModel() : base(null)
         {
-            PublicCloud = new PublicCloud();
         }
 
-        public HostingTypePublicCloudModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public HybridModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
-            PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
+            HybridHostingType = CatalogueItem.Solution.GetHosting().HybridHostingType;
         }
 
         protected override bool IsComplete
@@ -23,17 +22,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             get { throw new NotImplementedException(); }
         }        
 
-        public PublicCloud PublicCloud { get; set; }   
-        
-        public bool RequiresHscnChecked 
+        public HybridHostingType HybridHostingType { get; set; }
+
+        public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(PublicCloud.RequiresHscn); }
+            get { return !string.IsNullOrWhiteSpace(HybridHostingType.RequiresHscn); }
             set
             {
                 if (value)
-                    PublicCloud.RequiresHscn = "End user devices must be connected to HSCN/N3";
+                    HybridHostingType.RequiresHscn = "End user devices must be connected to HSCN/N3";
                 else
-                    PublicCloud.RequiresHscn = null;
+                    HybridHostingType.RequiresHscn = null;
             }
         }
     }

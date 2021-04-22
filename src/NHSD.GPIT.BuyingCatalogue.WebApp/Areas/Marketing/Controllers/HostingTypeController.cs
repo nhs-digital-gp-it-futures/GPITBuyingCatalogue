@@ -20,20 +20,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-public-cloud")]
-        public async Task<IActionResult> HostingTypePublicCloud(string id)
+        public async Task<IActionResult> PublicCloud(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new HostingTypePublicCloudModel(solution);
+            var model = new PublicCloudModel(solution);
 
             return View(model);
         }
 
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-public-cloud")]
-        public async Task<IActionResult> HostingTypePublicCloud(HostingTypePublicCloudModel model)
+        public async Task<IActionResult> PublicCloud(PublicCloudModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -51,20 +51,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-private-cloud")]
-        public async Task<IActionResult> HostingTypePrivateCloud(string id)
+        public async Task<IActionResult> PrivateCloud(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new HostingTypePrivateCloudModel(solution);
+            var model = new PrivateCloudModel(solution);
 
             return View(model);
         }
 
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-private-cloud")]
-        public async Task<IActionResult> HostingTypePrivateCloud(HostingTypePrivateCloudModel model)
+        public async Task<IActionResult> PrivateCloud(PrivateCloudModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -82,20 +82,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-hybrid")]
-        public async Task<IActionResult> HostingTypeHybrid(string id)
+        public async Task<IActionResult> Hybrid(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new HostingTypeHybridModel(solution);
+            var model = new HybridModel(solution);
 
             return View(model);
         }
 
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-hybrid")]
-        public async Task<IActionResult> HostingTypeHybrid(HostingTypeHybridModel model)
+        public async Task<IActionResult> Hybrid(HybridModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -113,20 +113,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/hosting-type-on-premise")]
-        public async Task<IActionResult> HostingTypeOnPremise(string id)
+        public async Task<IActionResult> OnPremise(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new HostingTypeOnPremiseModel(solution);
+            var model = new OnPremiseModel(solution);
 
             return View(model);
         }
 
         [HttpPost("marketing/supplier/solution/{id}/section/hosting-type-on-premise")]
-        public async Task<IActionResult> HostingTypeOnPremise(HostingTypeOnPremiseModel model)
+        public async Task<IActionResult> OnPremise(OnPremiseModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));

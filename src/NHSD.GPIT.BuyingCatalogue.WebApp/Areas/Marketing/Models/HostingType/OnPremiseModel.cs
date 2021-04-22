@@ -5,34 +5,34 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypeHybridModel : MarketingBaseModel
+    public class OnPremiseModel : MarketingBaseModel
     {
-        public HostingTypeHybridModel() : base(null)
+        public OnPremiseModel() : base(null)
         {
         }
 
-        public HostingTypeHybridModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public OnPremiseModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
-            HybridHostingType = CatalogueItem.Solution.GetHosting().HybridHostingType;
+            OnPremise = catalogueItem.Solution.GetHosting().OnPremise;          
         }
 
         protected override bool IsComplete
         {
             get { throw new NotImplementedException(); }
-        }        
+        }
 
-        public HybridHostingType HybridHostingType { get; set; }
+        public OnPremise OnPremise { get; set; }
 
         public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(HybridHostingType.RequiresHscn); }
+            get { return !string.IsNullOrWhiteSpace(OnPremise.RequiresHscn); }
             set
             {
                 if (value)
-                    HybridHostingType.RequiresHscn = "End user devices must be connected to HSCN/N3";
+                    OnPremise.RequiresHscn = "End user devices must be connected to HSCN/N3";
                 else
-                    HybridHostingType.RequiresHscn = null;
+                    OnPremise.RequiresHscn = null;
             }
         }
     }

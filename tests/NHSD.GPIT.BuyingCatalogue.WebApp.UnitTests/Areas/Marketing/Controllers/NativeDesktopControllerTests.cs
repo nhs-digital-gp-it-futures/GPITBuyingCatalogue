@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopOperatingSystems(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.OperatingSystems(id));
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopConnectivity(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.Connectivity(id));
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopMemoryAndStorage(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.MemoryAndStorage(id));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopThirdParty(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.ThirdParty(id));
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopHardwareRequirements(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id));
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktopAdditionalInformation(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id));
         }
     }
 }

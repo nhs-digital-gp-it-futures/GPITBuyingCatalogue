@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedSupportedBrowsers(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.SupportedBrowsers(id));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedMobileFirstApproach(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.MobileFirstApproach(id));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedPlugInsOrExtensions(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.PlugInsOrExtensions(id));
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedConnectivityAndResolution(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.ConnectivityAndResolution(id));
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedHardwareRequirements(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id));
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.BrowserBasedAdditionalInformation(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id));
         }
     }
 }

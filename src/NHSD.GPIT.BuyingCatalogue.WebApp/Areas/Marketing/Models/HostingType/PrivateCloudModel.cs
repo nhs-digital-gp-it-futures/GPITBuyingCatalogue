@@ -5,13 +5,13 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
-    public class HostingTypePrivateCloudModel : MarketingBaseModel
+    public class PrivateCloudModel : MarketingBaseModel
     {
-        public HostingTypePrivateCloudModel() : base(null)
+        public PrivateCloudModel() : base(null)
         {
         }
 
-        public HostingTypePrivateCloudModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public PrivateCloudModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                     
             PrivateCloud = catalogueItem.Solution.GetHosting().PrivateCloud;

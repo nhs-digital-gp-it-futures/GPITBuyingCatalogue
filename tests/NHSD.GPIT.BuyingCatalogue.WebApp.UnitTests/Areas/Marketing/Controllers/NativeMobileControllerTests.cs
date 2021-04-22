@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobileOperatingSystems(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.OperatingSystems(id));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobileMobileFirstApproach(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.MobileFirstApproach(id));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobileConnectivity(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.Connectivity(id));
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobileMemoryAndStorage(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.MemoryAndStorage(id));
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobileThirdParty(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.ThirdParty(id));
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobileHardwareRequirements(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id));
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobileAdditionalInformation(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id));
         }
     }
 }

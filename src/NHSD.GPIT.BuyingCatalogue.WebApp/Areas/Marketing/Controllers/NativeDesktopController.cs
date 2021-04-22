@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
                                   
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/operating-systems")]
-        public async Task<IActionResult> NativeDesktopOperatingSystems(string id)
+        public async Task<IActionResult> OperatingSystems(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/connectivity")]
-        public async Task<IActionResult> NativeDesktopConnectivity(string id)
+        public async Task<IActionResult> Connectivity(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/memory-and-storage")]
-        public async Task<IActionResult> NativeDesktopMemoryAndStorage(string id)
+        public async Task<IActionResult> MemoryAndStorage(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/third-party")]
-        public async Task<IActionResult> NativeDesktopThirdParty(string id)
+        public async Task<IActionResult> ThirdParty(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/hardware-requirements")]
-        public async Task<IActionResult> NativeDesktopHardwareRequirements(string id)
+        public async Task<IActionResult> HardwareRequirements(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/additional-information")]
-        public async Task<IActionResult> NativeDesktopAdditionalInformation(string id)
+        public async Task<IActionResult> AdditionalInformation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
