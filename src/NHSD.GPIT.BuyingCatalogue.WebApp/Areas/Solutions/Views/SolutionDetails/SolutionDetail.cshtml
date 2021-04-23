@@ -38,8 +38,8 @@
             @*Description DONE*@
 
             @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary) ||
-      !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
-      !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
+              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
             {
                 <div class="nhsuk-width-container" data-test-id="view-solution-description">
 
@@ -130,216 +130,9 @@
                 </div>
             }
 
-            @*Capabilities COME BACK TO THIS NOTHING TO DO WITH MARKETING DATA*@
+            @*Capabilities*@
 
-            <div class="nhsuk-width-container nhsuk-summary-list" data-test-id="view-capabilities">
-
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Capabilities met - NHS assured</h3>
-                </div>
-
-                <div class="nhsuk-grid-row nhsuk-u-padding-left-3">
-                    <div class="nhsuk-grid-column-full">
-                        <div class="nhsuk-grid-row" data-test-id="view-section-capabilities-guidance">
-                            <div data-test-id="view-capabilities-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">This Catalogue Solution has demonstrated that it can help meet the following needs in primary care:</div>
-                        </div>
-
-                        @foreach (var capability in Model.CatalogueItem.Solution.SolutionCapabilities)
-                        {
-                            <div data-test-id="view-section-table-row-capabilities" class="nhsuk-width-container bc-c-section-table-row nhsuk-grid-row">
-                                <div data-test-id="view-section-table-row-vertical">
-
-                                    <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                        @capability.Capability.Name
-                                    </h4>
-
-                                    <div class="nhsuk-grid-row">
-                                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-full nhsuk-u-padding-0">
-                                            <div data-test-id="view-question-data-text-description" class="bc-c-data-text nhsuk-grid-column-two-thirds">@capability.Capability.Description</div>
-
-                                            <div data-test-id="view-section-capabilities" class="nhsuk-grid-column-full">
-                                                <details class="nhsuk-details">
-                                                    <summary class="nhsuk-details__summary">
-                                                        <span class="nhsuk-details__summary-text">
-                                                            How this capability was met
-                                                        </span>
-                                                    </summary>
-                                                    <div class="nhsuk-details__text">
-
-                                                        <div data-test-id="view-question-data-text-description-paragraph-one" class="bc-c-data-text nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds">Capabilities are a set of requirements that are defined using short descriptions called epics. Capabilities are achieved when a Catalogue Solution meets the required epics.</div>
-
-                                                        <div data-test-id="view-question-data-text-description-paragraph-two" class="bc-c-data-text nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds">There are two types of epic: must and may. Some capabilities require the Catalogue Solution to meet all of the must epics, some require only one must epic to be met. May epics are optional.</div>
-
-                                                        <div data-test-id="view-question-data-text-description-paragraph-three" class="bc-c-data-text nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds"> This Catalogue Solution has achieved the following:</div>
-
-                                                        <div data-test-id="view-question-data-text-link" class="bc-c-data-link nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds">
-                                                            <a href="@capability.Capability.SourceUrl" target="_blank">
-                                                                View more details including acceptance criteria for all epics
-                                                            </a>
-                                                        </div>
-
-                                                        @*MJRTODO - This block needs to be dynamic - CAPABILITIES *@
-
-                                                        <div data-test-id="view-question-epic" class="bc-c-epics ">
-                                                            <div class="nhsuk-grid-row">
-
-                                                                <div data-test-id="must-epics" class="nhsuk-grid-column-one-half">
-                                                                    <div>
-
-                                                                        <div data-test-id="must-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-outline nhsuk-u-font-size-22">Must epics</div>
-
-                                                                    </div>
-
-                                                                    <div data-test-id="must-met-epics">
-                                                                        <div class="nhsuk-u-padding-top-5">
-
-                                                                            <h4 data-test-id="" class="bc-c-data-title ">
-                                                                                Must epics that have been met
-                                                                            </h4>
-
-                                                                        </div>
-                                                                        <div>
-
-
-
-
-
-
-
-                                                                            <div data-test-id="must-met-epic-list" class="bc-c-epic-list ">
-                                                                                <ul class="nhsuk-u-margin-bottom-0 nhsuk-list nhsuk-list--tick">
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Access Patient Record (C20E11)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Configure Task rules (C20E3)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Manage Tasks (C20E5)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Manage Task List configurations (C20E7)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>View Task reports (C20E9)</span>
-                                                                                    </li>
-
-                                                                                </ul>
-                                                                            </div>
-
-
-                                                                        </div>
-                                                                    </div>
-
-
-                                                                    <div data-test-id="must-not-met-epics">
-                                                                        <div class="nhsuk-u-padding-top-5">
-
-                                                                            <h4 data-test-id="" class="bc-c-data-title ">
-                                                                                Must epics that have not been met
-                                                                            </h4>
-
-                                                                        </div>
-                                                                        <div>
-
-                                                                            <div data-test-id="must-not-met-epic-list" class="bc-c-epic-list ">
-                                                                                <ul class="nhsuk-u-margin-bottom-0 nhsuk-list nhsuk-list--cross">
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Task templates (C20E1)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>View Workflow reports (C20E10)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Workflow templates (C20E2)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Configure Workflow rules (C20E4)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Workflows (C20E6)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Workflows List configurations (C20E8)</span>
-                                                                                    </li>
-
-                                                                                </ul>
-                                                                            </div>
-
-
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-
-                                                                <div data-test-id="may-epics" class="nhsuk-grid-column-one-half">
-                                                                    <div>
-
-                                                                        <div data-test-id="may-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-outline nhsuk-u-font-size-22">May epics</div>
-
-                                                                    </div>
-
-
-                                                                    <div data-test-id="may-not-met-epics">
-                                                                        <div class="nhsuk-u-padding-top-5">
-
-                                                                            <h4 data-test-id="" class="bc-c-data-title ">
-                                                                                May epics that have not been met
-                                                                            </h4>
-
-                                                                        </div>
-                                                                        <div>
-
-                                                                            <div data-test-id="may-not-met-epic-list" class="bc-c-epic-list ">
-                                                                                <ul class="nhsuk-u-margin-bottom-0 nhsuk-list nhsuk-list--cross">
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Share Task List configuration (C20E12)</span>
-                                                                                    </li>
-
-                                                                                    <li>
-                                                                                        <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Share Workflow List configuration (C20E13)</span>
-                                                                                    </li>
-
-                                                                                </ul>
-                                                                            </div>
-
-
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-
-                                                        @*END OF CAPABILITIES BLOCK*@
-
-                                                    </div>
-                                                </details>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                    </div>
-                </div>
-            </div>
+            <partial name="_Capabilities" model="Model.Capabilities" />
 
             @*Integrations DONE*@
 
@@ -583,9 +376,9 @@
                     </a>
                 </div>
             </div>
+
         </div>
     </div>
-
 </div>
 
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -10,16 +11,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public SolutionDetailModel(CatalogueItem catalogueItem)
         {
             CatalogueItem = catalogueItem;
-            Features = catalogueItem.Solution.GetFeatures();            
+            Features = catalogueItem.Solution.GetFeatures();
             PopulateContactInformation();
             PopulateFrameworks();
+            PopulateCapabilities();
             BrowserBased = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.BrowserBased, CatalogueItem.Solution.GetClientApplication());
             NativeMobile = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.NativeMobile, CatalogueItem.Solution.GetClientApplication());
             NativeDesktop = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.NativeDesktop, CatalogueItem.Solution.GetClientApplication());
             PublicCloud = new HostingTypeModel(CatalogueItem.Solution.GetHosting().PublicCloud);
             PrivateCloud = new HostingTypeModel(CatalogueItem.Solution.GetHosting().PrivateCloud);
             HybridHostingType = new HostingTypeModel(CatalogueItem.Solution.GetHosting().HybridHostingType);
-            OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
+            OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);            
         }
 
         // MJRTODO - Make this private and add appropriate properties
@@ -47,16 +49,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public HostingTypeModel PublicCloud { get; set; }
         public HostingTypeModel PrivateCloud { get; set; }
-        public HostingTypeModel HybridHostingType { get; set; }        
-        public HostingTypeModel OnPremise{ get; set; }
+        public HostingTypeModel HybridHostingType { get; set; }
+        public HostingTypeModel OnPremise { get; set; }
 
         public bool DisplayPublicCloud
         {
-            get 
+            get
             {
                 var publicCloud = CatalogueItem.Solution.GetHosting().PublicCloud;
 
-                if (publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary) || 
+                if (publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary) ||
                     !string.IsNullOrWhiteSpace(publicCloud.Link) ||
                     !string.IsNullOrWhiteSpace(publicCloud.RequiresHscn))
                     return true;
@@ -72,12 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 var publicCloud = CatalogueItem.Solution.GetHosting().PublicCloud;
 
                 if (publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary) ||
-                    !string.IsNullOrWhiteSpace(publicCloud.Link))                    
+                    !string.IsNullOrWhiteSpace(publicCloud.Link))
                     return true;
 
                 return false;
             }
         }
+
+        public SolutionCapabilitiesModel[] Capabilities { get; set; }
 
         public string Contact1Name { get; private set; }
 
@@ -133,6 +137,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         private void PopulateFrameworks()
         {
             Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework.ShortName));
+        }
+        
+        private void PopulateCapabilities()
+        {            
+            var capabilities = new List<SolutionCapabilitiesModel>();
+
+            foreach(var capability in CatalogueItem.Solution.SolutionCapabilities.OrderBy(x=>x.Capability.Name))
+            {                
+                capabilities.Add(new SolutionCapabilitiesModel(capability, CatalogueItem.Solution));
+            }
+
+            Capabilities = capabilities.ToArray();
         }
     }
 }
