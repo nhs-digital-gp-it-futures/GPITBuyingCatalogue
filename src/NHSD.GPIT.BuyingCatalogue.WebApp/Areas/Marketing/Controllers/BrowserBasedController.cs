@@ -55,8 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 clientApplication.MobileResponsive = model.MobileResponsive.Equals("Yes", StringComparison.InvariantCultureIgnoreCase) ? true : false;
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
-            
-            return Redirect($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+
+            return RedirectBack(model.SolutionId);
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/mobile-first-approach")]
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
-            return Redirect($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            return RedirectBack(model.SolutionId);
         }
 
 
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
-            return Redirect($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            return RedirectBack(model.SolutionId);
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/connectivity-and-resolution")]
@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
-            return Redirect($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            return RedirectBack(model.SolutionId);
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/hardware-requirements")]
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
-            return Redirect($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            return RedirectBack(model.SolutionId);
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/additional-information")]
@@ -224,7 +224,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
-            return Redirect($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            return RedirectBack(model.SolutionId);
+        }
+
+        private RedirectResult RedirectBack(string solutionId)
+        {
+            return Redirect($"/marketing/supplier/solution/{solutionId}/section/browser-based");
         }
     }
 }

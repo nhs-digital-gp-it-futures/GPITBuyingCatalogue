@@ -18,13 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public abstract bool? IsComplete { get; }
 
-        public CatalogueItem CatalogueItem { get; set; }
+        protected CatalogueItem CatalogueItem { get; set; }
 
         public string SolutionId { get; set; }
 
         public string SupplierId { get; set; }
 
-        public ClientApplication ClientApplication { get; set; }
+        protected ClientApplication ClientApplication { get; set; }
 
         protected string GetStatus(MarketingBaseModel model)
         {

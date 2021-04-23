@@ -4,7 +4,7 @@
 }
 
 <div class="nhsuk-width-container nhsuk-u-margin-top-5">
-    <div data-test-id="view-solution-page-back-link" class="nhsuk-u-margin-bottom-5">
+    @*<div data-test-id="view-solution-page-back-link" class="nhsuk-u-margin-bottom-5">
         <div class="nhsuk-back-link">
             <a class="nhsuk-back-link__link" href="./">
                 <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
@@ -14,81 +14,90 @@
             </a>
         </div>
 
-    </div>
+    </div>*@
+
+    <partial name="Partials/_BackLink" model="Model" />
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
 
             <div data-test-id="view-solution-header">
-
                 @if (Model.CatalogueItem.Solution.FrameworkSolutions.Any(x => x.IsFoundation))
                 {
                     <div data-test-id="view-solution-foundation" class="bc-c-tag nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-4 bc-c-tag-outline">Foundation Solution Set</div>
                 }
-
                 <h1 data-test-id="view-solution-page-solution-name" class="nhsuk-u-margin-bottom-2">@Model.CatalogueItem.Name</h1>
-
                 <h2 data-test-id="view-solution-page-supplier-name" class="nhsuk-u-margin-bottom-4">@Model.CatalogueItem.Supplier.Name</h2>
-
                 <p data-test-id="view-solution-page-solution-id" class="nhsuk-u-font-size-24">Solution ID: @Model.CatalogueItem.CatalogueItemId</p>
-
                 <div data-test-id="view-solution-page-last-updated" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4">Solution information last updated: @Model.CatalogueItem.Solution.LastUpdated.ToString("d MMMM yyyy")</div>
-
                 <div data-test-id="view-solution-page-frameworks" class="bc-t-font-color--grey-1">
                     Framework(s): @Model.Frameworks
                 </div>
-
             </div>
 
-            <div class="nhsuk-width-container" data-test-id="view-solution-description">
+            @*Description DONE*@
 
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Description</h3>
-                </div>
+            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary) ||
+              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
+              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+            {
+                <div class="nhsuk-width-container" data-test-id="view-solution-description">
 
-                <div class="nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-
-                    <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
-                        <div data-test-id="view-section-table-row-vertical">
-
-                            <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                Summary
-                            </h4>
-
-                            <div class="nhsuk-grid-row">
-                                <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                    <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.CatalogueItem.Solution.Summary</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div data-test-id="" class="bc-c-section-heading ">
+                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Description</h3>
                     </div>
 
-                    <div data-test-id="view-section-table-row-description" class="nhsuk-width-container bc-c-section-table-row ">
-                        <div data-test-id="view-section-table-row-vertical">
+                    <div class="nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
 
-                            <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                Full description
-                            </h4>
-
-                            <div class="nhsuk-grid-row">
-                                <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                    <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Solution.FullDescription</div>
-
-                                    @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
-                                    {
-                                        <div data-test-id="view-question-data-link" class="bc-c-data-link ">
-                                            <a href="@Model.CatalogueItem.Solution.AboutUrl" target="_blank">
-                                                @Model.CatalogueItem.Solution.AboutUrl
-                                            </a>
+                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary))
+                        {
+                            <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
+                                <div data-test-id="view-section-table-row-vertical">
+                                    <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                        Summary
+                                    </h4>
+                                    <div class="nhsuk-grid-row">
+                                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                                            <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.CatalogueItem.Solution.Summary</div>
                                         </div>
-                                    }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
+                 !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+                        {
+                            <div data-test-id="view-section-table-row-description" class="nhsuk-width-container bc-c-section-table-row ">
+                                <div data-test-id="view-section-table-row-vertical">
+                                    <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                        Full description
+                                    </h4>
+                                    <div class="nhsuk-grid-row">
+                                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription))
+                                            {
+                                                <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Solution.FullDescription</div>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+                                            {
+                                                <div data-test-id="view-question-data-link" class="bc-c-data-link ">
+                                                    <a href="@Model.CatalogueItem.Solution.AboutUrl" target="_blank">
+                                                        @Model.CatalogueItem.Solution.AboutUrl
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                     </div>
                 </div>
+            }
 
-            </div>
+            @*Features DONE*@
 
             @if (Model.Features.Any())
             {
@@ -121,268 +130,38 @@
                 </div>
             }
 
-            <div class="nhsuk-width-container nhsuk-summary-list" data-test-id="view-capabilities">
+            @*Capabilities*@
 
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Capabilities met - NHS assured</h3>
-                </div>
+            <partial name="_Capabilities" model="Model.Capabilities" />
 
-                <div class="nhsuk-grid-row nhsuk-u-padding-left-3">
-                    <div class="nhsuk-grid-column-full">
-                        <div class="nhsuk-grid-row" data-test-id="view-section-capabilities-guidance">
-                            <div data-test-id="view-capabilities-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">This Catalogue Solution has demonstrated that it can help meet the following needs in primary care:</div>
-                        </div>
-
-                        @foreach (var capability in Model.CatalogueItem.Solution.SolutionCapabilities)
-                        {                        
-                            <div data-test-id="view-section-table-row-capabilities" class="nhsuk-width-container bc-c-section-table-row nhsuk-grid-row">
-                            <div data-test-id="view-section-table-row-vertical">
-
-                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    @capability.Capability.Name
-                                </h4>
-
-                                <div class="nhsuk-grid-row">
-                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-full nhsuk-u-padding-0">
-                                        <div data-test-id="view-question-data-text-description" class="bc-c-data-text nhsuk-grid-column-two-thirds">@capability.Capability.Description</div>
-
-                                        <div data-test-id="view-section-capabilities" class="nhsuk-grid-column-full">
-                                            <details class="nhsuk-details">
-                                                <summary class="nhsuk-details__summary">
-                                                    <span class="nhsuk-details__summary-text">
-                                                        How this capability was met
-                                                    </span>
-                                                </summary>
-                                                <div class="nhsuk-details__text">
-
-                                                    <div data-test-id="view-question-data-text-description-paragraph-one" class="bc-c-data-text nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds">Capabilities are a set of requirements that are defined using short descriptions called epics. Capabilities are achieved when a Catalogue Solution meets the required epics.</div>
-
-                                                    <div data-test-id="view-question-data-text-description-paragraph-two" class="bc-c-data-text nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds">There are two types of epic: must and may. Some capabilities require the Catalogue Solution to meet all of the must epics, some require only one must epic to be met. May epics are optional.</div>
-
-                                                    <div data-test-id="view-question-data-text-description-paragraph-three" class="bc-c-data-text nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds"> This Catalogue Solution has achieved the following:</div>
-
-                                                    <div data-test-id="view-question-data-text-link" class="bc-c-data-link nhsuk-u-padding-left-0 nhsuk-u-padding-right-0 nhsuk-u-margin-bottom-5 nhsuk-grid-column-two-thirds">
-                                                        <a href="@capability.Capability.SourceUrl" target="_blank">
-                                                            View more details including acceptance criteria for all epics
-                                                        </a>
-                                                    </div>
-
-                                                    @*MJRTODO - This block needs to be dynamic - CAPABILITIES *@
-
-                                                    <div data-test-id="view-question-epic" class="bc-c-epics ">
-                                                        <div class="nhsuk-grid-row">
-
-                                                            <div data-test-id="must-epics" class="nhsuk-grid-column-one-half">
-                                                                <div>
-
-                                                                    <div data-test-id="must-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-outline nhsuk-u-font-size-22">Must epics</div>
-
-                                                                </div>
-
-                                                                <div data-test-id="must-met-epics">
-                                                                    <div class="nhsuk-u-padding-top-5">
-
-                                                                        <h4 data-test-id="" class="bc-c-data-title ">
-                                                                            Must epics that have been met
-                                                                        </h4>
-
-                                                                    </div>
-                                                                    <div>
-
-
-
-
-
-
-
-                                                                        <div data-test-id="must-met-epic-list" class="bc-c-epic-list ">
-                                                                            <ul class="nhsuk-u-margin-bottom-0 nhsuk-list nhsuk-list--tick">
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Access Patient Record (C20E11)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Configure Task rules (C20E3)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Manage Tasks (C20E5)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>Manage Task List configurations (C20E7)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke-width="4" stroke-linecap="round" d="M18.4 7.8l-8.5 8.4L5.6 12"></path></svg> <span>View Task reports (C20E9)</span>
-                                                                                </li>
-
-                                                                            </ul>
-                                                                        </div>
-
-
-                                                                    </div>
-                                                                </div>
-
-
-                                                                <div data-test-id="must-not-met-epics">
-                                                                    <div class="nhsuk-u-padding-top-5">
-
-                                                                        <h4 data-test-id="" class="bc-c-data-title ">
-                                                                            Must epics that have not been met
-                                                                        </h4>
-
-                                                                    </div>
-                                                                    <div>
-
-                                                                        <div data-test-id="must-not-met-epic-list" class="bc-c-epic-list ">
-                                                                            <ul class="nhsuk-u-margin-bottom-0 nhsuk-list nhsuk-list--cross">
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Task templates (C20E1)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>View Workflow reports (C20E10)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Workflow templates (C20E2)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Configure Workflow rules (C20E4)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Workflows (C20E6)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Manage Workflows List configurations (C20E8)</span>
-                                                                                </li>
-
-                                                                            </ul>
-                                                                        </div>
-
-
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-
-
-                                                            <div data-test-id="may-epics" class="nhsuk-grid-column-one-half">
-                                                                <div>
-
-                                                                    <div data-test-id="may-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-outline nhsuk-u-font-size-22">May epics</div>
-
-                                                                </div>
-
-
-                                                                <div data-test-id="may-not-met-epics">
-                                                                    <div class="nhsuk-u-padding-top-5">
-
-                                                                        <h4 data-test-id="" class="bc-c-data-title ">
-                                                                            May epics that have not been met
-                                                                        </h4>
-
-                                                                    </div>
-                                                                    <div>
-
-                                                                        <div data-test-id="may-not-met-epic-list" class="bc-c-epic-list ">
-                                                                            <ul class="nhsuk-u-margin-bottom-0 nhsuk-list nhsuk-list--cross">
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Share Task List configuration (C20E12)</span>
-                                                                                </li>
-
-                                                                                <li>
-                                                                                    <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path><path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path></svg> <span>Share Workflow List configuration (C20E13)</span>
-                                                                                </li>
-
-                                                                            </ul>
-                                                                        </div>
-
-
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-
-                                                    @*END OF CAPABILITIES BLOCK*@
-
-                                                </div>
-                                            </details>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        }
- 
-                    </div>
-                </div>
-            </div>
+            @*Integrations DONE*@
 
             <div data-test-id="view-integrations" class="nhsuk-width-container">
-
                 <div data-test-id="" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Integrations</h3>
                 </div>
-
                 <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-
-
-
                     <div data-test-id="view-integrations-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">View information about the systems this Catalogue Solution integrates with to exchange data:</div>
-
-
                     <div class="nhsuk-grid-column-full">
-
                         <div data-test-id="view-authority-assured-integrations">
-
                             <div data-test-id="view-section-table-row-authority-assured-integrations" class="nhsuk-width-container bc-c-section-table-row ">
                                 <div data-test-id="view-section-table-row-vertical">
-
                                     <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
                                         NHS assured integrations
                                     </h4>
-
                                     <div class="nhsuk-grid-row">
                                         <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
                                             <div data-test-id="view-question-data-text-link-authority-integrations" class="bc-c-data-link nhsuk-u-margin-bottom-3">
-                                                <a href="100000-001/document/integrations.pdf" target="_blank">
+                                                <a href="document/integrations.pdf" target="_blank">
                                                     View NHS assured integrations
                                                 </a>
                                             </div>
-
-
-
-
                                             <div data-test-id="view-data-text-additional-information" class="bc-c-data-text bc-t-font-color--grey-1">To find out more about these NHS assured integrations, follow the links below.</div>
-
-
-
-
-
-
                                             <div data-test-id="view-question-data-text-link-gpconnect" class="bc-c-data-link ">
                                                 <a href="https://digital.nhs.uk/services/gp-connect" target="_blank">
                                                     GPConnect
                                                 </a>
                                             </div>
-
-
-
-
-
-
                                             <div data-test-id="view-question-data-text-link-im1" class="bc-c-data-link ">
                                                 <a href="https://digital.nhs.uk/services/future-gp-it-systems-and-services/im1-pairing-integration" target="_blank">
                                                     IM1
@@ -392,452 +171,96 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
                         </div>
 
-
-
+                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.IntegrationsUrl))
+                        {
+                            <div data-test-id="view-supplier-asserted-integrations">
+                                <div data-test-id="view-section-table-row-supplier-asserted-integrations" class="nhsuk-width-container bc-c-section-table-row bc-t-border--none">
+                                    <div data-test-id="view-section-table-row-vertical">
+                                        <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                            Supplier asserted integrations
+                                        </h4>
+                                        <div class="nhsuk-grid-row">
+                                            <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                                                <div data-test-id="view-data-text-additional-information" class="bc-c-data-text ">Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</div>
+                                                <div data-test-id="view-question-data-text-link-supplier-integrations" class="bc-c-data-link ">
+                                                    <a href="@Model.CatalogueItem.Solution.IntegrationsUrl" target="_blank">
+                                                        @Model.CatalogueItem.Solution.IntegrationsUrl
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
 
                     </div>
                 </div>
             </div>
 
-            <div class="nhsuk-width-container" data-test-id="view-hosting-types">
+            @*Implementation Timescales*@
 
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Hosting type</h3>
-                </div>
-
-                <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                    <div data-test-id="view-section-hosting-types-guidance">
-
-
-
-                        <div data-test-id="view-hosting-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">These are the ways this Catalogue Solution can be hosted:</div>
-
-
+            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.ImplementationDetail))
+            {
+                <div class="nhsuk-width-container" data-test-id="view-implementation-timescales">
+                    <div data-test-id="" class="bc-c-section-heading ">
+                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Implementation timescales</h3>
                     </div>
-                    <div class="nhsuk-grid-column-full">
-
-
-                        <div data-test-id="view-section-hosting-type-public-cloud" class="">
-                            <details class="nhsuk-details">
-                                <summary class="nhsuk-details__summary">
-                                    <span class="nhsuk-details__summary-text">
-                                        Public cloud
-                                    </span>
-                                </summary>
-                                <div class="nhsuk-details__text">
-                                    <dl data-test-id="view-section-table-hosting-type-public-cloud" class="nhsuk-summary-list">
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                                    Summary
-                                                </h4>
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">Summary description</div>
-
-
-
-
-
-
-                                                        <div data-test-id="view-question-data-text-link" class="bc-c-data-link ">
-                                                            <a href="External URL link" target="_blank">
-                                                                External URL link
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-requires-hscn" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-requires-hscn" class="bc-c-data-text nhsuk-u-font-weight-bold">Link to HSCN or N3 network required to access service</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                    </dl>
-
-                                </div>
-                            </details>
-
+                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+                        <div data-test-id="view-implementation-timescales-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">These are the typical processes and timescales to implement this Catalogue Solution:</div>
+                        <div class="nhsuk-grid-column-two-thirds">
+                            <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Solution.ImplementationDetail</div>
                         </div>
-
-
-
-
-
-                        <div data-test-id="view-section-hosting-type-private-cloud" class="">
-                            <details class="nhsuk-details">
-                                <summary class="nhsuk-details__summary">
-                                    <span class="nhsuk-details__summary-text">
-                                        Private cloud
-                                    </span>
-                                </summary>
-                                <div class="nhsuk-details__text">
-                                    <dl data-test-id="view-section-table-hosting-type-private-cloud" class="nhsuk-summary-list">
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                                    Summary
-                                                </h4>
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">Summary description</div>
-
-
-
-
-
-
-                                                        <div data-test-id="view-question-data-text-link" class="bc-c-data-link ">
-                                                            <a href="External URL link" target="_blank">
-                                                                External URL link
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-hosting-model" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                                    Data center hosting model
-                                                </h4>
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-hosting-model" class="bc-c-data-text ">Hosting environment description</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-requires-hscn" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-requires-hscn" class="bc-c-data-text nhsuk-u-font-weight-bold">Link to HSCN or N3 network required to access service</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                    </dl>
-
-                                </div>
-                            </details>
-
-                        </div>
-
-
-
-
-
-                        <div data-test-id="view-section-hosting-type-hybrid" class="">
-                            <details class="nhsuk-details">
-                                <summary class="nhsuk-details__summary">
-                                    <span class="nhsuk-details__summary-text">
-                                        Hybrid
-                                    </span>
-                                </summary>
-                                <div class="nhsuk-details__text">
-                                    <dl data-test-id="view-section-table-hosting-type-hybrid" class="nhsuk-summary-list">
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                                    Summary
-                                                </h4>
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">Summary description</div>
-
-
-
-
-
-
-                                                        <div data-test-id="view-question-data-text-link" class="bc-c-data-link ">
-                                                            <a href="External URL link" target="_blank">
-                                                                External URL link
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-hosting-model" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                                    Data center hosting model
-                                                </h4>
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-hosting-model" class="bc-c-data-text ">Hosting environment description</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-requires-hscn" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-requires-hscn" class="bc-c-data-text nhsuk-u-font-weight-bold">Link to HSCN or N3 network required to access service</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                    </dl>
-
-                                </div>
-                            </details>
-
-                        </div>
-
-
-
-
-
-                        <div data-test-id="view-section-hosting-type-on-premise" class="">
-                            <details class="nhsuk-details">
-                                <summary class="nhsuk-details__summary">
-                                    <span class="nhsuk-details__summary-text">
-                                        On premise
-                                    </span>
-                                </summary>
-                                <div class="nhsuk-details__text">
-                                    <dl data-test-id="view-section-table-hosting-type-on-premise" class="nhsuk-summary-list">
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                                    Summary
-                                                </h4>
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">Summary description</div>
-
-
-
-
-
-
-                                                        <div data-test-id="view-question-data-text-link" class="bc-c-data-link ">
-                                                            <a href="External URL link" target="_blank">
-                                                                External URL link
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-hosting-model" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                                    Data center hosting model
-                                                </h4>
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-hosting-model" class="bc-c-data-text ">Hosting environment description</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div data-test-id="view-section-table-row-requires-hscn" class="nhsuk-width-container bc-c-section-table-row ">
-                                            <div data-test-id="view-section-table-row-vertical">
-
-                                                <div class="nhsuk-grid-row">
-                                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                        <div data-test-id="view-question-data-text-requires-hscn" class="bc-c-data-text nhsuk-u-font-weight-bold">Link to HSCN or N3 network required to access service</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                    </dl>
-
-                                </div>
-                            </details>
-
-                        </div>
-
-
                     </div>
                 </div>
-            </div>
+            }
+
+            @*Client Application Types*@
+
+            @if (Model.DisplayClientApplicationTypes)
+            {
+                <div class="nhsuk-width-container" data-test-id="view-client-application-types">
+                    <div data-test-id="" class="bc-c-section-heading ">
+                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Client application type</h3>
+                    </div>
+                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+                        <div data-test-id="view-section-client-application-types-guidance">
+                            <div data-test-id="view-client-application-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution is supported by the following client application types:</div>
+                        </div>
+                        <div class="nhsuk-grid-column-full">
+                            <partial name="_ClientApplicationTypes" model="Model.BrowserBased" />
+                            <partial name="_ClientApplicationTypes" model="Model.NativeMobile" />
+                            <partial name="_ClientApplicationTypes" model="Model.NativeDesktop" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @*Hosting Type*@
+
+            @if (Model.DisplayHostingType)
+            {
+                <div class="nhsuk-width-container" data-test-id="view-hosting-types">
+                    <div data-test-id="" class="bc-c-section-heading ">
+                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Hosting type</h3>
+                    </div>
+                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+                        <div data-test-id="view-section-hosting-types-guidance">
+                            <div data-test-id="view-hosting-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">These are the ways this Catalogue Solution can be hosted:</div>
+                        </div>
+                        <div class="nhsuk-grid-column-full">
+                            <partial name="_HostingType" model="Model.PublicCloud" />
+                            <partial name="_HostingType" model="Model.PrivateCloud" />
+                            <partial name="_HostingType" model="Model.HybridHostingType" />
+                            <partial name="_HostingType" model="Model.OnPremise" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @*Roadmap DONE APART FROM LINK*@
 
             <div class="nhsuk-width-container" data-test-id="view-roadmap">
                 <div data-test-id="" class="bc-c-section-heading ">
@@ -848,33 +271,55 @@
                         <div data-test-id="view-section-roadmap-guidance">
                             <div data-test-id="view-roadmap-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3">These are the supplier’s development plans for this Catalogue Solution:</div>
                         </div>
-
                         <div data-test-id="view-section-question-document-link">
                             <div data-test-id="view-question-data-link-document-link" class="bc-c-data-link nhsuk-u-margin-bottom-4">
-                                <a href="100000-001/document/roadmap.pdf" target="_blank">
+                                <a href="@Model.CatalogueItem.CatalogueItemId/document/roadmap.pdf" target="_blank">
                                     View roadmap
                                 </a>
                             </div>
                         </div>
+                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.RoadMap))
+                        {
+                            <div data-test-id="view-section-question-summary">
+                                <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.CatalogueItem.Solution.RoadMap</div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
 
-            <div class="nhsuk-width-container" data-test-id="view-about-supplier">
+            @*About Supplier*@
 
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">About supplier</h3>
-                </div>
-
-                <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                    <div class="nhsuk-grid-column-two-thirds nhsuk-u-margin-bottom-5">
-                        <div data-test-id="view-section-question-description">
-                            <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Supplier.Summary</div>
+            @if (Model.DisplaySupplier)
+            {
+                <div class="nhsuk-width-container" data-test-id="view-about-supplier">
+                    <div data-test-id="" class="bc-c-section-heading ">
+                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">About supplier</h3>
+                    </div>
+                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+                        <div class="nhsuk-grid-column-two-thirds nhsuk-u-margin-bottom-5">
+                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.Summary))
+                            {
+                                <div data-test-id="view-section-question-description">
+                                    <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Supplier.Summary</div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.SupplierUrl))
+                            {
+                                <div data-test-id="view-section-question-link">
+                                    <div data-test-id="view-question-data-link" class="bc-c-data-link ">
+                                        <a href="@Model.CatalogueItem.Supplier.SupplierUrl" target="_blank">
+                                            @Model.CatalogueItem.Supplier.SupplierUrl
+                                        </a>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
+            }
 
-            </div>
+            @*Learn More*@
 
             <div class="nhsuk-width-container" data-test-id="view-learn-more">
 
@@ -896,20 +341,31 @@
                 </div>
             </div>
 
-            <div class="nhsuk-width-container" data-test-id="view-solution-contact-details">
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Contact details</h3>
-                </div>
-                <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4 nhsuk-u-padding-left-3">
-                    <div data-test-id="view-section-question-contact-1" class="nhsuk-grid-column-one-half">
-                        <div data-test-id="view-question-data-text-contact-name" class="bc-c-data-text ">@Model.ContactName</div>
-                        <div data-test-id="view-question-data-text-department-name" class="bc-c-data-text ">@Model.Department</div>
-                        <div data-test-id="view-question-data-text-phone-number" class="bc-c-data-text ">@Model.PhoneNumber</div>
-                        <div data-test-id="view-question-data-text-email-address" class="bc-c-data-text ">@Model.EmailAddress</div>
+            @*Contact Details*@
+
+            @if (Model.DisplayContacts)
+            {
+                <div class="nhsuk-width-container" data-test-id="view-solution-contact-details">
+                    <div data-test-id="" class="bc-c-section-heading ">
+                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Contact details</h3>
+                    </div>
+                    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4 nhsuk-u-padding-left-3">
+                        <div data-test-id="view-section-question-contact-1" class="nhsuk-grid-column-one-half">
+                            <div data-test-id="view-question-data-text-contact-name" class="bc-c-data-text ">@Model.Contact1Name</div>
+                            <div data-test-id="view-question-data-text-department-name" class="bc-c-data-text ">@Model.Contact1Department</div>
+                            <div data-test-id="view-question-data-text-phone-number" class="bc-c-data-text ">@Model.Contact1PhoneNumber</div>
+                            <div data-test-id="view-question-data-text-email-address" class="bc-c-data-text ">@Model.Contact1EmailAddress</div>
+                        </div>
+                        <div data-test-id="view-section-question-contact-2" class="nhsuk-grid-column-one-half">
+                            <div data-test-id="view-question-data-text-contact-name" class="bc-c-data-text ">@Model.Contact2Name</div>
+                            <div data-test-id="view-question-data-text-department-name" class="bc-c-data-text ">@Model.Contact2Department</div>
+                            <div data-test-id="view-question-data-text-phone-number" class="bc-c-data-text ">@Model.Contact2PhoneNumber</div>
+                            <div data-test-id="view-question-data-text-email-address" class="bc-c-data-text ">@Model.Contact2EmailAddress</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
+            }
+
             <div class="nhsuk-u-padding-left-3 nhsuk-u-padding-right-3 nhsuk-u-padding-top-5 bc-u-text-align-right">
                 <div data-test-id="back-to-top-link" class="bc-c-back-to-top ">
                     <a class="nhsuk-back-to-top__link" href="#maincontent">
@@ -920,9 +376,9 @@
                     </a>
                 </div>
             </div>
+
         </div>
     </div>
-
 </div>
 
 

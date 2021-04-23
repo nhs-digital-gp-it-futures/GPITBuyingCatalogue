@@ -65,7 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var solution = await _solutionsService.GetSolution(id);
 
             var model = new SolutionDetailModel(solution);
-
+            model.BackLink = $"/marketing/supplier/solution/{id}";
+            
             return View("SolutionDetail", model);
         }
     }

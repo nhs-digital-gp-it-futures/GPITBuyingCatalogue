@@ -11,7 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 
         public ThirdPartyModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {            
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-desktop";                                    
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-desktop";
+
+            ThirdPartyComponents = ClientApplication.NativeDesktopThirdParty?.ThirdPartyComponents;
+            DeviceCapabilities = ClientApplication.NativeDesktopThirdParty?.DeviceCapabilities;
         }
 
         public override bool? IsComplete
@@ -22,5 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
                   !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopThirdParty?.DeviceCapabilities);
             }
         }        
+
+        public string ThirdPartyComponents { get; set; }
+
+        public string DeviceCapabilities { get; set; }
     }
 }

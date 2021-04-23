@@ -34,7 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         public override bool? IsComplete
         {
-            get { return ClientApplication.BrowsersSupported?.Any(); }
+            get 
+            {
+                if (ClientApplication.BrowsersSupported == null || !ClientApplication.BrowsersSupported.Any())
+                    return false;
+
+                return ClientApplication.MobileResponsive.HasValue;
+            }
         }
 
         public SupportedBrowserModel[] Browsers { get; set; }

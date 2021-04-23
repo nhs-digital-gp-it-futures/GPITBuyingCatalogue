@@ -21,6 +21,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Services;
+using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -29,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     {
         private const string IdentityDbConnectionEnvironmentVariable = "ID_DB_CONNECTION";
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
+        private const string OperatingModeEvironmentVariable = "OPERATING_MODE";
 
         public Startup(IConfiguration configuration)
         {
@@ -81,6 +83,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.UseHttpsRedirection();
 
+            var operatingMode = Environment.GetEnvironmentVariable(OperatingModeEvironmentVariable);
+
+            // Disable the marketing pages when deployed publicly
+            if(string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
+                app.UseMiddleware<DisableMarketingMiddleware>();
+
             app.UseStaticFiles(new StaticFileOptions()
             {
                 OnPrepareResponse = (context) =>
@@ -106,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
-            {
+            {                
                 endpoints.MapControllerRoute(
                     name: "areas",
                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
@@ -226,5 +234,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));
             });
         }
-    }
+    }    
 }

@@ -91,6 +91,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.Framework)
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.MarketingContacts)
+                .Include(x=>x.Solution)
+                .ThenInclude(x=>x.SolutionEpics)
+                .ThenInclude(x=>x.Status)
+                .Include(x => x.Solution)
+                .ThenInclude(x => x.SolutionEpics)
+                .ThenInclude(x => x.Epic)
+                .ThenInclude(x => x.CompliancyLevel)
                 .Where(x => x.CatalogueItemId == id)        
                 .FirstOrDefaultAsync();
 
