@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class SolutionDetailModel
+    public class SolutionDetailModel : NavBaseModel
     {
         public SolutionDetailModel(CatalogueItem catalogueItem)
         {
@@ -12,31 +13,120 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Features = catalogueItem.Solution.GetFeatures();            
             PopulateContactInformation();
             PopulateFrameworks();
+            BrowserBased = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.BrowserBased, CatalogueItem.Solution.GetClientApplication());
+            NativeMobile = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.NativeMobile, CatalogueItem.Solution.GetClientApplication());
+            NativeDesktop = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.NativeDesktop, CatalogueItem.Solution.GetClientApplication());
+            PublicCloud = new HostingTypeModel(CatalogueItem.Solution.GetHosting().PublicCloud);
+            PrivateCloud = new HostingTypeModel(CatalogueItem.Solution.GetHosting().PrivateCloud);
+            HybridHostingType = new HostingTypeModel(CatalogueItem.Solution.GetHosting().HybridHostingType);
+            OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
         }
 
+        // MJRTODO - Make this private and add appropriate properties
         public CatalogueItem CatalogueItem { get; private set; }
-
-        public string[] Features { get; private set; }
 
         public string Frameworks { get; private set; }
 
-        public string ContactName { get; private set; }
+        public string[] Features { get; private set; }
 
-        public string Department { get; private set; }
+        public ClientApplicationTypeModel BrowserBased { get; set; }
 
-        public string PhoneNumber { get; private set; }
+        public ClientApplicationTypeModel NativeMobile { get; set; }
 
-        public string EmailAddress { get; private set; }
+        public ClientApplicationTypeModel NativeDesktop { get; set; }
+
+        public bool DisplayClientApplicationTypes
+        {
+            get { return BrowserBased.DisplayClientApplication || NativeMobile.DisplayClientApplication || NativeDesktop.DisplayClientApplication; }
+        }
+
+        public bool DisplayHostingType
+        {
+            get { return PublicCloud.DisplayHostingType || PrivateCloud.DisplayHostingType || HybridHostingType.DisplayHostingType || OnPremise.DisplayHostingType; }
+        }
+
+        public HostingTypeModel PublicCloud { get; set; }
+        public HostingTypeModel PrivateCloud { get; set; }
+        public HostingTypeModel HybridHostingType { get; set; }        
+        public HostingTypeModel OnPremise{ get; set; }
+
+        public bool DisplayPublicCloud
+        {
+            get 
+            {
+                var publicCloud = CatalogueItem.Solution.GetHosting().PublicCloud;
+
+                if (publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary) || 
+                    !string.IsNullOrWhiteSpace(publicCloud.Link) ||
+                    !string.IsNullOrWhiteSpace(publicCloud.RequiresHscn))
+                    return true;
+
+                return false;
+            }
+        }
+
+        public bool DisplayPublicCloudSummary
+        {
+            get
+            {
+                var publicCloud = CatalogueItem.Solution.GetHosting().PublicCloud;
+
+                if (publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary) ||
+                    !string.IsNullOrWhiteSpace(publicCloud.Link))                    
+                    return true;
+
+                return false;
+            }
+        }
+
+        public string Contact1Name { get; private set; }
+
+        public string Contact1Department { get; private set; }
+
+        public string Contact1PhoneNumber { get; private set; }
+
+        public string Contact1EmailAddress { get; private set; }
+
+        public string Contact2Name { get; private set; }
+
+        public string Contact2Department { get; private set; }
+
+        public string Contact2PhoneNumber { get; private set; }
+
+        public string Contact2EmailAddress { get; private set; }
+
+        public bool DisplayContacts
+        {
+            get { return CatalogueItem.Solution.MarketingContacts.Any();  }
+        }
+
+        public bool DisplaySupplier
+        {
+            get 
+            {
+                return !string.IsNullOrWhiteSpace(CatalogueItem.Supplier.Summary) ||
+                    !string.IsNullOrWhiteSpace(CatalogueItem.Supplier.SupplierUrl);
+            }
+        }
 
         private void PopulateContactInformation()
         {
             if( CatalogueItem.Solution.MarketingContacts.Any())
             {
                 var contact = CatalogueItem.Solution.MarketingContacts.First();
-                ContactName = $"{contact.FirstName} {contact.LastName}";
-                Department = contact.Department;
-                PhoneNumber = contact.PhoneNumber;
-                EmailAddress = contact.Email;
+                Contact1Name = $"{contact.FirstName} {contact.LastName}";
+                Contact1Department = contact.Department;
+                Contact1PhoneNumber = contact.PhoneNumber;
+                Contact1EmailAddress = contact.Email;
+
+                if(CatalogueItem.Solution.MarketingContacts.Count() > 1)
+                {
+                    contact = CatalogueItem.Solution.MarketingContacts.Skip(1).First();
+                    Contact2Name = $"{contact.FirstName} {contact.LastName}";
+                    Contact2Department = contact.Department;
+                    Contact2PhoneNumber = contact.PhoneNumber;
+                    Contact2EmailAddress = contact.Email;
+                }
             }
         }
 

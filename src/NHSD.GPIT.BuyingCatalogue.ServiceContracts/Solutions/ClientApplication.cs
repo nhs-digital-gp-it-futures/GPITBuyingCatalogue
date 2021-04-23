@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public bool? MobileResponsive { get; set; }
 
-        public Plugins Plugins { get; set; }
+        public Plugins Plugins { get; set; } 
 
         public string HardwareRequirements { get; set; }
 
@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public MobileConnectionDetails MobileConnectionDetails { get; set; }
 
-        public MobileMemoryAndStorage MobileMemoryAndStorage { get; set; }
+        public MobileMemoryAndStorage MobileMemoryAndStorage { get; set; } 
 
-        public MobileThirdParty MobileThirdParty { get; set; }
+        public MobileThirdParty MobileThirdParty { get; set; } = new();
 
         public string NativeMobileAdditionalInformation { get; set; }
 
@@ -44,9 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string NativeDesktopMinimumConnectionSpeed { get; set; }
 
-        public NativeDesktopThirdParty NativeDesktopThirdParty { get; set; }
+        public NativeDesktopThirdParty NativeDesktopThirdParty { get; set; } 
 
-        public NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; }
+        public NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; } 
 
         public string NativeDesktopAdditionalInformation { get; set; }
     }
