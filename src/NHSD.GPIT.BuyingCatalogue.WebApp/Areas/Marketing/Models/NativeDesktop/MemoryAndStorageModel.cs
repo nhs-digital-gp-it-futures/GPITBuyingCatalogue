@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
                 new SelectListItem{ Text = "16:9 - 3840 x 2160", Value = "16:9 - 3840 x 2160" }
             };
 
-            SelectedScreenResolution = ClientApplication.MinimumDesktopResolution;
+            SelectedScreenResolution = ClientApplication.NativeDesktopMemoryAndStorage?.RecommendedResolution;
         }
 
         public override bool? IsComplete

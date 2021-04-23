@@ -111,10 +111,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             clientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
             clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription = model.StorageDescription;
-            clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.MinimumCpu;
-
-            // MJRTODO - Both browser-based and native-desktop are using this property????
-            clientApplication.MinimumDesktopResolution = model.SelectedScreenResolution;
+            clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.MinimumCpu;            
+            clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedScreenResolution;
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 

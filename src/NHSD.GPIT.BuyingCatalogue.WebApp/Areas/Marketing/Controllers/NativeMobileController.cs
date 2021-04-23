@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -44,7 +45,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
 
-            // TODO
+            if (clientApplication.MobileOperatingSystems == null)
+                clientApplication.MobileOperatingSystems = new MobileOperatingSystems();
+
+            if (clientApplication.MobileOperatingSystems.OperatingSystems == null)
+                clientApplication.MobileOperatingSystems.OperatingSystems = new System.Collections.Generic.HashSet<string>();
+
+            clientApplication.MobileOperatingSystems.OperatingSystems.Clear();
+
+            foreach (var operatingSystem in model.OperatingSystems.Where(x => x.Checked))
+                clientApplication.MobileOperatingSystems.OperatingSystems.Add(operatingSystem.OperatingSystemName);
+
+            clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
@@ -108,8 +120,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
+            
+            if (clientApplication.MobileConnectionDetails == null)
+                clientApplication.MobileConnectionDetails = new MobileConnectionDetails();
 
-            // TODO
+            clientApplication.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
+            clientApplication.MobileConnectionDetails.Description = model.Description;
+
+            if (clientApplication.MobileConnectionDetails.ConnectionType == null)
+                clientApplication.MobileConnectionDetails.ConnectionType = new System.Collections.Generic.HashSet<string>();
+
+            clientApplication.MobileConnectionDetails.ConnectionType.Clear();
+            
+            foreach (var connectionType in model.ConnectionTypes.Where(x => x.Checked))
+                clientApplication.MobileConnectionDetails.ConnectionType.Add(connectionType.ConnectionType);
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
