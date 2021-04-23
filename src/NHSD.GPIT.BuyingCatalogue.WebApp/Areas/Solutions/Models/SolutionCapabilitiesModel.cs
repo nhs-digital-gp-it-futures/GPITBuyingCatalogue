@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateEpics(Solution solution)
         {
-            foreach(var solutionEpic in solution.SolutionEpics.Where(x=>x.CapabilityId == Id && x.Epic.Active))
+            foreach(var solutionEpic in solution.SolutionEpics.Where(x=>x.CapabilityId == Id && x.Epic.Active && x.Epic.CompliancyLevel != null))
             {
                 var epicLabel = $"{solutionEpic.Epic.Name} ({solutionEpic.Epic.Id})";
 
