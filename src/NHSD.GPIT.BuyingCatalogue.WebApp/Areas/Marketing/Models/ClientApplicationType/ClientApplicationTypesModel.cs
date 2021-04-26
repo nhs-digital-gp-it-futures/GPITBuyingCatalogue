@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
 
         public override bool? IsComplete
         {
-            get { return CatalogueItem.Solution?.GetClientApplication().ClientApplicationTypes?.Any(); }
+            get { return CatalogueItem?.Solution?.GetClientApplication().ClientApplicationTypes?.Any(); }
         }
         
         public bool BrowserBased { get; set; }

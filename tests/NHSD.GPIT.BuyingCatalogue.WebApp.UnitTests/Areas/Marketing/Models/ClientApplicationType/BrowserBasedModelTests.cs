@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithEmptyCatalogueItem_AllStatusesIncomplete()
         {
-            var catalogueItem = new CatalogueItem { Solution = new Solution(), CatalogueItemId = "123" };
+            var catalogueItem = new CatalogueItem { Solution = new EntityFramework.Models.BuyingCatalogue.Solution(), CatalogueItemId = "123" };
 
             var model = new BrowserBasedModel(catalogueItem);
 

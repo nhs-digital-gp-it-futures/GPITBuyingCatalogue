@@ -24,11 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(ClientApplication.MobileThirdParty?.ThirdPartyComponents) ||
-                  !string.IsNullOrWhiteSpace(ClientApplication.MobileThirdParty?.DeviceCapabilities);
+                return !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.ThirdPartyComponents) ||
+                  !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.DeviceCapabilities);
             }
         }
-
 
         public string ThirdPartyComponents { get; set; }
 

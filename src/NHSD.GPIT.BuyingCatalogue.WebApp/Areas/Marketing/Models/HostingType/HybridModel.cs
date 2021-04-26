@@ -24,9 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(HybridHostingType.Summary) ||
-                    !string.IsNullOrWhiteSpace(HybridHostingType.Link) ||
-                    !string.IsNullOrWhiteSpace(HybridHostingType.RequiresHscn);                                                                
+                return !string.IsNullOrWhiteSpace(HybridHostingType?.Summary) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType?.Link) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType?.RequiresHscn) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType?.HostingModel);
             }
         }        
 
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(HybridHostingType.RequiresHscn); }
+            get { return !string.IsNullOrWhiteSpace(HybridHostingType?.RequiresHscn); }
             set
             {
                 if (value)

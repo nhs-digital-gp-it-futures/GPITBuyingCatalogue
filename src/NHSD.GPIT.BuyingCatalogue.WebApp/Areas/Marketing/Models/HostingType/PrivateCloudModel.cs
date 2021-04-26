@@ -24,10 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(PrivateCloud.Summary) ||
-                    !string.IsNullOrWhiteSpace(PrivateCloud.Link) ||
-                    !string.IsNullOrWhiteSpace(PrivateCloud.RequiresHscn) ||
-                    !string.IsNullOrWhiteSpace(PrivateCloud.HostingModel);
+                return !string.IsNullOrWhiteSpace(PrivateCloud?.Summary) ||
+                    !string.IsNullOrWhiteSpace(PrivateCloud?.Link) ||
+                    !string.IsNullOrWhiteSpace(PrivateCloud?.RequiresHscn) ||
+                    !string.IsNullOrWhiteSpace(PrivateCloud?.HostingModel);
             }
         }        
 
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(PrivateCloud.RequiresHscn); }
+            get { return !string.IsNullOrWhiteSpace(PrivateCloud?.RequiresHscn); }
             set
             {
                 if (value)

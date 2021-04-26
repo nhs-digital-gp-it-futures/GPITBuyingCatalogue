@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 
         public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopOperatingSystemsDescription); }
+            get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopOperatingSystemsDescription); }
         }        
 
         public string OperatingSystemsDescription { get; set; }

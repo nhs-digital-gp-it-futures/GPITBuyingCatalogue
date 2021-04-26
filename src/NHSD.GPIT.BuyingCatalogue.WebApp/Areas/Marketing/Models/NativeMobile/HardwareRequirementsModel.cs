@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
         public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication.NativeMobileHardwareRequirements); }
+            get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeMobileHardwareRequirements); }
         }
 
         public string Description { get; set; }

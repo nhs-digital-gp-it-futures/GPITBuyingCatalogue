@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
         public override bool? IsComplete
         {
-            get { return ClientApplication.NativeMobileFirstDesign.HasValue; }
+            get { return ClientApplication?.NativeMobileFirstDesign.HasValue; }
         }
 
         public string MobileFirstApproach { get; set; }

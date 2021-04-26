@@ -24,8 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopThirdParty?.ThirdPartyComponents) ||
-                  !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopThirdParty?.DeviceCapabilities);
+                return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopThirdParty?.ThirdPartyComponents) ||
+                  !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopThirdParty?.DeviceCapabilities);
             }
         }        
 
