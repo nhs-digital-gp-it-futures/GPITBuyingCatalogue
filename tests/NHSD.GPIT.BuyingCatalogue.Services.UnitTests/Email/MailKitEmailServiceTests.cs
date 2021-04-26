@@ -5,10 +5,10 @@ using System.Net.Mail;
 using System.Net.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using FluentAssertions;
 using MailKit;
 using MailKit.Security;
-using Microsoft.Extensions.Logging;
 using MimeKit;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -87,15 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         [Test]
         public static async Task SendEmailAsync_ConnectsWithExpectedSettings()
         {
-            const string host = "host";
-            const int port = 125;
-
-            var settings = new SmtpSettings
-            {
-                Authentication = new SmtpAuthenticationSettings(),
-                Host = host,
-                Port = port,
-            };
+            var settings = new Fixture().Build<SmtpSettings>().Create();
 
             var mockTransport = new Mock<IMailTransport>();
 
@@ -302,25 +294,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         [Test]
         public static void SendEmailAsync_Exception_LogsError()
         {
+            const string formatErrorMessage =
+                "SendEmailAsync: Failed: {server}:{port} with auth required {isRequired} and U:{user}, Sending Message {@mimeMessage}";
             var mockLogger = new Mock<ILogWrapper<MailKitEmailService>>();
+            var settings = new Fixture().Build<SmtpSettings>().Create();
             var mockTransport = new Mock<IMailTransport>();
+            var exception = new SmtpFailedRecipientException(SmtpStatusCode.ServiceNotAvailable, "to@recipient.test");
             mockTransport.Setup(
                 t => t.SendAsync(
                     It.IsAny<MimeMessage>(),
                     It.IsAny<CancellationToken>(),
                     It.IsAny<ITransferProgress>()))
-                .ThrowsAsync(new SmtpFailedRecipientException(SmtpStatusCode.ServiceNotAvailable, "to@recipient.test"));
+                .ThrowsAsync(exception);
 
             var message = new EmailMessage(BasicTemplate, SingleRecipient);
 
             var service = new MailKitEmailService(
                 mockTransport.Object,
-                new SmtpSettings(),
+                settings,
                 mockLogger.Object);
 
             Assert.ThrowsAsync<SmtpFailedRecipientException>(async () => await service.SendEmailAsync(message));
-
-            mockLogger.Verify(x => x.LogError(It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()),Times.Once);
+            mockLogger.Verify(l => l.LogError(
+                exception, 
+                formatErrorMessage, 
+                settings.Host,
+                settings.Port,
+                settings.Authentication.IsRequired,
+                settings.Authentication.UserName,
+                message), Times.Once);
         }
     }
 }

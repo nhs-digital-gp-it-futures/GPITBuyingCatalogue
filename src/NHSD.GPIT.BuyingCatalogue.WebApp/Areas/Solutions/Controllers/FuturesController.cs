@@ -22,8 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         public IActionResult Index()
         {
-            _logger.LogTrace("Taking user to Index View");
-
             return View();
         }
 

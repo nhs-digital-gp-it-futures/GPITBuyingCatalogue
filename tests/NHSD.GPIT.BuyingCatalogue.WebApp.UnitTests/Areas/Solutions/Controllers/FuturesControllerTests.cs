@@ -49,11 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var result = controller.Index() as ViewResult;
 
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.IsNull(((ViewResult)result).ViewName);
             result.Should().NotBeNull();
-            result.ViewName.Should().BeNullOrEmpty();
-            mockLogger.Verify(x => x.LogTrace("Taking user to Index View"), Times.Once);            
+            result.ViewName.Should().BeNull();
         }
         
         [Test]
