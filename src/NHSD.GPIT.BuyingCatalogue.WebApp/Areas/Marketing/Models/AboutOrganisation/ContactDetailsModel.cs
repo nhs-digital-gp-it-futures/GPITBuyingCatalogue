@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
@@ -13,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
 
         public ContactDetailsModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";            
             
             var allContacts = CatalogueItem.Solution.MarketingContacts.ToArray();
@@ -30,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
 
         public override bool? IsComplete
         {
-            get { return CatalogueItem.Solution?.MarketingContacts?.Any(); }
+            get { return CatalogueItem?.Solution?.MarketingContacts?.Any(); }
         }
         
         public MarketingContact Contact1 { get; set; }

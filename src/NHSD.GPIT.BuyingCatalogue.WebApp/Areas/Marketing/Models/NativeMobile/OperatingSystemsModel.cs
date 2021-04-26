@@ -11,7 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         }
 
         public OperatingSystemsModel(CatalogueItem catalogueItem) : base(catalogueItem)
-        {            
+        {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
             OperatingSystems = new SupportedOperatingSystemModel[]

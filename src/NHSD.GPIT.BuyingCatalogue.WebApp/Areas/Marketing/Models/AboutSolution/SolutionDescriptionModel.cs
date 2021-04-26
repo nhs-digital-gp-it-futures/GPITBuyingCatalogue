@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
@@ -10,6 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public SolutionDescriptionModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                                    
             Summary = catalogueItem.Solution.Summary;
             Description = catalogueItem.Solution.FullDescription;
@@ -18,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution?.Summary); }
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.Summary); }
         }
                 
         public string Summary { get; set; }

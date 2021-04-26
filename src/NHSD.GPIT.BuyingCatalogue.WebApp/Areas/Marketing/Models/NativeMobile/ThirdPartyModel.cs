@@ -10,7 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         }
 
         public ThirdPartyModel(CatalogueItem catalogueItem) : base(catalogueItem)
-        {            
+        {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
             ThirdPartyComponents = ClientApplication.MobileThirdParty?.ThirdPartyComponents;
@@ -21,11 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(ClientApplication.MobileThirdParty?.ThirdPartyComponents) ||
-                  !string.IsNullOrWhiteSpace(ClientApplication.MobileThirdParty?.DeviceCapabilities);
+                return !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.ThirdPartyComponents) ||
+                  !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.DeviceCapabilities);
             }
         }
-
 
         public string ThirdPartyComponents { get; set; }
 

@@ -12,7 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
         }
 
         public ConnectivityAndResolutionModel(CatalogueItem catalogueItem) : base(catalogueItem)
-        {            
+        {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
 
             ConnectionSpeeds = new List<SelectListItem>

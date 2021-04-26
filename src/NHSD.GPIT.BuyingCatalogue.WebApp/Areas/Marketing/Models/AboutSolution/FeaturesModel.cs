@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
@@ -12,6 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public FeaturesModel(CatalogueItem catalogueItem) : base (catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";            
 
             var features = CatalogueItem.Solution.GetFeatures();
@@ -29,18 +33,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public override bool? IsComplete
         {
-            get{ return CatalogueItem.Solution?.GetFeatures().Any(); }
-        }        
-        
-        public string Listing1 { get; set; }
-        public string Listing2 { get; set; }
-        public string Listing3 { get; set; }
-        public string Listing4 { get; set; }
-        public string Listing5 { get; set; }
-        public string Listing6 { get; set; }
-        public string Listing7 { get; set; }
-        public string Listing8 { get; set; }
-        public string Listing9 { get; set; }
-        public string Listing10 { get; set; }
+            get{ return CatalogueItem?.Solution?.GetFeatures().Any(); }
+        }
+
+        public string Listing1 { get; set; } = string.Empty;
+        public string Listing2 { get; set; } = string.Empty;
+        public string Listing3 { get; set; } = string.Empty;
+        public string Listing4 { get; set; } = string.Empty;
+        public string Listing5 { get; set; } = string.Empty;
+        public string Listing6 { get; set; } = string.Empty;
+        public string Listing7 { get; set; } = string.Empty;
+        public string Listing8 { get; set; } = string.Empty;
+        public string Listing9 { get; set; } = string.Empty;
+        public string Listing10 { get; set; } = string.Empty;
     }
 }

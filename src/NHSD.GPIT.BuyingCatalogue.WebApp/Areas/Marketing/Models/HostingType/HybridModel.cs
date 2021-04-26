@@ -13,6 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public HybridModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
             HybridHostingType = CatalogueItem.Solution.GetHosting().HybridHostingType;
         }
@@ -21,9 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(HybridHostingType.Summary) ||
-                    !string.IsNullOrWhiteSpace(HybridHostingType.Link) ||
-                    !string.IsNullOrWhiteSpace(HybridHostingType.RequiresHscn);                                                                
+                return !string.IsNullOrWhiteSpace(HybridHostingType?.Summary) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType?.Link) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType?.RequiresHscn) ||
+                    !string.IsNullOrWhiteSpace(HybridHostingType?.HostingModel);
             }
         }        
 
@@ -31,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(HybridHostingType.RequiresHscn); }
+            get { return !string.IsNullOrWhiteSpace(HybridHostingType?.RequiresHscn); }
             set
             {
                 if (value)

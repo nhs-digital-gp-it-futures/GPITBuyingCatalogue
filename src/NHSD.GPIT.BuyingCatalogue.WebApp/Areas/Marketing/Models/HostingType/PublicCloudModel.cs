@@ -8,12 +8,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
     public class PublicCloudModel : MarketingBaseModel
     {
         public PublicCloudModel() : base(null)
-        {
-            PublicCloud = new PublicCloud();
+        {            
         }
 
         public PublicCloudModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
             PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
         }
@@ -22,9 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(PublicCloud.Summary) ||
-                    !string.IsNullOrWhiteSpace(PublicCloud.Link) ||
-                    !string.IsNullOrWhiteSpace(PublicCloud.RequiresHscn);
+                return !string.IsNullOrWhiteSpace(PublicCloud?.Summary) ||
+                    !string.IsNullOrWhiteSpace(PublicCloud?.Link) ||
+                    !string.IsNullOrWhiteSpace(PublicCloud?.RequiresHscn);
             }
         }        
 
@@ -32,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
         
         public bool RequiresHscnChecked 
         {
-            get { return !string.IsNullOrWhiteSpace(PublicCloud.RequiresHscn); }
+            get { return !string.IsNullOrWhiteSpace(PublicCloud?.RequiresHscn); }
             set
             {
                 if (value)

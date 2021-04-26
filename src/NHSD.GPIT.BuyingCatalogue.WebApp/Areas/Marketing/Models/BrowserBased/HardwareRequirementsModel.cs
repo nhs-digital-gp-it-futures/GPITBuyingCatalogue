@@ -10,7 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
         }
 
         public HardwareRequirementsModel(CatalogueItem catalogueItem) : base(catalogueItem)
-        {            
+        {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
 
             Description = ClientApplication.HardwareRequirements;
@@ -18,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication.HardwareRequirements); }
+            get { return !string.IsNullOrWhiteSpace(ClientApplication?.HardwareRequirements); }
         }     
         
         public string Description { get; set; }

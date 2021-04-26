@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
@@ -12,6 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         public SupportedBrowsersModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
 
             Browsers = new SupportedBrowserModel[]
@@ -29,14 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             CheckBrowsers();
 
             if (ClientApplication.MobileResponsive.HasValue)
-                MobileResponsive = ClientApplication.MobileResponsive.GetValueOrDefault() ? "Yes" : "No";
+                MobileResponsive = ClientApplication.MobileResponsive.ToYesNo();
         }
 
         public override bool? IsComplete
         {
             get 
             {
-                if (ClientApplication.BrowsersSupported == null || !ClientApplication.BrowsersSupported.Any())
+                if (ClientApplication == null || ClientApplication.BrowsersSupported == null || !ClientApplication.BrowsersSupported.Any())
                     return false;
 
                 return ClientApplication.MobileResponsive.HasValue;

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware
-{
+{    
     public class DisableMarketingMiddleware
     {
         private readonly RequestDelegate next;
