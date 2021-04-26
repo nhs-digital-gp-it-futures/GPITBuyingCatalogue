@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
@@ -10,13 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public IntegrationsModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
             Link = CatalogueItem.Solution.IntegrationsUrl;
         }
 
         public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(CatalogueItem.Solution?.IntegrationsUrl); }
+            get { return !string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.IntegrationsUrl); }
         }
         
         public string Link { get; set; }

@@ -10,7 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
         }
 
         public AdditionalInformationModel(CatalogueItem catalogueItem) : base(catalogueItem)
-        {            
+        {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
 
             AdditionalInformation = ClientApplication.AdditionalInformation;
@@ -18,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication.AdditionalInformation); }
+            get { return !string.IsNullOrWhiteSpace(ClientApplication?.AdditionalInformation); }
         }      
         
         public string AdditionalInformation { get; set; }

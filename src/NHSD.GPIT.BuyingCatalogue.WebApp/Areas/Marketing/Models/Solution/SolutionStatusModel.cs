@@ -12,6 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
     {
         public SolutionStatusModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             CatalogueItemName = CatalogueItem.Name;
             SupplierName = CatalogueItem.Supplier.Name;
         }            

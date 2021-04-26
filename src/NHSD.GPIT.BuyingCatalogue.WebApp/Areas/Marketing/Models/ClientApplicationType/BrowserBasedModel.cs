@@ -14,13 +14,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
 
         public BrowserBasedModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
         }
 
         public override bool? IsComplete
         {
             get 
-            { 
+            {
+                if (CatalogueItem == null)
+                    return false;
+
                 return new SupportedBrowsersModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
                     new MobileFirstApproachModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
                     new PlugInsOrExtensionsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
