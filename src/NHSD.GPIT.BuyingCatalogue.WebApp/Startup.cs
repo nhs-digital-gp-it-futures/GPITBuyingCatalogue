@@ -28,9 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        private const string IdentityDbConnectionEnvironmentVariable = "ID_DB_CONNECTION";
-        private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
-        private const string OperatingModeEvironmentVariable = "OPERATING_MODE";
+        private const string OperatingModeEnvironmentVariable = "OPERATING_MODE";
 
         public Startup(IConfiguration configuration)
         {
@@ -46,21 +44,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             var healthChecksBuilder = services.AddHealthChecks();
 
-            ConfigureDbContexts(services, healthChecksBuilder);
+            services.ConfigureDbContexts(healthChecksBuilder);
 
-            ConfigureIdentity(services);
+            services.ConfigureIdentity();
 
-            ConfigureCookies(services);
+            services.ConfigureCookies(Configuration);
 
-            ConfigureIssuer(services);
+            services.ConfigureIssuer(Configuration);
 
-            ConfigurePasswordReset(services);
+            services.ConfigurePasswordReset(Configuration);
 
-            ConfigureEmail(services, healthChecksBuilder);
+            services.ConfigureEmail(Configuration, healthChecksBuilder);
 
-            ConfigureDisabledErrorMessage(services);
+            services.ConfigureDisabledErrorMessage(Configuration);
 
-            ConfigureAuthorization(services);
+            services.ConfigureAuthorization();
 
             ServicesStartup.Configure(services);
         }
@@ -83,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.UseHttpsRedirection();
 
-            var operatingMode = Environment.GetEnvironmentVariable(OperatingModeEvironmentVariable);
+            var operatingMode = Environment.GetEnvironmentVariable(OperatingModeEnvironmentVariable);
 
             // Disable the marketing pages when deployed publicly
             if(string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
@@ -133,105 +131,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 {
                     Predicate = healthCheckRegistration => healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready),
                 });
-            });
-        }
-
-        private void ConfigureDbContexts(IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
-        {
-            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
-            {
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
-            }
-
-            var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(identityConnectionString))
-            {
-                throw new InvalidOperationException($"Environment variable '{IdentityDbConnectionEnvironmentVariable}' must be set for the database connection string");
-            }
-
-            services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
-            services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(identityConnectionString));
-
-            healthCheckBuilder.AddDatabaseHealthCheck(identityConnectionString);
-        }
-
-        private static void ConfigureIdentity(IServiceCollection services)
-        {
-            services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, UserClaimsPrincipalFactoryEx<AspNetUser>>();
-
-            services.AddIdentity<AspNetUser, AspNetRole>(o =>
-            {
-                o.Password.RequireDigit = false;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequiredLength = 10;
-                o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                o.Lockout.MaxFailedAccessAttempts = 6;
-            })
-            .AddEntityFrameworkStores<UsersDbContext>()                               
-            .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
-            .AddPasswordValidator<PasswordValidator>();
-        }
-
-        private void ConfigureCookies(IServiceCollection services)
-        {
-            var cookieExpiration = Configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.Name = "user-session";
-                options.LoginPath = "/Identity/Account/Login";
-                options.LogoutPath = "/Identity/Account/Logout";
-                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
-                options.SlidingExpiration = cookieExpiration.SlidingExpiration;
-                options.AccessDeniedPath = "/404"; // MJRTODO - don't like this
-            });
-
-            services.AddAntiforgery(options => options.Cookie.Name = "antiforgery");
-        }
-
-        private void ConfigureIssuer(IServiceCollection services)
-        {
-            var issuerUrl = Configuration.GetValue<string>("issuerUrl");
-            var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
-            services.AddSingleton(issuerSettings);
-        }
-
-        private void ConfigurePasswordReset(IServiceCollection services)
-        {
-            var passwordResetSettings = Configuration.GetSection("passwordReset").Get<PasswordResetSettings>();
-            services.AddSingleton(passwordResetSettings);
-            services.AddScoped<IPasswordService, PasswordService>();
-            services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
-        }
-
-        private void ConfigureEmail(IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
-        {
-            var allowInvalidCertificate = Configuration.GetValue<bool>("AllowInvalidCertificate");
-            var smtpSettings = Configuration.GetSection("SmtpServer").Get<SmtpSettings>();
-            smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
-            services.AddSingleton(smtpSettings);
-            services.AddScoped<IMailTransport, SmtpClient>();
-            services.AddTransient<IEmailService, MailKitEmailService>();
-            healthCheckBuilder.AddSmtpHealthCheck(smtpSettings);
-        }
-
-        private void ConfigureDisabledErrorMessage(IServiceCollection services)
-        {
-            var disabledErrorMessage = Configuration.GetSection("disabledErrorMessage").Get<DisabledErrorMessageSettings>();
-            services.AddSingleton(disabledErrorMessage);
-        }
-
-        private void ConfigureAuthorization(IServiceCollection services)
-        {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));
             });
         }
     }    

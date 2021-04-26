@@ -17,13 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public FuturesController(ILogWrapper<FuturesController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));
+            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         public IActionResult Index()
         {
-            _logger.LogTrace("Taking user to Index View");
-
             return View();
         }
 

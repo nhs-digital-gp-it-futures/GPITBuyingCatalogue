@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public SolutionDetailsController(ILogWrapper<SolutionDetailsController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));
+            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
     
         [Route("solutions/futures/{id}")]
