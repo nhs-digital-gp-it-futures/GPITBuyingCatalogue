@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
     [Area("Marketing")]
+    [Route("marketing/supplier/solution/{id}/section/native-desktop")]
     public class NativeDesktopController : Controller
     {
         private readonly ILogWrapper<NativeDesktopController> _logger;
@@ -17,10 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public NativeDesktopController(ILogWrapper<NativeDesktopController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));
+            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
                                   
-        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/operating-systems")]
+        [HttpGet("operating-systems")]
         public async Task<IActionResult> OperatingSystems(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -33,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-desktop/operating-systems")]
+        [HttpPost("operating-systems")]
         public async Task<IActionResult> OperatingSystems(OperatingSystemsModel model)
         {
             if (model == null)
@@ -51,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/connectivity")]
+        [HttpGet("connectivity")]
         public async Task<IActionResult> Connectivity(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -64,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-desktop/connectivity")]
+        [HttpPost("connectivity")]
         public async Task<IActionResult> Connectivity(ConnectivityModel model)
         {
             if (model == null)
@@ -82,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/memory-and-storage")]
+        [HttpGet("memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -95,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-desktop/memory-and-storage")]
+        [HttpPost("memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(MemoryAndStorageModel model)
         {
             if (model == null)
@@ -119,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/third-party")]
+        [HttpGet("third-party")]
         public async Task<IActionResult> ThirdParty(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -132,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-desktop/third-party")]
+        [HttpPost("third-party")]
         public async Task<IActionResult> ThirdParty(ThirdPartyModel model)
         {
             if (model == null)
@@ -154,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/hardware-requirements")]
+        [HttpGet("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -167,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-desktop/hardware-requirements")]
+        [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
             if (model == null)
@@ -185,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop/additional-information")]
+        [HttpGet("additional-information")]
         public async Task<IActionResult> AdditionalInformation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -198,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-desktop/additional-information")]
+        [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
             if (model == null)
