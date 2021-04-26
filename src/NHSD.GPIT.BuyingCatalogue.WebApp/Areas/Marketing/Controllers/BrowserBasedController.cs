@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public BrowserBasedController(ILogWrapper<BrowserBasedController> logger, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(_solutionsService));
+            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [HttpGet("marketing/supplier/solution/{id}/section/browser-based/supported-browsers")]

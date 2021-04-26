@@ -51,29 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
             
-            // TODO - Refactor this. Should be posible to include in the above expression
+            // TODO - Refactor this. Should be possible to include in the above expression
             if(capabilities?.Length > 0)
             {
-                var filteredSolutions = new List<CatalogueItem>();
-
-                foreach( var solution in solutions )
-                {
-                    bool matched = true;
-
-                    foreach( var capability in capabilities )
-                    {
-                        if( !solution.Solution.SolutionCapabilities.Any(x=>x.Capability.CapabilityRef == capability ))
-                        {
-                            matched = false;
-                            break;
-                        }
-                    }
-
-                    if (matched)
-                        filteredSolutions.Add(solution);
-                }
-
-                solutions = filteredSolutions;
+                solutions = solutions.Where(solution => capabilities.All(capability =>
+                        solution.Solution.SolutionCapabilities.Any(x => x.Capability.CapabilityRef == capability)))
+                    .ToList();
             }
 
             return solutions;

@@ -20,7 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(NativeDesktopController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+            typeof(NativeDesktopController).Should()
+                .BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+            typeof(NativeDesktopController).Should()
+                .BeDecoratedWith<RouteAttribute>(x => x.Template == "marketing/supplier/solution/{id}/section/native-desktop");
         }
 
         [Test]
