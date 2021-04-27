@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 #nullable disable
 
@@ -18,5 +17,27 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
         public Guid LastUpdatedBy { get; set; }
 
         public virtual Solution Solution { get; set; }
+
+        public virtual bool IsEmpty() =>
+            string.IsNullOrWhiteSpace(FirstName)
+            && string.IsNullOrWhiteSpace(LastName)
+            && string.IsNullOrWhiteSpace(Department)
+            && string.IsNullOrWhiteSpace(PhoneNumber)
+            && string.IsNullOrWhiteSpace(Email);
+
+        public virtual void UpdateFrom(MarketingContact sourceContact)
+        {
+            if (sourceContact == null)
+                throw new ArgumentNullException(nameof(sourceContact));
+            
+            Department = sourceContact.Department;
+            Email = sourceContact.Email;
+            FirstName = sourceContact.FirstName;
+            LastName = sourceContact.LastName;
+            LastUpdated = sourceContact.LastUpdated;
+            PhoneNumber = sourceContact.PhoneNumber;
+        }
+
+        public virtual bool NewAndValid() => Id == default && !IsEmpty();
     }
 }

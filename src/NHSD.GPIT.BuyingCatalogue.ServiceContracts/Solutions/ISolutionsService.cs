@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -38,6 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link);
 
-        Task SaveSupplierContacts(string solutionId, MarketingContact contact1, MarketingContact contact2);
+        Task SaveSupplierContacts(SupplierContactsModel model);
     }
 }

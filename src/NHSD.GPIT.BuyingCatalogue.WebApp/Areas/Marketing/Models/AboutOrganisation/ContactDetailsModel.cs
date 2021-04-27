@@ -21,22 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
             
             var allContacts = CatalogueItem.Solution.MarketingContacts.ToArray();
 
-            if (allContacts.Length > 0)
-                Contact1 = allContacts[0];
-            else
-                Contact1 = new MarketingContact();
+            Contact1 = allContacts.Length > 0 ? allContacts[0] : new MarketingContact();
 
-            if (allContacts.Length > 1)
-                Contact2 = allContacts[1];
-            else
-                Contact2 = new MarketingContact();
+            Contact2 = allContacts.Length > 1 ? allContacts[1] : new MarketingContact();
         }
 
-        public override bool? IsComplete
-        {
-            get { return CatalogueItem?.Solution?.MarketingContacts?.Any(); }
-        }
-        
+        public override bool? IsComplete => CatalogueItem?.Solution?.MarketingContacts?.Any();
+
         public MarketingContact Contact1 { get; set; }
 
         public MarketingContact Contact2 { get; set; }

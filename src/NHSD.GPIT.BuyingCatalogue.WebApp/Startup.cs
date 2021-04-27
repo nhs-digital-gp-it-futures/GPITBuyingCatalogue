@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -61,10 +63,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureAuthorization();
 
             ServicesStartup.Configure(services);
+            
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
             if (env.IsDevelopment())
             {
@@ -76,6 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 

@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -16,24 +17,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private readonly ILogWrapper<SolutionsService> _logger;
         private readonly BuyingCatalogueDbContext _dbContext;
+        private readonly IRepository<MarketingContact> _repository;
 
-        public SolutionsService(ILogWrapper<SolutionsService> logger, BuyingCatalogueDbContext dbContext)
+        public SolutionsService(ILogWrapper<SolutionsService> logger, BuyingCatalogueDbContext dbContext,
+            IRepository<MarketingContact> repository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
-        
+
         public async Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
             var foundationSolutions = await _dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)                
+                .Include(x => x.Supplier)
                 .Where(x => x.CatalogueItemType.Name == "Solution"
-                    && x.PublishedStatus.Name == "Published" 
-                    && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                    && x.Solution.FrameworkSolutions.Any( x=> x.FrameworkId == "NHSDGP001"))
+                            && x.PublishedStatus.Name == "Published"
+                            && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
+                            && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
 
             return foundationSolutions;
@@ -46,13 +50,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType.Name == "Solution" 
-                    && x.PublishedStatus.Name == "Published"                    
-                    && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+                .Where(x => x.CatalogueItemType.Name == "Solution"
+                            && x.PublishedStatus.Name == "Published"
+                            && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
-            
+
             // TODO - Refactor this. Should be possible to include in the above expression
-            if(capabilities?.Length > 0)
+            if (capabilities?.Length > 0)
             {
                 solutions = solutions.Where(solution => capabilities.All(capability =>
                         solution.Solution.SolutionCapabilities.Any(x => x.Capability.CapabilityRef == capability)))
@@ -67,21 +71,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var solution = await _dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)                
-                .Include(x => x.Supplier)                
+                .ThenInclude(x => x.Capability)
+                .Include(x => x.Supplier)
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.FrameworkSolutions)
                 .ThenInclude(x => x.Framework)
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.MarketingContacts)
-                .Include(x=>x.Solution)
-                .ThenInclude(x=>x.SolutionEpics)
-                .ThenInclude(x=>x.Status)
+                .Include(x => x.Solution)
+                .ThenInclude(x => x.SolutionEpics)
+                .ThenInclude(x => x.Status)
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionEpics)
                 .ThenInclude(x => x.Epic)
                 .ThenInclude(x => x.CompliancyLevel)
-                .Where(x => x.CatalogueItemId == id)        
+                .Where(x => x.CatalogueItemId == id)
                 .FirstOrDefaultAsync();
 
             return solution;
@@ -94,9 +98,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType.Name == "Solution" 
-                    && x.PublishedStatus.Name == "Published"                    
-                    && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
+                .Where(x => x.CatalogueItemType.Name == "Solution"
+                            && x.PublishedStatus.Name == "Published"
+                            && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
                 .ToListAsync();
 
             return dfocvcSolutions;
@@ -104,7 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<List<Capability>> GetFuturesCapabilities()
         {
-            var capabilities = await _dbContext.Capabilities.Where(x=>x.Category.Name == "GP IT Futures").OrderBy(x=>x.Name).ToListAsync();
+            var capabilities = await _dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
+                .OrderBy(x => x.Name).ToListAsync();
 
             return capabilities;
         }
@@ -210,59 +215,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task SaveSupplierContacts(string solutionId, MarketingContact contact1, MarketingContact contact2)
+        public async Task SaveSupplierContacts(SupplierContactsModel model)
         {
-            contact1.SolutionId = solutionId;
-            contact1.LastUpdated = DateTime.UtcNow;
-            contact2.SolutionId = solutionId;
-            contact2.LastUpdated = DateTime.UtcNow;
+            model.ValidateNotNull(nameof(model));
+            
+            model.SetSolutionId();
 
-            var marketingContacts = await _dbContext.MarketingContacts.Where(x => x.SolutionId == solutionId).ToArrayAsync();
+            var marketingContacts = await _repository.GetAllAsync(x => x.SolutionId == model.SolutionId);
 
             if(!marketingContacts.Any())
             {
-                if(!contact1.IsEmpty()) _dbContext.MarketingContacts.Add(contact1);
-                if(!contact2.IsEmpty()) _dbContext.MarketingContacts.Add(contact2);
+                _repository.AddAll(model.ValidContacts());
             }
             else
             {
-                for (int i = 0; i < marketingContacts.Length; i++)
+                foreach (var contact in marketingContacts)
                 {
-                    if (marketingContacts[i].Id == contact1.Id)
-                    {
-                        if (contact1.IsEmpty())
-                            _dbContext.MarketingContacts.Remove(marketingContacts[i]);
-                        else
-                            UpdateContact(contact1, marketingContacts[i]);
-                    }
-                    else if (marketingContacts[i].Id == contact2.Id)
-                    {
-                        if (contact2.IsEmpty())
-                            _dbContext.MarketingContacts.Remove(marketingContacts[i]);
-                        else
-                            UpdateContact(contact2, marketingContacts[i]);
-                    }
+                    if (model.ContactFor(contact.Id) is not { } newContact)
+                        continue;
+
+                    if (newContact.IsEmpty())
+                        _repository.Remove(contact);
+                    else
+                        contact.UpdateFrom(newContact);
                 }
-
-                if(contact1.Id == default && !contact1.IsEmpty())
-                    _dbContext.MarketingContacts.Add(contact1);
-
-                if (contact2.Id == default && !contact2.IsEmpty())
-                    _dbContext.MarketingContacts.Add(contact2);
+                
+                _repository.AddAll(model.NewAndValidContacts());
             }
 
-            await _dbContext.SaveChangesAsync();
-        }
-
-
-        private void UpdateContact(MarketingContact sourceContact, MarketingContact targetContact)
-        {
-            targetContact.FirstName = sourceContact.FirstName;
-            targetContact.LastName = sourceContact.LastName;
-            targetContact.Department = sourceContact.Department;
-            targetContact.PhoneNumber = sourceContact.PhoneNumber;
-            targetContact.Email = sourceContact.Email;
-            targetContact.LastUpdated = sourceContact.LastUpdated;
+            await _repository.SaveChangesAsync();
         }
     }
 }
