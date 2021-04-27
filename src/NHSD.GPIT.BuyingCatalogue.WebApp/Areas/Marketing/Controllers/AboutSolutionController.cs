@@ -29,10 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new SolutionDescriptionModel(solution);
-            
-            return View(model);
+                        
+            return View(new SolutionDescriptionModel(solution));
         }
 
         [HttpPost("solution-description")]
@@ -56,10 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new FeaturesModel(solution);
-
-            return View(model);
+            
+            return View(new FeaturesModel(solution));
         }
 
         [HttpPost("features")]
@@ -83,10 +79,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!string.IsNullOrEmpty(model.Listing8)) features.Add(model.Listing8);
             if (!string.IsNullOrEmpty(model.Listing9)) features.Add(model.Listing9);
             if (!string.IsNullOrEmpty(model.Listing10)) features.Add(model.Listing10);
-
-            var jsonFeatures = JsonConvert.SerializeObject(features);
-
-            await _solutionsService.SaveSolutionFeatures(model.SolutionId, jsonFeatures);
+            
+            await _solutionsService.SaveSolutionFeatures(model.SolutionId, features.ToArray());
 
             return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
         }
@@ -98,10 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new IntegrationsModel(solution);
-
-            return View(model);
+            
+            return View(new IntegrationsModel(solution));
         }
 
         [HttpPost("integrations")]
@@ -125,10 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ImplementationTimescalesModel(solution);
-
-            return View(model);
+            
+            return View(new ImplementationTimescalesModel(solution));
         }
 
         [HttpPost("implementation-timescales")]
@@ -152,10 +142,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new RoadmapModel(solution);
-
-            return View(model);
+            
+            return View(new RoadmapModel(solution));
         }
 
         [HttpPost("roadmap")]

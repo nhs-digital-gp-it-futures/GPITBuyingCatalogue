@@ -34,6 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
         public override async Task<T[]> GetAllAsync(Expression<Func<T, bool>> predicate) =>
             await _dbSet.Where(predicate).ToArrayAsync();
 
+        public override async Task<T> SingleAsync(Expression<Func<T, bool>> predicate) =>
+            await _dbSet.SingleAsync(predicate);
+
         public override void Remove(T item) => _dbSet.Remove(item);
     }
 }

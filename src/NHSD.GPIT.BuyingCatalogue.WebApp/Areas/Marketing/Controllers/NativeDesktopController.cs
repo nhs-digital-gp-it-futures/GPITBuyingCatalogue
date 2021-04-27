@@ -28,10 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new OperatingSystemsModel(solution);
-
-            return View(model);
+            
+            return View(new OperatingSystemsModel(solution));
         }
 
         [HttpPost("operating-systems")]
@@ -59,10 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ConnectivityModel(solution);
-
-            return View(model);
+            
+            return View(new ConnectivityModel(solution));
         }
 
         [HttpPost("connectivity")]
@@ -90,10 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new MemoryAndStorageModel(solution);
-
-            return View(model);
+            
+            return View(new MemoryAndStorageModel(solution));
         }
 
         [HttpPost("memory-and-storage")]
@@ -127,10 +121,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ThirdPartyModel(solution);
-
-            return View(model);
+            
+            return View(new ThirdPartyModel(solution));
         }
 
         [HttpPost("third-party")]
@@ -162,10 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new HardwareRequirementsModel(solution);
-
-            return View(model);
+            
+            return View(new HardwareRequirementsModel(solution));
         }
 
         [HttpPost("hardware-requirements")]
@@ -193,10 +183,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new AdditionalInformationModel(solution);
-
-            return View(model);
+            
+            return View(new AdditionalInformationModel(solution));
         }
 
         [HttpPost("additional-information")]

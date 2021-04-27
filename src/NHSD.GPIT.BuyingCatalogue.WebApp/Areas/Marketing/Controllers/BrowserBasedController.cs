@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
     [Area("Marketing")]
+    [Route("marketing/supplier/solution/{id}/section/browser-based")]
     public class BrowserBasedController : Controller
     {
         private readonly ILogWrapper<BrowserBasedController> _logger;
@@ -20,20 +21,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/supported-browsers")]
+        [HttpGet("supported-browsers")]
         public async Task<IActionResult> SupportedBrowsers(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new SupportedBrowsersModel(solution);
-
-            return View(model);
+            
+            return View(new SupportedBrowsersModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/browser-based/supported-browsers")]
+        [HttpPost("supported-browsers")]
         public async Task<IActionResult> SupportedBrowsers(SupportedBrowsersModel model)
         {
             if(model == null)
@@ -59,20 +58,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/mobile-first-approach")]
+        [HttpGet("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new MobileFirstApproachModel(solution);
-
-            return View(model);
+            
+            return View(new MobileFirstApproachModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/browser-based/mobile-first-approach")]
+        [HttpPost("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(MobileFirstApproachModel model)
         {
             if (model == null)
@@ -93,21 +90,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-
-        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/plug-ins-or-extensions")]
+        [HttpGet("plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new PlugInsOrExtensionsModel(solution);
-
-            return View(model);
+            
+            return View(new PlugInsOrExtensionsModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/browser-based/plug-ins-or-extensions")]
+        [HttpPost("plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(PlugInsOrExtensionsModel model)
         {
             if (model == null)
@@ -133,20 +127,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/connectivity-and-resolution")]
+        [HttpGet("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ConnectivityAndResolutionModel(solution);
-
-            return View(model);
+            
+            return View(new ConnectivityAndResolutionModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/browser-based/connectivity-and-resolution")]
+        [HttpPost("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(ConnectivityAndResolutionModel model)
         {
             if (model == null)
@@ -165,20 +157,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/hardware-requirements")]
+        [HttpGet("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new HardwareRequirementsModel(solution);
-
-            return View(model);
+            
+            return View(new HardwareRequirementsModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/browser-based/hardware-requirements")]
+        [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
             if (model == null)
@@ -196,20 +186,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/browser-based/additional-information")]
+        [HttpGet("additional-information")]
         public async Task<IActionResult> AdditionalInformation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new AdditionalInformationModel(solution);
-
-            return View(model);
+            
+            return View(new AdditionalInformationModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/browser-based/additional-information")]
+        [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
             if (model == null)

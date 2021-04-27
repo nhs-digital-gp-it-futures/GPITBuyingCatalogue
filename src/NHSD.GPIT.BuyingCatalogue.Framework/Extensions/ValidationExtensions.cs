@@ -9,5 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             if (item == null)
                 throw new ArgumentNullException(name);
         }
+
+        public static void ValidateNotNullOrWhiteSpace(this string item, string name)
+        {
+            if(string.IsNullOrWhiteSpace(item))
+                throw new ArgumentException("Argument IsNullOrWhiteSpace", name);
+        }
     }
 }

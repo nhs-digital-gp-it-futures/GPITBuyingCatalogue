@@ -19,8 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
         public abstract void Add(T item);
         public abstract void AddAll(IList<T> items);
         public abstract Task<T[]> GetAllAsync(Expression<Func<T, bool>> predicate);
+        public abstract Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
         public abstract void Remove(T item);
-
         public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();
     }
 }
