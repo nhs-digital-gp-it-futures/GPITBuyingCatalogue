@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new HybridModel(null));
+                _ = new OnPremiseModel(null));
         }
 
         [Test]
@@ -96,6 +96,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
             var model = new OnPremiseModel(catalogueItem);
 
             Assert.AreEqual(expected, model.IsComplete);
+        }
+
+        [Test]
+        public static void RequiresHscnChecked_CorrectlySetsStringValue()
+        {
+            var hosting = new Hosting
+            {
+                OnPremise = new OnPremise()
+            };
+
+            var json = JsonConvert.SerializeObject(hosting);
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { Hosting = json }
+            };
+
+            var model = new OnPremiseModel(catalogueItem);
+
+            model.RequiresHscnChecked = false;
+            Assert.Null(model.OnPremise.RequiresHscn);
+            model.RequiresHscnChecked = true;
+            Assert.AreEqual("End user devices must be connected to HSCN/N3", model.OnPremise.RequiresHscn);
         }
     }
 }

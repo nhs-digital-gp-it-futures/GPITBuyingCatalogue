@@ -1,14 +1,9 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class HostingTypeModel
     {
-
         public HostingTypeModel(PublicCloud hostingType)
         {
             Label = "Public cloud";
@@ -25,8 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Summary = hostingType?.Summary;
             Link = hostingType?.Link;
             RequiresHscn = hostingType?.RequiresHscn;
-            HostingModel = hostingType?.HostingModel;
-            
+            HostingModel = hostingType?.HostingModel;            
         }
 
         public HostingTypeModel(HybridHostingType hostingType)
@@ -36,8 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Summary = hostingType?.Summary;
             Link = hostingType?.Link;
             RequiresHscn = hostingType?.RequiresHscn;
-            HostingModel = hostingType?.HostingModel;
-            
+            HostingModel = hostingType?.HostingModel;            
         }
 
         public HostingTypeModel(OnPremise hostingType)

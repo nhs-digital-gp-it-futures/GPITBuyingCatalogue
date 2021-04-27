@@ -45,7 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var model = new ConnectivityModel();
 
             Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.SelectedConnectionSpeed);            
+            Assert.False(model.IsComplete);
+            Assert.Null(model.SelectedConnectionSpeed);         
         }
 
         [Test]

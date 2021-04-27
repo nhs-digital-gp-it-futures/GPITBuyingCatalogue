@@ -9,6 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {        
         public SolutionCapabilitiesModel(SolutionCapability solutionCapability, Solution solution)
         {
+            if (solutionCapability is null)
+                throw new ArgumentNullException(nameof(solutionCapability));
+
+            if (solution is null)
+                throw new ArgumentNullException(nameof(solution));
+
             Id = solutionCapability.Capability.Id;
             Name = $"{solutionCapability.Capability.Name}, {solutionCapability.Capability.Version}";
             SourceUrl = solutionCapability.Capability.SourceUrl;

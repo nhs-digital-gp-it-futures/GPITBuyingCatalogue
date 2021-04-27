@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionControllerTests
     {
+        private static string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -37,9 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Index_InvalidId_ThrowsException(string id)
         {
             var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());
@@ -75,9 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Preview_InvalidId_ThrowsException(string id)
         {
             var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());

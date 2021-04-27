@@ -13,10 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class BrowserBasedControllerTests
     {
+        private static string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(BrowserBasedController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+            typeof(BrowserBasedController).Should()
+                .BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
         }
 
         [Test]
@@ -34,9 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedSupportedBrowsers_InvalidId_ThrowsException(string id)
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
@@ -45,9 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedMobileFirstApproach_InvalidId_ThrowsException(string id)
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
@@ -56,9 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedPlugInsOrExtensions_InvalidId_ThrowsException(string id)
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
@@ -67,9 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedConnectivityAndResolution_InvalidId_ThrowsException(string id)
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
@@ -78,9 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedHardwareRequirements_InvalidId_ThrowsException(string id)
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());
@@ -89,9 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedAdditionalInformation_InvalidId_ThrowsException(string id)
         {
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<ISolutionsService>());

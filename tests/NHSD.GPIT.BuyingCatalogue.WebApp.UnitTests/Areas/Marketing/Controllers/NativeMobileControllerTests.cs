@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class NativeMobileControllerTests
     {
+        private static string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -34,9 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobileOperatingSystems_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
@@ -45,9 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobileMobileFirstApproach_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
@@ -56,9 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobileConnectivity_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
@@ -67,9 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobileMemoryAndStorage_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
@@ -78,9 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobileThirdParty_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
@@ -89,9 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobileHardwareRequirements_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());
@@ -100,9 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobileAdditionalInformation_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<ISolutionsService>());

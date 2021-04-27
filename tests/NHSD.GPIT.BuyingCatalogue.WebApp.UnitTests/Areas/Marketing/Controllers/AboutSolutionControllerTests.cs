@@ -14,10 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class AboutSolutionControllerTests
     {
+        private static string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(AboutSolutionController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+            typeof(AboutSolutionController).Should()
+                .BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
         }
 
         [Test]
@@ -35,9 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_SolutionDescription_InvalidId_ThrowsException(string id)
         {
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
@@ -55,9 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Features_InvalidId_ThrowsException(string id)
         {
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
@@ -74,9 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Integrations_InvalidId_ThrowsException(string id)
         {
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
@@ -93,9 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_ImplementationTimescales_InvalidId_ThrowsException(string id)
         {
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());
@@ -112,9 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Roadmap_InvalidId_ThrowsException(string id)
         {
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(), Mock.Of<ISolutionsService>());

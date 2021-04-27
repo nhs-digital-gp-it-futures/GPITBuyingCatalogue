@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
                 new SelectListItem{ Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
             };
 
-            SelectedConnectionSpeed = ClientApplication.NativeDesktopMinimumConnectionSpeed;
+            SelectedConnectionSpeed = ClientApplication?.NativeDesktopMinimumConnectionSpeed;
         }
 
         public string SelectedConnectionSpeed { get; set; }
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 
         public override bool? IsComplete
         {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopMinimumConnectionSpeed); }
+            get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMinimumConnectionSpeed); }
         }        
     }
 }

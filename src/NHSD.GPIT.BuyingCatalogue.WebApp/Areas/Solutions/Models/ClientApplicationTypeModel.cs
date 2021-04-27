@@ -139,9 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string HardwareRequirements { get; set; }
 
-        public string AdditionalInformation { get; set; }
-
-        // Native Mobile additions
+        public string AdditionalInformation { get; set; }        
 
         public HashSet<string> MobileOperatingSystems { get; set; } = new();
 
@@ -158,12 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string ThirdPartyComponents { get; set; }
 
         public string DeviceCapabilities { get; set; }
-
-        // Desktop
-
+        
         public string ProcessingPower { get; set; }
-
-
-
     }
 }

@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-desktop";
 
-            AdditionalInformation = ClientApplication.NativeDesktopAdditionalInformation;
+            AdditionalInformation = ClientApplication?.NativeDesktopAdditionalInformation;
         }
 
         public override bool? IsComplete

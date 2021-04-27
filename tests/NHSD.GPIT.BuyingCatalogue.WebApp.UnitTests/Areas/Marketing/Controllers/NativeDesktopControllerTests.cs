@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class NativeDesktopControllerTests
     {
+        private static string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -37,9 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeDesktopOperatingSystems_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
@@ -48,9 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeDesktopConnectivity_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
@@ -59,9 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeDesktopMemoryAndStorage_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
@@ -70,9 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeDesktopThirdParty_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
@@ -81,9 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeDesktopHardwareRequirements_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());
@@ -92,9 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeDesktopAdditionalInformation_InvalidId_ThrowsException(string id)
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(), Mock.Of<ISolutionsService>());

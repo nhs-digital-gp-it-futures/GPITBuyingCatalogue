@@ -30,11 +30,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
                 new SelectListItem{ Text = "16GB or higher", Value = "16GB or higher"}
             };
 
-            SelectedMemorySize = ClientApplication.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement;
+            SelectedMemorySize = ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement;
 
-            StorageDescription = ClientApplication.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription;
+            StorageDescription = ClientApplication?.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription;
 
-            MinimumCpu = ClientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu;
+            MinimumCpu = ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumCpu;
 
             ScreenResolutions = new List<SelectListItem>
             {
@@ -60,16 +60,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
                 new SelectListItem{ Text = "16:9 - 3840 x 2160", Value = "16:9 - 3840 x 2160" }
             };
 
-            SelectedScreenResolution = ClientApplication.NativeDesktopMemoryAndStorage?.RecommendedResolution;
+            SelectedScreenResolution = ClientApplication?.NativeDesktopMemoryAndStorage?.RecommendedResolution;
         }
 
         public override bool? IsComplete
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement)
-                  && !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription)
-                  && !string.IsNullOrWhiteSpace(ClientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu); 
+                return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement)
+                  && !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription)
+                  && !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumCpu); 
             }
         }
 

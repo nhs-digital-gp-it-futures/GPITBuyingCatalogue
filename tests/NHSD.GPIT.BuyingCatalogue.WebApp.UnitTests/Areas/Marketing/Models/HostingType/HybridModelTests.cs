@@ -97,5 +97,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
 
             Assert.AreEqual(expected, model.IsComplete);
         }
+
+        [Test]
+        public static void RequiresHscnChecked_CorrectlySetsStringValue()
+        {
+            var hosting = new Hosting
+            {
+                HybridHostingType = new HybridHostingType()
+            };
+
+            var json = JsonConvert.SerializeObject(hosting);
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { Hosting = json }
+            };
+
+            var model = new HybridModel(catalogueItem);
+
+            model.RequiresHscnChecked = false;
+            Assert.Null(model.HybridHostingType.RequiresHscn);
+            model.RequiresHscnChecked = true;
+            Assert.AreEqual("End user devices must be connected to HSCN/N3", model.HybridHostingType.RequiresHscn);
+        }
     }
 }
