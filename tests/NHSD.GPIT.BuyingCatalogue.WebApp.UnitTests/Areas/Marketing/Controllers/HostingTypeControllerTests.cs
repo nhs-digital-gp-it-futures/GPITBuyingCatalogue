@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class HostingTypeControllerTests
     {
+        private static string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -35,9 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_HostingTypePublicCloud_InvalidId_ThrowsException(string id)
         {
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
@@ -54,9 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_HostingTypePrivateCloud_InvalidId_ThrowsException(string id)
         {
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
@@ -73,9 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_HostingTypeHybrid_InvalidId_ThrowsException(string id)
         {
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());
@@ -92,9 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_HostingTypeOnPremise_InvalidId_ThrowsException(string id)
         {
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<ISolutionsService>());

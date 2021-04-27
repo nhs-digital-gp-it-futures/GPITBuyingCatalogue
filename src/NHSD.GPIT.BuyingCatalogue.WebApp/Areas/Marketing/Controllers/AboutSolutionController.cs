@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
     [Area("Marketing")]
+    [Route("marketing/supplier/solution/{id}/section")]
     public class AboutSolutionController : Controller
     {
         private readonly ILogWrapper<AboutSolutionController> _logger;
@@ -21,20 +22,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
         
-        [HttpGet("marketing/supplier/solution/{id}/section/solution-description")]
+        [HttpGet("solution-description")]
         public async Task<IActionResult> SolutionDescription(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new SolutionDescriptionModel(solution);
-            
-            return View(model);
+                        
+            return View(new SolutionDescriptionModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/solution-description")]
+        [HttpPost("solution-description")]
         public async Task<IActionResult> SolutionDescription(SolutionDescriptionModel model)
         {
             if (model is null)
@@ -48,20 +47,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/features")]
+        [HttpGet("features")]
         public async Task<IActionResult> Features(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new FeaturesModel(solution);
-
-            return View(model);
+            
+            return View(new FeaturesModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/features")]
+        [HttpPost("features")]
         public async Task<IActionResult> Features(FeaturesModel model)
         {
             if (model is null)
@@ -82,28 +79,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!string.IsNullOrEmpty(model.Listing8)) features.Add(model.Listing8);
             if (!string.IsNullOrEmpty(model.Listing9)) features.Add(model.Listing9);
             if (!string.IsNullOrEmpty(model.Listing10)) features.Add(model.Listing10);
-
-            var jsonFeatures = JsonConvert.SerializeObject(features);
-
-            await _solutionsService.SaveSolutionFeatures(model.SolutionId, jsonFeatures);
+            
+            await _solutionsService.SaveSolutionFeatures(model.SolutionId, features.ToArray());
 
             return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/integrations")]
+        [HttpGet("integrations")]
         public async Task<IActionResult> Integrations(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new IntegrationsModel(solution);
-
-            return View(model);
+            
+            return View(new IntegrationsModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/integrations")]
+        [HttpPost("integrations")]
         public async Task<IActionResult> Integrations(IntegrationsModel model)
         {
             if (model is null)
@@ -117,20 +110,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/implementation-timescales")]
+        [HttpGet("implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ImplementationTimescalesModel(solution);
-
-            return View(model);
+            
+            return View(new ImplementationTimescalesModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/implementation-timescales")]
+        [HttpPost("implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(ImplementationTimescalesModel model)
         {
             if (model is null)
@@ -144,20 +135,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/roadmap")]
+        [HttpGet("roadmap")]
         public async Task<IActionResult> Roadmap(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new RoadmapModel(solution);
-
-            return View(model);
+            
+            return View(new RoadmapModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/roadmap")]
+        [HttpPost("roadmap")]
         public async Task<IActionResult> Roadmap(RoadmapModel model)
         {
             if (model is null)

@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-desktop";
 
-            OperatingSystemsDescription = ClientApplication.NativeDesktopOperatingSystemsDescription;
+            OperatingSystemsDescription = ClientApplication?.NativeDesktopOperatingSystemsDescription;
         }
 
         public override bool? IsComplete

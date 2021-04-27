@@ -26,12 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             CheckOperatingSystems();
 
-            Description = ClientApplication.MobileOperatingSystems?.OperatingSystemsDescription;
+            Description = ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription;
         }
 
         public override bool? IsComplete
         {
-            get { return ClientApplication.MobileOperatingSystems?.OperatingSystems?.Any(); }
+            get { return ClientApplication?.MobileOperatingSystems?.OperatingSystems?.Any(); }
         }
 
         public SupportedOperatingSystemModel[] OperatingSystems { get; set; }
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         {
             foreach (var browser in OperatingSystems)
             {
-                if (ClientApplication.MobileOperatingSystems?.OperatingSystems != null &&
+                if (ClientApplication?.MobileOperatingSystems?.OperatingSystems != null &&
                     ClientApplication.MobileOperatingSystems.OperatingSystems.Any(x => x.Equals(browser.OperatingSystemName, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     browser.Checked = true;

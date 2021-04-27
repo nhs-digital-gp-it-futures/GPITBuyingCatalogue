@@ -30,16 +30,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
                 new SelectListItem{ Text = "16GB or higher", Value = "16GB or higher"}
             };
 
-            SelectedMemorySize = ClientApplication.MobileMemoryAndStorage?.MinimumMemoryRequirement;
-            Description = ClientApplication.MobileMemoryAndStorage?.Description;
+            SelectedMemorySize = ClientApplication?.MobileMemoryAndStorage?.MinimumMemoryRequirement;
+            Description = ClientApplication?.MobileMemoryAndStorage?.Description;
         }
 
         public override bool? IsComplete
         {
             get 
             {
-                return !string.IsNullOrWhiteSpace(ClientApplication.MobileMemoryAndStorage?.MinimumMemoryRequirement) &&
-                  !string.IsNullOrWhiteSpace(ClientApplication.MobileMemoryAndStorage?.Description);
+                return !string.IsNullOrWhiteSpace(ClientApplication?.MobileMemoryAndStorage?.MinimumMemoryRequirement) &&
+                  !string.IsNullOrWhiteSpace(ClientApplication?.MobileMemoryAndStorage?.Description);
             }
         }
 

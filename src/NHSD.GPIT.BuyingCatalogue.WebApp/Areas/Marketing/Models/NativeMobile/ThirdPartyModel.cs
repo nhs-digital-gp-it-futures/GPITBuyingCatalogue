@@ -16,8 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
-            ThirdPartyComponents = ClientApplication.MobileThirdParty?.ThirdPartyComponents;
-            DeviceCapabilities = ClientApplication.MobileThirdParty?.DeviceCapabilities;
+            ThirdPartyComponents = ClientApplication?.MobileThirdParty?.ThirdPartyComponents;
+            DeviceCapabilities = ClientApplication?.MobileThirdParty?.DeviceCapabilities;
         }
 
         public override bool? IsComplete

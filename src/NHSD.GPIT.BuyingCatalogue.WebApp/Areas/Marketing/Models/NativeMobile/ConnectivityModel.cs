@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
                 new SelectListItem{ Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
             };
 
-            SelectedConnectionSpeed = ClientApplication.MobileConnectionDetails?.MinimumConnectionSpeed;
+            SelectedConnectionSpeed = ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed;
 
 
             ConnectionTypes = new ConnectionTypeModel[]
@@ -52,18 +52,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             CheckConnectionTypes();
 
-            Description = ClientApplication.MobileConnectionDetails?.Description;            
+            Description = ClientApplication?.MobileConnectionDetails?.Description;            
         }
 
         public override bool? IsComplete
         {
             get 
             {
-                if (!string.IsNullOrWhiteSpace(ClientApplication.MobileConnectionDetails?.MinimumConnectionSpeed) ||
-                  !string.IsNullOrWhiteSpace(ClientApplication.MobileConnectionDetails?.Description))
+                if (!string.IsNullOrWhiteSpace(ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed) ||
+                  !string.IsNullOrWhiteSpace(ClientApplication?.MobileConnectionDetails?.Description))
                     return true;
 
-                return ClientApplication.MobileConnectionDetails?.ConnectionType?.Any();
+                return ClientApplication?.MobileConnectionDetails?.ConnectionType?.Any();
             }
         }
 
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         {
             foreach (var connectionType in ConnectionTypes)
             {
-                if (ClientApplication.MobileConnectionDetails?.ConnectionType != null &&
+                if (ClientApplication?.MobileConnectionDetails?.ConnectionType != null &&
                     ClientApplication.MobileConnectionDetails.ConnectionType.Any(x => x.Equals(connectionType.ConnectionType, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     connectionType.Checked = true;

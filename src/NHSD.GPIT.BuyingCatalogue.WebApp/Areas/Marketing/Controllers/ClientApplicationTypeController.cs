@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationT
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
     [Area("Marketing")]
+    [Route("marketing/supplier/solution/{id}/section")]
     public class ClientApplicationTypeController : Controller
     {
         private readonly ILogWrapper<ClientApplicationTypeController> _logger;
@@ -19,20 +20,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
                       
-        [HttpGet("marketing/supplier/solution/{id}/section/client-application-types")]
+        [HttpGet("client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ClientApplicationTypesModel(solution);
-
-            return View(model);
+            
+            return View(new ClientApplicationTypesModel(solution));
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/client-application-types")]
+        [HttpPost("client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(ClientApplicationTypesModel model)
         {
             if (model is null)
@@ -54,43 +53,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/browser-based")]
+        [HttpGet("browser-based")]
         public async Task<IActionResult> BrowserBased(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new BrowserBasedModel(solution);
-
-            return View(model);
+            
+            return View(new BrowserBasedModel(solution));
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile")]
+        [HttpGet("native-mobile")]
         public async Task<IActionResult> NativeMobile(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new NativeMobileModel(solution);
-
-            return View(model);
+            
+            return View(new NativeMobileModel(solution));
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-desktop")]
+        [HttpGet("native-desktop")]
         public async Task<IActionResult> NativeDesktop(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new NativeDesktopModel(solution);
-
-            return View(model);
+            
+            return View(new NativeDesktopModel(solution));
         }
     }
 }

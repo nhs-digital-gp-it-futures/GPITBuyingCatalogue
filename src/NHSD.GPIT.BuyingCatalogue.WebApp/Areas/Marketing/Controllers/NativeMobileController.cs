@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
     [Area("Marketing")]
+    [Route("marketing/supplier/solution/{id}/section/native-mobile")]
     public class NativeMobileController : Controller
     {
         private readonly ILogWrapper<NativeMobileController> _logger;
@@ -21,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
                
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/operating-systems")]
+        [HttpGet("operating-systems")]
         public async Task<IActionResult> OperatingSystems(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-mobile/operating-systems")]
+        [HttpPost("operating-systems")]
         public async Task<IActionResult> OperatingSystems(OperatingSystemsModel model)
         {
             if (model == null)
@@ -63,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/mobile-first-approach")]
+        [HttpGet("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-mobile/mobile-first-approach")]
+        [HttpPost("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(MobileFirstApproachModel model)
         {
             if (model == null)
@@ -97,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/connectivity")]
+        [HttpGet("connectivity")]
         public async Task<IActionResult> Connectivity(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -110,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-mobile/connectivity")]
+        [HttpPost("connectivity")]
         public async Task<IActionResult> Connectivity(ConnectivityModel model)
         {
             if (model == null)
@@ -140,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/memory-and-storage")]
+        [HttpGet("memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -153,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-mobile/memory-and-storage")]
+        [HttpPost("memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(MemoryAndStorageModel model)
         {
             if (model == null)
@@ -175,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/third-party")]
+        [HttpGet("third-party")]
         public async Task<IActionResult> ThirdParty(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -188,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-mobile/third-party")]
+        [HttpPost("third-party")]
         public async Task<IActionResult> ThirdParty(ThirdPartyModel model)
         {
             if (model == null)
@@ -210,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/hardware-requirements")]
+        [HttpGet("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -223,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-mobile/hardware-requirements")]
+        [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
             if (model == null)
@@ -241,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/section/native-mobile/additional-information")]
+        [HttpGet("additional-information")]
         public async Task<IActionResult> AdditionalInformation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -254,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpPost("marketing/supplier/solution/{id}/section/native-mobile/additional-information")]
+        [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
             if (model == null)

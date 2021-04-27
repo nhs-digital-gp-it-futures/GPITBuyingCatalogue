@@ -29,10 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> Foundation()
         {
             var solutions = await _solutionsService.GetFuturesFoundationSolutions();
-
-            var model = new SolutionsModel { CatalogueItems = solutions };
-
-            return View(model);            
+            
+            return View(new SolutionsModel { CatalogueItems = solutions });            
         }
 
         [Route("Solutions/Futures/CapabilitiesSelector")]
@@ -82,10 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 splitCapabilities = capabilities.Split('-', StringSplitOptions.RemoveEmptyEntries);
 
             var foundationSolutions = await _solutionsService.GetFuturesSolutionsByCapabilities(splitCapabilities);
-
-            var model = new SolutionsModel { CatalogueItems = foundationSolutions };
-
-            return View(model);
+            
+            return View(new SolutionsModel { CatalogueItems = foundationSolutions });
         }
     }
 }

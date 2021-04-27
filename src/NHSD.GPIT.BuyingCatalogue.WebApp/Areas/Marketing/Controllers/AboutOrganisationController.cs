@@ -33,10 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new AboutSupplierModel(solution);
-
-            return View(model);
+            
+            return View(new AboutSupplierModel(solution));
         }
 
         [HttpPost("about-supplier")]
@@ -60,10 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ContactDetailsModel(solution);
-
-            return View(model);
+            
+            return View(new ContactDetailsModel(solution));
         }
 
         [HttpPost("contact-details")]

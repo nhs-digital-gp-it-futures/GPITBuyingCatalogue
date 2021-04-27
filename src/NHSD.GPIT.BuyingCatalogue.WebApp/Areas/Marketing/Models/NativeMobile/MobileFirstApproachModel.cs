@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
@@ -16,8 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
-            if (ClientApplication.NativeMobileFirstDesign.HasValue)
-                MobileFirstApproach = ClientApplication.NativeMobileFirstDesign.GetValueOrDefault() ? "Yes" : "No";
+            if (ClientApplication?.NativeMobileFirstDesign != null)
+                MobileFirstApproach = ClientApplication.NativeMobileFirstDesign.ToYesNo();
         }
 
         public override bool? IsComplete

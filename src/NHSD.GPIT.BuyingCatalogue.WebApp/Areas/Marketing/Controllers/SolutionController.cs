@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
     [Area("Marketing")]
+    [Route("marketing/supplier/solution/{id}")]
     public class SolutionController : Controller
     {
         private readonly ILogWrapper<SolutionController> _logger;
@@ -19,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [Route("marketing/supplier/solution/{id}")]
+        [HttpGet]
         public async Task<IActionResult> Index(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
-        [HttpGet("marketing/supplier/solution/{id}/preview")]
+        [HttpGet("preview")]
         public IActionResult Preview(string id)
         {
             if (string.IsNullOrWhiteSpace(id))

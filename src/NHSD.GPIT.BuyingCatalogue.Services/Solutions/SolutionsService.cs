@@ -17,19 +17,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private readonly ILogWrapper<SolutionsService> _logger;
         private readonly BuyingCatalogueDbContext _dbContext;
-        private readonly IRepository<MarketingContact> _repository;
+        private readonly IRepository<MarketingContact> _marketingContactRepository;
+        private readonly IRepository<Solution> _solutionRepository;
+        private readonly IRepository<Supplier> _supplierRepository;
 
-        public SolutionsService(ILogWrapper<SolutionsService> logger, BuyingCatalogueDbContext dbContext,
-            IRepository<MarketingContact> repository)
+        public SolutionsService(ILogWrapper<SolutionsService> logger, 
+            BuyingCatalogueDbContext dbContext,
+            IRepository<MarketingContact> marketingContactRepository,
+            IRepository<Solution> solutionRepository,
+            IRepository<Supplier> supplierRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
+            _solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
+            _supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
 
         public async Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
-            var foundationSolutions = await _dbContext.CatalogueItems
+            return await _dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
@@ -39,8 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
                             && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
-
-            return foundationSolutions;
         }
 
         public async Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities)
@@ -66,9 +71,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solutions;
         }
 
-        public async Task<CatalogueItem> GetSolution(string id)
+        public async Task<CatalogueItem> GetSolution(string solutionId)
         {
-            var solution = await _dbContext.CatalogueItems
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
+
+            return await _dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
@@ -85,15 +92,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionEpics)
                 .ThenInclude(x => x.Epic)
                 .ThenInclude(x => x.CompliancyLevel)
-                .Where(x => x.CatalogueItemId == id)
-                .FirstOrDefaultAsync();
-
-            return solution;
+                .Where(x => x.CatalogueItemId == solutionId)
+                .FirstOrDefaultAsync();            
         }
 
         public async Task<List<CatalogueItem>> GetDFOCVCSolutions()
         {
-            var dfocvcSolutions = await _dbContext.CatalogueItems
+            return await _dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
@@ -102,117 +107,113 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             && x.PublishedStatus.Name == "Published"
                             && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
                 .ToListAsync();
-
-            return dfocvcSolutions;
         }
 
         public async Task<List<Capability>> GetFuturesCapabilities()
         {
-            var capabilities = await _dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
+            return await _dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
                 .OrderBy(x => x.Name).ToListAsync();
-
-            return capabilities;
         }
 
-        public async Task SaveSolutionDescription(string id, string summary, string description, string link)
+        public async Task SaveSolutionDescription(string solutionId, string summary, string description, string link)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
+            summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
-
-            await _dbContext.SaveChangesAsync();
+            await _solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveSolutionFeatures(string id, string featuresJson)
+        public async Task SaveSolutionFeatures(string solutionId, string[] features)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            solution.Features = featuresJson;
-
-            await _dbContext.SaveChangesAsync();
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            solution.Features = JsonConvert.SerializeObject(features);
+            await _solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveIntegrationLink(string id, string integrationLink)
+        public async Task SaveIntegrationLink(string solutionId, string integrationLink)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.IntegrationsUrl = integrationLink;
-
-            await _dbContext.SaveChangesAsync();
+            await _solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveImplementationDetail(string id, string detail)
+        public async Task SaveImplementationDetail(string solutionId, string detail)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.ImplementationDetail = detail;
-
-            await _dbContext.SaveChangesAsync();
+            await _solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveRoadmap(string id, string roadmap)
+        public async Task SaveRoadmap(string solutionId, string roadmap)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == id);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.RoadMap = roadmap;
-
-            await _dbContext.SaveChangesAsync();
+            await _solutionRepository.SaveChangesAsync();
         }
 
         public async Task<ClientApplication> GetClientApplication(string solutionId)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            var clientApplication = solution.GetClientApplication();
-
-            return clientApplication;
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            return solution.GetClientApplication();
         }
 
         public async Task SaveClientApplication(string solutionId, ClientApplication clientApplication)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
+            clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var json = JsonConvert.SerializeObject(clientApplication);
-
-            solution.ClientApplication = json;
-
-            await _dbContext.SaveChangesAsync();
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);            
+            solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            await _solutionRepository.SaveChangesAsync();
         }
 
         public async Task<Hosting> GetHosting(string solutionId)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
+
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
             return solution.GetHosting();
         }
 
         public async Task SaveHosting(string solutionId, Hosting hosting)
         {
-            var solution = await _dbContext.Solutions.SingleAsync(x => x.Id == solutionId);
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
+            hosting.ValidateNotNull(nameof(hosting));
 
-            var json = JsonConvert.SerializeObject(hosting);
-
-            solution.Hosting = json;
-
-            await _dbContext.SaveChangesAsync();
+            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);            
+            solution.Hosting = JsonConvert.SerializeObject(hosting);
+            await _solutionRepository.SaveChangesAsync();
         }
 
         public async Task<Supplier> GetSupplier(string supplierId)
         {
-            var supplier = await _dbContext.Suppliers.SingleAsync(x => x.Id == supplierId);
+            supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            return supplier;
+            return await _supplierRepository.SingleAsync(x => x.Id == supplierId);
         }
 
         public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
         {
-            var supplier = await _dbContext.Suppliers.SingleAsync(x => x.Id == supplierId);
+            supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
+            var supplier = await _supplierRepository.SingleAsync(x => x.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
-
-            await _dbContext.SaveChangesAsync();
+            await _supplierRepository.SaveChangesAsync();
         }
 
         public async Task SaveSupplierContacts(SupplierContactsModel model)
@@ -221,11 +222,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             
             model.SetSolutionId();
 
-            var marketingContacts = await _repository.GetAllAsync(x => x.SolutionId == model.SolutionId);
+            var marketingContacts = await _marketingContactRepository.GetAllAsync(x => x.SolutionId == model.SolutionId);
 
             if(!marketingContacts.Any())
             {
-                _repository.AddAll(model.ValidContacts());
+                _marketingContactRepository.AddAll(model.ValidContacts());
             }
             else
             {
@@ -235,15 +236,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         continue;
 
                     if (newContact.IsEmpty())
-                        _repository.Remove(contact);
+                        _marketingContactRepository.Remove(contact);
                     else
                         contact.UpdateFrom(newContact);
                 }
                 
-                _repository.AddAll(model.NewAndValidContacts());
+                _marketingContactRepository.AddAll(model.NewAndValidContacts());
             }
 
-            await _repository.SaveChangesAsync();
+            await _marketingContactRepository.SaveChangesAsync();
         }
     }
 }

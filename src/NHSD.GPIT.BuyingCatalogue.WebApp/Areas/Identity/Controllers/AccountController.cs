@@ -41,10 +41,8 @@ Contact the account administrator at: {0} or call {1}";
 
         [HttpGet]
         public IActionResult Login(string returnUrl)
-        {
-            var loginViewModel = new LoginViewModel { ReturnUrl = returnUrl };
-
-            return View(loginViewModel);
+        {            
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
         [HttpPost]
@@ -112,15 +110,11 @@ Contact the account administrator at: {0} or call {1}";
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel viewModel)
         {
-            if (viewModel is null)
-            {
+            if (viewModel is null)            
                 throw new ArgumentNullException(nameof(viewModel));
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
+            
+            if (!ModelState.IsValid)            
+                return View(viewModel);            
             
             var resetToken = await _passwordService.GeneratePasswordResetTokenAsync(viewModel.EmailAddress);
             if (resetToken is null)
@@ -144,11 +138,9 @@ Contact the account administrator at: {0} or call {1}";
         {            
             var isValid = await _passwordService.IsValidPasswordResetTokenAsync(email, token);
 
-            if (!isValid)
-            {
+            if (!isValid)            
                 return RedirectToAction(nameof(ResetPasswordExpired));
-            }
-
+            
             return View(new ResetPasswordViewModel { Email = email, Token = token });
         }
 
@@ -156,23 +148,19 @@ Contact the account administrator at: {0} or call {1}";
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
         {
-            if (viewModel is null)
-            {
-                throw new ArgumentNullException(nameof(viewModel));
-            }
+            if (viewModel is null)            
+                throw new ArgumentNullException(nameof(viewModel));            
 
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
+            if (!ModelState.IsValid)            
+                return View(viewModel);            
             
             var res = await _passwordService.ResetPasswordAsync(viewModel.Email, viewModel.Token, viewModel.Password);
-            if (res.Succeeded)
-            {
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
-            }
+            
+            if (res.Succeeded)            
+                return RedirectToAction(nameof(ResetPasswordConfirmation));            
 
             var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
+            
             if (invalidPasswordError is not null)
             {
                 ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), invalidPasswordError.Description);
@@ -180,11 +168,10 @@ Contact the account administrator at: {0} or call {1}";
             }
 
             var invalidTokenError = res.Errors.FirstOrDefault(error => error.Code == IPasswordService.InvalidTokenCode);
-            if (invalidTokenError is not null)
-            {
+            
+            if (invalidTokenError is not null)            
                 return RedirectToAction(nameof(ResetPasswordExpired));
-            }
-
+            
             throw new InvalidOperationException(
                 $"Unexpected errors whilst resetting password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");            
         }

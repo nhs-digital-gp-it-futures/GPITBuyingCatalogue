@@ -11,21 +11,21 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities);
 
-        Task<CatalogueItem> GetSolution(string id);
+        Task<CatalogueItem> GetSolution(string solutionId);
 
         Task<List<CatalogueItem>> GetDFOCVCSolutions();
         
         Task<List<Capability>> GetFuturesCapabilities();
 
-        Task SaveSolutionDescription(string id, string summary, string description, string link);
+        Task SaveSolutionDescription(string solutionId, string summary, string description, string link);
 
-        Task SaveSolutionFeatures(string id, string featuresJson);
+        Task SaveSolutionFeatures(string solutionId, string[] features);
 
-        Task SaveIntegrationLink(string id, string integrationLink);
+        Task SaveIntegrationLink(string solutionId, string integrationLink);
 
-        Task SaveImplementationDetail(string id, string detail);
+        Task SaveImplementationDetail(string solutionId, string detail);
 
-        Task SaveRoadmap(string id, string roadmap);
+        Task SaveRoadmap(string solutionId, string roadmap);
 
         Task<ClientApplication> GetClientApplication(string solutionId);
 
