@@ -20,29 +20,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             PrivateCloud = catalogueItem.Solution.GetHosting().PrivateCloud;
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(PrivateCloud?.Summary) ||
-                    !string.IsNullOrWhiteSpace(PrivateCloud?.Link) ||
-                    !string.IsNullOrWhiteSpace(PrivateCloud?.RequiresHscn) ||
-                    !string.IsNullOrWhiteSpace(PrivateCloud?.HostingModel);
-            }
-        }        
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(PrivateCloud?.Summary) ||
+            !string.IsNullOrWhiteSpace(PrivateCloud?.Link) ||
+            !string.IsNullOrWhiteSpace(PrivateCloud?.RequiresHscn) ||
+            !string.IsNullOrWhiteSpace(PrivateCloud?.HostingModel);
 
         public PrivateCloud PrivateCloud { get; set; }
 
         public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(PrivateCloud?.RequiresHscn); }
-            set
-            {
-                if (value)
-                    PrivateCloud.RequiresHscn = "End user devices must be connected to HSCN/N3";
-                else
-                    PrivateCloud.RequiresHscn = null;
-            }
+            get => !string.IsNullOrWhiteSpace(PrivateCloud?.RequiresHscn);
+            set => PrivateCloud.RequiresHscn = value ? "End user devices must be connected to HSCN/N3" : null;
         }
     }
 }
