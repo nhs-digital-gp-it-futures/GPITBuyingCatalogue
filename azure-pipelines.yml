@@ -44,7 +44,7 @@ jobs:
       includePreviewVersions: false
 
   - bash: |
-      ./**/selenium-grid-setup.sh
+      ./**/setup-selenium-grid.sh
       if [ $? -ne 0 ]; then exit 1; fi
     displayName: Selenium Grid Setup
 
