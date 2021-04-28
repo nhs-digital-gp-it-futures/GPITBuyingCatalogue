@@ -43,7 +43,7 @@ jobs:
       version: $(dotnetVersion)
       includePreviewVersions: false
 
-  - task: Bash |
+  - bash: |
     ./tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/Pipeline/selenium-grid-setup.sh
       if [ $? -ne 0 ]; then exit 1; fi
     displayName: Selenium Grid Setup
