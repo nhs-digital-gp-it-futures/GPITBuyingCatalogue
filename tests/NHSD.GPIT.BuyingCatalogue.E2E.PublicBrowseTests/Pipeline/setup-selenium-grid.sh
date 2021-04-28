@@ -2,7 +2,7 @@
 
 docker-compose stop &&
 docker-compose rm -f &&
-docker-compose -f "docker-compose.yml" up --scale chrome=4 -d
+docker-compose -f "./tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/Pipeline/docker-compose.yml" up --scale chrome=4 -d
 
 n=0
 chromeNodeNames=$(docker ps --filter "name=chrome" --format "table {{.Names}}")
