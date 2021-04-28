@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
             
-            return View(new AboutSupplierModel(solution));
+            return View(_mapper.Map<CatalogueItem, AboutSupplierModel>(solution));
         }
 
         [HttpPost("about-supplier")]
@@ -48,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await _solutionsService.SaveSupplierDescriptionAndLink(model.SupplierId, model.Description, model.Link);
 
-            return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
+            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
         }
 
         [HttpGet("contact-details")]
@@ -59,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
             
-            return View(new ContactDetailsModel(solution));
+            return View(_mapper.Map<CatalogueItem, ContactDetailsModel>(solution));
         }
 
         [HttpPost("contact-details")]
