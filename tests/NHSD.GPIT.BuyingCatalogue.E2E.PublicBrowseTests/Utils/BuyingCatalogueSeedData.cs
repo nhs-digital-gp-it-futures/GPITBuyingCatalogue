@@ -717,7 +717,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             List<Supplier> suppliers = new()
             {
                 new Supplier
-                { 
+                {
                     Id = "99999",
                     Name = "DFOCVC Supplier",
                     LastUpdated = DateTime.UtcNow,

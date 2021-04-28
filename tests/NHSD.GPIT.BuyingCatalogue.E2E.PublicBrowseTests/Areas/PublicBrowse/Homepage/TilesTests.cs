@@ -6,8 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.PublicBrowse.Areas.Homepage
 {
     public sealed class TilesTests : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public TilesTests(LocalWebApplicationFactory factory) 
-            :base(factory)
+        public TilesTests(LocalWebApplicationFactory factory)
+            : base(factory)
         {
         }
 

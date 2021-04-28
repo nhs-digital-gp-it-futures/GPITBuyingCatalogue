@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         public LocalWebApplicationFactory()
         {
             ClientOptions.BaseAddress = new Uri(LocalhostBaseAddress);
-            
+
             DbName = Guid.NewGuid().ToString();
 
             SetEnvVariables();
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 }
             });
 
-            
+
             builder.UseUrls($"{LocalhostBaseAddress}:{new Random().Next(10000, 50000)}");
             return builder;
         }

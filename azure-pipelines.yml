@@ -29,7 +29,7 @@ jobs:
     name: echovar
 
 - job: dockerBuildAndPush
-  displayName: Run unit & integration tests and build & push docker containers to the ACR
+  displayName: Run all tests and build & push docker containers to the ACR
   variables:
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   dependsOn: version
@@ -42,7 +42,7 @@ jobs:
     inputs:
       version: $(dotnetVersion)
       includePreviewVersions: false
-
+  
   - task: DotNetCoreCLI@2
     displayName: 'Run dotnet restore'
     inputs:
@@ -69,7 +69,7 @@ jobs:
   - task: DockerInstaller@0
     inputs:
       dockerVersion: $(dockerVersion)
-
+    
   - script: docker-compose up --build -d
     displayName: 'Docker up'
 
@@ -80,6 +80,13 @@ jobs:
       projects: '**/*IntegrationTests.csproj'
       arguments: '-v n --no-build'
 
+  - task: DotNetCoreCLI@2
+    displayName: 'Run E2E Tests'
+    inputs:
+      command: test
+      projects: '**/*E2ETests.csproj'
+      arguments: '-v n --no-build'
+  
   - script: docker-compose logs
     displayName: 'Docker logs'
     condition: failed()
