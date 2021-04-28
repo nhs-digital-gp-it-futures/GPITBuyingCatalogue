@@ -6,5 +6,6 @@
         internal CommonActions CommonActions { get; set; }
         internal SolutionDescriptionActions SolutionDescriptionActions { get; set; }
         internal DashboardActions DashboardActions { get; set; }
+        internal AboutSupplierActions AboutSupplierActions { get; set; }
     }
 }

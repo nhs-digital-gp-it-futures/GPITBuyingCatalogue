@@ -1,12 +1,11 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions;
 using OpenQA.Selenium;
-using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
     internal sealed class HomepageActions : ActionBase
     {
-        public HomepageActions(IWebDriver driver) : base (driver)
+        public HomepageActions(IWebDriver driver) : base(driver)
         {
 
         }

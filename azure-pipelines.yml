@@ -43,6 +43,11 @@ jobs:
       version: $(dotnetVersion)
       includePreviewVersions: false
 
+  - task: bash
+    ./tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/Pipeline/selenium-grid-setup.sh
+      if [ $? -ne 0 ]; then exit 1; fi
+    displayName: Selenium Grid Setup
+
   - task: DotNetCoreCLI@2
     displayName: 'Run dotnet restore'
     inputs:
@@ -58,6 +63,13 @@ jobs:
       command: build
       projects: '**/*Tests.csproj'
       arguments: '--no-restore'
+    
+  - task: DotNetCoreCLI@2
+    displayName: 'Run E2E Tests'
+    inputs:
+      command: test
+      projects: '**/*E2ETests.csproj'
+      arguments: '-v n --no-build
 
   - task: DotNetCoreCLI@2
     displayName: 'Run unit tests'
