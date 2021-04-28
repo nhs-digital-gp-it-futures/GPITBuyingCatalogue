@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using OpenQA.Selenium;
 using System;
-using System.Linq;
 using System.Net.Http;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
@@ -15,29 +16,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             client = factory.CreateClient();
             this.factory = factory;
-            driver = factory.Driver;
+
+            driver = this.factory.Driver;
+            PublicBrowsePages = new PublicBrowsePages(driver).PageActions;
+            MarketingPages = new MarketingPageActions(driver).PageActions;
+
+            driver = this.factory.Driver;
             uri = new Uri(factory.RootUri);
-            driver.Navigate().GoToUrl(new Uri(uri, urlArea));
-            PublicBrowsePages = new PublicBrowsePages(this.driver).PageActions;
+            var combinedUri = new Uri(uri, urlArea);
+            driver.Navigate().GoToUrl(combinedUri);
         }
 
-        internal TDbContext GetContext<TDbContext>()
+        internal BuyingCatalogueDbContext GetBCContext()
         {
-            var serviceScopeFactory = (IServiceScopeFactory)factory.Services.GetService<IServiceScopeFactory>();
+            var options = new DbContextOptionsBuilder<BuyingCatalogueDbContext>()
+                .UseInMemoryDatabase(factory.DbName)
+                .Options;
 
-            var scope = serviceScopeFactory.CreateScope();
-
-            return scope.ServiceProvider.GetServices<TDbContext>().First();
-
-            //var scopedServices = factory.Services.GetRequiredService<TDbContext>();
-            //
-            //return scopedServices;
+            return new(options);
         }
 
         private readonly HttpClient client;
         protected readonly LocalWebApplicationFactory factory;
         protected readonly IWebDriver driver;
 
-        internal ActionCollection PublicBrowsePages { get; }
+        internal Actions.PublicBrowse.ActionCollection PublicBrowsePages { get; }
+        internal Actions.Marketing.ActionCollection MarketingPages { get; }
     }
 }

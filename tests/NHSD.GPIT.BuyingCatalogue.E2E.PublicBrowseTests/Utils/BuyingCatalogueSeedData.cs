@@ -101,12 +101,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     PublishedStatusId = 3,
                     SupplierId = "99999"
                 },
+                new CatalogueItem
+                {
+                    CatalogueItemId = "99999-99",
+                    CatalogueItemTypeId = 1,
+                    Created = DateTime.UtcNow,
+                    Name = "DFOCVC Solution Empty",
+                    SupplierId = "99999",
+                    PublishedStatusId = 1,
+                    Solution = new Solution
+                    {
+                        Id = "99999-99",
+                        Version = "1.0.0",
+                        LastUpdated = DateTime.UtcNow,
+                        LastUpdatedBy = Guid.Empty,
+                    }
+                }
             };
             context.AddRange(dfocvcSolutions);
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
                 new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = "99999-001", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = "99999-99", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
             };
             context.AddRange(frameworkSolutions);
         }

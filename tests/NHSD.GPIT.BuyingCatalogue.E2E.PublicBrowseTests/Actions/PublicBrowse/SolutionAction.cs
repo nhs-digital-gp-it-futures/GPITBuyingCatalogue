@@ -4,7 +4,7 @@ using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
-    internal class SolutionAction : ActionBase
+    internal sealed class SolutionAction : ActionBase
     {
         public SolutionAction(IWebDriver driver) : base(driver)
         {
