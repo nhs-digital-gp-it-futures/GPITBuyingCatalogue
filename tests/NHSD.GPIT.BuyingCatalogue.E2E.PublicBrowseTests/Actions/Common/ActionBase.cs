@@ -4,7 +4,7 @@ using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions
 {
-    internal class ActionBase
+    internal abstract class ActionBase
     {
         public ActionBase(IWebDriver driver)
         {

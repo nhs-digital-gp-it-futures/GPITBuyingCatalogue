@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string LocalhostBaseAddress = "https://localhost";
 
         private readonly IWebHost host;
-        private readonly string DbName;
+        internal readonly string DbName;
 
         internal IWebDriver Driver { get; }
 
