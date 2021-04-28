@@ -10,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
             {
                 AboutSupplierActions = new(driver),
                 CommonActions = new(driver),
+                ContactDetailsActions = new(driver),
                 DashboardActions = new(driver),
                 FeaturesActions = new(driver),
                 SolutionDescriptionActions = new(driver)
