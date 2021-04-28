@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 #nullable disable
 
@@ -27,10 +26,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
         public virtual AssociatedService AssociatedService { get; set; }
         public virtual Solution Solution { get; set; }
         public virtual ICollection<CataloguePrice> CataloguePrices { get; set; }
-
-        public MarketingContact FirstContact() => Solution?.MarketingContacts?.FirstOrDefault() ?? new MarketingContact();
-
-        public MarketingContact SecondContact() =>
-            Solution?.MarketingContacts?.Skip(1).FirstOrDefault() ?? new MarketingContact();
     }
 }

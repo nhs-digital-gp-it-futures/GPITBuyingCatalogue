@@ -1,5 +1,4 @@
 using System.Linq;
-using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -11,8 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
     [Parallelizable(ParallelScope.All)]
     public class CatalogueItemTests
     {
-        private static readonly Fixture Fixture = new();
-
         [Test, IgnoreCircularReferenceAutoData]
         public static void FirstContact_ValidModel_ReturnsFirstContact(CatalogueItem catalogueItem)
         {
