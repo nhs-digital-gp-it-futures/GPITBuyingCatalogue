@@ -42,6 +42,10 @@ jobs:
     inputs:
       version: $(dotnetVersion)
       includePreviewVersions: false
+  
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: $(dockerVersion)
 
   - bash: |
       chmod +x ./tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/Pipeline/setup-selenium-grid.sh
@@ -78,10 +82,6 @@ jobs:
       command: test
       projects: '**/*UnitTests.csproj'
       arguments: '-v n --no-build --collect "Code coverage"'
-
-  - task: DockerInstaller@0
-    inputs:
-      dockerVersion: $(dockerVersion)
 
   - script: docker-compose up --build -d
     displayName: 'Docker up'
