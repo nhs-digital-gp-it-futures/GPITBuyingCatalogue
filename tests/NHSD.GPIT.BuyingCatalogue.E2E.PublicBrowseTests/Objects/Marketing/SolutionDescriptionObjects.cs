@@ -5,6 +5,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
 {
     internal static class SolutionDescriptionObjects
     {
+        internal static By ErrorSection => By.ClassName("nhsuk-error-summary");
+
         internal static By SaveAndReturn => CustomBy.DataTestId("section-submit-button", "button[type=submit]");
 
         internal static By Description => By.Id("description");

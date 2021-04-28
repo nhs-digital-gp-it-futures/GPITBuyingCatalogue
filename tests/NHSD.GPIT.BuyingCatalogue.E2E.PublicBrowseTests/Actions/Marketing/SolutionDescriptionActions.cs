@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 
         public string SummaryAddText(int numChars)
         {
+            Driver.FindElement(SolutionDescriptionObjects.Summary).Clear();
             var summary = Strings.RandomString(numChars);
             Driver.FindElement(SolutionDescriptionObjects.Summary).SendKeys(summary);
             return summary;
@@ -20,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 
         internal string DescriptionAddText(int numChars)
         {
+            Driver.FindElement(SolutionDescriptionObjects.Description).Clear();
             var description = Strings.RandomString(numChars);
             Driver.FindElement(SolutionDescriptionObjects.Description).SendKeys(description);
             return description;
@@ -27,14 +29,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 
         internal string LinkAddText(int numChars)
         {
+            Driver.FindElement(SolutionDescriptionObjects.Link).Clear();
             var link = Strings.RandomString(numChars);
             Driver.FindElement(SolutionDescriptionObjects.Link).SendKeys(link);
             return link;
         }
 
-        internal void ClickSave()
+        internal bool ErrorMessageDisplayed()
         {
-            Driver.FindElement(SolutionDescriptionObjects.SaveAndReturn).Click();
+            try
+            {
+                Driver.FindElement(SolutionDescriptionObjects.ErrorSection);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

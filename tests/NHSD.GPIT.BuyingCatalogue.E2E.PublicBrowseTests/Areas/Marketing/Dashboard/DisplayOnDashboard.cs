@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class DisplayOnDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>
 	{
-        public DisplayOnDashboard(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-001/")
+        public DisplayOnDashboard(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/")
         {
         }
 
@@ -25,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 		[InlineData("Implementation timescales")]
 		public void MarketingPages_DisplayOnDashboard(string section)
         {
-			using var context = GetBCContext();
 			MarketingPages.DashboardActions.SectionDisplayed(section).Should().BeTrue();
 		}
 	}

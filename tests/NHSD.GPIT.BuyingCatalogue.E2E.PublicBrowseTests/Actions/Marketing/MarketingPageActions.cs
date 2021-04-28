@@ -8,8 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
         {
             PageActions = new ActionCollection
             {
-                DashboardActions = new DashboardActions(driver),
-                SolutionDescriptionActions = new SolutionDescriptionActions(driver)
+                CommonActions = new(driver),
+                DashboardActions = new(driver),
+                FeaturesActions = new(driver),
+                SolutionDescriptionActions = new(driver)
             };
         }
 

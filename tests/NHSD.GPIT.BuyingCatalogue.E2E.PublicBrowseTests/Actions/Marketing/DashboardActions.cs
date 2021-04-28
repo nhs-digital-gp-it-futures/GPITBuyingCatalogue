@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Extensions;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
@@ -31,6 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
             Driver.FindElements(DashboardObjects.SectionTitle)
                 .Single(s => s.Text.Contains(section)).FindElement(By.TagName("a"))
                 .Click();
+        }
+
+        internal bool SectionMarkedComplete(string sectionName)
+        {
+            var section = Driver.FindElements(DashboardObjects.Sections)
+                .Where(s => s.ContainsElement(DashboardObjects.SectionTitle))
+                .Single(s => s.FindElement(DashboardObjects.SectionTitle).Text == sectionName);
+            return section.FindElement(DashboardObjects.SectionStatus).Text.Equals("Complete", StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
