@@ -47,10 +47,7 @@ jobs:
     inputs:
       dockerVersion: $(dockerVersion)
 
-  - bash: |
-      chmod +x ./tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/Pipeline/setup-selenium-grid.sh
-      ./tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/Pipeline/setup-selenium-grid.sh
-      if [ $? -ne 0 ]; then exit 1; fi
+  - script: docker-compose up -f ./**/*Tests/Pipeline/docker-compose --scale chrome=4 -d
     displayName: Selenium Grid Setup
 
   - task: DotNetCoreCLI@2
