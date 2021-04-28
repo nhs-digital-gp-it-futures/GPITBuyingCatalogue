@@ -29,7 +29,7 @@ jobs:
     name: echovar
 
 - job: dockerBuildAndPush
-  displayName: Run unit & integration tests and build & push docker containers to the ACR
+  displayName: Run all tests and build & push docker containers to the ACR
   variables:
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   dependsOn: version
