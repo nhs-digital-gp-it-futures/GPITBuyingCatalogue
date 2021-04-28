@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public string SupplierId { get; set; }
 
-        protected ClientApplication ClientApplication { get; set; }
+        public ClientApplication ClientApplication { get; set; }
 
         protected string GetStatus(MarketingBaseModel model) =>
             model.IsComplete.GetValueOrDefault() ? "COMPLETE" : "INCOMPLETE";

@@ -3,10 +3,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -20,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class AboutOrganisationControllerTests
     {
-        private static string[] InvalidStrings = {null, string.Empty, "    "};
+        private static readonly string[] InvalidStrings = {null, string.Empty, "    "};
         
         [Test]
         public static void ClassIsCorrectlyDecorated()
@@ -51,6 +53,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 _ = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
                     Mock.Of<IMapper>(), null));
         }
+        
+        [Test]
+        public static void Get_AboutSupplier_HttpGetAttribute_ExpectedTemplate()
+        {
+            typeof(AboutOrganisationController)
+                .GetMethods()
+                .First(x => x.Name == nameof(AboutOrganisationController.AboutSupplier)
+                            && x.GetCustomAttribute<HttpGetAttribute>() != null)
+                .GetCustomAttribute<HttpGetAttribute>()
+                .Template
+                .Should().Be("about-supplier");
+        }
 
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
@@ -62,6 +76,67 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             Assert.ThrowsAsync<ArgumentException>(() => controller.AboutSupplier(id));
         }
 
+        [Test, AutoData]
+        public static async Task Get_AboutSupplier_ValidIdInput_RetrievesSolutionFromService(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), mockService.Object);
+
+            await controller.AboutSupplier(id);
+            
+            mockService.Verify(x => x.GetSolution(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_AboutSupplier_ValidIdInput_MapsSolutionToModel(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            mockService.Setup(x => x.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var mockMapper = new Mock<IMapper>();
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                mockMapper.Object, mockService.Object);
+
+            await controller.AboutSupplier(id);
+            
+            mockMapper.Verify(x => x.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_AboutSupplier_ValidIdInput_ReturnsViewWithExpectedModel(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            mockService.Setup(x => x.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var mockMapper = new Mock<IMapper>();
+            var mockAboutSupplierModel = new Mock<AboutSupplierModel>().Object;
+            mockMapper.Setup(x => x.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem))
+                .Returns(mockAboutSupplierModel);
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                mockMapper.Object, mockService.Object);
+
+            var actual = (await controller.AboutSupplier(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().Be(mockAboutSupplierModel);
+        }
+        
+        [Test]
+        public static void Post_AboutSupplier_HttpGetAttribute_ExpectedTemplate()
+        {
+            typeof(AboutOrganisationController)
+                .GetMethods()
+                .First(x => x.Name == nameof(AboutOrganisationController.AboutSupplier)
+                            && x.GetCustomAttribute<HttpPostAttribute>() != null)
+                .GetCustomAttribute<HttpPostAttribute>()
+                .Template
+                .Should().Be("about-supplier");
+        }
+
         [Test]
         public static void Post_AboutSupplier_NullModel_ThrowsException()
         {
@@ -69,6 +144,63 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.AboutSupplier((AboutSupplierModel) null));
+        }
+
+        [Test]
+        public static async Task Post_AboutSupplier_ModelNotValid_DoesNotCallService()
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), mockService.Object);
+            controller.ModelState.AddModelError("some-property", "some-error");
+
+            await controller.AboutSupplier(new Mock<AboutSupplierModel>().Object);
+
+            mockService.Verify(
+                x => x.SaveSupplierDescriptionAndLink(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+                Times.Never);
+        }
+
+        [Test]
+        public static async Task Post_AboutSupplier_ModelNotValid_ReturnsViewWithModel()
+        {
+            var mockAboutSupplierModel = new Mock<AboutSupplierModel>().Object;
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+            controller.ModelState.AddModelError("some-property", "some-error");
+
+            var actual = (await controller.AboutSupplier(mockAboutSupplierModel)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().Be(mockAboutSupplierModel);
+        }
+
+        [Test, AutoData]
+        public static async Task Post_AboutSupplier_ModelValid_CallsSaveOnService(AboutSupplierModel model)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), mockService.Object);
+
+            await controller.AboutSupplier(model);
+
+            mockService.Verify(x => x.SaveSupplierDescriptionAndLink(model.SupplierId,
+                model.Description, model.Link));
+        }
+
+        [Test, AutoData]
+        public static async Task Post_AboutSupplier_ModelValid_RedirectsToSolution(AboutSupplierModel model)
+        {
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+
+            var actual = (await controller.AboutSupplier(model)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(SolutionController.Index));
+            actual.ControllerName.Should().Be("Solution");
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
         
         [Test]
@@ -91,6 +223,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ContactDetails(id));
+        }
+        
+        [Test, AutoData]
+        public static async Task Get_ContactDetails_ValidId_GetsSolutionFromService(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), mockService.Object);
+
+            await controller.ContactDetails(id);
+            
+            mockService.Verify(x => x.GetSolution(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ContactDetails_ValidId_MapsSolutionToViewModel_ReturnsExpectedView(string id)
+        {
+            var mockContactDetailsModel = new Mock<ContactDetailsModel>().Object;
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockMapper = new Mock<IMapper>();
+            mockMapper.Setup(x => x.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem))
+                .Returns(mockContactDetailsModel);
+            
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(x => x.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                mockMapper.Object, mockService.Object);
+
+            var actual = (await controller.ContactDetails(id)).As<ViewResult>();
+            
+            mockMapper.Verify(x => x.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().Be(mockContactDetailsModel);
         }
 
         [Test]
