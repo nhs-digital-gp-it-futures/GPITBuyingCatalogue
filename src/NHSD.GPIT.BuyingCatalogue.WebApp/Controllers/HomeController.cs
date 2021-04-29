@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("Taking user to Home Index page");
+
             return View();
         }
 

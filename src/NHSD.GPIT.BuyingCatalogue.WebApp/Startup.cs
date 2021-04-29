@@ -1,29 +1,17 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
-using MailKit;
-using MailKit.Net.Smtp;
+using Serilog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
-using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NHSD.GPIT.BuyingCatalogue.Services.Identity;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
-using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -70,6 +58,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
+            app.UseSerilogRequestLogging(opts =>
+            {
+                opts.GetLevel = SerilogRequestLoggingOptions.GetLevel;
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
