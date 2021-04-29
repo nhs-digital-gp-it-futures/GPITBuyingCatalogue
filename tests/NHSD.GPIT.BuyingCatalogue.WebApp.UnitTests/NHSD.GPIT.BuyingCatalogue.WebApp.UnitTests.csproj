@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture.NUnit3" Version="4.17.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Bogus" Version="33.0.2" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
