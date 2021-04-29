@@ -18,11 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             Description = CatalogueItem.Solution.ImplementationDetail;
         }
 
-        public override bool? IsComplete
-        {
-            get { return !string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.ImplementationDetail); }
-        }
-        
+        public override bool? IsComplete => !string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.ImplementationDetail);
+
         public string Description { get; set; }
     }
 }
