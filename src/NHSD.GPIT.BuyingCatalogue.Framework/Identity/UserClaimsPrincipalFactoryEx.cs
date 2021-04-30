@@ -30,12 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
             var aspNetUser = (AspNetUser)user;
 
             id.AddClaim(new Claim("userDisplayName", $"{aspNetUser.FirstName} {aspNetUser.LastName}"));
-
-            if( aspNetUser.OrganisationFunction.Equals(OrganisationFunction.Authority.DisplayName, StringComparison.InvariantCultureIgnoreCase))
-                id.AddClaim(new Claim("IsAdmin", "True"));
-
-            if (aspNetUser.OrganisationFunction.Equals(OrganisationFunction.Buyer.DisplayName, StringComparison.InvariantCultureIgnoreCase))
-                id.AddClaim(new Claim("IsBuyer", "True"));
+            id.AddClaim(new Claim("organisationFunction", aspNetUser.OrganisationFunction));
 
             return id;
         }

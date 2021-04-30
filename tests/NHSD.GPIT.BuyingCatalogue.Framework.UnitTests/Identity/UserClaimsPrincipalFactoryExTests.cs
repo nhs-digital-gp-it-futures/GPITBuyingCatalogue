@@ -33,9 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         }
        
         [Test]
-        [TestCase("Buyer", "IsBuyer", "IsAdmin")]
-        [TestCase("Authority", "IsAdmin", "IsBuyer")]
-        public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(string organisationFunction, string presentClaim, string missingClaim)
+        [TestCase("Buyer")]
+        [TestCase("Authority")]
+        public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(string organisationFunction)
         {
             var user = new AspNetUser { Id = "123", UserName = "Foo", OrganisationFunction = organisationFunction, FirstName = "Fred", LastName = "Smith" };         
             var userManager = MockUserManager<AspNetUser>();
@@ -55,9 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             var principal = await factory.CreateAsync(user);
 
-            Assert.AreEqual("True", GetClaimValue(principal, presentClaim));
-            Assert.AreEqual("Fred Smith", GetClaimValue(principal, "userDisplayName"));
-            Assert.IsEmpty(GetClaimValue(principal, missingClaim));            
+            Assert.AreEqual(organisationFunction, GetClaimValue(principal, "organisationFunction"));
+            Assert.AreEqual("Fred Smith", GetClaimValue(principal, "userDisplayName"));                      
         }
       
         public static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
