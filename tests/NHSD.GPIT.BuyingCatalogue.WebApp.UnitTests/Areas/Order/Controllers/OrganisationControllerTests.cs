@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Get_Index_NotBuyer_ReturnsNotBuyerView()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{    
-                new Claim("IsAdmin", "True"),                
+                new Claim("organisationFunction", "Authority"),                
             }, "mock"));
 
             var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Get_Index_Buyer_ReturnsDefaultView()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{
-                new Claim("IsBuyer", "True"),                
+                new Claim("organisationFunction", "Buyer"),                
             }, "mock"));
 
             var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());

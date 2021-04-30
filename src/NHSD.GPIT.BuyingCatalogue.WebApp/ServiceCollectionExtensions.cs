@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("organisationFunction", new[] { OrganisationFunction.Authority.DisplayName }));
             });
         }
 
