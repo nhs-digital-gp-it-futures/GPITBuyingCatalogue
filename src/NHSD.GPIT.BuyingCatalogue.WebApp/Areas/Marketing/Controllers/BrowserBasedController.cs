@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
@@ -13,11 +15,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     public class BrowserBasedController : Controller
     {
         private readonly ILogWrapper<BrowserBasedController> _logger;
+        private readonly IMapper _mapper;
         private readonly ISolutionsService _solutionsService;
 
-        public BrowserBasedController(ILogWrapper<BrowserBasedController> logger, ISolutionsService solutionsService)
+        public BrowserBasedController(ILogWrapper<BrowserBasedController> logger,
+            IMapper mapper,
+            ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(logger));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
@@ -28,31 +34,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
             
-            return View(new SupportedBrowsersModel(solution));
+            return View(_mapper.Map<CatalogueItem, SupportedBrowsersModel>(solution));
         }
 
         [HttpPost("supported-browsers")]
         public async Task<IActionResult> SupportedBrowsers(SupportedBrowsersModel model)
         {
             if(model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
-            clientApplication.BrowsersSupported.Clear();
-
-            foreach (var browser in model.Browsers.Where(x => x.Checked))
-                clientApplication.BrowsersSupported.Add(browser.BrowserName);
-
-            if (string.IsNullOrWhiteSpace(model.MobileResponsive))
-                clientApplication.MobileResponsive = null;
-            else
-                clientApplication.MobileResponsive = model.MobileResponsive.Equals("Yes", StringComparison.InvariantCultureIgnoreCase) ? true : false;
-
+            _mapper.Map(model, clientApplication);
+            
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
             return RedirectBack(model.SolutionId);
@@ -83,7 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (string.IsNullOrWhiteSpace(model.MobileFirstApproach))
                 clientApplication.MobileFirstDesign = null;
             else
-                clientApplication.MobileFirstDesign = model.MobileFirstApproach.Equals("Yes", StringComparison.InvariantCultureIgnoreCase) ? true : false;
+                clientApplication.MobileFirstDesign =
+                    model.MobileFirstApproach.Equals("Yes", StringComparison.InvariantCultureIgnoreCase);
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 

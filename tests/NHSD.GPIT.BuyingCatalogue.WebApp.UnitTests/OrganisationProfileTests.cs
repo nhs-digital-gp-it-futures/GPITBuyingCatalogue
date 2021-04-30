@@ -1,5 +1,6 @@
 using System.Linq;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -171,20 +172,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         }
         
         [Test, IgnoreCircularReferenceAutoData]
-        public static void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
-            ContactDetailsModel contactDetailsModel)
-        {
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
-
-            var actual = mapper.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel);
-
-            actual.Contacts.Should()
-                .BeEquivalentTo(contactDetailsModel.Contact1, contactDetailsModel.Contact2);
-            actual.SolutionId.Should().Be(contactDetailsModel.SolutionId);
-        }
-
-        [Test, IgnoreCircularReferenceAutoData]
         public static void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(CatalogueItem catalogueItem,
             ClientApplication clientApplication)
         {
@@ -202,6 +189,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.Summary.Should().Be(catalogueItem.Solution.Summary);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
+        }
+        
+        [Test, IgnoreCircularReferenceAutoData]
+        public static void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
+            ContactDetailsModel contactDetailsModel)
+        {
+            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
+                .CreateMapper();
+
+            var actual = mapper.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel);
+
+            actual.Contacts.Should()
+                .BeEquivalentTo(contactDetailsModel.Contact1, contactDetailsModel.Contact2);
+            actual.SolutionId.Should().Be(contactDetailsModel.SolutionId);
+        }
+
+        [Test, AutoData]
+        public static void Map_FeaturesModelToStringArray_ResultAsExpected(FeaturesModel model)
+        {
+            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
+                .CreateMapper();
+
+            var actual = mapper.Map<FeaturesModel, string[]>(model);
+
+            actual[0].Should().Be(model.Listing1);
+            actual[1].Should().Be(model.Listing2);
+            actual[2].Should().Be(model.Listing3);
+            actual[3].Should().Be(model.Listing4);
+            actual[4].Should().Be(model.Listing5);
+            actual[5].Should().Be(model.Listing6);
+            actual[6].Should().Be(model.Listing7);
+            actual[7].Should().Be(model.Listing8);
+            actual[8].Should().Be(model.Listing9);
+            actual[9].Should().Be(model.Listing10);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-{    
+{
     public static class ClaimsPrincipalExtensions
     {
         public static string GetPrimaryOrganisationName(this ClaimsPrincipal user)

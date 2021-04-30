@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.Link,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.SupplierUrl))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<CatalogueItem, ContactDetailsModel>()
                 .ForMember(dest => dest.Contact1, opt => opt.MapFrom(src => src.FirstContact()))
                 .ForMember(dest => dest.Contact2, opt => opt.MapFrom(src => src.SecondContact()))
@@ -40,9 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>()
                 .AfterMap((src, dest) =>
                 {
-                    if (string.IsNullOrWhiteSpace(src.Solution.Features)) 
+                    if (string.IsNullOrWhiteSpace(src.Solution.Features))
                         return;
-                    
+
                     var features = JsonConvert.DeserializeObject<string[]>(src.Solution.Features);
                     dest.Listing1 = features.Length > 0 ? features[0] : string.Empty;
                     dest.Listing2 = features.Length > 1 ? features[1] : string.Empty;
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.Description,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.ImplementationDetail))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<CatalogueItem, IntegrationsModel>()
                 .ForMember(dest => dest.Link,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.IntegrationsUrl))
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.SupplierId,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Id))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter();
-            
+
             CreateMap<CatalogueItem, RoadmapModel>()
                 .ForMember(dest => dest.Summary,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.RoadMap))

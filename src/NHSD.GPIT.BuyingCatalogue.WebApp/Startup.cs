@@ -1,17 +1,23 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
+using System.Threading.Tasks;
 using AutoMapper;
 using Serilog;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -51,12 +57,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureAuthorization();
 
             ServicesStartup.Configure(services);
-            
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper, ILogger<Startup> logger)
         {
             app.UseSerilogRequestLogging(opts =>
             {
@@ -69,7 +75,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(
+                        context =>
+                        {
+                            var error = context.Features.Get<IExceptionHandlerFeature>();
+                            if (error != null)
+                            {
+                                var errorMessage = error.Error.FullErrorMessage();
+                                logger.LogError(error.Error, errorMessage);
+                            }
+                            context.Response.Redirect("Home/Error");
+                            return Task.CompletedTask;
+                        });
+                });
+                
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
