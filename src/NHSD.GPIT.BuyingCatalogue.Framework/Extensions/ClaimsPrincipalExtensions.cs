@@ -1,9 +1,10 @@
-﻿using System;
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using System;
 using System.Linq;
 using System.Security.Claims;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-{    
+{
     public static class ClaimsPrincipalExtensions
     {
         public static string GetPrimaryOrganisationName(this ClaimsPrincipal user)
@@ -18,11 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, "IsAdmin").Equals("True");
+            return GetClaimValue(user, "organisationFunction").Equals(OrganisationFunction.Authority.DisplayName);
         }
         public static bool IsBuyer(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, "IsBuyer").Equals("True");
+            return GetClaimValue(user, "organisationFunction").Equals(OrganisationFunction.Buyer.DisplayName);
         }
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)
