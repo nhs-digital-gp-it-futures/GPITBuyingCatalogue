@@ -7,9 +7,9 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 using NUnit.Framework;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 {
-    internal static class StringToBoolResolverTests
+    internal static class StringToNullableBoolResolverTests
     {
         private static string[] InvalidStrings = { null, string.Empty, "    " };
         private static IMapper _mapper;
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(x =>
                     x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
-                .Returns(new StringToBoolResolver());
+                .Returns(new StringToNullableBoolResolver());
             _mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BrowserBasedProfile>();

@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             marketingContact.IsEmpty().Should().BeFalse();
         }
 
-        [Test, IgnoreCircularReferenceAutoData]
+        [Test, CommonAutoData]
         public static void UpdateFrom_ValidContactInput_UpdatesProperties(MarketingContact marketingContact)
         {
             var newContact = new MarketingContact();

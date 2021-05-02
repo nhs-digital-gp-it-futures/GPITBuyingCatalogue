@@ -19,11 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             Description = ClientApplication.HardwareRequirements;
         }
 
-        public override bool? IsComplete
-        {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication?.HardwareRequirements); }
-        }     
-        
+        public override bool? IsComplete => !string.IsNullOrWhiteSpace(ClientApplication?.HardwareRequirements);
+
         public string Description { get; set; }
     }
 }
