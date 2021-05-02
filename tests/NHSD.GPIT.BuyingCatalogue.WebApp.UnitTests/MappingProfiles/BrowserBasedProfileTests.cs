@@ -178,9 +178,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mobileFirstApproach = clientApplication.MobileFirstDesign.HasValue
-                ? clientApplication.MobileFirstDesign.ToYesNo()
-                : null;
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BrowserBasedProfile>();
@@ -193,9 +190,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.MobileFirstApproach.Should().Be(mobileFirstApproach);
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
+        }
+
+        [Test, CommonAutoData]
+        public static void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasValue_MobileFirstApproachSet(
+            CatalogueItem catalogueItem, ClientApplication clientApplication)
+        {
+            clientApplication.MobileFirstDesign = DateTime.Now.Ticks % 2 == 0;
+            var expected = clientApplication.MobileFirstDesign.ToYesNo();
+            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BrowserBasedProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+
+            var actual = mapper.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem);
+
+            actual.MobileFirstApproach.Should().Be(expected);
+        }
+
+        [Test, CommonAutoData]
+        public static void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasNoValue_MobileFirstApproachNotSet(
+            CatalogueItem catalogueItem, ClientApplication clientApplication)
+        {
+            clientApplication.MobileFirstDesign = null;
+            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BrowserBasedProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+
+            var actual = mapper.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem);
+
+            actual.MobileFirstApproach.Should().BeNull();
         }
 
         [Test, CommonAutoData]

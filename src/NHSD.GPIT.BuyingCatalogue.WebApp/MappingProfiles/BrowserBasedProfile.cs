@@ -16,12 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         public BrowserBasedProfile()
         {
             CreateMap<CatalogueItem, AdditionalInformationModel>()
-                .ForMember(dest => dest.AdditionalInformation, opt => opt.Ignore())
+                .ForMember(dest => dest.AdditionalInformation, opt =>
+                {
+                    opt.SetMappingOrder(20);
+                    opt.MapFrom((_, dest) => dest.ClientApplication?.AdditionalInformation);
+                })
                 .ForMember(dest => dest.BackLink,
                     opt => opt.MapFrom(src =>
                         $"/marketing/supplier/solution/{src.CatalogueItemId}/section/browser-based"))
-                .IncludeBase<CatalogueItem, MarketingBaseModel>()
-                .AfterMap((_, dest) => dest.AdditionalInformation = dest.ClientApplication?.AdditionalInformation);
+                .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ConnectivityAndResolutionModel>()
                 .ForMember(dest => dest.BackLink,
@@ -82,21 +85,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.BackLink,
                     opt => opt.MapFrom(src =>
                         $"/marketing/supplier/solution/{src.CatalogueItemId}/section/browser-based"))
-                .ForMember(dest => dest.Description, opt => opt.Ignore())
-                .IncludeBase<CatalogueItem, MarketingBaseModel>()
-                .AfterMap((_, dest) => dest.Description = dest.ClientApplication?.HardwareRequirements);
+                .ForMember(dest => dest.Description, opt =>
+                {
+                    opt.SetMappingOrder(20);
+                    opt.MapFrom((_, dest) => dest.ClientApplication?.HardwareRequirements);
+                })
+                .IncludeBase<CatalogueItem, MarketingBaseModel>();
                 
             CreateMap<CatalogueItem, MobileFirstApproachModel>()
                 .ForMember(dest => dest.BackLink,
                     opt => opt.MapFrom(src =>
                         $"/marketing/supplier/solution/{src.CatalogueItemId}/section/browser-based"))
-                .ForMember(dest => dest.MobileFirstApproach, opt => opt.Ignore())
-                .IncludeBase<CatalogueItem, MarketingBaseModel>()
-                .AfterMap((_, dest) =>
+                .ForMember(dest => dest.MobileFirstApproach, opt =>
                 {
-                    if (dest.ClientApplication.MobileFirstDesign.HasValue)
-                        dest.MobileFirstApproach = dest.ClientApplication.MobileFirstDesign.ToYesNo();
-                });
+                    opt.SetMappingOrder(20);
+                    opt.Condition((_, dest) => dest.ClientApplication.MobileFirstDesign.HasValue);
+                    opt.MapFrom((_, dest) => dest.ClientApplication.MobileFirstDesign.ToYesNo());
+                })
+                .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, PlugInsOrExtensionsModel>()
                 .ForMember(dest => dest.AdditionalInformation, opt => opt.Ignore())
