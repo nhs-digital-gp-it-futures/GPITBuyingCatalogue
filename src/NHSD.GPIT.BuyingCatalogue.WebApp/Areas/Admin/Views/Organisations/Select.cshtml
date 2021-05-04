@@ -1,0 +1,41 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SelectOrganisationModel
+@{
+    ViewData["Title"] = "Confirm organisation";
+}
+
+<div class="nhsuk-width-container" data-test-id="select-org-page">
+    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+        <partial name="Partials/_BackLink" model="Model" />
+    </div>
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <h1 data-test-id="select-org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Confirm organisation</h1>
+            <h2 data-test-id="select-org-page-description" class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-9">Confirm this is the organisation you are looking for or go back and enter a different ODS code.</h2>
+            <h3 data-test-id="organisation-ods-code-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">ODS code</h3>
+            <div data-test-id="organisation-ods-code" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OdsOrganisation.OdsCode</div>
+            <h3 data-test-id="organisation-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Organisation name</h3>
+            <div data-test-id="organisation-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OdsOrganisation.OrganisationName</div>
+            <h3 data-test-id="organisation-address-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Address</h3>
+            <div data-test-id="organisation-address" class="nhsuk-u-margin-bottom-5">
+                <div data-test-id="organisation-address-1" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Line1</div>
+                <div data-test-id="organisation-address-2" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Line2</div>
+                <div data-test-id="organisation-address-3" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Line3</div>
+                <div data-test-id="organisation-address-4" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Town</div>
+                <div data-test-id="organisation-address-5" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.County</div>
+                <div data-test-id="organisation-address-6" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Postcode</div>
+                <div data-test-id="organisation-address-7" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Country</div>
+            </div>
+            <h3 data-test-id="organisation-primary-role-id-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Primary Role ID</h3>
+            <div data-test-id="organisation-primary-role-id" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OdsOrganisation.PrimaryRoleId</div>
+            <form method="post">                
+                <input type="hidden" asp-for="@Model.OdsOrganisation.OdsCode" />
+                <div data-test-id="select-org-button">
+                    <button class="nhsuk-button nhsuk-u-margin-bottom-9" type="submit">
+                        Select this organisation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
