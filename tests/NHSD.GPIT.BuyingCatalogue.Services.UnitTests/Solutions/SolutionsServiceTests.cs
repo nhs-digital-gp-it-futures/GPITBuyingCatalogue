@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveSupplierContacts_ModelNull_ThrowsException()
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveSupplierContacts(default));
 
@@ -38,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             var mockModel = new Mock<SupplierContactsModel>();
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
             
@@ -54,14 +54,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockModel.SetupGet(x => x.SolutionId)
                 .Returns(solutionId);
 
-            var mockMarketingContactRepository = new Mock<IRepository<MarketingContact>>();
+            var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .Callback((Expression<Func<MarketingContact, bool>> predicate) => predicate.Compile()
                     .Invoke(new MarketingContact {SolutionId = solutionId}).Should().BeTrue());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
             
@@ -76,13 +76,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockModel.Setup(x => x.ValidContacts())
                 .Returns(validContacts);
             
-            var mockMarketingContactRepository = new Mock<IRepository<MarketingContact>>();
+            var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(Array.Empty<MarketingContact>());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
             
@@ -104,13 +104,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockModel.Setup(x => x.ContactFor(savedModels[1].Id))
                 .Returns(mockNewContact.Object);
             
-            var mockMarketingContactRepository = new Mock<IRepository<MarketingContact>>();
+            var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(savedModels.ToArray);
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
             
@@ -132,13 +132,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockModel.Setup(x => x.ContactFor(savedModels[0].Id))
                 .Returns(mockNewContact.Object);
             
-            var mockMarketingContactRepository = new Mock<IRepository<MarketingContact>>();
+            var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(savedModels);
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
             
@@ -154,13 +154,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockModel.Setup(x => x.NewAndValidContacts())
                 .Returns(newAndValidContacts);
             
-            var mockMarketingContactRepository = new Mock<IRepository<MarketingContact>>();
+            var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(new []{new MarketingContact()});
             
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
             
@@ -171,11 +171,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveSupplierContacts_CallsSaveChangesAsync_OnRepository()
         {
-            var mockMarketingContactRepository = new Mock<IRepository<MarketingContact>>();
+            var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(Mock.Of<SupplierContactsModel>());
             
@@ -187,8 +187,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void GetSolution_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.GetSolution(solutionId));
 
@@ -200,8 +200,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveIntegrationLink_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveIntegrationLink(solutionId, "A link"));
 
@@ -211,13 +211,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveIntegrationLink_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSolutionRepository = new Mock<IRepository<Solution>>();
+            var mockSolutionRepository = new Mock<IBuyingCatalogueRepository<Solution>>();
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                mockSolutionRepository.Object, Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveIntegrationLink("100000-001", "A link");
 
@@ -229,8 +229,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveSolutionDescription_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(solutionId, "Summary", "Description", "Link"));
 
@@ -242,8 +242,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveSolutionDescription_InvalidSummary_ThrowsException(string summary)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription("100000-001", summary, "Description", "Link"));
 
@@ -253,13 +253,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveSolutionDescription_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSolutionRepository = new Mock<IRepository<Solution>>();
+            var mockSolutionRepository = new Mock<IBuyingCatalogueRepository<Solution>>();
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                mockSolutionRepository.Object, Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSolutionDescription("100000-001", "Summary", "Description", "Link");
 
@@ -271,8 +271,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveSolutionFeatures_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionFeatures(solutionId, null));
 
@@ -282,13 +282,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveSolutionFeatures_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSolutionRepository = new Mock<IRepository<Solution>>();
+            var mockSolutionRepository = new Mock<IBuyingCatalogueRepository<Solution>>();
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                mockSolutionRepository.Object, Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSolutionFeatures("100000-001", new string[0]);
 
@@ -300,8 +300,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveImplementationDetail_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveImplementationDetail(solutionId, "123"));
 
@@ -311,13 +311,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveImplementationDetail_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSolutionRepository = new Mock<IRepository<Solution>>();
+            var mockSolutionRepository = new Mock<IBuyingCatalogueRepository<Solution>>();
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                mockSolutionRepository.Object, Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveImplementationDetail("100000-001", "123");
 
@@ -329,8 +329,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveRoadmap_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveRoadmap(solutionId, "123"));
 
@@ -340,13 +340,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveRoadmap_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSolutionRepository = new Mock<IRepository<Solution>>();
+            var mockSolutionRepository = new Mock<IBuyingCatalogueRepository<Solution>>();
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                mockSolutionRepository.Object, Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveRoadmap("100000-001", "123");
 
@@ -358,8 +358,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void GetClientApplication_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.GetClientApplication(solutionId));
 
@@ -371,8 +371,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveClientApplication_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveClientApplication(solutionId, new ClientApplication()));
 
@@ -383,8 +383,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveClientApplication_InvalidModel_ThrowsException()
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveClientApplication("100000-001", null));
 
@@ -394,13 +394,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveClientApplication_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSolutionRepository = new Mock<IRepository<Solution>>();
+            var mockSolutionRepository = new Mock<IBuyingCatalogueRepository<Solution>>();
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                mockSolutionRepository.Object, Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveClientApplication("100000-001", new ClientApplication());
 
@@ -412,8 +412,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void GetHosting_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.GetHosting(solutionId));
 
@@ -426,8 +426,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveHosting_InvalidSolutionId_ThrowsException(string solutionId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveHosting(solutionId, new Hosting()));
 
@@ -438,8 +438,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void SaveHosting_InvalidModel_ThrowsException()
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveHosting("100000-001", null));
 
@@ -449,13 +449,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveHosting_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSolutionRepository = new Mock<IRepository<Solution>>();
+            var mockSolutionRepository = new Mock<IBuyingCatalogueRepository<Solution>>();
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                mockSolutionRepository.Object, Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveHosting("100000-001", new Hosting());
 
@@ -467,8 +467,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void GetSupplier_InvalidSupplierId_ThrowsException(string supplierId)
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), Mock.Of<IRepository<Supplier>>());
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.GetSupplier(supplierId));
 
@@ -478,13 +478,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveSupplier_CallsSaveChangesAsync_OnRepository()
         {
-            var mockSupplierRepository = new Mock<IRepository<Supplier>>();
+            var mockSupplierRepository = new Mock<IBuyingCatalogueRepository<Supplier>>();
             mockSupplierRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Supplier, bool>>>()))
                 .ReturnsAsync(new Supplier());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
-                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IRepository<MarketingContact>>(),
-                Mock.Of<IRepository<Solution>>(), mockSupplierRepository.Object);
+                Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
+                Mock.Of<IBuyingCatalogueRepository<Solution>>(), mockSupplierRepository.Object);
 
             await service.SaveSupplierDescriptionAndLink("100000-001", "Description", "Link");
 

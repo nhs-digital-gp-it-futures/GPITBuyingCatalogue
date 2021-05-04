@@ -48,6 +48,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddAntiforgery(options => options.Cookie.Name = "antiforgery");
         }
 
+        public static void ConfigureOds(this IServiceCollection services, IConfiguration configuration)
+        {
+            var odsSettings = configuration.GetSection("Ods").Get<OdsSettings>();
+
+            services.AddSingleton(odsSettings);
+        }
+
         public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
         {
             var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
