@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [TestCase(null, "No")]
         [TestCase("true", "Yes")]
         [TestCase("false", "No")]
-        public static void BooleanExtension_TpYesNo_ReturnsYesOrNoCorrectly(bool? value, string expected)
+        public static void BooleanExtension_ToYesNo_ReturnsYesOrNoCorrectly(bool? value, string expected)
         {
             var result = value.ToYesNo();
             Assert.AreEqual(result, expected);

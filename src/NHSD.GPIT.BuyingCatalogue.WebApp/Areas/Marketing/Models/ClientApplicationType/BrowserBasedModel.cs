@@ -34,34 +34,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             }
         }
         
-        public string SupportedBrowsersStatus
-        {
-            get { return GetStatus(new SupportedBrowsersModel(CatalogueItem)); }
-        }
+        public string SupportedBrowsersStatus => GetStatus(new SupportedBrowsersModel(CatalogueItem));
 
-        public string MobileFirstApproachStatus
-        {            
-            get { return GetStatus(new MobileFirstApproachModel(CatalogueItem)); }
-        }
+        public string MobileFirstApproachStatus => GetStatus(new MobileFirstApproachModel(CatalogueItem));
 
-        public string PlugInsStatus
-        {
-            get { return GetStatus(new PlugInsOrExtensionsModel(CatalogueItem)); }
-        }
+        public string PlugInsStatus => GetStatus(new PlugInsOrExtensionsModel(CatalogueItem));
 
-        public string ConnectivityStatus
-        {
-            get { return GetStatus(new ConnectivityAndResolutionModel(CatalogueItem)); }
-        }
+        public string ConnectivityStatus => GetStatus(new ConnectivityAndResolutionModel(CatalogueItem));
 
-        public string HardwareRequirementsStatus
-        {
-            get { return GetStatus(new HardwareRequirementsModel(CatalogueItem)); }
-        }
+        public string HardwareRequirementsStatus => GetStatus(new HardwareRequirementsModel(CatalogueItem));
 
-        public string AdditionalInformationStatus
-        {
-            get { return GetStatus(new AdditionalInformationModel(CatalogueItem)); }
-        }
+        public string AdditionalInformationStatus => GetStatus(new AdditionalInformationModel(CatalogueItem));
     }
 }
