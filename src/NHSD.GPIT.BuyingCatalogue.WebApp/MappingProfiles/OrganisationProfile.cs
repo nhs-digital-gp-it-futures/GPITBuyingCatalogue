@@ -71,10 +71,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt => opt.MapFrom(src => $"/marketing/supplier/solution/{src.CatalogueItemId}"))
                 .ForMember(dest => dest.BackLinkText, opt => opt.MapFrom(src => "Return to all sections"))
                 .ForMember(dest => dest.ClientApplication,
-                    opt => opt.MapFrom(src =>
-                        src.Solution != null && !string.IsNullOrEmpty(src.Solution.ClientApplication)
-                            ? JsonConvert.DeserializeObject<ClientApplication>(src.Solution.ClientApplication)
-                            : new ClientApplication()))
+                    opt =>
+                    {
+                        opt.SetMappingOrder(0);
+                        opt.MapFrom(src =>
+                            src.Solution != null && !string.IsNullOrEmpty(src.Solution.ClientApplication)
+                                ? JsonConvert.DeserializeObject<ClientApplication>(src.Solution.ClientApplication)
+                                : new ClientApplication());
+                    })
                 .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
                 .ForMember(dest => dest.SupplierId,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Id))

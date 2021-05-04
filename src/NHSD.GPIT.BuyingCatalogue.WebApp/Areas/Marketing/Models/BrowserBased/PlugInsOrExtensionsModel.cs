@@ -24,10 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             }
         }
 
-        public override bool? IsComplete
-        {
-            get { return ClientApplication?.Plugins?.Required.HasValue; }
-        }
+        public override bool? IsComplete => ClientApplication?.Plugins?.Required.HasValue;
 
         public string PlugInsRequired { get; set; }
 

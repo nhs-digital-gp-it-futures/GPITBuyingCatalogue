@@ -21,10 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
                 MobileFirstApproach = ClientApplication.MobileFirstDesign.ToYesNo();
         }
 
-        public override bool? IsComplete
-        {
-            get { return ClientApplication?.MobileFirstDesign.HasValue; }
-        }
+        public override bool? IsComplete => ClientApplication?.MobileFirstDesign.HasValue;
 
         public string MobileFirstApproach { get; set; }
     }
