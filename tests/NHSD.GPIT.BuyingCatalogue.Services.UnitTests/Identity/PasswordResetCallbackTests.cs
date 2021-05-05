@@ -58,6 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 { "Token", expectedToken },
                 { "action", nameof(AccountController.ResetPassword) },
                 { "controller", "Account" },
+                { "Area", "Identity" },
             };
 
             var context = new PasswordResetCallbackContext("https://www.google.co.uk/");

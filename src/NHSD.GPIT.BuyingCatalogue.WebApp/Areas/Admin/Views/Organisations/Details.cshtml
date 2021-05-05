@@ -1,4 +1,5 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DetailsModel
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @{
     ViewData["Title"] = "Buying Catalogue - Admin";
 }
@@ -60,32 +61,42 @@
 
             <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 " style="width:">
                 <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Name</div>
-
-
             </th>
 
             <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 " style="width:">
                 <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Telephone number</div>
-
-
             </th>
 
             <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 " style="width:">
                 <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Email address</div>
-
-
             </th>
 
             <th data-test-id="column-heading-3" class="nhsuk-u-padding-bottom-0 " style="width:">
                 <div data-test-id="column-heading-3-data" class="nhsuk-u-font-weight-bold"></div>
-
-
             </th>
 
             </thead>
 
 
             <tbody>
+
+                @for (int i = 0; i < Model.Users.Count(); i++)
+                {
+                    <tr data-test-id="table-row-@i" style="page-break-inside:avoid; page-break-after:auto">
+                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+                            <a data-test-id="user-name-@Model.Users[i].Id" href="/admin/organisations/@Model.Organisation.OrganisationId/@Model.Users[i].Id">@Model.Users[i].GetDisplayName()</a>
+                        </td>
+                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+                            <div data-test-id="user-phone-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].PhoneNumber</div>
+                        </td>
+                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+                            <div data-test-id="user-email-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].Email</div>
+                        </td>
+                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+                        </td>
+                    </tr>
+                }
+   
             </tbody>
 
         </table>
@@ -95,22 +106,9 @@
     <h3 class="nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-7">Related organisations</h3>
     <p>These are the organisations Cumbria and North East – H&amp;J Commissioning Hub can create orders for.</p>
     <div data-test-id="add-organisation-button">
-
-
-
-
-
-
-
-
-
-
         <a class="nhsuk-button nhsuk-u-margin-bottom-9" href="/admin/organisations/proxy/a98f01d6-3f73-4b59-b213-e2bd3397c16f" draggable="false">
             Add an organisation
         </a>
-
-
-
     </div>
 
     <div id="related-org-table" data-test-id="related-org-table" class="nhsuk-u-font-size-19">

@@ -39,7 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var organisations = await _organisationService.GetAllOrganisations();
-
             return View(new ListOrganisationsModel(organisations));
         }
 
@@ -47,15 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
             var organisation = await _organisationService.GetOrganisation(id);
-
-            return View(new DetailsModel(organisation));
+            var users = await _userService.GetAllUsersForOrganisation(id);
+            return View(new DetailsModel(organisation, users));
         }
 
         [HttpGet("{id}/edit")]
         public async Task<IActionResult> EditOrganisation(Guid id)
         {
             var organisation = await _organisationService.GetOrganisation(id);
-
             return View(new EditOrganisationModel(organisation));
         }
 
@@ -63,9 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> EditOrganisation(string id, EditOrganisationModel model)
         {
             await _organisationService.UpdateCatalogueAgreementSigned(model.Organisation.OrganisationId, model.CatalogueAgreementSigned);
-
             var routeValues = new RouteValueDictionary {{ "id", id }};
-
             return RedirectToAction("EditConfirmation", "Organisations", routeValues);             
         }
 
@@ -73,7 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> EditConfirmation(Guid id)
         {
             var organisation = await _organisationService.GetOrganisation(id);
-
             return View(new EditConfirmationModel(organisation.Name, id));
         }
 
@@ -103,7 +98,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Select(string ods)
         {
             var organisation = await _odsService.GetOrganisationByOdsCode(ods);
-
             return View(new SelectOrganisationModel(organisation));
         }
 
@@ -124,7 +118,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Create(string ods)
         {
             var organisation = await _odsService.GetOrganisationByOdsCode(ods);
-
             return View(new CreateOrganisationModel(organisation));
         }
 
@@ -138,9 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model);
 
             var organisation = await _odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
-
             var orgId = await _organisationService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
-
             return RedirectToAction("Confirmation", "Organisations", new { id = orgId.ToString() });            
         }
 
@@ -148,27 +139,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Confirmation(string id)
         {
             var organisation = await _organisationService.GetOrganisation(new Guid(id));
-
             return View(new ConfirmationModel(organisation.Name));
         }
-
 
         [HttpGet("{id}/adduser")]
         public async Task<IActionResult> AddUser(Guid id)
         {
             var organisation = await _organisationService.GetOrganisation(id);
-
             return View(new AddUserModel(organisation));
         }
 
         [HttpPost("{organisationId}/adduser")]
         public async Task<IActionResult> AddUser(Guid organisationId, AddUserModel model)
         {
-
             var result = await _createBuyerService.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress);
 
             // TODO - Check result
-
 
             // TODO - better way of routing
             return Redirect($"/admin/organisations/{organisationId}/adduser/confirmation?id={result.Value}");
@@ -178,8 +164,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AddUserConfirmation(Guid organisationId, string id)
         {            
             var user = await _userService.GetUser(id);
-
             return View(new AddUserConfirmationModel(user.GetDisplayName(), organisationId));
+        }
+
+        [HttpGet("{organisationId}/{userId}")]
+        public async Task<IActionResult> UserDetails(Guid organisationId, string userId)
+        {
+            var user = await _userService.GetUser(userId);
+            var organisation = await _organisationService.GetOrganisation(organisationId);
+            return View(new UserDetailsModel(organisation, user));
+        }
+
+        [HttpGet("{organisationId}/{userId}/disable")]
+        public async Task<IActionResult> UserDisabled(Guid organisationId, string userId)
+        {
+            var organisation = await _organisationService.GetOrganisation(organisationId);
+            var user = await _userService.GetUser(userId);
+            return View(new UserEnablingModel(organisation, user));
+        }
+
+        [HttpPost("{organisationId}/{userId}/disable")]
+        public async Task<IActionResult> UserDisabled(UserDetailsModel model)
+        {
+            await _userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
+            return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}/{model.User.Id}/disable");
+        }
+
+
+        [HttpGet("{organisationId}/{userId}/enable")]
+        public async Task<IActionResult> UserEnabled(Guid organisationId, string userId)
+        {
+            var organisation = await _organisationService.GetOrganisation(organisationId);
+            var user = await _userService.GetUser(userId);
+            return View(new UserEnablingModel(organisation, user));
+        }
+
+        [HttpPost("{organisationId}/{userId}/enable")]
+        public async Task<IActionResult> UserEnabled(UserDetailsModel model)
+        {
+            await _userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
+            return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}/{model.User.Id}/enable");
         }
     }
 }

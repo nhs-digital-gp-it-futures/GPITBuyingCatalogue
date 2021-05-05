@@ -1,4 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -6,12 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
@@ -23,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
         private const int MaximumEmailLength = 256;
 
         private static readonly EmailAddressAttribute EmailAddressAttribute = new();
-
 
         private readonly ILogWrapper<CreateBuyerService> _logger;
         private readonly IUsersDbRepository<AspNetUser> _userRepository;
@@ -47,38 +45,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-
         public async Task<Result<string>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
         {
-            // MJRTODO - validate arguments
-
-
-            //ApplicationUser newApplicationUser = ApplicationUser.CreateBuyer(
-            //    createBuyerRequest.EmailAddress,
-            //    createBuyerRequest.FirstName,
-            //    createBuyerRequest.LastName,
-            //    createBuyerRequest.PhoneNumber,
-            //    createBuyerRequest.EmailAddress,
-            //    createBuyerRequest.PrimaryOrganisationId);
-
             var aspNetUser = new AspNetUser
             {
                 Id = Guid.NewGuid().ToString().ToUpper(),
                 FirstName = firstName,
-                 LastName = lastName,
-                 PhoneNumber = phoneNumber,
-
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
                 UserName = emailAddress,
                 NormalizedUserName = emailAddress.ToUpper(),
-
                 Email = emailAddress,
-                 NormalizedEmail = emailAddress.ToUpper(),
-                 PrimaryOrganisationId = primaryOrganisationId,
-                 OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
-                 SecurityStamp = Guid.NewGuid().ToString(),
-                 ConcurrencyStamp = Guid.NewGuid().ToString()
+                NormalizedEmail = emailAddress.ToUpper(),
+                PrimaryOrganisationId = primaryOrganisationId,
+                OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString()
             };
-
 
             var validationResult = await ValidateAsync(aspNetUser);
             if (!validationResult.IsSuccess)
@@ -87,8 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             _userRepository.Add(aspNetUser);
 
             await _userRepository.SaveChangesAsync();
-
-            //await usersRepository.CreateUserAsync(newApplicationUser);
+            
             var token = await _passwordService.GeneratePasswordResetTokenAsync(aspNetUser.Email);
 
             // TODO: discuss exception handling options
@@ -98,7 +80,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             return Result.Success(aspNetUser.Id);
         }
-
 
         public async Task<Result> ValidateAsync(AspNetUser user)
         {
@@ -200,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             }
         }
 
-        public async Task SendInitialEmailAsync(PasswordResetToken token)
+        private async Task SendInitialEmailAsync(PasswordResetToken token)
         {
             if (token is null)
                 throw new ArgumentNullException(nameof(token));
@@ -212,8 +193,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
                 new EmailAddress(user.Email, user.GetDisplayName()),
                 _passwordResetCallback.GetPasswordResetCallback(token));
         }
-
-
     }
 
     // MJRTODO - refactor

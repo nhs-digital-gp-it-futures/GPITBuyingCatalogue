@@ -1,6 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+﻿using System;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
-using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
