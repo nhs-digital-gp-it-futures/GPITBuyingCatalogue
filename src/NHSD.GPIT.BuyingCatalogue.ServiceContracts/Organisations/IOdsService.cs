@@ -4,6 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 {
     public interface IOdsService
     {
-        Task<OdsOrganisation> GetOrganisationByOdsCodeAsync(string odsCode);
+        Task<OdsOrganisation> GetOrganisationByOdsCode(string odsCode);
     }
 }

@@ -28,10 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
             var hostString = new HostString(issuerSettings.IssuerUrl.Authority);
 
             var action = generator.GetUriByAction(
-                context,
+                //context,
                 "ResetPassword",                
                 "Account", 
-                new { token.Token, token.User.Email },
+                new { Token = token.Token, Email = token.User.Email, Area = "Identity" },
                 issuerSettings.IssuerUrl.Scheme,
                 hostString);
 

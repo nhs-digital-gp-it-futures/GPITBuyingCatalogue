@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -15,19 +16,49 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     {
         private readonly ILogWrapper<OdsService> _logger;
         private readonly OdsSettings _settings;
+        private readonly IMemoryCache _memoryCache;
+        private readonly MemoryCacheEntryOptions _memoryCacheOptions;
 
-        public OdsService(ILogWrapper<OdsService> logger, OdsSettings settings)            
+        private const int DEFAULT_CACHE_DURATION = 60;
+
+        public OdsService(ILogWrapper<OdsService> logger, OdsSettings settings, IMemoryCache memoryCache)            
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+
+            _memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DEFAULT_CACHE_DURATION));
         }
 
-        public async Task<OdsOrganisation> GetOrganisationByOdsCodeAsync(string odsCode)
+        public async Task<OdsOrganisation> GetOrganisationByOdsCode(string odsCode)
         {
             if (string.IsNullOrWhiteSpace(odsCode))
                 throw new ArgumentException(odsCode);
 
-            var odsOrganisation = await GetOrganisationByOdsCodeAsync2(odsCode);
+            var key = $"ODS-{odsCode}";
+
+            OdsOrganisation odsOrganisation;
+
+            if ( _memoryCache.TryGetValue(key, out odsOrganisation))
+                return odsOrganisation;
+            
+            var response = await _settings.ApiBaseUrl
+                .AppendPathSegment("organisations")
+                .AppendPathSegment(odsCode)
+                .AllowHttpStatus("3xx,4xx")
+                .GetJsonAsync<OdsResponse>();
+
+            var odsResponseOrganisation = response?.Organisation;
+
+            odsOrganisation =  odsResponseOrganisation is null ? null : new OdsOrganisation
+            {
+                OrganisationName = odsResponseOrganisation.Name,
+                OdsCode = odsCode,
+                PrimaryRoleId = GetPrimaryRoleId(odsResponseOrganisation),
+                Address = OdsResponseAddressToAddress(odsResponseOrganisation.GeoLoc.Location),
+                IsActive = IsActive(odsResponseOrganisation),
+                IsBuyerOrganisation = IsBuyerOrganisation(odsResponseOrganisation),
+            };
 
             if (odsOrganisation is null)
                 return null;
@@ -36,46 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             //if (!(odsOrganisation.IsActive && odsOrganisation.IsBuyerOrganisation))
             //    return new StatusCodeResult(StatusCodes.Status406NotAcceptable);
 
-            var addressModel = odsOrganisation.Address is null ? null : new Address
-            {
-                Line1 = odsOrganisation.Address.Line1,
-                Line2 = odsOrganisation.Address.Line2,
-                Line3 = odsOrganisation.Address.Line3,
-                Line4 = odsOrganisation.Address.Line4,
-                Town = odsOrganisation.Address.Town,
-                County = odsOrganisation.Address.County,
-                Postcode = odsOrganisation.Address.Postcode,
-                Country = odsOrganisation.Address.Country,
-            };
+            _memoryCache.Set(key, odsOrganisation, _memoryCacheOptions);
 
-            return new OdsOrganisation
-            {
-                OdsCode = odsOrganisation.OdsCode,
-                OrganisationName = odsOrganisation.OrganisationName,
-                PrimaryRoleId = odsOrganisation.PrimaryRoleId,
-                Address = addressModel,
-            };
-        }
-
-        private async Task<OdsOrganisation> GetOrganisationByOdsCodeAsync2(string odsCode)
-        {
-            var response = await _settings.ApiBaseUrl
-                .AppendPathSegment("organisations")
-                .AppendPathSegment(odsCode)
-                .AllowHttpStatus("3xx,4xx")
-                .GetJsonAsync<OdsResponse>();
-
-            var odsOrganisation = response?.Organisation;
-
-            return odsOrganisation is null ? null : new OdsOrganisation
-            {
-                OrganisationName = odsOrganisation.Name,
-                OdsCode = odsCode,
-                PrimaryRoleId = GetPrimaryRoleId(odsOrganisation),
-                Address = OdsResponseAddressToAddress(odsOrganisation.GeoLoc.Location),
-                IsActive = IsActive(odsOrganisation),
-                IsBuyerOrganisation = IsBuyerOrganisation(odsOrganisation),
-            };
+            return odsOrganisation;
         }
 
         private static string GetPrimaryRoleId(OdsResponseOrganisation organisation)
