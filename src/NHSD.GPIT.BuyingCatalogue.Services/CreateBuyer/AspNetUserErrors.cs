@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
-    public static class ApplicationUserErrors
+    public static class AspNetUserErrors
     {
         public static ErrorDetails FirstNameRequired()
         {

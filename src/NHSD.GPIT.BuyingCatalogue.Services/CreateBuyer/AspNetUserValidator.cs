@@ -57,12 +57,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             if (string.IsNullOrWhiteSpace(firstName))
             {
-                errors.Add(ApplicationUserErrors.FirstNameRequired());
+                errors.Add(AspNetUserErrors.FirstNameRequired());
                 return;
             }
 
             if (firstName.Length > MaximumFirstNameLength)
-                errors.Add(ApplicationUserErrors.FirstNameTooLong());
+                errors.Add(AspNetUserErrors.FirstNameTooLong());
         }
 
         private static void ValidateLastName(string lastName, List<ErrorDetails> errors)
@@ -72,12 +72,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             if (string.IsNullOrWhiteSpace(lastName))
             {
-                errors.Add(ApplicationUserErrors.LastNameRequired());
+                errors.Add(AspNetUserErrors.LastNameRequired());
                 return;
             }
 
             if (lastName.Length > MaximumLastNameLength)
-                errors.Add(ApplicationUserErrors.LastNameTooLong());
+                errors.Add(AspNetUserErrors.LastNameTooLong());
         }
 
         private static void ValidatePhoneNumber(string phoneNumber, List<ErrorDetails> errors)
@@ -87,12 +87,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {
-                errors.Add(ApplicationUserErrors.PhoneNumberRequired());
+                errors.Add(AspNetUserErrors.PhoneNumberRequired());
                 return;
             }
 
             if (phoneNumber.Length > MaximumPhoneNumberLength)
-                errors.Add(ApplicationUserErrors.PhoneNumberTooLong());
+                errors.Add(AspNetUserErrors.PhoneNumberTooLong());
         }
 
         private async Task ValidateEmailAsync(string email, List<ErrorDetails> errors)
@@ -102,17 +102,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             if (string.IsNullOrWhiteSpace(email))
             {
-                errors.Add(ApplicationUserErrors.EmailRequired());
+                errors.Add(AspNetUserErrors.EmailRequired());
                 return;
             }
 
             if (email.Length > MaximumEmailLength)
             {
-                errors.Add(ApplicationUserErrors.EmailTooLong());
+                errors.Add(AspNetUserErrors.EmailTooLong());
             }
             else if (!EmailAddressAttribute.IsValid(email))
             {
-                errors.Add(ApplicationUserErrors.EmailInvalidFormat());
+                errors.Add(AspNetUserErrors.EmailInvalidFormat());
             }
             else
             {
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
                 if (user is not null &&
                     string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase))
                 {
-                    errors.Add(ApplicationUserErrors.EmailAlreadyExists());
+                    errors.Add(AspNetUserErrors.EmailAlreadyExists());
                 }
             }
         }
