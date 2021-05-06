@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -204,6 +205,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             await _userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
             return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}/{model.User.Id}/enable");
+        }
+
+        [HttpGet("proxy/{organisationId}")]
+        public async Task<IActionResult> AddAnOrganisation(Guid organisationId)
+        {
+            var organisation = await _organisationService.GetOrganisation(organisationId);
+            var availableOrganisations = await _organisationService.GetAvailableProxyOrganisations(organisationId);
+            return View(new AddAnOrganisationModel(organisation, availableOrganisations));
+        }
+
+        [HttpPost("proxy/{organisationId}")]
+        public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model)
+        {            
+            return null;
         }
     }
 }

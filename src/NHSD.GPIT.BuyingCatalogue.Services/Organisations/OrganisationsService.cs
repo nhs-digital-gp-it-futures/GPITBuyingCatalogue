@@ -59,5 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             await _organisationRepository.SaveChangesAsync();
         }
+
+        public async Task<List<Organisation>> GetAvailableProxyOrganisations(Guid organisationId)
+        {
+            // TODO filter
+            return await GetAllOrganisations();
+        }
     }
 }

@@ -14,5 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
         Task<Guid> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
 
         Task UpdateCatalogueAgreementSigned(Guid organisationId, bool signed);
+
+        Task<List<Organisation>> GetAvailableProxyOrganisations(Guid organisationId);
     }
 }

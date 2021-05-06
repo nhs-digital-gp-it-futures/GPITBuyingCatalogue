@@ -1,0 +1,97 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddAnOrganisationModel
+@{
+    ViewData["Title"] = "Add new user";
+}
+
+
+<div class="nhsuk-width-container" data-test-id="add-proxy-organisation-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 data-test-id="org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Add organisation to Cheshire and Merseyside Commissioning Hub</h1>
+            <p data-test-id="organisation-details-subheading" class="nhsuk-heading-l nhsuk-u-font-size-22 nhsuk-u-margin-bottom-7">
+                Cheshire and Merseyside Commissioning Hub will then be able to create orders on this organisation's behalf.
+            </p>
+            <form method="POST">
+                <input type="hidden" name="_csrf" value="NY549N7j-Egps5Qz7EVzFDrkWMcaUmb2TDR8" />
+
+
+
+                <div id="relatedOrganisationId" data-test-id="question-relatedOrganisationId">
+
+                    <div data-test-id="radiobutton-options">
+
+
+                        <div class="nhsuk-form-group">
+
+                            <fieldset class="nhsuk-fieldset" aria-describedby="relatedOrganisationId-hint">
+                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                    Which organisation are you looking for?
+                                </legend>
+
+                                <div class="nhsuk-hint nhsuk-u-margin-bottom-3 nhsuk-u-margin-top-0" id="relatedOrganisationId-hint">
+                                    Select one option.
+                                </div>
+
+                                <div class="nhsuk-radios">
+
+                                    @foreach(var organisation in Model.AvailableOrganisations)
+                                    {
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" asp-for="@Model.SelectedOrganisation" type="radio" value="@organisation.OrganisationId">
+                                        <label class="nhsuk-label nhsuk-radios__label" asp-for="@Model.SelectedOrganisation">
+                                            @organisation.Name
+                                        </label>
+                                    </div>
+
+                                    }
+
+
+
+
+
+
+
+                                </div>
+                            </fieldset>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+                <div data-test-id="submit-button">
+
+
+
+
+
+
+
+
+
+
+                    <button class="nhsuk-button" type="submit">
+                        Confirm
+                    </button>
+
+
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
