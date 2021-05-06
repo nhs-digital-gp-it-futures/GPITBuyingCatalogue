@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddAnOrganisationModel
 @{
-    ViewData["Title"] = "Add new user";
+    ViewData["Title"] = "Buying Catalogue - Admin";
 }
 
 
@@ -14,9 +14,7 @@
                 Cheshire and Merseyside Commissioning Hub will then be able to create orders on this organisation's behalf.
             </p>
             <form method="POST">
-                <input type="hidden" name="_csrf" value="NY549N7j-Egps5Qz7EVzFDrkWMcaUmb2TDR8" />
-
-
+                <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
 
                 <div id="relatedOrganisationId" data-test-id="question-relatedOrganisationId">
 

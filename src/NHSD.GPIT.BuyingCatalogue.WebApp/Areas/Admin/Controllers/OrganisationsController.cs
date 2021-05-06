@@ -48,7 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var organisation = await _organisationService.GetOrganisation(id);
             var users = await _userService.GetAllUsersForOrganisation(id);
-            return View(new DetailsModel(organisation, users));
+            var relatedOrganisations = await _organisationService.GetRelatedOrganisations(id);
+            return View(new DetailsModel(organisation, users, relatedOrganisations));
         }
 
         [HttpGet("{id}/edit")]
@@ -211,14 +212,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AddAnOrganisation(Guid organisationId)
         {
             var organisation = await _organisationService.GetOrganisation(organisationId);
-            var availableOrganisations = await _organisationService.GetAvailableProxyOrganisations(organisationId);
+            var availableOrganisations = await _organisationService.GetUnrelatedOrganisations(organisationId);
             return View(new AddAnOrganisationModel(organisation, availableOrganisations));
         }
 
         [HttpPost("proxy/{organisationId}")]
         public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model)
+        {
+            await _organisationService.AddRelatedOrganisations(model.Organisation.OrganisationId, model.SelectedOrganisation);
+
+            // TODO - Use RedirectToAction
+            return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}");
+        }
+
+        [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
+        public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId)
+        {
+            var relatedOrganisation = await _organisationService.GetOrganisation(relatedOrganisationId);
+
+            return View(new RemoveAnOrganisationModel(organisationId, relatedOrganisation));
+        }
+
+        [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
+        public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId, RemoveAnOrganisationModel model )
         {            
-            return null;
+            await _organisationService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
+
+            // TODO - Use RedirectToAction
+            return Redirect($"/admin/organisations/{organisationId}");
         }
     }
 }
