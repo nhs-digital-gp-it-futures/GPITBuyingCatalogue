@@ -1,10 +1,12 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+﻿using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
     /// <summary>
     /// Registration settings.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public sealed class RegistrationSettings
     {
         /// <summary>

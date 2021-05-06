@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             return this;
         }
 
-        internal ApplicationUserBuilder WithPhoneNumber(string number)
+        public ApplicationUserBuilder WithPhoneNumber(string number)
         {
             phoneNumber = number;
             return this;
