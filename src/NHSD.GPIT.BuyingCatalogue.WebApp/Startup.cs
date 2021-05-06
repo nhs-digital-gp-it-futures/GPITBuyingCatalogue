@@ -50,6 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigurePasswordReset(Configuration);
 
+            services.ConfigureRegistration(Configuration);
+
             services.ConfigureOds(Configuration);
 
             services.ConfigureEmail(Configuration, healthChecksBuilder);
