@@ -1,6 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 
 #nullable disable
@@ -28,11 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
         public virtual DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public virtual DbSet<Organisation> Organisations { get; set; }
+        public virtual DbSet<RelatedOrganisation> RelatedOrganisations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=localhost,1450;Database=CatalogueUsers;user id=sa;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;");
             }
         }
@@ -169,6 +173,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
 
                 entity.Property(e => e.PrimaryRoleId).HasMaxLength(8);
+            });
+
+            modelBuilder.Entity<RelatedOrganisation>(entity =>
+            {
+                entity.HasKey(e => new { e.OrganisationId, e.RelatedOrganisationId });
+
+                entity.HasOne(d => d.Organisation)
+                    .WithMany(p => p.RelatedOrganisationOrganisations)
+                    .HasForeignKey(d => d.OrganisationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RelatedOrganisations_OrganisationId");
+
+                entity.HasOne(d => d.RelatedOrganisationNavigation)
+                    .WithMany(p => p.RelatedOrganisationRelatedOrganisationNavigations)
+                    .HasForeignKey(d => d.RelatedOrganisationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RelatedOrganisations_RelatedOrganisationId");
             });
 
             OnModelCreatingPartial(modelBuilder);

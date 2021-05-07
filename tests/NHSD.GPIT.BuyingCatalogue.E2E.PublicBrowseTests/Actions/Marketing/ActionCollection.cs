@@ -2,6 +2,7 @@
 {
     internal sealed class ActionCollection
     {
+        internal ClientApplicationTypeActions ClientApplicationTypeActions { get; set; }
         internal ContactDetailsActions ContactDetailsActions { get; set; }
         internal FeaturesActions FeaturesActions { get; set; }
         internal CommonActions CommonActions { get; set; }

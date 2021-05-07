@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Identity
         public static void Constructor_String_ApplicationUser_InitializesExpectedMembers()
         {
             const string expectedToken = "TokenToken";
-            var expectedUser = ApplicationUserBuilder.Create().Build();
+            var expectedUser = AspNetUserBuilder.Create().Build();
 
             var token = new PasswordResetToken(expectedToken, expectedUser);
 

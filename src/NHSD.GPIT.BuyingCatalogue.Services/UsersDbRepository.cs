@@ -10,12 +10,12 @@ using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
-    public class Repository<T> : RepositoryBase<T> where T : class
+    public class UsersDbRepository<T> : UsersDbRepositoryBase<T> where T : class
     {
         private readonly ILogWrapper<SolutionsService> _logger;
         private readonly DbSet<T> _dbSet;
 
-        public Repository(ILogWrapper<SolutionsService> logger, BuyingCatalogueDbContext dbContext) : base(dbContext)
+        public UsersDbRepository(ILogWrapper<SolutionsService> logger, UsersDbContext dbContext) : base(dbContext)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dbSet = dbContext.Set<T>();

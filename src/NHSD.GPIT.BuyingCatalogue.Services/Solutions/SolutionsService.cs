@@ -17,15 +17,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private readonly ILogWrapper<SolutionsService> _logger;
         private readonly BuyingCatalogueDbContext _dbContext;
-        private readonly IRepository<MarketingContact> _marketingContactRepository;
-        private readonly IRepository<Solution> _solutionRepository;
-        private readonly IRepository<Supplier> _supplierRepository;
+        private readonly IBuyingCatalogueRepository<MarketingContact> _marketingContactRepository;
+        private readonly IBuyingCatalogueRepository<Solution> _solutionRepository;
+        private readonly IBuyingCatalogueRepository<Supplier> _supplierRepository;
 
         public SolutionsService(ILogWrapper<SolutionsService> logger, 
             BuyingCatalogueDbContext dbContext,
-            IRepository<MarketingContact> marketingContactRepository,
-            IRepository<Solution> solutionRepository,
-            IRepository<Supplier> supplierRepository)
+            IBuyingCatalogueRepository<MarketingContact> marketingContactRepository,
+            IBuyingCatalogueRepository<Solution> solutionRepository,
+            IBuyingCatalogueRepository<Supplier> supplierRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

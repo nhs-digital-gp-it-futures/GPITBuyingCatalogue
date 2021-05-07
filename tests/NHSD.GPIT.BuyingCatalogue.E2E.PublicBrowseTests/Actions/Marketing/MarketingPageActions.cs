@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
                 ContactDetailsActions = new(driver),
                 DashboardActions = new(driver),
                 FeaturesActions = new(driver),
+                ClientApplicationTypeActions = new(driver),
                 SolutionDescriptionActions = new(driver)
             };
         }
