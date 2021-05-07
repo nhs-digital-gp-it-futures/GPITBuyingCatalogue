@@ -4,133 +4,47 @@
 }
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+    <div class="nhsuk-grid-column-full">
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
 
+        <div data-test-id="error-summary" nhs-validation-summary title="There is a problem"></div>
 
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Catalogue Solution description</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Give buyers as much detail as possible about your Catalogue Solution.</h2>
+            <h1 data-test-id="section-title">Catalogue Solution description</h1>
+            <p data-test-id="section-main-advice" class="nhsuk-lede-text">Give buyers as much detail as possible about your Catalogue Solution.</p>
             <div data-test-id="section-additional-advice">
 
             </div>
-        </div>
+
 
         <form method="post">
 
             <input type="hidden" asp-for="@Model.SolutionId" />
 
-            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-
-                <div data-test-id="question-summary">
-
-                    <div data-test-id="textarea-field">
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="350">
-
-                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="summary">
-                                    Summary
-                                </label>
-
-                                <div id="summary-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
-                                    Provide a brief overview of your Catalogue Solution.
-                                </div>
-
-
-                                <textarea class="govuk-textarea govuk-js-character-count" id="summary" name="summary" rows="5" aria-describedby="summary-info summary-hint">@Model.Summary</textarea>
-                            </div>
-
-                            <div id="summary-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 350 characters
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
+            <div nhs-validation-textarea
+                 asp-for="Summary"
+                 label-text="Summary"
+                 label-hint="Provide a brief overview of your Catalogue Solution."
+                 number-of-rows="5">
             </div>
 
-            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-
-                <div data-test-id="question-description">
-
-                    <div data-test-id="textarea-field">
-
-
-
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="1100">
-
-
-                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="description">
-                                    Full description (optional)
-                                </label>
-
-
-
-                                <div id="description-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
-                                    Provide a more detailed description of your Catalogue Solution, for example how it can be used and how it benefits users.
-                                </div>
-
-
-                                <textarea class="govuk-textarea govuk-js-character-count" id="description" name="description" rows="17" aria-describedby="description-info description-hint">@Model.Description</textarea>
-                            </div>
-
-                            <div id="description-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 1100 characters
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
+            <div nhs-validation-textarea
+                 asp-for="Description">
             </div>
 
-
-
-            <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-6">
-
-
-                <div data-test-id="question-link">
-
-                    <div data-test-id="text-field-input">
-
-
-                        <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="link">
-                                Link to more information (optional)
-                            </label>
-                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="link-hint">
-                                Provide a URL to a page that gives buyers further information about your Catalogue Solution.
-                            </div>
-                            <input class="nhsuk-input" id="link" name="link" type="text" value="@Model.Link" aria-describedby="link-hint">
-                        </div>
-
-                    </div>
-
-                    <div data-test-id="text-field-footer">
-                        <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                            (Maximum number of characters 1,000)
-                        </span>
-                    </div>
-                </div>
-
+            <div nhs-validation-input
+                 asp-for="Link"
+                 label-text="Link to more information (optional)"
+                 label-hint="Provide a URL to a page that gives buyers further information about your Catalogue Solution.">
             </div>
 
             <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-
                 <button class="nhsuk-button" type="submit">
                     Save and return
                 </button>
             </div>
         </form>
-
     </div>
 </div>
 
