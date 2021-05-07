@@ -154,13 +154,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.MinimumDesktopResolution,
                     opt => opt.MapFrom(src => src.SelectedScreenResolution))
                 .ForAllOtherMembers(opt => opt.Ignore());
-                
+
             CreateMap<PlugInsOrExtensionsModel, Plugins>()
                 .ForMember(dest => dest.AdditionalInformation, opt => opt.MapFrom(src => src.AdditionalInformation))
                 .ForMember(dest => dest.Required, opt =>
-                    opt.MapFrom<StringToNullableBoolResolver, string>(x =>
+                    opt.MapFrom<IMemberValueResolver<object, object, string, bool?>, string>(x =>
                         x.PlugInsRequired));
-            
+
+            CreateMap<string, bool?>()
+                .ConvertUsing<StringToNullableBoolResolver>();
+
             CreateMap<SupportedBrowsersModel, ClientApplication>()
                 .BeforeMap((_, dest) => dest.BrowsersSupported.Clear())
                 .ForMember(dest => dest.BrowsersSupported,
@@ -169,28 +172,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                             ? new HashSet<string>()
                             : src.Browsers.Where(x => x.Checked).Select(x => x.BrowserName)))
                 .ForMember(dest => dest.MobileResponsive,
-                    opt => opt.MapFrom<StringToNullableBoolResolver, string>(x =>
+                    opt => opt.MapFrom<IMemberValueResolver<object, object, string, bool?>, string>(x =>
                         x.MobileResponsive))
                 .ForAllOtherMembers(opt => opt.Ignore());
         }
     }
 }
-
-
-
-//var configuration = new MapperConfiguration(cfg => {
-//    cfg.CreateMap<Source, Destination>()
-//        .ForMember(dest => dest.Total,
-//            opt => opt.MapFrom<CustomResolver, decimal>(src => src.SubTotal));
-//    cfg.CreateMap<OtherSource, OtherDest>()
-//        .ForMember(dest => dest.OtherTotal,
-//            opt => opt.MapFrom<CustomResolver, decimal>(src => src.OtherSubTotal));
-//});
-
-//public class CustomResolver : IMemberValueResolver<object, object, decimal, decimal>
-//{
-//    public decimal Resolve(object source, object destination, decimal sourceMember, decimal destinationMember, ResolutionContext context)
-//    {
-//        // logic here
-//    }
-//}

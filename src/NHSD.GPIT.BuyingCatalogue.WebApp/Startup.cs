@@ -63,6 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ServicesStartup.Configure(services);
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddTransient<IMemberValueResolver<object, object, string, bool?>, StringToNullableBoolResolver>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
