@@ -2,6 +2,8 @@
 {
     internal sealed class ActionCollection
     {
+        internal RoadmapActions RoadmapActions { get; set; }
+        internal PreviewActions PreviewActions { get; set; }
         internal ClientApplicationTypeActions ClientApplicationTypeActions { get; set; }
         internal ContactDetailsActions ContactDetailsActions { get; set; }
         internal FeaturesActions FeaturesActions { get; set; }

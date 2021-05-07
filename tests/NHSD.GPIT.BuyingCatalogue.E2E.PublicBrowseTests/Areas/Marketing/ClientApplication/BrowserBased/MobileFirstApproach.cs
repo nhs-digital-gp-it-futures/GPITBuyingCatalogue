@@ -11,38 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     {
         public MobileFirstApproach(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/mobile-first-approach")
         {
-            using var context = GetBCContext();
-            var solution = context.Solutions.Single(s => s.Id == "99999-99");
-            solution.ClientApplication = @"{
-                        ""ClientApplicationTypes"": [
-                            ""browser-based""
-                        ],
-                        ""BrowsersSupported"": [],
-                        ""MobileResponsive"": null,
-                        ""Plugins"": null,
-                        ""HardwareRequirements"": null,
-                        ""NativeMobileHardwareRequirements"": null,
-                        ""NativeDesktopHardwareRequirements"": null,
-                        ""AdditionalInformation"": null,
-                        ""MinimumConnectionSpeed"": null,
-                        ""MinimumDesktopResolution"": null,
-                        ""MobileFirstDesign"": null,
-                        ""NativeMobileFirstDesign"": null,
-                        ""MobileOperatingSystems"": null,
-                        ""MobileConnectionDetails"": null,
-                        ""MobileMemoryAndStorage"": null,
-                        ""MobileThirdParty"": {
-                            ""ThirdPartyComponents"": null,
-                            ""DeviceCapabilities"": null
-                        },
-                        ""NativeMobileAdditionalInformation"": null,
-                        ""NativeDesktopOperatingSystemsDescription"": null,
-                        ""NativeDesktopMinimumConnectionSpeed"": null,
-                        ""NativeDesktopThirdParty"": null,
-                        ""NativeDesktopMemoryAndStorage"": null,
-                        ""NativeDesktopAdditionalInformation"": null
-                    }";
-            context.SaveChanges();
+            ClearClientApplication();
 
             driver.Navigate().Refresh();
         }
