@@ -1,10 +1,5 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
@@ -27,50 +22,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         public static void GetUserDisplayName_GetsValue()
         {
             var user = CreatePrincipal("userDisplayName", "Bill Smith");
-
-            var result = user.GetUserDisplayName();
-
-            Assert.AreEqual("Bill Smith", result);
+            
+            Assert.AreEqual("Bill Smith", user.GetUserDisplayName());
         }
 
         [Test]
         public static void IsAdmin_True_WithClaim()
         {
-            var user = CreatePrincipal("IsAdmin", "True");
-
-            var result = user.IsAdmin();
-
-            Assert.True(result);
+            var user = CreatePrincipal("organisationFunction", "Authority");
+            
+            Assert.True(user.IsAdmin());
+            Assert.False(user.IsBuyer());
         }
 
         [Test]
         public static void IsAdmin_False_WithoutClaim()
         {
-            var user = CreatePrincipal("UnrelatedClaim", "True");
+            var user = CreatePrincipal("UnrelatedClaim", "True");            
 
-            var result = user.IsAdmin();
-
-            Assert.False(result);
+            Assert.False(user.IsAdmin());
         }
 
         [Test]
         public static void IsBuyer_True_WithClaim()
         {
-            var user = CreatePrincipal("IsBuyer", "True");
-
-            var result = user.IsBuyer();
-
-            Assert.True(result);
+            var user = CreatePrincipal("organisationFunction", "Buyer");
+            
+            Assert.False(user.IsAdmin());
+            Assert.True(user.IsBuyer());
         }
 
         [Test]
         public static void IsBuyer_False_WithoutClaim()
         {
             var user = CreatePrincipal("UnrelatedClaim", "True");
-
-            var result = user.IsBuyer();
-
-            Assert.False(result);
+            
+            Assert.False(user.IsBuyer());
         }
 
         private static ClaimsPrincipal CreatePrincipal(string claim, string value)

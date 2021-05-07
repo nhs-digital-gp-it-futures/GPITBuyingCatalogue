@@ -12,21 +12,21 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public bool? MobileResponsive { get; set; }
 
-        public Plugins Plugins { get; set; } 
+        public virtual Plugins Plugins { get; set; } 
 
-        public string HardwareRequirements { get; set; }
+        public virtual string HardwareRequirements { get; set; }
 
         public string NativeMobileHardwareRequirements { get; set; }
 
         public string NativeDesktopHardwareRequirements { get; set; }
 
-        public string AdditionalInformation { get; set; }
+        public virtual string AdditionalInformation { get; set; }
 
         public string MinimumConnectionSpeed { get; set; }
 
         public string MinimumDesktopResolution { get; set; }
 
-        public bool? MobileFirstDesign { get; set; }
+        public virtual bool? MobileFirstDesign { get; set; }
 
         public bool? NativeMobileFirstDesign { get; set; }
 

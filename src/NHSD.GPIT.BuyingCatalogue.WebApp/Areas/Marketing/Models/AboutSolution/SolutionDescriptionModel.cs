@@ -20,11 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             Link = catalogueItem.Solution.AboutUrl;            
         }
 
-        public override bool? IsComplete
-        {
-            get { return !string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.Summary); }
-        }
-                
+        public override bool? IsComplete => !string.IsNullOrWhiteSpace(CatalogueItem?.Solution?.Summary);
+
         public string Summary { get; set; }
 
         public string Description { get; set; }

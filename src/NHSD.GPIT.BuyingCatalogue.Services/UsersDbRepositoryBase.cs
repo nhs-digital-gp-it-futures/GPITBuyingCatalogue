@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -7,11 +6,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
-    public abstract class RepositoryBase<T> : IRepository<T> where T : class
+    public abstract class UsersDbRepositoryBase<T> : IUsersDbRepository<T> where T : class
     {
-        private readonly BuyingCatalogueDbContext _dbContext;
+        private readonly UsersDbContext _dbContext;
 
-        protected RepositoryBase(BuyingCatalogueDbContext dbContext)
+        protected UsersDbRepositoryBase(UsersDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

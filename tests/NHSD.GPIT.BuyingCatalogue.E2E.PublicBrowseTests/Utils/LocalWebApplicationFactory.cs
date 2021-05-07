@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
+using Serilog;
+using Serilog.Events;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -38,6 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             SetEnvVariables();
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
             host = CreateWebHostBuilder().Build();
             host.Start();
 
@@ -56,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
-            var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>());
+            var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>()).UseSerilog();
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {

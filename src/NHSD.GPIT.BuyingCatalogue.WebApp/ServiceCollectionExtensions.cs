@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("organisationFunction", new[] { OrganisationFunction.Authority.DisplayName }));
             });
         }
 
@@ -46,6 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
 
             services.AddAntiforgery(options => options.Cookie.Name = "antiforgery");
+        }
+
+        public static void ConfigureOds(this IServiceCollection services, IConfiguration configuration)
+        {
+            var odsSettings = configuration.GetSection("Ods").Get<OdsSettings>();
+
+            services.AddSingleton(odsSettings);
         }
 
         public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
@@ -120,6 +127,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(passwordResetSettings);
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
+        }
+
+        public static void ConfigureRegistration(this IServiceCollection services, IConfiguration configuration)
+        {
+            var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();
+            services.AddSingleton(registrationSettings);
         }
     }
 }
