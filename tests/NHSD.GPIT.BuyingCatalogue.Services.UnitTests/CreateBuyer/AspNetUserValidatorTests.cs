@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class ApplicationUserValidatorTests
+    internal static class AspNetUserValidatorTests
     {
         [Test]
         public static async Task ValidateAsync_ValidApplicationUser_ReturnsSuccess()
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var context = ApplicationUserValidatorTestContext.Setup();
             var sut = context.ApplicationUserValidator;
 
-            var user = ApplicationUserBuilder
+            var user = AspNetUserBuilder
                 .Create()
                 .Build();
 
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var context = ApplicationUserValidatorTestContext.Setup();
             var sut = context.ApplicationUserValidator;
 
-            var user = ApplicationUserBuilder
+            var user = AspNetUserBuilder
                 .Create()
                 .WithFirstName(input)
                 .Build();
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var context = ApplicationUserValidatorTestContext.Setup();
             var sut = context.ApplicationUserValidator;
 
-            var user = ApplicationUserBuilder
+            var user = AspNetUserBuilder
                 .Create()
                 .WithLastName(input)
                 .Build();
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var context = ApplicationUserValidatorTestContext.Setup();
             var sut = context.ApplicationUserValidator;
 
-            var user = ApplicationUserBuilder
+            var user = AspNetUserBuilder
                 .Create()
                 .WithPhoneNumber(input)
                 .Build();
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var context = ApplicationUserValidatorTestContext.Setup();
             var sut = context.ApplicationUserValidator;
 
-            var user = ApplicationUserBuilder
+            var user = AspNetUserBuilder
                 .Create()
                 .WithEmailAddress(input)
                 .Build();
@@ -107,14 +107,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             const string duplicateEmailAddress = "duplicate@email.com";
 
             var context = ApplicationUserValidatorTestContext.Setup();
-            context.ApplicationUserByEmail = ApplicationUserBuilder
+            context.ApplicationUserByEmail = AspNetUserBuilder
                 .Create()
                 .WithEmailAddress(duplicateEmailAddress)
                 .Build();
 
             var sut = context.ApplicationUserValidator;
 
-            var user = ApplicationUserBuilder
+            var user = AspNetUserBuilder
                 .Create()
                 .WithEmailAddress(duplicateEmailAddress)
                 .Build();

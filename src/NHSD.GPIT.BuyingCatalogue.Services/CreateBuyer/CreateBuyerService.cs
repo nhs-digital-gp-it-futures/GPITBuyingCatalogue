@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             return Result.Success(aspNetUser.Id);
         }
 
-        private async Task SendInitialEmailAsync(PasswordResetToken token)
+        public async Task SendInitialEmailAsync(PasswordResetToken token)
         {
             if (token is null)
                 throw new ArgumentNullException(nameof(token));

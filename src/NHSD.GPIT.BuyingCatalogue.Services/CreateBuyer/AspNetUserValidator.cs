@@ -52,9 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         private static void ValidateFirstName(string firstName, List<ErrorDetails> errors)
         {
-            if (errors is null)
-                throw new ArgumentNullException(nameof(errors));
-
             if (string.IsNullOrWhiteSpace(firstName))
             {
                 errors.Add(AspNetUserErrors.FirstNameRequired());
@@ -67,9 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         private static void ValidateLastName(string lastName, List<ErrorDetails> errors)
         {
-            if (errors is null)
-                throw new ArgumentNullException(nameof(errors));
-
             if (string.IsNullOrWhiteSpace(lastName))
             {
                 errors.Add(AspNetUserErrors.LastNameRequired());
@@ -82,9 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         private static void ValidatePhoneNumber(string phoneNumber, List<ErrorDetails> errors)
         {
-            if (errors is null)
-                throw new ArgumentNullException(nameof(errors));
-
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {
                 errors.Add(AspNetUserErrors.PhoneNumberRequired());
@@ -97,9 +88,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         private async Task ValidateEmailAsync(string email, List<ErrorDetails> errors)
         {
-            if (errors is null)
-                throw new ArgumentNullException(nameof(errors));
-
             if (string.IsNullOrWhiteSpace(email))
             {
                 errors.Add(AspNetUserErrors.EmailRequired());

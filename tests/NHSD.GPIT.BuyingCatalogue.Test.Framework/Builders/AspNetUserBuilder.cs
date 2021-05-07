@@ -1,17 +1,16 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
-
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
 {
-    public sealed class ApplicationUserBuilder
+    public sealed class AspNetUserBuilder
     {
         private static readonly IDictionary<
             OrganisationFunction,
-            Func<ApplicationUserBuilder, AspNetUser>> ApplicationUserFactory =
-            new Dictionary<OrganisationFunction, Func<ApplicationUserBuilder, AspNetUser>>
+            Func<AspNetUserBuilder, AspNetUser>> ApplicationUserFactory =
+            new Dictionary<OrganisationFunction, Func<AspNetUserBuilder, AspNetUser>>
             {
                 {
                     OrganisationFunction.Authority, builder =>
@@ -46,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
         private bool catalogueAgreementSigned;
         private OrganisationFunction organisationFunction;
 
-        private ApplicationUserBuilder()
+        private AspNetUserBuilder()
         {
             userId = Guid.NewGuid().ToString();
             firstName = "Bob";
@@ -59,63 +58,63 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             organisationFunction = OrganisationFunction.Buyer;
         }
 
-        public static ApplicationUserBuilder Create() => new();
+        public static AspNetUserBuilder Create() => new();
 
-        internal ApplicationUserBuilder WithUserId(string id)
+        internal AspNetUserBuilder WithUserId(string id)
         {
             userId = id;
             return this;
         }
 
-        public ApplicationUserBuilder WithFirstName(string name)
+        public AspNetUserBuilder WithFirstName(string name)
         {
             firstName = name;
             return this;
         }
 
-        public ApplicationUserBuilder WithLastName(string name)
+        public AspNetUserBuilder WithLastName(string name)
         {
             lastName = name;
             return this;
         }
 
-        public ApplicationUserBuilder WithPhoneNumber(string number)
+        public AspNetUserBuilder WithPhoneNumber(string number)
         {
             phoneNumber = number;
             return this;
         }
 
-        public ApplicationUserBuilder WithEmailAddress(string address)
+        public AspNetUserBuilder WithEmailAddress(string address)
         {
             emailAddress = address;
             return this;
         }
 
-        internal ApplicationUserBuilder WithUsername(string name)
+        internal AspNetUserBuilder WithUsername(string name)
         {
             username = name;
             return this;
         }
 
-        internal ApplicationUserBuilder WithPrimaryOrganisationId(Guid id)
+        public AspNetUserBuilder WithPrimaryOrganisationId(Guid id)
         {
             primaryOrganisationId = id;
             return this;
         }
 
-        internal ApplicationUserBuilder WithOrganisationFunction(OrganisationFunction function)
+        internal AspNetUserBuilder WithOrganisationFunction(OrganisationFunction function)
         {
             organisationFunction = function;
             return this;
         }
 
-        internal ApplicationUserBuilder WithDisabled(bool isDisabled)
+        internal AspNetUserBuilder WithDisabled(bool isDisabled)
         {
             disabled = isDisabled;
             return this;
         }
 
-        internal ApplicationUserBuilder WithCatalogueAgreementSigned(bool agreementSigned)
+        internal AspNetUserBuilder WithCatalogueAgreementSigned(bool agreementSigned)
         {
             catalogueAgreementSigned = agreementSigned;
             return this;
@@ -157,13 +156,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             return new AspNetUser
             {
                 UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
                 FirstName = firstName,
                 LastName = lastName,
                 PhoneNumber = phoneNumber,
                 Email = email,
+                NormalizedEmail = email.ToUpper(),
                 OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
                 PrimaryOrganisationId = primaryOrganisationId
-
             };
         }
 
@@ -178,13 +178,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             return new AspNetUser
             {
                 UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
                 FirstName = firstName,
                 LastName = lastName,
                 PhoneNumber = phoneNumber,
                 Email = email,
+                NormalizedEmail = email.ToUpper(),
                 OrganisationFunction = OrganisationFunction.Authority.DisplayName,
                 PrimaryOrganisationId = primaryOrganisationId
-
             };
         }
     }

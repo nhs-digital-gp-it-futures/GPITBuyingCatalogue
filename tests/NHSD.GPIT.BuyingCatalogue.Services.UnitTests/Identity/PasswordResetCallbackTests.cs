@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             var callback = context.Callback;
 
             callback.GetPasswordResetCallback(
-                new PasswordResetToken(expectedToken, ApplicationUserBuilder.Create().Build()));
+                new PasswordResetToken(expectedToken, AspNetUserBuilder.Create().Build()));
 
             context.RouteValues.Should().BeEquivalentTo(expectedValues);
         }
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             var callback = context.Callback;
 
             var actualUri = callback.GetPasswordResetCallback(
-                new PasswordResetToken("Token", ApplicationUserBuilder.Create().Build()));
+                new PasswordResetToken("Token", AspNetUserBuilder.Create().Build()));
 
             actualUri.Should().Be(expectedUri);
         }
