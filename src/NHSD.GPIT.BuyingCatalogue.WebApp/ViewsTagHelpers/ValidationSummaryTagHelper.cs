@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
@@ -22,10 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)
-            {
+            if (output is null)            
                 throw new ArgumentNullException(nameof(output));
-            }
 
             if (ViewContext.ViewData.ModelState.IsValid)
             {
@@ -49,9 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         {
             var builder = new TagBuilder(TagHelperConstants.Div);
             builder.AddCssClass(TagHelperConstants.NhsValidationSummary);
-            builder.Attributes[TagHelperConstants.Role] = TagHelperConstants.RoleAlert;
-            builder.Attributes[TagHelperConstants.LabelledBy] = TagHelperConstants.ErrorSummaryTitle;
-            builder.Attributes[TagHelperConstants.TabIndex] = "-1";
+
+            builder.MergeAttributes(new Dictionary<string, string>(){
+                                        { TagHelperConstants.Role, TagHelperConstants.RoleAlert},
+                                        { TagHelperConstants.LabelledBy, TagHelperConstants.ErrorSummaryTitle},
+                                        { TagHelperConstants.TabIndex, "-1"},
+            });
 
             return builder;
         }
@@ -61,7 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var listItemBuilder = new TagBuilder(TagHelperConstants.ListItem);
             var linkBuilder = new TagBuilder(TagHelperConstants.Anchor);
             linkBuilder.Attributes.Add(TagHelperConstants.Link, $"#{linkElement}");
-            linkBuilder.AddCssClass("bc-c-login-page-error-box-padding");
             linkBuilder.InnerHtml.Append(errorMessage);
             listItemBuilder.InnerHtml.AppendHtml(linkBuilder);
 
@@ -72,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         {
             var builder = new TagBuilder(TagHelperConstants.SubHeader);
             builder.AddCssClass(TagHelperConstants.NhsValidationSummaryTitle);
-            builder.Attributes[TagHelperConstants.Id] = TagHelperConstants.ErrorSummaryTitle;
+            builder.MergeAttribute(TagHelperConstants.Id, TagHelperConstants.ErrorSummaryTitle);
             builder.InnerHtml.Append(Title);
 
             return builder;
@@ -86,15 +87,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             var viewType = ViewContext.ViewData.Model.GetType();
 
-            if (viewType is null)
-            {
+            if (viewType is null)            
                 throw new InvalidOperationException();
-            }
 
             var propertyNames = viewType.GetProperties().Select(i => i.Name).ToList();
             var orderedStates = ViewContext.ViewData.ModelState
-                .OrderBy(d => propertyNames.IndexOf(d.Key))
-                .ToList();
+                .OrderBy(d => propertyNames.IndexOf(d.Key));
 
             foreach ((var key, ModelStateEntry modelStateEntry) in orderedStates)
             {

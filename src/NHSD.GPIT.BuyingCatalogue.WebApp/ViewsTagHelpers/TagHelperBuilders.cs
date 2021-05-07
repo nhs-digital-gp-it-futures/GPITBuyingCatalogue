@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
