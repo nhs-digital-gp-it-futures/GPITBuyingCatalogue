@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 {
@@ -38,34 +34,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 
         public override bool? IsComplete => throw new NotImplementedException();
 
-        public string SolutionDescriptionStatus => GetStatus(new SolutionDescriptionModel(CatalogueItem));
+        public string SolutionDescriptionStatus { get; set; } //=> GetStatus(new SolutionDescriptionModel(CatalogueItem));
 
-        public string FeaturesStatus => GetStatus(new FeaturesModel(CatalogueItem));
+        public string FeaturesStatus { get; set; } //=> GetStatus(new FeaturesModel(CatalogueItem));
 
-        public string IntegrationsStatus => GetStatus(new IntegrationsModel(CatalogueItem));
+        public string IntegrationsStatus { get; set; } //=> GetStatus(new IntegrationsModel(CatalogueItem));
 
-        public string ImplementationTimescalesStatus => GetStatus(new ImplementationTimescalesModel(CatalogueItem));
+        public string ImplementationTimescalesStatus { get; set; } //=> GetStatus(new ImplementationTimescalesModel(CatalogueItem));
 
-        public string RoadmapStatus => GetStatus(new RoadmapModel(CatalogueItem));
+        public string RoadmapStatus { get; set; } //=> GetStatus(new RoadmapModel(CatalogueItem));
 
-        public string ClientApplicationTypeStatus => GetStatus(new ClientApplicationTypesModel(CatalogueItem));
+        public string ClientApplicationTypeStatus { get; set; } //=> GetStatus(new ClientApplicationTypesModel(CatalogueItem));
 
-        public string PublicCloudStatus => GetStatus(new PublicCloudModel(CatalogueItem));
+        public string PublicCloudStatus { get; set; } //=> GetStatus(new PublicCloudModel(CatalogueItem));
 
-        public string PrivateCloudStatus => GetStatus(new PrivateCloudModel(CatalogueItem));
+        public string PrivateCloudStatus { get; set; } //=> GetStatus(new PrivateCloudModel(CatalogueItem));
 
-        public string HybridStatus => GetStatus(new HybridModel(CatalogueItem));
+        public string HybridStatus { get; set; } //=> GetStatus(new HybridModel(CatalogueItem));
 
-        public string OnPremisesStatus => GetStatus(new OnPremiseModel(CatalogueItem));
+        public string OnPremisesStatus { get; set; } //=> GetStatus(new OnPremiseModel(CatalogueItem));
 
-        public string AboutSupplierStatus => GetStatus(new AboutSupplierModel(CatalogueItem));
+        public string AboutSupplierStatus { get; set; } //=> GetStatus(new AboutSupplierModel(CatalogueItem));
 
-        public string ContactDetailsStatus => GetStatus(new ContactDetailsModel(CatalogueItem));
+        public string ContactDetailsStatus { get; set; } //=> GetStatus(new ContactDetailsModel(CatalogueItem));
 
-        public string BrowserBasedStatus => GetStatus(new BrowserBasedModel(CatalogueItem));
+        public string BrowserBasedStatus { get; set; } //=> GetStatus(new BrowserBasedModel(CatalogueItem));
 
-        public string NativeDesktopStatus => GetStatus(new NativeDesktopModel(CatalogueItem));
+        public string NativeDesktopStatus { get; set; } //=> GetStatus(new NativeDesktopModel(CatalogueItem));
 
-        public string NativeMobileStatus => GetStatus(new NativeMobileModel(CatalogueItem));
+        public string NativeMobileStatus { get; set; } //=> GetStatus(new NativeMobileModel(CatalogueItem));
     }
 }

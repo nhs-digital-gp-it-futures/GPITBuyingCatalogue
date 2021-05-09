@@ -23,8 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             NativeDesktop = ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-desktop", StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public override bool? IsComplete =>
-            CatalogueItem?.Solution?.GetClientApplication().ClientApplicationTypes?.Any();
+        public override bool? IsComplete => BrowserBased || NativeDesktop || NativeMobile;
 
         public bool BrowserBased { get; set; }
 

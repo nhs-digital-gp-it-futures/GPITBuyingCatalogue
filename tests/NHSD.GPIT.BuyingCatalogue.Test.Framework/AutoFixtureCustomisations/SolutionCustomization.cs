@@ -15,12 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 c => c.With(s => s.ClientApplication,
                     JsonConvert.SerializeObject(
                         fixture
-                        .Build<ClientApplication>()
-                        .With(ca => ca.BrowsersSupported, new HashSet<string>
-                            {"Internet Explorer 11", "Google Chrome", "OPERA", "safari", "mozilla firefox"})
-                        .With(ca => ca.ClientApplicationTypes, GetClientApplicationTypes())
-                        .Create()
-                    )));
+                            .Build<ClientApplication>()
+                            .With(ca => ca.BrowsersSupported, new HashSet<string>
+                                {"Internet Explorer 11", "Google Chrome", "OPERA", "safari", "mozilla firefox"})
+                            .With(ca => ca.ClientApplicationTypes, GetClientApplicationTypes())
+                            .Create()
+                    ))
+                    .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>())));
         }
 
         private static HashSet<string> GetClientApplicationTypes()

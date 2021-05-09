@@ -20,29 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             HybridHostingType = CatalogueItem.Solution.GetHosting().HybridHostingType;
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(HybridHostingType?.Summary) ||
-                    !string.IsNullOrWhiteSpace(HybridHostingType?.Link) ||
-                    !string.IsNullOrWhiteSpace(HybridHostingType?.RequiresHscn) ||
-                    !string.IsNullOrWhiteSpace(HybridHostingType?.HostingModel);
-            }
-        }        
+        public override bool? IsComplete => HybridHostingType?.IsValid();
 
         public HybridHostingType HybridHostingType { get; set; }
 
         public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(HybridHostingType?.RequiresHscn); }
-            set
-            {
-                if (value)
-                    HybridHostingType.RequiresHscn = "End user devices must be connected to HSCN/N3";
-                else
-                    HybridHostingType.RequiresHscn = null;
-            }
+            get => !string.IsNullOrWhiteSpace(HybridHostingType?.RequiresHscn);
+            set => HybridHostingType.RequiresHscn = value ? "End user devices must be connected to HSCN/N3" : null;
         }
     }
 }
