@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
 {
@@ -10,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
         {
             Contact1 = new MarketingContact();
             Contact2 = new MarketingContact();
+            ClientApplication = new ClientApplication();
         }
 
         public ContactDetailsModel(CatalogueItem catalogueItem) : base(catalogueItem)

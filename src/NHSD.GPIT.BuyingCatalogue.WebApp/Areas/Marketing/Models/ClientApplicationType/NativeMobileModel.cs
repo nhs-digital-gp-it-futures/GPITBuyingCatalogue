@@ -1,6 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
@@ -19,22 +19,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
         }
 
         public override bool? IsComplete =>
-            new OperatingSystemsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-            new MobileFirstApproachModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-            new MemoryAndStorageModel(CatalogueItem).IsComplete.GetValueOrDefault();
+            ClientApplication != null &&
+            ClientApplication.NativeMobileSupportedOperatingSystemsComplete().GetValueOrDefault() &&
+            ClientApplication.NativeMobileFirstApproachComplete() &&
+            ClientApplication.NativeMobileMemoryAndStorageComplete().GetValueOrDefault();
 
-        public string SupportedOperatingSystemsStatus => GetStatus(new OperatingSystemsModel(CatalogueItem));
+        public string SupportedOperatingSystemsStatus =>
+            (ClientApplication?.NativeMobileSupportedOperatingSystemsComplete()).ToStatus();
 
-        public string MobileFirstApproachStatus => GetStatus(new MobileFirstApproachModel(CatalogueItem));
+        public string MobileFirstApproachStatus => (ClientApplication?.NativeMobileFirstApproachComplete()).ToStatus();
 
-        public string ConnectivityStatus => GetStatus(new ConnectivityModel(CatalogueItem));
+        public string ConnectivityStatus => (ClientApplication?.NativeMobileConnectivityComplete()).ToStatus();
 
-        public string MemoryAndStorageStatus => GetStatus(new MemoryAndStorageModel(CatalogueItem));
+        public string MemoryAndStorageStatus => (ClientApplication?.NativeMobileMemoryAndStorageComplete()).ToStatus();
 
-        public string ThirdPartyStatus => GetStatus(new ThirdPartyModel(CatalogueItem));
+        public string ThirdPartyStatus => (ClientApplication?.NativeMobileThirdPartyComplete()).ToStatus();
 
-        public string HardwareRequirementsStatus => GetStatus(new HardwareRequirementsModel(CatalogueItem));
+        public string HardwareRequirementsStatus =>
+            (ClientApplication?.NativeMobileHardwareRequirementsComplete()).ToStatus();
 
-        public string AdditionalInformationStatus => GetStatus(new AdditionalInformationModel(CatalogueItem));
+        public string AdditionalInformationStatus =>
+            (ClientApplication?.NativeMobileAdditionalInformationComplete()).ToStatus();
     }
 }

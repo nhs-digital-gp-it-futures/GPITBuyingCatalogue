@@ -10,6 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 {
     public class SolutionStatusModel : MarketingBaseModel
     {
+        public SolutionStatusModel() : base(null)
+        {
+        }
+        
         public SolutionStatusModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
             if (catalogueItem is null)
