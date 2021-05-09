@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                         src.Solution == null ? new HybridHostingType() :
                         string.IsNullOrWhiteSpace(src.Solution.Hosting) ? new HybridHostingType() :
                         JsonConvert.DeserializeObject<Hosting>(src.Solution.Hosting).HybridHostingType))
+                .ForMember(dest => dest.RequiresHscnChecked, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
             
             CreateMap<CatalogueItem, PrivateCloudModel>()
@@ -39,9 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
             
             CreateMap<CatalogueItem, SolutionStatusModel>()
-                .ConstructUsing((src, context) =>
-                    (SolutionStatusModel) context.Mapper.Map<CatalogueItem, MarketingBaseModel>(src))
-                .ConvertUsing<CatalogueItemToSolutionStatusModelConverter>();
+                .ConvertUsing<ITypeConverter<CatalogueItem, SolutionStatusModel>>();
         }
     }
 }

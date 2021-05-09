@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
@@ -14,6 +16,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -26,8 +30,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("organisationFunction", new[] { OrganisationFunction.Authority.DisplayName }));
+                options.AddPolicy("AdminOnly",
+                    policy => policy.RequireClaim("organisationFunction",
+                        new[] {OrganisationFunction.Authority.DisplayName}));
             });
+        }
+
+        public static void ConfigureAutoMapper(this IServiceCollection services)
+        {
+            services
+                .AddTransient<IMemberValueResolver<object, object, string, bool?>,
+                    StringToNullableBoolResolver>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         public static void ConfigureCookies(this IServiceCollection services, IConfiguration configuration)

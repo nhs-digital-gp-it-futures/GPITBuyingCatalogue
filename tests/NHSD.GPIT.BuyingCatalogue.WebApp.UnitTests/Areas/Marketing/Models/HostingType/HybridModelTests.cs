@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
             var model = new HybridModel();
 
             Assert.AreEqual("./", model.BackLink);
-            Assert.False(model.IsComplete);
+            Assert.Null(model.IsComplete);
             Assert.Null(model.HybridHostingType);
             Assert.False(model.RequiresHscnChecked);
         }

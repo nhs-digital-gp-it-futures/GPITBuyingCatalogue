@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             ServicesStartup.Configure(services);
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.ConfigureAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
