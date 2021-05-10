@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using OpenQA.Selenium;
+using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 {
@@ -19,5 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
         {
             Driver.FindElement(MarketingCommonObjects.SaveAndReturn).Click();
         }
+
+        internal void ClickFirstCheckbox() => Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
     }
 }
