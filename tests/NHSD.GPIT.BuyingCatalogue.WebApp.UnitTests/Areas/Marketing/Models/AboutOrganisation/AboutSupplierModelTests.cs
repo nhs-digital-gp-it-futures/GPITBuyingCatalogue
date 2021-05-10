@@ -48,12 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [TestCase("", "", false)]
         [TestCase(" ", " ", false)]
         [TestCase("Some description", "Some link", true)]
-        public static void IsCompleteIsCorrectlySet(string descripion, string link, bool? expected )
+        public static void IsCompleteIsCorrectlySet(string description, string link, bool? expected )
         {
             var catalogueItem = new CatalogueItem 
             { 
                 CatalogueItemId = "123",
-                Supplier = new Supplier {SupplierUrl = link, Summary = descripion }
+                Supplier = new Supplier {SupplierUrl = link, Summary = description }
             };
 
             var model = new AboutSupplierModel(catalogueItem);

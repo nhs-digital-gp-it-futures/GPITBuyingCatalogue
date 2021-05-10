@@ -1,7 +1,9 @@
 using AutoMapper;
 using FluentAssertions;
 using Moq;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
@@ -81,6 +83,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             mockMapper.Verify(m => m.Map<CatalogueItem, BrowserBasedModel>(mockCatalogueItem));
             mockBrowserBasedModel.VerifyGet(a => a.IsComplete);
             actual.BrowserBasedStatus.Should().Be(expected);
+        }
+
+        [Test, CommonAutoData]
+        public static void Convert_CatalogueItemToSolutionStatusModel_ValidCatalogueItem_SetsClientApplication(
+            CatalogueItem catalogueItem)
+        {
+            var clientApplication =
+                JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
+            var converter = new CatalogueItemToSolutionStatusModelConverter(GetMockMapper().Object);
+
+            var actual = converter.Convert(catalogueItem, default, default);
+
+            actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
+        }
+
+        [Test, CommonAutoData]
+        public static void Convert_CatalogueItemToSolutionStatusModel_NoClientAppInSolution_ClientApplicationSetToNew(
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.ClientApplication = null;
+            var converter = new CatalogueItemToSolutionStatusModelConverter(GetMockMapper().Object);
+
+            var actual = converter.Convert(catalogueItem, default, default);
+
+            actual.ClientApplication.Should().BeEquivalentTo(new ClientApplication());
+        }
+
+        [Test, CommonAutoData]
+        public static void Convert_CatalogueItemToSolutionStatusModel_NoSolutionInCatalogueItem_ClientApplicationSetToNew(
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution = null;
+            var converter = new CatalogueItemToSolutionStatusModelConverter(GetMockMapper().Object);
+
+            var actual = converter.Convert(catalogueItem, default, default);
+
+            actual.ClientApplication.Should().BeEquivalentTo(new ClientApplication());
         }
 
         [TestCaseSource(nameof(ResultSets))]

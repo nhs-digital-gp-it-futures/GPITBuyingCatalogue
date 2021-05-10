@@ -21,6 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.RequiresHscnChecked, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
             
+            CreateMap<CatalogueItem, OnPremiseModel>()
+                .ForMember(dest => dest.OnPremise,
+                    opt => opt.MapFrom(src =>
+                        src.Solution == null ? new OnPremise() :
+                        string.IsNullOrWhiteSpace(src.Solution.Hosting) ? new OnPremise() :
+                        JsonConvert.DeserializeObject<Hosting>(src.Solution.Hosting).OnPremise))
+                .ForMember(dest => dest.RequiresHscnChecked, opt => opt.Ignore())
+                .IncludeBase<CatalogueItem, MarketingBaseModel>();
+
             CreateMap<CatalogueItem, PrivateCloudModel>()
                 .ForMember(dest => dest.PrivateCloud,
                     opt => opt.MapFrom(src =>

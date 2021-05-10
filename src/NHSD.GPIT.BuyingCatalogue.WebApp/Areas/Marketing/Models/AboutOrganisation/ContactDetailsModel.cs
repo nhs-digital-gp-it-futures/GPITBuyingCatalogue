@@ -28,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
             Contact2 = allContacts.Length > 1 ? allContacts[1] : new MarketingContact();
         }
 
-        public override bool? IsComplete => CatalogueItem?.Solution?.MarketingContacts?.Any();
+        public override bool? IsComplete => (Contact1 != null && !Contact1.IsEmpty())
+                                            || (Contact2 != null && !Contact2.IsEmpty());
 
         public MarketingContact Contact1 { get; set; }
 
