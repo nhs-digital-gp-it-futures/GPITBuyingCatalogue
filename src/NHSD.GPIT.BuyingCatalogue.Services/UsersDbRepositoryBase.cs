@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
+    [ExcludeFromCodeCoverage]
     public abstract class UsersDbRepositoryBase<T> : IUsersDbRepository<T> where T : class
     {
         private readonly UsersDbContext _dbContext;
