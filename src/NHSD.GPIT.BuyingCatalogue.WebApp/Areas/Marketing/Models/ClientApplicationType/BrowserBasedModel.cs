@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
 
         public string SupportedBrowsersStatus => (ClientApplication?.SupportedBrowsersComplete()).ToStatus();
 
-        public string MobileFirstApproachStatus => (ClientApplication?.NativeMobileFirstApproachComplete()).ToStatus();
+        public string MobileFirstApproachStatus => (ClientApplication?.MobileFirstDesignComplete()).ToStatus();
 
         public string PlugInsStatus => (ClientApplication?.PlugInsComplete()).ToStatus();
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
+    [ExcludeFromCodeCoverage]
     public class UsersDbRepository<T> : UsersDbRepositoryBase<T> where T : class
     {
         private readonly ILogWrapper<SolutionsService> _logger;

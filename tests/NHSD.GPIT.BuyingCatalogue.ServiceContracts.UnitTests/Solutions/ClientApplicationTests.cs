@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 .Returns(true);
             clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
                 .Returns(true);
-            clientApplication.Setup(x => x.NativeMobileFirstApproachComplete())
+            clientApplication.Setup(x => x.MobileFirstDesignComplete())
                 .Returns(true);
             clientApplication.Setup(x => x.PlugInsComplete())
                 .Returns(true);
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             var clientApplication = new ClientApplication
             {
-                MobileFirstDesign = value,
+                NativeMobileFirstDesign = value,
             };
 
             clientApplication.NativeMobileFirstApproachComplete().Should().BeTrue();

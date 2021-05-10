@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         
         public virtual bool? BrowserBasedModelComplete() =>
             SupportedBrowsersComplete() &&
-            NativeMobileFirstApproachComplete() &&
+            MobileFirstDesignComplete() &&
             PlugInsComplete().GetValueOrDefault() &&
             ConnectivityAndResolutionComplete();
 
@@ -83,7 +83,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public virtual bool? NativeMobileConnectivityComplete() => MobileConnectionDetails?.IsValid();
 
-        public virtual bool NativeMobileFirstApproachComplete() => MobileFirstDesign.HasValue;
+        public virtual bool NativeMobileFirstApproachComplete() => NativeMobileFirstDesign.HasValue;
+
+        public virtual bool MobileFirstDesignComplete() => MobileFirstDesign.HasValue;
 
         public virtual bool? NativeMobileSupportedOperatingSystemsComplete() =>
             MobileOperatingSystems?.OperatingSystems?.Any();
