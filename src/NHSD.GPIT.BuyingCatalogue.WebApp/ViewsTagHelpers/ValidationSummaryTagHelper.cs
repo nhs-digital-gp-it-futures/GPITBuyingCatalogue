@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
-    [HtmlTargetElement(TagHelperConstants.Div, Attributes = TagHelperName)]
+    [HtmlTargetElement(TagHelperName)]
     public sealed class ValidationSummaryTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-validation-summary";
@@ -28,34 +28,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             if (ViewContext.ViewData.ModelState.IsValid)
             {
-                output.Content.Clear();
+                output.SuppressOutput();
                 return;
             }
 
-            var errorSummary = GetErrorSummaryBuilder();
             var header = GetHeaderBuilder();
             var errorList = GetErrorListBuilder();
 
-            errorSummary.InnerHtml.AppendHtml(header);
-            errorSummary.InnerHtml.AppendHtml(errorList);
+            BuildOutput(output);
 
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.Content.AppendHtml(errorSummary);
+            output.Content.AppendHtml(header);
+            output.Content.AppendHtml(errorList);
         }
 
-        private static TagBuilder GetErrorSummaryBuilder()
+        private void BuildOutput(TagHelperOutput output)
         {
-            var builder = new TagBuilder(TagHelperConstants.Div);
-            builder.AddCssClass(TagHelperConstants.NhsValidationSummary);
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
 
-            builder.MergeAttributes(new Dictionary<string, string>(){
-                                        { TagHelperConstants.Role, TagHelperConstants.RoleAlert},
-                                        { TagHelperConstants.LabelledBy, TagHelperConstants.ErrorSummaryTitle},
-                                        { TagHelperConstants.TabIndex, "-1"},
-            });
+            var attributes = new List<TagHelperAttribute>{
+                new TagHelperAttribute(TagHelperConstants.Role, TagHelperConstants.RoleAlert),
+                new TagHelperAttribute(TagHelperConstants.LabelledBy, TagHelperConstants.ErrorSummaryTitle),
+                new TagHelperAttribute(TagHelperConstants.TabIndex, "-1"),
+                new TagHelperAttribute(TagHelperConstants.DataTestId, "error-summary"),
+                new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsValidationSummary)
+            };
 
-            return builder;
+            attributes.ForEach(a => output.Attributes.Add(a));
         }
 
         private static TagBuilder GetListItemBuilder(string linkElement, string errorMessage)

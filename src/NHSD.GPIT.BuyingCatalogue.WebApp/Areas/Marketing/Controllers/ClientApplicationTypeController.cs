@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
+using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
@@ -44,9 +47,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             clientApplication.ClientApplicationTypes.Clear();
 
-            if (model.BrowserBased) clientApplication.ClientApplicationTypes.Add("browser-based");
-            if (model.NativeMobile) clientApplication.ClientApplicationTypes.Add("native-mobile");
-            if (model.NativeDesktop) clientApplication.ClientApplicationTypes.Add("native-desktop");
+            var checkboxProperties = model.GetType().GetProperties().Where(prop => prop.IsDefined(typeof(CheckboxAttribute)));
+
+            foreach(var prop in checkboxProperties)
+            {
+                if ((bool)prop.GetValue(model)) clientApplication.ClientApplicationTypes.Add(prop.GetCustomAttribute<CheckboxAttribute>().FieldText);
+            }
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 

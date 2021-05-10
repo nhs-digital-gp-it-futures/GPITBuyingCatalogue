@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
@@ -17,10 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
                 throw new ArgumentNullException(nameof(catalogueItem));
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
-                        
-            BrowserBased = ClientApplication.ClientApplicationTypes.Any(x => x.Equals("browser-based", StringComparison.InvariantCultureIgnoreCase));
-            NativeMobile = ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-mobile", StringComparison.InvariantCultureIgnoreCase));
-            NativeDesktop = ClientApplication.ClientApplicationTypes.Any(x => x.Equals("native-desktop", StringComparison.InvariantCultureIgnoreCase));
+
+            ProcessCheckboxFields(ClientApplication.ClientApplicationTypes);
         }
 
         public override bool? IsComplete
@@ -28,10 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             get { return CatalogueItem?.Solution?.GetClientApplication().ClientApplicationTypes?.Any(); }
         }
         
+        [Checkbox("Browser-based")]
         public bool BrowserBased { get; set; }
 
+        [Checkbox("Native mobile or tablet")]
         public bool NativeMobile { get; set; }
 
+        [Checkbox("Native desktop")]
         public bool NativeDesktop { get; set; }
     }
 }

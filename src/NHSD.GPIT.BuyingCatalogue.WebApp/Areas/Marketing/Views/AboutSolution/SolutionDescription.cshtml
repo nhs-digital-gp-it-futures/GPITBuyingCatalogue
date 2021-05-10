@@ -9,39 +9,22 @@
     </div>
     <div class="nhsuk-grid-column-two-thirds">
 
-        <div data-test-id="error-summary" nhs-validation-summary title="There is a problem"></div>
-
-            <h1 data-test-id="section-title">Catalogue Solution description</h1>
-            <p data-test-id="section-main-advice" class="nhsuk-lede-text">Give buyers as much detail as possible about your Catalogue Solution.</p>
-            <div data-test-id="section-additional-advice">
-            </div>
-
+        <nhs-validation-summary title="There is a problem" />
+        <nhs-page-title title="Catalogue Solution description" title-advice="Give buyers as much detail as possible about your Catalogue Solution." />
         <form method="post">
-
             <input type="hidden" asp-for="@Model.SolutionId" />
-
-            <div nhs-validation-textarea
+            <nhs-validation-textarea
                  asp-for="Summary"
                  label-text="Summary"
                  label-hint="Provide a brief overview of your Catalogue Solution."
-                 number-of-rows="5">
-            </div>
-
-            <div nhs-validation-textarea
-                 asp-for="Description">
-            </div>
-
-            <div nhs-validation-input
+                 number-of-rows="5"/>
+            <nhs-validation-textarea
+                 asp-for="Description" />
+            <nhs-validation-input
                  asp-for="Link"
                  label-text="Link to more information (optional)"
-                 label-hint="Provide a URL to a page that gives buyers further information about your Catalogue Solution.">
-            </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
+                 label-hint="Provide a URL to a page that gives buyers further information about your Catalogue Solution."/>
+            <nhs-submit-button />
         </form>
     </div>
 </div>

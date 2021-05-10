@@ -45,10 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             return HtmlAttributeNumberOfRows ?? NumberOfRowsAttribute?.NumberOfRows ?? TagHelperConstants.DefaultNumberOfTextAreaRows;
         }
 
-        public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression For)
+        public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression For, string validationName = null)
         {
             var modelState = viewContext.ViewData?.ModelState;
-            return !(modelState?[For.Name] is null) && modelState[For.Name].Errors.Any();
+            return !(modelState?[For?.Name ?? validationName] is null) && modelState[For?.Name ?? validationName].Errors.Any();
         }
     }
 }

@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
-    [HtmlTargetElement(TagHelperConstants.Div, Attributes = TagHelperName)]
+    [HtmlTargetElement(TagHelperName)]
     public sealed class ValidationTextInputTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-validation-input";
@@ -38,19 +38,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            if (output is null)            
+                throw new ArgumentNullException(nameof(output));            
 
             output.Content.Clear();
 
-            var outerDiv = TagHelperBuilders.GetOuterDivBuilder(For,ViewContext,DisableCharacterCounter);
-            var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(For);
-            var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder();
-            var formGroup = TagHelperBuilders.GetFormGroupBuilder(For);
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext,For,htmlGenerator, LabelText);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For,LabelHint);
+            var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(For.Name);
+            var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(TagHelperConstants.TextFieldInput);
+            var formGroup = TagHelperBuilders.GetFormGroupBuilder(For.Name);
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, LabelText);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For.Name, LabelHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext,For,htmlGenerator);
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For,DisableCharacterCounter);
@@ -62,11 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             formGroup.InnerHtml.AppendHtml(counter);
             innerTesting.InnerHtml.AppendHtml(formGroup);
             outerTesting.InnerHtml.AppendHtml(innerTesting);
-            outerDiv.InnerHtml.AppendHtml(outerTesting);
 
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.Content.AppendHtml(outerDiv);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, outerTesting, TagHelperConstants.SectionTextField, true);
         }
 
         private TagBuilder GetInputBuilder()

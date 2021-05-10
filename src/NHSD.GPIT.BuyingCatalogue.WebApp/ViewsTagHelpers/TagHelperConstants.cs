@@ -11,6 +11,12 @@
         internal const string UnorderedList = "ul";
         internal const string Svg = "svg";
         internal const string Path = "path";
+        internal const string FieldSet = "fieldset";
+        internal const string Legend = "legend";
+        internal const string H1 = "h1";
+        internal const string H2 = "h2";
+        internal const string Button = "button";
+        internal const string Input = "input";
 
         // Attributes
         internal const string DataTestId = "data-test-id";
@@ -28,10 +34,13 @@
         internal const string DataMaxLength = "data-maxlength";
         internal const string AriaDescribedBy = "aria-describedby";
         internal const string AriaLive = "aria-live";
+        internal const string Class = "class";
 
         //Attribute Values
         internal const string AriaLivePolite = "polite";
         internal const string TextFieldInput = "text-field-input";
+        internal const string TextAreaField = "textarea-field";
+        internal const string CheckBoxOptions = "checkbox-options";
 
         // Classes
         internal const string ErrorSummaryTitle = "error-summary-title";
@@ -54,11 +63,19 @@
         internal const string NhsBackLinkLink = "nhsuk-back-link__link";
         internal const string NhsIcon = "nhsuk-icon";
         internal const string NhsIconChevronLeft = "nhsuk-icon__chevron-left";
-        internal const string NhsUMarginBottom = "nhsuk-u-margin-bottom";
-        internal const string NhsUFontSize = "nhsuk-u-font-size";
-        internal const string NhsUFontWeight = "nhsuk-u-font-weight";        
+        internal const string NhsFieldset = "nhsuk-fieldset";
+        internal const string NhsFieldsetLegend = "nhsuk-fieldset__legend";
+        internal const string NhsFieldsetLegendOne = "nhsuk-fieldset__legend--1";
+        internal const string NhsFieldSetLegendHeading = "nhsuk-fieldset__heading";
         internal const string SectionTextField = "section-question-text-field";
         internal const string SectionTextAreaField = "section-question-textarea-field";
+        internal const string SectionListForm = "section-question-listform-field";
+        internal const string NhsMarginTop = "nhsuk-u-margin-top";
+        internal const string NhsMarginBottom = "nhsuk-u-margin-bottom";
+        internal const string NhsFontSize = "nhsuk-u-font-size";
+        internal const string NhsButton = "nhsuk-button";
+        internal const string NhsCheckboxes = "nhsuk-checkboxes";
+
 
         //Messages
         internal const string CharacterCountMessage = "(Maximum character length {0})";
