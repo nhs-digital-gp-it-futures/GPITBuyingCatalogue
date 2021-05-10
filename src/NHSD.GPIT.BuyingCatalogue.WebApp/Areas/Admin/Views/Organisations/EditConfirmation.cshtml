@@ -1,0 +1,10 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.EditConfirmationModel
+@{
+    ViewData["Title"] = $"{Model.Name} updated";
+}
+
+<div class="nhsuk-width-container" data-test-id="edit-organisation-confirmation-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <h1 data-test-id="edit-organisation-confirmation-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">@Model.Name updated</h1>
+    <h2 data-test-id="edit-organisation-confirmation-page-description" class="nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">This organisation&#39;s details have been updated.</h2>
+</div>

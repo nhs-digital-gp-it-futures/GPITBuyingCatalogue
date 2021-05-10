@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             const string emailAddress = "a@b.com";
             const string expectedToken = "HereBeToken";
-            var expectedUser = ApplicationUserBuilder.Create().Build();
+            var expectedUser = AspNetUserBuilder.Create().Build();
 
             var mockUserManager = MockUserManager;
             mockUserManager.Setup(m => m.FindByEmailAsync(It.Is<string>(e => e == emailAddress)))
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                     new PasswordResetSettings(),
                     MockUserManager.Object);
 
-                await service.SendResetEmailAsync(ApplicationUserBuilder.Create().Build(), null);
+                await service.SendResetEmailAsync(AspNetUserBuilder.Create().Build(), null);
             }
 
             Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 MockUserManager.Object);
 
             await registrationService.SendResetEmailAsync(
-                ApplicationUserBuilder.Create().Build(),
+                AspNetUserBuilder.Create().Build(),
                 new Uri("https://duckduckgo.com/"));
 
             mockEmailService.Verify(e => e.SendEmailAsync(It.IsNotNull<EmailMessage>()));
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 MockUserManager.Object);
 
             await registrationService.SendResetEmailAsync(
-                ApplicationUserBuilder.Create().Build(),
+                AspNetUserBuilder.Create().Build(),
                 new Uri("https://duckduckgo.com/"));
 
             mockEmailService.SentMessage.Subject.Should().Be(subject);
@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
             var mockEmailService = new MockEmailService();
 
-            var user = ApplicationUserBuilder
+            var user = AspNetUserBuilder
                 .Create()
                 .WithFirstName("Uncle")
                 .WithLastName("Bob")
@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 MockUserManager.Object);
 
             await registrationService.SendResetEmailAsync(
-                ApplicationUserBuilder.Create().Build(),
+                AspNetUserBuilder.Create().Build(),
                 callback);
 
             mockEmailService.SentMessage.TextBody!.FormatItems.Should().HaveCount(1);
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             const string password = "Pass123321";
 
             var expectedResult = new IdentityResult();
-            var user = ApplicationUserBuilder.Create().Build();
+            var user = AspNetUserBuilder.Create().Build();
             var mockUserManager = MockUserManager;
             mockUserManager.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.ResetPasswordAsync(user, token, password)).ReturnsAsync(() => expectedResult);
@@ -290,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             const string emailAddress = "invalid@email.address.test";
             const string token = "Token";
 
-            var expectedUser = ApplicationUserBuilder.Create().Build();
+            var expectedUser = AspNetUserBuilder.Create().Build();
 
             var mockUserManager = MockUserManager;
             mockUserManager.Setup(

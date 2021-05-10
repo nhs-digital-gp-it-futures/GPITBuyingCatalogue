@@ -152,13 +152,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.MinimumDesktopResolution,
                     opt => opt.MapFrom(src => src.SelectedScreenResolution))
                 .ForAllOtherMembers(opt => opt.Ignore());
-                
+
             CreateMap<PlugInsOrExtensionsModel, Plugins>()
                 .ForMember(dest => dest.AdditionalInformation, opt => opt.MapFrom(src => src.AdditionalInformation))
                 .ForMember(dest => dest.Required, opt =>
                     opt.MapFrom<IMemberValueResolver<object, object, string, bool?>, string>(x =>
                         x.PlugInsRequired));
-            
+
             CreateMap<string, bool?>()
                 .ConvertUsing<StringToNullableBoolResolver>();
 

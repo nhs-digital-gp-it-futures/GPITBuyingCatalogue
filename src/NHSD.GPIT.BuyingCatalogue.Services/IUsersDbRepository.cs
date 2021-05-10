@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
         
         Task<T[]> GetAllAsync(Expression<Func<T, bool>> predicate);
 
-        Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
+        Task<T> SingleAsync(Expression<Func<T, bool>> predicate);        
 
         void Remove(T item);
         

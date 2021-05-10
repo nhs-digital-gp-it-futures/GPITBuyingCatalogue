@@ -146,5 +146,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
         }
+
+        public static void ConfigureRegistration(this IServiceCollection services, IConfiguration configuration)
+        {
+            var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();
+            services.AddSingleton(registrationSettings);
+        }
     }
 }
