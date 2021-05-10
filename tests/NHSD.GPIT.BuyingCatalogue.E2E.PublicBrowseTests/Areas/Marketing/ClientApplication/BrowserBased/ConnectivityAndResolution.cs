@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     {
         public ConnectivityAndResolution(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/connectivity-and-resolution")
         {
-            ClearClientApplication();
+            ClearClientApplication("99999-99");
 
             driver.Navigate().Refresh();
         }

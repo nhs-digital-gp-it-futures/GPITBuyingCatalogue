@@ -2,6 +2,7 @@
 {
     internal sealed class ActionCollection
     {
+        internal Hosting Hosting { get; set; }
         internal RoadmapActions RoadmapActions { get; set; }
         internal PreviewActions PreviewActions { get; set; }
         internal ClientApplicationTypeActions ClientApplicationTypeActions { get; set; }

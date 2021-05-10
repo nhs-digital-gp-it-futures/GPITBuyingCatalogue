@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -11,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     {
         public SupportedBrowsers(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/supported-browsers")
         {
-            ClearClientApplication();
+            ClearClientApplication("99999-99");
         }
 
-        [Fact(Skip = "Error thrown by Automapper when saving page")]
+        [Fact]
         public async Task SupportedBrowser_SelectBrowser()
         {
             var browser = MarketingPages.ClientApplicationTypeActions.ClickBrowserCheckbox();
@@ -26,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).ClientApplication.Should().ContainEquivalentOf(browser);
         }
 
-        [Theory(Skip = "Error thrown by Automapper when saving page")]
+        [Theory]
         [InlineData("Yes")]
         [InlineData("No")]
         public async Task SupportedBrowser_SelectMobileResponsive(string label)

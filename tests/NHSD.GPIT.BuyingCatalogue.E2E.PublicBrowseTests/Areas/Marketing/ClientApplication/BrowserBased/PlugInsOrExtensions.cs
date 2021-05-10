@@ -11,12 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     {
         public PlugInsOrExtensions(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/plug-ins-or-extensions")
         {
-            ClearClientApplication();
+            ClearClientApplication("99999-99");
 
             driver.Navigate().Refresh();
         }
 
-        [Theory(Skip = "Error thrown by Automapper when saving page")]
+        [Theory]
         [InlineData("Yes")]
         [InlineData("No")]
         public async Task PlugInsOrExtensions_SelectRadioButton(string label)
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             clientApplication.Should().ContainEquivalentOf(@$"Plugins"":{{""Required"":{labelConvert},""AdditionalInformation"":""{additional}""}}");
         }
 
-        [Fact(Skip = "Error thrown by Automapper when saving page")]
+        [Fact]
         public void PlugInsOrExtensions_SectionComplete()
         {
             MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText("Yes");

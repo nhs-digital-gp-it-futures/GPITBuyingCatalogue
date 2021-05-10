@@ -37,10 +37,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             return new(options);
         }
 
-        internal void ClearClientApplication()
+        internal void ClearClientApplication(string solutionId)
         {
             using var context = GetBCContext();
-            var solution = context.Solutions.Single(s => s.Id == "99999-99");
+            var solution = context.Solutions.Single(s => s.Id == solutionId);
             solution.ClientApplication = @"{
                         ""ClientApplicationTypes"": [
                             ""browser-based""
@@ -70,6 +70,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         ""NativeDesktopMemoryAndStorage"": null,
                         ""NativeDesktopAdditionalInformation"": null
                     }";
+            context.SaveChanges();
+        }
+
+        internal void ClearHostingTypes(string solutionId)
+        {
+            using var context = GetBCContext();
+            var solution = context.Solutions.Single(s => s.Id == solutionId);
+            solution.Hosting = null;
             context.SaveChanges();
         }
 
