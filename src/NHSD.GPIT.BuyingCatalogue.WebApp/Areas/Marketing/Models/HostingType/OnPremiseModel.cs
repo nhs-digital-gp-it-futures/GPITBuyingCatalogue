@@ -20,16 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             OnPremise = catalogueItem.Solution.GetHosting().OnPremise;          
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(OnPremise?.Summary) ||
-                    !string.IsNullOrWhiteSpace(OnPremise?.Link) ||
-                    !string.IsNullOrWhiteSpace(OnPremise?.RequiresHscn) ||
-                    !string.IsNullOrWhiteSpace(OnPremise?.HostingModel);
-            }
-        }
+        public override bool? IsComplete => OnPremise?.IsValid();
 
         public OnPremise OnPremise { get; set; }
 

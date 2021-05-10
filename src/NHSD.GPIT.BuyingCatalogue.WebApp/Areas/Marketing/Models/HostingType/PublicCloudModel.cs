@@ -20,28 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(PublicCloud?.Summary) ||
-                    !string.IsNullOrWhiteSpace(PublicCloud?.Link) ||
-                    !string.IsNullOrWhiteSpace(PublicCloud?.RequiresHscn);
-            }
-        }        
+        public override bool? IsComplete => PublicCloud?.IsValid();
 
         public PublicCloud PublicCloud { get; set; }   
         
         public bool RequiresHscnChecked 
         {
-            get { return !string.IsNullOrWhiteSpace(PublicCloud?.RequiresHscn); }
-            set
-            {
-                if (value)
-                    PublicCloud.RequiresHscn = "End user devices must be connected to HSCN/N3";
-                else
-                    PublicCloud.RequiresHscn = null;
-            }
+            get => !string.IsNullOrWhiteSpace(PublicCloud?.RequiresHscn);
+            set => PublicCloud.RequiresHscn = value ? "End user devices must be connected to HSCN/N3" : null;
         }
     }
 }

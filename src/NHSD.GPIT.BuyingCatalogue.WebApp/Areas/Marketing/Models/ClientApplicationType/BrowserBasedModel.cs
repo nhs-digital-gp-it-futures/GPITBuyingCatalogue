@@ -1,7 +1,7 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
@@ -20,48 +20,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                if (CatalogueItem == null)
-                    return false;
+        public override bool? IsComplete =>
+            ClientApplication == null ? false : ClientApplication.BrowserBasedModelComplete();
 
-                return new SupportedBrowsersModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-                    new MobileFirstApproachModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-                    new PlugInsOrExtensionsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-                    new ConnectivityAndResolutionModel(CatalogueItem).IsComplete.GetValueOrDefault();                
-            }
-        }
-        
-        public string SupportedBrowsersStatus
-        {
-            get { return GetStatus(new SupportedBrowsersModel(CatalogueItem)); }
-        }
+        public string SupportedBrowsersStatus => (ClientApplication?.SupportedBrowsersComplete()).ToStatus();
 
-        public string MobileFirstApproachStatus
-        {            
-            get { return GetStatus(new MobileFirstApproachModel(CatalogueItem)); }
-        }
+        public string MobileFirstApproachStatus => (ClientApplication?.NativeMobileFirstApproachComplete()).ToStatus();
 
-        public string PlugInsStatus
-        {
-            get { return GetStatus(new PlugInsOrExtensionsModel(CatalogueItem)); }
-        }
+        public string PlugInsStatus => (ClientApplication?.PlugInsComplete()).ToStatus();
 
-        public string ConnectivityStatus
-        {
-            get { return GetStatus(new ConnectivityAndResolutionModel(CatalogueItem)); }
-        }
+        public string ConnectivityStatus => (ClientApplication?.ConnectivityAndResolutionComplete()).ToStatus();
 
-        public string HardwareRequirementsStatus
-        {
-            get { return GetStatus(new HardwareRequirementsModel(CatalogueItem)); }
-        }
+        public string HardwareRequirementsStatus => (ClientApplication?.HardwareRequirementsComplete()).ToStatus();
 
-        public string AdditionalInformationStatus
-        {
-            get { return GetStatus(new AdditionalInformationModel(CatalogueItem)); }
-        }
+        public string AdditionalInformationStatus => (ClientApplication?.AdditionalInformationComplete()).ToStatus();
     }
 }

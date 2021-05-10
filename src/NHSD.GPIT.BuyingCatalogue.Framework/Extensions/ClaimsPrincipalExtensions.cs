@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)
         {
-            var claim = user.Claims.FirstOrDefault(x => x.Type.Equals(claimType, StringComparison.InvariantCultureIgnoreCase));
+            var claim = user.Claims.FirstOrDefault(x => x.Type.EqualsIgnoreCase(claimType));
 
             return claim != null ? claim.Value : string.Empty;
         }

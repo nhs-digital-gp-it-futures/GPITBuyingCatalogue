@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var model = new ClientApplicationTypesModel();
 
             Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.IsComplete);
+            Assert.False(model.IsComplete);
             Assert.False(model.BrowserBased);
             Assert.False(model.NativeMobile);
             Assert.False(model.NativeDesktop);
