@@ -108,7 +108,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Push: Dev (no tagging)'
-    condition: and(succeeded(), $[not(eq(variables['Build.SourceBranch'], 'refs/heads/main'))])
+    condition: and(succeeded(), not(eq(variables['Build.SourceBranch'], 'refs/heads/main')))
     inputs:
       containerregistrytype: 'Azure Container Registry'
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
@@ -121,7 +121,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Push: Dev and Tag Latest'
-    condition: and(succeeded(), $[eq(variables['Build.SourceBranch'], 'refs/heads/main')])
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     inputs:
       containerregistrytype: 'Azure Container Registry'
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
