@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
             var model = new PrivateCloudModel();
 
             Assert.AreEqual("./", model.BackLink);
-            Assert.False(model.IsComplete);
+            Assert.Null(model.IsComplete);
             Assert.Null(model.PrivateCloud);
             Assert.False(model.RequiresHscnChecked);
         }

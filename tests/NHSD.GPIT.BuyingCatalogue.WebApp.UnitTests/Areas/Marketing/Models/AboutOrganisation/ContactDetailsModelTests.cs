@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
             var model = new ContactDetailsModel();
 
             Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.IsComplete);
+            Assert.False(model.IsComplete);
             model.Contact1.Should().BeEquivalentTo(new MarketingContact());
             model.Contact2.Should().BeEquivalentTo(new MarketingContact());
         }

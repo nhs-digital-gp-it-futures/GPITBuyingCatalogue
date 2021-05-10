@@ -10,5 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         public string Link { get; set; }
 
         public string RequiresHscn { get; set; }
+
+        public bool? IsValid() =>
+            !string.IsNullOrWhiteSpace(Summary) ||
+            !string.IsNullOrWhiteSpace(Link) ||
+            !string.IsNullOrWhiteSpace(RequiresHscn);
     }
 }

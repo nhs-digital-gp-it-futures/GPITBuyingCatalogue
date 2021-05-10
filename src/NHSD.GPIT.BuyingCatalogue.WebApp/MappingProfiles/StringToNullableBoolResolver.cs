@@ -1,5 +1,5 @@
-using System;
 using AutoMapper;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 {
@@ -14,6 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         private static bool? GetValue(string sourceMember) =>
             string.IsNullOrWhiteSpace(sourceMember)
                 ? (bool?) null
-                : sourceMember.Equals("Yes", StringComparison.InvariantCultureIgnoreCase);
+                : sourceMember.EqualsIgnoreCase("Yes");
     }
 }
