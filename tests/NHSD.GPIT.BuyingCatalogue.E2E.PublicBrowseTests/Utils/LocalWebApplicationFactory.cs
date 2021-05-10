@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             });
 
 
-            builder.UseUrls($"{LocalhostBaseAddress}:{new Random().Next(10000, 50000)}");
+            builder.UseUrls($"{LocalhostBaseAddress}:{new Random().Next(10000, 90000)}");
             return builder;
         }
 
