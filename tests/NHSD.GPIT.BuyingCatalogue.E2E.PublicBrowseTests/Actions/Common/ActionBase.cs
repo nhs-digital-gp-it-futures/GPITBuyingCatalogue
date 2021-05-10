@@ -2,7 +2,7 @@
 using OpenQA.Selenium.Support.UI;
 using System;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 {
     internal abstract class ActionBase
     {

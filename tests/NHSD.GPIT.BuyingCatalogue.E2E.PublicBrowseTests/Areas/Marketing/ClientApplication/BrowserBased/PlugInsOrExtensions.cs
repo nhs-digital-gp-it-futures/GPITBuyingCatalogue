@@ -11,43 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     {
         public PlugInsOrExtensions(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/plug-ins-or-extensions")
         {
-            using var context = GetBCContext();
-            var solution = context.Solutions.Single(s => s.Id == "99999-99");
-            solution.ClientApplication = @"{
-                        ""ClientApplicationTypes"": [
-                            ""browser-based""
-                        ],
-                        ""BrowsersSupported"": [],
-                        ""MobileResponsive"": null,
-                        ""Plugins"": null,
-                        ""HardwareRequirements"": null,
-                        ""NativeMobileHardwareRequirements"": null,
-                        ""NativeDesktopHardwareRequirements"": null,
-                        ""AdditionalInformation"": null,
-                        ""MinimumConnectionSpeed"": null,
-                        ""MinimumDesktopResolution"": null,
-                        ""MobileFirstDesign"": null,
-                        ""NativeMobileFirstDesign"": null,
-                        ""MobileOperatingSystems"": null,
-                        ""MobileConnectionDetails"": null,
-                        ""MobileMemoryAndStorage"": null,
-                        ""MobileThirdParty"": {
-                            ""ThirdPartyComponents"": null,
-                            ""DeviceCapabilities"": null
-                        },
-                        ""NativeMobileAdditionalInformation"": null,
-                        ""NativeDesktopOperatingSystemsDescription"": null,
-                        ""NativeDesktopMinimumConnectionSpeed"": null,
-                        ""NativeDesktopThirdParty"": null,
-                        ""NativeDesktopMemoryAndStorage"": null,
-                        ""NativeDesktopAdditionalInformation"": null
-                    }";
-            context.SaveChanges();
+            ClearClientApplication("99999-99");
 
             driver.Navigate().Refresh();
         }
 
-        [Theory(Skip = "Error thrown by Automapper when saving page")]
+        [Theory]
         [InlineData("Yes")]
         [InlineData("No")]
         public async Task PlugInsOrExtensions_SelectRadioButton(string label)
@@ -64,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             clientApplication.Should().ContainEquivalentOf(@$"Plugins"":{{""Required"":{labelConvert},""AdditionalInformation"":""{additional}""}}");
         }
 
-        [Fact(Skip = "Error thrown by Automapper when saving page")]
+        [Fact]
         public void PlugInsOrExtensions_SectionComplete()
         {
             MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText("Yes");
