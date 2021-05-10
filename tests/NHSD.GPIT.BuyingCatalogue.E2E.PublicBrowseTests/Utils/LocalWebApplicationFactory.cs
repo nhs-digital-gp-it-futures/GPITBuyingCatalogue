@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     public class LocalWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private const string LocalhostBaseAddress = "https://localhost";
+        private const string LocalhostBaseAddress = "https://127.0.0.1";
 
         private readonly IWebHost host;
         internal readonly string DbName;
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             if (!Browser.Contains("local") && !Debugger.IsAttached && browserFactory.GridRunning)
             {
-                RootUri = RootUri.Replace("localhost", "host.docker.internal");
+                RootUri = RootUri.Replace("127.0.0.1", "host.docker.internal");
             }
         }
 
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             });
 
 
-            builder.UseUrls($"{LocalhostBaseAddress}:{new Random().Next(10000, 90000)}");
+            builder.UseUrls($"{LocalhostBaseAddress}:0");
             return builder;
         }
 
