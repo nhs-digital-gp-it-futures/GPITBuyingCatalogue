@@ -8,11 +8,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
             PageActions = new ActionCollection
             {
-                BuyersGuideActions = new BuyersGuideActions(driver),
-                CommonActions = new CommonActions(driver),
-                HomePageActions = new HomepageActions(driver),
-                SolutionsActions = new SolutionsActions(driver),
-                SolutionAction = new SolutionAction(driver),
+                BuyersGuideActions = new(driver),
+                CommonActions = new(driver),
+                HomePageActions = new(driver),
+                SolutionsActions = new(driver),
+                SolutionAction = new(driver),
+                CapabilitySelectorActions = new(driver),
             };
         }
 
