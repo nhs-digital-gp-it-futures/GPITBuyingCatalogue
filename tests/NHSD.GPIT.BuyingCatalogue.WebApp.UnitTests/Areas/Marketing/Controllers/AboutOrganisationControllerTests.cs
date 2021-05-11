@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NUnit.Framework;
@@ -63,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("about-supplier");
+                .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -134,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("about-supplier");
+                .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -212,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("contact-details");
+                .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -269,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("contact-details");
+                .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
         }
 
         [Test]
