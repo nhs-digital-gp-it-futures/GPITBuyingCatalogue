@@ -19,5 +19,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
         internal static By ConnectionSpeedSelect => By.Id("SelectedConnectionSpeed");
 
         internal static By ResolutionSelect => By.Id("SelectedScreenResolution");
+
+        internal static By MemorySelect => By.Id("SelectedMemorySize");
+
+        internal static By ThirdPartyComponentTextArea => By.Id("ThirdPartyComponents");
+
+        internal static By DeviceCapabilityTextArea => By.Id("DeviceCapabilities");
+
+        internal static By SupportedOperatingSystemDescription => By.Id("OperatingSystemsDescription");
+
+        internal static By StorageDescriptionTextArea => By.Id("StorageDescription");
+
+        internal static By MinimumCpuTextArea => By.Id("MinimumCpu");
     }
 }

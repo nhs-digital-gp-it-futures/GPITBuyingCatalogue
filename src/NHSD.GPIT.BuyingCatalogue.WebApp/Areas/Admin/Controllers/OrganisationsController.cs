@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,9 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{id}/edit")]
         public async Task<IActionResult> EditOrganisation(string id, EditOrganisationModel model)
         {
-            await _organisationService.UpdateCatalogueAgreementSigned(model.Organisation.OrganisationId, model.CatalogueAgreementSigned);
-            var routeValues = new RouteValueDictionary {{ "id", id }};
-            return RedirectToAction("EditConfirmation", "Organisations", routeValues);             
+            await _organisationService.UpdateCatalogueAgreementSigned(model.Organisation.OrganisationId, model.CatalogueAgreementSigned);            
+            return RedirectToAction("EditConfirmation", "Organisations", new { id = id });             
         }
 
         [HttpGet("{id}/edit/confirmation")]
@@ -104,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("find/select")]
-        public async Task<IActionResult> Select(SelectOrganisationModel model)
+        public IActionResult Select(SelectOrganisationModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -113,7 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model);
 
             return RedirectToAction("Create", "Organisations", new { ods = model.OdsOrganisation.OdsCode });
-
         }
 
         [HttpGet("find/select/create")]
@@ -220,26 +217,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model)
         {
             await _organisationService.AddRelatedOrganisations(model.Organisation.OrganisationId, model.SelectedOrganisation);
-
-            // TODO - Use RedirectToAction
-            return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}");
+            return RedirectToAction("Details", "Organisations", new { id = model.Organisation.OrganisationId });
         }
 
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId)
         {
             var relatedOrganisation = await _organisationService.GetOrganisation(relatedOrganisationId);
-
             return View(new RemoveAnOrganisationModel(organisationId, relatedOrganisation));
         }
 
         [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId, RemoveAnOrganisationModel model )
         {            
-            await _organisationService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
-
-            // TODO - Use RedirectToAction
-            return Redirect($"/admin/organisations/{organisationId}");
+            await _organisationService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);           
+            return RedirectToAction("Details", "Organisations", new { id = organisationId });
         }
     }
 }

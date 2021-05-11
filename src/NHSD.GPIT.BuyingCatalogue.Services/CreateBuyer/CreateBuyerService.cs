@@ -66,9 +66,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             
             var token = await _passwordService.GeneratePasswordResetTokenAsync(aspNetUser.Email);
 
-            // TODO: discuss exception handling options
-            // TODO: consider moving sending e-mail out of process
-            // (the current in-process implementation has a significant impact on response time)
             await SendInitialEmailAsync(token);
 
             return Result.Success(aspNetUser.Id);
