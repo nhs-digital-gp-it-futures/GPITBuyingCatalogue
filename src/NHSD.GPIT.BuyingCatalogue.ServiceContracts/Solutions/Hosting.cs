@@ -13,12 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             OnPremise = new OnPremise();
         }
 
-        public PublicCloud PublicCloud { get; set; }
+        public virtual PublicCloud PublicCloud { get; set; }
 
-        public PrivateCloud PrivateCloud { get; set; }
+        public virtual PrivateCloud PrivateCloud { get; set; }
 
-        public HybridHostingType HybridHostingType { get; set; }
+        public virtual HybridHostingType HybridHostingType { get; set; }
 
-        public OnPremise OnPremise { get; set; }
+        public virtual OnPremise OnPremise { get; set; }
     }
 }
