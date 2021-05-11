@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
+using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -13,186 +15,212 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
     [Parallelizable(ParallelScope.All)]
     internal static class NativeMobileModelTests
     {
+        private const string KeyIncomplete = "INCOMPLETE";
+
+        private static object[] ResultSets =
+        {
+            new object[]{null, KeyIncomplete},
+            new object[]{false, KeyIncomplete},
+            new object[]{true, "COMPLETE"},
+        };
+
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new NativeMobileModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new NativeMobileModel(null))
+                .ParamName.Should().Be("catalogueItem");
         }
-
-        [Test]
-        public static void Constructor_WithCatalogueItem_SetsBackLink()
+        
+        [TestCase(false, KeyIncomplete)]
+        [TestCase(true, "COMPLETE")]
+        public static void AdditionalInformationStatus_Various_NativeMobileAdditionalInformationComplete_ResultAsExpected(
+            bool complete,
+            string expected)
         {
-            var catalogueItem = new CatalogueItem { CatalogueItemId = "123" };
-
-            var model = new NativeMobileModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-        }
-
-        [Test]
-        public static void WithEmptyCatalogueItem_Incomplete()
-        {
-            var catalogueItem = new CatalogueItem { CatalogueItemId = "123" };
-
-            var model = new NativeMobileModel(catalogueItem);
-
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("INCOMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.MemoryAndStorageStatus);
-            Assert.AreEqual("INCOMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
-        }
-
-        [Test]
-        public static void WithCompleteCatalogueItem_Complete()
-        {
-            var clientApplication = GetCompleteClientApplication();            
-            var catalogueItem = new CatalogueItem
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileAdditionalInformationComplete())
+                .Returns(complete);
+            var nativeMobileModel = new NativeMobileModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
-            };
-            
-            var model = new NativeMobileModel(catalogueItem);
-
-            Assert.True(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryAndStorageStatus);
-            Assert.AreEqual("COMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("COMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("COMPLETE", model.AdditionalInformationStatus);
-        }
-
-        [Test]        
-        public static void WithMandatoryComplete_Complete()
-        {
-            var clientApplication = GetCompleteClientApplication();
-            clientApplication.NativeMobileAdditionalInformation = null;
-            clientApplication.MobileThirdParty = null;
-            clientApplication.MobileConnectionDetails = null;
-            clientApplication.NativeMobileHardwareRequirements = null;
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeMobileModel(catalogueItem);
-
-            Assert.True(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryAndStorageStatus);
-            Assert.AreEqual("INCOMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            nativeMobileModel.AdditionalInformationStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeMobileAdditionalInformationComplete());
         }
 
         [Test]
-        public static void WithoutSupportedOperatingSystems_InComplete()
+        public static void ClientApplication_Null_ValuesFalseOrIncomplete()
         {
-            var clientApplication = GetCompleteClientApplication();
-            clientApplication.MobileOperatingSystems = null;
-            var catalogueItem = new CatalogueItem
+            var nativeMobileModel = new NativeMobileModel();
+            nativeMobileModel.ClientApplication.Should().BeNull();
+
+            nativeMobileModel.IsComplete.Should().BeFalse();
+            nativeMobileModel.ConnectivityStatus.Should().Be(KeyIncomplete);
+            nativeMobileModel.HardwareRequirementsStatus.Should().Be(KeyIncomplete);
+            nativeMobileModel.MemoryAndStorageStatus.Should().Be(KeyIncomplete);
+            nativeMobileModel.SupportedOperatingSystemsStatus.Should().Be(KeyIncomplete);
+            nativeMobileModel.ThirdPartyStatus.Should().Be(KeyIncomplete);
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void ConnectivityStatus_Various_NativeMobileConnectivityComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileConnectivityComplete())
+                .Returns(complete);
+            var NativeMobileModel = new NativeMobileModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeMobileModel(catalogueItem);
+            NativeMobileModel.ConnectivityStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeMobileConnectivityComplete());
+        }
 
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("INCOMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryAndStorageStatus);
-            Assert.AreEqual("COMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("COMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("COMPLETE", model.AdditionalInformationStatus);
+        [TestCaseSource(nameof(ResultSets))]
+        public static void HardwareRequirementsStatus_Various_NativeMobileHardwareRequirementsComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileHardwareRequirementsComplete())
+                .Returns(complete);
+            var NativeMobileModel = new NativeMobileModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            NativeMobileModel.HardwareRequirementsStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeMobileHardwareRequirementsComplete());
         }
 
         [Test]
-        public static void WithoutMobileFirstApproach_InComplete()
+        public static void IsComplete_AllValuesValid_ReturnsTrue()
         {
-            var clientApplication = GetCompleteClientApplication();
-            clientApplication.NativeMobileFirstDesign = null;
-            var catalogueItem = new CatalogueItem
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeMobileFirstApproachComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
+                .Returns(true);
+            var NativeMobileModel = new NativeMobileModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeMobileModel(catalogueItem);
-
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryAndStorageStatus);
-            Assert.AreEqual("COMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("COMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("COMPLETE", model.AdditionalInformationStatus);
+            NativeMobileModel.IsComplete.Should().BeTrue();
         }
 
-        [Test]
-        public static void WithoutMemoryAndStorage_InComplete()
+        [TestCase(false)]
+        [TestCase(null)]
+        public static void IsComplete_NativeMobileSupportedOperatingSystemsComplete_NotTrue_ReturnsFalse(bool value)
         {
-            var clientApplication = GetCompleteClientApplication();
-            clientApplication.MobileMemoryAndStorage = null;
-            var catalogueItem = new CatalogueItem
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
+                .Returns(value);
+            mockClientApplication.Setup(c => c.NativeMobileFirstApproachComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
+                .Returns(true);
+            var NativeMobileModel = new NativeMobileModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeMobileModel(catalogueItem);
-
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.MemoryAndStorageStatus);
-            Assert.AreEqual("COMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("COMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("COMPLETE", model.AdditionalInformationStatus);
+            NativeMobileModel.IsComplete.Should().BeFalse();
         }
 
-        private static ClientApplication GetCompleteClientApplication()
+        [TestCase(false)]
+        [TestCase(null)]
+        public static void IsComplete_NativeMobileFirstApproachComplete_NotTrue_ReturnsFalse(bool value)
         {
-            return new ClientApplication 
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeMobileFirstApproachComplete())
+                .Returns(value);
+            mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
+                .Returns(true);
+            var NativeMobileModel = new NativeMobileModel
             {
-                NativeMobileAdditionalInformation = "Some additional information",
-                MobileConnectionDetails = new MobileConnectionDetails
-                {
-                    MinimumConnectionSpeed = "15Mbs",
-                    ConnectionType = new HashSet<string> { "3G", "4G" },
-                    Description = "A description"
-                },
-                NativeMobileHardwareRequirements = "Some hardware requirements",
-                MobileMemoryAndStorage = new MobileMemoryAndStorage
-                {
-                    MinimumMemoryRequirement = "1GB",
-                    Description = "Storage requirements"
-                },
-                NativeMobileFirstDesign = true,
-                MobileOperatingSystems = new MobileOperatingSystems
-                {
-                    OperatingSystems = new HashSet<string> { "Android", "Other" },
-                    OperatingSystemsDescription = "A description"
-                },
-                MobileThirdParty = new MobileThirdParty 
-                { 
-                    ThirdPartyComponents = "Third party components", 
-                    DeviceCapabilities = "Device capabilities" 
-                }
-            };            
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            NativeMobileModel.IsComplete.Should().BeFalse();
+        }
+
+        [TestCase(false)]
+        [TestCase(null)]
+        public static void IsComplete_NativeMobileMemoryComplete_NotTrue_ReturnsFalse(bool value)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeMobileFirstApproachComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
+                .Returns(value);
+            var NativeMobileModel = new NativeMobileModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            NativeMobileModel.IsComplete.Should().BeFalse();
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void MemoryAndStorageStatus_Various_NativeMobileMemoryAndStorageComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
+                .Returns(complete);
+            var NativeMobileModel = new NativeMobileModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            NativeMobileModel.MemoryAndStorageStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeMobileMemoryAndStorageComplete());
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void SupportedOperatingSystemsStatus_Various_NativeMobileSupportedOperatingSystemsComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
+                .Returns(complete);
+            var NativeMobileModel = new NativeMobileModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            NativeMobileModel.SupportedOperatingSystemsStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeMobileSupportedOperatingSystemsComplete());
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void ThirdPartyStatus_Various_NativeMobileThirdPartyComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeMobileThirdPartyComplete())
+                .Returns(complete);
+            var NativeMobileModel = new NativeMobileModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            NativeMobileModel.ThirdPartyStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeMobileThirdPartyComplete());
         }
     }
 }

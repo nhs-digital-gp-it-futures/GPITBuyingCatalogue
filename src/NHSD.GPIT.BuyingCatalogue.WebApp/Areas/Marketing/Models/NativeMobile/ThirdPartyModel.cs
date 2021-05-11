@@ -20,14 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             DeviceCapabilities = ClientApplication?.MobileThirdParty?.DeviceCapabilities;
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.ThirdPartyComponents) ||
-                  !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.DeviceCapabilities);
-            }
-        }
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.ThirdPartyComponents) ||
+            !string.IsNullOrWhiteSpace(ClientApplication?.MobileThirdParty?.DeviceCapabilities);
 
         public string ThirdPartyComponents { get; set; }
 

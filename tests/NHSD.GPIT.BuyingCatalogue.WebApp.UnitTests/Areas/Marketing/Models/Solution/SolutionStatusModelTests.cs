@@ -9,11 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Solu
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionStatusModelTests
     {
-        [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionStatusModel(null));
-        }
+        
     }
 }

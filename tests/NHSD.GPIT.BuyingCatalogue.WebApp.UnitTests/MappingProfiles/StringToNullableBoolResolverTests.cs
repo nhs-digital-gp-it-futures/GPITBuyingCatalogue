@@ -9,6 +9,8 @@ using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 {
+    [TestFixture]
+    [Parallelizable(ParallelScope.All)]
     internal static class StringToNullableBoolResolverTests
     {
         private static string[] InvalidStrings = { null, string.Empty, "    " };

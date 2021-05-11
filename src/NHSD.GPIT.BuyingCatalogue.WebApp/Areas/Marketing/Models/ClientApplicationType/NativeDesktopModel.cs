@@ -1,11 +1,15 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
     public class NativeDesktopModel : MarketingBaseModel
-    { 
+    {
+        public NativeDesktopModel() : base(null)
+        {
+        }
+        
         public NativeDesktopModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
             if (catalogueItem is null)
@@ -14,45 +18,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                                
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return new OperatingSystemsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-                    new ConnectivityModel(CatalogueItem).IsComplete.GetValueOrDefault() &&                    
-                    new MemoryAndStorageModel(CatalogueItem).IsComplete.GetValueOrDefault();
-            }
-        }                
+        public override bool? IsComplete =>
+            ClientApplication != null &&
+            ClientApplication.NativeDesktopSupportedOperatingSystemsComplete().GetValueOrDefault() &&
+            ClientApplication.NativeDesktopConnectivityComplete().GetValueOrDefault() &&                    
+            ClientApplication.NativeDesktopMemoryAndStorageComplete().GetValueOrDefault();
 
-        public string SupportedOperatingSystemsStatus
-        {
-            get { return GetStatus(new OperatingSystemsModel(CatalogueItem)); }
-        }
+        public string SupportedOperatingSystemsStatus =>
+            (ClientApplication?.NativeDesktopSupportedOperatingSystemsComplete()).ToStatus();
 
-        public string ConnectivityStatus
-        {
-            get { return GetStatus(new ConnectivityModel(CatalogueItem)); }
-        }
+        public string ConnectivityStatus => (ClientApplication?.NativeDesktopConnectivityComplete()).ToStatus();
 
-        public string MemoryStatus
-        {
-            get { return GetStatus(new MemoryAndStorageModel(CatalogueItem)); }
-        }
+        public string MemoryAndStorageStatus => (ClientApplication?.NativeDesktopMemoryAndStorageComplete()).ToStatus();
 
-        public string ThirdPartyStatus
-        {
-            get { return GetStatus(new ThirdPartyModel(CatalogueItem)); }
-        }
+        public string ThirdPartyStatus => (ClientApplication?.NativeDesktopThirdPartyComplete()).ToStatus();
 
-        public string HardwareRequirementsStatus
-        {
-            get { return GetStatus(new HardwareRequirementsModel(CatalogueItem)); }
-        }
+        public string HardwareRequirementsStatus =>
+            (ClientApplication?.NativeDesktopHardwareRequirementsComplete()).ToStatus();
 
-        public string AdditionalInformationStatus
-        {
-            get { return GetStatus(new AdditionalInformationModel(CatalogueItem)); }
-        }
-
+        public string AdditionalInformationStatus =>
+            (ClientApplication?.NativeDesktopAdditionalInformationComplete()).ToStatus();
     }
 }

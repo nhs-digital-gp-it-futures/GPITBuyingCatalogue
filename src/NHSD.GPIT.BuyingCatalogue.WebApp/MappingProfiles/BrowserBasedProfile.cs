@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -142,8 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     {
                         browser.Checked = dest.ClientApplication.BrowsersSupported != null &&
                                           dest.ClientApplication.BrowsersSupported.Any(x =>
-                                              x.Equals(browser.BrowserName,
-                                                  StringComparison.InvariantCultureIgnoreCase));
+                                              x.EqualsIgnoreCase(browser.BrowserName));
                     }
                 });
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -28,57 +30,108 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(null, Mock.Of<ISolutionsService>()));
+                _ = new SolutionController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
+                .ParamName.Should().Be("logger");
+        }
+
+        [Test]
+        public static void Constructor_NullMapper_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), null,
+                    Mock.Of<ISolutionsService>()))
+                .ParamName.Should().Be("mapper");
         }
 
         [Test]
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), null));
+                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(), null))
+                .ParamName.Should().Be("solutionsService");
         }
 
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Index_InvalidId_ThrowsException(string id)
         {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Index(id));
         }
 
-        [Test]
-        public static async Task Get_Index_EmptySolution_AllIncomplete()
+        [Test, AutoData]
+        public static async Task Get_Index_ValidId_GetsSolutionFromService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+                mockService.Object);
 
-            mockService.Setup(x => x.GetSolution(It.IsAny<string>())).ReturnsAsync(new CatalogueItem { Solution = new Solution(), Supplier = new Supplier() });
-
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockService.Object);
-
-            var result = await controller.Index("123");
-
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.IsNull(((ViewResult)result).ViewName);
-            Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(SolutionStatusModel)));
-
-            var model = (SolutionStatusModel)((ViewResult)result).Model;
-
-            // MJRTODO - The rest
-            Assert.AreEqual("INCOMPLETE", model.ContactDetailsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ClientApplicationTypeStatus);
-            Assert.AreEqual("INCOMPLETE", model.FeaturesStatus);
-            Assert.AreEqual("INCOMPLETE", model.ImplementationTimescalesStatus);
-            Assert.AreEqual("INCOMPLETE", model.IntegrationsStatus);
-            Assert.AreEqual("INCOMPLETE", model.RoadmapStatus);
-            Assert.AreEqual("INCOMPLETE", model.SolutionDescriptionStatus);            
+            await controller.Index(id);
+            
+            mockService.Verify(s => s.GetSolution(id));
         }
 
+        [Test, AutoData]
+        public static async Task Get_Index_NullSolutionForId_ReturnsBadRequestResult(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.Index(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Index_ValidSolutionForId_MapsToModel(string id)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockMapper.Object,
+                mockService.Object);
+
+            await controller.Index(id);
+            
+            mockMapper.Verify(m => m.Map<CatalogueItem, SolutionStatusModel>(mockCatalogueItem));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Index_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        {
+            var mockSolutionStatusModel = new Mock<SolutionStatusModel>().Object;
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            mockMapper.Setup(m => m.Map<CatalogueItem, SolutionStatusModel>(mockCatalogueItem))
+                .Returns(mockSolutionStatusModel);
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockMapper.Object,
+                mockService.Object);
+
+            var actual = (await controller.Index(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().Be(mockSolutionStatusModel);
+        }
+        
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Preview_InvalidId_ThrowsException(string id)
         {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
 
             Assert.Throws<ArgumentException>(() => controller.Preview(id));
         }
@@ -86,14 +139,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Get_Preview_RedirectsToPreview()
         {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<ISolutionsService>());
+            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
 
-            var result = controller.Preview("123");
+            var result = (controller.Preview("123")).As<RedirectToActionResult>();
 
-            Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));
-            Assert.AreEqual("preview", ((RedirectToActionResult)result).ActionName);
-            Assert.AreEqual("solutions", ((RedirectToActionResult)result).ControllerName);
-            Assert.AreEqual("123", ((RedirectToActionResult)result).RouteValues["id"]);
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be("preview");
+            result.ControllerName.Should().Be("solutions");
+            result.RouteValues["id"].Should().Be("123");
         }
     }
 }

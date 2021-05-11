@@ -1,4 +1,6 @@
 ﻿using System;
+using FluentAssertions;
+using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,182 +13,211 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
     [Parallelizable(ParallelScope.All)]
     internal static class NativeDesktopModelTests
     {
+        private const string KeyIncomplete = "INCOMPLETE";
+
+        private static object[] ResultSets =
+        {
+            new object[]{null, KeyIncomplete},
+            new object[]{false, KeyIncomplete},
+            new object[]{true, "COMPLETE"},
+        };
+
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new NativeDesktopModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new NativeDesktopModel(null))
+                .ParamName.Should().Be("catalogueItem");
         }
-
-        [Test]
-        public static void Constructor_WithCatalogueItem_SetsBackLink()
+        
+        [TestCaseSource(nameof(ResultSets))]
+        public static void AdditionalInformationStatus_Various_NativeDesktopAdditionalInformationComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
         {
-            var catalogueItem = new CatalogueItem { CatalogueItemId = "123" };
-
-            var model = new NativeDesktopModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-        }
-
-        [Test]
-        public static void WithEmptyCatalogueItem_Incomplete()
-        {
-            var catalogueItem = new CatalogueItem { CatalogueItemId = "123" };
-
-            var model = new NativeDesktopModel(catalogueItem);
-
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("INCOMPLETE", model.SupportedOperatingSystemsStatus);            
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.MemoryStatus);
-            Assert.AreEqual("INCOMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
-        }
-
-        [Test]
-        public static void WithCompleteCatalogueItem_Complete()
-        {
-            var clientApplication = GetCompleteClientApplication();
-            var catalogueItem = new CatalogueItem
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopAdditionalInformationComplete())
+                .Returns(complete);
+            var nativeDesktopModel = new NativeDesktopModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeDesktopModel(catalogueItem);
-
-            Assert.True(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryStatus);
-            Assert.AreEqual("COMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("COMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("COMPLETE", model.AdditionalInformationStatus);
+            nativeDesktopModel.AdditionalInformationStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeDesktopAdditionalInformationComplete());
         }
 
         [Test]
-        public static void WithMandatoryComplete_Complete()
+        public static void ClientApplication_Null_ValuesFalseOrIncomplete()
         {
-            var clientApplication = GetCompleteClientApplication();
-            clientApplication.NativeDesktopThirdParty = null;
-            clientApplication.NativeDesktopHardwareRequirements = null;
-            clientApplication.NativeDesktopAdditionalInformation = null;
-            var catalogueItem = new CatalogueItem
+            var nativeDesktopModel = new NativeDesktopModel();
+            nativeDesktopModel.ClientApplication.Should().BeNull();
+
+            nativeDesktopModel.IsComplete.Should().BeFalse();
+            nativeDesktopModel.ConnectivityStatus.Should().Be(KeyIncomplete);
+            nativeDesktopModel.HardwareRequirementsStatus.Should().Be(KeyIncomplete);
+            nativeDesktopModel.MemoryAndStorageStatus.Should().Be(KeyIncomplete);
+            nativeDesktopModel.SupportedOperatingSystemsStatus.Should().Be(KeyIncomplete);
+            nativeDesktopModel.ThirdPartyStatus.Should().Be(KeyIncomplete);
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void ConnectivityStatus_Various_NativeDesktopConnectivityComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
+                .Returns(complete);
+            var nativeDesktopModel = new NativeDesktopModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeDesktopModel(catalogueItem);
+            nativeDesktopModel.ConnectivityStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeDesktopConnectivityComplete());
+        }
 
-            Assert.True(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryStatus);
-            Assert.AreEqual("INCOMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+        [TestCaseSource(nameof(ResultSets))]
+        public static void HardwareRequirementsStatus_Various_NativeDesktopHardwareRequirementsComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopHardwareRequirementsComplete())
+                .Returns(complete);
+            var nativeDesktopModel = new NativeDesktopModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            nativeDesktopModel.HardwareRequirementsStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeDesktopHardwareRequirementsComplete());
         }
 
         [Test]
-        public static void WithoutSupportedOperatingSystems_InComplete()
+        public static void IsComplete_AllValuesValid_ReturnsTrue()
         {
-            var clientApplication = GetCompleteClientApplication();
-            clientApplication.NativeDesktopOperatingSystemsDescription = null;
-            clientApplication.NativeDesktopThirdParty = null;
-            clientApplication.NativeDesktopHardwareRequirements = null;
-            clientApplication.NativeDesktopAdditionalInformation = null;
-            var catalogueItem = new CatalogueItem
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
+                .Returns(true);
+            var nativeDesktopModel = new NativeDesktopModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeDesktopModel(catalogueItem);
-
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("INCOMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryStatus);
-            Assert.AreEqual("INCOMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            nativeDesktopModel.IsComplete.Should().BeTrue();
         }
 
-        [Test]
-        public static void WithoutConnectivityStatus_InComplete()
+        [TestCase(false)]
+        [TestCase(null)]
+        public static void IsComplete_NativeDesktopSupportedOperatingSystemsComplete_NotTrue_ReturnsFalse(bool? value)
         {
-            var clientApplication = GetCompleteClientApplication();
-            clientApplication.NativeDesktopMinimumConnectionSpeed = null;
-            clientApplication.NativeDesktopThirdParty = null;
-            clientApplication.NativeDesktopHardwareRequirements = null;
-            clientApplication.NativeDesktopAdditionalInformation = null;
-            var catalogueItem = new CatalogueItem
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
+                .Returns(value);
+            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
+                .Returns(true);
+            var nativeDesktopModel = new NativeDesktopModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeDesktopModel(catalogueItem);
-
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.MemoryStatus);
-            Assert.AreEqual("INCOMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            nativeDesktopModel.IsComplete.Should().BeFalse();
         }
 
-        [Test]
-        public static void WithoutMemoryStatus_InComplete()
+        [TestCase(false)]
+        [TestCase(null)]
+        public static void IsComplete_NativeDesktopConnectivityComplete_NotTrue_ReturnsFalse(bool? value)
         {
-            var clientApplication = GetCompleteClientApplication();
-            
-            clientApplication.NativeDesktopMemoryAndStorage = null;
-            clientApplication.NativeDesktopThirdParty = null;
-            clientApplication.NativeDesktopHardwareRequirements = null;
-            clientApplication.NativeDesktopAdditionalInformation = null;
-            var catalogueItem = new CatalogueItem
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
+                .Returns(value);
+            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
+                .Returns(true);
+            var nativeDesktopModel = new NativeDesktopModel
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = JsonConvert.SerializeObject(clientApplication) }
+                ClientApplication = mockClientApplication.Object,
             };
 
-            var model = new NativeDesktopModel(catalogueItem);
-
-            Assert.False(model.IsComplete);
-            Assert.AreEqual("COMPLETE", model.SupportedOperatingSystemsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.MemoryStatus);
-            Assert.AreEqual("INCOMPLETE", model.ThirdPartyStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            nativeDesktopModel.IsComplete.Should().BeFalse();
         }
 
-        private static ClientApplication GetCompleteClientApplication()
+        [TestCase(false)]
+        [TestCase(null)]
+        public static void IsComplete_NativeDesktopMemoryComplete_NotTrue_ReturnsFalse(bool? value)
         {
-            return new ClientApplication
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
+                .Returns(true);
+            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
+                .Returns(value);
+            var nativeDesktopModel = new NativeDesktopModel
             {
-                NativeDesktopOperatingSystemsDescription = "Some operating system details",
-                NativeDesktopMinimumConnectionSpeed = "15Mbs",
-                MinimumDesktopResolution = "21:9 - 3440 x 1440",
-                NativeDesktopMemoryAndStorage = new NativeDesktopMemoryAndStorage
-                {
-                    MinimumMemoryRequirement = "1GB",
-                    StorageRequirementsDescription = "Storage requirements",
-                    MinimumCpu = "Xeon",
-                    RecommendedResolution = "4:3 - 1024 x 768"
-                },
-                NativeDesktopThirdParty = new NativeDesktopThirdParty 
-                { 
-                    ThirdPartyComponents = "Third party components", 
-                    DeviceCapabilities = "Device capabilities" 
-                },
-                NativeDesktopHardwareRequirements = "Some hardware requirements",
-                NativeDesktopAdditionalInformation = "Some additional information"
+                ClientApplication = mockClientApplication.Object,
             };
+
+            nativeDesktopModel.IsComplete.Should().BeFalse();
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void MemoryAndStorageStatus_Various_NativeDesktopMemoryAndStorageComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
+                .Returns(complete);
+            var nativeDesktopModel = new NativeDesktopModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            nativeDesktopModel.MemoryAndStorageStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeDesktopMemoryAndStorageComplete());
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void SupportedOperatingSystemsStatus_Various_NativeDesktopSupportedOperatingSystemsComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
+                .Returns(complete);
+            var nativeDesktopModel = new NativeDesktopModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            nativeDesktopModel.SupportedOperatingSystemsStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeDesktopSupportedOperatingSystemsComplete());
+        }
+
+        [TestCaseSource(nameof(ResultSets))]
+        public static void ThirdPartyStatus_Various_NativeDesktopThirdPartyComplete_ResultAsExpected(
+            bool? complete,
+            string expected)
+        {
+            var mockClientApplication = new Mock<ClientApplication>();
+            mockClientApplication.Setup(c => c.NativeDesktopThirdPartyComplete())
+                .Returns(complete);
+            var nativeDesktopModel = new NativeDesktopModel
+            {
+                ClientApplication = mockClientApplication.Object,
+            };
+
+            nativeDesktopModel.ThirdPartyStatus.Should().Be(expected);
+            mockClientApplication.Verify(c => c.NativeDesktopThirdPartyComplete());
         }
     }
 }

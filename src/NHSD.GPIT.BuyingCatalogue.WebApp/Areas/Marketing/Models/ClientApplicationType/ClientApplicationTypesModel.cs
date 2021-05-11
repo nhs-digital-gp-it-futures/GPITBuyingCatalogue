@@ -22,10 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             ProcessCheckboxFields(ClientApplication.ClientApplicationTypes);
         }
 
-        public override bool? IsComplete
-        {
-            get { return CatalogueItem?.Solution?.GetClientApplication().ClientApplicationTypes?.Any(); }
-        }
+        public override bool? IsComplete => BrowserBased || NativeDesktop || NativeMobile;
         
         [Checkbox("Browser-based")]
         public bool BrowserBased { get; set; }

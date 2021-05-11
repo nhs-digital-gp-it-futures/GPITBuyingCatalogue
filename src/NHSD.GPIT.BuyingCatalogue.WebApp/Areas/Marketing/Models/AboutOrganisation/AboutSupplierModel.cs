@@ -19,8 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
             Link = CatalogueItem.Supplier.SupplierUrl;
         }
 
-        public override bool? IsComplete => !string.IsNullOrWhiteSpace(CatalogueItem?.Supplier?.SupplierUrl) ||
-                                            !string.IsNullOrWhiteSpace(CatalogueItem?.Supplier?.Summary);
+        public override bool? IsComplete => !string.IsNullOrWhiteSpace(Description) ||
+                                            !string.IsNullOrWhiteSpace(Link);
 
         public string Description { get; set; }
 

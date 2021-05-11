@@ -1,4 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using OpenQA.Selenium;
 using System.Collections.Generic;
 

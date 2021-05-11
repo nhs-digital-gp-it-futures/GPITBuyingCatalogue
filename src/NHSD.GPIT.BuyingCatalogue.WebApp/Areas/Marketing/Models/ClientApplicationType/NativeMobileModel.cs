@@ -1,11 +1,15 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
     public class NativeMobileModel : MarketingBaseModel
-    { 
+    {
+        public NativeMobileModel() : base(null)
+        {
+        }
+        
         public NativeMobileModel(CatalogueItem catalogueItem) : base(catalogueItem)
         {
             if (catalogueItem is null)
@@ -14,49 +18,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                 
         }
 
-        public override bool? IsComplete
-        {
-            get
-            {
-                return new OperatingSystemsModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-                    new MobileFirstApproachModel(CatalogueItem).IsComplete.GetValueOrDefault() &&
-                    new MemoryAndStorageModel(CatalogueItem).IsComplete.GetValueOrDefault();
-            }
-        }                
+        public override bool? IsComplete =>
+            ClientApplication != null &&
+            ClientApplication.NativeMobileSupportedOperatingSystemsComplete().GetValueOrDefault() &&
+            ClientApplication.NativeMobileFirstApproachComplete() &&
+            ClientApplication.NativeMobileMemoryAndStorageComplete().GetValueOrDefault();
 
-        public string SupportedOperatingSystemsStatus
-        {
-            get { return GetStatus(new OperatingSystemsModel(CatalogueItem)); }
-        }
+        public string SupportedOperatingSystemsStatus =>
+            (ClientApplication?.NativeMobileSupportedOperatingSystemsComplete()).ToStatus();
 
-        public string MobileFirstApproachStatus
-        {
-            get { return GetStatus(new MobileFirstApproachModel(CatalogueItem)); }
-        }
+        public string MobileFirstApproachStatus => (ClientApplication?.NativeMobileFirstApproachComplete()).ToStatus();
 
-        public string ConnectivityStatus
-        {
-            get { return GetStatus(new ConnectivityModel(CatalogueItem)); }
-        }
+        public string ConnectivityStatus => (ClientApplication?.NativeMobileConnectivityComplete()).ToStatus();
 
-        public string MemoryAndStorageStatus
-        {
-            get { return GetStatus(new MemoryAndStorageModel(CatalogueItem)); }
-        }
+        public string MemoryAndStorageStatus => (ClientApplication?.NativeMobileMemoryAndStorageComplete()).ToStatus();
 
-        public string ThirdPartyStatus
-        {
-            get { return GetStatus(new ThirdPartyModel(CatalogueItem)); }
-        }
+        public string ThirdPartyStatus => (ClientApplication?.NativeMobileThirdPartyComplete()).ToStatus();
 
-        public string HardwareRequirementsStatus
-        {
-            get { return GetStatus(new HardwareRequirementsModel(CatalogueItem)); }
-        }
+        public string HardwareRequirementsStatus =>
+            (ClientApplication?.NativeMobileHardwareRequirementsComplete()).ToStatus();
 
-        public string AdditionalInformationStatus
-        {
-            get { return GetStatus(new AdditionalInformationModel(CatalogueItem)); }
-        }
+        public string AdditionalInformationStatus =>
+            (ClientApplication?.NativeMobileAdditionalInformationComplete()).ToStatus();
     }
 }

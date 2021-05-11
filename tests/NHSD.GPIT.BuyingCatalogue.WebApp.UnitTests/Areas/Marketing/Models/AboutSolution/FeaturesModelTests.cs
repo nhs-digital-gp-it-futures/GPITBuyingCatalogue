@@ -52,8 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var model = new FeaturesModel();
 
-            Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.IsComplete);
+            Assert.False(model.IsComplete);
             Assert.IsEmpty(model.Listing1);
             Assert.IsEmpty(model.Listing2);
             Assert.IsEmpty(model.Listing3);
