@@ -10,6 +10,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NUnit.Framework;
@@ -63,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("features");
+                .Should().Be(nameof(AboutSolutionController.Features).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -149,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("features");
+                .Should().Be(nameof(AboutSolutionController.Features).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -246,7 +247,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("implementation-timescales");
+                .Should().Be(nameof(AboutSolutionController.ImplementationTimescales).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -333,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("implementation-timescales");
+                .Should().Be(nameof(AboutSolutionController.ImplementationTimescales).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -413,7 +414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("integrations");
+                .Should().Be(nameof(AboutSolutionController.Integrations).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -500,7 +501,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("integrations");
+                .Should().Be(nameof(AboutSolutionController.Integrations).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -577,7 +578,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("roadmap");
+                .Should().Be(nameof(AboutSolutionController.Roadmap).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -665,7 +666,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("roadmap");
+                .Should().Be(nameof(AboutSolutionController.Roadmap).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -741,7 +742,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("solution-description");
+                .Should().Be(nameof(AboutSolutionController.SolutionDescription).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -827,7 +828,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("solution-description");
+                .Should().Be(nameof(AboutSolutionController.SolutionDescription).ToLowerCaseHyphenated());
         }
 
         [Test]
