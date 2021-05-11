@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public const string TagHelperName = "nhs-validation-summary";
         public const string TitleName = "title";
 
+        private const string DefaultTitle = "There is a problem";
+
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
@@ -73,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var builder = new TagBuilder(TagHelperConstants.SubHeader);
             builder.AddCssClass(TagHelperConstants.NhsValidationSummaryTitle);
             builder.MergeAttribute(TagHelperConstants.Id, TagHelperConstants.ErrorSummaryTitle);
-            builder.InnerHtml.Append(Title);
+            builder.InnerHtml.Append(Title ?? DefaultTitle);
 
             return builder;
         }

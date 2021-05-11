@@ -12,9 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public const string TagHelperName = "nhs-validation-checkbox";
         public const string ParentTagName = "nhs-checkbox-container";
 
-        private const string NhsCheckboxItems = "nhsuk-checkboxes__item";
-        private const string NhsCheckboxInput = "nhsuk-checkboxes__input";
-        private const string NhsCheckBoxLabel = "nhsuk-checkboxes__label";
+        private const string HiddenAttributeName = "hidden-input";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -24,6 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         [HtmlAttributeName(TagHelperConstants.For)]
         public ModelExpression For { get; set; }
+
+        [HtmlAttributeName(HiddenAttributeName)]
+        public ModelExpression HiddenFor { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
@@ -45,29 +46,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
-            output.Attributes.Add("class", NhsCheckboxItems);
+            output.Attributes.Add(TagHelperConstants.Class, TagHelperConstants.NhsCheckboxItem);
 
             output.Content.AppendHtml(input);
             output.Content.AppendHtml(label);
-        }
 
-        private TagBuilder GetCheckboxLabelBuilder( )
-        {
-            var labelBuilder = htmlGenerator.GenerateLabel(
-                ViewContext,
-                For.ModelExplorer,
-                For.Name,
-                LabelText ?? TagHelperFunctions.GetCustomAttribute<CheckboxAttribute>(For).DisplayText,
-                null);
-
-            labelBuilder.AddCssClass(TagHelperConstants.NhsLabel);
-            labelBuilder.AddCssClass(NhsCheckBoxLabel);
-
-            return labelBuilder;
+            if(HiddenFor != null)            
+                output.Content.AppendHtml(GetHiddenInputBuilder());
+            
         }
 
         private TagBuilder GetCheckboxInputBuilder()
         {
+
             var inputBuilder = htmlGenerator.GenerateCheckBox(
             ViewContext,
             For.ModelExplorer,
@@ -75,9 +66,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             (bool)For.Model,
             null);
 
-            inputBuilder.AddCssClass(NhsCheckboxInput);
+            inputBuilder.AddCssClass(TagHelperConstants.NhsCheckboxInput);
 
             return inputBuilder;
+        }
+
+        private TagBuilder GetCheckboxLabelBuilder()
+        {
+            return htmlGenerator.GenerateLabel(
+                ViewContext,
+                For.ModelExplorer,
+                For.Name,
+                LabelText ?? TagHelperFunctions.GetCustomAttribute<CheckboxAttribute>(For).DisplayText,
+                new { @class = $"{TagHelperConstants.NhsLabel} {TagHelperConstants.NhsCheckboxLabel}" });
+        }
+
+        private TagBuilder GetHiddenInputBuilder()
+        {
+            return htmlGenerator.GenerateHidden(
+                ViewContext,
+                HiddenFor.ModelExplorer,
+                HiddenFor.Name,
+                HiddenFor.Model,
+                false,
+                null);            
         }
     }
 }

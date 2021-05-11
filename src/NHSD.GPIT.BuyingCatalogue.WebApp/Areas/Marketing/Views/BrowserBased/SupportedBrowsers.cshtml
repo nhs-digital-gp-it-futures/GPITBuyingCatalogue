@@ -8,82 +8,32 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Browser-based application – supported browsers</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know which types of browser will work with your Catalogue Solution.</h2>
-            <div data-test-id="section-additional-advice">
-            </div>
-        </div>
-
+        <nhs-validation-summary />
+        <nhs-page-title
+            title="Browser-based application – supported browsers"
+            title-advice="Let buyers know which types of browser will work with your Catalogue Solution."
+        />
         <form method="post">
-
             <input type="hidden" asp-for="@Model.SolutionId" />
-
-            <div data-test-id="section-question-checkbox-options" class="nhsuk-u-margin-bottom-6">
-                <div id="supported-browsers" data-test-id="question-supported-browsers">
-                    <div data-test-id="checkbox-options">
-                        <div class="nhsuk-form-group">
-                            <fieldset class="nhsuk-fieldset" aria-describedby="supported-browsers-hint">
-                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Supported browser types
-                                </legend>
-                                <div class="nhsuk-hint nhsuk-u-margin-bottom-3 nhsuk-u-margin-top-0" id="supported-browsers-hint">
-                                    Select all the types of browser that are supported by your Catalogue Solution.
-                                </div>
-                                <div class="nhsuk-checkboxes">
-                                    @for (var i = 0; i < Model.Browsers.Length; i++)
-                                    {
-                                        <div class="nhsuk-checkboxes__item">
-                                            <input class="nhsuk-checkboxes__input" type="checkbox" asp-for="@Model.Browsers[i].Checked" />
-                                            <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.Browsers[i].Checked">@Model.Browsers[i].BrowserName</label>
-                                            <input type="hidden" asp-for="@Model.Browsers[i].BrowserName" />
-                                        </div>
-                                    }
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-question-radiobutton-options" class="nhsuk-u-margin-bottom-6">
-                <div id="mobile-responsive" data-test-id="question-mobile-responsive">
-                    <div data-test-id="radiobutton-options">
-                        <div class="nhsuk-form-group">
-                            <fieldset class="nhsuk-fieldset" aria-describedby="mobile-responsive-hint">
-                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Mobile responsive
-                                </legend>
-                                <div class="nhsuk-hint nhsuk-u-margin-bottom-3 nhsuk-u-margin-top-0" id="mobile-responsive-hint">
-                                    Does the design of your Catalogue Solution adapt for use on mobile or tablet devices?
-                                </div>
-                                <div class="nhsuk-radios">
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" asp-for="@Model.MobileResponsive" type="radio" value="Yes">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="mobile-responsive-1">
-                                            Yes
-                                        </label>
-                                    </div>
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" asp-for="@Model.MobileResponsive" type="radio" value="No">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="mobile-responsive-2">
-                                            No
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
-
+            <nhs-fieldset-form asp-for="@Model"
+                label-text="Supported browser types"
+                label-hint="Select all the types of browser that are supported by your Catalogue Solution.">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.Browsers.Length; i++)
+                    {
+                        <nhs-validation-checkbox asp-for="@Model.Browsers[i].Checked" label-text="@Model.Browsers[i].BrowserName" hidden-input="@Model.Browsers[i].BrowserName" />
+                    }
+                    </nhs-checkbox-container> 
+            </nhs-fieldset-form>
+            <nhs-fieldset-form asp-for="@Model"
+                label-text="Mobile responsive"
+                label-hint="Does the design of your Catalogue Solution adapt for use on mobile or tablet devices?">
+                    <nhs-radio-buttons
+                    asp-for="MobileResponsive"
+                    is-yes-no="true" 
+                    />                
+            </nhs-fieldset-form>
+            <nhs-submit-button />
         </form>
     </div>
 </div>

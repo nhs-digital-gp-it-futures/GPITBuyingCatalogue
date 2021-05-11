@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
@@ -10,13 +11,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
     public sealed class FieldSetFormTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-fieldset-form";
-        public const string CheckBoxContainerTagName = "nhs-checkbox-container";
-        public const string RadioButtonTagName = "nhs-radio-buttons";
-        public const string FieldSetFormName = "name";
+        public const string CheckBoxContainerTagName = CheckboxContainerTagHelper.TagHelperName;
+        public const string RadioButtonTagName = RadioButtonsTagHelper.TagHelperName;
+
+        public const string ContainsRadioButtonsName = "contains-radio-buttons";
 
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
+
+        [HtmlAttributeName(TagHelperConstants.For)]
+        public ModelExpression For { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
@@ -24,16 +29,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
 
-        [HtmlAttributeName(FieldSetFormName)]
-        public string FormName { get; set; }
+        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
+        public bool? DisableLabelAndHint { get; set; }
+
+        [HtmlAttributeName(ContainsRadioButtonsName)]
+        public bool? ContainsRadioButtons { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+            string FormName = GetModelKebabNameFromFor();
+
             var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(FormName);
-            var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(TagHelperConstants.CheckBoxOptions);
+            var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(ContainsRadioButtons == true ?
+                                                                            TagHelperConstants.RadioOptions :
+                                                                            TagHelperConstants.CheckBoxOptions);
             var formGroup = TagHelperBuilders.GetFormGroupBuilder(FormName);
-            var fieldset = GetFieldSetLegendHeadingBuilder();
-            var hint = TagHelperBuilders.GetLabelHintBuilder(FormName, LabelHint);
+            var fieldset = GetFieldSetLegendHeadingBuilder(FormName);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, FormName, DisableLabelAndHint);
 
             var content = await output.GetChildContentAsync();
 
@@ -46,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, outerTesting, TagHelperConstants.SectionListForm, true, FormName);
         }
 
-        private TagBuilder GetFieldSetLegendHeadingBuilder()
+        private TagBuilder GetFieldSetLegendHeadingBuilder(string FormName)
         {
-            var fieldset = GetFieldsetBuilder();
+            var fieldset = GetFieldsetBuilder(FormName);
             var fieldsetLegend = GetFieldsetLegendBuilder();
             var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder();
 
@@ -58,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             return fieldset;
         }
 
-        private TagBuilder GetFieldsetBuilder()
+        private TagBuilder GetFieldsetBuilder(string FormName)
         {
             var builder = new TagBuilder(TagHelperConstants.FieldSet);
 
@@ -81,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         private TagBuilder GetFieldsetLegendHeadingTagBuilder()
         {
 
-            if (LabelText == null)
+            if (LabelText == null || DisableLabelAndHint == true)
                 return new TagBuilder("empty");
 
             var builder = new TagBuilder(TagHelperConstants.H1);
@@ -91,6 +103,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             builder.InnerHtml.Append(LabelText);
 
             return builder;
+        }
+
+        private string GetModelKebabNameFromFor()
+        {
+            string name = For.Model.GetType().Name;
+            name = name.Remove(name.Length - 5);
+
+            var pattern = new Regex(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+");
+            return string.Join("-", pattern.Matches(name)).ToLower();
         }
     }
 }

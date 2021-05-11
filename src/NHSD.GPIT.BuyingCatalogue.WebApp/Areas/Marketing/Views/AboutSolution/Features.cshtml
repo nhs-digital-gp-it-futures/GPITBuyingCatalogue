@@ -8,186 +8,36 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-
-
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Catalogue Solution features</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Highlight to buyers the key features of your Catalogue Solution.</h2>
-            <div data-test-id="section-additional-advice">
-
-            </div>
-        </div>
-
+        <nhs-validation-summary title="There is a problem" />
+        <nhs-page-title title="Catalogue Solution Features" title-advice="Highlight to buyers the key features of your Catalogue Solution." />
         <form method="post">
 
             <input type="hidden" asp-for="@Model.SolutionId" />
-
             <div data-test-id="section-question-bulletpoint-list" class="nhsuk-u-margin-bottom-6">
-
                 <div data-test-id="question-listing">
-
                     <div data-test-id="bulletpoint-list-main-advice">
                         <span class="nhsuk-u-font-size-24 nhsuk-u-font-weight-bold bc-u-inline-block nhsuk-u-margin-bottom-2">
                             Features list (optional)
                         </span>
                     </div>
-
                     <span data-test-id="bulletpoint-list-additional-advice" class="nhsuk-hint nhsuk-u-margin-bottom-3">
                         List up to 10 key features provided by your Catalogue Solution that meet needs in primary care, for example how it can help manage information and resources.
                     </span>
-
                     <div data-test-id="bulletpoint-list-fields">
-
-                        <div data-test-id="field-listing-1">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing1">
-                                listing 1
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing1">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-2">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing2">
-                                listing 2
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing2">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-3">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing3">
-                                listing 3
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing3">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-4">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing4">
-                                listing 4
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing4">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-5">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing5">
-                                listing 5
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing5">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-6">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing6">
-                                listing 6
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing6">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-7">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing7">
-                                listing 7
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing7">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-8">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing8">
-                                listing 8
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing8">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-9">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing9">
-                                listing 9
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing9">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
-                        <div data-test-id="field-listing-10">
-                            <label class="nhsuk-label nhsuk-u-visually-hidden" asp-for="@Model.Listing10">
-                                listing 10
-                            </label>
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <input class="nhsuk-input nhsuk-input--width-30" type="text" asp-for="@Model.Listing10">
-                            </div>
-                        </div>
-                        <div data-test-id="bulletpoint-list-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16 nhsuk-u-margin-bottom-3">
-                                (Maximum number of characters 100)
-                            </span>
-                        </div>
-
+                        <nhs-validation-input asp-for="Listing1" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing2" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing3" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing4" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing5" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing6" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing7" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing8" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing9" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing10" disable-label-and-hint="true" />
                     </div>
                 </div>
             </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
-
+            <nhs-submit-button />
         </form>
     </div>
 </div>

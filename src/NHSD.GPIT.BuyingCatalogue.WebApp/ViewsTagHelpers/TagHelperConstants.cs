@@ -21,6 +21,7 @@
         // Attributes
         internal const string DataTestId = "data-test-id";
         internal const string For = "asp-for";
+        internal const string Items = "asp-items";
         internal const string Id = "id";
         internal const string LabelledBy = "aria-labelledy";
         internal const string Role = "role";
@@ -41,6 +42,8 @@
         internal const string TextFieldInput = "text-field-input";
         internal const string TextAreaField = "textarea-field";
         internal const string CheckBoxOptions = "checkbox-options";
+        internal const string RadioOptions = "radiobutton-options";
+        internal const string ComboboxOptions = "combobox-options";
 
         // Classes
         internal const string ErrorSummaryTitle = "error-summary-title";
@@ -49,6 +52,7 @@
         internal const string NhsFormGroupError = "nhsuk-form-group--error";
         internal const string NhsInput = "nhsuk-input";
         internal const string NhsLabel = "nhsuk-label";
+        internal const string NhsSelect = "nhsuk-select";
         internal const string NhsHint = "nhsuk-hint";
         internal const string GovUkHint = "govuk-hint";
         internal const string GovUkCharacterCountMessage = "govuk-character-count__message";
@@ -70,20 +74,26 @@
         internal const string SectionTextField = "section-question-text-field";
         internal const string SectionTextAreaField = "section-question-textarea-field";
         internal const string SectionListForm = "section-question-listform-field";
+        internal const string SectionCombobox = "section-question-combobox-options";
         internal const string NhsMarginTop = "nhsuk-u-margin-top";
         internal const string NhsMarginBottom = "nhsuk-u-margin-bottom";
         internal const string NhsFontSize = "nhsuk-u-font-size";
         internal const string NhsButton = "nhsuk-button";
         internal const string NhsCheckboxes = "nhsuk-checkboxes";
+        internal const string NhsCheckboxItem = "nhsuk-checkboxes__item";
+        internal const string NhsCheckboxInput = "nhsuk-checkboxes__input";
+        internal const string NhsCheckboxLabel = "nhsuk-checkboxes__label";
 
 
         //Messages
         internal const string CharacterCountMessage = "(Maximum character length {0})";
+        internal const string DefaultSelectListMessage = "Please select";
 
         //Html Attributes
         internal const string LabelTextName = "label-text";
         internal const string LabelHintName = "label-hint";
         internal const string DisableCharacterCounterName = "disable-character-counter";
+        internal const string DisableLabelAndHint = "disable-label-and-hint";
         internal const string TextAreaNumberOfRows = "number-of-rows";
 
         //Defaults

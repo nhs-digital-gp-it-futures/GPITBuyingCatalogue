@@ -35,6 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.DisableCharacterCounterName)]
         public bool? DisableCharacterCounter { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
+        public bool? DisableLabelAndHint { get; set; }
+
+
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -46,8 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(For.Name);
             var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(TagHelperConstants.TextFieldInput);
             var formGroup = TagHelperBuilders.GetFormGroupBuilder(For.Name);
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, LabelText);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For.Name, LabelHint);
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For,  htmlGenerator, null, LabelText, DisableLabelAndHint);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext,For,htmlGenerator);
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For,DisableCharacterCounter);
@@ -60,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             innerTesting.InnerHtml.AppendHtml(formGroup);
             outerTesting.InnerHtml.AppendHtml(innerTesting);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, outerTesting, TagHelperConstants.SectionTextField, true);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, outerTesting, TagHelperConstants.SectionTextField, DisableCharacterCounter);
         }
 
         private TagBuilder GetInputBuilder()
@@ -71,7 +75,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 For.Name,
                 For.Model,
                 null,
-                null);
+                new
+                {
+                    @class = TagHelperConstants.NhsInput,
+                    aria_describedby = $"{For.Name}-info {For.Name}-summary",
+                    data_test_id = $"{For.Name}-input"
+                });
 
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
                 builder.MergeAttribute(TagHelperConstants.Type, "password");
@@ -81,12 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);
-
-            builder.AddCssClass(TagHelperConstants.NhsInput);
-
-            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, $"{For.Name}-info {For.Name}-summary");
-
-            builder.MergeAttribute(TagHelperConstants.DataTestId, $"{For.Name}-input");
 
             return builder;
         }

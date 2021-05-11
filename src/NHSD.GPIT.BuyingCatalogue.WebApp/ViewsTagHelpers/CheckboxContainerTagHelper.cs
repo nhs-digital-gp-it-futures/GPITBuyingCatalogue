@@ -24,9 +24,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             output.Content.AppendHtml(content);
         }
-
-
     }
-
-
 }

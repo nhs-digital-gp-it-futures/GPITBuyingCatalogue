@@ -13,44 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
     {
 
         #region Global Builders
-        public static TagBuilder GetOuterDivBuilder(ModelExpression For, ViewContext viewContext, bool? DisableCharacterCounter)
-        {
-            var builder = new TagBuilder(TagHelperConstants.Div);
-
-            var attributes = new Dictionary<string, string>
-            {
-                { TagHelperConstants.DataTestId, TagHelperConstants.SectionTextField},
-            };
-
-            if (!TagHelperFunctions.IsCounterDisabled(For, DisableCharacterCounter))
-            {
-                attributes.Add(TagHelperConstants.DataModule, TagHelperConstants.GovUkCharacterCount);
-                attributes.Add(TagHelperConstants.DataMaxLength, TagHelperFunctions.GetMaximumCharacterLength(For).ToString());
-            }
-
-            builder.MergeAttributes(attributes);
-
-            var modelState = viewContext.ViewData.ModelState;
-            if (!modelState.ContainsKey(For.Name))
-            {
-                return builder;
-            }
-
-            if (TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, For))
-            {
-                builder.AddCssClass(TagHelperConstants.NhsFormGroupError);
-            }
-
-            return builder;
-        }
-
         public static void UpdateOutputDiv(
             TagHelperOutput output,
             ModelExpression For,
             ViewContext viewContext,
             TagBuilder htmlContent,
             string SectionName,
-            bool DisableCharacterCounter,
+            bool? DisableCharacterCounter,
             string validationName = null)
         {
 
@@ -77,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, For))
             {
-                output.Attributes.Add(new TagHelperAttribute("class", TagHelperConstants.NhsFormGroupError));
+                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsFormGroupError));
             }
         }
 
@@ -109,24 +78,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public static TagBuilder GetValidationBuilder(ViewContext viewContext, ModelExpression For, IHtmlGenerator htmlGenerator)
         {
-            var builder = htmlGenerator.GenerateValidationMessage(
+            return htmlGenerator.GenerateValidationMessage(
                 viewContext,
                 For.ModelExplorer,
                 For.Name,
                 null,
                 TagHelperConstants.Span,
-                null);
-
-            builder.AddCssClass(TagHelperConstants.NhsErrorMessage);
-            builder.Attributes[TagHelperConstants.DataTestId] = $"{For.Name}-error";
-
-            return builder;
+                new { @class = TagHelperConstants.NhsErrorMessage, data_test_id = $"{For.Name}-error" });
         }
 
-        public static TagBuilder GetLabelHintBuilder(string name, string HintText)
+        public static TagBuilder GetLabelHintBuilder(ModelExpression For, string HintText, string FormName = null, bool? HtmlAttributeDisableLabelAndHint = null)
         {
-            if (string.IsNullOrEmpty(HintText))
+            if (string.IsNullOrEmpty(For.Name)
+                && string.IsNullOrEmpty(FormName)
+                || HtmlAttributeDisableLabelAndHint.HasValue
+                && HtmlAttributeDisableLabelAndHint.Value
+                || TagHelperFunctions.GetCustomAttribute<DisableLabelAndHintAttribute>(For) != null)
                 return new TagBuilder("empty");
+
+            var name = !string.IsNullOrEmpty(For.Name) ? For.Name : FormName;
 
             var builder = new TagBuilder(TagHelperConstants.Div);
 
@@ -141,19 +111,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         #endregion
         #region Text Area And Text Input Specific Builders
-        public static TagBuilder GetLabelBuilder(ViewContext viewContext, ModelExpression For, IHtmlGenerator htmlGenerator, string HtmlAttributeLabelText = null)
+        public static TagBuilder GetLabelBuilder(
+            ViewContext viewContext,
+            ModelExpression For,
+            IHtmlGenerator htmlGenerator,
+            string FormName = null,
+            string HtmlAttributeLabelText = null,
+            bool? HtmlAttributeDisableLabelAndHint = null)
         {
-            var builder = htmlGenerator.GenerateLabel(
+            if (string.IsNullOrEmpty(For.Name)
+                && string.IsNullOrEmpty(FormName)
+                || HtmlAttributeDisableLabelAndHint.HasValue
+                && HtmlAttributeDisableLabelAndHint.Value
+                || TagHelperFunctions.GetCustomAttribute<DisableLabelAndHintAttribute>(For) != null)
+            {
+                return new TagBuilder("empty");
+            }
+
+            var name = !string.IsNullOrEmpty(For.Name) ? For.Name : FormName;
+
+            return htmlGenerator.GenerateLabel(
                 viewContext,
                 For.ModelExplorer,
-                For.Name,
+                name,
                 HtmlAttributeLabelText ?? TagHelperFunctions.GetCustomAttribute<LabelTextAttribute>(For)?.Text,
-                null);
-
-            builder.AddCssClass(TagHelperConstants.NhsLabel);
-            builder.MergeAttribute(TagHelperConstants.DataTestId, $"{For.Name}-label");
-
-            return builder;
+                new { @class = TagHelperConstants.NhsLabel, data_test_id = $"{For.Name}-label" });
         } 
 
         public static TagBuilder GetCounterBuilder(ModelExpression For, bool? disableCharacterCounter)
@@ -172,16 +154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             return builder;
         }
-
-        #endregion
-        #region Checkbox and Radio Fieldset Builder
-
-
-
-        #endregion
-        #region Checkbox Specific Builders
-
-
 
         #endregion
     }

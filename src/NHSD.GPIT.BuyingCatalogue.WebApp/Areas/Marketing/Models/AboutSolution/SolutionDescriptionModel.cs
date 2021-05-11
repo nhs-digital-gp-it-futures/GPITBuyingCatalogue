@@ -29,9 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
         public string Summary { get; set; }
 
         [StringLength(1100)]
-        [LabelText("Full Description (optional)")]
-        [LabelHint("Provide a more detailed description of your Catalogue Solution, for example how it can be used and how it benefits users.")]
-        [TextAreaRows(17)]
         public string Description { get; set; }
 
         [StringLength(1000)]

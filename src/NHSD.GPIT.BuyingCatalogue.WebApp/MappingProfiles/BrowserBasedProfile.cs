@@ -32,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                         $"/marketing/supplier/solution/{src.CatalogueItemId}/section/browser-based"))
                 .ForMember(dest => dest.ConnectionSpeeds, opt => opt.MapFrom(src => new List<SelectListItem>
                 {
-                    new() { Text = "Please select"},
                     new() { Text = "0.5Mbps", Value="0.5Mbps"},
                     new() { Text = "1Mbps", Value="1Mbps"},
                     new() { Text = "1.5Mbps", Value="1.5Mbps"},
@@ -44,11 +43,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     new() { Text = "15Mbps", Value="15Mbps"},
                     new() { Text = "20Mbps", Value="20Mbps"},
                     new() { Text = "30Mbps", Value="30Mbps"},
-                    new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
+                    new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"},
                 }))
                 .ForMember(dest => dest.ScreenResolutions, opt => opt.MapFrom(src => new List<SelectListItem>
                 {
-                    new() { Text = "Please select", Value = "" },
                     new() { Text = "16:9 - 640 x 360", Value = "16:9 - 640 x 360" },
                     new() { Text = "4:3 - 800 x 600", Value = "4:3 - 800 x 600" },
                     new() { Text = "4:3 - 1024 x 768", Value = "4:3 - 1024 x 768" },

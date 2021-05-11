@@ -33,6 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.DisableCharacterCounterName)]
         public bool? DisableCharacterCounter { get; set; } 
 
+        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
+        public bool? DisableLabelAndHint { get; set; }
+
         [HtmlAttributeName(TagHelperConstants.TextAreaNumberOfRows)]
         public int? NumberOfRows { get; set; }
 
@@ -46,8 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(For.Name);
             var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(TagHelperConstants.TextAreaField);
             var formGroup = TagHelperBuilders.GetFormGroupBuilder(For.Name);
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, LabelText);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For.Name, LabelHint);
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText,DisableLabelAndHint);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For, DisableCharacterCounter);
@@ -60,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             innerTesting.InnerHtml.AppendHtml(formGroup);
             outerTesting.InnerHtml.AppendHtml(innerTesting);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, outerTesting, TagHelperConstants.SectionTextField, true);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, outerTesting, TagHelperConstants.SectionTextField, DisableCharacterCounter);
         }
 
         private TagBuilder GetInputBuilder()

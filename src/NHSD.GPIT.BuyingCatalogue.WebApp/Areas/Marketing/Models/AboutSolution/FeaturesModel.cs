@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -10,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
         public FeaturesModel() : base(null)
         {
         }
-
         public FeaturesModel(CatalogueItem catalogueItem) : base (catalogueItem)
         {
             if (catalogueItem is null)
@@ -33,15 +33,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public override bool? IsComplete => CatalogueItem?.Solution?.GetFeatures().Any();
 
+        [StringLength(100)]
         public string Listing1 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing2 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing3 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing4 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing5 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing6 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing7 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing8 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing9 { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string Listing10 { get; set; } = string.Empty;
     }
 }

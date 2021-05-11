@@ -15,11 +15,18 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
 
-                <nhs-fieldset-form label-text="Which organisation are you looking for?" label-hint="Select one option." name="relatedOrganisationId">
+                <nhs-fieldset-form
+                    asp-for="@Model"
+                    label-text="Which organisation are you looking for?"
+                    label-hint="Select one option."
+                    contains-radio-buttons="true">
                     <nhs-radio-buttons asp-for="@Model.SelectedOrganisation" values="@Model.AvailableOrganisations" value-name="OrganisationId" display-name="Name" />
                 </nhs-fieldset-form>
                 <nhs-submit-button text="Confirm" />
             </form>
+
+            
+
         </div>
     </div>
 </div>
