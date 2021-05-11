@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeMobileHardwareRequirements); }
         }
 
-        [StringLength(500)]
+        [StringLength(300)]
         public string Description { get; set; }
     }
 }

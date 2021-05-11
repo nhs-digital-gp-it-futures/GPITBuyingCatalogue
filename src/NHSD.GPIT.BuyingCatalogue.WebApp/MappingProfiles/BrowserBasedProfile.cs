@@ -171,6 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt => opt.MapFrom<IMemberValueResolver<object, object, string, bool?>, string>(x =>
                         x.MobileResponsive))
                 .ForAllOtherMembers(opt => opt.Ignore());
+
         }
     }
 }

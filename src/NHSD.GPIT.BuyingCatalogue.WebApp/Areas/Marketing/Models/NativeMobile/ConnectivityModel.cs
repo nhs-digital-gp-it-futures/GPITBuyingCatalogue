@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
@@ -20,18 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
             SelectedConnectionSpeed = ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed;
-
-
-            ConnectionTypes = new ConnectionTypeModel[]
-            {
-                new ConnectionTypeModel{ ConnectionType = "GPRS" },
-                new ConnectionTypeModel{ ConnectionType = "3G" },
-                new ConnectionTypeModel{ ConnectionType = "LTE" },
-                new ConnectionTypeModel{ ConnectionType = "4G" },
-                new ConnectionTypeModel{ ConnectionType = "5G" },
-                new ConnectionTypeModel{ ConnectionType = "Bluetooth" },
-                new ConnectionTypeModel{ ConnectionType = "Wifi" }
-            };
 
             CheckConnectionTypes();
 
@@ -55,6 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
         public ConnectionTypeModel[] ConnectionTypes { get; set; }
 
+        [StringLength(300)]
         public string Description { get; set; }
 
         private void CheckConnectionTypes()
