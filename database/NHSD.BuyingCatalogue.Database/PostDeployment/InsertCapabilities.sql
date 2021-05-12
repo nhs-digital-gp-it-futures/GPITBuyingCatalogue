@@ -8,7 +8,8 @@
     IsFoundation bit DEFAULT 0 NOT NULL,
     [Version] nvarchar(10) DEFAULT '1.0.1' NULL,
     EffectiveDate date DEFAULT '2019-12-31' NOT NULL,
-    CategoryId int DEFAULT 1 NOT NULL
+    CategoryId int DEFAULT 1 NOT NULL,
+    FrameworkId nvarchar(20) DEFAULT 'NHSDGP001' NOT NULL
 );
 
 DECLARE @gpitFuturesBaseUrl AS char(55) = 'https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/';
@@ -42,7 +43,6 @@ VALUES
 ('7E8A8D7A-F8CE-4AA5-A3EF-31BBBD39DF40', 'C25', 'Cross-organisation Workforce Management', 'Supports the efficient planning and scheduling of the health and care workforce to ensure that services can be delivered effectively by the right staff.', @gpitFuturesBaseUrl + '1391135659/Cross-organisation+Workforce+Management', 0),
 ('5DB79FF4-FA9C-4DA2-BBFC-8CA40FEC0B43', 'C26', 'Data Analytics for Integrated and Federated Care', 'Supports the analysis of multiple and complex datasets and presentation of the output to enable decision-making, service design and performance management.', @gpitFuturesBaseUrl + '1391135590/Data+Analytics+for+Integrated+and+Federated+Care', 0),
 ('A66765F0-7EB6-400B-8319-FE7FBD86AB47', 'C27', 'Domiciliary Care', 'Enables Service Providers to effectively plan and manage Domiciliary Care services to ensure care needs are met and that Care Workers can manage their schedule.', @gpitFuturesBaseUrl + '1391133451/Domiciliary+Care', 0),
-('C332947A-D29E-4169-A7B1-FF277CF513C2', 'C28', 'e-Consultations (Patient/Service User to Professional)', 'Enables Patients/Service Users to access support from Health and Care Professionals, across a range of settings, without the need for a face to face encounter.', @gpitFuturesBaseUrl + '1391133433/e-Consultations+Patient+Service+User+to+Professional', 0),
 ('7BE309D9-696F-4B90-A65E-EB16DD5AC4ED', 'C29', 'e-Consultations (Professional to Professional)', 'Enables the communication and sharing of specialist knowledge and advice between Health and Care Professionals to support better care decisions and professional development.', @gpitFuturesBaseUrl + '1391135495/e-Consultations+Professional+to+Professional', 0),
 ('8BEE1FF3-84D4-430B-A678-336F57C57387', 'C30', 'Medicines Optimisation', 'Supports clinicians and pharmacists in reviewing a Patient''s medication and requesting changes to medication to ensure the Patient is taking the best combination of medicines.', @gpitFuturesBaseUrl + '1391133405/Medicines+Optimisatio', 0),
 ('0766FCF3-79B1-4B2F-A79E-9B09C0249034', 'C32', 'Personal Health Budget', 'Enables a Patient/Service User to set up and manage a Personal Health Budget giving them more choice and control over the management of their identified healthcare and well-being needs.', @gpitFuturesBaseUrl + '1391133426/Personal+Health+Budget', 0),
@@ -61,11 +61,16 @@ DECLARE @covidVaccinationBaseUrl AS char(55) = 'https://gpitbjss.atlassian.net/w
 
 INSERT INTO @capabilities(Id, CapabilityRef, [Name], [Description], SourceUrl, [Version], EffectiveDate, CategoryId)
 VALUES
-('151CA7DF-5227-4EBF-9200-93258EFA3735', 'C45', 'Cohort Identification', 'The Cohort Identification Capability enables the identification of Patient cohorts by identifying Patients that require a COVID-19 vaccination based on nationally defined criteria.', @covidVaccinationBaseUrl + '7918551305/Cohort+Identification', '1.0.0', '2020-12-09', 2),
+('151CA7DF-5227-4EBF-9200-93258EFA3735', 'C45', 'Cohort Identification', 'The Cohort Identification Capability enables the identification of Patient cohorts by identifying Patients that require a COVID-19 vaccination based on nationally defined criteria.', @covidVaccinationBaseUrl + '7918551305/Cohort+Identification', '1.0.2', '2021-01-25', 2),
 ('53255CB2-C5F6-427B-A18A-D3055E310FD6', 'C46', 'Appointments Management – COVID-19 Vaccinations', 'The Appointments Management – COVID-19 Vaccinations Capability enables the administration and scheduling of COVID-19 vaccination appointments for Patients.', @covidVaccinationBaseUrl + '7918551324/Appointments+Management+-+COVID-19+Vaccinations', '1.0.0', '2020-12-09', 2),
-('EC26D316-4F3D-45B1-BDF5-717D24DAB360', 'C47', 'Vaccination and Adverse Reaction Recording', 'The Vaccination and Adverse Reaction Recording Capability enables the recording of COVID-19 vaccination and adverse reaction data at the point of care. The Capability also supports the delivery of this data to the Patient’s registered GP Practice Foundation Solution and to NHS Digital.', @covidVaccinationBaseUrl + '7918551342/Vaccination+and+Adverse+Reaction+Recording', '1.0.0', '2020-12-09', 2);
+('EC26D316-4F3D-45B1-BDF5-717D24DAB360', 'C47', 'Vaccination and Adverse Reaction Recording', 'The Vaccination and Adverse Reaction Recording Capability enables the recording of COVID-19 vaccination and adverse reaction data at the point of care. The Capability also supports the delivery of this data to the Patient’s registered GP Practice Foundation Solution and to NHS Digital.', @covidVaccinationBaseUrl + '7918551342/Vaccination+and+Adverse+Reaction+Recording', '4.0.0', '2021-03-29', 2);
 
--- It's unlikely that the code below will need to change unless/until there is more than one framework
+INSERT INTO @capabilities(Id, CapabilityRef, [Name], [Description], SourceUrl, [Version], EffectiveDate, CategoryId, FrameworkId)
+VALUES
+('EE71409B-F570-4581-B082-2B13DAC6CE6D', 'C43', 'Online Consultation', 'The Online Consultation Capability allows Patients/Service Users/Proxies to request and receive support relating to healthcare concerns, at a time and place convenient for them.', 'https://gpitbjss.atlassian.net/wiki/spaces/DFOCVCL/pages/5132484695/Online+Consultation', '1.0.1', '2021-03-11', 3, 'DFOCVC001'),
+('4E07C901-1DA1-43EB-BE45-C89B7DBD9D66', 'C44', 'Video Consultation', 'The Video Consultation Capability allows Health or Care Professionals to conduct secure live remote video consultations with individual or groups of Patients/Service Users/Proxies ensuring they can receive support relating to healthcare concerns when a Video Consultation is most appropriate.', 'https://gpitbjss.atlassian.net/wiki/spaces/DFOCVCL/pages/5132484947/Video+Consultation', '1.0.0', '2021-03-11', 3, 'DFOCVC001');
+
+-- The code below should not need to be changed
 
 MERGE INTO dbo.Capability AS TARGET
      USING @capabilities AS SOURCE
@@ -83,11 +88,10 @@ UPDATE SET TARGET.[Version] = SOURCE.[Version],
 
 MERGE INTO dbo.FrameworkCapabilities AS TARGET
      USING @capabilities AS SOURCE
-        ON TARGET.FrameworkId = 'NHSDGP001'
-       AND TARGET.CapabilityId = SOURCE.Id
+        ON TARGET.CapabilityId = SOURCE.Id
       WHEN MATCHED THEN
 UPDATE SET TARGET.IsFoundation = SOURCE.IsFoundation
       WHEN NOT MATCHED BY TARGET THEN
     INSERT (FrameworkId, CapabilityId, IsFoundation)
-    VALUES ('NHSDGP001', SOURCE.Id, SOURCE.IsFoundation);
+    VALUES (SOURCE.FrameworkId, SOURCE.Id, SOURCE.IsFoundation);
 GO

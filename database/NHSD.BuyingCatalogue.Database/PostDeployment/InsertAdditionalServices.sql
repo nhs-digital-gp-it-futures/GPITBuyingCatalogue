@@ -24,7 +24,7 @@ BEGIN
                  VALUES (@additionalServiceId,'Addition to Write on Time', 'Write on time Addttion Full Description', @now , @emptyGuid, @solutionId);
 
             INSERT INTO dbo.CataloguePrice(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 1, 'GBP', @now, 199.99);
+                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 199.99);
         END;
     END;
 
@@ -161,7 +161,7 @@ BEGIN
                  VALUES (@additionalServiceId,'Addition to Medsort', 'Medsort Addition Full Description', @now , @emptyGuid, @solutionId);
 
             INSERT INTO dbo.CataloguePrice(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 1, 'GBP', @now, 599.99);
+                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 599.99);
         END;
     END;
 
@@ -181,7 +181,7 @@ BEGIN
                  VALUES (@additionalServiceId,'Addition to Boston Dynamics', 'Boston Dynamics Addition Full Description', @now , @emptyGuid, @solutionId);
 
             INSERT INTO dbo.CataloguePrice(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 1, 'GBP', @now, 599.99);
+                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 599.99);
         END;
     END;
 

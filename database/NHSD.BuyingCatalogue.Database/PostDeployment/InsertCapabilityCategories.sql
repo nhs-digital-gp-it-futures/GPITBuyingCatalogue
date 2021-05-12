@@ -8,7 +8,8 @@ INSERT INTO @capabilityCategories(Id, [Name])
 VALUES
 (0, 'Undefined'),
 (1, 'GP IT Futures'),
-(2, 'Covid-19 Vaccination');
+(2, 'Covid-19 Vaccination'),
+(3, 'DFOCVC');
 
 MERGE INTO dbo.CapabilityCategory AS TARGET
      USING @capabilityCategories AS SOURCE
