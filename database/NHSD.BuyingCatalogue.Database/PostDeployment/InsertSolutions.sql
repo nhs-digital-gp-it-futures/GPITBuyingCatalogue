@@ -20,7 +20,8 @@ DECLARE @sharedCarePlansCapabilityId AS uniqueidentifier = 'd1532ca0-ef0c-457c-9
 DECLARE @unifiedCareRecordCapabilityId AS uniqueidentifier = '59696227-602a-421d-a883-29e88997ac17';
 DECLARE @workflowCapabilityId AS uniqueidentifier = '9d325dec-6e5b-44e4-876b-eacf6cd41b3e';
 
-DECLARE @frameworkId AS nvarchar(10) = 'NHSDGP001';
+DECLARE @gpitframeworkId AS nvarchar(10) = 'NHSDGP001';
+DECLARE @dfocvcframeworkId AS nvarchar(10) = 'DFOCVC001';
 DECLARE @emptyGuid AS uniqueidentifier = '00000000-0000-0000-0000-000000000000';
 DECLARE @now AS datetime = GETUTCDATE();
 
@@ -53,7 +54,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Patsy', 'Delgado', '07451593188', 'Sales@remedical.co.uk', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Pat', 'Butcher', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
@@ -61,7 +62,7 @@ BEGIN
               WHERE CapabilityRef = 'C1';
 
         INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@frameworkId, @solutionId , 1, @now, @emptyGuid);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -86,15 +87,15 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Sam', 'Thomas', '07255920626', 'Sales@CareShare.com', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef IN ('C1', 'C5');
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId,SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@frameworkId, @solutionId, 1, @now, @emptyGuid);
+        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+             VALUES (@gpitframeworkId, @solutionId, 1, @now, @emptyGuid);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -119,7 +120,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Virginia', 'Wilson', '07810401180', 'Sales@Zen.com', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Victoria', 'Sponge', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
@@ -149,7 +150,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Richard', 'Perez', '07882055950', 'Sales@CatterpillarMedworks.com', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Richard', 'Burton', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
@@ -179,7 +180,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Harry', 'nzales', '07219884068', 'Sales@CurtisSystems.com', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Harry', 'Houdini', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
@@ -187,7 +188,7 @@ BEGIN
               WHERE CapabilityRef = 'C8';
 
         INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@frameworkId, @solutionId , 1, @now, @emptyGuid);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -212,7 +213,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Michelle', 'Moore', '07849662065', 'Sales@ClinicalRaptor.com', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Agent', 'M', '01234 567891', 'm@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
@@ -242,7 +243,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES ('100006-001', 'Timothy', 'Campbell', '07107924358', 'Sales@DocLightning.com', 'Sales', @now, @emptyGuid);
+             VALUES ('100006-001', 'Timothy', 'Teabag', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT '100006-001', Id, 1, @now, @emptyGuid
@@ -272,7 +273,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Cheryl', 'White', '07295044295', 'Sales@DocabilitySoftware.com', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Betty', 'Banjo', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
@@ -301,7 +302,7 @@ BEGIN
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Boston', 'Rob', '07295044295', 'Sales@DocabilitySoftware.com', 'Sales', @now, @emptyGuid);
+             VALUES (@solutionId, 'Boston', 'Rocks', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
@@ -364,7 +365,7 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
             @emptyGuid);
 
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Eduardo', 'Eggbert', 'info@egton.net', '0845 1245 245 and select Option 1', 'Internal Sales Team', @now, @emptyGuid);
+             VALUES (@solutionId, 'Eduardo', 'Eggbert', 'eddie@eggs.test', '01234 567891', 'Internal Sales Team', @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
@@ -383,7 +384,7 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
         (@solutionId, @workflowCapabilityId, 1, @now, @emptyGuid);
 
         INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated ,LastUpdatedBy)
-             VALUES (@frameworkId, @solutionId , 1, @now, @emptyGuid);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
 
         INSERT INTO dbo.SolutionEpic (SolutionId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
@@ -550,45 +551,129 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
         (@solutionId, @citizenViewRecordCapabilityId, 1, @now, @emptyGuid);
 
         INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@frameworkId, @solutionId , 1, @now, @emptyGuid);
+             VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
     END;
 
-    /* insert prices */
+    /*************************************************************************************************************************************************************/
+
+    SET @solutionId = '99999-01';
+
+    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    BEGIN
+        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+             VALUES (@solutionId, @solutionItemType, 'DFOCVC Online Consultation', '99999', @publishedStatus, @now);
+
+        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        VALUES (
+            @solutionId,
+            @version1,
+            '["Digital Online Consultation","Video Consultation", "Fully interopable with all major GP IT solutions", "Compliant with all relevant ISO standards"]',
+            '{"PublicCloud":{"Summary":"Summary description","Link":"External URL link","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"PrivateCloud":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"HybridHostingType":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"OnPremise":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"}}',
+            'http://www.dfocvctest.com/about',
+            'Summary - DFOCVC.',
+            'FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.',
+            @now,
+            @emptyGuid);
+
+        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
+
+        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+             SELECT @solutionId, Id, 1, @now, @emptyGuid
+               FROM dbo.Capability
+              WHERE CapabilityRef IN ('C43');
+
+        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+             VALUES (@dfocvcframeworkId, @solutionId, 0, @now, @emptyGuid);
+    END;
+
+    /*************************************************************************************************************************************************************/
+
+    SET @solutionId = '99999-02';
+
+    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    BEGIN
+        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+             VALUES (@solutionId, @solutionItemType, 'GPIT DFOCVC Online Consultation', '99999', @publishedStatus, @now);
+
+        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        VALUES (
+            @solutionId,
+            @version1,
+            '["Digital Online Consultation","Video Consultation", "Fully interopable with all major GP IT solutions", "Compliant with all relevant ISO standards"]',
+            '{"PublicCloud":{"Summary":"Summary description","Link":"External URL link","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"PrivateCloud":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"HybridHostingType":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"},"OnPremise":{"Summary":"Summary description","Link":"External URL link","HostingModel":"Hosting environment description","RequiresHSCN":"Link to HSCN or N3 network required to access service"}}',
+            'http://www.gpitdfocvctest.com/about',
+            'Summary - GPIT DFOCVC.',
+            'FULL DESCRIPTION – GPIT Futures, Digital First Online Consultation and Video Consultation Solution.',
+            @now,
+            @emptyGuid);
+
+        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
+
+        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+             SELECT @solutionId, Id, 1, @now, @emptyGuid
+               FROM dbo.Capability
+              WHERE CapabilityRef IN ('C44');
+
+        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+             VALUES (@gpitframeworkId, @solutionId, 1, @now, @emptyGuid),
+                    (@dfocvcframeworkId, @solutionId, 0, @now, @emptyGuid);
+    END;
+
+    DECLARE @flatPriceType AS int = 1;
+    DECLARE @tieredPriceType AS int = 2;
+
+    DECLARE @patientProvisioningType AS int = 1;
+    DECLARE @declarativeProvisioningType AS int = 2;
+    DECLARE @onDemandProvisioningType AS int = 3;
+
+    DECLARE @monthTimeUnit AS int = 1;
+    DECLARE @yearTimeUnit AS int = 2;
+
+    /* Insert prices */
     IF NOT EXISTS (SELECT * FROM dbo.CataloguePrice)
     BEGIN
-     INSERT INTO dbo.CataloguePrice(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-          VALUES ('100000-001', 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 99.99),
-                 ('100000-001', 1, 2, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, NULL),
-                 ('100001-001', 3, 1, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', NULL, 'GBP', @now, 3.142),
-                 ('100002-001', 2, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 1, 'GBP', @now, 4.85),
-                 ('100004-001', 2, 1, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', 1, 'GBP', @now, 10101.65),
-                 ('100005-001', 3, 1, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', NULL, 'GBP', @now, 456),
-                 ('100006-001', 2, 1, '90119522-D381-4296-82EE-8FE630593B56', 1, 'GBP', @now, 7),
-                 ('99998-98', 1, 1, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', 2, 'GBP', @now, 30000),
-                 ('99999-89', 1, 1, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', 2, 'GBP', @now, 500.49),
-                 ('100002-001', 2, 2, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 1, 'GBP', @now, NULL),
-                 ('99998-98', 1, 2, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', 2, 'GBP', @now, NULL),
-                 ('99999-89', 1, 2, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', 2, 'GBP', @now, NULL),
-                 ('100000-001', 3, 1, '774E5A1D-D15C-4A37-9990-81861BEAE42B', NULL, 'GBP', @now, 1001.010),
-                 ('100003-001', 2, 1, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', 1, 'GBP', @now, 19.987),
-                 ('100007-001', 3, 1, '90119522-D381-4296-82EE-8FE630593B56', NULL, 'GBP', @now, 0.15),
-                 ('100007-002', 3, 2, '90119522-D381-4296-82EE-8FE630593B56', NULL, 'GBP', @now, NULL);
+     INSERT INTO dbo.CataloguePrice(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
+          VALUES ('100000-001', @patientProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, 99.99),
+                 ('100000-001', @patientProvisioningType, @tieredPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, NULL),
+                 ('100000-001', @onDemandProvisioningType, @flatPriceType, '774E5A1D-D15C-4A37-9990-81861BEAE42B', NULL, 'GBP', @now, 1001.010),
+                 ('100001-001', @onDemandProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', NULL, 'GBP', @now, 3.142),
+                 ('100002-001', @declarativeProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @monthTimeUnit, 'GBP', @now, 4.85),
+                 ('100002-001', @declarativeProvisioningType, @tieredPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @monthTimeUnit, 'GBP', @now, NULL),
+                 ('100003-001', @declarativeProvisioningType, @flatPriceType, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', @monthTimeUnit, 'GBP', @now, 19.987),
+                 ('100004-001', @declarativeProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @monthTimeUnit, 'GBP', @now, 10101.65),
+                 ('100005-001', @onDemandProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', NULL, 'GBP', @now, 456),
+                 ('100006-001', @declarativeProvisioningType, @flatPriceType, '90119522-D381-4296-82EE-8FE630593B56', @monthTimeUnit, 'GBP', @now, 7),
+                 ('100007-001', @onDemandProvisioningType, @flatPriceType, '90119522-D381-4296-82EE-8FE630593B56', NULL, 'GBP', @now, 0.15),
+                 ('100007-002', @onDemandProvisioningType, @tieredPriceType, '90119522-D381-4296-82EE-8FE630593B56', NULL, 'GBP', @now, NULL),
+                 ('99998-98', @patientProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, 30000),
+                 ('99998-98', @patientProvisioningType, @tieredPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, NULL),
+                 ('99999-01', @patientProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, 1.25),
+                 ('99999-02', @patientProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, 1.55),
+                 ('99999-89', @patientProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, 500.49),
+                 ('99999-89', @patientProvisioningType, @tieredPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, NULL);
 
-          DECLARE @priceId1000072 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '100007-002');
+          -- Tiered price IDs
+          DECLARE @priceId1000001 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '100000-001' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId1000021 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '100002-001' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId1000072 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '100007-002' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId9999898 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '99998-98' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId9999989 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '99999-89' AND CataloguePriceTypeId = @tieredPriceType);
 
           INSERT INTO dbo.CataloguePriceTier(CataloguePriceId, BandStart, BandEnd, Price)
-               VALUES (2, 1, 999, 123.45),
-                      (2, 1000, 1999, 49.99),
-                      (2, 2000, NULL, 19.99),
-                      (10, 1, 10, 200),
-                      (10, 11, 99, 150.15),
-                      (10, 100, NULL, 99.99),
-                      (11, 1, 10000, 500),
-                      (11, 10001, NULL, 499.99),
-                      (12, 1, 8, 42.42),
-                      (12, 9, 33,33.33),
-                      (12, 34, 1004, 50),
-                      (12, 1005, NULL, 0.02),
+               VALUES (@priceId1000001, 1, 999, 123.45),
+                      (@priceId1000001, 1000, 1999, 49.99),
+                      (@priceId1000001, 2000, NULL, 19.99),
+                      (@priceId1000021, 1, 10, 200),
+                      (@priceId1000021, 11, 99, 150.15),
+                      (@priceId1000021, 100, NULL, 99.99),
+                      (@priceId9999898, 1, 10000, 500),
+                      (@priceId9999898, 10001, NULL, 499.99),
+                      (@priceId9999989, 1, 8, 42.42),
+                      (@priceId9999989, 9, 33,33.33),
+                      (@priceId9999989, 34, 1004, 50),
+                      (@priceId9999989, 1005, NULL, 0.02),
                       (@priceId1000072, 1, 10, 20),
                       (@priceId1000072, 11, 99, 30.15),
                       (@priceId1000072, 100, NULL, 40.99);
