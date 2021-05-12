@@ -237,6 +237,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             
             mockService.Verify(x => x.GetSolution(id));
         }
+        
+        [Test, AutoData]
+        public static async Task Get_ContactDetails_NullSolutionFromService_ReturnsBadRequestResponse(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(x => x.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), mockService.Object);
+
+            var actual = (await controller.ContactDetails(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
 
         [Test, AutoData]
         public static async Task Get_ContactDetails_ValidId_MapsSolutionToViewModel_ReturnsExpectedView(string id)
