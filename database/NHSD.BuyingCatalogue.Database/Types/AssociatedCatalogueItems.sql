@@ -1,4 +1,6 @@
 ﻿CREATE TYPE import.AssociatedCatalogueItems AS TABLE
 (
-    CatalogueItemId nvarchar(14) NOT NULL PRIMARY KEY
+    PRIMARY KEY (AssociatedServiceId, AssociatedCatalogueItemId),
+    AssociatedServiceId nvarchar(14) NOT NULL,
+    AssociatedCatalogueItemId nvarchar(14) NOT NULL
 );

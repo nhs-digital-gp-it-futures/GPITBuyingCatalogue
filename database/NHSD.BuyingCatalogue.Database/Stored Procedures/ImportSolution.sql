@@ -1,50 +1,76 @@
 ﻿CREATE PROCEDURE import.ImportSolution
-     @SolutionId nvarchar(14),
-     @SolutionName nvarchar(255),
-     @IsFoundation bit,
+     @Solutions import.Solutions READONLY,
      @Capabilities import.SolutionCapability READONLY
 AS
     SET NOCOUNT ON;
 
-    DECLARE @supplierId AS nvarchar(6) = import.GetSupplierId(@SolutionId);
+    DECLARE @items AS TABLE
+    (
+        Id nvarchar(14) NOT NULL,
+        SupplierId nvarchar(6) NULL,
+        [Name] nvarchar(255) NOT NULL,
+        IsFoundation bit DEFAULT 0 NULL,
+        FrameworkId nvarchar(10) NOT NULL
+    );
 
-    IF NOT EXISTS (SELECT * FROM dbo.Supplier WHERE Id = @supplierId)
-        THROW 51000, 'Supplier record does not exist.', 1;
+    INSERT INTO @items(Id, [Name], SupplierId, IsFoundation, FrameworkId)
+         SELECT s.Id, s.[Name], gsi.Id, s.IsFoundation, s.FrameworkId
+          FROM @Solutions AS s
+               CROSS APPLY import.GetSupplierId(s.Id) AS gsi;
 
-    DECLARE @draftPublicationStatus AS int = (SELECT Id FROM dbo.PublicationStatus WHERE [Name] = 'Draft');
+    DECLARE @missingSuppliers AS TABLE
+    (
+        SupplierId nvarchar(6) PRIMARY KEY
+    );
+
+    INSERT INTO @missingSuppliers (SupplierId)
+         SELECT DISTINCT i.SupplierId
+           FROM @items AS i
+          WHERE NOT EXISTS (SELECT * FROM dbo.Supplier AS s WHERE s.Id = i.SupplierId);
+
+    IF EXISTS (SELECT * FROM @missingSuppliers)
+    BEGIN;
+        DECLARE @missingSuppliersList AS nvarchar(max) = (SELECT STRING_AGG(SupplierId, ', ') FROM @missingSuppliers);
+        DECLARE @errorMessage AS nvarchar(max) = 'One or more supplier records do not exist for the following IDs: ' + @missingSuppliersList;
+
+        THROW 51000, @errorMessage, 1;
+    END;
+
     DECLARE @emptyGuid AS uniqueidentifier = CAST(0x0 AS uniqueidentifier);
-    DECLARE @frameworkId AS nvarchar(10) = 'NHSDGP001';
     DECLARE @now AS datetime = GETUTCDATE();
-    DECLARE @passedFull AS int = (SELECT Id FROM dbo.SolutionCapabilityStatus WHERE [Name] = 'Passed - Full');
-    DECLARE @solutionCatalogueItemType AS int = (SELECT CatalogueItemTypeId FROM dbo.CatalogueItemType WHERE [Name] = 'Solution');
+    DECLARE @passedFull AS int = 1;
+    DECLARE @solutionCatalogueItemType AS int = 1;
 
     BEGIN TRANSACTION;
 
     BEGIN TRY
-        IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @SolutionId)
-            INSERT INTO dbo.CatalogueItem(CatalogueItemId, [Name], Created,
-                        CatalogueItemTypeId, SupplierId, PublishedStatusId)
-                 VALUES (@SolutionId, @SolutionName, @now,
-                        @solutionCatalogueItemType, @supplierId, @draftPublicationStatus);
+        INSERT INTO dbo.CatalogueItem(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
+             SELECT i.Id, i.[Name], @solutionCatalogueItemType, i.SupplierId
+               FROM @items AS i
+              WHERE NOT EXISTS (SELECT * FROM dbo.CatalogueItem AS c WHERE c.CatalogueItemId = i.Id);
 
-        IF NOT EXISTS (SELECT * FROM dbo.Solution WHERE Id = @SolutionId)
-            INSERT INTO dbo.Solution(Id, LastUpdated, LastUpdatedBy)
-                 VALUES (@SolutionId, @now, @emptyGuid);
+        INSERT INTO dbo.Solution(Id, LastUpdated, LastUpdatedBy)
+             SELECT i.Id, @now, @emptyGuid
+               FROM @items AS i
+              WHERE NOT EXISTS (SELECT * FROM dbo.Solution AS s WHERE s.Id = i.Id);
 
-        IF NOT EXISTS (SELECT * FROM dbo.FrameworkSolutions WHERE SolutionId = @SolutionId AND FrameworkId = @frameworkId)
-            INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
-                 VALUES (@frameworkId, @SolutionId, 0, @now, @emptyGuid);
+        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+             SELECT i.FrameworkId, i.Id, 0, @now, @emptyGuid
+               FROM @items AS i
+              WHERE NOT EXISTS (SELECT * FROM dbo.FrameworkSolutions AS f WHERE f.SolutionId = i.Id AND f.FrameworkId = i.FrameworkId);
 
-        UPDATE dbo.FrameworkSolutions
-           SET IsFoundation = @IsFoundation
-         WHERE SolutionId = @SolutionId
-           AND FrameworkId = @frameworkId;
+        UPDATE f
+           SET f.IsFoundation = i.IsFoundation
+          FROM dbo.FrameworkSolutions AS f
+               INNER JOIN @items AS i ON i.Id = f.SolutionId
+         WHERE f.FrameworkId = i.FrameworkId;
 
-        DELETE FROM dbo.SolutionCapability
-              WHERE SolutionId = @SolutionId;
+        DELETE FROM s
+               FROM dbo.SolutionCapability AS s
+                    INNER JOIN @items AS i ON i.Id = s.SolutionId;
 
         INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @SolutionId, c.Id, @passedFull, @now, @emptyGuid
+             SELECT SolutionId, c.Id, @passedFull, @now, @emptyGuid
                FROM @Capabilities AS cap
                     INNER JOIN dbo.Capability AS c
                     ON c.CapabilityRef = cap.CapabilityRef;

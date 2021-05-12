@@ -66,30 +66,30 @@ BEGIN
         @emptyGuid);
 
 
-    INSERT INTO [dbo].[SupplierContact] ([Id], [SupplierId],[FirstName],[LastName],[Email],[PhoneNumber],[LastUpdated],[LastUpdatedBy])
+    INSERT INTO dbo.SupplierContact (Id, SupplierId, FirstName, LastName, Email, PhoneNumber, LastUpdated, LastUpdatedBy)
     VALUES
-    (NEWID(),'100000', 'Tim', 'Timpson', 'tim@sharkscissors.net', '123456',@now, @emptyGuid),
-    (NEWID(),'100001', 'Kimberly','Green', 'kimben@gmail.com', '(04065) 66339',@now, @emptyGuid),
-    (NEWID(),'100002', 'Tracy', 'Lloyd', 'tracyloyd@edwards.com', '03490246609',@now, @emptyGuid),
-    (NEWID(),'100003', 'Mason', 'Lewis', 'masowis@gmail.com', '(03829) 404796',@now, @emptyGuid),
-    (NEWID(),'100004', 'Ashley', 'Murray', 'ashleray@Price.com', '05000 446126',@now, @emptyGuid),
-    (NEWID(),'100005', 'Ethan', 'Mitchell', 'ethall@Knight.com', '03439008436',@now, @emptyGuid),
-    (NEWID(),'100006', 'Sienna', 'Rogers', 'siennaers@chards.com', '+44(0)3336 91256',@now, @emptyGuid),
-    (NEWID(),'100007', 'Nick', 'Walker', 'nickwaker@walkers.com', '0761 501 9180',@now, @emptyGuid),
-    (NEWID(),'100008', 'Muhammad', 'Rogers', 'muhaers@gmail.com', '+44(0)5755 54895',@now, @emptyGuid),
-    (NEWID(),'100009', 'Mohammed', 'Reid', 'mohameid@Owen-Hunt.com', '(0274) 450 7272',@now, @emptyGuid),
-    (NEWID(),'100010', 'Becky', 'Cox', 'beckcox@beckcox.com', '0871 396 1160',@now, @emptyGuid),
-    (NEWID(),'100011', 'Jennifer', 'Hunt', 'jennnt@gmail.com', '0003 380 3176',@now, @emptyGuid),
-    (NEWID(),'100012', 'Oscar', 'Richards', 'oscarrrds@gollins.com', '+44(0)4319961720',@now, @emptyGuid),
-    (NEWID(),'100013', 'Jeannie', 'Wilkins', 'pahmed@hospkerhy.cf',  '+44 1632 960277',@now, @emptyGuid),
-    (NEWID(),'100014', 'Marisa', 'Fletcher', 'xiamkeherma@priv8dns.net', '+44 1632 960867',@now, @emptyGuid),
-    (NEWID(),'100015', 'Myra', 'Gray', 'gcrronaldo280s@vilbarcpil.ga', '+44 1632 960405',@now, @emptyGuid),
-    (NEWID(),'100016', 'Renato', 'Dodson', 'xpamela.gomes.pa2@traclecfa.ml', '+44 1632 960420',@now, @emptyGuid),
-    (NEWID(),'100017', 'Angel', 'Waters', 'nael.altaic@central-teater.ru', '+44 1632 960376',@now, @emptyGuid),
-    (NEWID(),'100018', 'Lindsay', 'Cooke', 'oblac@pquw0o.com', '+44 1632 960544',@now, @emptyGuid),
-    (NEWID(),'100019', 'Xavier', 'Jacobson', 'esamuel.allvesof@morcagumd.gq', '+44 1632 960749',@now, @emptyGuid),
-    (NEWID(),'100020', 'Mario', 'Long', 'noulmes14b@priv8dns.net', '+44 1632 960487',@now, @emptyGuid),
-    (NEWID(),'99998', 'Aimee', 'Mcdonald', 'fpiyushpandey8115@traclecfa.ml', '+44 1632 960294',@now, @emptyGuid),
-    (NEWID(),'99999', 'Sophia', 'Rojas', 'csheikha@sporbaydar.cf', '+44 1632 960131',@now, @emptyGuid);
+    (NEWID(),'100000', 'Tim',      'Teabag',    'timtea@test.test',       '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100001', 'Kim',      'Samosa',    'kimsam@test.test',       '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100002', 'Boston',   'Sponge',    'bosponge@test.test',     '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100003', 'Betty',    'Sponge',    'betsponge@test.test',    '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100004', 'Eduardo',  'Eggbert',   'eduegg@test.test',       '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100005', 'Sam',      'Samosa',    'sammosa@test.test',      '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100006', 'Harry',    'Samosa',    'harsam@test.test',       '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100007', 'Agent',    'Banjo',     'agbanj@test.test',       '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100008', 'Pat',      'Sponge',    'patsponge@sponge.test',  '+44(0)1234 567891',@now, @emptyGuid),
+    (NEWID(),'100009', 'Richard',  'Teabag',    'richtbag@teabag.test',   '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100010', 'Harry',    'Banjo',     'harbanjo@banjo.test',    '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100011', 'Timothy',  'Sponge',    'timsponge@test.test',    '01234 567891',     @now, @emptyGuid),
+    (NEWID(),'100012', 'Oscar',    'Banjo',     'oscarrrds@banjo.test',   '+44(0)1234 567891',@now, @emptyGuid),
+    (NEWID(),'100013', 'Victoria', 'Teabag',    'victea@test.test',       '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'100014', 'Boston',   'Banjo',     'bosbanjo@test.test',     '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'100015', 'Betty',    'Eggbert',   'betegg@test.test',       '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'100016', 'Eduardo',  'Butcher',   'edu.butcher@test.test',  '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'100017', 'Harry',    'Teabag',    'hartea@test.test',       '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'100018', 'Richard',  'Samosa',    'richsam@test.test',      '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'100019', 'Timothy',  'Teabag',    'timothy@test.test',      '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'100020', 'Victoria', 'Sponge',    'victsponge@test.test',   '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'99998',  'Richard',  'Eggbert',   'ricegg@test.test',       '+44 1234 567891',  @now, @emptyGuid),
+    (NEWID(),'99999',  'Agent',    'Teabag',    'teagen@test.test',       '+44 1234 567891',  @now, @emptyGuid);
 END;
 GO
