@@ -133,15 +133,6 @@ jobs:
       CleanTargetFolder: false
       OverWrite: true
 
-  - task: CopyFiles@2
-    displayName: Build Artifact - WebApp Module
-    inputs:
-      SourceFolder: 'modules/bc_webapp_pri'
-      Contents: '**'
-      TargetFolder: '$(build.artifactStagingDirectory)/modules/bc_webapp_pri'
-      CleanTargetFolder: false
-      OverWrite: true
-
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
     
