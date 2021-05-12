@@ -94,27 +94,54 @@ jobs:
   - script: docker-compose down -v
     displayName: 'Docker down'
 
-  - task: DockerCompose@0
-    displayName: 'Build: Dev'
-    condition: succeeded()
-    inputs:
-      containerregistrytype: 'Azure Container Registry'
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
-      dockerComposeFile: '**/docker-compose.yml'
-      action: 'Build services'
-      additionalImageTags: '$(semVer)'
-      includeSourceTags: true
+  # - task: DockerCompose@0
+  #   displayName: 'Build: Dev'
+  #   condition: succeeded()
+  #   inputs:
+  #     containerregistrytype: 'Azure Container Registry'
+  #     azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+  #     azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+  #     dockerComposeFile: '**/docker-compose.yml'
+  #     action: 'Build services'
+  #     additionalImageTags: '$(semVer)'
+  #     includeSourceTags: true
 
-  - task: DockerCompose@0
-    displayName: 'Push: Dev'
-    condition: succeeded()
-    inputs:
-      containerregistrytype: 'Azure Container Registry'
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
-      dockerComposeFile: '**/docker-compose.yml'
-      action: 'Push services'
-      additionalImageTags: '$(semVer)'
-      includeSourceTags: true
+  # - task: DockerCompose@0
+  #   displayName: 'Push: Dev'
+  #   condition: succeeded()
+  #   inputs:
+  #     containerregistrytype: 'Azure Container Registry'
+  #     azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+  #     azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+  #     dockerComposeFile: '**/docker-compose.yml'
+  #     action: 'Push services'
+  #     additionalImageTags: '$(semVer)'
+  #     includeSourceTags: true
 
+- job: createBuildArtifact
+  displayName: Create Build Artifact
+  dependsOn: dockerBuildAndPush
+  #condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+        
+  steps:
+  - task: CopyFiles@2
+    displayName: Build Artifact - Code
+    inputs:
+      SourceFolder: 'terraform'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/terraform'
+      CleanTargetFolder: false
+      OverWrite: true
+
+  - task: CopyFiles@2
+    displayName: Build Artifact - WebApp Module
+    inputs:
+      SourceFolder: 'modules/bc_webapp_pri'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/modules/bc_webapp_pri'
+      CleanTargetFolder: false
+      OverWrite: true
+
+  - publish: $(build.artifactStagingDirectory)
+    artifact: build-artifact 
+    
