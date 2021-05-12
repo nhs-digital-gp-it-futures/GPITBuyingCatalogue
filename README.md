@@ -3,7 +3,7 @@ ASP.NET Core Buying Catalogue Web Application
 
 This repository contains a revised architecture for the Buying Catalogue.
 
-Once complete, this will become the single repository required for the Busying Catalogue.
+Once complete, this will become the single repository required for the Buying Catalogue.
 
 ## IMPORTANT NOTES
 
