@@ -1,0 +1,8 @@
+﻿IF UPPER('$(INCLUDE_PUBLISH)') <> 'TRUE'
+BEGIN
+    DROP PROCEDURE IF EXISTS publish.PublishSolution;
+    DROP ROLE IF EXISTS Publisher;
+
+    DROP SCHEMA IF EXISTS publish;
+END;
+GO

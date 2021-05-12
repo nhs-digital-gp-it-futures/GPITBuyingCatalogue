@@ -18,15 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             _logger.LogInformation("Taking user to Home Index page");
 
+            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable("BC_DB_CONNECTION");
+            _logger.LogInformation("MJRXXX" + buyingCatalogueConnectionString);
+
             return View();
         }
 
-#if DEBUG
         public IActionResult TestLinks()
         {
             return View();
         }
-#endif
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode)
