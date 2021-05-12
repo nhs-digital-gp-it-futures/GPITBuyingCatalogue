@@ -34,4 +34,4 @@ if [ "${INTEGRATION_TEST^^}" = "TRUE" ]; then
     /opt/mssql-tools/bin/sqlcmd -S $DB_SERVER,$PORT -U $SA_USERNAME -P $SA_PASSWORD -d $DB_NAME -I -i "PostDeployment.sql"
 fi
 
-printf "\nDatabase setup complete!!\n"
+printf "\nBuyingCatalogue database setup complete\n"

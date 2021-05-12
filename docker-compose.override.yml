@@ -14,7 +14,8 @@ services:
             - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
         depends_on:
-            - "sqlserver"
+            - "nhsd_bcdb_deploy"
+            - "nhsd_cudb_deploy"
             - "maildev"
 
     sqlserver:
@@ -29,20 +30,45 @@ services:
         image: maildev/maildev
         ports:
         - "1080:80"
+        - "1081:25"
 
-    dacpac:
+    nhsd_bcdb_deploy:
         image: ${DOCKER_REGISTRY}buyingcataloguedatabase
-        container_name: mydacpac
+        container_name: nhsd_bcdb_deploy
         build:
             context: .
             dockerfile: database/NHSD.BuyingCatalogue.Database.Deployment/Docker/Dockerfile
         environment:
             SA_PASSWORD: "Abc123Abc123"
-            DB_NAME: "buyingcatalogue"
-            DB_SERVER: sqlserver
             NHSD_PASSWORD: "DisruptTheMarket1!"
+            DB_NAME: "BuyingCatalogue"
+            DB_SERVER: sqlserver            
             INCLUDE_IMPORT: "TRUE"
             INCLUDE_PUBLISH: "TRUE"
             INSERT_TEST_DATA: "TRUE"
         depends_on:
-            - "sqlserver"            
+            - "sqlserver"   
+            
+    nhsd_cudb_deploy:
+        image: ${DOCKER_REGISTRY}catalogueusersdatabase
+        container_name: nhsd_cudb_deploy
+        build:
+            context: .
+            dockerfile: database/NHSD.BuyingCatalogue.Identity.UserDatabase.Deployment/Docker/Dockerfile
+        environment:
+            SA_PASSWORD: "Abc123Abc123"
+            NHSD_PASSWORD: "DisruptTheMarket1!"
+            DB_NAME: "CatalogueUsers"
+            DB_SERVER: sqlserver            
+            INCLUDE_IMPORT: "TRUE"
+            INCLUDE_PUBLISH: "TRUE"
+            INSERT_TEST_DATA: "TRUE"                                    
+            CREATE_EA_USER: "True"
+            EA_USER_FIRST_NAME: "Agency"
+            EA_USER_LAST_NAME: "User"
+            EA_USER_EMAIL: "user@agency.com"
+            EA_USER_PASSWORD_HASH: "AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg=="
+            EA_USER_PHONE: "01234567890" 
+
+        depends_on:
+            - "sqlserver"   
