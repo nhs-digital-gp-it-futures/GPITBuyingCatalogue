@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -8,10 +9,22 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
     {
         public int Id { get; set; }
         public string SolutionId { get; set; }
+
+        [StringLength(35)]
         public string FirstName { get; set; }
+
+        [StringLength(35)]
         public string LastName { get; set; }
+
+        [StringLength(255)]
+        [EmailAddress]
         public string Email { get; set; }
+
+        [StringLength(35)]
+        [Phone]
         public string PhoneNumber { get; set; }
+
+        [StringLength(50)]
         public string Department { get; set; }
         public DateTime LastUpdated { get; set; }
         public Guid LastUpdatedBy { get; set; }

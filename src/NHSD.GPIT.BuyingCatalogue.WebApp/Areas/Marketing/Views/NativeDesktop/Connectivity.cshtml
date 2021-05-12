@@ -8,39 +8,16 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Native desktop application – connectivity</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know about your Catalogue Solution’s connection requirements.</h2>
-            <div data-test-id="section-additional-advice">
-            </div>
-        </div>
-
+        <nhs-validation-summary />
+        <nhs-page-title title="Native desktop application – connectivity"
+                        title-advice="Let buyers know about your Catalogue Solution’s connection requirements." />
         <form method="post">
-
             <input type="hidden" asp-for="@Model.SolutionId" />
-
-            <div data-test-id="section-question-combobox-options" class="nhsuk-u-margin-bottom-6">
-                <div data-test-id="question-minimum-connection-speed">
-                    <div data-test-id="combobox-options">
-                        <div class="nhsuk-form-group">
-                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="minimum-connection-speed">
-                                Connection speed
-                            </label>
-                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="minimum-connection-speed-hint">
-                                Select the minimum bandwidth required for your Catalogue Solution to function.
-                            </div>
-                            @Html.DropDownListFor(x => Model.SelectedConnectionSpeed, new SelectList(Model.ConnectionSpeeds, "Value", "Text"), htmlAttributes: new { @class = "nhsuk-select" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
-
+            <nhs-validation-select asp-for="SelectedConnectionSpeed"
+                                   asp-items="@(new SelectList(Model.ConnectionSpeeds, "Value", "Text"))"
+                                   label-text="Connection speed"
+                                   label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
+            <nhs-submit-button />
         </form>
     </div>
 </div>

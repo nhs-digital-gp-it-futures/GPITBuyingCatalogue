@@ -8,65 +8,19 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Native desktop application – third-party components and device capabilities</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know about any third-party components or device capabilities needed for your Catalogue Solution.</h2>
-            <div data-test-id="section-additional-advice">
-            </div>
-        </div>
-
+        <nhs-validation-summary />
+        <nhs-page-title title="Native desktop application – third-party components and device capabilities"
+                        title-advice="Let buyers know about any third-party components or device capabilities needed for your Catalogue Solution." />
         <form method="post">
-
             <input type="hidden" asp-for="@Model.SolutionId" />
 
-            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-                <div data-test-id="question-third-party-components">
-                    <div data-test-id="textarea-field">
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
-                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.ThirdPartyComponents">
-                                    Third-party components (optional)
-                                </label>
-                                <div id="ThirdPartyComponents-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
-                                    Provide information on any third-party components required for your Catalogue Solution to function, for example integration software, such as a QR code scanner, or Google search.
-                                </div>
-                                <textarea class="govuk-textarea govuk-js-character-count" rows="5" aria-describedby="ThirdPartyComponents-info ThirdPartyComponents-hint" asp-for="@Model.ThirdPartyComponents"></textarea>
-                            </div>
-                            <div id="ThirdPartyComponents-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 500 characters
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-                <div data-test-id="question-device-capabilities">
-                    <div data-test-id="textarea-field">
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
-                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.DeviceCapabilities">
-                                    Device capabilities (optional)
-                                </label>
-                                <div id="DeviceCapabilities-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
-                                    Provide information on any device capabilities required for your Catalogue Solution to function, for example a camera or a certain type of connection port.
-                                </div>
-                                <textarea class="govuk-textarea govuk-js-character-count" rows="5" aria-describedby="DeviceCapabilities-info DeviceCapabilities-hint" asp-for="@Model.DeviceCapabilities"></textarea>
-                            </div>
-                            <div id="DeviceCapabilities-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 500 characters
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
-
+            <nhs-validation-textarea asp-for="ThirdPartyComponents"
+                                     label-text="Third-party components (optional)"
+                                     label-hint="Provide information on any third-party components required for your Catalogue Solution to function, for example integration software, such as a QR code scanner, or Google search." />
+            <nhs-validation-textarea asp-for="DeviceCapabilities"
+                                     label-text="Device capabilities (optional)"
+                                     label-hint="Provide information on any device capabilities required for your Catalogue Solution to function, for example a camera or a certain type of connection port." />
+            <nhs-submit-button />
         </form>
     </div>
 </div>

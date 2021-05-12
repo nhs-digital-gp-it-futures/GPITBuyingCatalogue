@@ -47,8 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             builder.AddCssClass($"{TagHelperConstants.NhsMarginBottom}-3");
 
-            builder.MergeAttribute(TagHelperConstants.DataTestId, "section-title");
-
             builder.InnerHtml.Append(Title);
 
             return builder;
@@ -60,8 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             builder.AddCssClass($"{TagHelperConstants.NhsFontSize}-22");
 
-            builder.MergeAttribute(TagHelperConstants.DataTestId, "section-main-advice");
-
             builder.InnerHtml.Append(TitleAdvice);
 
             return builder;
@@ -71,13 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         {
             var builder = new TagBuilder(TagHelperConstants.Div);
 
-            builder.MergeAttribute(TagHelperConstants.DataTestId, "section-additional-advice");
-
             builder.InnerHtml.Append(TitleAdviceAditional);
 
             return builder;
         }
-
-
     }
 }

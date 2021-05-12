@@ -38,8 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
 
-
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (output is null)            
@@ -47,8 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             output.Content.Clear();
 
-            var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(For.Name);
-            var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(TagHelperConstants.TextFieldInput);
             var formGroup = TagHelperBuilders.GetFormGroupBuilder(For.Name);
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For,  htmlGenerator, null, LabelText, DisableLabelAndHint);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
@@ -61,10 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             formGroup.InnerHtml.AppendHtml(validation);
             formGroup.InnerHtml.AppendHtml(input);
             formGroup.InnerHtml.AppendHtml(counter);
-            innerTesting.InnerHtml.AppendHtml(formGroup);
-            outerTesting.InnerHtml.AppendHtml(innerTesting);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, outerTesting, TagHelperConstants.SectionTextField, DisableCharacterCounter);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, DisableCharacterCounter);
         }
 
         private TagBuilder GetInputBuilder()

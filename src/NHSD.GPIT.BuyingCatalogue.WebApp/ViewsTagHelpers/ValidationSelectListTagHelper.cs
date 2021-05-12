@@ -46,16 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var selectlist = GetSelectListBuilder();
-            var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(TagHelperConstants.ComboboxOptions);
-            var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(For.Name);
 
             formgroup.InnerHtml.AppendHtml(label);
             formgroup.InnerHtml.AppendHtml(hint);
             formgroup.InnerHtml.AppendHtml(selectlist);
-            innerTesting.InnerHtml.AppendHtml(formgroup);
-            outerTesting.InnerHtml.AppendHtml(innerTesting);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, outerTesting, TagHelperConstants.SectionCombobox, true);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formgroup, true);
         }
 
         private TagBuilder GetSelectListBuilder()

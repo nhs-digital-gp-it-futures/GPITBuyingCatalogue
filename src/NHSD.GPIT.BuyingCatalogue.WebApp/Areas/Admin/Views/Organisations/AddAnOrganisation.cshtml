@@ -11,22 +11,17 @@
             <nhs-page-title 
                 title="Add organisation to @Model.Organisation.Name"
                 title-advice="@Model.Organisation.Name will then be able to create orders on this organisation's behalf." />
-
             <form method="post">
                 <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
 
                 <nhs-fieldset-form
                     asp-for="@Model"
                     label-text="Which organisation are you looking for?"
-                    label-hint="Select one option."
-                    contains-radio-buttons="true">
+                    label-hint="Select one option.">
                     <nhs-radio-buttons asp-for="@Model.SelectedOrganisation" values="@Model.AvailableOrganisations" value-name="OrganisationId" display-name="Name" />
                 </nhs-fieldset-form>
                 <nhs-submit-button text="Confirm" />
-            </form>
-
-            
-
+            </form>    
         </div>
     </div>
 </div>

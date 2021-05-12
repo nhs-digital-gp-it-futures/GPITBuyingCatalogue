@@ -52,7 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 new TagHelperAttribute(TagHelperConstants.Role, TagHelperConstants.RoleAlert),
                 new TagHelperAttribute(TagHelperConstants.LabelledBy, TagHelperConstants.ErrorSummaryTitle),
                 new TagHelperAttribute(TagHelperConstants.TabIndex, "-1"),
-                new TagHelperAttribute(TagHelperConstants.DataTestId, "error-summary"),
                 new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsValidationSummary)
             };
 

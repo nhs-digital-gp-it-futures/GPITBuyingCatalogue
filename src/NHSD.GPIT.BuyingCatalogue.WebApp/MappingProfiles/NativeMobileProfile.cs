@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 {
@@ -15,18 +12,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
     {
         public NativeMobileProfile()
         {
-            CreateMap<CatalogueItem, ConnectivityModel>()
-                .ForMember(dest => dest.ConnectionTypes,
-                    opt => opt.MapFrom(src => new ConnectionTypeModel[]
+            CreateMap<CatalogueItem, OperatingSystemsModel>()
+                .ForMember(dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeMobileBackLink(src.CatalogueItemId)))
+                .ForMember(dest => dest.Description, opt =>
+                {
+                    opt.SetMappingOrder(10);
+                    opt.MapFrom((_, dest) => dest.ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription);
+                })
+                .ForMember(dest => dest.OperatingSystems,
+                    opt => opt.MapFrom(src => ProfileDefaults.SupportedOperatingSystems))
+                .IncludeBase<CatalogueItem, MarketingBaseModel>()
+                .AfterMap((_, dest) =>
+                {
+                    foreach (var browser in dest.OperatingSystems)
                     {
-                        new() { ConnectionType = "GPRS" },
-                        new() { ConnectionType = "3G" },
-                        new() { ConnectionType = "LTE" },
-                        new() { ConnectionType = "4G" },
-                        new() { ConnectionType = "5G" },
-                        new() { ConnectionType = "Bluetooth" },
-                        new() { ConnectionType = "Wifi" }
-                    }))
+                        if (dest.ClientApplication?.MobileOperatingSystems?.OperatingSystems != null &&
+                            dest.ClientApplication.MobileOperatingSystems.OperatingSystems.Any(x => x.Equals(browser.OperatingSystemName, StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            browser.Checked = true;
+                        }
+                    }
+                });
+
+            CreateMap<CatalogueItem, MobileFirstApproachModel>()
+                .ForMember(dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeMobileBackLink(src.CatalogueItemId)))
+                .ForMember(dest => dest.MobileFirstApproach, opt =>
+                {
+                    opt.SetMappingOrder(10);
+                    opt.Condition((_, dest) => dest.ClientApplication.NativeMobileFirstDesign.HasValue);
+                    opt.MapFrom((_, dest) => dest.ClientApplication.NativeMobileFirstDesign.ToYesNo());
+                })
+                .IncludeBase<CatalogueItem, MarketingBaseModel>();
+
+            CreateMap<CatalogueItem, ConnectivityModel>()
+                .ForMember(dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeMobileBackLink(src.CatalogueItemId)))
+                .ForMember(dest => dest.ConnectionTypes,
+                    opt => opt.MapFrom(src => ProfileDefaults.MobileConnectionTypes))
                 .ForMember(dest => dest.Description, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -37,21 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.SetMappingOrder(20);
                     opt.MapFrom((_, dest) => dest.ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed);
                 })
-                .ForMember(dest => dest.ConnectionSpeeds, opt => opt.MapFrom(src => new List<SelectListItem>
-                {
-                    new() { Text = "0.5Mbps", Value="0.5Mbps"},
-                    new() { Text = "1Mbps", Value="1Mbps"},
-                    new() { Text = "1.5Mbps", Value="1.5Mbps"},
-                    new() { Text = "2Mbps", Value="2Mbps"},
-                    new() { Text = "3Mbps", Value="3Mbps"},
-                    new() { Text = "5Mbps", Value="5Mbps"},
-                    new() { Text = "8Mbps", Value="8Mbps"},
-                    new() { Text = "10Mbps", Value="10Mbps"},
-                    new() { Text = "15Mbps", Value="15Mbps"},
-                    new() { Text = "20Mbps", Value="20Mbps"},
-                    new() { Text = "30Mbps", Value="30Mbps"},
-                    new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"},
-                }))
+                .ForMember(dest => dest.ConnectionSpeeds,
+                    opt => opt.MapFrom(src => ProfileDefaults.ConnectionSpeeds))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>()
                 .AfterMap((_, dest) =>
                 {
@@ -66,17 +77,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 });
 
             CreateMap<CatalogueItem, MemoryAndStorageModel>()
+                .ForMember(dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeMobileBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.MemorySizes,
-                    opt => opt.MapFrom(src => new List<SelectListItem>
-                    {
-                        new SelectListItem{ Text = "256MB", Value = "256MB"},
-                        new SelectListItem{ Text = "512MB", Value = "512MB"},
-                        new SelectListItem{ Text = "1GB", Value = "1GB"},
-                        new SelectListItem{ Text = "2GB", Value = "2GB"},
-                        new SelectListItem{ Text = "4GB", Value = "4GB"},
-                        new SelectListItem{ Text = "8GB", Value = "8GB"},
-                        new SelectListItem{ Text = "16GB or higher", Value = "16GB or higher"}
-                    }))
+                    opt => opt.MapFrom(src => ProfileDefaults.MemorySizes))
                 .ForMember(dest => dest.SelectedMemorySize, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -90,6 +94,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ThirdPartyModel>()
+                .ForMember(dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeMobileBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.ThirdPartyComponents, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -103,6 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, HardwareRequirementsModel>()
+                .ForMember(dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeMobileBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.Description, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -111,6 +119,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, AdditionalInformationModel>()
+                .ForMember(dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeMobileBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.AdditionalInformation, opt =>
                 {
                     opt.SetMappingOrder(10);

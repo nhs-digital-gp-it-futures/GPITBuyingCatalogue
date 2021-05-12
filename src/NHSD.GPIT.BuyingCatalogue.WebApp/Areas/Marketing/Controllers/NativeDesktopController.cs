@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
@@ -13,11 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     public class NativeDesktopController : Controller
     {
         private readonly ILogWrapper<NativeDesktopController> _logger;
+        private readonly IMapper _mapper;
         private readonly ISolutionsService _solutionsService;
 
-        public NativeDesktopController(ILogWrapper<NativeDesktopController> logger, ISolutionsService solutionsService)
+        public NativeDesktopController(ILogWrapper<NativeDesktopController> logger, IMapper mapper, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
                                   
@@ -57,8 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-            
-            return View(new ConnectivityModel(solution));
+
+            var model = _mapper.Map<CatalogueItem, ConnectivityModel>(solution);
+
+            return View(model);
         }
 
         [HttpPost("connectivity")]
@@ -86,8 +92,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-            
-            return View(new MemoryAndStorageModel(solution));
+
+            var model = _mapper.Map<CatalogueItem, MemoryAndStorageModel>(solution);
+
+            return View(model);
         }
 
         [HttpPost("memory-and-storage")]
@@ -121,8 +129,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-            
-            return View(new ThirdPartyModel(solution));
+
+            var model = _mapper.Map<CatalogueItem, ThirdPartyModel>(solution);
+
+            return View(model);
         }
 
         [HttpPost("third-party")]
@@ -154,8 +164,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-            
-            return View(new HardwareRequirementsModel(solution));
+
+            var model = _mapper.Map<CatalogueItem, HardwareRequirementsModel>(solution);
+
+            return View(model);
         }
 
         [HttpPost("hardware-requirements")]
@@ -183,8 +195,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-            
-            return View(new AdditionalInformationModel(solution));
+
+            var model = _mapper.Map<CatalogueItem, AdditionalInformationModel>(solution);
+
+            return View(model);
         }
 
         [HttpPost("additional-information")]

@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new OperatingSystemsModel(solution);
+            var model = _mapper.Map<CatalogueItem, OperatingSystemsModel>(solution);
 
             return View(model);
         }
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new MobileFirstApproachModel(solution);
+            var model = _mapper.Map<CatalogueItem, MobileFirstApproachModel>(solution);
 
             return View(model);
         }

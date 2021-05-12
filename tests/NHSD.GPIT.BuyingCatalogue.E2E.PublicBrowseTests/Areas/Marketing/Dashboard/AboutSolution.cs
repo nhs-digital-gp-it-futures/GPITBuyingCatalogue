@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             MarketingPages.DashboardActions.SectionMarkedComplete("Solution description").Should().BeFalse();
         }
 
-        [Fact(Skip = "Validation not implemented")]
+        [Fact]
         public async Task AboutSolution_SummaryLeftEmpty()
         {
             using var context = GetBCContext();
@@ -65,21 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             await context.SaveChangesAsync();
             driver.Navigate().Refresh();
-
-            MarketingPages.CommonActions.ClickSave();
-
-            MarketingPages.SolutionDescriptionActions.ErrorMessageDisplayed().Should().BeTrue();
-        }
-
-        [Theory(Skip = "Validation not implemented")]
-        [InlineData(301, 1000, 1000)]
-        [InlineData(300, 1001, 1000)]
-        [InlineData(300, 1000, 1001)]
-        public void AboutSolution_ExceedsMaxLength(int summaryCount, int descriptionCount, int linkCount)
-        {
-            MarketingPages.SolutionDescriptionActions.SummaryAddText(summaryCount);
-            MarketingPages.SolutionDescriptionActions.DescriptionAddText(descriptionCount);
-            MarketingPages.SolutionDescriptionActions.LinkAddText(linkCount);
 
             MarketingPages.CommonActions.ClickSave();
 

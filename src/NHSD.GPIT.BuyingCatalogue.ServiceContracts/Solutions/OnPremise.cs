@@ -1,14 +1,19 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     [ExcludeFromCodeCoverage]
     public class OnPremise
     {
+        [StringLength(500)]
         public string Summary { get; set; }
 
+        [StringLength(1000)]
+        [Url]
         public string Link { get; set; }
 
+        [StringLength(1000)]
         public string HostingModel { get; set; }
 
         public string RequiresHscn { get; set; }

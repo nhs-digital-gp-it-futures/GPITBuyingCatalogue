@@ -8,19 +8,12 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Contact details</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Help buyers get in touch about your Catalogue Solution.</h2>
-            <div data-test-id="section-additional-advice">
-            </div>
-        </div>
-
+        <nhs-validation-summary />
+        <nhs-page-title title="Contact details"
+                        title-advice="Help buyers get in touch about your Catalogue Solution." />
         <form method="post">
-
             <input type="hidden" asp-for="@Model.SolutionId" />
-
             <div data-test-id="question-contact-1" class="nhsuk-u-margin-bottom-6">
-
                 <div data-test-id="multi-question-main-advice">
                     <span class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold bc-u-inline-block nhsuk-u-margin-bottom-2">
                         Contact 1 (optional)
@@ -29,106 +22,21 @@
                 <span data-test-id="multi-question-additional-advice" class="nhsuk-hint nhsuk-u-margin-bottom-3">
                     Provide some or all of the following information about an individual or department at your organisation.
                 </span>
-
                 <div data-test-id="multi-question-questions">
-
-                    <input type="hidden" asp-for="@Model.Contact1.Id" />
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-1[first-name]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact1.FirstName">
-                                        First name
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact1.FirstName">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 35)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-1[last-name]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact1.LastName">
-                                        Last name
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact1.LastName">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 35)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-1[department-name]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact1.Department">
-                                        Department name
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact1.Department">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 50)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-1[phone-number]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact1.PhoneNumber">
-                                        Phone number
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact1.PhoneNumber">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 35)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-1[email-address]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact1.Email">
-                                        Email address
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact1.Email">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 255)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
+                    <input type="hidden" asp-for="Contact1.Id" />
+                    <nhs-validation-input asp-for="Contact1.FirstName"
+                                          label-text="First name" />
+                    <nhs-validation-input asp-for="Contact1.LastName"
+                                          label-text="Last name" />
+                    <nhs-validation-input asp-for="Contact1.Department"
+                                          label-text="Department name" />
+                    <nhs-validation-input asp-for="Contact1.PhoneNumber"
+                                          label-text="Phone number" />
+                    <nhs-validation-input asp-for="Contact1.Email"
+                                          label-text="Email address" />
                 </div>
             </div>
-
             <div data-test-id="question-contact-2" class="nhsuk-u-margin-bottom-6">
-
                 <div data-test-id="multi-question-main-advice">
                     <span class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold bc-u-inline-block nhsuk-u-margin-bottom-2">
                         Contact 2 (optional)
@@ -137,109 +45,21 @@
                 <span data-test-id="multi-question-additional-advice" class="nhsuk-hint nhsuk-u-margin-bottom-3">
                     Provide some or all of the following information about an individual or department at your organisation.
                 </span>
-
                 <div data-test-id="multi-question-questions">
-
-                    <input type="hidden" asp-for="@Model.Contact2.Id" />
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-2[first-name]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact2.FirstName">
-                                        First name
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact2.FirstName">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 35)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-2[last-name]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact2.LastName">
-                                        Last name
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact2.LastName">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 35)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-2[department-name]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact2.Department">
-                                        Department name
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact2.Department">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 50)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-2[phone-number]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact2.PhoneNumber">
-                                        Phone number
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact2.PhoneNumber">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 35)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="section-question-text-field" class="nhsuk-u-margin-bottom-3">
-                        <div data-test-id="question-contact-2[email-address]">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.Contact2.Email">
-                                        Email address
-                                    </label>
-                                    <input class="nhsuk-input" type="text" asp-for="@Model.Contact2.Email">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                    (Maximum number of characters 255)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
+                    <input type="hidden" asp-for="Contact2.Id" />
+                    <nhs-validation-input asp-for="Contact2.FirstName"
+                                          label-text="First name" />
+                    <nhs-validation-input asp-for="Contact2.LastName"
+                                          label-text="Last name" />
+                    <nhs-validation-input asp-for="Contact2.Department"
+                                          label-text="Department name" />
+                    <nhs-validation-input asp-for="Contact2.PhoneNumber"
+                                          label-text="Phone number" />
+                    <nhs-validation-input asp-for="Contact2.Email"
+                                          label-text="Email address" />
                 </div>
             </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
+            <nhs-submit-button />
         </form>
 
     </div>

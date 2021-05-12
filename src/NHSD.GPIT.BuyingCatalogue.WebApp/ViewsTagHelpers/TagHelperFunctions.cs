@@ -20,14 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         {
             return For?.Metadata?
             .ContainerType?
-            .GetProperty(For.Name)?
+            .GetProperty(For.Name.Substring(For.Name.LastIndexOf('.') + 1))?
             .GetCustomAttribute<T>();
         }
         public static IEnumerable<T> GetCustomAttributes<T>(ModelExpression For) where T : Attribute
         {
             return For?.Metadata?
             .ContainerType?
-            .GetProperty(For.Name)?
+            .GetProperty(For.Name.Substring(For.Name.LastIndexOf('.') + 1))?
             .GetCustomAttributes<T>();
         }
 

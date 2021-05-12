@@ -14,8 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public const string CheckBoxContainerTagName = CheckboxContainerTagHelper.TagHelperName;
         public const string RadioButtonTagName = RadioButtonsTagHelper.TagHelperName;
 
-        public const string ContainsRadioButtonsName = "contains-radio-buttons";
-
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
@@ -32,17 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
 
-        [HtmlAttributeName(ContainsRadioButtonsName)]
-        public bool? ContainsRadioButtons { get; set; }
-
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             string FormName = GetModelKebabNameFromFor();
 
-            var outerTesting = TagHelperBuilders.GetOuterTestingDivBuilder(FormName);
-            var innerTesting = TagHelperBuilders.GetInnerTestingDivBuilder(ContainsRadioButtons == true ?
-                                                                            TagHelperConstants.RadioOptions :
-                                                                            TagHelperConstants.CheckBoxOptions);
             var formGroup = TagHelperBuilders.GetFormGroupBuilder(FormName);
             var fieldset = GetFieldSetLegendHeadingBuilder(FormName);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, FormName, DisableLabelAndHint);
@@ -52,10 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             formGroup.InnerHtml.AppendHtml(fieldset);
             formGroup.InnerHtml.AppendHtml(hint);
             formGroup.InnerHtml.AppendHtml(content);
-            innerTesting.InnerHtml.AppendHtml(formGroup);
-            outerTesting.InnerHtml.AppendHtml(innerTesting);
 
-            TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, outerTesting, TagHelperConstants.SectionListForm, true, FormName);
+            TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, formGroup, true, FormName);
         }
 
         private TagBuilder GetFieldSetLegendHeadingBuilder(string FormName)

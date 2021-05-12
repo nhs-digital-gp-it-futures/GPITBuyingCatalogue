@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
-            output.Attributes.Add(TagHelperConstants.DataTestId, "section-submit-button");
+
             output.Attributes.Add(TagHelperConstants.Class, $"{TagHelperConstants.NhsMarginTop}-7");
 
             output.Content.AppendHtml(button);

@@ -19,7 +19,6 @@
         internal const string Input = "input";
 
         // Attributes
-        internal const string DataTestId = "data-test-id";
         internal const string For = "asp-for";
         internal const string Items = "asp-items";
         internal const string Id = "id";
@@ -71,10 +70,6 @@
         internal const string NhsFieldsetLegend = "nhsuk-fieldset__legend";
         internal const string NhsFieldsetLegendOne = "nhsuk-fieldset__legend--1";
         internal const string NhsFieldSetLegendHeading = "nhsuk-fieldset__heading";
-        internal const string SectionTextField = "section-question-text-field";
-        internal const string SectionTextAreaField = "section-question-textarea-field";
-        internal const string SectionListForm = "section-question-listform-field";
-        internal const string SectionCombobox = "section-question-combobox-options";
         internal const string NhsMarginTop = "nhsuk-u-margin-top";
         internal const string NhsMarginBottom = "nhsuk-u-margin-bottom";
         internal const string NhsFontSize = "nhsuk-u-font-size";
