@@ -4,11 +4,12 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Features(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/features")
         {
@@ -71,6 +72,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Features").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

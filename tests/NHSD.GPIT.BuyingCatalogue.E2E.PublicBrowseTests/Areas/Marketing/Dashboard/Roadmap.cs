@@ -4,11 +4,12 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class Roadmap : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Roadmap : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Roadmap(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/roadmap")
         {
@@ -46,6 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Roadmap").Should().BeTrue();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

@@ -2,16 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.NativeMobile
 {
-    public sealed class MobileFirst: TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class MobileFirst: TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public MobileFirst(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/mobile-first-approach")
         {
-            ClearClientApplication("99999-99");
-            driver.Navigate().Refresh();
         }
 
         [Theory]
@@ -46,6 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
             CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Mobile first approach").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

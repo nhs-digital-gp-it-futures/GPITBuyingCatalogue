@@ -3,16 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.NativeDesktop
 {
-    public sealed class ThirdPartyComponents : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ThirdPartyComponents : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public ThirdPartyComponents(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/third-party")
         {
-            ClearClientApplication("99999-99");
-            driver.Navigate().Refresh();
         }
 
         [Fact]
@@ -49,6 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
             CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Third-party components and device capabilities").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

@@ -4,11 +4,12 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class ImplementationTimescales : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ImplementationTimescales : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public ImplementationTimescales(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/implementation-timescales")
         {
@@ -45,6 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Implementation timescales").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

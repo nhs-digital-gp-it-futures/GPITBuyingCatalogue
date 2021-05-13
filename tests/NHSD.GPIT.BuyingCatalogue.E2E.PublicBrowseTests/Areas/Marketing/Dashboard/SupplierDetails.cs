@@ -4,11 +4,12 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class SupplierDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class SupplierDetails : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public SupplierDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/about-supplier")
         {
@@ -48,6 +49,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("About supplier").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

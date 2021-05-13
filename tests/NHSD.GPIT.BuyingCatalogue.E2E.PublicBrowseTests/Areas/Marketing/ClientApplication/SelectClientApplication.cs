@@ -1,11 +1,12 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
 {
-    public sealed class SelectClientApplication : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class SelectClientApplication : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public SelectClientApplication(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/client-application-types")
         {
@@ -42,6 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
             CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Client application type").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }
