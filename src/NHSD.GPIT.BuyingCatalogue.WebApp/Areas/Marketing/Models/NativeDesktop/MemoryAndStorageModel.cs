@@ -28,15 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
             SelectedScreenResolution = ClientApplication?.NativeDesktopMemoryAndStorage?.RecommendedResolution;
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement)
-                  && !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription)
-                  && !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumCpu); 
-            }
-        }
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement)
+            && !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription)
+            && !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumCpu);
 
         public string SelectedMemorySize { get; set; }
         public List<SelectListItem> MemorySizes { get; set; }

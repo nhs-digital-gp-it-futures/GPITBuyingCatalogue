@@ -20,11 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 
             SelectedConnectionSpeed = ClientApplication?.NativeDesktopMinimumConnectionSpeed;
         }
-        public string SelectedConnectionSpeed { get; set; }
+
         public List<SelectListItem> ConnectionSpeeds { get; set; }
-        public override bool? IsComplete
-        {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMinimumConnectionSpeed); }
-        }        
+
+        public string SelectedConnectionSpeed { get; set; }
+        
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMinimumConnectionSpeed);
     }
 }

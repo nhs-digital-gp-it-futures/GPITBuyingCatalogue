@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
             
             return View(_mapper.Map<CatalogueItem, AboutSupplierModel>(solution));
         }
@@ -59,6 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
             
             return View(_mapper.Map<CatalogueItem, ContactDetailsModel>(solution));
         }

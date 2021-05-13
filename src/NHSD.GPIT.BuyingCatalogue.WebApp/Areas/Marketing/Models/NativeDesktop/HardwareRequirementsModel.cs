@@ -20,10 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
             Description = ClientApplication?.NativeDesktopHardwareRequirements;
         }
 
-        public override bool? IsComplete
-        {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopHardwareRequirements); }
-        }
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopHardwareRequirements);
 
         [StringLength(500)]
         public string Description { get; set; }
