@@ -38,7 +38,10 @@ variable "repository_name" {
 variable "always_on" {
   type = string
 }
-variable "db_name" {
+variable "db_name_main" {
+  type = string
+}
+variable "db_name_identity" {
   type = string
 }
 variable "auth_pwd" {

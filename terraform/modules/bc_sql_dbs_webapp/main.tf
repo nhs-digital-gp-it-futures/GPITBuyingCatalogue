@@ -1,5 +1,5 @@
-resource "azurerm_sql_database" "sql_bapi" {
-  name                             = "${var.db_name}-bapi"
+resource "azurerm_sql_database" "sql_main" {
+  name                             = "BuyingCatalogue-${var.db_name}${var.environment}"
   resource_group_name              = var.rg_name 
   location                         = var.region
   server_name                      = var.sqlsvr_name 
@@ -18,8 +18,8 @@ resource "azurerm_sql_database" "sql_bapi" {
   }
 }
 
-resource "azurerm_sql_database" "sql_isapi" {
-  name                             = "${var.db_name}-isapi" 
+resource "azurerm_sql_database" "sql_user" {
+  name                             = "CatalogueUser-${var.db_name}${var.environment}"
   resource_group_name              = var.rg_name 
   location                         = var.region
   server_name                      = var.sqlsvr_name
@@ -38,8 +38,8 @@ resource "azurerm_sql_database" "sql_isapi" {
   }
 }
 
-resource "azurerm_sql_database" "sql_ordapi" {
-  name                             = "${var.db_name}-ordapi" 
+resource "azurerm_sql_database" "sql_ordering" {
+  name                             = "CatalogueOrdering-${var.db_name}${var.environment}"
   resource_group_name              = var.rg_name 
   location                         = var.region
   server_name                      = var.sqlsvr_name
