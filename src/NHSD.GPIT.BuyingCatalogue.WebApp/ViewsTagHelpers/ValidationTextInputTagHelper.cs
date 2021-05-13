@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (output is null)            
-                throw new ArgumentNullException(nameof(output));            
+                throw new ArgumentNullException(nameof(output));
 
             output.Content.Clear();
 
@@ -73,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 {
                     @class = TagHelperConstants.NhsInput,
                     aria_describedby = $"{For.Name}-info {For.Name}-summary",
-                    data_test_id = $"{For.Name}-input"
                 });
 
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
