@@ -13,11 +13,12 @@
                         title-advice="Let buyers know about the design concepts of your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
+            <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-fieldset-form asp-for="@Model"
                                label-text="Mobile first approach"
                                label-hint="Is your Catalogue Solution designed with a mobile first approach?">
                 <nhs-radio-buttons asp-for="MobileFirstApproach"
-                                   is-yes-no="true"/>
+                                   is-yes-no="true" />
             </nhs-fieldset-form>
             <nhs-submit-button />
         </form>

@@ -13,6 +13,7 @@
                         title-advice="Let buyers know the minimum requirements for your Catalogue Solution to function." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
+            <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-validation-select asp-for="SelectedMemorySize"
                                    asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
                                    label-text="Memory size"

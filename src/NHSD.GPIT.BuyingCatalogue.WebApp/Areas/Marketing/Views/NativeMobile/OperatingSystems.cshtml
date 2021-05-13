@@ -13,6 +13,7 @@
                         title-advice="Let buyers know which operating systems will work with your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
+            <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-fieldset-form asp-for="@Model"
                                label-text="Supported operating systems"
                                label-hint="Select the operating systems supported by your Catalogue Solution.">
@@ -25,7 +26,6 @@
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form>
-
             <nhs-validation-textarea asp-for="Description"
                                      label-text="Description of supported operating systems (optional)"
                                      label-hint="Provide any additional information that may be helpful to buyers, for example which version of the operating system is supported." />

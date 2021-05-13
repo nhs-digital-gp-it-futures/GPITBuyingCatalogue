@@ -15,20 +15,17 @@
         />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
-            <nhs-fieldset-form
-                asp-for="@Model"
-                label-text="Plug-ins or extensions required"
-                label-hint="Does a device using your Catalogue Solution require plug-ins or extensions that customise its browsers or software to function?"
-            >
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <nhs-fieldset-form asp-for="@Model"
+                               label-text="Plug-ins or extensions required"
+                               label-hint="Does a device using your Catalogue Solution require plug-ins or extensions that customise its browsers or software to function?">
                 <nhs-radio-buttons asp-for="@Model.PlugInsRequired" is-yes-no="true" />
             </nhs-fieldset-form>
-            <nhs-validation-textarea
-                asp-for="AdditionalInformation"
-                label-text="Additional information (optional)"
-                label-hint="If your Catalogue Solution uses plug-ins or extensions, provide more information about them for buyers."
-                number-of-rows="5"
-            />
-           <nhs-submit-button />
+            <nhs-validation-textarea asp-for="AdditionalInformation"
+                                     label-text="Additional information (optional)"
+                                     label-hint="If your Catalogue Solution uses plug-ins or extensions, provide more information about them for buyers."
+                                     number-of-rows="5" />
+            <nhs-submit-button />
         </form>
     </div>
 </div>

@@ -14,6 +14,7 @@
 
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
+            <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-validation-textarea asp-for="PublicCloud.Summary"
                                      label-text="Summary (optional)"
                                      label-hint="Provide information on how your Catalogue Solution can be hosted." />

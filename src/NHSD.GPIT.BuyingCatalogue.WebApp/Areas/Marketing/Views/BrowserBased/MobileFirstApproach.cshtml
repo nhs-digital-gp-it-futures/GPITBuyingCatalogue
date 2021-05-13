@@ -15,11 +15,11 @@
         />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
-            <nhs-fieldset-form
-                asp-for="@Model"
-                label-text="Mobile first approach"
-                label-hint="Is your Catalogue Solution designed with a mobile first approach?">
-                    <nhs-radio-buttons asp-for="@Model.MobileFirstApproach" is-yes-no="true" />
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <nhs-fieldset-form asp-for="@Model"
+                               label-text="Mobile first approach"
+                               label-hint="Is your Catalogue Solution designed with a mobile first approach?">
+                <nhs-radio-buttons asp-for="@Model.MobileFirstApproach" is-yes-no="true" />
             </nhs-fieldset-form>
             <nhs-submit-button />
         </form>

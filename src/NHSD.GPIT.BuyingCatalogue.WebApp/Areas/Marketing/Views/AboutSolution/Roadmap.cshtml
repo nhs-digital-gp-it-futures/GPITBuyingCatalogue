@@ -15,11 +15,10 @@
         />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
-            <nhs-validation-textarea
-             asp-for="Summary"
-             label-text="Summary (optional)"
-             label-hint="Provide information on how and when you plan to enhance your Catalogue Solution."
-            />
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <nhs-validation-textarea asp-for="Summary"
+                                     label-text="Summary (optional)"
+                                     label-hint="Provide information on how and when you plan to enhance your Catalogue Solution." />
             <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
                 <p class="nhsuk-u-font-size-14">This information will be published on the Buying Catalogue and therefore available to anyone. You should not include anything you consider commercially sensitive.</p>

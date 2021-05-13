@@ -13,7 +13,7 @@
                         title-advice="Let buyers know about any third-party components or device capabilities needed for your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
-
+            <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-validation-textarea asp-for="ThirdPartyComponents"
                                      label-text="Third-party components (optional)"
                                      label-hint="Provide information on any third-party components required for your Catalogue Solution to function, for example integration software, such as a QR code scanner, or Google search." />

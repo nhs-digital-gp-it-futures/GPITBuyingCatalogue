@@ -16,11 +16,10 @@
          />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
-            <nhs-validation-input
-                asp-for="Link"
-                label-text="Link to supplier asserted integrations (optional)"
-                label-hint="Provide a URL to a page that gives information about your own integrations. They may only allow your Catalogue Solution to partially integrate with other systems."
-             />
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <nhs-validation-input asp-for="Link"
+                                  label-text="Link to supplier asserted integrations (optional)"
+                                  label-hint="Provide a URL to a page that gives information about your own integrations. They may only allow your Catalogue Solution to partially integrate with other systems." />
             <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
                 <p class="nhsuk-u-font-size-14">If you are providing a URL, it must link to a page detailing all the supplier asserted integrations for your Catalogue Solution. It’s your responsibility to keep this page up-to-date.</p>
