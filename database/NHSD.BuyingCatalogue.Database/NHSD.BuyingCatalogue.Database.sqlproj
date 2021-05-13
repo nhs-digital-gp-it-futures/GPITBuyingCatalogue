@@ -134,6 +134,9 @@
     <Build Include="Stored Procedures\ImportAssociatedService.sql" />
     <Build Include="Functions\GetSupplierId.sql" />
     <Build Include="Types\AssociatedCatalogueItems.sql" />
+    <Build Include="Types\Solutions.sql" />
+    <Build Include="Types\AdditionalServices.sql" />
+    <Build Include="Types\AssociatedServices.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="INCLUDE_IMPORT">

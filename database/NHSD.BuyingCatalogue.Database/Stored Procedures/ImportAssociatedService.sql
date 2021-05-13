@@ -1,45 +1,66 @@
 ﻿CREATE PROCEDURE import.ImportAssociatedService
-     @AssociatedServiceId nvarchar(14),
-     @ServiceName nvarchar(255),
-     @ServiceDescription nvarchar(1000),
-     @OrderGuidance nvarchar(1000),
+     @AssociatedServices import.AssociatedServices READONLY,
      @AssociatedCatalogueItems import.AssociatedCatalogueItems READONLY
 AS
     SET NOCOUNT ON;
 
-    DECLARE @supplierId AS nvarchar(6) = import.GetSupplierId(@AssociatedServiceId);
+    DECLARE @items AS TABLE
+    (
+        Id nvarchar(14) NOT NULL,
+        SupplierId nvarchar(6) NULL,
+        [Name] nvarchar(255) NOT NULL,
+        [Description] nvarchar(1000) NULL,
+        OrderGuidance nvarchar(1000) NULL
+    );
 
-    IF NOT EXISTS (SELECT * FROM dbo.Supplier WHERE Id = @supplierId)
-        THROW 51000, 'Supplier record does not exist.', 1;
+    INSERT INTO @items(Id, [Name], SupplierId, [Description], OrderGuidance)
+         SELECT a.Id, a.[Name], gsi.Id, a.[Description], a.OrderGuidance
+          FROM @AssociatedServices AS a
+               CROSS APPLY import.GetSupplierId(a.Id) AS gsi;
 
-    DECLARE @associatedServiceCatalogueItemType AS int = (SELECT CatalogueItemTypeId FROM dbo.CatalogueItemType WHERE [Name] = 'Associated Service');
-    DECLARE @draftPublicationStatus AS int = (SELECT Id FROM dbo.PublicationStatus WHERE [Name] = 'Draft');
+    DECLARE @missingSuppliers AS TABLE
+    (
+        SupplierId nvarchar(6) PRIMARY KEY
+    );
+
+    INSERT INTO @missingSuppliers (SupplierId)
+         SELECT DISTINCT i.SupplierId
+           FROM @items AS i
+          WHERE NOT EXISTS (SELECT * FROM dbo.Supplier AS s WHERE s.Id = i.SupplierId);
+
+    IF EXISTS (SELECT * FROM @missingSuppliers)
+    BEGIN;
+        DECLARE @missingSuppliersList AS nvarchar(max) = (SELECT STRING_AGG(SupplierId, ', ') FROM @missingSuppliers);
+        DECLARE @errorMessage AS nvarchar(max) = 'One or more supplier records do not exist for the following IDs: ' + @missingSuppliersList;
+
+        THROW 51000, @errorMessage, 1;
+    END;
+
+    DECLARE @associatedServiceCatalogueItemType AS int = 3;
     DECLARE @emptyGuid AS uniqueidentifier = CAST(0x0 AS uniqueidentifier);
     DECLARE @now AS datetime = GETUTCDATE();
 
     BEGIN TRANSACTION;
 
     BEGIN TRY
-        IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @AssociatedServiceId)
-            INSERT INTO dbo.CatalogueItem(CatalogueItemId, [Name], Created,
-                        CatalogueItemTypeId, SupplierId, PublishedStatusId)
-                 VALUES (@AssociatedServiceId, @ServiceName, @now,
-                        @associatedServiceCatalogueItemType, @supplierId, @draftPublicationStatus);
+        INSERT INTO dbo.CatalogueItem(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
+             SELECT i.Id, i.[Name], @associatedServiceCatalogueItemType, i.SupplierId
+               FROM @items AS i
+              WHERE NOT EXISTS (SELECT * FROM dbo.AssociatedService AS a WHERE a.AssociatedServiceId = i.Id);
 
-        IF NOT EXISTS (SELECT * FROM dbo.AssociatedService WHERE AssociatedServiceId = @AssociatedServiceId)
-            INSERT INTO dbo.AssociatedService(AssociatedServiceId, [Description], OrderGuidance,
-                   LastUpdated, LastUpdatedBy)
-            VALUES (@AssociatedServiceId, @ServiceDescription, @OrderGuidance,
-                   @now, @emptyGuid);
+        INSERT INTO dbo.AssociatedService(AssociatedServiceId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+             SELECT i.Id, i.[Description], i.OrderGuidance, @now, @emptyGuid
+               FROM @items AS i
+              WHERE NOT EXISTS (SELECT * FROM dbo.AssociatedService AS a WHERE a.AssociatedServiceId = i.Id);
 
         INSERT INTO dbo.SupplierServiceAssociation(AssociatedServiceId, CatalogueItemId)
-             SELECT @AssociatedServiceId, CatalogueItemId
+             SELECT AssociatedServiceId, AssociatedCatalogueItemId
                FROM @AssociatedCatalogueItems AS a
               WHERE NOT EXISTS (
                     SELECT *
                       FROM dbo.SupplierServiceAssociation AS s
-                     WHERE s.AssociatedServiceId = @AssociatedServiceId
-                       AND s.CatalogueItemId = a.CatalogueItemId
+                     WHERE s.AssociatedServiceId = a.AssociatedServiceId
+                       AND s.CatalogueItemId = a.AssociatedCatalogueItemId
                     );
 
         COMMIT TRANSACTION;

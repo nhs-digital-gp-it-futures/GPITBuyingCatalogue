@@ -34,34 +34,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 
         public override bool? IsComplete => throw new NotImplementedException();
 
-        public string SolutionDescriptionStatus { get; set; } //=> GetStatus(new SolutionDescriptionModel(CatalogueItem));
+        public string SolutionDescriptionStatus { get; set; }
 
-        public string FeaturesStatus { get; set; } //=> GetStatus(new FeaturesModel(CatalogueItem));
+        public string FeaturesStatus { get; set; }
 
-        public string IntegrationsStatus { get; set; } //=> GetStatus(new IntegrationsModel(CatalogueItem));
+        public string IntegrationsStatus { get; set; }
 
-        public string ImplementationTimescalesStatus { get; set; } //=> GetStatus(new ImplementationTimescalesModel(CatalogueItem));
+        public string ImplementationTimescalesStatus { get; set; }
 
-        public string RoadmapStatus { get; set; } //=> GetStatus(new RoadmapModel(CatalogueItem));
+        public string RoadmapStatus { get; set; }
 
-        public string ClientApplicationTypeStatus { get; set; } //=> GetStatus(new ClientApplicationTypesModel(CatalogueItem));
+        public string ClientApplicationTypeStatus { get; set; }
 
-        public string PublicCloudStatus { get; set; } //=> GetStatus(new PublicCloudModel(CatalogueItem));
+        public string PublicCloudStatus { get; set; }
 
-        public string PrivateCloudStatus { get; set; } //=> GetStatus(new PrivateCloudModel(CatalogueItem));
+        public string PrivateCloudStatus { get; set; }
 
-        public string HybridStatus { get; set; } //=> GetStatus(new HybridModel(CatalogueItem));
+        public string HybridStatus { get; set; }
 
-        public string OnPremisesStatus { get; set; } //=> GetStatus(new OnPremiseModel(CatalogueItem));
+        public string OnPremisesStatus { get; set; }
 
-        public string AboutSupplierStatus { get; set; } //=> GetStatus(new AboutSupplierModel(CatalogueItem));
+        public string AboutSupplierStatus { get; set; }
 
-        public string ContactDetailsStatus { get; set; } //=> GetStatus(new ContactDetailsModel(CatalogueItem));
+        public string ContactDetailsStatus { get; set; }
 
-        public string BrowserBasedStatus { get; set; } //=> GetStatus(new BrowserBasedModel(CatalogueItem));
+        public string BrowserBasedStatus { get; set; }
 
-        public string NativeDesktopStatus { get; set; } //=> GetStatus(new NativeDesktopModel(CatalogueItem));
+        public string NativeDesktopStatus { get; set; }
 
-        public string NativeMobileStatus { get; set; } //=> GetStatus(new NativeMobileModel(CatalogueItem));
+        public string NativeMobileStatus { get; set; }
     }
 }

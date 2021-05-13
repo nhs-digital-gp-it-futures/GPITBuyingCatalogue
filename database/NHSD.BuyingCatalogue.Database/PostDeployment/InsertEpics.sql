@@ -29,7 +29,7 @@ VALUES
 ('C3E2', 'Manage my nominated EPS pharmacy', @capabilityId, 1, 1),
 ('C3E3', 'Manage my Preferred PharmacyAs a Patient', @capabilityId, 3, 1),
 ('C3E4', 'Manage Acute Medications', @capabilityId, 3, 1),
-('C3E5', 'View medication informatio', @capabilityId, 3, 1),
+('C3E5', 'View medication information', @capabilityId, 3, 1),
 ('C3E6', 'Manage Repeat Medications as a Proxy', @capabilityId, 3, 1),
 ('C3E7', 'Manage nominated EPS pharmacy as a Proxy', @capabilityId, 3, 1),
 ('C3E8', 'Manage Preferred Pharmacy as a Proxy', @capabilityId, 3, 1),
@@ -50,7 +50,7 @@ VALUES
 ('C5E1', 'Manage Session templates', @capabilityId, 1, 1),
 ('C5E2', 'Manage Sessions', @capabilityId, 1, 1),
 ('C5E3', 'Configure Appointments', @capabilityId, 1, 1),
-('C5E4', 'Practice configuratio', @capabilityId, 1, 1),
+('C5E4', 'Practice configuration', @capabilityId, 1, 1),
 ('C5E5', 'Manage Appointments', @capabilityId, 1, 1),
 ('C5E6', 'View Appointment reports', @capabilityId, 1, 1),
 ('C5E7', 'Access Patient Record', @capabilityId, 1, 1);
@@ -86,7 +86,7 @@ VALUES
 ('C8E1', 'Manage Requests for Investigations', @capabilityId, 1, 1),
 ('C8E2', 'View Requests for Investigations reports', @capabilityId, 1, 1),
 ('C8E3', 'Create a Request for Investigation for multiple Patients', @capabilityId, 3, 1),
-('C8E4', 'Receive external Request for Investigation informatio', @capabilityId, 3, 1);
+('C8E4', 'Receive external Request for Investigation information', @capabilityId, 3, 1);
 
 SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C9');
 
@@ -97,7 +97,7 @@ VALUES
 ('C9E3', 'Manage document attributes', @capabilityId, 1, 1),
 ('C9E4', 'Manage document coded entries', @capabilityId, 1, 1),
 ('C9E5', 'Document workflows', @capabilityId, 1, 1),
-('C9E6', 'Manage document annotatio', @capabilityId, 1, 1),
+('C9E6', 'Manage document annotation', @capabilityId, 1, 1),
 ('C9E7', 'Search for documents', @capabilityId, 1, 1),
 ('C9E8', 'Search document content', @capabilityId, 1, 1),
 ('C9E9', 'Document and Patient matching', @capabilityId, 1, 1),
@@ -128,11 +128,11 @@ SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C12');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
-('C12E1', 'Manage General Practice and Branch site informatio', @capabilityId, 1, 1),
+('C12E1', 'Manage General Practice and Branch site information', @capabilityId, 1, 1),
 ('C12E2', 'Manage General Practice Staff Members', @capabilityId, 1, 1),
 ('C12E3', 'Manage Staff Member inactivity periods', @capabilityId, 1, 1),
 ('C12E4', 'Manage Staff Member Groups', @capabilityId, 1, 1),
-('C12E5', 'Manage Related Organisations informatio', @capabilityId, 1, 1),
+('C12E5', 'Manage Related Organisations information', @capabilityId, 1, 1),
 ('C12E6', 'Manage Related Organisation Staff Members', @capabilityId, 1, 1),
 ('C12E7', 'Manage Non-human Resources', @capabilityId, 3, 1);
 
@@ -170,7 +170,7 @@ VALUES
 ('C14E2', 'Manage Formularies', @capabilityId, 1, 1),
 ('C14E3', 'Manage shared Formularies', @capabilityId, 1, 1),
 ('C14E4', 'Set default Formulary for Practice Users', @capabilityId, 1, 1),
-('C14E5', 'Manage prescribed medicatio', @capabilityId, 1, 1),
+('C14E5', 'Manage prescribed medication', @capabilityId, 1, 1),
 ('C14E6', 'Manage prescriptions', @capabilityId, 1, 1),
 ('C14E7', 'Manage Patient''s Preferred Pharmacy', @capabilityId, 1, 1),
 ('C14E8', 'Manage Patient medication reviews', @capabilityId, 1, 1),
@@ -187,7 +187,7 @@ SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C15');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
-('C15E1', 'Record Consultation informatio', @capabilityId, 1, 1),
+('C15E1', 'Record Consultation information', @capabilityId, 1, 1),
 ('C15E2', 'View report on calls and recalls', @capabilityId, 1, 1),
 ('C15E3', 'View report of Consultations', @capabilityId, 1, 1),
 ('C15E4', 'Access Patient Record', @capabilityId, 1, 1),
@@ -222,7 +222,7 @@ SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C19');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
-('C19E1', 'Document classificatio', @capabilityId, 1, 1),
+('C19E1', 'Document classification', @capabilityId, 1, 1),
 ('C19E2', 'Manage Document Classification rules', @capabilityId, 1, 1),
 ('C19E3', 'Document and Patient matching', @capabilityId, 1, 1);
 
@@ -241,8 +241,8 @@ VALUES
 ('C20E9', 'View Task reports', @capabilityId, 1, 1),
 ('C20E10', 'View Workflow reports', @capabilityId, 1, 1),
 ('C20E11', 'Access Patient Record', @capabilityId, 1, 1),
-('C20E12', 'Share Task List configuratio', @capabilityId, 3, 1),
-('C20E13', 'Share Workflow List configuratio', @capabilityId, 3, 1);
+('C20E12', 'Share Task List configuration', @capabilityId, 3, 1),
+('C20E13', 'Share Workflow List configuration', @capabilityId, 3, 1);
 
 SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C21');
 
@@ -316,7 +316,7 @@ VALUES
 ('C26E5', 'Present output', @capabilityId, 1, 1),
 ('C26E6', 'Define selection rules on reports', @capabilityId, 1, 1),
 ('C26E7', 'Create and run performance-based reports', @capabilityId, 3, 1),
-('C26E8', 'Drill down to detailed informatio', @capabilityId, 3, 1),
+('C26E8', 'Drill down to detailed information', @capabilityId, 3, 1),
 ('C26E9', 'Forecasting', @capabilityId, 3, 1),
 ('C26E10', 'Enable reporting at different levels', @capabilityId, 3, 1);
 
@@ -332,20 +332,7 @@ VALUES
 ('C27E6', 'Remote access to Domiciliary Care schedule', @capabilityId, 3, 1),
 ('C27E7', 'Receive notifications relating to Service User', @capabilityId, 3, 1),
 ('C27E8', 'Reports', @capabilityId, 3, 1),
-('C27E9', 'Nominated individuals to view Domiciliary Care schedule ', @capabilityId, 3, 1);
-
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C28');
-
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
-VALUES
-('C28E1', 'Patient/Service User requests support', @capabilityId, 1, 1),
-('C28E2', 'Respond to request for support from Patient/Service User', @capabilityId, 1, 1),
-('C28E3', 'Patient/Service User makes administrative request', @capabilityId, 3, 1),
-('C28E4', 'Link requests and responses to Patient/Service User Record', @capabilityId, 3, 1),
-('C28E5', 'Self-help and signposting', @capabilityId, 3, 1),
-('C28E6', 'Live Consultation: Patient/Service User and Health and Care Professionals', @capabilityId, 3, 1),
-('C28E7', 'Group e-Consultations', @capabilityId, 3, 1),
-('C28E8', 'Reports', @capabilityId, 3, 1);
+('C27E9', 'Nominated individuals to view Domiciliary Care schedule', @capabilityId, 3, 1);
 
 SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C29');
 
@@ -370,7 +357,7 @@ VALUES
 ('C30E6', 'Notify other interested parties of medication changes', @capabilityId, 3, 1),
 ('C30E7', 'Configure medication substitutions', @capabilityId, 3, 1),
 ('C30E8', 'Use pre-configured medication substitutions', @capabilityId, 3, 1),
-('C30E9', 'Maintain prescribed medicatio', @capabilityId, 3, 1),
+('C30E9', 'Maintain prescribed medication', @capabilityId, 3, 1),
 ('C30E10', 'Access national or local Medicines Optimisation guidance', @capabilityId, 3, 1),
 ('C30E11', 'Prescribing decision support', @capabilityId, 3, 1),
 ('C30E12', 'Medicines Optimisation reporting', @capabilityId, 3, 1),
@@ -384,7 +371,7 @@ VALUES
 ('C32E1', 'Manage Personal Health Budget', @capabilityId, 1, 1),
 ('C32E2', 'Record Personal Health Budget purchases', @capabilityId, 1, 1),
 ('C32E3', 'Assess Personal Health Budgets', @capabilityId, 1, 1),
-('C32E4', 'Link Personal Health Budget with care pla', @capabilityId, 3, 1),
+('C32E4', 'Link Personal Health Budget with care plan', @capabilityId, 3, 1),
 ('C32E5', 'Support different models for management of Personal Health Budgets', @capabilityId, 3, 1),
 ('C32E6', 'Apply criteria for the use of Personal Health Budgets', @capabilityId, 3, 1),
 ('C32E7', 'Payments under Personal Health Budgets', @capabilityId, 3, 1),
@@ -394,7 +381,7 @@ VALUES
 ('C32E11', 'Link to Patient Record', @capabilityId, 3, 1),
 ('C32E12', 'Link to Workflow', @capabilityId, 3, 1),
 ('C32E13', 'Provider view', @capabilityId, 3, 1),
-('C32E14', 'Management Informatio', @capabilityId, 3, 1),
+('C32E14', 'Management Information', @capabilityId, 3, 1),
 ('C32E15', 'Identify candidates for Personal Health Budgets', @capabilityId, 3, 1);
 
 SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C33');
@@ -402,7 +389,7 @@ SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C33');
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C33E1', 'Maintain Personal Health Record content', @capabilityId, 1, 1),
-('C33E2', 'Organise Personal Health Record ', @capabilityId, 3, 1),
+('C33E2', 'Organise Personal Health Record', @capabilityId, 3, 1),
 ('C33E3', 'Manage access to Personal Health Record', @capabilityId, 3, 1),
 ('C33E4', 'Manage data coming into Personal Health Record', @capabilityId, 3, 1);
 
@@ -427,10 +414,10 @@ SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C36');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
-('C36E1', 'Create Shared Care Pla', @capabilityId, 1, 1),
-('C36E2', 'View Shared Care Pla', @capabilityId, 1, 1),
-('C36E3', 'Amend Shared Care Pla', @capabilityId, 1, 1),
-('C36E4', 'Close Shared Care Plan ', @capabilityId, 1, 1),
+('C36E1', 'Create Shared Care Plan', @capabilityId, 1, 1),
+('C36E2', 'View Shared Care Plan', @capabilityId, 1, 1),
+('C36E3', 'Amend Shared Care Plan', @capabilityId, 1, 1),
+('C36E4', 'Close Shared Care Plan', @capabilityId, 1, 1),
 ('C36E5', 'Assign Shared Care Plan actions', @capabilityId, 3, 1),
 ('C36E6', 'Access Shared Care Plans remotely', @capabilityId, 3, 1),
 ('C36E7', 'Search and view Shared Care Plans', @capabilityId, 3, 1),
@@ -572,11 +559,111 @@ VALUES
 ('C47E8', 'View information from the GP Patient Record using GP Connect Access Record HTML', @capabilityId, 3, 1),
 ('C47E9', 'View information from the GP Patient Record held by the same Solution', @capabilityId, 3, 1),
 ('C47E10', 'View Summary Care Record (SCR) for a Patient', @capabilityId, 3, 1),
-('C47E11', 'Scanning of a GS1 barcode when recording vaccination data', @capabilityId, 1, 1),
+('C47E11', 'Scanning of a GS1 barcode when recording vaccination data', @capabilityId, 3, 1),
 ('C47E12', 'Record structured COVID-19 vaccination data at the point of care directly into GP Patient Record', @capabilityId, 3, 1),
 ('C47E13', 'Record structured COVID-19 adverse reaction data at the point of care directly into GP Patient Record', @capabilityId, 3, 1),
 ('C47E14', 'Verify Patient information using Personal Demographics Service (PDS)', @capabilityId, 1, 1),
-('C47E15', 'Latest COVID-19 Clinical Screening Questions at the point of care for Patients registered at different GP Practices', @capabilityId, 1, 1);
+('C47E15', 'Latest COVID-19 Clinical Screening Questions at the point of care for Patients registered at different GP Practices', @capabilityId, 1, 1),
+('C47E16', 'Record structured COVID-19 vaccination data at the point of care for Patients using pre-configured vaccine batches', @capabilityId, 1, 1),
+('C47E17', 'View vaccination information for a Patient held by the National Immunisation Management Service (NIMS) at point of care', @capabilityId, 1, 1),
+('C47E18', 'Update previously recorded structured COVID-19 vaccination and adverse reaction data for Patients', @capabilityId, 1, 1),
+('C47E19', 'Extract COVID-19 Extended Attributes data for NHS Digital Extended Attributes Extract', @capabilityId, 1, 1),
+('C47E20', 'View reports on COVID-19 vaccination data', @capabilityId, 1, 1);
+
+SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C43');
+
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+VALUES
+('E00001', 'conduct Online Consultation', @CapabilityId, 1, 1),
+('E00002', 'conduct Online Consultation with a Proxy', @CapabilityId, 3, 1),
+('E00003', 'Patient/Service User requests for Online Consultation support and provides information', @CapabilityId, 3, 1),
+('E00004', 'Proxy requests for Online Consultation support and provides information', @CapabilityId, 3, 1),
+('E00005', 'respond to Online Consultation requests for support from Patients/Service Users', @CapabilityId, 3, 1),
+('E00006', 'respond to Online Consultation requests for support from Proxies', @CapabilityId, 3, 1),
+('E00007', 'include attachments in Online Consultation requests', @CapabilityId, 3, 1),
+('E00008', 'include attachments in Online Consultation requests from a Proxy', @CapabilityId, 3, 1),
+('E00009', 'automated response to Online Consultation requests for support from Patients/Service Users', @CapabilityId, 3, 1),
+('E00010', 'automated response to Online Consultation requests for support from Proxies', @CapabilityId, 3, 1),
+('E00011', 'Patient/Service User makes an administrative request', @CapabilityId, 3, 1),
+('E00012', 'Proxy makes an administrative request', @CapabilityId, 3, 1),
+('E00013', 'respond to administrative requests for support from Patients/Service Users', @CapabilityId, 3, 1),
+('E00014', 'respond to administrative requests for support from Proxies', @CapabilityId, 3, 1),
+('E00015', 'automated responses to administrative requests from Patients/Service Users', @CapabilityId, 3, 1),
+('E00016', 'automated responses to administrative requests from Proxies', @CapabilityId, 3, 1),
+('E00017', 'link Online Consultation requests for support and responses', @CapabilityId, 3, 1),
+('E00018', 'link Online Consultation requests for support from a Proxy and responses', @CapabilityId, 3, 1),
+('E00019', 'self-help and signposting', @CapabilityId, 3, 1),
+('E00020', 'Proxy supporting self-help and signposting', @CapabilityId, 3, 1),
+('E00021', 'symptom checking', @CapabilityId, 3, 1),
+('E00022', 'symptom checking by a Proxy', @CapabilityId, 3, 1),
+('E00023', 'Direct Messaging', @CapabilityId, 3, 1),
+('E00024', 'Direct Messaging by a Proxy', @CapabilityId, 3, 1),
+('E00025', 'view the Patient Record during Online Consultation', @CapabilityId, 3, 1),
+('E00026', 'electronically share files during Direct Messaging', @CapabilityId, 3, 1),
+('E00027', 'electronically share files during Direct Messaging with a Proxy', @CapabilityId, 3, 1),
+('E00028', 'customisation of report', @CapabilityId, 3, 1),
+('E00029', 'report on utilisation of Online Consultation requests for support', @CapabilityId, 3, 1),
+('E00030', 'report on outcomes or dispositions provided to the Patient/Service User', @CapabilityId, 3, 1),
+('E00031', 'report on the status of Online Consultations', @CapabilityId, 3, 1),
+('E00032', 'report on Patient demographics using Online Consultation', @CapabilityId, 3, 1),
+('E00033', 'manually prioritise Online Consultation requests for support', @CapabilityId, 3, 1),
+('E00034', 'assign Online Consultation requests to a Health or Care Professional manually', @CapabilityId, 3, 1),
+('E00035', 'categorise outcome of Online Consultation requests', @CapabilityId, 3, 1),
+('E00037', 'automatically prioritise Online Consultation requests', @CapabilityId, 3, 1),
+('E00038', 'assign Online Consultation requests to Health or Care Professional automatically', @CapabilityId, 3, 1),
+('E00056', 'disable and enable Direct Messaging for a Healthcare Organisation', @CapabilityId, 3, 1),
+('E00057', 'disable and enable Direct Messaging for a Patient/Service User', @CapabilityId, 3, 1),
+('E00058', 'disable and enable electronic file sharing during Direct Messaging for a Healthcare Organisation', @CapabilityId, 3, 1),
+('E00075', 'Patient/Service User feedback for Online Consultation', @CapabilityId, 3, 1),
+('E00076', 'record Online Consultation outcome to the Patient Record', @CapabilityId, 3, 1),
+('E00077', 'retain attachments (file and images) in the Patient Record', @CapabilityId, 3, 1),
+('E00078', 'Verify Patient/Service User details against Personal Demographics Service (PDS)', @CapabilityId, 3, 1),
+('E00079', 'SNOMED code Online Consultation', @CapabilityId, 3, 1),
+('E00080', 'customisation of the question sets for Patients/Service Users requesting Online Consultation support', @CapabilityId, 3, 1),
+('E00081', 'accessibility options for Online Consultation', @CapabilityId, 3, 1),
+('E00082', 'notification to Patients/Service Users', @CapabilityId, 3, 1),
+('E00083', 'customisation of instructions to Patients/Service Users using Online Consultation Solution', @CapabilityId, 3, 1),
+('E00084', 'categorise administration requests', @CapabilityId, 3, 1),
+('E00085', 'disable and enable Direct Messaging for an Online Consultation request for support', @CapabilityId, 3, 1),
+('E00086', 'configuration of the triage process', @CapabilityId, 3, 1),
+('E00089', 'save the complete record of an Online Consultation to the Patient Record', @CapabilityId, 3, 1),
+('E00090', 'Health or Care Professional initiates an Online Consultations request', @CapabilityId, 3, 1),
+('E00091', 'Proxy Verification', @CapabilityId, 3, 1);
+
+SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C44');
+
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+VALUES
+('E00039', 'conduct Video Consultation', @CapabilityId, 1, 1),
+('E00040', 'conduct Video Consultation with a Proxy', @CapabilityId, 3, 1),
+('E00041', 'conduct Video Consultation with the Patient/Service User without registration', @CapabilityId, 3, 1),
+('E00042', 'conduct Video Consultation with a Proxy without registration', @CapabilityId, 3, 1),
+('E00043', 'end Video Consultation with a Patient/Service User', @CapabilityId, 3, 1),
+('E00045', 'Direct Messaging during a Video Consultation', @CapabilityId, 3, 1),
+('E00047', 'view the Patient Record during Video Consultation', @CapabilityId, 3, 1),
+('E00048', 'conduct group Video Consultations', @CapabilityId, 3, 1),
+('E00051', 'electronically share files during a Video Consultation', @CapabilityId, 3, 1),
+('E00053', 'Health or Care Professional can share their screen during a Video Consultation', @CapabilityId, 3, 1),
+('E00055', 'record Video Consultation outcome to the Patient record ', @CapabilityId, 3, 1),
+('E00059', 'Health or Care Professional can record a Video Consultation', @CapabilityId, 3, 1),
+('E00060', 'Patient/Service User can record a Video Consultation', @CapabilityId, 3, 1),
+('E00061', 'accessibility options', @CapabilityId, 3, 1),
+('E00062', 'waiting room', @CapabilityId, 3, 1),
+('E00063', 'disable and enable Direct Messaging during a Video Consultation for the Patient/Service User', @CapabilityId, 3, 1),
+('E00064', 'record Direct Messages to the Patient Record', @CapabilityId, 3, 1),
+('E00065', 'Patient/Service User name is not automatically visible in a group Video Consultation', @CapabilityId, 3, 1),
+('E00066', 'invite new participants to an existing Video Consultation with a Patient/Service User', @CapabilityId, 3, 1),
+('E00067', 'disable and enable electronic file sharing during a Video Consultation', @CapabilityId, 3, 1),
+('E00068', 'disable and enable screen sharing during a Video Consultation', @CapabilityId, 3, 1),
+('E00069', 'Patient/Service User feedback on Video Consultations', @CapabilityId, 3, 1),
+('E00070', 'test the Video Consultation settings', @CapabilityId, 3, 1),
+('E00071', 'consecutive consultations with multiple Patients/Service Users via a single Video Consultation', @CapabilityId, 3, 1),
+('E00072', 'reminder of upcoming or scheduled Video Consultation', @CapabilityId, 3, 1),
+('E00073', 'disable and enable audio during a group Video Consultation', @CapabilityId, 3, 1),
+('E00074', 'disable and enable video during a group Video Consultation', @CapabilityId, 3, 1),
+('E00087', 'retain attachments (file and images) received during Video Consultation in the Patient Record', @CapabilityId, 3, 1),
+('E00088', 'SNOMED code Video Consultation', @CapabilityId, 3, 1);
+
 
 MERGE INTO dbo.Epic AS TARGET
 USING #Epics AS SOURCE
