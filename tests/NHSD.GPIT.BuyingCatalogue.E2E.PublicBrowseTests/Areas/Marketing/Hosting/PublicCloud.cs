@@ -13,8 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
     {
         public PublicCloud(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-public-cloud")
         {
-            ClearHostingTypes("99999-99");
-            driver.Navigate().Refresh();
         }
 
         [Fact]
@@ -54,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearHostingTypes("99999-99");
         }
     }
 }

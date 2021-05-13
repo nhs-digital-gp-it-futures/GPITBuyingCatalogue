@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearHostingTypes("99999-99");
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using AutoMapper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
 
@@ -98,6 +95,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.MapFrom((_, dest) => dest.ClientApplication?.NativeDesktopAdditionalInformation);
                 })
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
+
+            CreateMap<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>()
+                .ForMember(dest => dest.MinimumMemoryRequirement, opt => opt.MapFrom(src => src.SelectedMemorySize))
+                .ForMember(dest => dest.StorageRequirementsDescription,
+                    opt => opt.MapFrom(src => src.StorageDescription))
+                .ForMember(dest => dest.MinimumCpu, opt => opt.MapFrom(src => src.MinimumCpu))
+                .ForMember(dest => dest.RecommendedResolution, opt => opt.MapFrom(src => src.SelectedScreenResolution));
+
+            CreateMap<ThirdPartyModel, NativeDesktopThirdParty>()
+                .ForMember(dest => dest.DeviceCapabilities, opt => opt.MapFrom(src => src.DeviceCapabilities))
+                .ForMember(dest => dest.ThirdPartyComponents, opt => opt.MapFrom(src => src.ThirdPartyComponents));
         }
     }
 }

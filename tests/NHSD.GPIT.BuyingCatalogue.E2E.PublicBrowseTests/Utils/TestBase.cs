@@ -64,5 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.SaveChanges();
         }
 
+        internal void ClearFeatures(string solutionId)
+        {
+            using var context = GetBCContext();
+            var solution = context.Solutions.Single(s => s.Id == solutionId);
+            solution.Features = string.Empty;
+            context.SaveChanges();
+        }
     }
 }

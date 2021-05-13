@@ -13,16 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     {
         public Features(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/features")
         {
-            using var context = GetBCContext();
-            var solution = context.Solutions.Single(s => s.Id == "99999-99");
-            solution.Features = string.Empty;
-            context.SaveChanges();
         }
 
         [Fact]
         public async Task Features_AddFeaturesAsync()
         {
             var feature = MarketingPages.FeaturesActions.EnterFeature();
+
             CommonActions.ClickSave();
 
             using var context = GetBCContext();
@@ -56,9 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void Features_SectionMarkedComplete()
         {
-            driver.Navigate().Refresh();
-
             var feature = MarketingPages.FeaturesActions.EnterFeature();
+
             CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Features").Should().BeTrue();
@@ -67,8 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void Features_SectionMarkedIncomplete()
         {
-            driver.Navigate().Refresh();
-
             CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Features").Should().BeFalse();
@@ -76,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearFeatures("99999-99");
         }
     }
 }
