@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
 using Xunit;
@@ -17,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public async Task MemoryAndStorage_CompleteAllFields()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectMemoryDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
 
-            var description = MarketingPages.AboutSupplierActions.DescriptionAddText(200);
+            var description = TextGenerators.TextInputAddText(CommonSelectors.Description, 200);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
 
@@ -34,11 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MemoryAndStorage_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectMemoryDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
 
-            MarketingPages.AboutSupplierActions.DescriptionAddText(200);
+            TextGenerators.TextInputAddText(CommonSelectors.Description, 200);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Memory and storage").Should().BeTrue();
         }
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MemoryAndStorage_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Memory and storage").Should().BeFalse();
         }

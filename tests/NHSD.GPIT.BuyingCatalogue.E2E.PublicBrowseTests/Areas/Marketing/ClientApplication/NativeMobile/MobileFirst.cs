@@ -19,9 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [InlineData("No")]
         public async Task MobileFirst_CompleteRadioButton(string label)
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText(label);
+            CommonActions.ClickRadioButtonWithText(label);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
 
@@ -33,9 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MobileFirst_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText("Yes");
+            CommonActions.ClickRadioButtonWithText("Yes");
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Mobile first approach").Should().BeTrue();
         }
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MobileFirst_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Mobile first approach").Should().BeFalse();
         }

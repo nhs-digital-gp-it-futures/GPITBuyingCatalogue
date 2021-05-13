@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
         public string Email { get; set; }
 
         [StringLength(35)]
-        [Phone]
         public string PhoneNumber { get; set; }
 
         [StringLength(50)]

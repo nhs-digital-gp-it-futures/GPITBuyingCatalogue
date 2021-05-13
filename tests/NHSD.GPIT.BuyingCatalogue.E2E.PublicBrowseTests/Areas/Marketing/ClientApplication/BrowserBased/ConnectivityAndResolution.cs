@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,10 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public async Task ConnectivityAndResolution_SelectBothFields()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectConnectionSpeedDropdown(1);
-            MarketingPages.ClientApplicationTypeActions.SelectResolutionDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).ClientApplication;
@@ -33,10 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void ConnectivityAndResolution_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectConnectionSpeedDropdown(1);
-            MarketingPages.ClientApplicationTypeActions.SelectResolutionDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Connectivity and resolution").Should().BeTrue();
         }
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void ConnectivityAndResolution_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Connectivity and resolution").Should().BeFalse();
         }

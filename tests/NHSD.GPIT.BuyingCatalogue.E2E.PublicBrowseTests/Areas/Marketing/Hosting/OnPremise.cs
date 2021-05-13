@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
 using Xunit;
@@ -17,12 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public async Task OnPremise_CompleteAllFields()
         {
-            var summary = MarketingPages.Hosting.OnPremiseActions.EnterSummary(500);
-            var link = MarketingPages.Hosting.OnPremiseActions.EnterLink(1000);
-            var hostingModel = MarketingPages.Hosting.OnPremiseActions.EnterHostingModel(1000);
-            MarketingPages.Hosting.PublicCloudActions.ToggleHSCNCheckbox();
+            var summary = TextGenerators.TextInputAddText(HostingTypesObjects.OnPremise_Summary, 500);
+            var link = TextGenerators.UrlInputAddText(HostingTypesObjects.OnPremise_Link, 1000);
+            var hostingModel = TextGenerators.TextInputAddText(HostingTypesObjects.OnPremise_HostingModel, 1000);
+            MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var hosting = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).Hosting;
@@ -33,12 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public void OnPremise_SectionComplete()
         {
-            MarketingPages.Hosting.OnPremiseActions.EnterSummary(500);
-            MarketingPages.Hosting.OnPremiseActions.EnterLink(1000);
-            MarketingPages.Hosting.OnPremiseActions.EnterHostingModel(1000);
-            MarketingPages.Hosting.PublicCloudActions.ToggleHSCNCheckbox();
+            TextGenerators.TextInputAddText(HostingTypesObjects.OnPremise_Summary, 500);
+            TextGenerators.UrlInputAddText(HostingTypesObjects.OnPremise_Link, 1000);
+            TextGenerators.TextInputAddText(HostingTypesObjects.OnPremise_HostingModel, 1000);
+            MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("On premise").Should().BeTrue();
         }
@@ -46,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public void OnPremise_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("On premise").Should().BeFalse();
         }

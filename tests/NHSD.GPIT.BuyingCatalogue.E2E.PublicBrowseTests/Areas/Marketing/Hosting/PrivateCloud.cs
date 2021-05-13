@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
 using Xunit;
@@ -17,12 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public async Task PrivateCloud_CompleteAllFields()
         {
-            var summary = MarketingPages.Hosting.PrivateCloudActions.EnterSummary(500);
-            var link = MarketingPages.Hosting.PrivateCloudActions.EnterLink(1000);
-            var hostingModel = MarketingPages.Hosting.PrivateCloudActions.EnterHostingModel(1000);
-            MarketingPages.Hosting.PublicCloudActions.ToggleHSCNCheckbox();
+            var summary = TextGenerators.TextInputAddText(HostingTypesObjects.PrivateCloud_Summary, 500);
+            var link = TextGenerators.UrlInputAddText(HostingTypesObjects.PrivateCloud_Link, 1000);
+            var hostingModel = TextGenerators.TextInputAddText(HostingTypesObjects.PrivateCloud_HostingModel, 1000);
+            MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var hosting = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).Hosting;
@@ -33,12 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public void PrivateCloud_SectionComplete()
         {
-            MarketingPages.Hosting.PrivateCloudActions.EnterSummary(500);
-            MarketingPages.Hosting.PrivateCloudActions.EnterLink(1000);
-            MarketingPages.Hosting.PrivateCloudActions.EnterHostingModel(1000);
-            MarketingPages.Hosting.PublicCloudActions.ToggleHSCNCheckbox();
+            TextGenerators.TextInputAddText(HostingTypesObjects.PrivateCloud_Summary, 500);
+            TextGenerators.UrlInputAddText(HostingTypesObjects.PrivateCloud_Link, 1000);
+            TextGenerators.TextInputAddText(HostingTypesObjects.PrivateCloud_HostingModel, 1000);
+            MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Private cloud").Should().BeTrue();
         }
@@ -46,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public void PrivateCloud_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Private cloud").Should().BeFalse();
         }

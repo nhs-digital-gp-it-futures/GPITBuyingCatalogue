@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             MarketingPages.ContactDetailsActions.AddMarketingContact(contact);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == "99999-99");
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             MarketingPages.ContactDetailsActions.AddMarketingContact(firstContact, 1);
             MarketingPages.ContactDetailsActions.AddMarketingContact(secondContact, 2);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == "99999-99");
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             MarketingPages.ContactDetailsActions.AddMarketingContact(contact);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Contact details").Should().BeTrue();
         }
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             driver.Navigate().Refresh();
 
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Contact details").Should().BeFalse();
         }

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,8 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task ImplementationTimescales_EnterDescription()
         {
-            var implementation = MarketingPages.SolutionDescriptionActions.DescriptionAddText(1000);
-            MarketingPages.CommonActions.ClickSave();
+            var implementation = TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
+
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
@@ -31,8 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void ImplementationTimescales_MarkedAsComplete()
         {
-            MarketingPages.SolutionDescriptionActions.DescriptionAddText(1000);
-            MarketingPages.CommonActions.ClickSave();
+            TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Implementation timescales").Should().BeTrue();
         }
@@ -40,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void ImplementationTimescales_MarkedAsIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Implementation timescales").Should().BeFalse();
         }

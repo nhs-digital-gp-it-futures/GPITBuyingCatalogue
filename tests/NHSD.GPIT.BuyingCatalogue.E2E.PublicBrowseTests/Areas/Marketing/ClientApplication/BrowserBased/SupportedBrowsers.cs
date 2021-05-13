@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,10 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public async Task SupportedBrowser_SelectBrowser()
         {
-            var browser = MarketingPages.ClientApplicationTypeActions.ClickBrowserCheckbox();
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText("Yes");
+            var browser = CommonActions.ClickCheckbox(CommonSelectors.BrowserCheckboxItem);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickRadioButtonWithText("Yes");
+
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).ClientApplication.Should().ContainEquivalentOf(browser);
@@ -30,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [InlineData("No")]
         public async Task SupportedBrowser_SelectMobileResponsive(string label)
         {
-            MarketingPages.ClientApplicationTypeActions.ClickBrowserCheckbox();
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText(label);
+            CommonActions.ClickCheckbox(CommonSelectors.BrowserCheckboxItem);
+            CommonActions.ClickRadioButtonWithText(label);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             string labelConvert = label == "Yes" ? "true" : "false";
 

@@ -25,7 +25,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
         internal static By OnPremise_Link => By.Id("OnPremise_Link");
 
         internal static By OnPremise_HostingModel => By.Id("OnPremise_HostingModel");
-
-        internal static By HSCN_Checkbox => By.CssSelector("input[type=checkbox]");
     }
 }

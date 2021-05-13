@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,8 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task Integrations_AddUrl()
         {
-            var link = MarketingPages.SolutionDescriptionActions.LinkAddText(1000);
-            MarketingPages.CommonActions.ClickSave();
+            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
@@ -33,8 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             driver.Navigate().Refresh();
 
-            var link = MarketingPages.SolutionDescriptionActions.LinkAddText(1000);
-            MarketingPages.CommonActions.ClickSave();
+            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Integrations").Should().BeTrue();
         }
@@ -44,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             driver.Navigate().Refresh();
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Integrations").Should().BeFalse();
         }

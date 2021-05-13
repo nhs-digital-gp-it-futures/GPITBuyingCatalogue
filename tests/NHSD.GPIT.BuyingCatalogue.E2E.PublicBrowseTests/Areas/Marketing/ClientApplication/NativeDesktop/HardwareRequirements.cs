@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
 using Xunit;
@@ -17,9 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public async Task HardwareRequirements_CompleteAllFields()
         {
-            var hardwareRequirement = MarketingPages.AboutSupplierActions.DescriptionAddText(1000);
+            var hardwareRequirement = TextGenerators.TextInputAddText(CommonSelectors.Description, 500);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
 
@@ -30,9 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void HardwareRequirements_SectionComplete()
         {
-            MarketingPages.AboutSupplierActions.DescriptionAddText(1000);
+            TextGenerators.TextInputAddText(CommonSelectors.Description, 500);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Hardware requirements").Should().BeTrue();
         }
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void HardwareRequirements_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Hardware requirements").Should().BeFalse();
         }

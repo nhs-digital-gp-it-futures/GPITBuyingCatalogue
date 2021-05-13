@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
         public void SelectClientApplication_DashboardSectionEnabled(string clientApplicationType)
         {
             MarketingPages.ClientApplicationTypeActions.SelectClientApplicationCheckbox(clientApplicationType);
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionDisplayed(clientApplicationType).Should().BeTrue();
         }
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
         public void SelectClientApplication_SectionMarkedAsComplete()
         {
             MarketingPages.ClientApplicationTypeActions.SelectClientApplicationCheckbox("Browser-based");
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Client application type").Should().BeTrue();
         }
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
         [Fact]
         public void SelectClientApplication_SectionMarkedAsIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Client application type").Should().BeFalse();
         }

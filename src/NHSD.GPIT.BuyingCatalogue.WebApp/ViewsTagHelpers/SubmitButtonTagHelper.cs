@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             builder.AddCssClass(TagHelperConstants.NhsButton);
 
+            builder.GenerateId("Submit", "_");
+
             builder.MergeAttribute(TagHelperConstants.Type, "submit");
 
             builder.InnerHtml.Append(Text ?? DefaultButtonText);

@@ -1,5 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using OpenQA.Selenium;
 
@@ -15,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
         {
             var randomString = Strings.RandomString(100);
 
-            Driver.FindElements(FeaturesObjects.FeatureInput)[index].SendKeys(randomString);
+            Driver.FindElements(CommonSelectors.NhsInput)[index].SendKeys(randomString);
 
             return randomString;
         }

@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         public async Task Features_AddFeaturesAsync()
         {
             var feature = MarketingPages.FeaturesActions.EnterFeature();
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
                 addedFeatures.Add(feature);
             }
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             driver.Navigate().Refresh();
 
             var feature = MarketingPages.FeaturesActions.EnterFeature();
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Features").Should().BeTrue();
         }
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             driver.Navigate().Refresh();
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Features").Should().BeFalse();
         }
