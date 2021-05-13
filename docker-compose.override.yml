@@ -32,6 +32,13 @@ services:
         - "1080:80"
         - "1081:25"
 
+    blob.store:
+        image: mcr.microsoft.com/azure-storage/azurite:3.10.0
+        container_name: nhsd_bc_integration_blob_store
+        ports:
+        - "10100:10000"
+        - "10101:10001"
+
     nhsd_bcdb_deploy:
         image: ${DOCKER_REGISTRY}buyingcataloguedatabase
         container_name: nhsd_bcdb_deploy

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
+namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
 {
     /// <summary>
     /// Defines static values used to set up the SMTP health check.

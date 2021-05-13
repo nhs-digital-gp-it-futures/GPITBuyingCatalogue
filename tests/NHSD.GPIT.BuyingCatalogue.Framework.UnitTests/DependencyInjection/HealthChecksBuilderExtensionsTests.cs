@@ -6,7 +6,7 @@ using HealthChecks.Network.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
+using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NUnit.Framework;
 

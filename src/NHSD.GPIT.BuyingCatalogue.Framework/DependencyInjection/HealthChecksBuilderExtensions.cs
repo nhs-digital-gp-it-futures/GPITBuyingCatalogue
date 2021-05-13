@@ -6,7 +6,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 
-namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
+namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
 {
     /// <summary>
     /// Contains extension methods to <see cref="IHealthChecksBuilder"/> for configuring health checks.
@@ -73,6 +73,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
                     HealthStatus.Unhealthy,
                     new[] { HealthCheckTags.Ready },
                     TimeSpan.FromSeconds(10));
+
+            return healthChecksBuilder;
+        }
+
+        public static IHealthChecksBuilder AddAzureStorageHealthChecks(this IHealthChecksBuilder healthChecksBuilder, IAzureBlobStorageSettings storageSettings)
+        {
+            healthChecksBuilder
+                .AddAzureBlobStorage(
+                    storageSettings.ConnectionString,
+                    storageSettings.ContainerName,
+                    null,
+                    "Azure Blob Storage",
+                    HealthStatus.Unhealthy,
+                    new[] { HealthCheckTags.Ready },
+                    storageSettings.HealthCheck?.Timeout)
+                .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { HealthCheckTags.Live });
 
             return healthChecksBuilder;
         }
