@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
@@ -12,6 +13,24 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
     [Parallelizable(ParallelScope.All)]
     internal static class SupplierContactsModelTests
     {
+        [Test, CommonAutoData]
+        public static void ContactFor_ValidId_ReturnsMatchingContact(SupplierContactsModel model)
+        {
+            var contactId = model.Contacts[1].Id;
+            
+            var actual = model.ContactFor(contactId);
+
+            actual.Should().BeEquivalentTo(model.Contacts[1]);
+        }
+
+        [Test, CommonAutoData]
+        public static void ContactFor_InvalidId_ReturnsNull(SupplierContactsModel model, int contactId)
+        {
+            var actual = model.ContactFor(contactId);
+
+            actual.Should().BeNull();
+        }
+        
         [Test]
         public static void SetSolutionId_Sets_SolutionIdOnContacts()
         {

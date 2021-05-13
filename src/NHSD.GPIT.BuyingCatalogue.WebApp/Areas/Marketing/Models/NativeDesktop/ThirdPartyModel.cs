@@ -20,14 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
             DeviceCapabilities = ClientApplication?.NativeDesktopThirdParty?.DeviceCapabilities;
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopThirdParty?.ThirdPartyComponents) ||
-                  !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopThirdParty?.DeviceCapabilities);
-            }
-        }        
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopThirdParty?.ThirdPartyComponents) ||
+            !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopThirdParty?.DeviceCapabilities);
 
         public string ThirdPartyComponents { get; set; }
 
