@@ -23,4 +23,4 @@ fi
 /sqlpackage/sqlpackage /Action:publish /SourceFile:NHSD.BuyingCatalogue.Identity.UserDatabase.Deployment.dacpac /TargetServerName:$DB_SERVER,$PORT /TargetDatabaseName:$DB_NAME /TargetUser:$SA_USERNAME /TargetPassword:$SA_PASSWORD $SQLPACKAGEARGS
 /opt/mssql-tools/bin/sqlcmd -S $DB_SERVER,$PORT -U $SA_USERNAME -P $SA_PASSWORD -d $DB_NAME -I -i "PostDeployment.sql"
 
-printf "\nCatalogueUsers database setup complete\n"
+printf "\nCatalogueUsers database setup complete!\n"
