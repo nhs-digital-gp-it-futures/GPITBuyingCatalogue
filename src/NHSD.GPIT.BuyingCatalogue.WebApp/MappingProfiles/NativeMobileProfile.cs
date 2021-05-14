@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
@@ -96,6 +97,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.SetMappingOrder(20);
                     opt.MapFrom((_, dest) =>
                         dest.ClientApplication?.MobileMemoryAndStorage?.MinimumMemoryRequirement);
+                })
+                .IncludeBase<CatalogueItem, MarketingBaseModel>();
+
+            CreateMap<CatalogueItem, MobileFirstApproachModel>()
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => GetBackLink(src)))
+                .ForMember(dest => dest.MobileFirstApproach, opt =>
+                {
+                    opt.SetMappingOrder(20);
+                    opt.MapFrom(
+                        (_, dest) => dest.ClientApplication?.NativeMobileFirstDesign.ToYesNo());
                 })
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 

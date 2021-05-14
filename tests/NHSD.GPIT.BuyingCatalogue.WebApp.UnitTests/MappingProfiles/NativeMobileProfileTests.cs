@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
@@ -157,6 +158,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             });
             actual.SelectedMemorySize.Should()
                 .Be(clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement);
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
+        }
+
+        [Test, CommonAutoData]
+        public static void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            var clientApplication = 
+                JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeMobileProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+            
+            var actual = mapper.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem);
+
+            actual.BackLink.Should().Be(GetBackLink(catalogueItem));
+            actual.BackLinkText.Should().Be("Return to all sections");
+            actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
+            actual.MobileFirstApproach.Should().Be(clientApplication.NativeMobileFirstDesign.ToYesNo());
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
