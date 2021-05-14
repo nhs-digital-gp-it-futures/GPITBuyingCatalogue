@@ -32,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Assert.IsNull(((ViewResult)result).ViewName);
         }
 
-#if DEBUG
         [Test]
         public static void Get_TestLinks_ReturnsDefaultView()
         {
@@ -43,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }
-#endif
 
         [Test]
         public static void Get_Error500_ReturnsDefaultErrorView()

@@ -20,7 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [Route("Document/{documentName}")]
         public async Task<IActionResult> GetDocument(string documentName)
         {
-            return await _documentService.DownloadDocumentAsync(documentName);            
+            var document = await _documentService.DownloadDocumentAsync(documentName);
+
+            if (document == null)
+                return View("NotFound");
+
+            return document;
         }
     }
 }

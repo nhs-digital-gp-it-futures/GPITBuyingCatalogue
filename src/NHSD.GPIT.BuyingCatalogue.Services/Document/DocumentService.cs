@@ -20,40 +20,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
         }
 
         public async Task<FileStreamResult> DownloadDocumentAsync(string name)
-        {
-            IDocument downloadInfo;
-
+        {            
             try
             {
-                downloadInfo = await _documentRepository.DownloadAsync(name);
+                var downloadInfo = await _documentRepository.DownloadAsync(name);
+                return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
             }
             catch (DocumentRepositoryException e)
             {
                 _logger.LogError(e, null);
-                return null; // TODO - handle error in new way
-                //return StatusCode(e.HttpStatusCode);
-            }
-
-            return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
+                return null;                 
+            }            
         }
 
         public async Task<FileStreamResult> DownloadSolutionDocumentAsync(string id, string name)
-        {
-            IDocument downloadInfo;
-
+        {            
             try
             {
-                downloadInfo = await _documentRepository.DownloadAsync(id, name);
+                var downloadInfo = await _documentRepository.DownloadAsync(id, name);
+                return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
             }
             catch (DocumentRepositoryException e)
             {
-                _logger.LogError(e, null);
-
-                //return StatusCode(e.HttpStatusCode);
-                return null; // TODO - handle error in new way
-            }
-
-            return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
+                _logger.LogError(e, null);         
+                return null;
+            }            
         }
 
         public IAsyncEnumerable<string> GetDocumentsBySolutionId(string id)
