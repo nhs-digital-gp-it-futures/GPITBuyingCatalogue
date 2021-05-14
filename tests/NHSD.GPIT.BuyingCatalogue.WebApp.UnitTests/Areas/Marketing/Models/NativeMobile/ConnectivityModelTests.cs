@@ -1,29 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeMobile
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class ConnectivityModelModelTests
+    internal class ConnectivityModelModelTests
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeMobileProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        [OneTimeTearDown]
+        public void CleanUp()
+        {
+            mapper = null;
+        }
+
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        public void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new ConnectivityModel(null));
         }
 
         [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
+        public void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication 
             { 
@@ -41,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 Solution = new Solution { ClientApplication = json }
             };
 
-            var model = new ConnectivityModel(catalogueItem);
+            var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
             Assert.AreEqual("15Mbs", model.SelectedConnectionSpeed);
@@ -54,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         }
 
         [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        public void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new ConnectivityModel();
 
@@ -70,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase("15Mbs", null, false, true)]
         [TestCase(null, "A description", false, true)]
         [TestCase(null, null, true, true)]
-        public static void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, string description, bool hasConnectionType, bool? expected)
+        public void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, string description, bool hasConnectionType, bool? expected)
         {
             var clientApplication = new ClientApplication 
             {
@@ -88,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
-            var model = new ConnectivityModel(catalogueItem);
+            var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
             Assert.AreEqual(expected, model.IsComplete);
         }
@@ -97,7 +117,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             return new List<SelectListItem>
             {
-                new SelectListItem{ Text = "Please select"},
                 new SelectListItem{ Text = "0.5Mbps", Value="0.5Mbps"},
                 new SelectListItem{ Text = "1Mbps", Value="1Mbps"},
                 new SelectListItem{ Text = "1.5Mbps", Value="1.5Mbps"},
