@@ -118,3 +118,20 @@ jobs:
       additionalImageTags: '$(semVer)'
       includeSourceTags: true
 
+- job: createBuildArtifact
+  displayName: Create Build Artifact
+  dependsOn: dockerBuildAndPush
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+        
+  steps:
+  - task: CopyFiles@2
+    displayName: Build Artifact - Code
+    inputs:
+      SourceFolder: 'terraform'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/terraform'
+      CleanTargetFolder: false
+      OverWrite: true
+
+  - publish: $(build.artifactStagingDirectory)
+    artifact: build-artifact 
