@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string NativeMobileHardwareRequirements { get; set; }
 
-        public string NativeDesktopHardwareRequirements { get; set; }
+        public virtual string NativeDesktopHardwareRequirements { get; set; }
 
         public virtual string AdditionalInformation { get; set; }
 
@@ -41,21 +41,21 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string NativeMobileAdditionalInformation { get; set; }
 
-        public string NativeDesktopOperatingSystemsDescription { get; set; }
+        public virtual string NativeDesktopOperatingSystemsDescription { get; set; }
 
-        public string NativeDesktopMinimumConnectionSpeed { get; set; }
+        public virtual string NativeDesktopMinimumConnectionSpeed { get; set; }
 
-        public NativeDesktopThirdParty NativeDesktopThirdParty { get; set; } 
+        public virtual NativeDesktopThirdParty NativeDesktopThirdParty { get; set; } 
 
-        public NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; } 
+        public virtual NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; } 
 
-        public string NativeDesktopAdditionalInformation { get; set; }
+        public virtual string NativeDesktopAdditionalInformation { get; set; }
 
         public virtual bool AdditionalInformationComplete() => !string.IsNullOrWhiteSpace(AdditionalInformation);
         
         public virtual bool? BrowserBasedModelComplete() =>
             SupportedBrowsersComplete() &&
-            NativeMobileFirstApproachComplete() &&
+            MobileFirstDesignComplete() &&
             PlugInsComplete().GetValueOrDefault() &&
             ConnectivityAndResolutionComplete();
 
@@ -83,7 +83,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public virtual bool? NativeMobileConnectivityComplete() => MobileConnectionDetails?.IsValid();
 
-        public virtual bool NativeMobileFirstApproachComplete() => MobileFirstDesign.HasValue;
+        public virtual bool NativeMobileFirstApproachComplete() => NativeMobileFirstDesign.HasValue;
+
+        public virtual bool MobileFirstDesignComplete() => MobileFirstDesign.HasValue;
 
         public virtual bool? NativeMobileSupportedOperatingSystemsComplete() =>
             MobileOperatingSystems?.OperatingSystems?.Any();

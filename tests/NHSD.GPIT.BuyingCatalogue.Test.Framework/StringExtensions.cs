@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework
 {
     public static class StringExtensions
     {
+        public static string ToControllerName(this string input) => input.Replace("Controller", null);
+
         public static string ToLowerCaseHyphenated(this string input)
         {
             if (string.IsNullOrWhiteSpace(input))

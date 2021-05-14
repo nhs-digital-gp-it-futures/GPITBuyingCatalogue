@@ -32,6 +32,42 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
             }
         }
 
+        internal object EnterProcessingPowerText(int charCount)
+        {
+            var processingPower = Strings.RandomString(charCount);
+
+            Driver.FindElement(ClientApplicationObjects.MinimumCpuTextArea).SendKeys(processingPower);
+
+            return processingPower;
+        }
+
+        internal object EnterStorageSpaceText(int charCount)
+        {
+            var storageSpace = Strings.RandomString(charCount);
+
+            Driver.FindElement(ClientApplicationObjects.StorageDescriptionTextArea).SendKeys(storageSpace);
+
+            return storageSpace;
+        }
+
+        internal string EnterSupportedOperatingSystemsDescription(int charCount)
+        {
+            var operatingSystem = Strings.RandomString(charCount);
+
+            Driver.FindElement(ClientApplicationObjects.SupportedOperatingSystemDescription).SendKeys(operatingSystem);
+
+            return operatingSystem;
+        }
+
+        internal object EnterDeviceCapability(int charCount)
+        {
+            var component = Strings.RandomString(charCount);
+
+            Driver.FindElement(ClientApplicationObjects.DeviceCapabilityTextArea).SendKeys(component);
+
+            return component;
+        }
+
         internal string ClickBrowserCheckbox(int index = 0)
         {
             var checkboxItems = Driver.FindElements(ClientApplicationObjects.BrowserCheckboxItem);
@@ -40,6 +76,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 
             selected.FindElement(By.TagName("input")).Click();
             return selected.FindElement(By.TagName("label")).Text;
+        }
+
+        internal string EnterThirdPartyComponents(int charCount)
+        {
+            var component = Strings.RandomString(charCount);
+
+            Driver.FindElement(ClientApplicationObjects.ThirdPartyComponentTextArea).SendKeys(component);
+
+            return component;
         }
 
         internal void ClickRadioButtonWithText(string label)
@@ -67,6 +112,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
         internal void SelectResolutionDropdown(int index = 0)
         {
             var select = Driver.FindElement(ClientApplicationObjects.ResolutionSelect);
+            new SelectElement(select).SelectByIndex(index);
+        }
+
+        internal void SelectMemoryDropdown(int index = 0)
+        {
+            var select = Driver.FindElement(ClientApplicationObjects.MemorySelect);
             new SelectElement(select).SelectByIndex(index);
         }
     }

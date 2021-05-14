@@ -70,8 +70,8 @@ jobs:
     inputs:
       dockerVersion: $(dockerVersion)
     
-  - script: docker-compose up --build -d
-    displayName: 'Docker up'
+  # - script: docker-compose up --build -d
+  #   displayName: 'Docker up'
 
   - task: DotNetCoreCLI@2
     displayName: 'Run integration tests'
