@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
@@ -7,7 +10,7 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 using NUnit.Framework;
 
@@ -15,14 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class NativeDesktopProfileTests
+    internal static class NativeMobileProfileTests
     {
         [Test]
         public static void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             });
 
@@ -37,13 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem);
 
-            actual.AdditionalInformation.Should().Be(clientApplication.NativeDesktopAdditionalInformation);
+            actual.AdditionalInformation.Should().Be(clientApplication.NativeMobileAdditionalInformation);
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
@@ -59,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
             
@@ -84,11 +87,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 new() {Text = "30Mbps", Value = "30Mbps"},
                 new() {Text = "Higher than 30Mbps", Value = "Higher than 30Mbps"}
             });
-            actual.SelectedConnectionSpeed.Should().Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
+            actual.ConnectionTypes.Should().BeEquivalentTo(new ConnectionTypeModel[]
+            {
+                new() {ConnectionType = "GPRS"},
+                new() {ConnectionType = "3G"},
+                new() {ConnectionType = "LTE"},
+                new() {ConnectionType = "4G"},
+                new() {ConnectionType = "5G"},
+                new() {ConnectionType = "Bluetooth"},
+                new() {ConnectionType = "Wifi"}
+            });
+            actual.Description.Should().Be(clientApplication.MobileConnectionDetails.Description);
+            actual.SelectedConnectionSpeed.Should()
+                .Be(clientApplication.MobileConnectionDetails.MinimumConnectionSpeed);
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public static void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
@@ -97,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
             
@@ -106,12 +121,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.Description.Should().Be(clientApplication.NativeDesktopHardwareRequirements);
+            actual.Description.Should().Be(clientApplication.NativeMobileHardwareRequirements);
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+                [Test, CommonAutoData]
         public static void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -119,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
             
@@ -128,6 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
+            actual.Description.Should().Be(clientApplication.MobileMemoryAndStorage.Description);
             actual.MemorySizes.Should().BeEquivalentTo(new List<SelectListItem>
             {
                 new() { Text = "Please select"},
@@ -139,36 +155,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 new() { Text = "8GB", Value = "8GB"},
                 new() { Text = "16GB or higher", Value = "16GB or higher"}
             });
-            actual.MinimumCpu.Should().Be(clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu);
-            actual.SelectedScreenResolution.Should()
-                .Be(clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution);
             actual.SelectedMemorySize.Should()
-                .Be(clientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement);
-            actual.ScreenResolutions.Should().BeEquivalentTo(new List<SelectListItem>
-            {
-                new() {Text = "Please select", Value = ""},
-                new() {Text = "16:9 - 640 x 360", Value = "16:9 - 640 x 360"},
-                new() {Text = "4:3 - 800 x 600", Value = "4:3 - 800 x 600"},
-                new() {Text = "4:3 - 1024 x 768", Value = "4:3 - 1024 x 768"},
-                new() {Text = "16:9 - 1280 x 720", Value = "16:9 - 1280 x 720"},
-                new() {Text = "16:10 - 1280 x 800", Value = "16:10 - 1280 x 800"},
-                new() {Text = "5:4 - 1280 x 1024", Value = "5:4 - 1280 x 1024"},
-                new() {Text = "16:9 - 1360 x 768", Value = "16:9 - 1360 x 768"},
-                new() {Text = "16:9 - 1366 x 768", Value = "16:9 - 1366 x 768"},
-                new() {Text = "16:10 - 1440 x 900", Value = "16:10 - 1440 x 900"},
-                new() {Text = "16:9 - 1536 x 864", Value = "16:9 - 1536 x 864"},
-                new() {Text = "16:9 - 1600 x 900", Value = "16:9 - 1600 x 900"},
-                new() {Text = "16:10 - 1680 x 1050", Value = "16:10 - 1680 x 1050"},
-                new() {Text = "16:9 - 1920 x 1080", Value = "16:9 - 1920 x 1080"},
-                new() {Text = "16:10 - 1920 x 1200", Value = "16:10 - 1920 x 1200"},
-                new() {Text = "16:9 - 2048 x 1152", Value = "16:9 - 2048 x 1152"},
-                new() {Text = "21:9 - 2560 x 1080", Value = "21:9 - 2560 x 1080"},
-                new() {Text = "16:9 - 2560 x 1440", Value = "16:9 - 2560 x 1440"},
-                new() {Text = "21:9 - 3440 x 1440", Value = "21:9 - 3440 x 1440"},
-                new() {Text = "16:9 - 3840 x 2160", Value = "16:9 - 3840 x 2160"}
-            });
-            actual.StorageDescription.Should()
-                .Be(clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription);
+                .Be(clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement);
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
@@ -181,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
             
@@ -190,7 +178,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.OperatingSystemsDescription.Should().Be(clientApplication.NativeDesktopOperatingSystemsDescription);
+            actual.Description.Should().Be(clientApplication.MobileOperatingSystems.OperatingSystemsDescription);
+            actual.OperatingSystems.Should().BeEquivalentTo(new SupportedOperatingSystemModel[]
+            {
+                new() {OperatingSystemName = "Apple IOS", Checked = true},
+                new() {OperatingSystemName = "Android", Checked = true},
+                new() {OperatingSystemName = "Other"}
+            });
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
@@ -203,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
             
@@ -212,31 +206,96 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.DeviceCapabilities.Should().Be(clientApplication.NativeDesktopThirdParty.DeviceCapabilities);
-            actual.ThirdPartyComponents.Should().Be(clientApplication.NativeDesktopThirdParty.ThirdPartyComponents);
+            actual.DeviceCapabilities.Should().Be(clientApplication.MobileThirdParty.DeviceCapabilities);
+            actual.ThirdPartyComponents.Should().Be(clientApplication.MobileThirdParty.ThirdPartyComponents);
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
         [Test, AutoData]
-        public static void Map_MemoryAndStorageModelToNativeDesktopMemoryAndStorage_ResultAsExpected(
+        public static void Map_ConnectivityModelToMobileConnectionDetails_ResultAsExpected(
+            ConnectivityModel connectivityModel)
+        {
+            var fixture = new Fixture();
+            connectivityModel.ConnectionTypes = Enumerable.Range(1, 7).ToList()
+                .Select(x => new ConnectionTypeModel
+                {
+                    Checked = DateTime.Now.Ticks % 2 == 0, 
+                    ConnectionType= fixture.Create<string>(),
+                }).ToArray();
+            var expected = connectivityModel.ConnectionTypes.Where(o => o.Checked)
+                .Select(o => o.ConnectionType);
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeMobileProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+            
+            var actual = mapper.Map<ConnectivityModel, MobileConnectionDetails>(connectivityModel);
+
+            actual.ConnectionType.Should().BeEquivalentTo(expected);
+            actual.Description.Should().Be(connectivityModel.Description);
+            actual.MinimumConnectionSpeed.Should().Be(connectivityModel.SelectedConnectionSpeed);
+        }
+        
+        [Test, AutoData]
+        public static void Map_MemoryAndStorageModelToMobileMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
         {
             var mapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<NativeMobileProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+
+            var actual = mapper.Map<MemoryAndStorageModel, MobileMemoryAndStorage>(memoryAndStorageModel);
+
+            actual.Description.Should().Be(memoryAndStorageModel.Description);
+            actual.MinimumMemoryRequirement.Should().Be(memoryAndStorageModel.SelectedMemorySize);
+        }
+
+        [Test, AutoData]
+        public static void Map_OperatingSystemsModelToMobileOperatingSystems_ResultAsExpected(
+            OperatingSystemsModel operatingSystemsModel)
+        {
+            var fixture = new Fixture();
+            operatingSystemsModel.OperatingSystems = Enumerable.Range(1, 7).ToList()
+                .Select(x => new SupportedOperatingSystemModel
+                {
+                    Checked = DateTime.Now.Ticks % 2 == 0,
+                    OperatingSystemName = fixture.Create<string>(),
+                }).ToArray();
+            var expected = operatingSystemsModel.OperatingSystems.Where(o => o.Checked)
+                .Select(o => o.OperatingSystemName);
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeMobileProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+
+            var actual = mapper.Map<OperatingSystemsModel, MobileOperatingSystems>(operatingSystemsModel);
+
+            actual.OperatingSystems.Should().BeEquivalentTo(expected);
+            actual.OperatingSystemsDescription.Should().BeEquivalentTo(operatingSystemsModel.Description);
+        }
+
+        [Test, AutoData]
+        public static void Map_ThirdPartyModelToMobileThirdParty_ResultAsExpected(
+            ThirdPartyModel thirdPartyModel)
+        {
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
             
-            var actual = mapper.Map<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>(memoryAndStorageModel);
-            
-            actual.MinimumMemoryRequirement.Should().Be(memoryAndStorageModel.SelectedMemorySize);
-            actual.StorageRequirementsDescription.Should().Be(memoryAndStorageModel.StorageDescription);
-            actual.MinimumCpu.Should().Be(memoryAndStorageModel.MinimumCpu);
-            actual.RecommendedResolution.Should().Be(memoryAndStorageModel.SelectedScreenResolution);
+            var actual = mapper.Map<ThirdPartyModel, MobileThirdParty>(thirdPartyModel);
+
+            actual.DeviceCapabilities.Should().Be(thirdPartyModel.DeviceCapabilities);
+            actual.ThirdPartyComponents.Should().Be(thirdPartyModel.ThirdPartyComponents);
         }
         
         private static string GetBackLink(CatalogueItem catalogueItem) =>
-            $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop";
+            $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-mobile";
     }
 }

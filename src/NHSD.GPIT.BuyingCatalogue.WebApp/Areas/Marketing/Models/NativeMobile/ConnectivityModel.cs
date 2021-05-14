@@ -21,33 +21,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             ConnectionSpeeds = new List<SelectListItem>
             {
-                new SelectListItem{ Text = "Please select"},
-                new SelectListItem{ Text = "0.5Mbps", Value="0.5Mbps"},
-                new SelectListItem{ Text = "1Mbps", Value="1Mbps"},
-                new SelectListItem{ Text = "1.5Mbps", Value="1.5Mbps"},
-                new SelectListItem{ Text = "2Mbps", Value="2Mbps"},
-                new SelectListItem{ Text = "3Mbps", Value="3Mbps"},
-                new SelectListItem{ Text = "5Mbps", Value="5Mbps"},
-                new SelectListItem{ Text = "8Mbps", Value="8Mbps"},
-                new SelectListItem{ Text = "10Mbps", Value="10Mbps"},
-                new SelectListItem{ Text = "15Mbps", Value="15Mbps"},
-                new SelectListItem{ Text = "20Mbps", Value="20Mbps"},
-                new SelectListItem{ Text = "30Mbps", Value="30Mbps"},
-                new SelectListItem{ Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
+                new() { Text = "Please select"},
+                new() { Text = "0.5Mbps", Value="0.5Mbps"},
+                new() { Text = "1Mbps", Value="1Mbps"},
+                new() { Text = "1.5Mbps", Value="1.5Mbps"},
+                new() { Text = "2Mbps", Value="2Mbps"},
+                new() { Text = "3Mbps", Value="3Mbps"},
+                new() { Text = "5Mbps", Value="5Mbps"},
+                new() { Text = "8Mbps", Value="8Mbps"},
+                new() { Text = "10Mbps", Value="10Mbps"},
+                new() { Text = "15Mbps", Value="15Mbps"},
+                new() { Text = "20Mbps", Value="20Mbps"},
+                new() { Text = "30Mbps", Value="30Mbps"},
+                new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
             };
 
             SelectedConnectionSpeed = ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed;
 
-
             ConnectionTypes = new ConnectionTypeModel[]
             {
-                new ConnectionTypeModel{ ConnectionType = "GPRS" },
-                new ConnectionTypeModel{ ConnectionType = "3G" },
-                new ConnectionTypeModel{ ConnectionType = "LTE" },
-                new ConnectionTypeModel{ ConnectionType = "4G" },
-                new ConnectionTypeModel{ ConnectionType = "5G" },
-                new ConnectionTypeModel{ ConnectionType = "Bluetooth" },
-                new ConnectionTypeModel{ ConnectionType = "Wifi" }
+                new() { ConnectionType = "GPRS" },
+                new() { ConnectionType = "3G" },
+                new() { ConnectionType = "LTE" },
+                new() { ConnectionType = "4G" },
+                new() { ConnectionType = "5G" },
+                new() { ConnectionType = "Bluetooth" },
+                new() { ConnectionType = "Wifi" }
             };
 
             CheckConnectionTypes();

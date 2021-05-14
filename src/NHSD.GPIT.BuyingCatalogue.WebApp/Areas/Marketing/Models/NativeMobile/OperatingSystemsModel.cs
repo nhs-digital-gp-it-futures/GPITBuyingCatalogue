@@ -19,9 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             OperatingSystems = new SupportedOperatingSystemModel[]
             {
-                new SupportedOperatingSystemModel{ OperatingSystemName = "Apple IOS" },
-                new SupportedOperatingSystemModel{ OperatingSystemName = "Android" },
-                new SupportedOperatingSystemModel{ OperatingSystemName = "Other" }
+                new() { OperatingSystemName = "Apple IOS" },
+                new() { OperatingSystemName = "Android" },
+                new() { OperatingSystemName = "Other" }
             };
 
             CheckOperatingSystems();
@@ -29,10 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             Description = ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription;
         }
 
-        public override bool? IsComplete
-        {
-            get { return ClientApplication?.MobileOperatingSystems?.OperatingSystems?.Any(); }
-        }
+        public override bool? IsComplete => ClientApplication?.MobileOperatingSystems?.OperatingSystems?.Any();
 
         public SupportedOperatingSystemModel[] OperatingSystems { get; set; }
 

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
@@ -14,11 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     public class NativeMobileController : Controller
     {
         private readonly ILogWrapper<NativeMobileController> _logger;
+        private readonly IMapper _mapper;
         private readonly ISolutionsService _solutionsService;
 
-        public NativeMobileController(ILogWrapper<NativeMobileController> logger, ISolutionsService solutionsService)
+        public NativeMobileController(ILogWrapper<NativeMobileController> logger, IMapper mapper,
+            ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
                
@@ -29,8 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new OperatingSystemsModel(solution);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+            
+            var model = _mapper.Map<CatalogueItem, OperatingSystemsModel>(solution);
 
             return View(model);
         }
@@ -39,25 +44,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> OperatingSystems(OperatingSystemsModel model)
         {
             if (model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
-            if (clientApplication.MobileOperatingSystems == null)
-                clientApplication.MobileOperatingSystems = new MobileOperatingSystems();
-
-            if (clientApplication.MobileOperatingSystems.OperatingSystems == null)
-                clientApplication.MobileOperatingSystems.OperatingSystems = new System.Collections.Generic.HashSet<string>();
-
-            clientApplication.MobileOperatingSystems.OperatingSystems.Clear();
-
-            foreach (var operatingSystem in model.OperatingSystems.Where(x => x.Checked))
-                clientApplication.MobileOperatingSystems.OperatingSystems.Add(operatingSystem.OperatingSystemName);
-
-            clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
+            clientApplication.MobileOperatingSystems =
+                _mapper.Map<OperatingSystemsModel, MobileOperatingSystems>(model);
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
@@ -71,8 +68,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new MobileFirstApproachModel(solution);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+            
+            var model = _mapper.Map<CatalogueItem, MobileFirstApproachModel>(solution);
 
             return View(model);
         }
@@ -81,17 +80,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> MobileFirstApproach(MobileFirstApproachModel model)
         {
             if (model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
-            if (string.IsNullOrWhiteSpace(model.MobileFirstApproach))
-                clientApplication.NativeMobileFirstDesign = null;
-            else
-                clientApplication.NativeMobileFirstDesign = model.MobileFirstApproach.Equals("Yes", StringComparison.InvariantCultureIgnoreCase) ? true : false;
+            clientApplication.NativeMobileFirstDesign = model.MobileFirstDesign();
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
@@ -105,8 +103,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ConnectivityModel(solution);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+            
+            var model = _mapper.Map<CatalogueItem, ConnectivityModel>(solution);
 
             return View(model);
         }
@@ -115,26 +115,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> Connectivity(ConnectivityModel model)
         {
             if (model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
-            
-            if (clientApplication.MobileConnectionDetails == null)
-                clientApplication.MobileConnectionDetails = new MobileConnectionDetails();
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
-            clientApplication.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
-            clientApplication.MobileConnectionDetails.Description = model.Description;
-
-            if (clientApplication.MobileConnectionDetails.ConnectionType == null)
-                clientApplication.MobileConnectionDetails.ConnectionType = new System.Collections.Generic.HashSet<string>();
-
-            clientApplication.MobileConnectionDetails.ConnectionType.Clear();
-            
-            foreach (var connectionType in model.ConnectionTypes.Where(x => x.Checked))
-                clientApplication.MobileConnectionDetails.ConnectionType.Add(connectionType.ConnectionType);
+            clientApplication.MobileConnectionDetails = _mapper.Map<ConnectivityModel, MobileConnectionDetails>(model);
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
@@ -148,8 +138,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new MemoryAndStorageModel(solution);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+            
+            var model = _mapper.Map<CatalogueItem, MemoryAndStorageModel>(solution);
 
             return View(model);
         }
@@ -158,18 +150,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> MemoryAndStorage(MemoryAndStorageModel model)
         {
             if (model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
-            if (clientApplication.MobileMemoryAndStorage == null)
-                clientApplication.MobileMemoryAndStorage = new MobileMemoryAndStorage();
-
-            clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
-            clientApplication.MobileMemoryAndStorage.Description = model.Description;
+            clientApplication.MobileMemoryAndStorage =
+                _mapper.Map<MemoryAndStorageModel, MobileMemoryAndStorage>(model);
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
@@ -183,8 +174,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new ThirdPartyModel(solution);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+            
+            var model = _mapper.Map<CatalogueItem, ThirdPartyModel>(solution);
 
             return View(model);
         }
@@ -193,18 +186,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> ThirdParty(ThirdPartyModel model)
         {
             if (model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
-
-            if (clientApplication.MobileThirdParty == null)
-                clientApplication.MobileThirdParty = new MobileThirdParty();
-
-            clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
-            clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;            
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
+            
+            clientApplication.MobileThirdParty = _mapper.Map<ThirdPartyModel, MobileThirdParty>(model);            
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
@@ -218,8 +209,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new HardwareRequirementsModel(solution);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+            
+            var model = _mapper.Map<CatalogueItem, HardwareRequirementsModel>(solution);
 
             return View(model);
         }
@@ -228,13 +221,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
             if (model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
-
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
+            
             clientApplication.NativeMobileHardwareRequirements = model.Description;
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
@@ -249,8 +244,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
-
-            var model = new AdditionalInformationModel(solution);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+            
+            var model = _mapper.Map<CatalogueItem, AdditionalInformationModel>(solution);
 
             return View(model);
         }
@@ -259,23 +256,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
             if (model == null)
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var clientApplication = await _solutionsService.GetClientApplication(model.SolutionId);
-
+            if (clientApplication == null)
+                return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
+            
             clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
 
             await _solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
             return RedirectBack(model.SolutionId);
         }
-
-        private RedirectResult RedirectBack(string solutionId)
-        {
-            return Redirect($"/marketing/supplier/solution/{solutionId}/section/native-mobile");
-        }
+        
+        private RedirectResult RedirectBack(string solutionId) =>
+            Redirect($"/marketing/supplier/solution/{solutionId}/section/native-mobile");
     }
 }
