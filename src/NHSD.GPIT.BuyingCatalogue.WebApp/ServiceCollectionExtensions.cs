@@ -9,11 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
+using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.Services.Document;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
@@ -151,6 +152,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();
             services.AddSingleton(registrationSettings);
+        }
+
+        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration, IHealthChecksBuilder healthCheckBuilder)
+        {
+            var settings = configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
+            services.AddSingleton(settings);
+
+            services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
+
+            healthCheckBuilder.AddAzureStorageHealthChecks(settings);
         }
     }
 }
