@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using OpenQA.Selenium;
 using System;
 

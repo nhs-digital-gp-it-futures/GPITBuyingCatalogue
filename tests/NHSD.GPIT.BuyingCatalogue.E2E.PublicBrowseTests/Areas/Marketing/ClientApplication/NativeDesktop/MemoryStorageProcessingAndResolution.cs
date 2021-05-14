@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
 using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.NativeDesktop
 {
@@ -19,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         {
             CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
 
-            var storageSpace = TextGenerators.TextInputAddText(CommonSelectors.StorageDescriptionTextArea, 300);
+            var storageSpace = TextGenerators.TextInputAddText(CommonSelectors.StorageDescriptionTextArea, 100);
 
-            var processingPower = TextGenerators.TextInputAddText(CommonSelectors.MinimumCpuTextArea, 300);            
+            var processingPower = TextGenerators.TextInputAddText(CommonSelectors.MinimumCpuTextArea, 100);            
 
             CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
 

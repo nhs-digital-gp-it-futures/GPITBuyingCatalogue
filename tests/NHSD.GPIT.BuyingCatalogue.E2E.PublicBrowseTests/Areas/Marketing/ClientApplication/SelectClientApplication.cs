@@ -10,10 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
     {
         public SelectClientApplication(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/client-application-types")
         {
-            using var context = GetBCContext();
-            var solution = context.Solutions.Single(s => s.Id == "99999-99");
-            solution.ClientApplication = string.Empty;
-            context.SaveChanges();
         }
 
         [Theory]

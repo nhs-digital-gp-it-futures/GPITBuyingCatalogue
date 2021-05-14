@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System.Linq;
 
