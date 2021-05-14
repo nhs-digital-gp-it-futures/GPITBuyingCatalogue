@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             using var context = GetBCContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);
-            solution.ClientApplication = null;
+            solution.ClientApplication = string.Empty;
             context.SaveChanges();
         }
 

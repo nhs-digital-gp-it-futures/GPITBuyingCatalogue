@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
 {
     internal static class CommonSelectors
     {
