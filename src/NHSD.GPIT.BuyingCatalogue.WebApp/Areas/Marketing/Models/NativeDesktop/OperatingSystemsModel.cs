@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
@@ -22,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
         public override bool? IsComplete =>
             !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopOperatingSystemsDescription);
 
+        [StringLength(1000)]
         public string OperatingSystemsDescription { get; set; }
     }
 }

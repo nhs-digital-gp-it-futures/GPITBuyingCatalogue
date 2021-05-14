@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 
         internal bool MainSectionDisplayed(string section)
         {
-            return Driver.FindElements(PreviewPageObjects.PreviewHeaders).Select(s => s.Text.ToLower())
+            return Driver.FindElements(CommonSelectors.Header3).Select(s => s.Text.ToLower())
                 .Contains(section.ToLower());
         }
 

@@ -15,8 +15,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class NativeDesktopProfileTests
+    internal class NativeDesktopProfileTests
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        [OneTimeTearDown]
+        public void CleanUp()
+        {
+            mapper = null;
+        }
+
         [Test]
         public static void Mappings_Configuration_Valid()
         {
@@ -30,16 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
+        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem);
 
@@ -53,16 +66,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToConnectivityModel_ResultAsExpected(
+        public void Map_CatalogueItemToConnectivityModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
@@ -72,7 +80,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(new List<SelectListItem>
             {
-                new() {Text = "Please select"},
                 new() {Text = "0.5Mbps", Value = "0.5Mbps"},
                 new() {Text = "1Mbps", Value = "1Mbps"},
                 new() {Text = "1.5Mbps", Value = "1.5Mbps"},
@@ -92,16 +99,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
+        public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, HardwareRequirementsModel>(catalogueItem);
 
@@ -115,16 +117,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected(
+        public void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, MemoryAndStorageModel>(catalogueItem);
             
@@ -134,7 +131,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.MemorySizes.Should().BeEquivalentTo(new List<SelectListItem>
             {
-                new() { Text = "Please select"},
                 new() { Text = "256MB", Value = "256MB"},
                 new() { Text = "512MB", Value = "512MB"},
                 new() { Text = "1GB", Value = "1GB"},
@@ -150,7 +146,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 .Be(clientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement);
             actual.ScreenResolutions.Should().BeEquivalentTo(new List<SelectListItem>
             {
-                new() {Text = "Please select", Value = ""},
                 new() {Text = "16:9 - 640 x 360", Value = "16:9 - 640 x 360"},
                 new() {Text = "4:3 - 800 x 600", Value = "4:3 - 800 x 600"},
                 new() {Text = "4:3 - 1024 x 768", Value = "4:3 - 1024 x 768"},
@@ -178,16 +173,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected(
+        public void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, OperatingSystemsModel>(catalogueItem);
 
@@ -201,16 +191,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToThirdPartyModel_ResultAsExpected(
+        public void Map_CatalogueItemToThirdPartyModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, ThirdPartyModel>(catalogueItem);
 
@@ -225,15 +210,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, AutoData]
-        public static void Map_MemoryAndStorageModelToNativeDesktopMemoryAndStorage_ResultAsExpected(
+        public void Map_MemoryAndStorageModelToNativeDesktopMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
-        {
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
-            
+        {            
             var actual = mapper.Map<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>(memoryAndStorageModel);
             
             actual.MinimumMemoryRequirement.Should().Be(memoryAndStorageModel.SelectedMemorySize);

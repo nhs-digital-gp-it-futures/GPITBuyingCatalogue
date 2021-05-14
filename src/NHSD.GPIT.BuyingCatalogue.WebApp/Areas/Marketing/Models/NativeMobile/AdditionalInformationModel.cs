@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
@@ -23,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         {
             get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeMobileAdditionalInformation); }
         }
-
+        [StringLength(500)]
         public string AdditionalInformation { get; set; }
     }
 }

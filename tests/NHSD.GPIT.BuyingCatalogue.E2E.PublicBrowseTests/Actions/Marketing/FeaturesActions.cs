@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
         {
             var randomString = Strings.RandomString(100);
 
-            Driver.FindElements(FeaturesObjects.FeatureInput)[index].SendKeys(randomString);
+            Driver.FindElements(CommonSelectors.NhsInput)[index].SendKeys(randomString);
 
             return randomString;
         }

@@ -1,28 +1,30 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 {
-    public sealed class Hybrid : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Hybrid : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Hybrid(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-hybrid")
         {
-            ClearHostingTypes("99999-99");
-            driver.Navigate().Refresh();
         }
 
         [Fact]
         public async Task Hybrid_CompleteAllFields()
         {
-            var summary = MarketingPages.Hosting.HybridActions.EnterSummary(500);
-            var link = MarketingPages.Hosting.HybridActions.EnterLink(1000);
-            var hostingModel = MarketingPages.Hosting.HybridActions.EnterHostingModel(1000);
-            MarketingPages.Hosting.PublicCloudActions.ToggleHSCNCheckbox();
+            var summary = TextGenerators.TextInputAddText(HostingTypesObjects.HybridHostingType_Summary, 500);
+            var link = TextGenerators.UrlInputAddText(HostingTypesObjects.HybridHostingType_Link, 1000);
+            var hostingModel = TextGenerators.TextInputAddText(HostingTypesObjects.HybridHostingType_HostingModel, 1000);
 
-            MarketingPages.CommonActions.ClickSave();
+            MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
+
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var hosting = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).Hosting;
@@ -33,12 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public void Hybrid_SectionComplete()
         {
-            MarketingPages.Hosting.HybridActions.EnterSummary(500);
-            MarketingPages.Hosting.HybridActions.EnterLink(1000);
-            MarketingPages.Hosting.HybridActions.EnterHostingModel(1000);
-            MarketingPages.Hosting.PublicCloudActions.ToggleHSCNCheckbox();
+            TextGenerators.TextInputAddText(HostingTypesObjects.HybridHostingType_Summary, 500);
+            TextGenerators.UrlInputAddText(HostingTypesObjects.HybridHostingType_Link, 1000);
+            TextGenerators.TextInputAddText(HostingTypesObjects.HybridHostingType_HostingModel, 1000);
 
-            MarketingPages.CommonActions.ClickSave();
+            MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
+
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Hybrid").Should().BeTrue();
         }
@@ -46,9 +49,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         [Fact]
         public void Hybrid_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Hybrid").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearHostingTypes("99999-99");
         }
     }
 }

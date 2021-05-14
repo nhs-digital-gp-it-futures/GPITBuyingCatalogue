@@ -7,18 +7,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
     public class SupportedBrowsersModel : MarketingBaseModel
     {
-        public SupportedBrowsersModel() : base(null)
-        {
-        }
+        public SupportedBrowserModel[] Browsers { get; set; }
 
-        public SupportedBrowsersModel(CatalogueItem catalogueItem) : base(catalogueItem)
-        {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
+        public string MobileResponsive { get; set; }
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
-
-            Browsers = new SupportedBrowserModel[]
+        private readonly SupportedBrowserModel[] SupportedBrowsers = new SupportedBrowserModel[]
             {
                 new() { BrowserName = "Google Chrome" },
                 new() { BrowserName = "Microsoft Edge" },
@@ -30,6 +23,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
                 new() { BrowserName = "Internet Explorer 10" }
             };
 
+        public SupportedBrowsersModel() : base(null)
+        {
+        }
+
+        public SupportedBrowsersModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
+
+            Browsers = SupportedBrowsers;
+
             CheckBrowsers();
 
             if (ClientApplication.MobileResponsive.HasValue)
@@ -40,9 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             ClientApplication?.BrowsersSupported != null && ClientApplication.BrowsersSupported.Any() &&
             ClientApplication.MobileResponsive.HasValue;
 
-        public SupportedBrowserModel[] Browsers { get; set; }
-
-        public string MobileResponsive { get; set; }
 
         private void CheckBrowsers()
         {

@@ -1,28 +1,27 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
 {
-    public sealed class ConnectivityAndResolution : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ConnectivityAndResolution : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public ConnectivityAndResolution(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/connectivity-and-resolution")
-        {
-            ClearClientApplication("99999-99");
-
-            driver.Navigate().Refresh();
+        { 
         }
 
         [Fact]
         public async Task ConnectivityAndResolution_SelectBothFields()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectConnectionSpeedDropdown(1);
-            MarketingPages.ClientApplicationTypeActions.SelectResolutionDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).ClientApplication;
@@ -33,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void ConnectivityAndResolution_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectConnectionSpeedDropdown(1);
-            MarketingPages.ClientApplicationTypeActions.SelectResolutionDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Connectivity and resolution").Should().BeTrue();
         }
@@ -44,9 +43,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void ConnectivityAndResolution_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Connectivity and resolution").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }
