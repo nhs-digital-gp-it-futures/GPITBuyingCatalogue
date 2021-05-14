@@ -5,7 +5,7 @@ using Azure.Storage.Blobs;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
-    public sealed class AzureBlobStorageSettings : IAzureBlobStorageSettings
+    public sealed class AzureBlobStorageSettings
     {
         // Ignored to prevent access keys being logged
         [JsonIgnore]

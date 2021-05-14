@@ -54,6 +54,41 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "NHSD.BuyingCatalogue.Identi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.BuyingCatalogue.Identity.UserDatabase.Deployment", "database\NHSD.BuyingCatalogue.Identity.UserDatabase.Deployment\NHSD.BuyingCatalogue.Identity.UserDatabase.Deployment.csproj", "{9DD9F992-C20D-48CF-AD10-6048FFED3D01}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azurite", "azurite", "{F90CEB7A-B66B-4F5A-8A2C-6DE14FF4DD52}"
+	ProjectSection(SolutionItems) = preProject
+		azurite\Dockerfile = azurite\Dockerfile
+		azurite\file_upload.sh = azurite\file_upload.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{1B923A5C-AD49-4392-A206-0A66D46F20ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "non-solution", "non-solution", "{34AAF2FD-7872-4C64-BCB3-B168A64B1FA0}"
+	ProjectSection(SolutionItems) = preProject
+		azurite\data\non-solution\compare-futures-solutions.xlsx = azurite\data\non-solution\compare-futures-solutions.xlsx
+		azurite\data\non-solution\compare-solutions.xlsx = azurite\data\non-solution\compare-solutions.xlsx
+		azurite\data\non-solution\covid19-compare-solutions.pdf = azurite\data\non-solution\covid19-compare-solutions.pdf
+		azurite\data\non-solution\terms-of-use.pdf = azurite\data\non-solution\terms-of-use.pdf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "100000-001", "100000-001", "{70774E0A-33F4-4CEE-B320-1DE6D82E1957}"
+	ProjectSection(SolutionItems) = preProject
+		azurite\data\100000-001\integrations.pdf = azurite\data\100000-001\integrations.pdf
+		azurite\data\100000-001\roadmap.pdf = azurite\data\100000-001\roadmap.pdf
+		azurite\data\100000-001\solution.pdf = azurite\data\100000-001\solution.pdf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "100000-002", "100000-002", "{9042A191-6B68-4A8A-93CB-12495ECDFEB4}"
+	ProjectSection(SolutionItems) = preProject
+		azurite\data\100000-002\integrations.pdf = azurite\data\100000-002\integrations.pdf
+		azurite\data\100000-002\roadmap.pdf = azurite\data\100000-002\roadmap.pdf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "100000-003", "100000-003", "{B84CF9CB-287E-48E7-9CCA-4D412DFCFD16}"
+	ProjectSection(SolutionItems) = preProject
+		azurite\data\100000-003\integrations.pdf = azurite\data\100000-003\integrations.pdf
+		azurite\data\100000-003\roadmap.pdf = azurite\data\100000-003\roadmap.pdf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +192,11 @@ Global
 		{DEB7CA57-ED42-4C1A-8EFF-16ACC504AE5F} = {F1ED3B97-DA91-4876-B7F9-0CC403F7928B}
 		{649E5E09-31C8-453B-826D-78CF3FB621B3} = {F1ED3B97-DA91-4876-B7F9-0CC403F7928B}
 		{9DD9F992-C20D-48CF-AD10-6048FFED3D01} = {F1ED3B97-DA91-4876-B7F9-0CC403F7928B}
+		{1B923A5C-AD49-4392-A206-0A66D46F20ED} = {F90CEB7A-B66B-4F5A-8A2C-6DE14FF4DD52}
+		{34AAF2FD-7872-4C64-BCB3-B168A64B1FA0} = {1B923A5C-AD49-4392-A206-0A66D46F20ED}
+		{70774E0A-33F4-4CEE-B320-1DE6D82E1957} = {1B923A5C-AD49-4392-A206-0A66D46F20ED}
+		{9042A191-6B68-4A8A-93CB-12495ECDFEB4} = {1B923A5C-AD49-4392-A206-0A66D46F20ED}
+		{B84CF9CB-287E-48E7-9CCA-4D412DFCFD16} = {1B923A5C-AD49-4392-A206-0A66D46F20ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {141F787F-5876-42E9-90BB-1A87A9EE130D}

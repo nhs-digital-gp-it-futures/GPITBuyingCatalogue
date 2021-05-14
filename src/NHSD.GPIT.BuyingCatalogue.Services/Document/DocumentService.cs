@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 {
     public class DocumentService : IDocumentService
     {
         private readonly ILogWrapper<DocumentService> _logger;
-        private readonly IDocumentRepository _documentRepository;
+        private readonly IAzureBlobDocumentRepository _documentRepository;
 
-        public DocumentService(ILogWrapper<DocumentService> logger,    
-            IDocumentRepository documentRepository)
+        public DocumentService(ILogWrapper<DocumentService> logger,
+            IAzureBlobDocumentRepository documentRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _documentRepository = documentRepository ?? throw new ArgumentNullException(nameof(documentRepository));

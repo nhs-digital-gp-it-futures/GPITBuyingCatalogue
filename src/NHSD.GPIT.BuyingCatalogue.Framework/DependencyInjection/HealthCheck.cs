@@ -10,7 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
         /// <summary>
         /// The name for the SMTP health check.
         /// </summary>
-        public const string Name = "smtp";
+        public const string SmptName = "smtp";
+
+        /// <summary>
+        /// The name for the Azure Storage health check.
+        /// </summary>
+        public const string AzureStorageName = "azureblob";
 
         /// <summary>
         /// The default tags for the SMTP health check, currently just "ready".

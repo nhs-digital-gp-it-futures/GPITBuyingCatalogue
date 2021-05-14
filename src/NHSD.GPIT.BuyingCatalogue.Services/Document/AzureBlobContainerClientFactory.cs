@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 {
     public static class AzureBlobContainerClientFactory
     {
-        public static BlobContainerClient Create(IAzureBlobStorageSettings settings)
+        public static BlobContainerClient Create(AzureBlobStorageSettings settings)
         {
             var retrySettings = settings.Retry;
 

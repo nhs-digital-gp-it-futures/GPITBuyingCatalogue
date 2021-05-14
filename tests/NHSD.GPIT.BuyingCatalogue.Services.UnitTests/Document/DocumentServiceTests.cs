@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
         {
             Assert.Throws<ArgumentNullException>(() => _ = new DocumentService(
                 null,
-                Mock.Of<IDocumentRepository>()));
+                Mock.Of<IAzureBlobDocumentRepository>()));
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
                 new InvalidOperationException(),
                 StatusCodes.Status502BadGateway);
 
-            var mockStorage = new Mock<IDocumentRepository>();
+            var mockStorage = new Mock<IAzureBlobDocumentRepository>();
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).Throws(expectedException);
 
             var mockLogger = new Mock<ILogWrapper<DocumentService>>();
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
         {
             var exception = new InvalidOperationException();
 
-            var mockStorage = new Mock<IDocumentRepository>();
+            var mockStorage = new Mock<IAzureBlobDocumentRepository>();
 
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).Throws(exception);
 
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             downloadInfo.Setup(d => d.Content).Returns(expectedStream);
             downloadInfo.Setup(d => d.ContentType).Returns(expectedContentType);
 
-            var mockStorage = new Mock<IDocumentRepository>();
+            var mockStorage = new Mock<IAzureBlobDocumentRepository>();
 
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).ReturnsAsync(downloadInfo.Object);
 
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
                 new InvalidOperationException(),
                 StatusCodes.Status502BadGateway);
 
-            var mockStorage = new Mock<IDocumentRepository>();
+            var mockStorage = new Mock<IAzureBlobDocumentRepository>();
 
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(expectedException);
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
         {
             var exception = new InvalidOperationException();
 
-            var mockStorage = new Mock<IDocumentRepository>();
+            var mockStorage = new Mock<IAzureBlobDocumentRepository>();
 
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             downloadInfo.Setup(d => d.Content).Returns(expectedStream);
             downloadInfo.Setup(d => d.ContentType).Returns(expectedContentType);
 
-            var mockStorage = new Mock<IDocumentRepository>();
+            var mockStorage = new Mock<IAzureBlobDocumentRepository>();
 
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
         {
             var mockEnumerable = new Mock<IAsyncEnumerable<string>>();
 
-            var mockStorage = new Mock<IDocumentRepository>();
+            var mockStorage = new Mock<IAzureBlobDocumentRepository>();
             mockStorage.Setup(s => s.GetFileNamesAsync(It.IsAny<string>()))
                 .Returns(mockEnumerable.Object);
 

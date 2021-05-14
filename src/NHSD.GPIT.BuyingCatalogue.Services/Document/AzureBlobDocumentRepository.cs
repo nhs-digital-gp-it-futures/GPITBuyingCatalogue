@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Azure;
@@ -7,20 +8,20 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 {
-    public sealed class AzureBlobDocumentRepository : IDocumentRepository
+    public sealed class AzureBlobDocumentRepository : IAzureBlobDocumentRepository
     {
-        private readonly BlobContainerClient client;
-        private readonly IAzureBlobStorageSettings blobStorageSettings;
+        private readonly BlobContainerClient _client;
+        private readonly AzureBlobStorageSettings _blobStorageSettings;
 
-        public AzureBlobDocumentRepository(BlobContainerClient client, IAzureBlobStorageSettings blobStorageSettings)
+        public AzureBlobDocumentRepository(BlobContainerClient client, AzureBlobStorageSettings blobStorageSettings)
         {
-            this.client = client;
-            this.blobStorageSettings = blobStorageSettings;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _blobStorageSettings = blobStorageSettings ?? throw new ArgumentNullException(nameof(blobStorageSettings));
         }
 
         public Task<IDocument> DownloadAsync(string documentName)
         {
-            return DownloadAsync(blobStorageSettings.DocumentDirectory, documentName);
+            return DownloadAsync(_blobStorageSettings.DocumentDirectory, documentName);
         }
 
         public async Task<IDocument> DownloadAsync(string? directoryName, string documentName)
@@ -28,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
             try
             {
                 var blobName = directoryName + "/" + documentName;
-                var downloadInfo = await client.GetBlobClient(blobName).DownloadAsync();
+                var downloadInfo = await _client.GetBlobClient(blobName).DownloadAsync();
 
                 return new AzureBlobDocument(downloadInfo);
             }
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 
         public async IAsyncEnumerable<string> GetFileNamesAsync(string directory)
         {
-            var all = client.GetBlobsAsync(prefix: $"{directory}/");
+            var all = _client.GetBlobsAsync(prefix: $"{directory}/");
 
             await foreach (var blob in all)
             {

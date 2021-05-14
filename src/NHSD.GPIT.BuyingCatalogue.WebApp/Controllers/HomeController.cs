@@ -7,19 +7,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogWrapper<HomeController> _logger;
+        private readonly ILogWrapper<HomeController> _logger;        
 
         public HomeController(ILogWrapper<HomeController> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));            
         }
 
         public IActionResult Index()
         {
             _logger.LogInformation("Taking user to Home Index page");
-
-            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable("BC_DB_CONNECTION");
-            _logger.LogInformation("MJRXXX" + buyingCatalogueConnectionString);
 
             return View();
         }

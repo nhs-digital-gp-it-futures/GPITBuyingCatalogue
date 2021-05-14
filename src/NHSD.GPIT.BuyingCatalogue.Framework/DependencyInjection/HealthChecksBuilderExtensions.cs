@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
                     smtp.Host = smtpSettings.Host;
                     smtp.Port = smtpSettings.Port;
                 },
-                HealthCheck.Name,
+                HealthCheck.SmptName,
                 HealthStatus.Degraded,
                 tags ?? HealthCheck.DefaultTags,
                 timeout ?? HealthCheck.DefaultTimeout);
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
                 throw new ArgumentException();
             
             healthChecksBuilder.AddCheck(
-                    "self",
+                    "db-self",
                     () => HealthCheckResult.Healthy(),
                     new[] { HealthCheckTags.Live })
                 .AddSqlServer(
@@ -77,18 +77,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
             return healthChecksBuilder;
         }
 
-        public static IHealthChecksBuilder AddAzureStorageHealthChecks(this IHealthChecksBuilder healthChecksBuilder, IAzureBlobStorageSettings storageSettings)
+        public static IHealthChecksBuilder AddAzureStorageHealthChecks(this IHealthChecksBuilder healthChecksBuilder, AzureBlobStorageSettings storageSettings)
         {
             healthChecksBuilder
                 .AddAzureBlobStorage(
                     storageSettings.ConnectionString,
                     storageSettings.ContainerName,
                     null,
-                    "Azure Blob Storage",
+                    HealthCheck.AzureStorageName,
                     HealthStatus.Unhealthy,
                     new[] { HealthCheckTags.Ready },
                     storageSettings.HealthCheck?.Timeout)
-                .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { HealthCheckTags.Live });
+                .AddCheck("azureblob-self", () => HealthCheckResult.Healthy(), new[] { HealthCheckTags.Live });
 
             return healthChecksBuilder;
         }

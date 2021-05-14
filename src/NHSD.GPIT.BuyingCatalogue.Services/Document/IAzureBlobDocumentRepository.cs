@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 {
-    public interface IDocumentRepository
+    public interface IAzureBlobDocumentRepository
     {
         Task<IDocument> DownloadAsync(string documentName);
 

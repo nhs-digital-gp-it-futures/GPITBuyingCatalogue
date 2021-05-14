@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.Services.Document;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
@@ -157,6 +158,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var settings = configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
             services.AddSingleton(settings);
+
+            services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
+
             healthCheckBuilder.AddAzureStorageHealthChecks(settings);
         }
     }

@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
             var builder = mockBuilder.Object;
             builder.AddSmtpHealthCheck(new SmtpSettings());
 
-            healthCheckArguments.Name.Should().Be(HealthCheck.Name);
+            healthCheckArguments.Name.Should().Be(HealthCheck.SmptName);
         }
 
         [Test]
