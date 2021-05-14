@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
@@ -14,11 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     public class NativeMobileController : Controller
     {
         private readonly ILogWrapper<NativeMobileController> _logger;
+        private readonly IMapper _mapper;
         private readonly ISolutionsService _solutionsService;
 
-        public NativeMobileController(ILogWrapper<NativeMobileController> logger, ISolutionsService solutionsService)
+        public NativeMobileController(ILogWrapper<NativeMobileController> logger, IMapper mapper, ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
                
@@ -30,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new OperatingSystemsModel(solution);
+            var model = _mapper.Map<CatalogueItem, OperatingSystemsModel>(solution);
 
             return View(model);
         }
@@ -72,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new MobileFirstApproachModel(solution);
+            var model = _mapper.Map<CatalogueItem, MobileFirstApproachModel>(solution);
 
             return View(model);
         }
@@ -106,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new ConnectivityModel(solution);
+            var model = _mapper.Map<CatalogueItem, ConnectivityModel>(solution);
 
             return View(model);
         }
@@ -149,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new MemoryAndStorageModel(solution);
+            var model = _mapper.Map<CatalogueItem, MemoryAndStorageModel>(solution);
 
             return View(model);
         }
@@ -184,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new ThirdPartyModel(solution);
+            var model = _mapper.Map<CatalogueItem, ThirdPartyModel>(solution);
 
             return View(model);
         }
@@ -219,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             var solution = await _solutionsService.GetSolution(id);
 
-            var model = new HardwareRequirementsModel(solution);
+            var model = _mapper.Map<CatalogueItem, HardwareRequirementsModel>(solution);
 
             return View(model);
         }

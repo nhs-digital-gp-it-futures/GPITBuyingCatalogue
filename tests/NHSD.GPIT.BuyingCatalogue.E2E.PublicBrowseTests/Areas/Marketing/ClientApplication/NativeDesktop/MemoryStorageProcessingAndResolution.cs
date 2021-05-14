@@ -1,35 +1,32 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.NativeDesktop
 {
-    public sealed class MemoryStorageProcessingAndResolution : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class MemoryStorageProcessingAndResolution : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public MemoryStorageProcessingAndResolution(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/memory-and-storage")
         {
-            ClearClientApplication("99999-99");
-            driver.Navigate().Refresh();
         }
 
         [Fact]
         public async Task MemoryStorageProcessingAndResolution_CompleteAllFields()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectMemoryDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
 
-            var storageSpace = MarketingPages.ClientApplicationTypeActions.EnterStorageSpaceText(300);
+            var storageSpace = TextGenerators.TextInputAddText(CommonSelectors.StorageDescriptionTextArea, 100);
 
-            var processingPower = MarketingPages.ClientApplicationTypeActions.EnterProcessingPowerText(300);
+            var processingPower = TextGenerators.TextInputAddText(CommonSelectors.MinimumCpuTextArea, 100);            
 
-            MarketingPages.ClientApplicationTypeActions.SelectResolutionDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
 
@@ -43,15 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MemoryStorageProcessingAndResolution_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectMemoryDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
 
-            MarketingPages.ClientApplicationTypeActions.EnterStorageSpaceText(300);
+            TextGenerators.TextInputAddText(CommonSelectors.StorageDescriptionTextArea, 300);
 
-            MarketingPages.ClientApplicationTypeActions.EnterProcessingPowerText(300);
+            TextGenerators.TextInputAddText(CommonSelectors.MinimumCpuTextArea, 300);
 
-            MarketingPages.ClientApplicationTypeActions.SelectResolutionDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Memory, storage, processing and resolution").Should().BeTrue();
         }
@@ -59,9 +56,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MemoryStorageProcessingAndResolution_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Memory, storage, processing and resolution").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

@@ -1,28 +1,26 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
 {
-    public sealed class HardwareRequirements : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class HardwareRequirements : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public HardwareRequirements(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/hardware-requirements")
         {
-            ClearClientApplication("99999-99");
         }
 
         [Fact]
         public async Task HarwareRequirements_CompleteAllFields()
         {
-            var hardwareRequirement = MarketingPages.AboutSupplierActions.DescriptionAddText(1000);
+            var hardwareRequirement = TextGenerators.TextInputAddText(CommonSelectors.Description, 500);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
 
@@ -33,9 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void HarwareRequirements_SectionComplete()
         {
-            MarketingPages.AboutSupplierActions.DescriptionAddText(1000);
+            TextGenerators.TextInputAddText(CommonSelectors.Description, 500);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Hardware requirements").Should().BeTrue();
         }
@@ -43,9 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void HarwareRequirements_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Hardware requirements").Should().BeFalse();
+        }
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

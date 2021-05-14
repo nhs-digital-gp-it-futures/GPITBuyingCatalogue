@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
@@ -21,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         public override bool? IsComplete => !string.IsNullOrWhiteSpace(ClientApplication?.HardwareRequirements);
 
+        [StringLength(500)]
         public string Description { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
@@ -22,10 +24,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         public override bool? IsComplete => !string.IsNullOrWhiteSpace(Summary);
 
+        [Required(ErrorMessage = "Enter a Summary")]
+        [StringLength(350)]
         public string Summary { get; set; }
 
+        [StringLength(1100)]
         public string Description { get; set; }
 
+        [StringLength(1000)]
+        [Url]
         public string Link { get; set; }      
     }
 }

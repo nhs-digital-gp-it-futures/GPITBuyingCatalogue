@@ -8,97 +8,27 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Native desktop application – memory, storage, processing and resolution</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know the minimum requirements for your Catalogue Solution to function.</h2>
-            <div data-test-id="section-additional-advice">
-            </div>
-        </div>
-
+        <nhs-validation-summary />
+        <nhs-page-title title="Native desktop application – memory, storage, processing and resolution"
+                        title-advice="Let buyers know the minimum requirements for your Catalogue Solution to function." />
         <form method="post">
-
             <input type="hidden" asp-for="@Model.SolutionId" />
-
-            <div data-test-id="section-question-combobox-options" class="nhsuk-u-margin-bottom-6">
-                <div data-test-id="question-minimum-memory-requirement">
-                    <div data-test-id="combobox-options">
-                        <div class="nhsuk-form-group">
-                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="minimum-memory-requirement">
-                                Memory size
-                            </label>
-                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="minimum-memory-requirement-hint">
-                                Select the minimum memory size required for your Catalogue Solution to function.
-                            </div>
-                            @Html.DropDownListFor(x => Model.SelectedMemorySize, new SelectList(Model.MemorySizes, "Value", "Text"), htmlAttributes: new { @class = "nhsuk-select" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-                <div data-test-id="question-storage-requirements-description">
-                    <div data-test-id="textarea-field">
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
-                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.StorageDescription">
-                                    Storage space
-                                </label>
-                                <div id="StorageDescription-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
-                                    Provide information about how much storage space a device will need to use your Catalogue Solution.
-                                </div>
-                                <textarea class="govuk-textarea govuk-js-character-count" rows="5" aria-describedby="StorageDescription-info StorageDescription-hint" asp-for="@Model.StorageDescription"></textarea>
-                            </div>
-                            <div id="StorageDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 300 characters
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-question-textarea-field" class="nhsuk-u-margin-bottom-6">
-                <div data-test-id="question-minimum-cpu">
-                    <div data-test-id="textarea-field">
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="300">
-                            <div class="govuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="govuk-label nhsuk-u-font-size-24 nhsuk-label nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.MinimumCpu">
-                                    Processing power
-                                </label>
-                                <div id="MinimumCpu-hint" class="govuk-hint nhsuk-hint nhsuk-u-margin-bottom-3">
-                                    Provide information on the minimum CPU power required for your Catalogue Solution to function on desktop.
-                                </div>
-                                <textarea class="govuk-textarea govuk-js-character-count" rows="5" aria-describedby="MinimumCpu-info MinimumCpu-hint" asp-for="@Model.MinimumCpu"></textarea>
-                            </div>
-                            <div id="MinimumCpu-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                You can enter up to 300 characters
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-question-combobox-options" class="nhsuk-u-margin-bottom-6">
-                <div data-test-id="question-recommended-resolution">
-                    <div data-test-id="combobox-options">
-                        <div class="nhsuk-form-group">
-                            <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="recommended-resolution">
-                                Screen resolution and aspect ratio (optional)
-                            </label>
-                            <div class="nhsuk-hint nhsuk-u-margin-bottom-3" id="recommended-resolution-hint">
-                                Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function on desktop.
-                            </div>
-                            @Html.DropDownListFor(x => Model.SelectedScreenResolution, new SelectList(Model.ScreenResolutions, "Value", "Text"), htmlAttributes: new { @class = "nhsuk-select" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
-
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <nhs-validation-select asp-for="SelectedMemorySize"
+                                   asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
+                                   label-text="Memory size"
+                                   label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
+            <nhs-validation-textarea asp-for="StorageDescription"
+                                     label-text="Storage space"
+                                     label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution." />
+            <nhs-validation-textarea asp-for="MinimumCpu"
+                                     label-text="Processing power"
+                                     label-hint="Provide information on the minimum CPU power required for your Catalogue Solution to function on desktop." />
+            <nhs-validation-select asp-for="SelectedScreenResolution"
+                                   asp-items="@(new SelectList(Model.ScreenResolutions, "Value", "Text"))"
+                                   label-text="Screen resolution and aspect ratio (optional)"
+                                   label-hint="Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function on desktop." />
+            <nhs-submit-button />
         </form>
     </div>
 </div>

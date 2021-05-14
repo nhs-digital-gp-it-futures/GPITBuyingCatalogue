@@ -1,28 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.BrowserBased
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class ConnectivityAndResolutionModelTests
+    internal class ConnectivityAndResolutionModelTests
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BrowserBasedProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        [OneTimeTearDown]
+        public void CleanUp()
+        {
+            mapper = null;
+        }
+
+
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        public void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new ConnectivityAndResolutionModel(null));
         }
 
         [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
+        public void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication { MinimumConnectionSpeed = "15Mbs", MinimumDesktopResolution = "21:9 - 3440 x 1440" };
             var json = JsonConvert.SerializeObject(clientApplication);
@@ -31,8 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
                     CatalogueItemId = "123",
                     Solution = new Solution { ClientApplication = json } 
                 };
-            
-            var model = new ConnectivityAndResolutionModel(catalogueItem);
+
+            var model = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
             Assert.AreEqual("15Mbs", model.SelectedConnectionSpeed);
@@ -42,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         }
 
         [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        public void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new ConnectivityAndResolutionModel();
 
@@ -56,14 +77,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("15Mbs", true)]
-        public static void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, bool? expected )
+        public void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, bool? expected )
         {
             var clientApplication = new ClientApplication { MinimumConnectionSpeed = minimumConnectionSpeed};
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
-            var model = new ConnectivityAndResolutionModel(catalogueItem);
-            
+            var model = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
+
             Assert.AreEqual(expected, model.IsComplete);
         }
 
@@ -71,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         {
             return new List<SelectListItem>
             {
-                new SelectListItem{ Text = "Please select"},
                 new SelectListItem{ Text = "0.5Mbps", Value="0.5Mbps"},
                 new SelectListItem{ Text = "1Mbps", Value="1Mbps"},
                 new SelectListItem{ Text = "1.5Mbps", Value="1.5Mbps"},
@@ -91,7 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         {
             return new List<SelectListItem>
             {
-                new SelectListItem{ Text = "Please select", Value = "" },
                 new SelectListItem{ Text = "16:9 - 640 x 360", Value = "16:9 - 640 x 360" },
                 new SelectListItem{ Text = "4:3 - 800 x 600", Value = "4:3 - 800 x 600" },
                 new SelectListItem{ Text = "4:3 - 1024 x 768", Value = "4:3 - 1024 x 768" },

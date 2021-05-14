@@ -1,27 +1,28 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.NativeMobile
 {
-    public sealed class ThirdPartyComponents : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ThirdPartyComponents : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public ThirdPartyComponents(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/third-party")
         {
-            ClearClientApplication("99999-99");
-            driver.Navigate().Refresh();
         }
 
         [Fact]
         public async Task ThirdPartyComponents_CompleteAllFields()
         {
-            var thirdPartyComponent = MarketingPages.ClientApplicationTypeActions.EnterThirdPartyComponents(500);
+            var thirdPartyComponent = TextGenerators.TextInputAddText(CommonSelectors.ThirdPartyComponentTextArea, 500);
 
-            var deviceCapability = MarketingPages.ClientApplicationTypeActions.EnterDeviceCapability(500);
+            var deviceCapability = TextGenerators.TextInputAddText(CommonSelectors.DeviceCapabilityTextArea, 500);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
 
@@ -33,11 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void ThirdPartyComponents_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.EnterThirdPartyComponents(500);
+            TextGenerators.TextInputAddText(CommonSelectors.ThirdPartyComponentTextArea, 500);
 
-            MarketingPages.ClientApplicationTypeActions.EnterDeviceCapability(500);
+            TextGenerators.TextInputAddText(CommonSelectors.DeviceCapabilityTextArea, 500);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Third-party components and device capabilities").Should().BeTrue();
         }
@@ -45,9 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void ThirdPartyComponents_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Third-party components and device capabilities").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }
