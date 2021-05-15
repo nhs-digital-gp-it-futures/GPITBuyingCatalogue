@@ -1,25 +1,26 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.NativeDesktop
 {
-    public sealed class Connectivity : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Connectivity : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Connectivity(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/connectivity")
         {
-            ClearClientApplication("99999-99");
-            driver.Navigate().Refresh();
         }
 
         [Fact]
         public async Task Connectivity_CompleteAllFields()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectConnectionSpeedDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
 
@@ -31,9 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void Connectivity_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.SelectConnectionSpeedDropdown(1);
+            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Connectivity").Should().BeTrue();
         }
@@ -41,9 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void Connectivity_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Connectivity").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

@@ -17,8 +17,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class OrganisationProfileTests
+    internal class OrganisationProfileTests
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        [OneTimeTearDown]
+        public void CleanUp()
+        {
+            mapper = null;
+        }
+
         [Test]
         public static void Mappings_Configuration_Valid()
         {
@@ -28,13 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToAboutSupplierModel_ResultAsExpected(
+        public void Map_CatalogueItemToAboutSupplierModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, AboutSupplierModel>(catalogueItem);
 
@@ -48,13 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToContactDetailsModel_ResultAsExpected(
+        public void Map_CatalogueItemToContactDetailsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, ContactDetailsModel>(catalogueItem);
 
@@ -68,15 +81,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToFeaturesModel_ResultAsExpected(
+        public void Map_CatalogueItemToFeaturesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var features = new Fixture().CreateMany<string>(10).ToList();
             catalogueItem.Solution.Features = JsonConvert.SerializeObject(features);
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, FeaturesModel>(catalogueItem);
             
@@ -98,13 +109,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToFeaturesModel_NoFeaturesString_ListingsNotSet(
+        public void Map_CatalogueItemToFeaturesModel_NoFeaturesString_ListingsNotSet(
             CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.ClientApplication = null;
             catalogueItem.Solution.Features = string.Empty;
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, FeaturesModel>(catalogueItem);
 
@@ -122,13 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected(
+        public void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, ImplementationTimescalesModel>(catalogueItem);
 
@@ -141,12 +148,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToIntegrationsModel_ResultAsExpected(
+        public void Map_CatalogueItemToIntegrationsModel_ResultAsExpected(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, IntegrationsModel>(catalogueItem);
 
@@ -159,12 +164,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToRoadMapModel_ResultAsExpected(
+        public void Map_CatalogueItemToRoadMapModel_ResultAsExpected(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, RoadmapModel>(catalogueItem);
 
@@ -177,13 +180,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(
+        public void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(catalogueItem);
             
@@ -198,12 +199,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
+        public void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
             ContactDetailsModel contactDetailsModel)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
-
             var actual = mapper.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel);
 
             actual.Contacts.Should()
@@ -212,11 +210,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, AutoData]
-        public static void Map_FeaturesModelToStringArray_ResultAsExpected(FeaturesModel model)
+        public void Map_FeaturesModelToStringArray_ResultAsExpected(FeaturesModel model)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>())
-                .CreateMapper();
-
             var actual = mapper.Map<FeaturesModel, string[]>(model);
 
             actual[0].Should().Be(model.Listing1);

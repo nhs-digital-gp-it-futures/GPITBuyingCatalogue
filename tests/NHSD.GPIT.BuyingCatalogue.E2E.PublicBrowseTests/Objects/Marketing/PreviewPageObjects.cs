@@ -5,8 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
 {
     internal static class PreviewPageObjects
     {
-        internal static By PreviewHeaders => By.TagName("h3");
-
         internal static By ExpandingSections => By.CssSelector("details.nhsuk-details");
 
         internal static By BrowserBasedSectionTitles => CustomBy.DataTestId("view-section-dl-browser-based", "dt");

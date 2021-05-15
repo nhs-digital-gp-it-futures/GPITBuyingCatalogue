@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class ContactDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ContactDetails : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public ContactDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/contact-details")
         {
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             MarketingPages.ContactDetailsActions.AddMarketingContact(contact);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == "99999-99");
@@ -48,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             MarketingPages.ContactDetailsActions.AddMarketingContact(firstContact, 1);
             MarketingPages.ContactDetailsActions.AddMarketingContact(secondContact, 2);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == "99999-99");
@@ -74,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             MarketingPages.ContactDetailsActions.AddMarketingContact(contact);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Contact details").Should().BeTrue();
         }
@@ -84,9 +85,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             driver.Navigate().Refresh();
 
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Contact details").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

@@ -1,28 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeDesktop
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class ConnectivityModelTests
+    internal class ConnectivityModelTests
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        [OneTimeTearDown]
+        public void CleanUp()
+        {
+            mapper = null;
+        }
+
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        public void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new ConnectivityModel(null));
         }
 
         [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
+        public void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication { NativeDesktopMinimumConnectionSpeed = "15Mbs", MinimumDesktopResolution = "21:9 - 3440 x 1440" };
             var json = JsonConvert.SerializeObject(clientApplication);
@@ -31,8 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                     CatalogueItemId = "123",
                     Solution = new Solution { ClientApplication = json } 
                 };
-            
-            var model = new ConnectivityModel(catalogueItem);
+
+            var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
             Assert.AreEqual("15Mbs", model.SelectedConnectionSpeed);            
@@ -40,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         }
 
         [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        public void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new ConnectivityModel();
 
@@ -54,22 +74,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("15Mbs", true)]
-        public static void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, bool? expected )
+        public void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, bool? expected )
         {
             var clientApplication = new ClientApplication { NativeDesktopMinimumConnectionSpeed = minimumConnectionSpeed};
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
-            var model = new ConnectivityModel(catalogueItem);
-            
+            var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
+
             Assert.AreEqual(expected, model.IsComplete);
         }
 
-        private static List<SelectListItem> GetConnectionSpeeds()
+        private List<SelectListItem> GetConnectionSpeeds()
         {
             return new List<SelectListItem>
             {
-                new SelectListItem{ Text = "Please select"},
                 new SelectListItem{ Text = "0.5Mbps", Value="0.5Mbps"},
                 new SelectListItem{ Text = "1Mbps", Value="1Mbps"},
                 new SelectListItem{ Text = "1.5Mbps", Value="1.5Mbps"},

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 
-namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
+namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
 {
     /// <summary>
     /// Contains extension methods to <see cref="IHealthChecksBuilder"/> for configuring health checks.
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
                     smtp.Host = smtpSettings.Host;
                     smtp.Port = smtpSettings.Port;
                 },
-                HealthCheck.Name,
+                HealthCheck.SmptName,
                 HealthStatus.Degraded,
                 tags ?? HealthCheck.DefaultTags,
                 timeout ?? HealthCheck.DefaultTimeout);
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
                 throw new ArgumentException();
             
             healthChecksBuilder.AddCheck(
-                    "self",
+                    "db-self",
                     () => HealthCheckResult.Healthy(),
                     new[] { HealthCheckTags.Live })
                 .AddSqlServer(
@@ -73,6 +73,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection
                     HealthStatus.Unhealthy,
                     new[] { HealthCheckTags.Ready },
                     TimeSpan.FromSeconds(10));
+
+            return healthChecksBuilder;
+        }
+
+        public static IHealthChecksBuilder AddAzureStorageHealthChecks(this IHealthChecksBuilder healthChecksBuilder, AzureBlobStorageSettings storageSettings)
+        {
+            healthChecksBuilder
+                .AddAzureBlobStorage(
+                    storageSettings.ConnectionString,
+                    storageSettings.ContainerName,
+                    null,
+                    HealthCheck.AzureStorageName,
+                    HealthStatus.Unhealthy,
+                    new[] { HealthCheckTags.Ready },
+                    storageSettings.HealthCheck?.Timeout)
+                .AddCheck("azureblob-self", () => HealthCheckResult.Healthy(), new[] { HealthCheckTags.Live });
 
             return healthChecksBuilder;
         }

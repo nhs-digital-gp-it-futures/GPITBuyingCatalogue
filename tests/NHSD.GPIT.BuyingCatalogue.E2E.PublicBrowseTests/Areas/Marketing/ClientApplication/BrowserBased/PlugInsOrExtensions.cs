@@ -1,19 +1,18 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
 {
-    public sealed class PlugInsOrExtensions : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class PlugInsOrExtensions : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public PlugInsOrExtensions(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/plug-ins-or-extensions")
         {
-            ClearClientApplication("99999-99");
-
-            driver.Navigate().Refresh();
         }
 
         [Theory]
@@ -21,10 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [InlineData("No")]
         public async Task PlugInsOrExtensions_SelectRadioButton(string label)
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText(label);
-            var additional = MarketingPages.ClientApplicationTypeActions.EnterAdditionalInformation(100);
+            CommonActions.ClickRadioButtonWithText(label);
+            var additional = TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 100);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             string labelConvert = label == "Yes" ? "true" : "false";
 
@@ -36,10 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void PlugInsOrExtensions_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText("Yes");
-            MarketingPages.ClientApplicationTypeActions.EnterAdditionalInformation(100);
+            CommonActions.ClickRadioButtonWithText("Yes");
+            TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 100);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Plug-ins or extensions required").Should().BeTrue();
         }
@@ -47,9 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void PlugInsOrExtensions_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Plug-ins or extensions required").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

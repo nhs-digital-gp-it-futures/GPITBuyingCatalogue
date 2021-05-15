@@ -1,12 +1,15 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class AboutSolution : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AboutSolution : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public AboutSolution(LocalWebApplicationFactory factory) : base(factory, "/marketing/supplier/solution/99999-99/section/solution-description")
         {
@@ -15,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task AboutSolution_EditAllFieldsAsync()
         {
-            var summary = MarketingPages.SolutionDescriptionActions.SummaryAddText(300);
-            var description = MarketingPages.SolutionDescriptionActions.DescriptionAddText(1000);
-            var link = MarketingPages.SolutionDescriptionActions.LinkAddText(1000);
+            var summary = TextGenerators.TextInputAddText(CommonSelectors.Summary, 350);
+            var description = TextGenerators.TextInputAddText(CommonSelectors.Description, 1100);
+            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
@@ -31,11 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void AboutSolution_SectionMarkedAsComplete()
         {
-            MarketingPages.SolutionDescriptionActions.SummaryAddText(300);
-            MarketingPages.SolutionDescriptionActions.DescriptionAddText(1000);
-            MarketingPages.SolutionDescriptionActions.LinkAddText(1000);
+            TextGenerators.TextInputAddText(CommonSelectors.Summary, 350);
+            TextGenerators.TextInputAddText(CommonSelectors.Description, 1100);
+            TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Solution description").Should().BeTrue();
         }
@@ -51,12 +54,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             await context.SaveChangesAsync();
 
-            MarketingPages.CommonActions.ClickGoBackLink();
+           CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Solution description").Should().BeFalse();
         }
 
-        [Fact(Skip = "Validation not implemented")]
+        [Fact]
         public async Task AboutSolution_SummaryLeftEmpty()
         {
             using var context = GetBCContext();
@@ -66,24 +69,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             await context.SaveChangesAsync();
             driver.Navigate().Refresh();
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
-            MarketingPages.SolutionDescriptionActions.ErrorMessageDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
         }
 
-        [Theory(Skip = "Validation not implemented")]
-        [InlineData(301, 1000, 1000)]
-        [InlineData(300, 1001, 1000)]
-        [InlineData(300, 1000, 1001)]
-        public void AboutSolution_ExceedsMaxLength(int summaryCount, int descriptionCount, int linkCount)
+        public void Dispose()
         {
-            MarketingPages.SolutionDescriptionActions.SummaryAddText(summaryCount);
-            MarketingPages.SolutionDescriptionActions.DescriptionAddText(descriptionCount);
-            MarketingPages.SolutionDescriptionActions.LinkAddText(linkCount);
-
-            MarketingPages.CommonActions.ClickSave();
-
-            MarketingPages.SolutionDescriptionActions.ErrorMessageDisplayed().Should().BeTrue();
+            ClearClientApplication("99999-99");
         }
     }
 }

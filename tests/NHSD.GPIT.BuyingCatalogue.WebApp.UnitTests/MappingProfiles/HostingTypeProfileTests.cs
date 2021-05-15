@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
@@ -16,8 +15,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class HostingTypeProfileTests
+    internal class HostingTypeProfileTests
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<HostingTypeProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        [OneTimeTearDown]
+        public void CleanUp()
+        {
+            mapper = null;
+        }
+
         [Test]
         public static void Mappings_Configuration_Valid()
         {
@@ -31,18 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToHybridModel_ResultAsExpected(
+        public void Map_CatalogueItemToHybridModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
-            var mapper = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<OrganisationProfile>();
-                    cfg.AddProfile<HostingTypeProfile>();
-                })
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, HybridModel>(catalogueItem);
             
@@ -55,18 +66,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToOnPremiseModel_ResultAsExpected(
+        public void Map_CatalogueItemToOnPremiseModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
-            var mapper = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<OrganisationProfile>();
-                    cfg.AddProfile<HostingTypeProfile>();
-                })
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, OnPremiseModel>(catalogueItem);
             
@@ -79,18 +84,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToPrivateCloudModel_ResultAsExpected(
+        public void Map_CatalogueItemToPrivateCloudModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
-            var mapper = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<OrganisationProfile>();
-                    cfg.AddProfile<HostingTypeProfile>();
-                })
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, PrivateCloudModel>(catalogueItem);
             
@@ -103,18 +102,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToPublicCloudModel_ResultAsExpected(
+        public void Map_CatalogueItemToPublicCloudModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
-            var mapper = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<OrganisationProfile>();
-                    cfg.AddProfile<HostingTypeProfile>();
-                })
-                .CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, PublicCloudModel>(catalogueItem);
             
@@ -127,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToSolutionStatusModel_MapsFromConverter(
+        public void Map_CatalogueItemToSolutionStatusModel_MapsFromConverter(
             CatalogueItem catalogueItem)
         {
             var mockSolutionStatusModel = new Mock<SolutionStatusModel>().Object;

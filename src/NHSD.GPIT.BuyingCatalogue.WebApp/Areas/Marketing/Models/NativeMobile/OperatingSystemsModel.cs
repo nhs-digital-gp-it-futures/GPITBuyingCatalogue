@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
@@ -33,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
         public SupportedOperatingSystemModel[] OperatingSystems { get; set; }
 
+        [StringLength(1000)]
         public string Description { get; set; }
         
         private void CheckOperatingSystems()

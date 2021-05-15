@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -28,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new FuturesController(null,
-                Mock.Of<ISolutionsService>()));
+                Mock.Of<ISolutionsService>(),
+                Mock.Of<IDocumentService>()));
         }
 
         [Test]
@@ -36,6 +38,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
+                null,
+                Mock.Of<IDocumentService>()));
+        }
+
+        [Test]
+        public static void Constructor_NullDocumentService_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
+                Mock.Of<ISolutionsService>(),
                 null));
         }
 
@@ -45,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockLogger = new Mock<ILogWrapper<FuturesController>>();
 
             var controller = new FuturesController(mockLogger.Object,
-                Mock.Of<ISolutionsService>());
+                Mock.Of<ISolutionsService>(), Mock.Of<IDocumentService>());
 
             var result = controller.Index() as ViewResult;
 
@@ -53,20 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.ViewName.Should().BeNull();
         }
         
-        [Test]
-        public static void Get_Compare_ReturnsDefaultView()
-        {
-            var controller = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
-                Mock.Of<ISolutionsService>());
-
-            var result = controller.Compare() as ViewResult;
-
-            result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
-        } 
-
-        // MJRTODO - This is a better test. Need applying to all
-
         [Test]
         public static async Task Get_CapabilitiesSelector_ReturnsDefaultView()
         {
@@ -82,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockSolutionsService.Setup(x => x.GetFuturesCapabilities()).ReturnsAsync(solutions);
 
             var controller = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
-                mockSolutionsService.Object);
+                mockSolutionsService.Object, Mock.Of<IDocumentService>());
 
             var result = await controller.CapabilitiesSelector() as ViewResult;            
             result.Should().NotBeNull();
@@ -109,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockSolutionsService.Setup(x => x.GetFuturesFoundationSolutions()).ReturnsAsync(solutions);
             
             var controller = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
-                mockSolutionsService.Object);
+                mockSolutionsService.Object, Mock.Of<IDocumentService>());
 
             var result = await controller.Foundation();
 

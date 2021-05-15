@@ -201,4 +201,3 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         private static string GetBackLink(CatalogueItem catalogueItem) =>
             $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-mobile";
     }
-}

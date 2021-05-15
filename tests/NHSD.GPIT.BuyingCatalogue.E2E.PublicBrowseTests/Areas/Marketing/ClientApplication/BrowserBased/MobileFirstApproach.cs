@@ -1,19 +1,16 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
 {
-    public sealed class MobileFirstApproach : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class MobileFirstApproach : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public MobileFirstApproach(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/mobile-first-approach")
         {
-            ClearClientApplication("99999-99");
-
-            driver.Navigate().Refresh();
         }
 
         [Theory]
@@ -21,9 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [InlineData("No")]
         public async Task MobileFirstApproach_SelectRadioButton(string label)
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText(label);
+            CommonActions.ClickRadioButtonWithText(label);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             string labelConvert = label == "Yes" ? "true" : "false";
 
@@ -35,9 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void MobileFirstApproach_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText("Yes");
+            CommonActions.ClickRadioButtonWithText("Yes");
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Mobile first approach").Should().BeTrue();
         }
@@ -45,9 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void MobileFirstApproach_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Mobile first approach").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

@@ -17,6 +17,7 @@ services:
             - "nhsd_bcdb_deploy"
             - "nhsd_cudb_deploy"
             - "maildev"
+            - "file.upload"
 
     sqlserver:
         image: "mcr.microsoft.com/mssql/server"
@@ -31,6 +32,13 @@ services:
         ports:
         - "1080:80"
         - "1081:25"
+
+    blob.store:
+        image: mcr.microsoft.com/azure-storage/azurite:3.10.0
+        container_name: nhsd_bc_integration_blob_store
+        ports:
+        - "10100:10000"
+        - "10101:10001"
 
     nhsd_bcdb_deploy:
         image: ${DOCKER_REGISTRY}buyingcataloguedatabase
@@ -68,7 +76,16 @@ services:
             EA_USER_LAST_NAME: "User"
             EA_USER_EMAIL: "user@agency.com"
             EA_USER_PASSWORD_HASH: "AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg=="
-            EA_USER_PHONE: "01234567890" 
+            EA_USER_PHONE: "01234567890"
 
         depends_on:
             - "sqlserver"   
+
+    file.upload:
+        image: ${DOCKER_REGISTRY}file-uploader
+        container_name: file_uploader
+        build:
+            context: .
+            dockerfile: azurite/Dockerfile
+        depends_on:
+            - "blob.store"  
