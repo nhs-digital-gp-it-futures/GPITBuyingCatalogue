@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 {
     public static class ProfileDefaults
     {
-        public static List<SelectListItem> ConnectionSpeeds = new List<SelectListItem>
+        public static List<SelectListItem> ConnectionSpeeds = new()
         {
             new() { Text = "0.5Mbps", Value="0.5Mbps"},
             new() { Text = "1Mbps", Value="1Mbps"},
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
             new() { Text = "Higher than 30Mbps", Value = "Higher than 30Mbps" },
        };
 
-        public static List<SelectListItem> ScreenResolutions = new List<SelectListItem>
+        public static List<SelectListItem> ScreenResolutions = new()
         {
             new() { Text = "16:9 - 640 x 360", Value = "16:9 - 640 x 360" },
             new() { Text = "4:3 - 800 x 600", Value = "4:3 - 800 x 600" },
@@ -49,7 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
             new() { Text = "16:9 - 3840 x 2160", Value = "16:9 - 3840 x 2160" }
         };
 
-        public static List<SelectListItem> MemorySizes = new List<SelectListItem> {
+        public static List<SelectListItem> MemorySizes = new()
+        {
             new SelectListItem{ Text = "256MB", Value = "256MB"},
             new SelectListItem{ Text = "512MB", Value = "512MB"},
             new SelectListItem{ Text = "1GB", Value = "1GB"},
@@ -59,8 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
             new SelectListItem{ Text = "16GB or higher", Value = "16GB or higher"}
         };
 
-        public static SupportedBrowserModel[] SupportedBrowsers = new SupportedBrowserModel[]
-        {
+        public static SupportedBrowserModel[] SupportedBrowsers = {
             new() {BrowserName = "Google Chrome"},
             new() {BrowserName = "Microsoft Edge"},
             new() { BrowserName = "Mozilla Firefox" },
@@ -71,15 +71,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
             new() { BrowserName = "Internet Explorer 10" }
         };
 
-        public static SupportedOperatingSystemModel[] SupportedOperatingSystems = new SupportedOperatingSystemModel[]
-        {
-            new SupportedOperatingSystemModel{ OperatingSystemName = "Apple IOS" },
-            new SupportedOperatingSystemModel{ OperatingSystemName = "Android" },
-            new SupportedOperatingSystemModel{ OperatingSystemName = "Other" }
+        public static SupportedOperatingSystemModel[] SupportedOperatingSystems = {
+            new() { OperatingSystemName = "Apple IOS" },
+            new() { OperatingSystemName = "Android" },
+            new() { OperatingSystemName = "Other" }
         };
 
-        public static ConnectionTypeModel[] MobileConnectionTypes = new ConnectionTypeModel[]
-        {
+        public static ConnectionTypeModel[] MobileConnectionTypes = {
             new() { ConnectionType = "GPRS" },
             new() { ConnectionType = "3G" },
             new() { ConnectionType = "LTE" },
@@ -89,24 +87,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
             new() { ConnectionType = "Wifi" }
         };
 
-        public static string GetBrowserBasedBackLink(string CatalogueItemId)
-        {
-            return $"/marketing/supplier/solution/{CatalogueItemId}/section/browser-based";
-        }
+        public static string GetBrowserBasedBackLink(string catalogueItemId) =>
+            $"{GetSolutionBackLink(catalogueItemId)}/section/browser-based";
 
-        public static string GetNativeDesktopBackLink(string CatalogueItemId)
-        {
-            return $"/marketing/supplier/solution/{CatalogueItemId}/section/native-desktop";
-        }
+        public static string GetNativeDesktopBackLink(string catalogueItemId) =>
+            $"{GetSolutionBackLink(catalogueItemId)}/section/native-desktop";
 
-        public static string GetNativeMobileBackLink(string CatalogueItemId)
-        {
-            return $"/marketing/supplier/solution/{CatalogueItemId}/section/native-mobile";
-        }
+        public static string GetNativeMobileBackLink(string catalogueItemId) =>
+            $"{GetSolutionBackLink(catalogueItemId)}/section/native-mobile";
 
-        public static string GetSolutionBackLink(string CatalogueItemId)
-        {
-            return $"/marketing/supplier/solution/{CatalogueItemId}";
-        }
+        public static string GetSolutionBackLink(string catalogueItemId) =>
+            $"/marketing/supplier/solution/{catalogueItemId}";
     }
 }

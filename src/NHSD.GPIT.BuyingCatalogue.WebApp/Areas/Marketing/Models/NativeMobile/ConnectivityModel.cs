@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         }
 
         public string SelectedConnectionSpeed { get; set; }
+        
         public List<SelectListItem> ConnectionSpeeds { get; set; }
 
         public ConnectionTypeModel[] ConnectionTypes { get; set; }

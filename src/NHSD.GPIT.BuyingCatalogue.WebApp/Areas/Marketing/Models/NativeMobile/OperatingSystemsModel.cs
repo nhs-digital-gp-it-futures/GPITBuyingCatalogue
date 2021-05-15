@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
@@ -18,12 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
-            OperatingSystems = new SupportedOperatingSystemModel[]
-            {
-                new() { OperatingSystemName = "Apple IOS" },
-                new() { OperatingSystemName = "Android" },
-                new() { OperatingSystemName = "Other" }
-            };
+            OperatingSystems = ProfileDefaults.SupportedOperatingSystems;
 
             CheckOperatingSystems();
 

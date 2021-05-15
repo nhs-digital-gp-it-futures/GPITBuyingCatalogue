@@ -74,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(new List<SelectListItem>
             {
-                new() {Text = "Please select"},
                 new() {Text = "0.5Mbps", Value = "0.5Mbps"},
                 new() {Text = "1Mbps", Value = "1Mbps"},
                 new() {Text = "1.5Mbps", Value = "1.5Mbps"},
@@ -147,7 +146,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.Description.Should().Be(clientApplication.MobileMemoryAndStorage.Description);
             actual.MemorySizes.Should().BeEquivalentTo(new List<SelectListItem>
             {
-                new() { Text = "Please select"},
                 new() { Text = "256MB", Value = "256MB"},
                 new() { Text = "512MB", Value = "512MB"},
                 new() { Text = "1GB", Value = "1GB"},

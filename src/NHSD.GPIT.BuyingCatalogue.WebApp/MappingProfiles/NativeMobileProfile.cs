@@ -26,32 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<CatalogueItem, ConnectivityModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => GetBackLink(src)))
-                .ForMember(dest => dest.ConnectionSpeeds, opt => opt.MapFrom(src => new List<SelectListItem>
-                {
-                    new() {Text = "Please select"},
-                    new() {Text = "0.5Mbps", Value = "0.5Mbps"},
-                    new() {Text = "1Mbps", Value = "1Mbps"},
-                    new() {Text = "1.5Mbps", Value = "1.5Mbps"},
-                    new() {Text = "2Mbps", Value = "2Mbps"},
-                    new() {Text = "3Mbps", Value = "3Mbps"},
-                    new() {Text = "5Mbps", Value = "5Mbps"},
-                    new() {Text = "8Mbps", Value = "8Mbps"},
-                    new() {Text = "10Mbps", Value = "10Mbps"},
-                    new() {Text = "15Mbps", Value = "15Mbps"},
-                    new() {Text = "20Mbps", Value = "20Mbps"},
-                    new() {Text = "30Mbps", Value = "30Mbps"},
-                    new() {Text = "Higher than 30Mbps", Value = "Higher than 30Mbps"}
-                }))
-                .ForMember(dest => dest.ConnectionTypes, opt => opt.MapFrom(src => new ConnectionTypeModel[]
-                {
-                    new() {ConnectionType = "GPRS"},
-                    new() {ConnectionType = "3G"},
-                    new() {ConnectionType = "LTE"},
-                    new() {ConnectionType = "4G"},
-                    new() {ConnectionType = "5G"},
-                    new() {ConnectionType = "Bluetooth"},
-                    new() {ConnectionType = "Wifi"}
-                }))
+                .ForMember(dest => dest.ConnectionSpeeds, opt => opt.MapFrom(src => ProfileDefaults.ConnectionSpeeds))
+                .ForMember(dest => dest.ConnectionTypes, opt => opt.MapFrom(src => ProfileDefaults.MobileConnectionTypes))
                 .ForMember(dest => dest.Description, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -93,17 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.MapFrom((_, dest) =>
                         dest.ClientApplication?.MobileMemoryAndStorage?.Description);
                 })
-                .ForMember(dest => dest.MemorySizes, opt => opt.MapFrom(src => new List<SelectListItem>
-                {
-                    new() {Text = "Please select"},
-                    new() {Text = "256MB", Value = "256MB"},
-                    new() {Text = "512MB", Value = "512MB"},
-                    new() {Text = "1GB", Value = "1GB"},
-                    new() {Text = "2GB", Value = "2GB"},
-                    new() {Text = "4GB", Value = "4GB"},
-                    new() {Text = "8GB", Value = "8GB"},
-                    new() {Text = "16GB or higher", Value = "16GB or higher"}
-                }))
+                .ForMember(dest => dest.MemorySizes, opt => opt.MapFrom(src => ProfileDefaults.MemorySizes))
                 .ForMember(dest => dest.SelectedMemorySize, opt =>
                 {
                     opt.SetMappingOrder(20);
@@ -130,12 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.MapFrom(
                         (_, dest) => dest.ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription);
                 })
-                .ForMember(dest => dest.OperatingSystems, opt => opt.MapFrom(src => new SupportedOperatingSystemModel[]
-                {
-                    new() {OperatingSystemName = "Apple IOS"},
-                    new() {OperatingSystemName = "Android"},
-                    new() {OperatingSystemName = "Other"}
-                }))
+                .ForMember(dest => dest.OperatingSystems,
+                    opt => opt.MapFrom(src => ProfileDefaults.SupportedOperatingSystems))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>()
                 .AfterMap((_, dest) =>
                 {
@@ -199,5 +161,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         }
 
         private static string GetBackLink(CatalogueItem catalogueItem) =>
-            $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-mobile";
+            ProfileDefaults.GetNativeMobileBackLink(catalogueItem.CatalogueItemId);
     }
+}
