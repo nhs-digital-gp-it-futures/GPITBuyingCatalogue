@@ -90,13 +90,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             });
             actual.ConnectionTypes.Should().BeEquivalentTo(new ConnectionTypeModel[]
             {
-                new() {ConnectionType = "GPRS"},
+                new() {ConnectionType = "GPRS", Checked = true},
                 new() {ConnectionType = "3G"},
-                new() {ConnectionType = "LTE"},
+                new() {ConnectionType = "LTE", Checked = true},
                 new() {ConnectionType = "4G"},
-                new() {ConnectionType = "5G"},
+                new() {ConnectionType = "5G", Checked = true},
                 new() {ConnectionType = "Bluetooth"},
-                new() {ConnectionType = "Wifi"}
+                new() {ConnectionType = "Wifi", Checked = true}
             });
             actual.Description.Should().Be(clientApplication.MobileConnectionDetails.Description);
             actual.SelectedConnectionSpeed.Should()

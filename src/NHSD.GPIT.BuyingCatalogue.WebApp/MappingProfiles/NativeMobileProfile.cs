@@ -62,7 +62,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.SetMappingOrder(20);
                     opt.MapFrom((_, dest) => dest.ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed);
                 })
-                .IncludeBase<CatalogueItem, MarketingBaseModel>();
+                .IncludeBase<CatalogueItem, MarketingBaseModel>()
+                .AfterMap((src, dest) =>
+                {
+                    var mobilConnectionTypes = dest.ClientApplication?.MobileConnectionDetails?.ConnectionType;
+                    if (mobilConnectionTypes == null)
+                        return;
+
+                    foreach (var connectionType in dest.ConnectionTypes)
+                    {
+                        connectionType.Checked = mobilConnectionTypes.Any(x =>
+                            x.Equals(connectionType.ConnectionType, StringComparison.InvariantCultureIgnoreCase));
+                    }
+                });
 
             CreateMap<CatalogueItem, HardwareRequirementsModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => GetBackLink(src)))
@@ -130,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     var operatingSystems = dest.ClientApplication?.MobileOperatingSystems?.OperatingSystems;
                     if (operatingSystems == null)
                         return;
-                    
+
                     foreach (var browser in dest.OperatingSystems)
                     {
                         browser.Checked = operatingSystems.Any(x =>
@@ -158,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.MinimumConnectionSpeed, opt => opt.MapFrom(src => src.SelectedConnectionSpeed))
                 .AfterMap((src, dest) =>
                 {
-                    if(src.ConnectionTypes == null || !src.ConnectionTypes.Any())
+                    if (src.ConnectionTypes == null || !src.ConnectionTypes.Any())
                         return;
 
                     foreach (var connectionType in src.ConnectionTypes.Where(x => x.Checked))
@@ -174,9 +186,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.OperatingSystemsDescription, opt => opt.MapFrom(src => src.Description))
                 .AfterMap((src, dest) =>
                 {
-                    if(src.OperatingSystems == null || !src.OperatingSystems.Any())
+                    if (src.OperatingSystems == null || !src.OperatingSystems.Any())
                         return;
-                    
+
                     foreach (var operatingSystem in src.OperatingSystems.Where(x => x.Checked))
                         dest.OperatingSystems.Add(operatingSystem.OperatingSystemName);
                 });
