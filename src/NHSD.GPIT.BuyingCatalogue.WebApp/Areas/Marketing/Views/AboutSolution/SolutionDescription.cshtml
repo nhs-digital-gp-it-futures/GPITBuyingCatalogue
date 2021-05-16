@@ -5,11 +5,11 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <partial name="Partials/_BackLink" model="Model" />
+        <partial name="_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="Catalogue Solution description" title-advice="Give buyers as much detail as possible about your Catalogue Solution." />
+        <partial name="_NhsPageTitle" model="@Model.PageTitle()"/>
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />

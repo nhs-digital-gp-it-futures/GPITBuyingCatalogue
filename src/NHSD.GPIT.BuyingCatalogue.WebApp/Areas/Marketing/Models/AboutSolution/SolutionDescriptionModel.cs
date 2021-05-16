@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
@@ -33,6 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         [StringLength(1000)]
         [Url]
-        public string Link { get; set; }      
+        public string Link { get; set; }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Give buyers as much detail as possible about your Catalogue Solution.",
+                Title = "Catalogue Solution description",
+            };
     }
 }

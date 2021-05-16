@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
@@ -35,5 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
                     OnPremise.RequiresHscn = null;
             }
         }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Provide information to buyers about how your Catalogue Solution can be hosted.",
+                Title = "Hosting type – on premise",
+            };
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
@@ -24,5 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
         public override bool? IsComplete => ClientApplication?.MobileFirstDesign.HasValue;
 
         public string MobileFirstApproach { get; set; }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Let buyers know about the design concepts of your Catalogue Solution.",
+                Title = "Browser-based application – mobile first approach",
+            };
     }
 }

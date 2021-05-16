@@ -5,20 +5,19 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
+        <partial name="_BackLink" model="Model"/>
     </div>
     <div class="nhsuk-grid-column-two-thirds">
 
-        <nhs-validation-summary />
-        <nhs-page-title title="Native mobile or tablet application – connectivity"
-                        title-advice="Let buyers know about your Catalogue Solution’s connection requirements." />
+        <nhs-validation-summary/>
+        <partial name="_NhsPageTitle" model="@Model.PageTitle()"/>
         <form method="post">
-            <input type="hidden" asp-for="@Model.SolutionId" />
-            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.SolutionId"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
             <nhs-validation-select asp-for="SelectedConnectionSpeed"
-                                   asp-items="@(new SelectList(Model.ConnectionSpeeds,"Value","Text"))"
+                                   asp-items="@(new SelectList(Model.ConnectionSpeeds, "Value", "Text"))"
                                    label-text="Connection speed (optional)"
-                                   label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
+                                   label-hint="Select the minimum bandwidth required for your Catalogue Solution to function."/>
             <nhs-fieldset-form asp-for="@Model"
                                label-text="Connection types supported (optional)"
                                label-hint="Select all of the connection types that will work with your Catalogue Solution.">
@@ -27,14 +26,14 @@
                     {
                         <nhs-validation-checkbox asp-for="@Model.ConnectionTypes[i].Checked"
                                                  label-text="@Model.ConnectionTypes[i].ConnectionType"
-                                                 hidden-input="@Model.ConnectionTypes[i].ConnectionType" />
+                                                 hidden-input="@Model.ConnectionTypes[i].ConnectionType"/>
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form>
             <nhs-validation-textarea asp-for="Description"
                                      label-text="Connection requirements (optional)"
-                                     label-hint="Provide information on any connection requirements for your Catalogue Solution." />
-            <nhs-submit-button />
+                                     label-hint="Provide information on any connection requirements for your Catalogue Solution."/>
+            <nhs-submit-button/>
         </form>
     </div>
 </div>

@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
@@ -58,5 +59,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
                 }
             }
         }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Let buyers know which types of browser will work with your Catalogue Solution.",
+                Title = "Browser-based application – supported browsers",
+            };
     }
 }

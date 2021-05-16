@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
 {
@@ -28,6 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
 
         [StringLength(1000)]
         [Url]
-        public string Link { get; set; }               
+        public string Link { get; set; }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Help buyers learn more about your organisation.",
+                Title = "About supplier",
+            };
     }
 }

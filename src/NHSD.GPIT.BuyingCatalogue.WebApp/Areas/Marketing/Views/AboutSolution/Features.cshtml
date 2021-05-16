@@ -5,15 +5,15 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
+        <partial name="_BackLink" model="Model"/>
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary title="There is a problem" />
-        <nhs-page-title title="Catalogue Solution Features" title-advice="Highlight to buyers the key features of your Catalogue Solution." />
+        <nhs-validation-summary title="There is a problem"/>
+        <partial name="_NhsPageTitle" model="@Model.PageTitle()"/>
         <form method="post">
 
-            <input type="hidden" asp-for="@Model.SolutionId" />
-            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.SolutionId"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
             <div data-test-id="section-question-bulletpoint-list" class="nhsuk-u-margin-bottom-6">
                 <div data-test-id="question-listing">
                     <div data-test-id="bulletpoint-list-main-advice">
@@ -25,20 +25,20 @@
                         List up to 10 key features provided by your Catalogue Solution that meet needs in primary care, for example how it can help manage information and resources.
                     </span>
                     <div data-test-id="bulletpoint-list-fields">
-                        <nhs-validation-input asp-for="Listing1" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing2" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing3" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing4" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing5" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing6" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing7" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing8" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing9" disable-label-and-hint="true" />
-                        <nhs-validation-input asp-for="Listing10" disable-label-and-hint="true" />
+                        <nhs-validation-input asp-for="Listing1" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing2" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing3" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing4" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing5" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing6" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing7" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing8" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing9" disable-label-and-hint="true"/>
+                        <nhs-validation-input asp-for="Listing10" disable-label-and-hint="true"/>
                     </div>
                 </div>
             </div>
-            <nhs-submit-button />
+            <nhs-submit-button/>
         </form>
     </div>
 </div>

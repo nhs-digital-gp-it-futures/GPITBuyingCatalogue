@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
@@ -26,5 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public List<Organisation> AvailableOrganisations { get; set; }    
         
         public Guid SelectedOrganisation { get; set; }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = $"{Organisation?.Name} will then be able to create orders on this organisation's behalf.",
+                Title = Organisation?.Name,
+            };
     }
 }

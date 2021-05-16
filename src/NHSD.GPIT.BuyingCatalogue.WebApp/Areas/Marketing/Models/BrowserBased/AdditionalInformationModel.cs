@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
@@ -24,5 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         [StringLength(500)]
         public string AdditionalInformation { get; set; }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Let buyers know any additional information about your Catalogue Solution.",
+                Title = "Browser-based application – additional information",
+            };
     }
 }

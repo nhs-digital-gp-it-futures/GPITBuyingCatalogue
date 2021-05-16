@@ -5,23 +5,22 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
+        <partial name="_BackLink" model="Model"/>
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
-        <nhs-page-title title="Native mobile and tablet application – memory and storage"
-                        title-advice="Let buyers know the minimum requirements for your Catalogue Solution to function." />
+        <nhs-validation-summary/>
+        <partial name="_NhsPageTitle" model="@Model.PageTitle()"/>
         <form method="post">
-            <input type="hidden" asp-for="@Model.SolutionId" />
-            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.SolutionId"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
             <nhs-validation-select asp-for="SelectedMemorySize"
                                    asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
                                    label-text="Memory size"
-                                   label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
+                                   label-hint="Select the minimum memory size required for your Catalogue Solution to function."/>
             <nhs-validation-textarea asp-for="Description"
                                      label-text="Storage space"
-                                     label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution." />
-            <nhs-submit-button />
+                                     label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution."/>
+            <nhs-submit-button/>
         </form>
     </div>
 </div>

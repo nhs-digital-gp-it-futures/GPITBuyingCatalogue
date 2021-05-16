@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
@@ -23,5 +24,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 
         [StringLength(1100)]
         public string Description { get; set; }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice =
+                    "Describe the typical processes and timescales to implement your Catalogue Solution. Include typical timescales that maybe required to transition from an existing solution if applicable.",
+                Title = "Catalogue Solution implementation timescales",
+            };
     }
 }

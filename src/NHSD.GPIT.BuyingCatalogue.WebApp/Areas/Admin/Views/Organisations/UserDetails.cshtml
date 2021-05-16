@@ -5,7 +5,7 @@
 }
 
 <div class="nhsuk-width-container" data-test-id="view-user-page">
-    <partial name="Partials/_BackLink" model="Model" />
+    <partial name="_BackLink" model="Model" />
     <h1 data-test-id="view-user-page-title" class="">@Model.User.GetDisplayName() details</h1>
     <h2 data-test-id="organisation-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Organisation name</h2>
     <div data-test-id="organisation-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.Organisation.Name</div>

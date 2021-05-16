@@ -5,23 +5,20 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
+        <partial name="_BackLink" model="Model"/>
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
-        <nhs-page-title
-            title="Browser-based application – mobile first approach"
-            title-advice="Let buyers know about the design concepts of your Catalogue Solution."
-        />
+        <nhs-validation-summary/>
+        <partial name="_NhsPageTitle" model="@Model.PageTitle()"/>
         <form method="post">
-            <input type="hidden" asp-for="@Model.SolutionId" />
-            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.SolutionId"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
             <nhs-fieldset-form asp-for="@Model"
                                label-text="Mobile first approach"
                                label-hint="Is your Catalogue Solution designed with a mobile first approach?">
-                <nhs-radio-buttons asp-for="@Model.MobileFirstApproach" is-yes-no="true" />
+                <nhs-radio-buttons asp-for="@Model.MobileFirstApproach" is-yes-no="true"/>
             </nhs-fieldset-form>
-            <nhs-submit-button />
+            <nhs-submit-button/>
         </form>
     </div>
 </div>

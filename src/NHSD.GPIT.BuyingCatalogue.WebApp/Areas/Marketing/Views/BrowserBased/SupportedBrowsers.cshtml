@@ -5,24 +5,21 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
+        <partial name="_BackLink" model="Model"/>
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
-        <nhs-page-title
-            title="Browser-based application – supported browsers"
-            title-advice="Let buyers know which types of browser will work with your Catalogue Solution."
-        />
+        <nhs-validation-summary/>
+        <partial name="_NhsPageTitle" model="@Model.PageTitle()"/>
         <form method="post">
-            <input type="hidden" asp-for="@Model.SolutionId" />
-            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.SolutionId"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
             <nhs-fieldset-form asp-for="@Model"
                                label-text="Supported browser types"
                                label-hint="Select all the types of browser that are supported by your Catalogue Solution.">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.Browsers.Length; i++)
                     {
-                        <nhs-validation-checkbox asp-for="@Model.Browsers[i].Checked" label-text="@Model.Browsers[i].BrowserName" hidden-input="@Model.Browsers[i].BrowserName" />
+                        <nhs-validation-checkbox asp-for="@Model.Browsers[i].Checked" label-text="@Model.Browsers[i].BrowserName" hidden-input="@Model.Browsers[i].BrowserName"/>
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form>
@@ -30,9 +27,9 @@
                                label-text="Mobile responsive"
                                label-hint="Does the design of your Catalogue Solution adapt for use on mobile or tablet devices?">
                 <nhs-radio-buttons asp-for="MobileResponsive"
-                                   is-yes-no="true" />
+                                   is-yes-no="true"/>
             </nhs-fieldset-form>
-            <nhs-submit-button />
+            <nhs-submit-button/>
         </form>
     </div>
 </div>

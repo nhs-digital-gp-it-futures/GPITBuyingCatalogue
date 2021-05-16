@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
@@ -29,5 +30,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
             get => !string.IsNullOrWhiteSpace(PrivateCloud?.RequiresHscn);
             set => PrivateCloud.RequiresHscn = value ? "End user devices must be connected to HSCN/N3" : null;
         }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Provide information to buyers about how your Catalogue Solution can be hosted.",
+                Title = "Hosting type – private cloud",
+            };
     }
 }

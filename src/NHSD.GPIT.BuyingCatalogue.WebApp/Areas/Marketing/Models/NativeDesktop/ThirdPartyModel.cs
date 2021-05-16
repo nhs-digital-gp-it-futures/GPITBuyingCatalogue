@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 {
@@ -30,5 +31,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 
         [StringLength(500)]
         public string DeviceCapabilities { get; set; }
+
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice =
+                    "Let buyers know about any third-party components or device capabilities needed for your Catalogue Solution.",
+                Title = "Native desktop application – third-party components and device capabilities",
+            };
     }
 }

@@ -5,20 +5,19 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
+        <partial name="_BackLink" model="Model"/>
     </div>
 
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
-        <nhs-page-title title="Browser-based application – additional information"
-                        title-advice="Let buyers know any additional information about your Catalogue Solution." />
+        <nhs-validation-summary/>
+        <partial name="_NhsPageTitle" model="@Model.PageTitle()"/>
         <form method="post">
-            <input type="hidden" asp-for="@Model.SolutionId" />
-            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.SolutionId"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
             <nhs-validation-textarea asp-for="AdditionalInformation"
                                      label-text="Additional information (optional)"
-                                     label-hint="Provide additional information about your browser-based Catalogue Solution" />
-            <nhs-submit-button />
+                                     label-hint="Provide additional information about your browser-based Catalogue Solution"/>
+            <nhs-submit-button/>
         </form>
     </div>
 </div>

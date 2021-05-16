@@ -1,6 +1,7 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
@@ -27,5 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         }
 
         public string MobileFirstApproach { get; set; }
+
+        public PageTitleViewModel PageTitle() => new()
+        {
+            Advice = "Let buyers know about the design concepts of your Catalogue Solution.",
+            Title = "Native mobile or tablet application – mobile first approach",
+        };
     }
 }
