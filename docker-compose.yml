@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   nhsd.gpit.buyingcatalogue.webapp:
-    image: ${REGISTRY:-nhsd}/buying-catalogue/nhsdgpitbuyingcataloguewebapp
+    image: ${REGISTRY:-nhsd}/buying-catalogue/nhsdgpitbuyingcataloguewebapp:${TAG:-latestbuild}
     container_name: nhsdgpitbuyingcataloguewebapp
     build:
       context: .
