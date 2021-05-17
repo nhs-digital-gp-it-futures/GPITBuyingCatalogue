@@ -155,7 +155,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentNullException(nameof(model));
 
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
             await _solutionsService.SaveSolutionDescription(model.SolutionId, model.Summary, model.Description,
                 model.Link);

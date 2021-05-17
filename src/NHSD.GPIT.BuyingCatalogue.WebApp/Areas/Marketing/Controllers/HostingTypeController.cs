@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
@@ -12,11 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     public class HostingTypeController : Controller
     {
         private readonly ILogWrapper<HostingTypeController> _logger;
+        private readonly IMapper _mapper;
         private readonly ISolutionsService _solutionsService;
 
-        public HostingTypeController(ILogWrapper<HostingTypeController> logger, ISolutionsService solutionsService)
+        public HostingTypeController(ILogWrapper<HostingTypeController> logger, IMapper mapper,
+            ISolutionsService solutionsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
@@ -27,8 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
             
-            return View(new PublicCloudModel(solution));
+            return View(_mapper.Map<CatalogueItem, PublicCloudModel>(solution));
         }
 
         [HttpPost("hosting-type-public-cloud")]
@@ -41,12 +48,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var hosting = await _solutionsService.GetHosting(model.SolutionId);
+            if (hosting == null)
+                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
 
             hosting.PublicCloud = model.PublicCloud;
 
             await _solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
+            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
         }
 
         [HttpGet("hosting-type-private-cloud")]
@@ -56,8 +65,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
             
-            return View(new PrivateCloudModel(solution));
+            return View(_mapper.Map<CatalogueItem, PrivateCloudModel>(solution));
         }
 
         [HttpPost("hosting-type-private-cloud")]
@@ -70,7 +81,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var hosting = await _solutionsService.GetHosting(model.SolutionId);
-
+            if (hosting == null)
+                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
+            
             hosting.PrivateCloud = model.PrivateCloud;
 
             await _solutionsService.SaveHosting(model.SolutionId, hosting);
@@ -85,8 +98,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
 
-            return View(new HybridModel(solution));
+            return View(_mapper.Map<CatalogueItem, HybridModel>(solution));
         }
 
         [HttpPost("hosting-type-hybrid")]
@@ -99,7 +114,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var hosting = await _solutionsService.GetHosting(model.SolutionId);
-
+            if (hosting == null)
+                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
+            
             hosting.HybridHostingType = model.HybridHostingType;
 
             await _solutionsService.SaveHosting(model.SolutionId, hosting);
@@ -114,8 +131,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException(nameof(id));
 
             var solution = await _solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
             
-            return View(new OnPremiseModel(solution));
+            return View(_mapper.Map<CatalogueItem, OnPremiseModel>(solution));
         }
 
         [HttpPost("hosting-type-on-premise")]
@@ -128,6 +147,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var hosting = await _solutionsService.GetHosting(model.SolutionId);
+            if (hosting == null)
+                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
 
             hosting.OnPremise = model.OnPremise;
 

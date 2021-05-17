@@ -4,25 +4,23 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Features(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/features")
         {
-            using var context = GetBCContext();
-            var solution = context.Solutions.Single(s => s.Id == "99999-99");
-            solution.Features = string.Empty;
-            context.SaveChanges();
         }
 
         [Fact]
         public async Task Features_AddFeaturesAsync()
         {
             var feature = MarketingPages.FeaturesActions.EnterFeature();
-            MarketingPages.CommonActions.ClickSave();
+
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
@@ -41,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
                 addedFeatures.Add(feature);
             }
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
@@ -55,10 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void Features_SectionMarkedComplete()
         {
-            driver.Navigate().Refresh();
-
             var feature = MarketingPages.FeaturesActions.EnterFeature();
-            MarketingPages.CommonActions.ClickSave();
+
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Features").Should().BeTrue();
         }
@@ -66,11 +63,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void Features_SectionMarkedIncomplete()
         {
-            driver.Navigate().Refresh();
-
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Features").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearFeatures("99999-99");
         }
     }
 }

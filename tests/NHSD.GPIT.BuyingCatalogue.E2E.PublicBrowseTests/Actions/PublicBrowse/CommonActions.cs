@@ -1,5 +1,7 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
 using OpenQA.Selenium;
+using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
@@ -11,7 +13,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         internal string PageTitle()
         {
-            return Driver.FindElement(Objects.PublicBrowse.CommonObjects.PageTitle).Text;
+            return Driver.FindElement(CommonObjects.PageTitle).Text;
+        }
+
+        internal void ClickGoBackLink()
+        {
+            Driver.FindElement(CommonObjects.GoBackLink).Click();
+        }
+
+        internal void ClickContinueButton()
+        {
+            Driver.FindElement(CommonObjects.ContinueButton).Click();
         }
     }
 }

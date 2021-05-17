@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
@@ -19,11 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
             AdditionalInformation = ClientApplication?.NativeDesktopAdditionalInformation;
         }
 
-        public override bool? IsComplete
-        {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopAdditionalInformation); }
-        }
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopAdditionalInformation);
 
+        [StringLength(500)]
         public string AdditionalInformation { get; set; }
     }
 }

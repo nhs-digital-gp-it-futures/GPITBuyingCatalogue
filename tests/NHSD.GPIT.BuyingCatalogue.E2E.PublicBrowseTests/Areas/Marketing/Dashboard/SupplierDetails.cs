@@ -1,13 +1,16 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
-    public sealed class SupplierDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class SupplierDetails : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public SupplierDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/about-supplier")
         {
@@ -19,11 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         }
 
         [Fact]
-        public async Task SupplierDetails_EnterSummary()
+        public async Task SupplierDetails_EnterDescription()
         {
-            var summary = MarketingPages.AboutSupplierActions.DescriptionAddText(1000);
-            var link = MarketingPages.AboutSupplierActions.LinkAddText(1000);
-            MarketingPages.CommonActions.ClickSave();
+            var summary = TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
+            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+
+            CommonActions.ClickSave();
 
             using var context = GetBCContext();
             var catalogueItem = await context.CatalogueItems.Include(c => c.Supplier).SingleAsync(s => s.CatalogueItemId == "99999-99");
@@ -34,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void SupplierDetails_MarkedAsComplete()
         {
-            MarketingPages.AboutSupplierActions.DescriptionAddText(1000);
-            MarketingPages.CommonActions.ClickSave();
+            TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("About supplier").Should().BeTrue();
         }
@@ -43,9 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void SupplierDetails_MarkedAsIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("About supplier").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

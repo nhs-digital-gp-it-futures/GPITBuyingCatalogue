@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NUnit.Framework;
@@ -63,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("about-supplier");
+                .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -134,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("about-supplier");
+                .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -212,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be("contact-details");
+                .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -235,6 +236,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             await controller.ContactDetails(id);
             
             mockService.Verify(x => x.GetSolution(id));
+        }
+        
+        [Test, AutoData]
+        public static async Task Get_ContactDetails_NullSolutionFromService_ReturnsBadRequestResponse(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(x => x.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
+                Mock.Of<IMapper>(), mockService.Object);
+
+            var actual = (await controller.ContactDetails(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
         [Test, AutoData]
@@ -269,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be("contact-details");
+                .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
         }
 
         [Test]

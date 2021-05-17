@@ -52,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureRegistration(Configuration);
 
+            services.ConfigureAzureBlobStorage(Configuration, healthChecksBuilder);
+
             services.ConfigureOds(Configuration);
 
             services.ConfigureEmail(Configuration, healthChecksBuilder);

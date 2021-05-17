@@ -15,12 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         {
             CreateMap<CatalogueItem, BrowserBasedModel>()
                 .ForMember(dest => dest.BackLink,
-                    opt => opt.MapFrom(src => $"/marketing/supplier/solution/{src.CatalogueItemId}"))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
                 .ForMember(dest => dest.BackLink,
-                    opt => opt.MapFrom(src => $"/marketing/supplier/solution/{src.CatalogueItemId}"))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.BrowserBased, opt =>
                 {
                     opt.SetMappingOrder(20);
@@ -43,12 +43,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
             
             CreateMap<CatalogueItem, NativeDesktopModel>()
                 .ForMember(dest => dest.BackLink,
-                    opt => opt.MapFrom(src => $"/marketing/supplier/solution/{src.CatalogueItemId}"))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
             
             CreateMap<CatalogueItem, NativeMobileModel>()
                 .ForMember(dest => dest.BackLink,
-                    opt => opt.MapFrom(src => $"/marketing/supplier/solution/{src.CatalogueItemId}"))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
             
             CreateMap<ClientApplicationTypesModel, ClientApplication>()

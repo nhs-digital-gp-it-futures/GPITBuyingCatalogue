@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
@@ -22,8 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisat
         public override bool? IsComplete => !string.IsNullOrWhiteSpace(Description) ||
                                             !string.IsNullOrWhiteSpace(Link);
 
+        [StringLength(1100)]
         public string Description { get; set; }
 
+        [StringLength(1000)]
+        [Url]
         public string Link { get; set; }               
     }
 }
