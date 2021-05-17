@@ -10,11 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Area("Order")]
     public class OrganisationController : Controller
     {
-        private readonly ILogWrapper<OrganisationController> _logger;
-        
+        private readonly ILogWrapper<OrganisationController> logger;
+
         public OrganisationController(ILogWrapper<OrganisationController> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public IActionResult Index()

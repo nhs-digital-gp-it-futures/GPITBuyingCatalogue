@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class DocumentServiceTests
-    {        
+    {
         [Test]
         public static void Constructor_NullLogger_ThrowsException()
         {
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).Throws(exception);
 
-            var controller = new DocumentService(Mock.Of<ILogWrapper<DocumentService>>(), mockStorage.Object );
+            var controller = new DocumentService(Mock.Of<ILogWrapper<DocumentService>>(), mockStorage.Object);
 
             Assert.ThrowsAsync<InvalidOperationException>(() => controller.DownloadDocumentAsync("directory"));
         }
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 
             var mockLogger = new Mock<ILogWrapper<DocumentService>>();
 
-            var controller = new DocumentService(mockLogger.Object, mockStorage.Object );
+            var controller = new DocumentService(mockLogger.Object, mockStorage.Object);
 
             await controller.DownloadSolutionDocumentAsync("ID", "directory");
 

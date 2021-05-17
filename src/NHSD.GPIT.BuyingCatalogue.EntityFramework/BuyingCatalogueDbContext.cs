@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 #nullable disable
@@ -19,42 +17,60 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         }
 
         public virtual DbSet<AdditionalService> AdditionalServices { get; set; }
-        public virtual DbSet<AssociatedService> AssociatedServices { get; set; }
-        public virtual DbSet<Capability> Capabilities { get; set; }
-        public virtual DbSet<CapabilityCategory> CapabilityCategories { get; set; }
-        public virtual DbSet<CapabilityStatus> CapabilityStatuses { get; set; }
-        public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
-        public virtual DbSet<CatalogueItemType> CatalogueItemTypes { get; set; }
-        public virtual DbSet<CataloguePrice> CataloguePrices { get; set; }
-        public virtual DbSet<CataloguePriceTier> CataloguePriceTiers { get; set; }
-        public virtual DbSet<CataloguePriceType> CataloguePriceTypes { get; set; }
-        public virtual DbSet<CompliancyLevel> CompliancyLevels { get; set; }
-        public virtual DbSet<Epic> Epics { get; set; }
-        public virtual DbSet<Framework> Frameworks { get; set; }
-        public virtual DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
-        public virtual DbSet<FrameworkSolution> FrameworkSolutions { get; set; }
-        public virtual DbSet<MarketingContact> MarketingContacts { get; set; }
-        public virtual DbSet<PricingUnit> PricingUnits { get; set; }
-        public virtual DbSet<ProvisioningType> ProvisioningTypes { get; set; }
-        public virtual DbSet<PublicationStatus> PublicationStatuses { get; set; }
-        public virtual DbSet<Solution> Solutions { get; set; }
-        public virtual DbSet<SolutionCapability> SolutionCapabilities { get; set; }
-        public virtual DbSet<SolutionCapabilityStatus> SolutionCapabilityStatuses { get; set; }
-        public virtual DbSet<SolutionEpic> SolutionEpics { get; set; }
-        public virtual DbSet<SolutionEpicStatus> SolutionEpicStatuses { get; set; }
-        public virtual DbSet<Supplier> Suppliers { get; set; }
-        public virtual DbSet<SupplierContact> SupplierContacts { get; set; }
-        public virtual DbSet<SupplierServiceAssociation> SupplierServiceAssociations { get; set; }
-        public virtual DbSet<TimeUnit> TimeUnits { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=localhost,1450;Database=buyingcatalogue;user id=sa;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;");
-            }
-        }
+        public virtual DbSet<AssociatedService> AssociatedServices { get; set; }
+
+        public virtual DbSet<Capability> Capabilities { get; set; }
+
+        public virtual DbSet<CapabilityCategory> CapabilityCategories { get; set; }
+
+        public virtual DbSet<CapabilityStatus> CapabilityStatuses { get; set; }
+
+        public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
+
+        public virtual DbSet<CatalogueItemType> CatalogueItemTypes { get; set; }
+
+        public virtual DbSet<CataloguePrice> CataloguePrices { get; set; }
+
+        public virtual DbSet<CataloguePriceTier> CataloguePriceTiers { get; set; }
+
+        public virtual DbSet<CataloguePriceType> CataloguePriceTypes { get; set; }
+
+        public virtual DbSet<CompliancyLevel> CompliancyLevels { get; set; }
+
+        public virtual DbSet<Epic> Epics { get; set; }
+
+        public virtual DbSet<Framework> Frameworks { get; set; }
+
+        public virtual DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
+
+        public virtual DbSet<FrameworkSolution> FrameworkSolutions { get; set; }
+
+        public virtual DbSet<MarketingContact> MarketingContacts { get; set; }
+
+        public virtual DbSet<PricingUnit> PricingUnits { get; set; }
+
+        public virtual DbSet<ProvisioningType> ProvisioningTypes { get; set; }
+
+        public virtual DbSet<PublicationStatus> PublicationStatuses { get; set; }
+
+        public virtual DbSet<Solution> Solutions { get; set; }
+
+        public virtual DbSet<SolutionCapability> SolutionCapabilities { get; set; }
+
+        public virtual DbSet<SolutionCapabilityStatus> SolutionCapabilityStatuses { get; set; }
+
+        public virtual DbSet<SolutionEpic> SolutionEpics { get; set; }
+
+        public virtual DbSet<SolutionEpicStatus> SolutionEpicStatuses { get; set; }
+
+        public virtual DbSet<Supplier> Suppliers { get; set; }
+
+        public virtual DbSet<SupplierContact> SupplierContacts { get; set; }
+
+        public virtual DbSet<SupplierServiceAssociation> SupplierServiceAssociations { get; set; }
+
+        public virtual DbSet<TimeUnit> TimeUnits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

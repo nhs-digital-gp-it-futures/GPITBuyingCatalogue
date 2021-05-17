@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes
         {
             Text = labelText;
         }
+
         public string Text { get; init; }
     }
 }

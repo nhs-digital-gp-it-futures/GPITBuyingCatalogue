@@ -5,7 +5,6 @@ using AutoFixture.NUnit3;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
-    [SuppressMessage("Performance", "CA1813:Avoid unsealed attributes", Justification = "AutoFixture customization hierarchy")]
     public class CommonAutoDataAttribute : AutoDataAttribute
     {
         public CommonAutoDataAttribute() :

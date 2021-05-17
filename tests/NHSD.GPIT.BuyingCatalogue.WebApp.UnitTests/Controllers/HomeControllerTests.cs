@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
             var result = controller.Index();
-            
+
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }
-        
+
         [Test]
         public static void Get_ErrorNullStatus_ReturnsDefaultErrorView()
         {
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         {
             var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
-            IFeatureCollection features = new FeatureCollection();            
+            IFeatureCollection features = new FeatureCollection();
             features.Set<IStatusCodeReExecuteFeature>(new StatusCodeReExecuteFeature { OriginalPath = "BAD" });
 
             controller.ControllerContext = new ControllerContext()

@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// </summary>
         /// <param name="content">The content of the message body.</param>
         /// <param name="formatItems">Any format items to format the content with.</param>
-        public EmailMessageBody(string? content, params object[] formatItems)
+        public EmailMessageBody(string content, params object[] formatItems)
         {
             Content = string.IsNullOrWhiteSpace(content) ? string.Empty : content;
             this.formatItems.AddRange(formatItems);

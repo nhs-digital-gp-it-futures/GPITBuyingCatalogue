@@ -9,19 +9,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
     {
         // Ignored to prevent access keys being logged
         [JsonIgnore]
-        public string? ConnectionString { get; set; }
+        public string ConnectionString { get; set; }
 
-        public string? ContainerName { get; set; }
+        public string ContainerName { get; set; }
 
-        public string? DocumentDirectory { get; set; }
+        public string DocumentDirectory { get; set; }
 
-        public AzureBlobStorageHealthCheckSettings? HealthCheck { get; set; }
+        public AzureBlobStorageHealthCheckSettings HealthCheck { get; set; }
 
-        public AzureBlobStorageRetrySettings? Retry { get; set; }
+        public AzureBlobStorageRetrySettings Retry { get; set; }
 
         // Not part of the interface definition as its current use
         // is for logging only
-        public Uri? Uri
+        public Uri Uri
         {
             get
             {

@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var controller = new GuideController(Mock.Of<ILogWrapper<GuideController>>());
 
             var result = controller.Index();
-            
+
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }

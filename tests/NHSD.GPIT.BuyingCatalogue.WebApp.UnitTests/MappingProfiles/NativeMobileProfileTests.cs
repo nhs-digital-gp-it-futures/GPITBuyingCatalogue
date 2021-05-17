@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
@@ -32,19 +32,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 
             mapperConfiguration.AssertConfigurationIsValid();
         }
-        
+
         [Test, CommonAutoData]
         public static void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem);
 
             actual.AdditionalInformation.Should().Be(clientApplication.NativeMobileAdditionalInformation);
@@ -59,14 +59,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public static void Map_CatalogueItemToConnectivityModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
@@ -108,14 +108,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public static void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<CatalogueItem, HardwareRequirementsModel>(catalogueItem);
 
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
@@ -126,20 +126,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-                [Test, CommonAutoData]
+        [Test, CommonAutoData]
         public static void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+    CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<CatalogueItem, MemoryAndStorageModel>(catalogueItem);
-            
+
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
@@ -164,14 +164,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public static void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem);
 
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
@@ -186,14 +186,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public static void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<CatalogueItem, OperatingSystemsModel>(catalogueItem);
 
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
@@ -209,19 +209,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public static void Map_CatalogueItemToThirdPartyModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<CatalogueItem, ThirdPartyModel>(catalogueItem);
 
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
@@ -241,8 +241,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             connectivityModel.ConnectionTypes = Enumerable.Range(1, 7).ToList()
                 .Select(x => new ConnectionTypeModel
                 {
-                    Checked = DateTime.Now.Ticks % 2 == 0, 
-                    ConnectionType= fixture.Create<string>(),
+                    Checked = DateTime.Now.Ticks % 2 == 0,
+                    ConnectionType = fixture.Create<string>(),
                 }).ToArray();
             var expected = connectivityModel.ConnectionTypes.Where(o => o.Checked)
                 .Select(o => o.ConnectionType);
@@ -251,14 +251,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<ConnectivityModel, MobileConnectionDetails>(connectivityModel);
 
             actual.ConnectionType.Should().BeEquivalentTo(expected);
             actual.Description.Should().Be(connectivityModel.Description);
             actual.MinimumConnectionSpeed.Should().Be(connectivityModel.SelectedConnectionSpeed);
         }
-        
+
         [Test, AutoData]
         public static void Map_MemoryAndStorageModelToMobileMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
@@ -309,13 +309,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 cfg.AddProfile<NativeMobileProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
-            
+
             var actual = mapper.Map<ThirdPartyModel, MobileThirdParty>(thirdPartyModel);
 
             actual.DeviceCapabilities.Should().Be(thirdPartyModel.DeviceCapabilities);
             actual.ThirdPartyComponents.Should().Be(thirdPartyModel.ThirdPartyComponents);
         }
-        
+
         private static string GetBackLink(CatalogueItem catalogueItem) =>
             $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-mobile";
     }

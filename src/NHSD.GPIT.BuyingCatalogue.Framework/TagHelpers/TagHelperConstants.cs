@@ -4,6 +4,7 @@
     {
         // Tags
         internal const string Div = "div";
+
         internal const string Anchor = "a";
         internal const string Link = "href";
         internal const string ListItem = "li";
@@ -15,6 +16,7 @@
 
         // Attributes
         internal const string DataTestId = "data-test-id";
+
         internal const string For = "asp-for";
         internal const string Id = "id";
         internal const string LabelledBy = "aria-labelledy";
@@ -28,6 +30,7 @@
 
         // Classes
         internal const string ErrorSummaryTitle = "error-summary-title";
+
         internal const string NhsErrorMessage = "nhsuk-error-message";
         internal const string NhsFormGroup = "nhsuk-form-group";
         internal const string NhsFormGroupError = "nhsuk-form-group--error";

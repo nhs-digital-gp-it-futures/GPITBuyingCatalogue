@@ -1,8 +1,6 @@
 ﻿using System;
 using FluentAssertions;
 using Moq;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 using NUnit.Framework;
@@ -15,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
     {
         private const string KeyIncomplete = "INCOMPLETE";
 
-        private static object[] ResultSets =
+        private static readonly object[] ResultSets =
         {
             new object[]{null, KeyIncomplete},
             new object[]{false, KeyIncomplete},
@@ -28,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             Assert.Throws<ArgumentNullException>(() => _ = new NativeDesktopModel(null))
                 .ParamName.Should().Be("catalogueItem");
         }
-        
+
         [TestCaseSource(nameof(ResultSets))]
         public static void AdditionalInformationStatus_Various_NativeDesktopAdditionalInformationComplete_ResultAsExpected(
             bool? complete,

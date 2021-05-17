@@ -11,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         public NativeDesktopProfile()
         {
             CreateMap<CatalogueItem, OperatingSystemsModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.OperatingSystemsDescription, opt =>
                 {
@@ -21,9 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ConnectivityModel>()
-                    .ForMember(dest => dest.BackLink,
+                    .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
-                .ForMember(dest => dest.ConnectionSpeeds,
+                .ForMember(
+                    dest => dest.ConnectionSpeeds,
                     opt => opt.MapFrom(src => ProfileDefaults.ConnectionSpeeds))
                 .ForMember(dest => dest.SelectedConnectionSpeed, opt =>
                 {
@@ -33,11 +36,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, MemoryAndStorageModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
-                .ForMember(dest => dest.MemorySizes,
+                .ForMember(
+                    dest => dest.MemorySizes,
                     opt => opt.MapFrom(src => ProfileDefaults.MemorySizes))
-                .ForMember(dest => dest.ScreenResolutions,
+                .ForMember(
+                    dest => dest.ScreenResolutions,
                     opt => opt.MapFrom(src => ProfileDefaults.ScreenResolutions))
                 .ForMember(dest => dest.SelectedScreenResolution, opt =>
                 {
@@ -62,7 +68,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ThirdPartyModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.ThirdPartyComponents, opt =>
                 {
@@ -77,7 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, HardwareRequirementsModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.Description, opt =>
                 {
@@ -87,7 +95,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, AdditionalInformationModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.AdditionalInformation, opt =>
                 {
@@ -98,7 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>()
                 .ForMember(dest => dest.MinimumMemoryRequirement, opt => opt.MapFrom(src => src.SelectedMemorySize))
-                .ForMember(dest => dest.StorageRequirementsDescription,
+                .ForMember(
+                    dest => dest.StorageRequirementsDescription,
                     opt => opt.MapFrom(src => src.StorageDescription))
                 .ForMember(dest => dest.MinimumCpu, opt => opt.MapFrom(src => src.MinimumCpu))
                 .ForMember(dest => dest.RecommendedResolution, opt => opt.MapFrom(src => src.SelectedScreenResolution));

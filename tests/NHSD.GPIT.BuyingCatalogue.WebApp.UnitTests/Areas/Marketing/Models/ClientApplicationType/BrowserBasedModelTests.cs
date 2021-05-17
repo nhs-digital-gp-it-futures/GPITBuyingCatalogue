@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var model = new BrowserBasedModel();
 
             Assert.AreEqual("./", model.BackLink);
-            Assert.False(model.IsComplete);            
+            Assert.False(model.IsComplete);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                 CatalogueItemId = "123",
                 Solution = new Solution { ClientApplication = json }
             };
-            
+
             var model = new BrowserBasedModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var clientApplication = new ClientApplication
             {
                 BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
-                MobileResponsive = true,                
+                MobileResponsive = true,
                 Plugins = new Plugins { Required = true },
                 MinimumConnectionSpeed = "15Mbs"
             };
@@ -339,7 +339,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                 BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
                 MobileResponsive = true,
                 MobileFirstDesign = true,
-                Plugins = new Plugins { Required = true },                
+                Plugins = new Plugins { Required = true },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem

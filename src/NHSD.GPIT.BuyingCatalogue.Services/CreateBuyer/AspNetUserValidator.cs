@@ -19,11 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         private static readonly EmailAddressAttribute EmailAddressAttribute = new();
 
-        private readonly IUsersDbRepository<AspNetUser> _usersRepository;
+        private readonly IUsersDbRepository<AspNetUser> usersRepository;
 
         public AspNetUserValidator(IUsersDbRepository<AspNetUser> usersRepository)
         {
-            _usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
+            this.usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
         }
 
         public async Task<Result> ValidateAsync(AspNetUser user)
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             }
             else
             {
-                var user = (await _usersRepository.GetAllAsync(x => x.NormalizedEmail == email.ToUpper())).FirstOrDefault();
+                var user = (await usersRepository.GetAllAsync(x => x.NormalizedEmail == email.ToUpper())).FirstOrDefault();
 
                 if (user is not null &&
                     string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase))

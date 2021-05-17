@@ -6,22 +6,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
 {
     public class NativeDesktopModel : MarketingBaseModel
     {
-        public NativeDesktopModel() : base(null)
+        public NativeDesktopModel()
+            : base(null)
         {
         }
-        
-        public NativeDesktopModel(CatalogueItem catalogueItem) : base(catalogueItem)
+
+        public NativeDesktopModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                                
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
         }
 
         public override bool? IsComplete =>
             ClientApplication != null &&
             ClientApplication.NativeDesktopSupportedOperatingSystemsComplete().GetValueOrDefault() &&
-            ClientApplication.NativeDesktopConnectivityComplete().GetValueOrDefault() &&                    
+            ClientApplication.NativeDesktopConnectivityComplete().GetValueOrDefault() &&
             ClientApplication.NativeDesktopMemoryAndStorageComplete().GetValueOrDefault();
 
         public string SupportedOperatingSystemsStatus =>

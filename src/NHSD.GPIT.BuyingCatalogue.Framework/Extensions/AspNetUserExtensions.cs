@@ -7,6 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
         public static string GetDisplayName(this AspNetUser user)
         {
             return $"{user.FirstName} {user.LastName}";
-        }        
+        }
     }
 }

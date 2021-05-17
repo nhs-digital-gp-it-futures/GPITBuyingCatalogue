@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
     [ExcludeFromCodeCoverage]
     public static class ServicesStartup
     {
-        private static readonly Regex AssemblyScanRegex = new Regex(@"NHSD\.GPIT\.BuyingCatalogue(?!.*Test.*)", RegexOptions.Compiled);
+        private static readonly Regex AssemblyScanRegex = new(@"NHSD\.GPIT\.BuyingCatalogue(?!.*Test.*)", RegexOptions.Compiled);
 
         public static void Configure(IServiceCollection services)
         {

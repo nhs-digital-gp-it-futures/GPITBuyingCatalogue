@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer

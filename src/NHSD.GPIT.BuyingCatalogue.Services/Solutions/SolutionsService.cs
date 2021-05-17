@@ -15,28 +15,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public class SolutionsService : ISolutionsService
     {
-        private readonly ILogWrapper<SolutionsService> _logger;
-        private readonly BuyingCatalogueDbContext _dbContext;
-        private readonly IBuyingCatalogueRepository<MarketingContact> _marketingContactRepository;
-        private readonly IBuyingCatalogueRepository<Solution> _solutionRepository;
-        private readonly IBuyingCatalogueRepository<Supplier> _supplierRepository;
+        private readonly ILogWrapper<SolutionsService> logger;
+        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly IBuyingCatalogueRepository<MarketingContact> marketingContactRepository;
+        private readonly IBuyingCatalogueRepository<Solution> solutionRepository;
+        private readonly IBuyingCatalogueRepository<Supplier> supplierRepository;
 
-        public SolutionsService(ILogWrapper<SolutionsService> logger, 
+        public SolutionsService(
+            ILogWrapper<SolutionsService> logger,
             BuyingCatalogueDbContext dbContext,
             IBuyingCatalogueRepository<MarketingContact> marketingContactRepository,
             IBuyingCatalogueRepository<Solution> solutionRepository,
             IBuyingCatalogueRepository<Supplier> supplierRepository)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
-            _solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
-            _supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
+            this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
+            this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
 
         public async Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
-            return await _dbContext.CatalogueItems
+            return await dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
@@ -50,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities)
         {
-            var solutions = await _dbContext.CatalogueItems
+            var solutions = await dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
@@ -75,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            return await _dbContext.CatalogueItems
+            return await dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
@@ -93,12 +94,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.Epic)
                 .ThenInclude(x => x.CompliancyLevel)
                 .Where(x => x.CatalogueItemId == solutionId)
-                .FirstOrDefaultAsync();            
+                .FirstOrDefaultAsync();
         }
 
         public async Task<List<CatalogueItem>> GetDFOCVCSolutions()
         {
-            return await _dbContext.CatalogueItems
+            return await dbContext.CatalogueItems
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
@@ -111,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<List<Capability>> GetFuturesCapabilities()
         {
-            return await _dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
+            return await dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
                 .OrderBy(x => x.Name).ToListAsync();
         }
 
@@ -120,54 +121,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
-            await _solutionRepository.SaveChangesAsync();
+            await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveSolutionFeatures(string solutionId, string[] features)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.Features = JsonConvert.SerializeObject(features);
-            await _solutionRepository.SaveChangesAsync();
+            await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveIntegrationLink(string solutionId, string integrationLink)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.IntegrationsUrl = integrationLink;
-            await _solutionRepository.SaveChangesAsync();
+            await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveImplementationDetail(string solutionId, string detail)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.ImplementationDetail = detail;
-            await _solutionRepository.SaveChangesAsync();
+            await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveRoadmap(string solutionId, string roadmap)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.RoadMap = roadmap;
-            await _solutionRepository.SaveChangesAsync();
+            await solutionRepository.SaveChangesAsync();
         }
 
         public async Task<ClientApplication> GetClientApplication(string solutionId)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             return solution.GetClientApplication();
         }
 
@@ -176,16 +177,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);            
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
-            await _solutionRepository.SaveChangesAsync();
+            await solutionRepository.SaveChangesAsync();
         }
 
         public async Task<Hosting> GetHosting(string solutionId)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             return solution.GetHosting();
         }
 
@@ -194,39 +195,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             hosting.ValidateNotNull(nameof(hosting));
 
-            var solution = await _solutionRepository.SingleAsync(x => x.Id == solutionId);            
+            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
             solution.Hosting = JsonConvert.SerializeObject(hosting);
-            await _solutionRepository.SaveChangesAsync();
+            await solutionRepository.SaveChangesAsync();
         }
 
         public async Task<Supplier> GetSupplier(string supplierId)
         {
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            return await _supplierRepository.SingleAsync(x => x.Id == supplierId);
+            return await supplierRepository.SingleAsync(x => x.Id == supplierId);
         }
 
         public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
         {
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            var supplier = await _supplierRepository.SingleAsync(x => x.Id == supplierId);
+            var supplier = await supplierRepository.SingleAsync(x => x.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
-            await _supplierRepository.SaveChangesAsync();
+            await supplierRepository.SaveChangesAsync();
         }
 
         public async Task SaveSupplierContacts(SupplierContactsModel model)
         {
             model.ValidateNotNull(nameof(model));
-            
+
             model.SetSolutionId();
 
-            var marketingContacts = await _marketingContactRepository.GetAllAsync(x => x.SolutionId == model.SolutionId);
+            var marketingContacts = await marketingContactRepository.GetAllAsync(x => x.SolutionId == model.SolutionId);
 
-            if(!marketingContacts.Any())
+            if (!marketingContacts.Any())
             {
-                _marketingContactRepository.AddAll(model.ValidContacts());
+                marketingContactRepository.AddAll(model.ValidContacts());
             }
             else
             {
@@ -236,15 +237,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         continue;
 
                     if (newContact.IsEmpty())
-                        _marketingContactRepository.Remove(contact);
+                        marketingContactRepository.Remove(contact);
                     else
                         contact.UpdateFrom(newContact);
                 }
-                
-                _marketingContactRepository.AddAll(model.NewAndValidContacts());
+
+                marketingContactRepository.AddAll(model.NewAndValidContacts());
             }
 
-            await _marketingContactRepository.SaveChangesAsync();
+            await marketingContactRepository.SaveChangesAsync();
         }
     }
 }

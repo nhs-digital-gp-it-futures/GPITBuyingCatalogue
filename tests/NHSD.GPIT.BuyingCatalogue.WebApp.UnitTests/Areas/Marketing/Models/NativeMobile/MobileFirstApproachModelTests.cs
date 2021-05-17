@@ -24,12 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             var clientApplication = new ClientApplication { NativeMobileFirstDesign = true };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { ClientApplication = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { ClientApplication = json }
+            };
+
             var model = new MobileFirstApproachModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
@@ -48,15 +48,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
         [TestCase(null, false)]
         [TestCase(false, true)]
-        [TestCase(true, true)]        
-        public static void IsCompleteIsCorrectlySet(bool? mobileFirstDesign, bool? expected )
+        [TestCase(true, true)]
+        public static void IsCompleteIsCorrectlySet(bool? mobileFirstDesign, bool? expected)
         {
-            var clientApplication = new ClientApplication { NativeMobileFirstDesign = mobileFirstDesign};
+            var clientApplication = new ClientApplication { NativeMobileFirstDesign = mobileFirstDesign };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
             var model = new MobileFirstApproachModel(catalogueItem);
-            
+
             Assert.AreEqual(expected, model.IsComplete);
         }
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             string mobileFirstApproach,
             bool? expected)
         {
-            var model = new MobileFirstApproachModel {MobileFirstApproach = mobileFirstApproach};
+            var model = new MobileFirstApproachModel { MobileFirstApproach = mobileFirstApproach };
 
             model.MobileFirstDesign().Should().Be(expected);
         }

@@ -33,14 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
                     Summary = "A summary"
                 }
             };
-            
+
             var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { Hosting = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { Hosting = json }
+            };
+
             var model = new HybridModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         [TestCase(null, "Link", null, null, true)]
         [TestCase(null, null, "Requires Hscn", null, true)]
         [TestCase(null, null, null, "Summary", true)]
-        public static void IsCompleteIsCorrectlySet(string hostingModel, string link, string requiresHscn, string summary, bool? expected )
+        public static void IsCompleteIsCorrectlySet(string hostingModel, string link, string requiresHscn, string summary, bool? expected)
         {
             var hosting = new Hosting
             {
@@ -113,9 +113,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
                 Solution = new Solution { Hosting = json }
             };
 
-            var model = new HybridModel(catalogueItem);
-
-            model.RequiresHscnChecked = false;
+            var model = new HybridModel(catalogueItem)
+            {
+                RequiresHscnChecked = false
+            };
             Assert.Null(model.HybridHostingType.RequiresHscn);
             model.RequiresHscnChecked = true;
             Assert.AreEqual("End user devices must be connected to HSCN/N3", model.HybridHostingType.RequiresHscn);

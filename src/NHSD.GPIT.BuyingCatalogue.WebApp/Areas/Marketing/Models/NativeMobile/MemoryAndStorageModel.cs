@@ -8,11 +8,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
     public class MemoryAndStorageModel : MarketingBaseModel
     {
-        public MemoryAndStorageModel() : base(null)
+        public MemoryAndStorageModel()
+            : base(null)
         {
         }
 
-        public MemoryAndStorageModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public MemoryAndStorageModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
@@ -28,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             !string.IsNullOrWhiteSpace(ClientApplication?.MobileMemoryAndStorage?.Description);
 
         public string SelectedMemorySize { get; set; }
+
         public List<SelectListItem> MemorySizes { get; set; }
 
         [StringLength(300)]

@@ -316,8 +316,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
 
             Assert.ThrowsAsync<SmtpFailedRecipientException>(async () => await service.SendEmailAsync(message));
             mockLogger.Verify(l => l.LogError(
-                exception, 
-                formatErrorMessage, 
+                exception,
+                formatErrorMessage,
                 settings.Host,
                 settings.Port,
                 settings.Authentication.IsRequired,

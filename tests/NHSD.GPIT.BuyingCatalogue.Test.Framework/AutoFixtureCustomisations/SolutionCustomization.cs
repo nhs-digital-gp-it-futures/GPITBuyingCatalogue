@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     ))
                     .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>())));
         }
-        
+
         private static HashSet<string> GetClientApplicationTypes()
         {
             var result = new HashSet<string>();

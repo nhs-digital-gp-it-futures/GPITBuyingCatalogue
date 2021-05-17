@@ -23,12 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             var clientApplication = new ClientApplication { NativeDesktopHardwareRequirements = "Some hardware requirements" };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { ClientApplication = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { ClientApplication = json }
+            };
+
             var model = new HardwareRequirementsModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
@@ -50,14 +50,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("Some hardware requirements", true)]
-        public static void IsCompleteIsCorrectlySet(string hardwareRequirements, bool? expected )
+        public static void IsCompleteIsCorrectlySet(string hardwareRequirements, bool? expected)
         {
-            var clientApplication = new ClientApplication { NativeDesktopHardwareRequirements = hardwareRequirements};
+            var clientApplication = new ClientApplication { NativeDesktopHardwareRequirements = hardwareRequirements };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
             var model = new HardwareRequirementsModel(catalogueItem);
-            
+
             Assert.AreEqual(expected, model.IsComplete);
         }
     }

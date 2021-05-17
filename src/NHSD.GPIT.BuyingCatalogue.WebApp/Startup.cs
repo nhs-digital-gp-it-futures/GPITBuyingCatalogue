@@ -1,23 +1,21 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
-using Serilog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Services;
-using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
+using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
+using NHSD.GPIT.BuyingCatalogue.Services;
+using Serilog;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -92,15 +90,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                                 var errorMessage = error.Error.FullErrorMessage();
                                 logger.LogError(error.Error, errorMessage);
                             }
+
                             context.Response.Redirect("Home/Error");
                             return Task.CompletedTask;
                         });
                 });
-                
+
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
@@ -110,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             var operatingMode = Environment.GetEnvironmentVariable(OperatingModeEnvironmentVariable);
 
             // Disable the marketing pages when deployed publicly
-            if(string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
+            if (string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
                 app.UseMiddleware<DisableMarketingMiddleware>();
 
             app.UseStaticFiles(new StaticFileOptions()
@@ -118,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 OnPrepareResponse = (context) =>
                 {
                     context.Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-                }
+                },
             });
 
             app.Use(async (context, next) =>
@@ -138,11 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
-            {                
+            {
                 endpoints.MapControllerRoute(
                     name: "areas",
-                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                );
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "default",
@@ -159,5 +157,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 });
             });
         }
-    }    
+    }
 }

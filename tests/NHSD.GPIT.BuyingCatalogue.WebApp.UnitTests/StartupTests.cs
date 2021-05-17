@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using FluentAssertions;
 using MailKit;
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             Environment.SetEnvironmentVariable("ID_DB_CONNECTION",
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=ID_Catalog;Trusted_Connection=True;");
         }
-        
+
         [TestCase(typeof(DisabledErrorMessageSettings))]
         [TestCase(typeof(BuyingCatalogueDbContext))]
         [TestCase(typeof(DataProtectorTokenProvider<AspNetUser>))]
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
 
             webHost.Services.GetRequiredService(expectedType).Should().NotBeNull();
         }
-        
+
         [TestCase(typeof(IEmailService), typeof(MailKitEmailService))]
         [TestCase(typeof(IMailTransport), typeof(SmtpClient))]
         [TestCase(typeof(IPasswordResetCallback), typeof(PasswordResetCallback))]
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             issuerSettings.IssuerUrl.Should().Be(config["issuerUrl"]);
         }
     }
-    
+
     public class StartupTest : Startup
     {
         public StartupTest(IConfiguration configuration) : base(configuration)

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -23,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public Organisation Organisation { get; set; }
 
-        public List<Organisation> AvailableOrganisations { get; set; }    
-        
+        public List<Organisation> AvailableOrganisations { get; set; }
+
         public Guid SelectedOrganisation { get; set; }
     }
 }

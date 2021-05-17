@@ -1,5 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
@@ -32,6 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var result = contact.IsEmpty();
 
             Assert.AreEqual(expected, result);
-        }      
+        }
     }
 }

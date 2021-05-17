@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     internal static class NativeDesktopThirdPartyTests
     {
         private static readonly Fixture Fixture = new();
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test, AutoData]
         public static void IsValid_BothPropertiesValid_ReturnsTrue(NativeDesktopThirdParty nativeDesktopThirdParty)
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
             nativeDesktopThirdParty.IsValid().Should().BeTrue();
         }
-        
+
         [TestCaseSource(nameof(InvalidStrings))]
         public static void IsValid_DeviceCapabilitiesIsInvalid_ReturnsTrue(string invalid)
         {

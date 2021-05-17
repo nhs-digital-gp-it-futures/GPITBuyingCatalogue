@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
@@ -43,10 +43,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 cfg.AddProfile<OrganisationProfile>();
                 cfg.AddProfile<HostingTypeProfile>();
             });
-            
+
             mapperConfiguration.AssertConfigurationIsValid();
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToHybridModel_ResultAsExpected(
             CatalogueItem catalogueItem)
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
 
             var actual = mapper.Map<CatalogueItem, HybridModel>(catalogueItem);
-            
+
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
 
             var actual = mapper.Map<CatalogueItem, OnPremiseModel>(catalogueItem);
-            
+
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
 
             var actual = mapper.Map<CatalogueItem, PrivateCloudModel>(catalogueItem);
-            
+
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             var hosting = JsonConvert.DeserializeObject<Hosting>(catalogueItem.Solution.Hosting);
 
             var actual = mapper.Map<CatalogueItem, PublicCloudModel>(catalogueItem);
-            
+
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);

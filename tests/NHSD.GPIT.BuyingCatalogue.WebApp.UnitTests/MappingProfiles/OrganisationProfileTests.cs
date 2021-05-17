@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using AutoMapper;
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public static void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
-            
+
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             catalogueItem.Solution.Features = JsonConvert.SerializeObject(features);
 
             var actual = mapper.Map<CatalogueItem, FeaturesModel>(catalogueItem);
-            
+
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, ImplementationTimescalesModel>(catalogueItem);
 
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
@@ -146,13 +146,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToIntegrationsModel_ResultAsExpected(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, IntegrationsModel>(catalogueItem);
 
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
@@ -162,13 +162,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToRoadMapModel_ResultAsExpected(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, RoadmapModel>(catalogueItem);
 
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.Summary.Should().Be(catalogueItem.Solution.RoadMap);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(
             CatalogueItem catalogueItem)
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
             var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(catalogueItem);
-            
+
             actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.Summary.Should().Be(catalogueItem.Solution.Summary);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
             ContactDetailsModel contactDetailsModel)

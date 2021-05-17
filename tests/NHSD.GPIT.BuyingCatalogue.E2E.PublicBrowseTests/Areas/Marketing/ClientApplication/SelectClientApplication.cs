@@ -1,7 +1,6 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Linq;
-using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication

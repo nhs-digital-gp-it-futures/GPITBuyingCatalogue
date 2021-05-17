@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 #nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity
-{    
+{
     [Table("AspNetUsers")]
     public partial class AspNetUser : IdentityUser<string>
     {
@@ -19,15 +19,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity
         }
 
         public Guid PrimaryOrganisationId { get; set; }
+
         public string OrganisationFunction { get; set; }
+
         public bool Disabled { get; set; }
+
         public bool CatalogueAgreementSigned { get; set; }
+
         public string FirstName { get; set; }
+
         public string LastName { get; set; }
 
         public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
+
         public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
+
         public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
+
         public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; }
     }
 }

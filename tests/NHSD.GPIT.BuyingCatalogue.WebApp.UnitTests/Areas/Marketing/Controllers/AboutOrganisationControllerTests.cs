@@ -23,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class AboutOrganisationControllerTests
     {
-        private static readonly string[] InvalidStrings = {null, string.Empty, "    "};
-        
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 _ = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
                     Mock.Of<IMapper>(), null));
         }
-        
+
         [Test]
         public static void Get_AboutSupplier_HttpGetAttribute_ExpectedTemplate()
         {
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AboutSupplier(id);
-            
+
             mockService.Verify(x => x.GetSolution(id));
         }
 
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 mockMapper.Object, mockService.Object);
 
             await controller.AboutSupplier(id);
-            
+
             mockMapper.Verify(x => x.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem));
         }
 
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockAboutSupplierModel);
         }
-        
+
         [Test]
         public static void Post_AboutSupplier_HttpGetAttribute_ExpectedTemplate()
         {
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.AboutSupplier((AboutSupplierModel) null));
+            Assert.ThrowsAsync<ArgumentNullException>(() => controller.AboutSupplier((AboutSupplierModel)null));
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ControllerName.Should().Be("Solution");
             actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
-        
+
         [Test]
         public static void Get_ContactDetails_HttpGetAttribute_ExpectedTemplate()
         {
@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ContactDetails(id));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_ContactDetails_ValidId_GetsSolutionFromService(string id)
         {
@@ -234,10 +234,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ContactDetails(id);
-            
+
             mockService.Verify(x => x.GetSolution(id));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_ContactDetails_NullSolutionFromService_ReturnsBadRequestResponse(string id)
         {
@@ -261,16 +261,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockMapper.Setup(x => x.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem))
                 .Returns(mockContactDetailsModel);
-            
+
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            
+
             var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.ContactDetails(id)).As<ViewResult>();
-            
+
             mockMapper.Verify(x => x.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockContactDetailsModel);
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.ContactDetails((ContactDetailsModel) null));
+            Assert.ThrowsAsync<ArgumentNullException>(() => controller.ContactDetails((ContactDetailsModel)null));
         }
 
         [Test]
@@ -357,7 +357,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static async Task Post_ContactDetails_ModelValid_RedirectToSolutionAction()
         {
-            var contactDetailsModel = new ContactDetailsModel {SolutionId = new Fixture().Create<string>()};
+            var contactDetailsModel = new ContactDetailsModel { SolutionId = new Fixture().Create<string>() };
             var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 

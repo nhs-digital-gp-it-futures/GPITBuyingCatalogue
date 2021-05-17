@@ -13,22 +13,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
     public class OrganisationsService : IOrganisationsService
     {
-        private readonly ILogWrapper<OrganisationsService> _logger;
-        private readonly UsersDbContext _dbContext;
-        private readonly IUsersDbRepository<Organisation> _organisationRepository;        
+        private readonly ILogWrapper<OrganisationsService> logger;
+        private readonly UsersDbContext dbContext;
+        private readonly IUsersDbRepository<Organisation> organisationRepository;
 
-        public OrganisationsService(ILogWrapper<OrganisationsService> logger,
+        public OrganisationsService(
+            ILogWrapper<OrganisationsService> logger,
             UsersDbContext dbContext,
             IUsersDbRepository<Organisation> organisationRepository)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _organisationRepository = organisationRepository ?? throw new ArgumentNullException(nameof(organisationRepository));
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.organisationRepository = organisationRepository ?? throw new ArgumentNullException(nameof(organisationRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<List<Organisation>> GetAllOrganisations()
         {
-            return (await _organisationRepository.GetAllAsync(x => true)).OrderBy(x=>x.Name).ToList();
+            return (await organisationRepository.GetAllAsync(x => true)).OrderBy(x => x.Name).ToList();
         }
 
         public async Task<Guid> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
@@ -41,64 +42,64 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
                 OdsCode = odsOrganisation.OdsCode.ToUpper(),
-                PrimaryRoleId = odsOrganisation.PrimaryRoleId
+                PrimaryRoleId = odsOrganisation.PrimaryRoleId,
             };
 
-            _organisationRepository.Add(organisation);
+            organisationRepository.Add(organisation);
 
-            await _organisationRepository.SaveChangesAsync();
+            await organisationRepository.SaveChangesAsync();
 
             return organisation.OrganisationId;
         }
 
         public async Task<Organisation> GetOrganisation(Guid id)
         {
-            return await _organisationRepository.SingleAsync(x => x.OrganisationId == id);
+            return await organisationRepository.SingleAsync(x => x.OrganisationId == id);
         }
 
         public async Task UpdateCatalogueAgreementSigned(Guid organisationId, bool signed)
         {
-            var organisation =  await _organisationRepository.SingleAsync(x => x.OrganisationId == organisationId);
+            var organisation = await organisationRepository.SingleAsync(x => x.OrganisationId == organisationId);
             organisation.CatalogueAgreementSigned = signed;
-            await _organisationRepository.SaveChangesAsync();
+            await organisationRepository.SaveChangesAsync();
         }
 
         public async Task<List<Organisation>> GetUnrelatedOrganisations(Guid organisationId)
         {
             // TODO - should be able to combine this into a single query
-            var allOrganisations = await GetAllOrganisations();            
+            var allOrganisations = await GetAllOrganisations();
             var relatedOrganisations = await GetRelatedOrganisations(organisationId);
             return allOrganisations.Where(x => !relatedOrganisations.Any(y => y.OrganisationId == x.OrganisationId)).OrderBy(x => x.Name).ToList();
         }
 
         public async Task<List<Organisation>> GetRelatedOrganisations(Guid organisationId)
         {
-            var organisation = await _dbContext.Organisations
+            var organisation = await dbContext.Organisations
                 .Include(x => x.RelatedOrganisationOrganisations)
                 .ThenInclude(x => x.RelatedOrganisationNavigation)
                 .SingleAsync(x => x.OrganisationId == organisationId);
 
-            return organisation.RelatedOrganisationOrganisations.Select(x => x.RelatedOrganisationNavigation).OrderBy(x=>x.Name).ToList();
+            return organisation.RelatedOrganisationOrganisations.Select(x => x.RelatedOrganisationNavigation).OrderBy(x => x.Name).ToList();
         }
 
         public async Task AddRelatedOrganisations(Guid organisationId, Guid relatedOrganisationId)
         {
-            var organisation = await _dbContext.Organisations
+            var organisation = await dbContext.Organisations
                 .Include(x => x.RelatedOrganisationOrganisations)
                 .ThenInclude(x => x.RelatedOrganisationNavigation)
                 .SingleAsync(x => x.OrganisationId == organisationId);
 
             if (organisation.RelatedOrganisationOrganisations.Any(x => x.RelatedOrganisationId == relatedOrganisationId))
                 return;
-            
-            _dbContext.RelatedOrganisations.Add(new RelatedOrganisation { OrganisationId = organisationId, RelatedOrganisationId = relatedOrganisationId });
 
-            await _dbContext.SaveChangesAsync();            
+            dbContext.RelatedOrganisations.Add(new RelatedOrganisation { OrganisationId = organisationId, RelatedOrganisationId = relatedOrganisationId });
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task RemoveRelatedOrganisations(Guid organisationId, Guid relatedOrganisationId)
         {
-            var organisation = await _dbContext.Organisations
+            var organisation = await dbContext.Organisations
                 .Include(x => x.RelatedOrganisationOrganisations)
                 .ThenInclude(x => x.RelatedOrganisationNavigation)
                 .SingleAsync(x => x.OrganisationId == organisationId);
@@ -110,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             organisation.RelatedOrganisationOrganisations.Remove(relatedItem);
 
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
     }
 }

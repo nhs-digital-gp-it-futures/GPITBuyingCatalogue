@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class NativeMobileControllerTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void ClassIsCorrectlyDecorated()
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 _ = new NativeMobileController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
                 .ParamName.Should().Be("logger");
         }
-        
+
         [Test]
         public static void Constructor_NullMapper_ThrowsException()
         {
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                     null))
                 .ParamName.Should().Be("solutionsService");
         }
-        
+
         [Test]
         public static void Get_AdditionalInformation_HttpGetAttribute_ExpectedTemplate()
         {
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockAdditionalInformationModel);
         }
-        
+
         [Test]
         public static void Post_AdditionalInformation_HttpPostAttribute_ExpectedTemplate()
         {
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_AdditionalInformation_ModelNull_ThrowsException()
+        public static void Post_AdditionalInformation_ModelNull_ThrowsException()
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -271,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be(GetRedirectUrl(model.SolutionId));
         }
-        
+
         [Test]
         public static void Get_Connectivity_HttpGetAttribute_ExpectedTemplate()
         {
@@ -372,7 +372,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_Connectivity_ModelNull_ThrowsException()
+        public static void Post_Connectivity_ModelNull_ThrowsException()
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -492,7 +492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be(GetRedirectUrl(model.SolutionId));
         }
-        
+
         [Test]
         public static void Get_HardwareRequirements_HttpGetAttribute_ExpectedTemplate()
         {
@@ -579,7 +579,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockHardwareRequirementsModel);
         }
-        
+
         [Test]
         public static void Post_HardwareRequirements_HttpPostAttribute_ExpectedTemplate()
         {
@@ -593,7 +593,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_HardwareRequirements_ModelNull_ThrowsException()
+        public static void Post_HardwareRequirements_ModelNull_ThrowsException()
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -709,7 +709,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be(GetRedirectUrl(model.SolutionId));
         }
-        
+
         [Test]
         public static void Get_MemoryAndStorage_HttpGetAttribute_ExpectedTemplate()
         {
@@ -796,7 +796,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockMemoryAndStorageModel);
         }
-        
+
         [Test]
         public static void Post_MemoryAndStorage_HttpPostAttribute_ExpectedTemplate()
         {
@@ -810,7 +810,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_MemoryAndStorage_ModelNull_ThrowsException()
+        public static void Post_MemoryAndStorage_ModelNull_ThrowsException()
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -914,7 +914,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             mockService.Verify(s => s.SaveClientApplication(model.SolutionId, mockClientApplication));
         }
-        
+
         [Test, AutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_ReturnsRedirectResult(
             MemoryAndStorageModel model)
@@ -930,7 +930,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be(GetRedirectUrl(model.SolutionId));
         }
-        
+
         [Test]
         public static void Get_MobileFirstApproach_HttpGetAttribute_ExpectedTemplate()
         {
@@ -1017,7 +1017,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockMobileFirstApproachModel);
         }
-        
+
         [Test]
         public static void Post_MobileFirstApproach_HttpPostAttribute_ExpectedTemplate()
         {
@@ -1153,7 +1153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be(GetRedirectUrl(model.SolutionId));
         }
-        
+
         [Test]
         public static void Get_OperatingSystems_HttpGetAttribute_ExpectedTemplate()
         {
@@ -1240,7 +1240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockOperatingSystemsModel);
         }
-        
+
         [Test]
         public static void Post_OperatingSystems_HttpPostAttribute_ExpectedTemplate()
         {
@@ -1458,7 +1458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockThirdPartyModel);
         }
-        
+
         [Test]
         public static void Post_ThirdParty_HttpPostAttribute_ExpectedTemplate()
         {
@@ -1472,7 +1472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_ThirdParty_ModelNull_ThrowsException()
+        public static void Post_ThirdParty_ModelNull_ThrowsException()
         {
             var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -1592,7 +1592,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be(GetRedirectUrl(model.SolutionId));
         }
-        
+
         private static string GetRedirectUrl(string solutionId) =>
             $"/marketing/supplier/solution/{solutionId}/section/native-mobile";
     }

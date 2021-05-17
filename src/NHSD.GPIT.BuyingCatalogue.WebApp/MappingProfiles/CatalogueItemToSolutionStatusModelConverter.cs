@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoMapper;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
@@ -14,59 +14,59 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 {
     public class CatalogueItemToSolutionStatusModelConverter : ITypeConverter<CatalogueItem, SolutionStatusModel>
     {
-        private readonly IMapper _mapper;
+        private readonly IMapper mapper;
 
-        public CatalogueItemToSolutionStatusModelConverter(IMapper mapper) => _mapper = mapper;
+        public CatalogueItemToSolutionStatusModelConverter(IMapper mapper) => this.mapper = mapper;
 
-        public SolutionStatusModel Convert(CatalogueItem source, SolutionStatusModel destination, ResolutionContext context)
+        public SolutionStatusModel Convert(CatalogueItem catalogueItem, SolutionStatusModel destination, ResolutionContext context)
         {
-            if (source == null)
-                throw new ArgumentNullException($"${nameof(CatalogueItem)} cannot be null");
+            if (catalogueItem == null)
+                throw new ArgumentNullException(nameof(catalogueItem));
 
             var result = new SolutionStatusModel
             {
-                BackLink = $"/marketing/supplier/solution/{source.CatalogueItemId}",
+                BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}",
                 BackLinkText = "Return to all sections",
-                CatalogueItemName = source.Name,
-                SolutionId = source.CatalogueItemId,
-                SupplierId = source.Supplier?.Id,
-                SupplierName = source.Supplier?.Name,
+                CatalogueItemName = catalogueItem.Name,
+                SolutionId = catalogueItem.CatalogueItemId,
+                SupplierId = catalogueItem.Supplier?.Id,
+                SupplierName = catalogueItem.Supplier?.Name,
             };
 
-            result.AboutSupplierStatus = _mapper.Map<CatalogueItem, AboutSupplierModel>(source)
+            result.AboutSupplierStatus = mapper.Map<CatalogueItem, AboutSupplierModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.BrowserBasedStatus = _mapper.Map<CatalogueItem, BrowserBasedModel>(source)
+            result.BrowserBasedStatus = mapper.Map<CatalogueItem, BrowserBasedModel>(catalogueItem)
                 .IsComplete.ToStatus();
-            result.ClientApplication = source.Solution != null && !string.IsNullOrEmpty(source.Solution.ClientApplication)
-                ? JsonConvert.DeserializeObject<ClientApplication>(source.Solution.ClientApplication)
+            result.ClientApplication = catalogueItem.Solution != null && !string.IsNullOrEmpty(catalogueItem.Solution.ClientApplication)
+                ? JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication)
                 : new ClientApplication();
-            result.ClientApplicationTypeStatus = _mapper.Map<CatalogueItem, ClientApplicationTypesModel>(source)
+            result.ClientApplicationTypeStatus = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.ContactDetailsStatus = _mapper.Map<CatalogueItem, ContactDetailsModel>(source)
+            result.ContactDetailsStatus = mapper.Map<CatalogueItem, ContactDetailsModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.FeaturesStatus = _mapper.Map<CatalogueItem, FeaturesModel>(source)
+            result.FeaturesStatus = mapper.Map<CatalogueItem, FeaturesModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.HybridStatus = _mapper.Map<CatalogueItem, HybridModel>(source)
+            result.HybridStatus = mapper.Map<CatalogueItem, HybridModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.ImplementationTimescalesStatus = _mapper.Map<CatalogueItem, ImplementationTimescalesModel>(source)
+            result.ImplementationTimescalesStatus = mapper.Map<CatalogueItem, ImplementationTimescalesModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.IntegrationsStatus = _mapper.Map<CatalogueItem, IntegrationsModel>(source)
+            result.IntegrationsStatus = mapper.Map<CatalogueItem, IntegrationsModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.OnPremisesStatus = _mapper.Map<CatalogueItem, OnPremiseModel>(source)
+            result.OnPremisesStatus = mapper.Map<CatalogueItem, OnPremiseModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.NativeDesktopStatus = _mapper.Map<CatalogueItem, NativeDesktopModel>(source)
+            result.NativeDesktopStatus = mapper.Map<CatalogueItem, NativeDesktopModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.NativeMobileStatus = _mapper.Map<CatalogueItem, NativeMobileModel>(source)
+            result.NativeMobileStatus = mapper.Map<CatalogueItem, NativeMobileModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.PrivateCloudStatus = _mapper.Map<CatalogueItem, PrivateCloudModel>(source)
+            result.PrivateCloudStatus = mapper.Map<CatalogueItem, PrivateCloudModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.PublicCloudStatus = _mapper.Map<CatalogueItem, PublicCloudModel>(source)
+            result.PublicCloudStatus = mapper.Map<CatalogueItem, PublicCloudModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.RoadmapStatus = _mapper.Map<CatalogueItem, RoadmapModel>(source)
+            result.RoadmapStatus = mapper.Map<CatalogueItem, RoadmapModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            result.SolutionDescriptionStatus = _mapper.Map<CatalogueItem, SolutionDescriptionModel>(source)
+            result.SolutionDescriptionStatus = mapper.Map<CatalogueItem, SolutionDescriptionModel>(catalogueItem)
                     .IsComplete.ToStatus();
-            
+
             return result;
         }
     }

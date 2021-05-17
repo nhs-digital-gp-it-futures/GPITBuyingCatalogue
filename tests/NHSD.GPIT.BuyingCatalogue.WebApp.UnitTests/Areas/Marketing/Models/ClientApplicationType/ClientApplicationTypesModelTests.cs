@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         {
             var clientApplication = new ClientApplication
             {
-                ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop"}
+                ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" }
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem

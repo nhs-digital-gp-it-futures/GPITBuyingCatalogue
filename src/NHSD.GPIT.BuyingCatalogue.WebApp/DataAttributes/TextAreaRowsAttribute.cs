@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes
         {
             NumberOfRows = numberOfRows;
         }
+
         public int NumberOfRows { get; init; }
     }
 }

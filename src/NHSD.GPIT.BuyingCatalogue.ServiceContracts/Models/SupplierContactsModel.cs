@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public virtual void SetSolutionId()
         {
-            if(Contacts == null || !Contacts.Any())
+            if (Contacts == null || !Contacts.Any())
                 return;
 
             foreach (var contact in Contacts)

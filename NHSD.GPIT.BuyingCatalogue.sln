@@ -5,9 +5,11 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F263267A-74BC-476F-AC68-412968DFDE9B}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		docker-build.ps1 = docker-build.ps1
 		docker-start.ps1 = docker-start.ps1
 		LICENSE = LICENSE
+		NHSD.GPIT.BuyingCatalogue.sln.DotSettings = NHSD.GPIT.BuyingCatalogue.sln.DotSettings
 		NuGet.config = NuGet.config
 		README.md = README.md
 	EndProjectSection
@@ -133,6 +135,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bc_webapp_pri", "bc_webapp_
 		terraform\modules\bc_webapp_pri\variables.tf = terraform\modules\bc_webapp_pri\variables.tf
 		terraform\modules\bc_webapp_pri\z_imported_secrets_core.tf = terraform\modules\bc_webapp_pri\z_imported_secrets_core.tf
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dictionaries", "Dictionaries", "{9874F3E6-3B8A-4D8A-83B8-64DEBBAE7A5A}"
+	ProjectSection(SolutionItems) = preProject
+		Dictionaries\en_GB-large.aff = Dictionaries\en_GB-large.aff
+		Dictionaries\en_GB-large.dic = Dictionaries\en_GB-large.dic
+		Dictionaries\README_en_GB-large.txt = Dictionaries\README_en_GB-large.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GlobalSuppressions", "GlobalSuppressions", "{18C7C946-2B91-4CBA-86AD-DE983CD70DF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

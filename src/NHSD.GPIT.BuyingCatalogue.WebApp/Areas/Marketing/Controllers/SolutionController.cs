@@ -13,29 +13,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Route("marketing/supplier/solution/{id}")]
     public class SolutionController : Controller
     {
-        private readonly ILogWrapper<SolutionController> _logger;
-        private readonly IMapper _mapper;
-        private readonly ISolutionsService _solutionsService;
+        private readonly ILogWrapper<SolutionController> logger;
+        private readonly IMapper mapper;
+        private readonly ISolutionsService solutionsService;
 
-        public SolutionController(ILogWrapper<SolutionController> logger, IMapper mapper,
+        public SolutionController(
+            ILogWrapper<SolutionController> logger,
+            IMapper mapper,
             ISolutionsService solutionsService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException($"index-{nameof(id)}");
 
-            var solution = await _solutionsService.GetSolution(id);
-            if(solution == null)
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
-            var model = _mapper.Map<CatalogueItem, SolutionStatusModel>(solution);
+            var model = mapper.Map<CatalogueItem, SolutionStatusModel>(solution);
 
             return View(model);
         }
@@ -44,9 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public IActionResult Preview(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException($"preview-{nameof(id)}");
 
-            return RedirectToAction("preview", "solutions", new { id = id });
-        }                    
+            return RedirectToAction("preview", "solutions", new { id });
+        }
     }
 }

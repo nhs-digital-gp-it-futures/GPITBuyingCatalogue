@@ -31,17 +31,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             Assert.AreEqual("Value cannot be null. (Parameter 'logger')", ex.Message);
         }
-       
+
         [Test]
         [TestCase("Buyer")]
         [TestCase("Authority")]
         public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(string organisationFunction)
         {
-            var user = new AspNetUser { Id = "123", UserName = "Foo", OrganisationFunction = organisationFunction, FirstName = "Fred", LastName = "Smith" };         
+            var user = new AspNetUser { Id = "123", UserName = "Foo", OrganisationFunction = organisationFunction, FirstName = "Fred", LastName = "Smith" };
             var userManager = MockUserManager<AspNetUser>();
             userManager.Setup(m => m.GetUserIdAsync(user)).ReturnsAsync(user.Id);
             userManager.Setup(m => m.GetUserNameAsync(user)).ReturnsAsync(user.UserName);
-         
+
             var options = new Mock<IOptions<IdentityOptions>>();
             var identityOptions = new IdentityOptions();
             options.Setup(a => a.Value).Returns(identityOptions);
@@ -56,9 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             var principal = await factory.CreateAsync(user);
 
             Assert.AreEqual(organisationFunction, GetClaimValue(principal, "organisationFunction"));
-            Assert.AreEqual("Fred Smith", GetClaimValue(principal, "userDisplayName"));                      
+            Assert.AreEqual("Fred Smith", GetClaimValue(principal, "userDisplayName"));
         }
-      
+
         public static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
         {
             var store = new Mock<IUserStore<TUser>>();

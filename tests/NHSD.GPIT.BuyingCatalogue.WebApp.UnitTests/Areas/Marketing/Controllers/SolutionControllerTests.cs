@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionControllerTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void ClassIsCorrectlyDecorated()
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 mockService.Object);
 
             await controller.Index(id);
-            
+
             mockService.Verify(s => s.GetSolution(id));
         }
 
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 mockService.Object);
 
             await controller.Index(id);
-            
+
             mockMapper.Verify(m => m.Map<CatalogueItem, SolutionStatusModel>(mockCatalogueItem));
         }
 
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockSolutionStatusModel = new Mock<SolutionStatusModel>().Object;
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            
+
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolution(id))
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockSolutionStatusModel);
         }
-        
+
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Preview_InvalidId_ThrowsException(string id)

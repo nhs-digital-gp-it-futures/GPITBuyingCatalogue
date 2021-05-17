@@ -1,6 +1,6 @@
 ﻿using System;
-using Serilog.Events;
 using Microsoft.AspNetCore.Http;
+using Serilog.Events;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Logging
 {

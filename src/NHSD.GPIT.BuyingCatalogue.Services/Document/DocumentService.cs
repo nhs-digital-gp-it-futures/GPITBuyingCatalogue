@@ -9,47 +9,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 {
     public class DocumentService : IDocumentService
     {
-        private readonly ILogWrapper<DocumentService> _logger;
-        private readonly IAzureBlobDocumentRepository _documentRepository;
+        private readonly ILogWrapper<DocumentService> logger;
+        private readonly IAzureBlobDocumentRepository documentRepository;
 
-        public DocumentService(ILogWrapper<DocumentService> logger,
+        public DocumentService(
+            ILogWrapper<DocumentService> logger,
             IAzureBlobDocumentRepository documentRepository)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _documentRepository = documentRepository ?? throw new ArgumentNullException(nameof(documentRepository));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.documentRepository = documentRepository ?? throw new ArgumentNullException(nameof(documentRepository));
         }
 
         public async Task<FileStreamResult> DownloadDocumentAsync(string name)
-        {            
+        {
             try
             {
-                var downloadInfo = await _documentRepository.DownloadAsync(name);
+                var downloadInfo = await documentRepository.DownloadAsync(name);
                 return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
             }
             catch (DocumentRepositoryException e)
             {
-                _logger.LogError(e, null);
-                return null;                 
-            }            
+                logger.LogError(e, null);
+                return null;
+            }
         }
 
         public async Task<FileStreamResult> DownloadSolutionDocumentAsync(string id, string name)
-        {            
+        {
             try
             {
-                var downloadInfo = await _documentRepository.DownloadAsync(id, name);
+                var downloadInfo = await documentRepository.DownloadAsync(id, name);
                 return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
             }
             catch (DocumentRepositoryException e)
             {
-                _logger.LogError(e, null);         
+                logger.LogError(e, null);
                 return null;
-            }            
+            }
         }
 
         public IAsyncEnumerable<string> GetDocumentsBySolutionId(string id)
         {
-            return _documentRepository.GetFileNamesAsync(id);
+            return documentRepository.GetFileNamesAsync(id);
         }
     }
 }
