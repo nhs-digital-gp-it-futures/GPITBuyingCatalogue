@@ -15,6 +15,7 @@ services:
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
         depends_on:
             - "nhsd_bcdb_deploy"
+            - "nhsd_codb_deploy"
             - "nhsd_cudb_deploy"
             - "maildev"
             - "file.upload"
@@ -56,6 +57,23 @@ services:
             INSERT_TEST_DATA: "TRUE"
         depends_on:
             - "sqlserver"   
+
+    nhsd_codb_deploy:
+        image: ${DOCKER_REGISTRY}catalogueorderingdatabase
+        container_name: nhsd_codb_deploy
+        build:
+            context: .
+            dockerfile: database/NHSD.BuyingCatalogue.Ordering.OrderingDatabase.Deployment/Docker/Dockerfile
+        environment:
+            SA_PASSWORD: "Abc123Abc123"
+            NHSD_PASSWORD: "DisruptTheMarket1!"
+            DB_NAME: "CatalogueOrdering"
+            DB_SERVER: sqlserver            
+            INCLUDE_IMPORT: "TRUE"
+            INCLUDE_PUBLISH: "TRUE"
+            INSERT_TEST_DATA: "TRUE"
+        depends_on:
+            - "sqlserver"  
             
     nhsd_cudb_deploy:
         image: ${DOCKER_REGISTRY}catalogueusersdatabase
