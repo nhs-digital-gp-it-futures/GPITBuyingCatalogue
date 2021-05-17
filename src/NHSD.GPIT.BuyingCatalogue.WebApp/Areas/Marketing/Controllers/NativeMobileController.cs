@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> AdditionalInformation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException("additional-information-id");
+                throw new ArgumentException($"additional-information-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)

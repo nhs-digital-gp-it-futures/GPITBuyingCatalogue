@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"additional-information-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Connectivity(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"connectivity-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -513,7 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"hardware-requirments-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -730,7 +730,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.MemoryAndStorage(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"memory-and-storage-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -951,7 +951,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.OperatingSystems(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"operating-systems-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -1166,7 +1166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ThirdParty(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"third-party-{nameof(id)}");
         }
 
         [Test, AutoData]

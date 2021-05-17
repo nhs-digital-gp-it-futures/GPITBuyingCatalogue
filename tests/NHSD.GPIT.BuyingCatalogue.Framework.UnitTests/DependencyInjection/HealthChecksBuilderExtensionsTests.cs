@@ -219,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
         {
             var builder = Mock.Of<IHealthChecksBuilder>();
 
-            Assert.Throws<ArgumentException>(() => HealthChecksBuilderExtensions.AddDatabaseHealthCheck(builder, " "));
+            Assert.Throws<ArgumentNullException>(() => HealthChecksBuilderExtensions.AddDatabaseHealthCheck(builder, " "));
         }
 
         #endregion DatabaseHealthCheck Tests

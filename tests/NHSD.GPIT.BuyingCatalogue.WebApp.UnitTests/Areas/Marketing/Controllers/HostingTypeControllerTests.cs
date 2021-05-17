@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.PublicCloud(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-public-cloud-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -286,7 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.PrivateCloud(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-private-cloud-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -495,7 +495,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Hybrid(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-hybrid-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -704,7 +704,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.OnPremise(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-onpremise-{nameof(id)}");
         }
 
         [Test, AutoData]
