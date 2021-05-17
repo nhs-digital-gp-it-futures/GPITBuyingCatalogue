@@ -1,2 +1,2 @@
 # GPITBuyingCatalogue
-ASP.NET Core Buying Catalogue Web Application 
+ASP.NET Core Buying Catalogue Web Application.
