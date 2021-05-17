@@ -24,5 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
             Driver.FindElement(CommonObjects.ContinueButton).Click();
         }
+
+        internal void ClickLoginLink()
+        {
+            Driver.FindElement(CommonObjects.LoginLink).Click();
+        }
     }
 }

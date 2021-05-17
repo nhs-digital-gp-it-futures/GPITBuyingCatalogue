@@ -10,5 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By PageTitle => By.TagName("h1");
 
         internal static By GoBackLink => CustomBy.DataTestId("go-back-link", "a");
+
+        internal static By LoginLink => CustomBy.DataTestId("login-link");
     }
 }

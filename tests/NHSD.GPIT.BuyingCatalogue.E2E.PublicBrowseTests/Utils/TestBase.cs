@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
@@ -23,7 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         internal Actions.Common.CommonActions CommonActions { get; }
 
+        internal Actions.Authorization.ActionCollection  AuthorizationPages{ get; }
+
         internal TextGenerators TextGenerators { get; }
+
+        internal static string DefaultPassword = "Th1sIsP4ssword!";
 
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
@@ -33,7 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             driver = this.factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(driver).PageActions;
             MarketingPages = new MarketingPageActions(driver).PageActions;
+            AuthorizationPages = new AuthorizationPages(driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(driver);
+
             TextGenerators = new TextGenerators(driver);
 
             uri = new Uri(factory.RootUri);
@@ -44,7 +51,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         internal BuyingCatalogueDbContext GetBCContext()
         {
             var options = new DbContextOptionsBuilder<BuyingCatalogueDbContext>()
-                .UseInMemoryDatabase(factory.DbName)
+                .UseInMemoryDatabase(factory.BcDbName)
+                .Options;
+
+            return new(options);
+        }
+
+        internal UsersDbContext GetUsersContext()
+        {
+            var options = new DbContextOptionsBuilder<UsersDbContext>()
+                .UseInMemoryDatabase(factory.UsersDbName)
                 .Options;
 
             return new(options);
