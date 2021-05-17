@@ -19,8 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             PublicBrowsePages.CommonActions.ClickLoginLink();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
-            AuthorizationPages.LoginActions.PasswordInputDisplayed();
-            AuthorizationPages.LoginActions.LoginButtonDisplayed();
+            AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
+            AuthorizationPages.LoginActions.LoginButtonDisplayed().Should().BeTrue();
         }
 
         [Fact]
@@ -35,6 +35,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeTrue();
         }
+
+        [Theory]
+        [InlineData("user", "")]
+        [InlineData("user", "falsePassword")]
+        [InlineData("falseUser@email.com", "password")]
+        [InlineData("", "password")]
+        public async Task Login_UnsuccessfulLogin(string user, string password)
+        {
+            using var context = GetUsersContext();
+            var userEmail = user == "user" ? (await context.AspNetUsers.FirstAsync(s => s.OrganisationFunction == "Authority")).Email : user;
+            var userPassword = password == "password" ? DefaultPassword : password;
+
+            PublicBrowsePages.CommonActions.ClickLoginLink();
+
+            AuthorizationPages.LoginActions.Login(userEmail, userPassword);
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+
+            AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
+            AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
+            AuthorizationPages.LoginActions.LoginButtonDisplayed().Should().BeTrue();
+        }
+        
 
         public void Dispose()
         {
