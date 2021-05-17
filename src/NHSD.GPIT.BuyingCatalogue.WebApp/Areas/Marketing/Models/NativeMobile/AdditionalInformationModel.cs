@@ -20,10 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             AdditionalInformation = ClientApplication?.NativeMobileAdditionalInformation;
         }
 
-        public override bool? IsComplete
-        {
-            get { return !string.IsNullOrWhiteSpace(ClientApplication?.NativeMobileAdditionalInformation); }
-        }
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.NativeMobileAdditionalInformation);
+
         [StringLength(500)]
         public string AdditionalInformation { get; set; }
     }

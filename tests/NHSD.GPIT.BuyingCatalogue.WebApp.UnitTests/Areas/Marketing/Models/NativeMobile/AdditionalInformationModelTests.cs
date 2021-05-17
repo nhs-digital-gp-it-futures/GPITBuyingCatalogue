@@ -1,4 +1,7 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,6 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
     [Parallelizable(ParallelScope.All)]
     internal static class AdditionalInformationModelTests
     {
+        [Test]
+        public static void AdditionalInformation_StringLengthAttribute_ExpectedValue()
+        {
+            typeof(AdditionalInformationModel)
+                .GetProperty(nameof(AdditionalInformationModel.AdditionalInformation))
+                .GetCustomAttribute<StringLengthAttribute>()
+                .MaximumLength.Should().Be(500);
+        }
+
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {

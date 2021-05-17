@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             Assert.AreEqual(7, model.ConnectionTypes.Length);
             Assert.True(model.ConnectionTypes.Single(x => x.ConnectionType == "3G").Checked);
             Assert.True(model.ConnectionTypes.Single(x => x.ConnectionType == "4G").Checked);
-            Assert.AreEqual(5, model.ConnectionTypes.Where(x=>x.Checked == false).Count());
+            Assert.AreEqual(5, model.ConnectionTypes.Count(x => !x.Checked));
         }
 
         [Test]
@@ -113,23 +113,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             Assert.AreEqual(expected, model.IsComplete);
         }
 
-        private static List<SelectListItem> GetConnectionSpeeds()
-        {
-            return new List<SelectListItem>
+        private static List<SelectListItem> GetConnectionSpeeds() =>
+            new()
             {
-                new SelectListItem{ Text = "0.5Mbps", Value="0.5Mbps"},
-                new SelectListItem{ Text = "1Mbps", Value="1Mbps"},
-                new SelectListItem{ Text = "1.5Mbps", Value="1.5Mbps"},
-                new SelectListItem{ Text = "2Mbps", Value="2Mbps"},
-                new SelectListItem{ Text = "3Mbps", Value="3Mbps"},
-                new SelectListItem{ Text = "5Mbps", Value="5Mbps"},
-                new SelectListItem{ Text = "8Mbps", Value="8Mbps"},
-                new SelectListItem{ Text = "10Mbps", Value="10Mbps"},
-                new SelectListItem{ Text = "15Mbps", Value="15Mbps"},
-                new SelectListItem{ Text = "20Mbps", Value="20Mbps"},
-                new SelectListItem{ Text = "30Mbps", Value="30Mbps"},
-                new SelectListItem{ Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
+                new() { Text = "0.5Mbps", Value="0.5Mbps"},
+                new() { Text = "1Mbps", Value="1Mbps"},
+                new() { Text = "1.5Mbps", Value="1.5Mbps"},
+                new() { Text = "2Mbps", Value="2Mbps"},
+                new() { Text = "3Mbps", Value="3Mbps"},
+                new() { Text = "5Mbps", Value="5Mbps"},
+                new() { Text = "8Mbps", Value="8Mbps"},
+                new() { Text = "10Mbps", Value="10Mbps"},
+                new() { Text = "15Mbps", Value="15Mbps"},
+                new() { Text = "20Mbps", Value="20Mbps"},
+                new() { Text = "30Mbps", Value="30Mbps"},
+                new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
             };
-        }
     }
 }

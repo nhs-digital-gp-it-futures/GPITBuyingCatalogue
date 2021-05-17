@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public virtual string HardwareRequirements { get; set; }
 
-        public string NativeMobileHardwareRequirements { get; set; }
+        public virtual string NativeMobileHardwareRequirements { get; set; }
 
         public virtual string NativeDesktopHardwareRequirements { get; set; }
 
@@ -29,17 +29,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public virtual bool? MobileFirstDesign { get; set; }
 
-        public bool? NativeMobileFirstDesign { get; set; }
+        public virtual bool? NativeMobileFirstDesign { get; set; }
 
-        public MobileOperatingSystems MobileOperatingSystems { get; set; }
+        public virtual MobileOperatingSystems MobileOperatingSystems { get; set; }
 
-        public MobileConnectionDetails MobileConnectionDetails { get; set; }
+        public virtual MobileConnectionDetails MobileConnectionDetails { get; set; }
 
-        public MobileMemoryAndStorage MobileMemoryAndStorage { get; set; } 
+        public virtual MobileMemoryAndStorage MobileMemoryAndStorage { get; set; } 
 
-        public MobileThirdParty MobileThirdParty { get; set; } = new();
+        public virtual MobileThirdParty MobileThirdParty { get; set; } = new();
 
-        public string NativeMobileAdditionalInformation { get; set; }
+        public virtual string NativeMobileAdditionalInformation { get; set; }
 
         public virtual string NativeDesktopOperatingSystemsDescription { get; set; }
 

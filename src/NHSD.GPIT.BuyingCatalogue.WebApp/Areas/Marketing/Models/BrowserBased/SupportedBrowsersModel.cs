@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
@@ -11,17 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
         public string MobileResponsive { get; set; }
 
-        private readonly SupportedBrowserModel[] SupportedBrowsers = new SupportedBrowserModel[]
-            {
-                new() { BrowserName = "Google Chrome" },
-                new() { BrowserName = "Microsoft Edge" },
-                new() { BrowserName = "Mozilla Firefox" },
-                new() { BrowserName = "Opera" },
-                new() { BrowserName = "Safari" },
-                new() { BrowserName = "Chromium" },
-                new() { BrowserName = "Internet Explorer 11" },
-                new() { BrowserName = "Internet Explorer 10" }
-            };
+        private readonly SupportedBrowserModel[] SupportedBrowsers = ProfileDefaults.SupportedBrowsers;
 
         public SupportedBrowsersModel() : base(null)
         {

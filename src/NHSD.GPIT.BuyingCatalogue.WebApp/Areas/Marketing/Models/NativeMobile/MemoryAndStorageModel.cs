@@ -23,14 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             Description = ClientApplication?.MobileMemoryAndStorage?.Description;
         }
 
-        public override bool? IsComplete
-        {
-            get 
-            {
-                return !string.IsNullOrWhiteSpace(ClientApplication?.MobileMemoryAndStorage?.MinimumMemoryRequirement) &&
-                  !string.IsNullOrWhiteSpace(ClientApplication?.MobileMemoryAndStorage?.Description);
-            }
-        }
+        public override bool? IsComplete =>
+            !string.IsNullOrWhiteSpace(ClientApplication?.MobileMemoryAndStorage?.MinimumMemoryRequirement) &&
+            !string.IsNullOrWhiteSpace(ClientApplication?.MobileMemoryAndStorage?.Description);
 
         public string SelectedMemorySize { get; set; }
         public List<SelectListItem> MemorySizes { get; set; }
