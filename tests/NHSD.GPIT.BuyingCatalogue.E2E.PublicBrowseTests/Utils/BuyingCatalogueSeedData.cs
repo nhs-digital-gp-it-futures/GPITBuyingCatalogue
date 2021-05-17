@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     CatalogueItemId = "99999-001",
                     CatalogueItemTypeId = 1,
                     Created = DateTime.UtcNow,
-                    Name = "DFOCVC Solution",
+                    Name = "DFOCVC Solution Full",
                     Solution = new Solution
                     {
                         Id = "99999-001",
@@ -32,6 +32,74 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        ClientApplication = @"{
+                            ""ClientApplicationTypes"": [
+                                ""browser-based"",
+                                ""native-mobile"",
+                                ""native-desktop""
+                            ],
+                            ""BrowsersSupported"": [
+                                ""Google Chrome"",
+                                ""Chromium"",
+                                ""Internet Explorer 11"",
+                                ""Internet Explorer 10""
+                            ],
+                            ""MobileResponsive"": true,
+                            ""Plugins"": {
+                                ""Required"": false,
+                                ""AdditionalInformation"": ""Additional information""
+                            },
+                            ""MinimumConnectionSpeed"": ""2Mbps"",
+                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
+                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
+                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
+                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
+                            ""AdditionalInformation"": ""Here is some additional information"",
+                            ""MobileFirstDesign"": true,
+                            ""NativeMobileFirstDesign"": true,
+                            ""MobileOperatingSystems"": {
+                                ""OperatingSystems"": [
+                                    ""Apple IOS"",
+                                    ""Android"",
+                                    ""Other""
+                                ],
+                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
+                            },
+                            ""MobileConnectionDetails"": {
+                                ""MinimumConnectionSpeed"": ""2Mbps"",
+                                ""ConnectionType"": [
+                                    ""GPRS"",
+                                    ""3G"",
+                                    ""LTE"",
+                                    ""4G"",
+                                    ""5G"",
+                                    ""Wifi""
+                                ],
+                                ""Description"": ""Mobile connection required""
+                            },
+                            ""MobileMemoryAndStorage"": {
+                                ""MinimumMemoryRequirement"": ""2GB"",
+                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
+                            },
+                            ""MobileThirdParty"": {
+                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
+                                ""DeviceCapabilities"": ""Must have app""
+                            },
+                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
+                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
+                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
+                            ""NativeDesktopThirdParty"": {
+                                ""ThirdPartyComponents"": "".NET framework 4."",
+                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
+                            },
+                            ""NativeDesktopMemoryAndStorage"": {
+                                ""MinimumMemoryRequirement"": ""4GB"",
+                                ""StorageRequirementsDescription"": ""10GB free disk space."",
+                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
+                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
+                            },
+                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
+                        }",
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
@@ -41,65 +109,79 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         },
                         SolutionEpics = new List<SolutionEpic>
                         {
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00001", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00002", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00003", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00004", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00005", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00006", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00007", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00008", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00009", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00010", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00011", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00012", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00013", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00014", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00015", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00016", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00017", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00018", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00019", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00020", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00021", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00022", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00023", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00024", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00025", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00026", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00027", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00028", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00029", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00030", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00031", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00032", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00033", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00034", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00035", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00037", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00038", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00056", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00057", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00058", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00075", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00076", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00077", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00078", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00079", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00080", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00081", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00082", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00083", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00084", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00085", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00086", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00089", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00090", StatusId = 1},
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00091", StatusId = 1},
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00001", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00002", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00003", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00004", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00005", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00006", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00007", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00008", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00009", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00010", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00011", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00012", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00013", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00014", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00015", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00016", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00017", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00018", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00019", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00020", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00021", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00022", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00023", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00024", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00025", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00026", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00027", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00028", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00029", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00030", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00031", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00032", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00033", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00034", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00035", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00037", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00038", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00056", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00057", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00058", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00075", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00076", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00077", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00078", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00079", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00080", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00081", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00082", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00083", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00084", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00085", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00086", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00089", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00090", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00091", StatusId = 1 },
                         },
+                        ImplementationDetail = "Some implementation detail",
+                        MarketingContacts = new List<MarketingContact>
+                        {
+                            new MarketingContact
+                            {
+                                Id = 1,
+                                FirstName = "Bob",
+                                LastName = "Smith",
+                                Email = "test@test.com",
+                                Department = "Fruit controller",
+                                LastUpdated = DateTime.UtcNow,
+                                LastUpdatedBy = Guid.Empty,
+                            }
+                        }
                     },
                     PublishedStatusId = 3,
-                    SupplierId = "99999"
+                    SupplierId = "99999",
                 },
                 new CatalogueItem
                 {
@@ -116,7 +198,230 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                     }
-                }
+                },
+                new CatalogueItem
+                {
+                    CatalogueItemId = "99999-002",
+                    CatalogueItemTypeId = 1,
+                    Created = DateTime.UtcNow,
+                    Name = "GPIT Solution Full",
+                    Solution = new Solution
+                    {
+                        Id = "99999-002",
+                        AboutUrl = "https://test.com",
+                        Summary = "SUMMARY - GPIT Solution",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        ClientApplication = @"{
+                            ""ClientApplicationTypes"": [
+                                ""browser-based"",
+                                ""native-mobile"",
+                                ""native-desktop""
+                            ],
+                            ""BrowsersSupported"": [
+                                ""Google Chrome"",
+                                ""Chromium"",
+                                ""Internet Explorer 11"",
+                                ""Internet Explorer 10""
+                            ],
+                            ""MobileResponsive"": true,
+                            ""Plugins"": {
+                                ""Required"": false,
+                                ""AdditionalInformation"": ""Additional information""
+                            },
+                            ""MinimumConnectionSpeed"": ""2Mbps"",
+                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
+                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
+                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
+                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
+                            ""AdditionalInformation"": ""Here is some additional information"",
+                            ""MobileFirstDesign"": true,
+                            ""NativeMobileFirstDesign"": true,
+                            ""MobileOperatingSystems"": {
+                                ""OperatingSystems"": [
+                                    ""Apple IOS"",
+                                    ""Android"",
+                                    ""Other""
+                                ],
+                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
+                            },
+                            ""MobileConnectionDetails"": {
+                                ""MinimumConnectionSpeed"": ""2Mbps"",
+                                ""ConnectionType"": [
+                                    ""GPRS"",
+                                    ""3G"",
+                                    ""LTE"",
+                                    ""4G"",
+                                    ""5G"",
+                                    ""Wifi""
+                                ],
+                                ""Description"": ""Mobile connection required""
+                            },
+                            ""MobileMemoryAndStorage"": {
+                                ""MinimumMemoryRequirement"": ""2GB"",
+                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
+                            },
+                            ""MobileThirdParty"": {
+                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
+                                ""DeviceCapabilities"": ""Must have app""
+                            },
+                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
+                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
+                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
+                            ""NativeDesktopThirdParty"": {
+                                ""ThirdPartyComponents"": "".NET framework 4."",
+                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
+                            },
+                            ""NativeDesktopMemoryAndStorage"": {
+                                ""MinimumMemoryRequirement"": ""4GB"",
+                                ""StorageRequirementsDescription"": ""10GB free disk space."",
+                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
+                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
+                            },
+                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
+                        }",
+                        Version = "1.0.0",
+                        LastUpdated = DateTime.UtcNow,
+                        LastUpdatedBy = Guid.Empty,
+                        FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
+                        SolutionCapabilities = new List<SolutionCapability> {
+                            new SolutionCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        },
+                        SolutionEpics = new List<SolutionEpic>
+                        {
+                            new SolutionEpic { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), EpicId = "C1E1", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), EpicId = "C1E2", StatusId = 2 },
+                        },
+                        ImplementationDetail = "Some implementation detail",
+                        MarketingContacts = new List<MarketingContact>
+                        {
+                            new MarketingContact
+                            {
+                                Id = 3,
+                                FirstName = "Geoff",
+                                LastName = "Jones",
+                                Email = "test@test.com",
+                                Department = "Fruit wrangler",
+                                LastUpdated = DateTime.UtcNow,
+                                LastUpdatedBy = Guid.Empty,
+                            }
+                        }
+                    },
+                    PublishedStatusId = 3,
+                    SupplierId = "99999",
+                },
+
+                new CatalogueItem
+                {
+                    CatalogueItemId = "99999-003",
+                    CatalogueItemTypeId = 1,
+                    Created = DateTime.UtcNow,
+                    Name = "GPIT Solution Full 2",
+                    Solution = new Solution
+                    {
+                        Id = "99999-003",
+                        AboutUrl = "https://test.com",
+                        Summary = "SUMMARY - GPIT Solution 2",
+                        Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
+                        Hosting = @"{""PublicCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""PrivateCloud"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""HybridHostingType"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""},""OnPremise"":{""Summary"":""Summary description"",""Link"":""External URL link"",""HostingModel"":""Hosting environment description"",""RequiresHSCN"":""Link to HSCN or N3 network required to access service""}}",
+                        ClientApplication = @"{
+                            ""ClientApplicationTypes"": [
+                                ""browser-based"",
+                                ""native-mobile"",
+                                ""native-desktop""
+                            ],
+                            ""BrowsersSupported"": [
+                                ""Google Chrome"",
+                                ""Chromium"",
+                                ""Internet Explorer 11"",
+                                ""Internet Explorer 10""
+                            ],
+                            ""MobileResponsive"": true,
+                            ""Plugins"": {
+                                ""Required"": false,
+                                ""AdditionalInformation"": ""Additional information""
+                            },
+                            ""MinimumConnectionSpeed"": ""2Mbps"",
+                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
+                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
+                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
+                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
+                            ""AdditionalInformation"": ""Here is some additional information"",
+                            ""MobileFirstDesign"": true,
+                            ""NativeMobileFirstDesign"": true,
+                            ""MobileOperatingSystems"": {
+                                ""OperatingSystems"": [
+                                    ""Apple IOS"",
+                                    ""Android"",
+                                    ""Other""
+                                ],
+                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
+                            },
+                            ""MobileConnectionDetails"": {
+                                ""MinimumConnectionSpeed"": ""2Mbps"",
+                                ""ConnectionType"": [
+                                    ""GPRS"",
+                                    ""3G"",
+                                    ""LTE"",
+                                    ""4G"",
+                                    ""5G"",
+                                    ""Wifi""
+                                ],
+                                ""Description"": ""Mobile connection required""
+                            },
+                            ""MobileMemoryAndStorage"": {
+                                ""MinimumMemoryRequirement"": ""2GB"",
+                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
+                            },
+                            ""MobileThirdParty"": {
+                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
+                                ""DeviceCapabilities"": ""Must have app""
+                            },
+                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
+                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
+                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
+                            ""NativeDesktopThirdParty"": {
+                                ""ThirdPartyComponents"": "".NET framework 4."",
+                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
+                            },
+                            ""NativeDesktopMemoryAndStorage"": {
+                                ""MinimumMemoryRequirement"": ""4GB"",
+                                ""StorageRequirementsDescription"": ""10GB free disk space."",
+                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
+                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
+                            },
+                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
+                        }",
+                        Version = "1.0.0",
+                        LastUpdated = DateTime.UtcNow,
+                        LastUpdatedBy = Guid.Empty,
+                        FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
+                        SolutionCapabilities = new List<SolutionCapability> {
+                            new SolutionCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        },
+                        SolutionEpics = new List<SolutionEpic>
+                        {
+                            new SolutionEpic { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), EpicId = "C2E1", StatusId = 1 },
+                            new SolutionEpic { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), EpicId = "C2E2", StatusId = 2 },
+                        },
+                        ImplementationDetail = "Some implementation detail",
+                        MarketingContacts = new List<MarketingContact>
+                        {
+                            new MarketingContact
+                            {
+                                Id = 3,
+                                FirstName = "Geoff",
+                                LastName = "Jones",
+                                Email = "test@test.com",
+                                Department = "Fruit wrangler",
+                                LastUpdated = DateTime.UtcNow,
+                                LastUpdatedBy = Guid.Empty,
+                            }
+                        }
+                    },
+                    PublishedStatusId = 3,
+                    SupplierId = "99999",
+                },
             };
             context.AddRange(dfocvcSolutions);
 
@@ -124,6 +429,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = "99999-001", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
                 new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = "99999-99", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = "99999-002", IsFoundation = true, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = "99999-003", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
             };
             context.AddRange(frameworkSolutions);
         }
@@ -170,57 +477,65 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             };
             context.AddRange(frameworks);
 
+            List<CapabilityCategory> categories = new()
+            {
+                new CapabilityCategory { Id = 1, Name = "GP IT Futures" },
+                new CapabilityCategory { Id = 2, Name = "Covid-19 Vaccination" },
+                new CapabilityCategory { Id = 3, Name = "DFOCVC" },
+                new CapabilityCategory { Id = 0, Name = "Undefined" },
+            };
+            context.AddRange(categories);
+
             // Capabilities
             string gpitFuturesBaseUrl = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/";
             string covidVaccinationBaseUrl = "https://gpitbjss.atlassian.net/wiki/spaces/CVPDR/pages/";
             List<Capability> capabilities = new()
             {
-                new Capability { Id = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), CapabilityRef = "C1", Name = "Appointments Management – Citizen", Description = "Enables Citizens to manage their Appointments online. Supports the use of Appointment slots that have been configured in Appointments Management – GP.", SourceUrl = $"{gpitFuturesBaseUrl}1391134205/Appointments+Management+-+Citize" },
-                new Capability { Id = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), CapabilityRef = "C2", Name = "Communicate With Practice – Citizen", Description = "Supports secure and trusted electronic communications between Citizens and the Practice. Integrates with Patient Information Maintenance.", SourceUrl = $"{gpitFuturesBaseUrl}1391134188/Communicate+With+Practice+-+Citize" },
-                new Capability { Id = new Guid("60C2F5B0-B950-44C8-A246-099335A1C816"), CapabilityRef = "C3", Name = "Prescription Ordering – Citizen", Description = "Enables Citizens to request medication online and manage nominated and preferred Pharmacies for Patients.", SourceUrl = $"{gpitFuturesBaseUrl}1391134214/Prescription+Ordering+-+Citizen" },
-                new Capability { Id = new Guid("64E5986D-1EBF-4DF0-8219-C150C082CA7B"), CapabilityRef = "C4", Name = "View Record – Citizen", Description = "Enables Citizens to view their Patient Record online.", SourceUrl = $"{gpitFuturesBaseUrl}1391134197/View+Record+-+Citize" },
-                new Capability { Id = new Guid("EFD93D25-447B-4CA3-9D78-108D42AFEAE0"), CapabilityRef = "C5", Name = "Appointments Management – GP", Description = "Supports the administration, scheduling, resourcing and reporting of appointments.", SourceUrl = $"{gpitFuturesBaseUrl}1391134029/Appointments+Management+-+GP" },
-                new Capability { Id = new Guid("A71F2BE1-6395-4DB7-828C-D4733B42B5B5"), CapabilityRef = "C6", Name = "Clinical Decision Support", Description = "Supports clinical decision-making to improve Patient safety at the point of care.", SourceUrl = $"{gpitFuturesBaseUrl}1391134150/Clinical+Decision+Support" },
-                new Capability { Id = new Guid("0A372F63-ADD4-4529-A6CD-4437C6EF115B"), CapabilityRef = "C7", Name = "Communication Management", Description = "Supports the delivery and management of communications to Citizens and Practice staff.", SourceUrl = $"{gpitFuturesBaseUrl}1391134087/Communication+Management" },
-                new Capability { Id = new Guid("4518D3F7-F56D-48F0-9FBE-7FA943F4673B"), CapabilityRef = "C8", Name = "Digital Diagnostics", Description = "Supports electronic requesting with other healthcare organisations. Test results can be received, reviewed and stored against the Patient record.", SourceUrl = $"{gpitFuturesBaseUrl}1391133770/Digital+Diagnostics" },
-                new Capability { Id = new Guid("19002612-8D53-4472-82FC-2753B253434C"), CapabilityRef = "C9", Name = "Document Management", Description = "Supports the secure management and classification of all forms unstructured electronic documents including those created by scanning paper documents. Also enables processing of documents and matching documents with Patients.", SourceUrl = $"{gpitFuturesBaseUrl}1391134166/Document+Management" },
-                new Capability { Id = new Guid("9D805AAD-D43A-480E-9BC0-41A755BAFE2F"), CapabilityRef = "C10", Name = "GP Extracts Verification", Description = "Supports Practice staff in ensuring accuracy of the data that is used with the Calculating Quality Reporting Service (CQRS).", SourceUrl = $"{gpitFuturesBaseUrl}1391133797/GP+Extracts+Verificatio" },
-                new Capability { Id = new Guid("20B09859-6FC2-404C-B7A4-3830790E63AB"), CapabilityRef = "C11", Name = "Referral Management", Description = "Supports recording, reviewing, sending, and reporting of Patient Referrals. Enables Referral information to be included in the Patient Record.", SourceUrl = $"{gpitFuturesBaseUrl}1391133614/Referral+Management" },
-                new Capability { Id = new Guid("E3E4CF8A-22D3-4056-BB5D-10F8E26B9B5E"), CapabilityRef = "C12", Name = "Resource Management", Description = "Supports the management and reporting of Practice information, resources, Staff Members and related organisations. Also enables management of Staff Member availability and inactivity.", SourceUrl = $"{gpitFuturesBaseUrl}1391133939/Resource+Management" },
-                new Capability { Id = new Guid("8C384983-774A-45BD-9D4E-6B3C7D3B7323"), CapabilityRef = "C13", Name = "Patient Information Maintenance", Description = "Supports the registration of Patients and the maintenance of all Patient personal information. Supports the organisation and presentation of a comprehensive Patient Record. Also supports the management of related persons and configuring access to Citizen Services.", SourceUrl = $"{gpitFuturesBaseUrl}1391134180/Patient+Information+Maintenance" },
-                new Capability { Id = new Guid("B3F89711-6BD7-42D7-BE5B-BAE2F239EBDD"), CapabilityRef = "C14", Name = "Prescribing", Description = "Supports the effective and safe prescribing of medical products and appliances to Patients. Information to support prescribing will be available.", SourceUrl = $"{gpitFuturesBaseUrl}1391134158/Prescribing" },
-                new Capability { Id = new Guid("9442DCC4-22DF-494B-8672-B7B4DD077496"), CapabilityRef = "C15", Name = "Recording Consultations", Description = "Supports the standardised recording of Consultations and other General Practice activities. Also supports the extraction of Female Genital Mutilation (FGM) data for the FGM data set.", SourceUrl = $"{gpitFuturesBaseUrl}1391134389/Recording+Consultations" },
-                new Capability { Id = new Guid("DD649CC4-A710-4472-98B3-663D9D12A8B7"), CapabilityRef = "C16", Name = "Reporting", Description = "Enables reporting and analysis of data from other Capabilities in the Practice Solution to support clinical care and Practice management.", SourceUrl = $"{gpitFuturesBaseUrl}1391133718/Reporting" },
-                new Capability { Id = new Guid("E5521A71-A28E-4BC9-BDDF-599F0A90719D"), CapabilityRef = "C17", Name = "Scanning", Description = "Support the con[Version] of paper documentation into digital format preserving the document quality and structure.", SourceUrl = $"{gpitFuturesBaseUrl}1391134270/Scanning" },
-                new Capability { Id = new Guid("385E00F9-3DE6-4A72-B662-E0405BCECFC8"), CapabilityRef = "C18", Name = "Telehealth", Description = "Enables Citizens and Patients that use health monitoring solutions to share monitoring data with health and care professionals to support remote delivery of care and increase self-care outside of clinical settings.", SourceUrl = $"{gpitFuturesBaseUrl}1391134248/Telehealth" },
-                new Capability { Id = new Guid("1E82CC7C-87C7-4379-B86F-CF36C59D1A46"), CapabilityRef = "C19", Name = "Unstructured Data Extraction", Description = "Enables automated and manual interpretation and extraction of structured data from paper documents and unstructured electronic documents to support their classification and matching with Patient Records.", SourceUrl = $"{gpitFuturesBaseUrl}1391133668/Unstructured+Data+Extractio" },
-                new Capability { Id = new Guid("9D325DEC-6E5B-44E4-876B-EACF6CD41B3E"), CapabilityRef = "C20", Name = "Workflow", Description = "Supports manual and automated management of work in the Practice. Also supports effective planning, tracking, monitoring and reporting.", SourceUrl = $"{gpitFuturesBaseUrl}1391134020/Workflow" },
-                new Capability { Id = new Guid("1C552148-6EA8-4D82-84EB-E660622A1741"), CapabilityRef = "C21", Name = "Care Homes", Description = "Enables a record of the Resident's health and care needs to be maintained and shared with parties who are involved in providing care, to support decision making and the effective planning and delivery of care.", SourceUrl = $"{gpitFuturesBaseUrl}1391133439/Care+Homes" },
-                new Capability { Id = new Guid("12B3AD26-487E-43B1-9D58-264C3C359BC6"), CapabilityRef = "C22", Name = "Caseload Management", Description = "Supports the allocation of appropriate Health and Care Professionals to Patients/Service Users in need of support, ensuring balanced workloads and the efficient use of staff and other resources.", SourceUrl = $"{gpitFuturesBaseUrl}1391133457/Caseload+Management" },
-                new Capability { Id = new Guid("7547E181-C897-4A01-86D9-09B76AB1C906"), CapabilityRef = "C23", Name = "Cross-organisation Appointment Booking", Description = "Enables appointments to be made available and booked across Organisational boundaries, creating flexibility for Health and Care Professionals and Patients/Service Users.", SourceUrl = $"{gpitFuturesBaseUrl}1391135407/Cross-organisation+Appointment+Booking" },
-                new Capability { Id = new Guid("890AF628-5B84-4176-B3D1-A4ADC65710FE"), CapabilityRef = "C24", Name = "Cross-organisation Workflow Tools", Description = "Supports and automates clinical and business processes across Organisational boundaries to make processes and communication more efficient.", SourceUrl = $"{gpitFuturesBaseUrl}1391133492/Cross-organisation+Workflow+Tools" },
-                new Capability { Id = new Guid("7E8A8D7A-F8CE-4AA5-A3EF-31BBBD39DF40"), CapabilityRef = "C25", Name = "Cross-organisation Workforce Management", Description = "Supports the efficient planning and scheduling of the health and care workforce to ensure that services can be delivered effectively by the right staff.", SourceUrl = $"{gpitFuturesBaseUrl}1391135659/Cross-organisation+Workforce+Management" },
-                new Capability { Id = new Guid("5DB79FF4-FA9C-4DA2-BBFC-8CA40FEC0B43"), CapabilityRef = "C26", Name = "Data Analytics for Integrated and Federated Care", Description = "Supports the analysis of multiple and complex datasets and presentation of the output to enable decision-making, service design and performance management.", SourceUrl = $"{gpitFuturesBaseUrl}1391135590/Data+Analytics+for+Integrated+and+Federated+Care" },
-                new Capability { Id = new Guid("A66765F0-7EB6-400B-8319-FE7FBD86AB47"), CapabilityRef = "C27", Name = "Domiciliary Care", Description = "Enables Service Providers to effectively plan and manage Domiciliary Care services to ensure care needs are met and that Care Workers can manage their schedule.", SourceUrl = $"{gpitFuturesBaseUrl}1391133451/Domiciliary+Care" },
-                new Capability { Id = new Guid("C332947A-D29E-4169-A7B1-FF277CF513C2"), CapabilityRef = "C28", Name = "e-Consultations (Patient/Service User to Professional)", Description = "Enables Patients/Service Users to access support from Health and Care Professionals, across a range of settings, without the need for a face to face encounter.", SourceUrl = $"{gpitFuturesBaseUrl}1391133433/e-Consultations+Patient+Service+User+to+Professional" },
-                new Capability { Id = new Guid("7BE309D9-696F-4B90-A65E-EB16DD5AC4ED"), CapabilityRef = "C29", Name = "e-Consultations (Professional to Professional)", Description = "Enables the communication and sharing of specialist knowledge and advice between Health and Care Professionals to support better care decisions and professional development.", SourceUrl = $"{gpitFuturesBaseUrl}1391135495/e-Consultations+Professional+to+Professional" },
-                new Capability { Id = new Guid("8BEE1FF3-84D4-430B-A678-336F57C57387"), CapabilityRef = "C30", Name = "Medicines Optimisation", Description = "Supports clinicians and pharmacists in reviewing a Patient's medication and requesting changes to medication to ensure the Patient is taking the best combination of medicines.", SourceUrl = $"{gpitFuturesBaseUrl}1391133405/Medicines+Optimisatio" },
-                new Capability { Id = new Guid("0766FCF3-79B1-4B2F-A79E-9B09C0249034"), CapabilityRef = "C32", Name = "Personal Health Budget", Description = "Enables a Patient/Service User to set up and manage a Personal Health Budget giving them more choice and control over the management of their identified healthcare and well-being needs.", SourceUrl = $"{gpitFuturesBaseUrl}1391133426/Personal+Health+Budget" },
-                new Capability { Id = new Guid("E5E3BE58-E5EC-4423-85DD-61D88640C22A"), CapabilityRef = "C33", Name = "Personal Health Record", Description = "Enables a Patient/Service User to manage and maintain their own Electronic Health Record and to share that information with relevant Health and Care Professionals.", SourceUrl = $"{gpitFuturesBaseUrl}1391135480/Personal+Health+Record" },
-                new Capability { Id = new Guid("2271B113-5D5D-4899-B259-3046CAEA76ED"), CapabilityRef = "C34", Name = "Population Health Management", Description = "Enables Organisations to accumulate, analyse and report on Patient healthcare data to identify improvement in care and identify and track Patient outcomes.", SourceUrl = $"{gpitFuturesBaseUrl}1391135469/Population+Health+Management" },
-                new Capability { Id = new Guid("12C6A61C-013C-475F-BB0C-2DA5D414C03B"), CapabilityRef = "C35", Name = "Risk Stratification", Description = "Supports Health and Care Professionals by providing trusted models to predict future Patient events, informing interventions to achieve better Patient outcomes.", SourceUrl = $"{gpitFuturesBaseUrl}1391133445/Risk+Stratificatio" },
-                new Capability { Id = new Guid("D1532CA0-EF0C-457C-9CFC-AFFA0FBDF134"), CapabilityRef = "C36", Name = "Shared Care Plans", Description = "Enables the maintenance of a single, shared care plan across multiple Organisations to ensure more co-ordinated working and more efficient management of activities relating to the Patient/Service User's health and care.", SourceUrl = $"{gpitFuturesBaseUrl}1391134486/Shared+Care+Plans" },
-                new Capability { Id = new Guid("1D1B92A4-BD48-4C55-8301-9D1830BCD729"), CapabilityRef = "C37", Name = "Social Prescribing", Description = "Supports the referral of Patients/Service Users to non-clinical services to help address their health and well-being needs.", SourceUrl = $"{gpitFuturesBaseUrl}1391135572/Social+Prescribing" },
-                new Capability { Id = new Guid("188F67DB-49D9-4808-810F-27D9E7703DF6"), CapabilityRef = "C38", Name = "Telecare", Description = "Supports the monitoring of Patients/Service Users or their environment to ensure quick identification and response to any adverse event.", SourceUrl = $"{gpitFuturesBaseUrl}1391135549/Telecare" },
-                new Capability { Id = new Guid("59696227-602A-421D-A883-29E88997AC17"), CapabilityRef = "C39", Name = "Unified Care Record", Description = "Provides a consolidated view to Health and Care Professionals of a Patient/Service User's complete and up-to-date records, sourced from various health and care settings.", SourceUrl = $"{gpitFuturesBaseUrl}1391134504/Unified+Care+Record" },
-                new Capability { Id = new Guid("4CFB2E12-9B05-4F48-AD25-5E8A4A06C6E7"), CapabilityRef = "C40", Name = "Medicines Verification", Description = "Supports compliance with the Falsified Medicines Directive and minimise the risk that falsified medicinal products are supplied to the public.", SourceUrl = $"{gpitFuturesBaseUrl}1391135093/Medicines+Verificatio" },
-                new Capability { Id = new Guid("6E77147D-D2AF-46BD-A2F2-BB4F235DAF3A"), CapabilityRef = "C41", Name = "Productivity", Description = "Supports Patients/Service Users and Health and Care Professionals by delivering improved efficiency or experience related outcomes.", SourceUrl = $"{gpitFuturesBaseUrl}1391135618/Productivity" },
-                new Capability { Id = new Guid("D314DC27-BC65-4ABD-97C5-F9BE478D8A10"), CapabilityRef = "C42", Name = "Dispensing", Description = "Supports the timely and effective dispensing of medical products and appliances to Patients.", SourceUrl = $"{gpitFuturesBaseUrl}1391133465/Dispensing" },
-                new Capability { Id = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), CapabilityRef = "C43", Name = "Online Consultation ", Description = "The Online Consultation Capability allows Patients/Service Users/Proxies to request and receive support relating to healthcare concerns, at a time and place convenient for them. ", SourceUrl = "https://gpitbjss.atlassian.net/wiki/spaces/DFOCVC/pages/2519925022/Online+Consultation " },
-                new Capability { Id = new Guid("4E07C901-1DA1-43EB-BE45-C89B7DBD9D66"), CapabilityRef = "C44", Name = "Video Consultation ", Description = "The Video Consultation Capability allows Health or Care Professionals to conduct secure live remote video consultations with individual or groups of Patients/Service Users/Proxies ensuring they can receive support relating to healthcare concerns when a Video Consultation is most appropriate. ", SourceUrl = "https://gpitbjss.atlassian.net/wiki/spaces/DFOCVC/pages/2519925030/Video+Consultation" },
-                new Capability { Id = new Guid("151CA7DF-5227-4EBF-9200-93258EFA3735"), CapabilityRef = "C45", Name = "Cohort Identification ", Description = "The Cohort Identification Capability enables the identification of Patient cohorts by identifying Patients that require a COVID-19 vaccination based on nationally defined criteria. ", SourceUrl = $"{covidVaccinationBaseUrl}7918551305/Cohort+Identification" },
-                new Capability { Id = new Guid("53255CB2-C5F6-427B-A18A-D3055E310FD6"), CapabilityRef = "C46", Name = "Appointments Management – COVID-19 Vaccinations ", Description = "The Appointments Management – COVID-19 Vaccinations Capability enables the administration and scheduling of COVID-19 vaccination appointments for Patients. ", SourceUrl = $"{covidVaccinationBaseUrl}7918551324/Appointments+Management+-+COVID-19+Vaccinations" },
-                new Capability { Id = new Guid("EC26D316-4F3D-45B1-BDF5-717D24DAB360"), CapabilityRef = "C47", Name = "Vaccination and Adverse Reaction Recording ", Description = "The Vaccination and Adverse Reaction Recording Capability enables the recording of COVID-19 vaccination and adverse reaction data at the point of care. The Capability also supports the delivery of this data to the Patient's registered GP Practice Foundation Solution and to NHS Digital. ", SourceUrl = $"{covidVaccinationBaseUrl}7918551342/Vaccination+and+Adverse+Reaction+Recording " },
+                new Capability { Id = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), CapabilityRef = "C1", Name = "Appointments Management – Citizen", Description = "Enables Citizens to manage their Appointments online. Supports the use of Appointment slots that have been configured in Appointments Management – GP.", SourceUrl = $"{gpitFuturesBaseUrl}1391134205/Appointments+Management+-+Citize", CategoryId = 1 },
+                new Capability { Id = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), CapabilityRef = "C2", Name = "Communicate With Practice – Citizen", Description = "Supports secure and trusted electronic communications between Citizens and the Practice. Integrates with Patient Information Maintenance.", SourceUrl = $"{gpitFuturesBaseUrl}1391134188/Communicate+With+Practice+-+Citize", CategoryId = 1 },
+                new Capability { Id = new Guid("60C2F5B0-B950-44C8-A246-099335A1C816"), CapabilityRef = "C3", Name = "Prescription Ordering – Citizen", Description = "Enables Citizens to request medication online and manage nominated and preferred Pharmacies for Patients.", SourceUrl = $"{gpitFuturesBaseUrl}1391134214/Prescription+Ordering+-+Citizen", CategoryId = 1 },
+                new Capability { Id = new Guid("64E5986D-1EBF-4DF0-8219-C150C082CA7B"), CapabilityRef = "C4", Name = "View Record – Citizen", Description = "Enables Citizens to view their Patient Record online.", SourceUrl = $"{gpitFuturesBaseUrl}1391134197/View+Record+-+Citize", CategoryId = 1 },
+                new Capability { Id = new Guid("EFD93D25-447B-4CA3-9D78-108D42AFEAE0"), CapabilityRef = "C5", Name = "Appointments Management – GP", Description = "Supports the administration, scheduling, resourcing and reporting of appointments.", SourceUrl = $"{gpitFuturesBaseUrl}1391134029/Appointments+Management+-+GP", CategoryId = 1 },
+                new Capability { Id = new Guid("A71F2BE1-6395-4DB7-828C-D4733B42B5B5"), CapabilityRef = "C6", Name = "Clinical Decision Support", Description = "Supports clinical decision-making to improve Patient safety at the point of care.", SourceUrl = $"{gpitFuturesBaseUrl}1391134150/Clinical+Decision+Support", CategoryId = 1 },
+                new Capability { Id = new Guid("0A372F63-ADD4-4529-A6CD-4437C6EF115B"), CapabilityRef = "C7", Name = "Communication Management", Description = "Supports the delivery and management of communications to Citizens and Practice staff.", SourceUrl = $"{gpitFuturesBaseUrl}1391134087/Communication+Management", CategoryId = 1 },
+                new Capability { Id = new Guid("4518D3F7-F56D-48F0-9FBE-7FA943F4673B"), CapabilityRef = "C8", Name = "Digital Diagnostics", Description = "Supports electronic requesting with other healthcare organisations. Test results can be received, reviewed and stored against the Patient record.", SourceUrl = $"{gpitFuturesBaseUrl}1391133770/Digital+Diagnostics", CategoryId = 1 },
+                new Capability { Id = new Guid("19002612-8D53-4472-82FC-2753B253434C"), CapabilityRef = "C9", Name = "Document Management", Description = "Supports the secure management and classification of all forms unstructured electronic documents including those created by scanning paper documents. Also enables processing of documents and matching documents with Patients.", SourceUrl = $"{gpitFuturesBaseUrl}1391134166/Document+Management", CategoryId = 1 },
+                new Capability { Id = new Guid("9D805AAD-D43A-480E-9BC0-41A755BAFE2F"), CapabilityRef = "C10", Name = "GP Extracts Verification", Description = "Supports Practice staff in ensuring accuracy of the data that is used with the Calculating Quality Reporting Service (CQRS).", SourceUrl = $"{gpitFuturesBaseUrl}1391133797/GP+Extracts+Verificatio", CategoryId = 1 },
+                new Capability { Id = new Guid("20B09859-6FC2-404C-B7A4-3830790E63AB"), CapabilityRef = "C11", Name = "Referral Management", Description = "Supports recording, reviewing, sending, and reporting of Patient Referrals. Enables Referral information to be included in the Patient Record.", SourceUrl = $"{gpitFuturesBaseUrl}1391133614/Referral+Management", CategoryId = 1 },
+                new Capability { Id = new Guid("E3E4CF8A-22D3-4056-BB5D-10F8E26B9B5E"), CapabilityRef = "C12", Name = "Resource Management", Description = "Supports the management and reporting of Practice information, resources, Staff Members and related organisations. Also enables management of Staff Member availability and inactivity.", SourceUrl = $"{gpitFuturesBaseUrl}1391133939/Resource+Management", CategoryId = 1 },
+                new Capability { Id = new Guid("8C384983-774A-45BD-9D4E-6B3C7D3B7323"), CapabilityRef = "C13", Name = "Patient Information Maintenance", Description = "Supports the registration of Patients and the maintenance of all Patient personal information. Supports the organisation and presentation of a comprehensive Patient Record. Also supports the management of related persons and configuring access to Citizen Services.", SourceUrl = $"{gpitFuturesBaseUrl}1391134180/Patient+Information+Maintenance", CategoryId = 1 },
+                new Capability { Id = new Guid("B3F89711-6BD7-42D7-BE5B-BAE2F239EBDD"), CapabilityRef = "C14", Name = "Prescribing", Description = "Supports the effective and safe prescribing of medical products and appliances to Patients. Information to support prescribing will be available.", SourceUrl = $"{gpitFuturesBaseUrl}1391134158/Prescribing", CategoryId = 1 },
+                new Capability { Id = new Guid("9442DCC4-22DF-494B-8672-B7B4DD077496"), CapabilityRef = "C15", Name = "Recording Consultations", Description = "Supports the standardised recording of Consultations and other General Practice activities. Also supports the extraction of Female Genital Mutilation (FGM) data for the FGM data set.", SourceUrl = $"{gpitFuturesBaseUrl}1391134389/Recording+Consultations", CategoryId = 1 },
+                new Capability { Id = new Guid("DD649CC4-A710-4472-98B3-663D9D12A8B7"), CapabilityRef = "C16", Name = "Reporting", Description = "Enables reporting and analysis of data from other Capabilities in the Practice Solution to support clinical care and Practice management.", SourceUrl = $"{gpitFuturesBaseUrl}1391133718/Reporting", CategoryId = 1 },
+                new Capability { Id = new Guid("E5521A71-A28E-4BC9-BDDF-599F0A90719D"), CapabilityRef = "C17", Name = "Scanning", Description = "Support the con[Version] of paper documentation into digital format preserving the document quality and structure.", SourceUrl = $"{gpitFuturesBaseUrl}1391134270/Scanning", CategoryId = 1 },
+                new Capability { Id = new Guid("385E00F9-3DE6-4A72-B662-E0405BCECFC8"), CapabilityRef = "C18", Name = "Telehealth", Description = "Enables Citizens and Patients that use health monitoring solutions to share monitoring data with health and care professionals to support remote delivery of care and increase self-care outside of clinical settings.", SourceUrl = $"{gpitFuturesBaseUrl}1391134248/Telehealth", CategoryId = 1 },
+                new Capability { Id = new Guid("1E82CC7C-87C7-4379-B86F-CF36C59D1A46"), CapabilityRef = "C19", Name = "Unstructured Data Extraction", Description = "Enables automated and manual interpretation and extraction of structured data from paper documents and unstructured electronic documents to support their classification and matching with Patient Records.", SourceUrl = $"{gpitFuturesBaseUrl}1391133668/Unstructured+Data+Extractio", CategoryId = 1 },
+                new Capability { Id = new Guid("9D325DEC-6E5B-44E4-876B-EACF6CD41B3E"), CapabilityRef = "C20", Name = "Workflow", Description = "Supports manual and automated management of work in the Practice. Also supports effective planning, tracking, monitoring and reporting.", SourceUrl = $"{gpitFuturesBaseUrl}1391134020/Workflow", CategoryId = 1 },
+                new Capability { Id = new Guid("1C552148-6EA8-4D82-84EB-E660622A1741"), CapabilityRef = "C21", Name = "Care Homes", Description = "Enables a record of the Resident's health and care needs to be maintained and shared with parties who are involved in providing care, to support decision making and the effective planning and delivery of care.", SourceUrl = $"{gpitFuturesBaseUrl}1391133439/Care+Homes", CategoryId = 1 },
+                new Capability { Id = new Guid("12B3AD26-487E-43B1-9D58-264C3C359BC6"), CapabilityRef = "C22", Name = "Caseload Management", Description = "Supports the allocation of appropriate Health and Care Professionals to Patients/Service Users in need of support, ensuring balanced workloads and the efficient use of staff and other resources.", SourceUrl = $"{gpitFuturesBaseUrl}1391133457/Caseload+Management", CategoryId = 1 },
+                new Capability { Id = new Guid("7547E181-C897-4A01-86D9-09B76AB1C906"), CapabilityRef = "C23", Name = "Cross-organisation Appointment Booking", Description = "Enables appointments to be made available and booked across Organisational boundaries, creating flexibility for Health and Care Professionals and Patients/Service Users.", SourceUrl = $"{gpitFuturesBaseUrl}1391135407/Cross-organisation+Appointment+Booking", CategoryId = 1 },
+                new Capability { Id = new Guid("890AF628-5B84-4176-B3D1-A4ADC65710FE"), CapabilityRef = "C24", Name = "Cross-organisation Workflow Tools", Description = "Supports and automates clinical and business processes across Organisational boundaries to make processes and communication more efficient.", SourceUrl = $"{gpitFuturesBaseUrl}1391133492/Cross-organisation+Workflow+Tools", CategoryId = 1 },
+                new Capability { Id = new Guid("7E8A8D7A-F8CE-4AA5-A3EF-31BBBD39DF40"), CapabilityRef = "C25", Name = "Cross-organisation Workforce Management", Description = "Supports the efficient planning and scheduling of the health and care workforce to ensure that services can be delivered effectively by the right staff.", SourceUrl = $"{gpitFuturesBaseUrl}1391135659/Cross-organisation+Workforce+Management", CategoryId = 1 },
+                new Capability { Id = new Guid("5DB79FF4-FA9C-4DA2-BBFC-8CA40FEC0B43"), CapabilityRef = "C26", Name = "Data Analytics for Integrated and Federated Care", Description = "Supports the analysis of multiple and complex datasets and presentation of the output to enable decision-making, service design and performance management.", SourceUrl = $"{gpitFuturesBaseUrl}1391135590/Data+Analytics+for+Integrated+and+Federated+Care", CategoryId = 1 },
+                new Capability { Id = new Guid("A66765F0-7EB6-400B-8319-FE7FBD86AB47"), CapabilityRef = "C27", Name = "Domiciliary Care", Description = "Enables Service Providers to effectively plan and manage Domiciliary Care services to ensure care needs are met and that Care Workers can manage their schedule.", SourceUrl = $"{gpitFuturesBaseUrl}1391133451/Domiciliary+Care", CategoryId = 1 },
+                new Capability { Id = new Guid("7BE309D9-696F-4B90-A65E-EB16DD5AC4ED"), CapabilityRef = "C29", Name = "e-Consultations (Professional to Professional)", Description = "Enables the communication and sharing of specialist knowledge and advice between Health and Care Professionals to support better care decisions and professional development.", SourceUrl = $"{gpitFuturesBaseUrl}1391135495/e-Consultations+Professional+to+Professional", CategoryId = 1 },
+                new Capability { Id = new Guid("8BEE1FF3-84D4-430B-A678-336F57C57387"), CapabilityRef = "C30", Name = "Medicines Optimisation", Description = "Supports clinicians and pharmacists in reviewing a Patient's medication and requesting changes to medication to ensure the Patient is taking the best combination of medicines.", SourceUrl = $"{gpitFuturesBaseUrl}1391133405/Medicines+Optimisatio", CategoryId = 1 },
+                new Capability { Id = new Guid("0766FCF3-79B1-4B2F-A79E-9B09C0249034"), CapabilityRef = "C32", Name = "Personal Health Budget", Description = "Enables a Patient/Service User to set up and manage a Personal Health Budget giving them more choice and control over the management of their identified healthcare and well-being needs.", SourceUrl = $"{gpitFuturesBaseUrl}1391133426/Personal+Health+Budget", CategoryId = 1 },
+                new Capability { Id = new Guid("E5E3BE58-E5EC-4423-85DD-61D88640C22A"), CapabilityRef = "C33", Name = "Personal Health Record", Description = "Enables a Patient/Service User to manage and maintain their own Electronic Health Record and to share that information with relevant Health and Care Professionals.", SourceUrl = $"{gpitFuturesBaseUrl}1391135480/Personal+Health+Record", CategoryId = 1 },
+                new Capability { Id = new Guid("2271B113-5D5D-4899-B259-3046CAEA76ED"), CapabilityRef = "C34", Name = "Population Health Management", Description = "Enables Organisations to accumulate, analyse and report on Patient healthcare data to identify improvement in care and identify and track Patient outcomes.", SourceUrl = $"{gpitFuturesBaseUrl}1391135469/Population+Health+Management", CategoryId = 1 },
+                new Capability { Id = new Guid("12C6A61C-013C-475F-BB0C-2DA5D414C03B"), CapabilityRef = "C35", Name = "Risk Stratification", Description = "Supports Health and Care Professionals by providing trusted models to predict future Patient events, informing interventions to achieve better Patient outcomes.", SourceUrl = $"{gpitFuturesBaseUrl}1391133445/Risk+Stratificatio", CategoryId = 1 },
+                new Capability { Id = new Guid("D1532CA0-EF0C-457C-9CFC-AFFA0FBDF134"), CapabilityRef = "C36", Name = "Shared Care Plans", Description = "Enables the maintenance of a single, shared care plan across multiple Organisations to ensure more co-ordinated working and more efficient management of activities relating to the Patient/Service User's health and care.", SourceUrl = $"{gpitFuturesBaseUrl}1391134486/Shared+Care+Plans", CategoryId = 1 },
+                new Capability { Id = new Guid("1D1B92A4-BD48-4C55-8301-9D1830BCD729"), CapabilityRef = "C37", Name = "Social Prescribing", Description = "Supports the referral of Patients/Service Users to non-clinical services to help address their health and well-being needs.", SourceUrl = $"{gpitFuturesBaseUrl}1391135572/Social+Prescribing", CategoryId = 1 },
+                new Capability { Id = new Guid("188F67DB-49D9-4808-810F-27D9E7703DF6"), CapabilityRef = "C38", Name = "Telecare", Description = "Supports the monitoring of Patients/Service Users or their environment to ensure quick identification and response to any adverse event.", SourceUrl = $"{gpitFuturesBaseUrl}1391135549/Telecare", CategoryId = 1 },
+                new Capability { Id = new Guid("59696227-602A-421D-A883-29E88997AC17"), CapabilityRef = "C39", Name = "Unified Care Record", Description = "Provides a consolidated view to Health and Care Professionals of a Patient/Service User's complete and up-to-date records, sourced from various health and care settings.", SourceUrl = $"{gpitFuturesBaseUrl}1391134504/Unified+Care+Record", CategoryId = 1 },
+                new Capability { Id = new Guid("4CFB2E12-9B05-4F48-AD25-5E8A4A06C6E7"), CapabilityRef = "C40", Name = "Medicines Verification", Description = "Supports compliance with the Falsified Medicines Directive and minimise the risk that falsified medicinal products are supplied to the public.", SourceUrl = $"{gpitFuturesBaseUrl}1391135093/Medicines+Verificatio", CategoryId = 1 },
+                new Capability { Id = new Guid("6E77147D-D2AF-46BD-A2F2-BB4F235DAF3A"), CapabilityRef = "C41", Name = "Productivity", Description = "Supports Patients/Service Users and Health and Care Professionals by delivering improved efficiency or experience related outcomes.", SourceUrl = $"{gpitFuturesBaseUrl}1391135618/Productivity", CategoryId = 1 },
+                new Capability { Id = new Guid("D314DC27-BC65-4ABD-97C5-F9BE478D8A10"), CapabilityRef = "C42", Name = "Dispensing", Description = "Supports the timely and effective dispensing of medical products and appliances to Patients.", SourceUrl = $"{gpitFuturesBaseUrl}1391133465/Dispensing", CategoryId = 1 },
+                new Capability { Id = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), CapabilityRef = "C43", Name = "Online Consultation ", Description = "The Online Consultation Capability allows Patients/Service Users/Proxies to request and receive support relating to healthcare concerns, at a time and place convenient for them. ", SourceUrl = "https://gpitbjss.atlassian.net/wiki/spaces/DFOCVC/pages/2519925022/Online+Consultation ", CategoryId = 3 },
+                new Capability { Id = new Guid("4E07C901-1DA1-43EB-BE45-C89B7DBD9D66"), CapabilityRef = "C44", Name = "Video Consultation ", Description = "The Video Consultation Capability allows Health or Care Professionals to conduct secure live remote video consultations with individual or groups of Patients/Service Users/Proxies ensuring they can receive support relating to healthcare concerns when a Video Consultation is most appropriate. ", SourceUrl = "https://gpitbjss.atlassian.net/wiki/spaces/DFOCVC/pages/2519925030/Video+Consultation", CategoryId = 3 },
+                new Capability { Id = new Guid("151CA7DF-5227-4EBF-9200-93258EFA3735"), CapabilityRef = "C45", Name = "Cohort Identification ", Description = "The Cohort Identification Capability enables the identification of Patient cohorts by identifying Patients that require a COVID-19 vaccination based on nationally defined criteria. ", SourceUrl = $"{covidVaccinationBaseUrl}7918551305/Cohort+Identification", CategoryId = 2 },
+                new Capability { Id = new Guid("53255CB2-C5F6-427B-A18A-D3055E310FD6"), CapabilityRef = "C46", Name = "Appointments Management – COVID-19 Vaccinations ", Description = "The Appointments Management – COVID-19 Vaccinations Capability enables the administration and scheduling of COVID-19 vaccination appointments for Patients. ", SourceUrl = $"{covidVaccinationBaseUrl}7918551324/Appointments+Management+-+COVID-19+Vaccinations", CategoryId = 2 },
+                new Capability { Id = new Guid("EC26D316-4F3D-45B1-BDF5-717D24DAB360"), CapabilityRef = "C47", Name = "Vaccination and Adverse Reaction Recording ", Description = "The Vaccination and Adverse Reaction Recording Capability enables the recording of COVID-19 vaccination and adverse reaction data at the point of care. The Capability also supports the delivery of this data to the Patient's registered GP Practice Foundation Solution and to NHS Digital. ", SourceUrl = $"{covidVaccinationBaseUrl}7918551342/Vaccination+and+Adverse+Reaction+Recording ", CategoryId = 2 },
             };
 
             context.AddRange(capabilities);
@@ -420,14 +735,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new Epic { Id = "C27E7", Name = "Receive notifications relating to Service User", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C27").Id, CompliancyLevelId = 3, Active = true },
                 new Epic { Id = "C27E8", Name = "Reports", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C27").Id, CompliancyLevelId = 3, Active = true },
                 new Epic { Id = "C27E9", Name = "Nominated individuals to view Domiciliary Care schedule", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C27").Id, CompliancyLevelId = 3, Active = true },
-                new Epic { Id = "C28E1", Name = "Patient/Service User requests support", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 1, Active = true },
-                new Epic { Id = "C28E2", Name = "Respond to request for support from Patient/Service User", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 1, Active = true },
-                new Epic { Id = "C28E3", Name = "Patient/Service User makes administrative request", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 3, Active = true },
-                new Epic { Id = "C28E4", Name = "Link requests and responses to Patient/Service User Record", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 3, Active = true },
-                new Epic { Id = "C28E5", Name = "Self-help and signposting", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 3, Active = true },
-                new Epic { Id = "C28E6", Name = "Live Consultation: Patient/Service User and Health and Care Professionals", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 3, Active = true },
-                new Epic { Id = "C28E7", Name = "Group e-Consultations", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 3, Active = true },
-                new Epic { Id = "C28E8", Name = "Reports", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C28").Id, CompliancyLevelId = 3, Active = true },
                 new Epic { Id = "C29E1", Name = "Health or Care Professional requests support", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C29").Id, CompliancyLevelId = 1, Active = true },
                 new Epic { Id = "C29E2", Name = "Respond to request for support from another Health or Care Professional", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C29").Id, CompliancyLevelId = 1, Active = true },
                 new Epic { Id = "C29E3", Name = "Link additional information to a request for support", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C29").Id, CompliancyLevelId = 3, Active = true },
@@ -676,6 +983,53 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             };
             context.AddRange(epics);
 
+            List<FrameworkCapability> frameworkCapabilities = new()
+            {
+                new FrameworkCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("60C2F5B0-B950-44C8-A246-099335A1C816"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("64E5986D-1EBF-4DF0-8219-C150C082CA7B"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("EFD93D25-447B-4CA3-9D78-108D42AFEAE0"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("A71F2BE1-6395-4DB7-828C-D4733B42B5B5"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("0A372F63-ADD4-4529-A6CD-4437C6EF115B"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("4518D3F7-F56D-48F0-9FBE-7FA943F4673B"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("19002612-8D53-4472-82FC-2753B253434C"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("9D805AAD-D43A-480E-9BC0-41A755BAFE2F"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("20B09859-6FC2-404C-B7A4-3830790E63AB"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("E3E4CF8A-22D3-4056-BB5D-10F8E26B9B5E"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("8C384983-774A-45BD-9D4E-6B3C7D3B7323"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("B3F89711-6BD7-42D7-BE5B-BAE2F239EBDD"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("9442DCC4-22DF-494B-8672-B7B4DD077496"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("DD649CC4-A710-4472-98B3-663D9D12A8B7"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("E5521A71-A28E-4BC9-BDDF-599F0A90719D"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("385E00F9-3DE6-4A72-B662-E0405BCECFC8"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("1E82CC7C-87C7-4379-B86F-CF36C59D1A46"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("9D325DEC-6E5B-44E4-876B-EACF6CD41B3E"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("1C552148-6EA8-4D82-84EB-E660622A1741"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("12B3AD26-487E-43B1-9D58-264C3C359BC6"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("7547E181-C897-4A01-86D9-09B76AB1C906"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("890AF628-5B84-4176-B3D1-A4ADC65710FE"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("7E8A8D7A-F8CE-4AA5-A3EF-31BBBD39DF40"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("5DB79FF4-FA9C-4DA2-BBFC-8CA40FEC0B43"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("A66765F0-7EB6-400B-8319-FE7FBD86AB47"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("7BE309D9-696F-4B90-A65E-EB16DD5AC4ED"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("8BEE1FF3-84D4-430B-A678-336F57C57387"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("0766FCF3-79B1-4B2F-A79E-9B09C0249034"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("E5E3BE58-E5EC-4423-85DD-61D88640C22A"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("2271B113-5D5D-4899-B259-3046CAEA76ED"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("12C6A61C-013C-475F-BB0C-2DA5D414C03B"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("D1532CA0-EF0C-457C-9CFC-AFFA0FBDF134"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("1D1B92A4-BD48-4C55-8301-9D1830BCD729"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("188F67DB-49D9-4808-810F-27D9E7703DF6"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("59696227-602A-421D-A883-29E88997AC17"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("4CFB2E12-9B05-4F48-AD25-5E8A4A06C6E7"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("6E77147D-D2AF-46BD-A2F2-BB4F235DAF3A"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("D314DC27-BC65-4ABD-97C5-F9BE478D8A10"), FrameworkId = "NHSDGP001" },
+                new FrameworkCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), FrameworkId = "DFOCVC001" },
+                new FrameworkCapability { CapabilityId = new Guid("4E07C901-1DA1-43EB-BE45-C89B7DBD9D66"), FrameworkId = "DFOCVC001" },
+            };
+            context.AddRange(frameworkCapabilities);
+
             // ProvisioningType
             List<ProvisioningType> provisioningTypes = new()
             {
@@ -724,10 +1078,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     LastUpdatedBy = Guid.Empty,
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
-                    Address = @"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}"
+                    Address = @"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}",
+                    Summary = "About this supplier",
+                    SupplierUrl = "https://www.e2etest.com",
                 }
             };
             context.AddRange(suppliers);
+
+            // Supplier Contacts
+            var supplierContacts = new List<SupplierContact>
+            {
+                new SupplierContact
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    FirstName = "Dave",
+                    LastName = "Smith",
+                    LastUpdated = DateTime.UtcNow,
+                    LastUpdatedBy = Guid.Empty,
+                    PhoneNumber = "00987654321",
+                    SupplierId = "99999"
+                },
+            };
+
+            context.AddRange(supplierContacts);
 
             // TimeUnit
             List<TimeUnit> timeUnits = new()

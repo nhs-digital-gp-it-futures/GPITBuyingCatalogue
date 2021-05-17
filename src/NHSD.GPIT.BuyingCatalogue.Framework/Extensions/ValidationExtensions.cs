@@ -15,5 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             if(string.IsNullOrWhiteSpace(item))
                 throw new ArgumentException("Argument IsNullOrWhiteSpace", name);
         }
+
+        public static void ValidateGuid(this Guid item, string name)
+        {
+            if (item == Guid.Empty)
+                throw new ArgumentException("Agrgument is empty Guid", name);
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         public HostingTypeProfile()
         {
             CreateMap<CatalogueItem, HybridModel>()
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.HybridHostingType,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new HybridHostingType() :
@@ -22,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
             
             CreateMap<CatalogueItem, OnPremiseModel>()
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.OnPremise,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new OnPremise() :
@@ -31,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, PrivateCloudModel>()
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.PrivateCloud,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new PrivateCloud() :
@@ -40,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, PublicCloudModel>()
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.PublicCloud,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new PublicCloud() :

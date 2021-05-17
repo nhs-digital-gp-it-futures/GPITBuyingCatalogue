@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<CatalogueItem, MarketingBaseModel>()
                 .ForMember(dest => dest.BackLink,
-                    opt => opt.MapFrom(src => $"/marketing/supplier/solution/{src.CatalogueItemId}"))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.BackLinkText, opt => opt.MapFrom(src => "Return to all sections"))
                 .ForMember(dest => dest.ClientApplication,
                     opt =>

@@ -6,7 +6,7 @@ using HealthChecks.Network.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions.DependencyInjection;
+using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NUnit.Framework;
 
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
             var builder = mockBuilder.Object;
             builder.AddSmtpHealthCheck(new SmtpSettings());
 
-            healthCheckArguments.Name.Should().Be(HealthCheck.Name);
+            healthCheckArguments.Name.Should().Be(HealthCheck.SmptName);
         }
 
         [Test]

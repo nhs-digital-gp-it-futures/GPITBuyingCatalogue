@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -45,7 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             Assert.Null(model.MobileFirstApproach);
         }
 
-        [Test]
         [TestCase(null, false)]
         [TestCase(false, true)]
         [TestCase(true, true)]        
@@ -58,6 +58,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var model = new MobileFirstApproachModel(catalogueItem);
             
             Assert.AreEqual(expected, model.IsComplete);
+        }
+
+        [TestCase(null, null)]
+        [TestCase("", null)]
+        [TestCase("     ", null)]
+        [TestCase("Yes", true)]
+        [TestCase("YES", true)]
+        [TestCase("No", false)]
+        public static void MobileFirstDesign_DifferentValuesForMobileFirstApproach_ResultAsExpected(
+            string mobileFirstApproach,
+            bool? expected)
+        {
+            var model = new MobileFirstApproachModel {MobileFirstApproach = mobileFirstApproach};
+
+            model.MobileFirstDesign().Should().Be(expected);
         }
     }
 }

@@ -15,10 +15,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class ClientApplicationTypeProfileTests
+    internal class ClientApplicationTypeProfileTests
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<ClientApplicationTypeProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        [OneTimeTearDown]
+        public void CleanUp()
+        {
+            mapper = null;
+        }
+
         [Test]
-        public static void Mappings_Configuration_Valid()
+        public void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
@@ -30,16 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
+        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ClientApplicationTypeProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
             
             var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
 
@@ -58,16 +71,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToBrowserBasedModel_ResultAsExpected(
+        public void Map_CatalogueItemToBrowserBasedModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ClientApplicationTypeProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, BrowserBasedModel>(catalogueItem);
             
@@ -80,16 +88,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToNativeDesktopModel_ResultAsExpected(
+        public void Map_CatalogueItemToNativeDesktopModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ClientApplicationTypeProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, NativeDesktopModel>(catalogueItem);
             
@@ -102,16 +105,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public static void Map_CatalogueItemToNativeMobileModel_ResultAsExpected(
+        public void Map_CatalogueItemToNativeMobileModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
             var clientApplication = 
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ClientApplicationTypeProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
 
             var actual = mapper.Map<CatalogueItem, NativeMobileModel>(catalogueItem);
             
@@ -124,15 +122,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
         
         [Test, CommonAutoData]
-        public static void Map_ClientApplicationTypesModelToClientApplication_ResultAsExpected(
+        public void Map_ClientApplicationTypesModelToClientApplication_ResultAsExpected(
             ClientApplication clientApplication, ClientApplicationTypesModel model)
         {
             var original = clientApplication.CopyObjectToNew();
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ClientApplicationTypeProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
 
             mapper.Map(model, clientApplication);
             

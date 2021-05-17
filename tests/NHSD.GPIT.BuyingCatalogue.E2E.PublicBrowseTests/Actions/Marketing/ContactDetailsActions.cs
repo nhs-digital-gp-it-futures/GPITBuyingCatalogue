@@ -1,4 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Common.Actions;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using OpenQA.Selenium;

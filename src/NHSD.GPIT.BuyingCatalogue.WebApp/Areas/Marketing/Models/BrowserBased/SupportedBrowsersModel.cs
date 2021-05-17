@@ -2,11 +2,18 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
     public class SupportedBrowsersModel : MarketingBaseModel
     {
+        public SupportedBrowserModel[] Browsers { get; set; }
+
+        public string MobileResponsive { get; set; }
+
+        private readonly SupportedBrowserModel[] SupportedBrowsers = ProfileDefaults.SupportedBrowsers;
+
         public SupportedBrowsersModel() : base(null)
         {
         }
@@ -18,17 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
 
-            Browsers = new SupportedBrowserModel[]
-            {
-                new() { BrowserName = "Google Chrome" },
-                new() { BrowserName = "Microsoft Edge" },
-                new() { BrowserName = "Mozilla Firefox" },
-                new() { BrowserName = "Opera" },
-                new() { BrowserName = "Safari" },
-                new() { BrowserName = "Chromium" },
-                new() { BrowserName = "Internet Explorer 11" },
-                new() { BrowserName = "Internet Explorer 10" }
-            };
+            Browsers = SupportedBrowsers;
 
             CheckBrowsers();
 
@@ -40,9 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             ClientApplication?.BrowsersSupported != null && ClientApplication.BrowsersSupported.Any() &&
             ClientApplication.MobileResponsive.HasValue;
 
-        public SupportedBrowserModel[] Browsers { get; set; }
-
-        public string MobileResponsive { get; set; }
 
         private void CheckBrowsers()
         {

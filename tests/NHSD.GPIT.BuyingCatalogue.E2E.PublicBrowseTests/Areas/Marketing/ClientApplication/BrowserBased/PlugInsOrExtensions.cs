@@ -1,61 +1,29 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
 {
-    public sealed class PlugInsOrExtensions : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class PlugInsOrExtensions : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public PlugInsOrExtensions(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/plug-ins-or-extensions")
         {
-            using var context = GetBCContext();
-            var solution = context.Solutions.Single(s => s.Id == "99999-99");
-            solution.ClientApplication = @"{
-                        ""ClientApplicationTypes"": [
-                            ""browser-based""
-                        ],
-                        ""BrowsersSupported"": [],
-                        ""MobileResponsive"": null,
-                        ""Plugins"": null,
-                        ""HardwareRequirements"": null,
-                        ""NativeMobileHardwareRequirements"": null,
-                        ""NativeDesktopHardwareRequirements"": null,
-                        ""AdditionalInformation"": null,
-                        ""MinimumConnectionSpeed"": null,
-                        ""MinimumDesktopResolution"": null,
-                        ""MobileFirstDesign"": null,
-                        ""NativeMobileFirstDesign"": null,
-                        ""MobileOperatingSystems"": null,
-                        ""MobileConnectionDetails"": null,
-                        ""MobileMemoryAndStorage"": null,
-                        ""MobileThirdParty"": {
-                            ""ThirdPartyComponents"": null,
-                            ""DeviceCapabilities"": null
-                        },
-                        ""NativeMobileAdditionalInformation"": null,
-                        ""NativeDesktopOperatingSystemsDescription"": null,
-                        ""NativeDesktopMinimumConnectionSpeed"": null,
-                        ""NativeDesktopThirdParty"": null,
-                        ""NativeDesktopMemoryAndStorage"": null,
-                        ""NativeDesktopAdditionalInformation"": null
-                    }";
-            context.SaveChanges();
-
-            driver.Navigate().Refresh();
         }
 
-        [Theory(Skip = "Error thrown by Automapper when saving page")]
+        [Theory]
         [InlineData("Yes")]
         [InlineData("No")]
         public async Task PlugInsOrExtensions_SelectRadioButton(string label)
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText(label);
-            var additional = MarketingPages.ClientApplicationTypeActions.EnterAdditionalInformation(100);
+            CommonActions.ClickRadioButtonWithText(label);
+            var additional = TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 100);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             string labelConvert = label == "Yes" ? "true" : "false";
 
@@ -64,13 +32,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             clientApplication.Should().ContainEquivalentOf(@$"Plugins"":{{""Required"":{labelConvert},""AdditionalInformation"":""{additional}""}}");
         }
 
-        [Fact(Skip = "Error thrown by Automapper when saving page")]
+        [Fact]
         public void PlugInsOrExtensions_SectionComplete()
         {
-            MarketingPages.ClientApplicationTypeActions.ClickRadioButtonWithText("Yes");
-            MarketingPages.ClientApplicationTypeActions.EnterAdditionalInformation(100);
+            CommonActions.ClickRadioButtonWithText("Yes");
+            TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 100);
 
-            MarketingPages.CommonActions.ClickSave();
+            CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Plug-ins or extensions required").Should().BeTrue();
         }
@@ -78,9 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void PlugInsOrExtensions_SectionIncomplete()
         {
-            MarketingPages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Plug-ins or extensions required").Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            ClearClientApplication("99999-99");
         }
     }
 }

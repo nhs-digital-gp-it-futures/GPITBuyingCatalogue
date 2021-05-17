@@ -8,54 +8,19 @@
         <partial name="Partials/_BackLink" model="Model" />
     </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-            <h1 data-test-id="section-title" class="nhsuk-u-margin-bottom-3">Native mobile or tablet application – mobile first approach</h1>
-            <h2 data-test-id="section-main-advice" class="nhsuk-u-font-size-22">Let buyers know about the design concepts of your Catalogue Solution.</h2>
-            <div data-test-id="section-additional-advice">
-            </div>
-        </div>
-
+        <nhs-validation-summary />
+        <nhs-page-title title="Native mobile or tablet application – mobile first approach"
+                        title-advice="Let buyers know about the design concepts of your Catalogue Solution." />
         <form method="post">
-
             <input type="hidden" asp-for="@Model.SolutionId" />
-
-            <div data-test-id="section-question-radiobutton-options" class="nhsuk-u-margin-bottom-6">
-                <div id="mobile-first-design" data-test-id="question-mobile-first-design">
-                    <div data-test-id="radiobutton-options">
-                        <div class="nhsuk-form-group">
-                            <fieldset class="nhsuk-fieldset" aria-describedby="mobile-first-design-hint">
-                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Mobile first approach
-                                </legend>
-                                <div class="nhsuk-hint nhsuk-u-margin-bottom-3 nhsuk-u-margin-top-0" id="mobile-first-design-hint">
-                                    Is your Catalogue Solution designed with a mobile first approach?
-                                </div>
-                                <div class="nhsuk-radios">
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" asp-for="@Model.MobileFirstApproach" type="radio" value="Yes">
-                                        <label class="nhsuk-label nhsuk-radios__label" asp-for="@Model.MobileFirstApproach">
-                                            Yes
-                                        </label>
-                                    </div>
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" asp-for="@Model.MobileFirstApproach" type="radio" value="No">
-                                        <label class="nhsuk-label nhsuk-radios__label" asp-for="@Model.MobileFirstApproach">
-                                            No
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div data-test-id="section-submit-button" class="nhsuk-u-margin-top-7">
-                <button class="nhsuk-button" type="submit">
-                    Save and return
-                </button>
-            </div>
-
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <nhs-fieldset-form asp-for="@Model"
+                               label-text="Mobile first approach"
+                               label-hint="Is your Catalogue Solution designed with a mobile first approach?">
+                <nhs-radio-buttons asp-for="MobileFirstApproach"
+                                   is-yes-no="true" />
+            </nhs-fieldset-form>
+            <nhs-submit-button />
         </form>
     </div>
 </div>

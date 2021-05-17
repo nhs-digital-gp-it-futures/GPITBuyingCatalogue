@@ -7,11 +7,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogWrapper<HomeController> _logger;
+        private readonly ILogWrapper<HomeController> _logger;        
 
         public HomeController(ILogWrapper<HomeController> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));            
         }
 
         public IActionResult Index()
@@ -21,12 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return View();
         }
 
-#if DEBUG
         public IActionResult TestLinks()
         {
             return View();
         }
-#endif
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode)

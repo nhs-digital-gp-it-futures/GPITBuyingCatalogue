@@ -70,8 +70,8 @@ jobs:
     inputs:
       dockerVersion: $(dockerVersion)
     
-  - script: docker-compose up --build -d
-    displayName: 'Docker up'
+  # - script: docker-compose up --build -d
+  #   displayName: 'Docker up'
 
   - task: DotNetCoreCLI@2
     displayName: 'Run integration tests'
@@ -132,3 +132,20 @@ jobs:
       includeSourceTags: true
       includeLatestTag: true
 
+- job: createBuildArtifact
+  displayName: Create Build Artifact
+  dependsOn: dockerBuildAndPush
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+        
+  steps:
+  - task: CopyFiles@2
+    displayName: Build Artifact - Code
+    inputs:
+      SourceFolder: 'terraform'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/terraform'
+      CleanTargetFolder: false
+      OverWrite: true
+
+  - publish: $(build.artifactStagingDirectory)
+    artifact: build-artifact 

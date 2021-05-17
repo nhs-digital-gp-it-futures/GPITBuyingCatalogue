@@ -19,11 +19,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                             .With(ca => ca.BrowsersSupported, new HashSet<string>
                                 {"Internet Explorer 11", "Google Chrome", "OPERA", "safari", "mozilla firefox"})
                             .With(ca => ca.ClientApplicationTypes, GetClientApplicationTypes())
+                            .With(ca => ca.MobileConnectionDetails, fixture.Build<MobileConnectionDetails>()
+                                .With(m => m.ConnectionType, new HashSet<string>
+                                {
+                                    "5g",
+                                    "lte",
+                                    "GpRS",
+                                    "wifi"
+                                })
+                                .Create())
+                            .With(ca => ca.MobileOperatingSystems, fixture.Build<MobileOperatingSystems>()
+                                .With(m => m.OperatingSystems, new HashSet<string>
+                                {
+                                    "andrOID",
+                                    "Apple ios",
+                                }).Create())
                             .Create()
                     ))
                     .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>())));
         }
-
+        
         private static HashSet<string> GetClientApplicationTypes()
         {
             var result = new HashSet<string>();
