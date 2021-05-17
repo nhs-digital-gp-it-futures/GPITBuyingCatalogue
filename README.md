@@ -1,7 +1,4 @@
 # GPITBuyingCatalogue
-<<<<<<< HEAD
-ASP.NET Core Buying Catalogue Web Application.
-=======
 ASP.NET Core Buying Catalogue Web Application 
 
 This repository contains a revised architecture for the Buying Catalogue.
@@ -54,4 +51,3 @@ You can also simply open the solution in Visual Studio and run/debug NHSD.GPIT.B
 
 The `dacpac` deployment takes a few seconds to initialize and complete so it is not unusual for there to be a slight delay between SQL server initializing and the database being ready for use; upon completion `<DB Name> database setup complete` is logged to the console.
 
->>>>>>> 3aaddbc9ea8219b41c6e086cc0b67a259c5d3731
