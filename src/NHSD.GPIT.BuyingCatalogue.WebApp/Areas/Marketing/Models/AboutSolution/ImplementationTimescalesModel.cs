@@ -6,16 +6,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
     public class ImplementationTimescalesModel : MarketingBaseModel
     {
-        public ImplementationTimescalesModel() : base(null)
+        public ImplementationTimescalesModel()
+            : base(null)
         {
         }
 
-        public ImplementationTimescalesModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public ImplementationTimescalesModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
             Description = CatalogueItem.Solution.ImplementationDetail;
         }
 

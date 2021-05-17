@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 using NUnit.Framework;
@@ -17,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
     {
         private const string KeyIncomplete = "INCOMPLETE";
 
-        private static object[] ResultSets =
+        private static readonly object[] ResultSets =
         {
             new object[]{null, KeyIncomplete},
             new object[]{false, KeyIncomplete},
@@ -30,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             Assert.Throws<ArgumentNullException>(() => _ = new NativeMobileModel(null))
                 .ParamName.Should().Be("catalogueItem");
         }
-        
+
         [TestCase(false, KeyIncomplete)]
         [TestCase(true, "COMPLETE")]
         public static void AdditionalInformationStatus_Various_NativeMobileAdditionalInformationComplete_ResultAsExpected(

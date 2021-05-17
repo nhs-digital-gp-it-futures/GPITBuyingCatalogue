@@ -1,6 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using OpenQA.Selenium;
-using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {

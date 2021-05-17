@@ -13,8 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
         }
 
         public Guid PricingUnitId { get; set; }
+
         public string Name { get; set; }
+
         public string TierName { get; set; }
+
         public string Description { get; set; }
 
         public virtual ICollection<CataloguePrice> CataloguePrices { get; set; }

@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
         {
         }
 
-        private Result(bool isSuccess, IEnumerable<ErrorDetails>? errors)
+        private Result(bool isSuccess, IEnumerable<ErrorDetails> errors)
         {
             IsSuccess = isSuccess;
             Errors = new ReadOnlyCollection<ErrorDetails>(errors?.ToList() ?? new List<ErrorDetails>());
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
             return new(false, errors, default!);
         }
 
-        public bool Equals(Result? other)
+        public bool Equals(Result other)
         {
             if (other is null)
                 return false;
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
                 && AreErrorsEqual(Errors, other.Errors);
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as Result);
         }
@@ -83,5 +83,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
         {
             return first.SequenceEqual(second);
         }
-    }        
+    }
 }

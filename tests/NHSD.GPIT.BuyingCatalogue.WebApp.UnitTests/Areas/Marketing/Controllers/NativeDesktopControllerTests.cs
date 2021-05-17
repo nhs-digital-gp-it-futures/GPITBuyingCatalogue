@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class NativeDesktopControllerTests
     {
-        private static string[] InvalidStrings = {null, string.Empty, "    "};
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void ClassIsCorrectlyDecorated()
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         null))
                 .ParamName.Should().Be("solutionsService");
         }
-        
+
         [Test]
         public static void Get_AdditionalInformation_HttpGetAttribute_ExpectedTemplate()
         {
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"additional-information-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_AdditionalInformation_ModelNull_ThrowsException()
+        public static void Post_AdditionalInformation_ModelNull_ThrowsException()
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Connectivity(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"connectivity-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -376,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_Connectivity_ModelNull_ThrowsException()
+        public static void Post_Connectivity_ModelNull_ThrowsException()
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -492,7 +492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
         }
-        
+
         [Test]
         public static void Get_HardwareRequirements_HttpGetAttribute_ExpectedTemplate()
         {
@@ -513,7 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"hardware-requirments-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -593,7 +593,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_HardwareRequirements_ModelNull_ThrowsException()
+        public static void Post_HardwareRequirements_ModelNull_ThrowsException()
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -709,7 +709,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
         }
-        
+
         [Test]
         public static void Get_MemoryAndStorage_HttpGetAttribute_ExpectedTemplate()
         {
@@ -730,7 +730,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.MemoryAndStorage(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"memory-and-storage-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -796,7 +796,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockMemoryAndStorageModel);
         }
-        
+
         [Test]
         public static void Post_MemoryAndStorage_HttpPostAttribute_ExpectedTemplate()
         {
@@ -810,7 +810,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_MemoryAndStorage_ModelNull_ThrowsException()
+        public static void Post_MemoryAndStorage_ModelNull_ThrowsException()
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -930,7 +930,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
         }
-        
+
         [Test]
         public static void Get_OperatingSystems_HttpGetAttribute_ExpectedTemplate()
         {
@@ -951,7 +951,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.OperatingSystems(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"operating-systems-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -1031,7 +1031,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_OperatingSystems_ModelNull_ThrowsException()
+        public static void Post_OperatingSystems_ModelNull_ThrowsException()
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
@@ -1166,7 +1166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ThirdParty(id))
-                .Message.Should().Be("id");
+                .Message.Should().Be($"third-party-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -1232,7 +1232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockThirdPartyModel);
         }
-        
+
         [Test]
         public static void Post_ThirdParty_HttpPostAttribute_ExpectedTemplate()
         {
@@ -1246,7 +1246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_ThirdParty_ModelNull_ThrowsException()
+        public static void Post_ThirdParty_ModelNull_ThrowsException()
         {
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());

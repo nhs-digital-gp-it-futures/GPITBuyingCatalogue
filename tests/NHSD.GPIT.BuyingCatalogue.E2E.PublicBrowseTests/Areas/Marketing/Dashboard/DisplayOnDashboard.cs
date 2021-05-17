@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard

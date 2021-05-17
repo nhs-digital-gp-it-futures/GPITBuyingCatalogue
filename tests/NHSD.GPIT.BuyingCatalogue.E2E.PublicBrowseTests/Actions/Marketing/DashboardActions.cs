@@ -1,9 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+﻿using System;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Extensions;
 using OpenQA.Selenium;
-using System;
-using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 {

@@ -23,12 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         {
             var clientApplication = new ClientApplication { MobileFirstDesign = true };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { ClientApplication = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { ClientApplication = json }
+            };
+
             var model = new MobileFirstApproachModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
@@ -48,15 +48,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         [Test]
         [TestCase(null, false)]
         [TestCase(false, true)]
-        [TestCase(true, true)]        
-        public static void IsCompleteIsCorrectlySet(bool? mobileFirstDesign, bool? expected )
+        [TestCase(true, true)]
+        public static void IsCompleteIsCorrectlySet(bool? mobileFirstDesign, bool? expected)
         {
-            var clientApplication = new ClientApplication { MobileFirstDesign = mobileFirstDesign};
+            var clientApplication = new ClientApplication { MobileFirstDesign = mobileFirstDesign };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
             var model = new MobileFirstApproachModel(catalogueItem);
-            
+
             Assert.AreEqual(expected, model.IsComplete);
         }
     }

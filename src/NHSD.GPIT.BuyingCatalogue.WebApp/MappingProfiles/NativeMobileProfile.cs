@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -96,7 +95,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.MapFrom(
                         (_, dest) => dest.ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription);
                 })
-                .ForMember(dest => dest.OperatingSystems,
+                .ForMember(
+                    dest => dest.OperatingSystems,
                     opt => opt.MapFrom(src => ProfileDefaults.SupportedOperatingSystems))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>()
                 .AfterMap((_, dest) =>

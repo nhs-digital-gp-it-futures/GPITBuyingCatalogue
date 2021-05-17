@@ -6,11 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
     public class MobileFirstApproachModel : MarketingBaseModel
     {
-        public MobileFirstApproachModel() : base(null)
+        public MobileFirstApproachModel()
+            : base(null)
         {
         }
 
-        public MobileFirstApproachModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public MobileFirstApproachModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));

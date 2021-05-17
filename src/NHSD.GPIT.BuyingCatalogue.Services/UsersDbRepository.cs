@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -12,33 +12,35 @@ using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
     [ExcludeFromCodeCoverage]
-    public class UsersDbRepository<T> : UsersDbRepositoryBase<T> where T : class
+    public class UsersDbRepository<T> : UsersDbRepositoryBase<T>
+        where T : class
     {
-        private readonly ILogWrapper<SolutionsService> _logger;
-        private readonly DbSet<T> _dbSet;
+        private readonly ILogWrapper<SolutionsService> logger;
+        private readonly DbSet<T> dbSet;
 
-        public UsersDbRepository(ILogWrapper<SolutionsService> logger, UsersDbContext dbContext) : base(dbContext)
+        public UsersDbRepository(ILogWrapper<SolutionsService> logger, UsersDbContext dbContext)
+            : base(dbContext)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _dbSet = dbContext.Set<T>();
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            dbSet = dbContext.Set<T>();
         }
 
-        public override void Add(T item) => _dbSet.Add(item);
+        public override void Add(T item) => dbSet.Add(item);
 
         public override void AddAll(IList<T> items)
         {
             foreach (var item in items)
             {
-                _dbSet.Add(item);
+                dbSet.Add(item);
             }
         }
 
         public override async Task<T[]> GetAllAsync(Expression<Func<T, bool>> predicate) =>
-            await _dbSet.Where(predicate).ToArrayAsync();
+            await dbSet.Where(predicate).ToArrayAsync();
 
         public override async Task<T> SingleAsync(Expression<Func<T, bool>> predicate) =>
-            await _dbSet.SingleAsync(predicate);
+            await dbSet.SingleAsync(predicate);
 
-        public override void Remove(T item) => _dbSet.Remove(item);
+        public override void Remove(T item) => dbSet.Remove(item);
     }
 }

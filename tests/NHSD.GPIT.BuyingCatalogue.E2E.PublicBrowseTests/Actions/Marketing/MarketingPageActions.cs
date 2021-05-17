@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
         public MarketingPageActions(IWebDriver driver)
         {
             PageActions = new ActionCollection
-            { 
+            {
                 ContactDetailsActions = new(driver),
                 DashboardActions = new(driver),
                 FeaturesActions = new(driver),

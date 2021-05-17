@@ -10,55 +10,57 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Area("Solutions")]
     public class SolutionDetailsController : Controller
     {
-        private readonly ILogWrapper<SolutionDetailsController> _logger;
-        private readonly ISolutionsService _solutionsService;
+        private readonly ILogWrapper<SolutionDetailsController> logger;
+        private readonly ISolutionsService solutionsService;
 
         public SolutionDetailsController(ILogWrapper<SolutionDetailsController> logger, ISolutionsService solutionsService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
-    
+
         [Route("solutions/futures/{id}")]
-        public async Task <IActionResult> SolutionDetail(string id)
+        public async Task<IActionResult> SolutionDetail(string id)
         {
-            var solution = await _solutionsService.GetSolution(id);
-            
+            var solution = await solutionsService.GetSolution(id);
+
             return View(new SolutionDetailModel(solution));
         }
 
         [Route("solutions/futures/foundation/{id}")]
         public async Task<IActionResult> FoundationSolutionDetail(string id)
         {
-            var solution = await _solutionsService.GetSolution(id);
-            
+            var solution = await solutionsService.GetSolution(id);
+
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
 
         [Route("solutions/dfocvc/{id}")]
         public async Task<IActionResult> DVOCVCSolutionDetail(string id)
         {
-            var solution = await _solutionsService.GetSolution(id);
-            
+            var solution = await solutionsService.GetSolution(id);
+
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
 
         [Route("solutions/vaccinations/{id}")]
         public async Task<IActionResult> VaccinationsSolutionDetail(string id)
         {
-            var solution = await _solutionsService.GetSolution(id);
-            
+            var solution = await solutionsService.GetSolution(id);
+
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
 
         [Route("solutions/preview/{id}")]
         public async Task<IActionResult> PreviewSolutionDetail(string id)
         {
-            var solution = await _solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolution(id);
 
-            var model = new SolutionDetailModel(solution);
-            model.BackLink = $"/marketing/supplier/solution/{id}";
-            
+            var model = new SolutionDetailModel(solution)
+            {
+                BackLink = $"/marketing/supplier/solution/{id}",
+            };
+
             return View("SolutionDetail", model);
         }
     }

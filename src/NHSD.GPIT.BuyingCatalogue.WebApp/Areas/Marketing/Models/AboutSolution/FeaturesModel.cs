@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
@@ -8,15 +7,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
 {
     public class FeaturesModel : MarketingBaseModel
     {
-        public FeaturesModel() : base(null)
+        public FeaturesModel()
+            : base(null)
         {
         }
-        public FeaturesModel(CatalogueItem catalogueItem) : base (catalogueItem)
+
+        public FeaturesModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";            
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
 
             var features = CatalogueItem.Solution.GetFeatures();
             Listing1 = features.Length > 0 ? features[0] : string.Empty;
@@ -31,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             Listing10 = features.Length > 9 ? features[9] : string.Empty;
         }
 
-        public override bool? IsComplete => 
+        public override bool? IsComplete =>
             !string.IsNullOrEmpty(Listing1) ||
             !string.IsNullOrEmpty(Listing2) ||
             !string.IsNullOrEmpty(Listing3) ||

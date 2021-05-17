@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var result = value.ToStatus();
             Assert.AreEqual(result, expected);
         }
-        
+
         [TestCase(null, "No")]
         [TestCase(true, "Yes")]
         [TestCase(false, "No")]

@@ -21,17 +21,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [Test]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
-            var clientApplication = new ClientApplication 
+            var clientApplication = new ClientApplication
             {
                 MobileThirdParty = new MobileThirdParty { ThirdPartyComponents = "Third party components", DeviceCapabilities = "Device capabilities" }
             };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { ClientApplication = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { ClientApplication = json }
+            };
+
             var model = new ThirdPartyModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase(null, " ", false)]
         [TestCase("Third party", null, true)]
         [TestCase(null, "Device capability", true)]
-        public static void IsCompleteIsCorrectlySet(string thirdPary, string deviceCapabilities, bool? expected )
+        public static void IsCompleteIsCorrectlySet(string thirdPary, string deviceCapabilities, bool? expected)
         {
             var clientApplication = new ClientApplication
             {
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
             var model = new ThirdPartyModel(catalogueItem);
-            
+
             Assert.AreEqual(expected, model.IsComplete);
         }
     }

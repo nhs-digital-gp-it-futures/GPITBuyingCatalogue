@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -28,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             {
                 MobileOperatingSystems = new MobileOperatingSystems
                 {
-                    OperatingSystems = new HashSet<string> { "Android", "Other" },                     
-                    OperatingSystemsDescription = "A description"                    
+                    OperatingSystems = new HashSet<string> { "Android", "Other" },
+                    OperatingSystemsDescription = "A description"
                 }
             };
             var json = JsonConvert.SerializeObject(clientApplication);
@@ -42,10 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var model = new OperatingSystemsModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
-            
+
             Assert.True(model.OperatingSystems.Single(x => x.OperatingSystemName == "Android").Checked);
             Assert.True(model.OperatingSystems.Single(x => x.OperatingSystemName == "Other").Checked);
-            Assert.False(model.OperatingSystems.Single(x => x.OperatingSystemName == "Apple IOS").Checked);            
+            Assert.False(model.OperatingSystems.Single(x => x.OperatingSystemName == "Apple IOS").Checked);
         }
 
         [Test]

@@ -13,30 +13,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Route("marketing/supplier/solution/{id}/section")]
     public class AboutSolutionController : Controller
     {
-        private readonly ILogWrapper<AboutSolutionController> _logger;
-        private readonly IMapper _mapper;
-        private readonly ISolutionsService _solutionsService;
+        private readonly ILogWrapper<AboutSolutionController> logger;
+        private readonly IMapper mapper;
+        private readonly ISolutionsService solutionsService;
 
-        public AboutSolutionController(ILogWrapper<AboutSolutionController> logger,
+        public AboutSolutionController(
+            ILogWrapper<AboutSolutionController> logger,
             IMapper mapper,
             ISolutionsService solutionsService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
-        
+
         [HttpGet("features")]
         public async Task<IActionResult> Features(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException($"Features-{nameof(id)}");
 
-            var solution = await _solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
-            
-            return View(_mapper.Map<CatalogueItem, FeaturesModel>(solution));
+
+            return View(mapper.Map<CatalogueItem, FeaturesModel>(solution));
         }
 
         [HttpPost("features")]
@@ -48,23 +49,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var features = _mapper.Map<FeaturesModel, string[]>(model);
-            await _solutionsService.SaveSolutionFeatures(model.SolutionId, features);
+            var features = mapper.Map<FeaturesModel, string[]>(model);
+            await solutionsService.SaveSolutionFeatures(model.SolutionId, features);
 
             return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
         }
-        
+
         [HttpGet("implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException($"implementation-timescales-{nameof(id)}");
 
-            var solution = await _solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
-            
-            return View(_mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
+
+            return View(mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
         }
 
         [HttpPost("implementation-timescales")]
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await _solutionsService.SaveImplementationDetail(model.SolutionId, model.Description);
+            await solutionsService.SaveImplementationDetail(model.SolutionId, model.Description);
 
             return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
         }
@@ -85,13 +86,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> Integrations(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException($"integrations-{nameof(id)}");
 
-            var solution = await _solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
-            
-            return View(_mapper.Map<CatalogueItem, IntegrationsModel>(solution));
+
+            return View(mapper.Map<CatalogueItem, IntegrationsModel>(solution));
         }
 
         [HttpPost("integrations")]
@@ -103,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await _solutionsService.SaveIntegrationLink(model.SolutionId, model.Link);
+            await solutionsService.SaveIntegrationLink(model.SolutionId, model.Link);
 
             return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
         }
@@ -112,13 +113,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         public async Task<IActionResult> Roadmap(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException($"roadmap-{nameof(id)}");
 
-            var solution = await _solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
-            
-            return View(_mapper.Map<CatalogueItem, RoadmapModel>(solution));
+
+            return View(mapper.Map<CatalogueItem, RoadmapModel>(solution));
         }
 
         [HttpPost("roadmap")]
@@ -130,22 +131,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await _solutionsService.SaveRoadmap(model.SolutionId, model.Summary);
+            await solutionsService.SaveRoadmap(model.SolutionId, model.Summary);
 
             return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
         }
-        
+
         [HttpGet("solution-description")]
         public async Task<IActionResult> SolutionDescription(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException(nameof(id));
+                throw new ArgumentException($"solution-description-{nameof(id)}");
 
-            var solution = await _solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
-            
-            return View(_mapper.Map<CatalogueItem, SolutionDescriptionModel>(solution));
+
+            return View(mapper.Map<CatalogueItem, SolutionDescriptionModel>(solution));
         }
 
         [HttpPost("solution-description")]
@@ -159,7 +160,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
             }
 
-            await _solutionsService.SaveSolutionDescription(model.SolutionId, model.Summary, model.Description,
+            await solutionsService.SaveSolutionDescription(
+                model.SolutionId,
+                model.Summary,
+                model.Description,
                 model.Link);
 
             return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });

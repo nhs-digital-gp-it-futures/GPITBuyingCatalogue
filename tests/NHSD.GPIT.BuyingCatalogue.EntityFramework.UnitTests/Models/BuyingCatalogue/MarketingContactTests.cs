@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
     public class MarketingContactTests
     {
         private static readonly Fixture Fixture = new();
-        
+
         [Test]
         public static void IsEmpty_AllRequiredPropertiesEmpty_ReturnsTrue()
         {
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Test]
         public static void IsEmpty_HasFirstName_ReturnsFalse()
         {
-            var marketingContact = new MarketingContact{ FirstName = Fixture.Create<string>(), };
+            var marketingContact = new MarketingContact { FirstName = Fixture.Create<string>(), };
 
             marketingContact.IsEmpty().Should().BeFalse();
         }
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Test]
         public static void IsEmpty_HasLastName_ReturnsFalse()
         {
-            var marketingContact = new MarketingContact{ LastName = Fixture.Create<string>(), };
+            var marketingContact = new MarketingContact { LastName = Fixture.Create<string>(), };
 
             marketingContact.IsEmpty().Should().BeFalse();
         }
@@ -41,15 +41,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Test]
         public static void IsEmpty_HasDepartment_ReturnsFalse()
         {
-            var marketingContact = new MarketingContact{ Department = Fixture.Create<string>(), };
+            var marketingContact = new MarketingContact { Department = Fixture.Create<string>(), };
 
             marketingContact.IsEmpty().Should().BeFalse();
         }
-        
+
         [Test]
         public static void IsEmpty_HasEmail_ReturnsFalse()
         {
-            var marketingContact = new MarketingContact{ Email = Fixture.Create<string>(), };
+            var marketingContact = new MarketingContact { Email = Fixture.Create<string>(), };
 
             marketingContact.IsEmpty().Should().BeFalse();
         }
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Test]
         public static void IsEmpty_HasPhoneNumber_ReturnsFalse()
         {
-            var marketingContact = new MarketingContact{ PhoneNumber = Fixture.Create<string>(), };
+            var marketingContact = new MarketingContact { PhoneNumber = Fixture.Create<string>(), };
 
             marketingContact.IsEmpty().Should().BeFalse();
         }
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         public static void UpdateFrom_ValidContactInput_UpdatesProperties(MarketingContact marketingContact)
         {
             var newContact = new MarketingContact();
-            
+
             newContact.UpdateFrom(marketingContact);
 
             newContact.Department.Should().Be(marketingContact.Department);
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Test]
         public static void NewAndValid_DefaultIdAndNotEmptyContact_ReturnsTrue()
         {
-            var mockMarketingContact = new Mock<MarketingContact>{ CallBase = true, };
+            var mockMarketingContact = new Mock<MarketingContact> { CallBase = true, };
             mockMarketingContact.Setup(x => x.IsEmpty())
                 .Returns(false);
             mockMarketingContact.Object.Id.Should().Be(default);
@@ -97,22 +97,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Test]
         public static void NewAndValid_IdNotDefault_ReturnsFalse()
         {
-            var marketingContact = new MarketingContact {Id = 88};
+            var marketingContact = new MarketingContact { Id = 88 };
             marketingContact.IsEmpty().Should().BeTrue();
 
             marketingContact.NewAndValid().Should().BeFalse();
         }
-        
+
         [Test]
         public static void NewAndValid_IdNotDefault_EmptyContact_ReturnsFalse()
         {
-            var mockMarketingContact = new Mock<MarketingContact>{ CallBase = true, };
+            var mockMarketingContact = new Mock<MarketingContact> { CallBase = true, };
             mockMarketingContact.Setup(x => x.IsEmpty())
                 .Returns(true);
             mockMarketingContact.Object.Id = 77;
 
             mockMarketingContact.Object.NewAndValid().Should().BeFalse();
         }
-
     }
 }

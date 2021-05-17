@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class BrowserBasedControllerTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void ClassIsCorrectlyDecorated()
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 _ = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<IMapper>(),
                     null));
         }
-        
+
         [Test]
         public static void Get_AdditionalInformation_HttpGetAttribute_ExpectedTemplate()
         {
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_AdditionalInformation_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id));
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_AdditionalInformation_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id);
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_AdditionalInformation_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockAdditionalInformationModel);
         }
-        
+
         [Test]
         public static void Post_AdditionalInformation_HttpPostAttribute_ExpectedTemplate()
         {
@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             actual.ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_AdditionalInformation_InvalidModel_ReturnsViewWithModel()
         {
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(model);
-            
+
             mockService.Verify(x => x.GetClientApplication(model.SolutionId));
         }
 
@@ -204,11 +204,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.AdditionalInformation(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_AdditionalInformation_ValidModel_MapsModelToClientApplication(
             AdditionalInformationModel model)
@@ -251,13 +251,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.AdditionalInformation(model)).As<RedirectResult>();
 
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
         }
-        
+
         [Test]
         public static void Get_ConnectivityAndResolution_HttpGetAttribute_ExpectedTemplate()
         {
@@ -274,7 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_ConnectivityAndResolution_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ConnectivityAndResolution(id));
@@ -284,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_ConnectivityAndResolution_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ConnectivityAndResolution(id);
@@ -306,7 +306,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_ConnectivityAndResolution_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -343,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockConnectivityAndResolutionModel);
         }
-        
+
         [Test]
         public static void Post_ConnectivityAndResolution_HttpPostAttribute_ExpectedTemplate()
         {
@@ -367,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             actual.ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_ConnectivityAndResolution_InvalidModel_ReturnsViewWithModel()
         {
@@ -392,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ConnectivityAndResolution(model);
-            
+
             mockService.Verify(x => x.GetClientApplication(model.SolutionId));
         }
 
@@ -407,11 +407,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.ConnectivityAndResolution(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_ConnectivityAndResolution_ValidModel_MapsModelToClientApplication(
             ConnectivityAndResolutionModel model)
@@ -455,13 +455,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.ConnectivityAndResolution(model)).As<RedirectResult>();
 
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
         }
-        
+
         [Test]
         public static void Get_HardwareRequirements_HttpGetAttribute_ExpectedTemplate()
         {
@@ -478,7 +478,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_HardwareRequirements_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id));
@@ -488,7 +488,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_HardwareRequirements_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id);
@@ -510,7 +510,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_HardwareRequirements_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -547,7 +547,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockHardwareRequirementsModel);
         }
-        
+
         [Test]
         public static void Post_HardwareRequirements_HttpPostAttribute_ExpectedTemplate()
         {
@@ -571,7 +571,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             actual.ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_HardwareRequirements_InvalidModel_ReturnsViewWithModel()
         {
@@ -596,7 +596,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(model);
-            
+
             mockService.Verify(x => x.GetClientApplication(model.SolutionId));
         }
 
@@ -611,11 +611,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.HardwareRequirements(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_HardwareRequirements_ValidModel_MapsModelToClientApplication(
             HardwareRequirementsModel model)
@@ -658,7 +658,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.HardwareRequirements(model)).As<RedirectResult>();
 
             actual.Should().NotBeNull();
@@ -681,7 +681,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_SupportedBrowsers_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.SupportedBrowsers(id));
@@ -691,7 +691,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_SupportedBrowsers_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.SupportedBrowsers(id);
@@ -713,7 +713,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_SupportedBrowsers_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -774,7 +774,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             actual.ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_SupportedBrowsers_InvalidModel_ReturnsViewWithModel()
         {
@@ -799,7 +799,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.SupportedBrowsers(model);
-            
+
             mockService.Verify(x => x.GetClientApplication(model.SolutionId));
         }
 
@@ -814,11 +814,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.SupportedBrowsers(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_SupportedBrowsers_ValidModel_MapsModelToClientApplication(
             SupportedBrowsersModel model)
@@ -862,13 +862,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.SupportedBrowsers(model)).As<RedirectResult>();
 
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
         }
-        
+
         [Test]
         public static void Get_MobileFirstApproach_HttpGetAttribute_ExpectedTemplate()
         {
@@ -880,7 +880,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Template
                 .Should().Be("mobile-first-approach");
         }
-        
+
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedMobileFirstApproach_InvalidId_ThrowsException(string id)
@@ -899,7 +899,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(id);
-            
+
             mockService.Verify(x => x.GetSolution(id));
         }
 
@@ -917,7 +917,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_MobileFirstApproach_ServiceResponseValid_MapsToModel(
             string id)
@@ -931,10 +931,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 mockMapper.Object, mockService.Object);
 
             await controller.MobileFirstApproach(id);
-        
+
             mockMapper.Verify(x => x.Map<CatalogueItem, MobileFirstApproachModel>(mockCatalogueItem));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_MobileFirstApproach_ServiceResponseValid_ReturnsExpectedView(
             string id)
@@ -967,7 +967,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Template
                 .Should().Be("mobile-first-approach");
         }
-        
+
         [Test]
         public static void Post_MobileFirstApproach_NullModel_ThrowsException()
         {
@@ -979,7 +979,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             actual.ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_MobileFirstApproach_InvalidModel_ReturnsViewWithModel()
         {
@@ -1004,7 +1004,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(model);
-            
+
             mockService.Verify(x => x.GetClientApplication(model.SolutionId));
         }
 
@@ -1019,11 +1019,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MobileFirstApproach(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_MobileFirstApproach_ValidModel_MapsModelToClientApplication(
             MobileFirstApproachModel model, bool? mobileFirstApproach)
@@ -1070,13 +1070,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.MobileFirstApproach(model)).As<RedirectResult>();
 
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
         }
-        
+
         [Test]
         public static void Get_PlugInsOrExtensions_HttpGetAttribute_ExpectedTemplate()
         {
@@ -1088,7 +1088,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Template
                 .Should().Be("plug-ins-or-extensions");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_PlugInsOrExtensions_ValidId_GetsSolutionFromService(string id)
         {
@@ -1097,7 +1097,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PlugInsOrExtensions(id);
-            
+
             mockService.Verify(x => x.GetSolution(id));
         }
 
@@ -1115,7 +1115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_PlugInsOrExtensions_ServiceResponseValid_MapsToModel(
             string id)
@@ -1129,10 +1129,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 mockMapper.Object, mockService.Object);
 
             await controller.PlugInsOrExtensions(id);
-        
+
             mockMapper.Verify(x => x.Map<CatalogueItem, PlugInsOrExtensionsModel>(mockCatalogueItem));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_PlugInsOrExtensions_ServiceResponseValid_ReturnsExpectedView(
             string id)
@@ -1158,12 +1158,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_PlugInsOrExtensions_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.PlugInsOrExtensions(id));
         }
-        
+
         [Test]
         public static void Post_PlugInsOrExtensions_HttpGetAttribute_ExpectedTemplate()
         {
@@ -1187,7 +1187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             actual.ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_PlugInsOrExtensions_InvalidModel_ReturnsViewWithModel()
         {
@@ -1212,7 +1212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PlugInsOrExtensions(model);
-            
+
             mockService.Verify(x => x.GetClientApplication(model.SolutionId));
         }
 
@@ -1227,14 +1227,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PlugInsOrExtensions(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_PlugInsOrExtensions_ValidModel_MapsModelToClientApplication(
-            PlugInsOrExtensionsModel model, bool? PlugInsOrExtensions)
+            PlugInsOrExtensionsModel model)
         {
             var mockMapper = new Mock<IMapper>();
             var mockPlugins = new Mock<Plugins>().Object;
@@ -1279,18 +1279,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.PlugInsOrExtensions(model)).As<RedirectResult>();
 
             actual.Should().NotBeNull();
             actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
         }
-        
+
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedConnectivityAndResolution_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ConnectivityAndResolution(id));
@@ -1300,7 +1300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedHardwareRequirements_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id));
@@ -1310,7 +1310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBasedAdditionalInformation_InvalidId_ThrowsException(string id)
         {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), 
+            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id));

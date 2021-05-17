@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class HostingTypeControllerTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void ClassIsCorrectlyDecorated()
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 _ = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<IMapper>(), null))
                 .ParamName.Should().Be("solutionsService");
         }
-        
+
         [Test]
         public static void Get_PublicCloud_HttpGetAttribute_ExpectedTemplate()
         {
@@ -73,18 +73,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_PublicCloud_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.PublicCloud(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-public-cloud-{nameof(id)}");
         }
 
         [Test, AutoData]
         public static async Task Get_PublicCloud_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PublicCloud(id);
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_PublicCloud_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 controller.PublicCloud(default(PublicCloudModel)))
                 .ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_PublicCloud_InvalidModel_ReturnsViewWithModel()
         {
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PublicCloud(model);
-            
+
             mockService.Verify(x => x.GetHosting(model.SolutionId));
         }
 
@@ -208,11 +208,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PublicCloud(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_PublicCloud_ValidModel_MapsModelToHosting(
             PublicCloudModel model)
@@ -256,14 +256,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockHosting);
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.PublicCloud(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(SolutionController.Index));
             actual.ControllerName.Should().Be(nameof(SolutionController).ToControllerName());
         }
-        
+
         [Test]
         public static void Get_PrivateCloud_HttpGetAttribute_ExpectedTemplate()
         {
@@ -282,18 +282,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_PrivateCloud_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.PrivateCloud(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-private-cloud-{nameof(id)}");
         }
 
         [Test, AutoData]
         public static async Task Get_PrivateCloud_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PrivateCloud(id);
@@ -315,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_PrivateCloud_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -377,7 +377,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 controller.PrivateCloud(default(PrivateCloudModel)))
                 .ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_PrivateCloud_InvalidModel_ReturnsViewWithModel()
         {
@@ -402,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PrivateCloud(model);
-            
+
             mockService.Verify(x => x.GetHosting(model.SolutionId));
         }
 
@@ -417,11 +417,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PrivateCloud(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_PrivateCloud_ValidModel_MapsModelToHosting(
             PrivateCloudModel model)
@@ -465,7 +465,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockHosting);
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.PrivateCloud(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
@@ -491,18 +491,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Hybrid_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Hybrid(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-hybrid-{nameof(id)}");
         }
 
         [Test, AutoData]
         public static async Task Get_Hybrid_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Hybrid(id);
@@ -524,7 +524,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_Hybrid_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -586,7 +586,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 controller.Hybrid(default(HybridModel)))
                 .ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_Hybrid_InvalidModel_ReturnsViewWithModel()
         {
@@ -611,7 +611,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Hybrid(model);
-            
+
             mockService.Verify(x => x.GetHosting(model.SolutionId));
         }
 
@@ -626,11 +626,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.Hybrid(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_Hybrid_ValidModel_MapsModelToHosting(
             HybridModel model)
@@ -674,7 +674,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockHosting);
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.Hybrid(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
@@ -700,18 +700,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_OnPremise_InvalidId_ThrowsException(string id)
         {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.OnPremise(id))
-                .Message.Should().Be(nameof(id));
+                .Message.Should().Be($"hosting-type-onpremise-{nameof(id)}");
         }
 
         [Test, AutoData]
         public static async Task Get_OnPremise_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), 
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OnPremise(id);
@@ -733,7 +733,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_OnPremise_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -795,7 +795,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 controller.OnPremise(default(OnPremiseModel)))
                 .ParamName.Should().Be("model");
         }
-        
+
         [Test]
         public static async Task Post_OnPremise_InvalidModel_ReturnsViewWithModel()
         {
@@ -820,7 +820,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OnPremise(model);
-            
+
             mockService.Verify(x => x.GetHosting(model.SolutionId));
         }
 
@@ -835,11 +835,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.OnPremise(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_OnPremise_ValidModel_MapsModelToHosting(
             OnPremiseModel model)
@@ -883,7 +883,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockHosting);
             var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.OnPremise(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();

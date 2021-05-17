@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             DataTestTag = "public-cloud";
             Summary = hostingType?.Summary;
             Link = hostingType?.Link;
-            RequiresHscn = hostingType?.RequiresHscn;            
+            RequiresHscn = hostingType?.RequiresHscn;
         }
 
         public HostingTypeModel(PrivateCloud hostingType)
@@ -20,27 +20,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Summary = hostingType?.Summary;
             Link = hostingType?.Link;
             RequiresHscn = hostingType?.RequiresHscn;
-            HostingModel = hostingType?.HostingModel;            
+            HostingModel = hostingType?.HostingModel;
         }
 
         public HostingTypeModel(HybridHostingType hostingType)
         {
-            Label = "Hybrid"; 
+            Label = "Hybrid";
             DataTestTag = "hybrid";
             Summary = hostingType?.Summary;
             Link = hostingType?.Link;
             RequiresHscn = hostingType?.RequiresHscn;
-            HostingModel = hostingType?.HostingModel;            
+            HostingModel = hostingType?.HostingModel;
         }
 
         public HostingTypeModel(OnPremise hostingType)
         {
-            Label = "On premise"; 
+            Label = "On premise";
             DataTestTag = "on-premise";
             Summary = hostingType?.Summary;
             Link = hostingType?.Link;
             RequiresHscn = hostingType?.RequiresHscn;
-            HostingModel = hostingType?.HostingModel;            
+            HostingModel = hostingType?.HostingModel;
         }
 
         public string Label { get; set; }
@@ -57,12 +57,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool DisplayHostingType
         {
-            get 
-            { 
+            get
+            {
                 return !string.IsNullOrWhiteSpace(Summary) ||
                     !string.IsNullOrWhiteSpace(Link) ||
                     !string.IsNullOrWhiteSpace(HostingModel) ||
-                    !string.IsNullOrWhiteSpace(RequiresHscn); 
+                    !string.IsNullOrWhiteSpace(RequiresHscn);
             }
         }
 

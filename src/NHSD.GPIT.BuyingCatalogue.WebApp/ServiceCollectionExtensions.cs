@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
@@ -31,9 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly",
-                    policy => policy.RequireClaim("organisationFunction",
-                        new[] {OrganisationFunction.Authority.DisplayName}));
+                options.AddPolicy(
+                    "AdminOnly",
+                    policy => policy.RequireClaim(
+                        "organisationFunction",
+                        new[] { OrganisationFunction.Authority.DisplayName }));
             });
         }
 
@@ -43,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .AddTransient<IMemberValueResolver<object, object, string, bool?>,
                     StringToNullableBoolResolver>();
             services
-                .AddTransient<ITypeConverter<CatalogueItem, SolutionStatusModel>, 
+                .AddTransient<ITypeConverter<CatalogueItem, SolutionStatusModel>,
                     CatalogueItemToSolutionStatusModelConverter>();
             services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -102,8 +104,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(disabledErrorMessage);
         }
 
-        public static void ConfigureEmail(this IServiceCollection services, 
-            IConfiguration configuration, IHealthChecksBuilder healthCheckBuilder)
+        public static void ConfigureEmail(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            IHealthChecksBuilder healthCheckBuilder)
         {
             var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");
             var smtpSettings = configuration.GetSection("SmtpServer").Get<SmtpSettings>();

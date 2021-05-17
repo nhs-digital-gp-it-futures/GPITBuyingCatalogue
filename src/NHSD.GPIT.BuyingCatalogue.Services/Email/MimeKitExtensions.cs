@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
         /// <returns>the corresponding <see cref="MimeMessage"/>.</returns>
         public static MimeMessage AsMimeMessage(
             this EmailMessage emailMessage,
-            string? emailSubjectPrefix = null)
+            string emailSubjectPrefix = null)
         {
             var bodyBuilder = new BodyBuilder
             {

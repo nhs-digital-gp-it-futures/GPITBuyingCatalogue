@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,14 +11,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     internal static class MobileMemoryAndStorageTests
     {
         private static readonly Fixture Fixture = new();
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test, AutoData]
         public static void IsValid_BothPropertiesValid_ReturnsTrue(MobileMemoryAndStorage mobileMemoryAndStorage)
         {
             mobileMemoryAndStorage.Description.Should().NotBeNullOrWhiteSpace();
             mobileMemoryAndStorage.MinimumMemoryRequirement.Should().NotBeNullOrWhiteSpace();
-            
+
             mobileMemoryAndStorage.IsValid().Should().BeTrue();
         }
 

@@ -1,10 +1,9 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
@@ -53,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void Features_SectionMarkedComplete()
         {
-            var feature = MarketingPages.FeaturesActions.EnterFeature();
+            MarketingPages.FeaturesActions.EnterFeature();
 
             CommonActions.ClickSave();
 

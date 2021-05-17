@@ -36,8 +36,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver.FindElement(targetField).SendKeys(url);
             return url;
         }
-
-
-
     }
 }

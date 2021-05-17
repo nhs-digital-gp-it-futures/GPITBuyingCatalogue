@@ -1,5 +1,4 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NUnit.Framework;
 
@@ -116,12 +115,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [TestCase(null, false)]
         [TestCase("", false)]
         [TestCase(" ", false)]
-        [TestCase("A summary", true)]        
+        [TestCase("A summary", true)]
         public static void DisplaySummaryDescription_CorrectlySet(string summary, bool expected)
         {
             var privateCloud = new PrivateCloud
             {
-                Summary = summary                
+                Summary = summary
             };
 
             var model = new HostingTypeModel(privateCloud);

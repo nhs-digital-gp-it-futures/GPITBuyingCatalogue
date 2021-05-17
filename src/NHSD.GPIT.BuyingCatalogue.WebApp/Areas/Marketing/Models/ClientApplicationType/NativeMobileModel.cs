@@ -6,16 +6,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
 {
     public class NativeMobileModel : MarketingBaseModel
     {
-        public NativeMobileModel() : base(null)
+        public NativeMobileModel()
+            : base(null)
         {
         }
-        
-        public NativeMobileModel(CatalogueItem catalogueItem) : base(catalogueItem)
+
+        public NativeMobileModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                 
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
         }
 
         public override bool? IsComplete =>

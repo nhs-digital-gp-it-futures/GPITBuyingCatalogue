@@ -1,7 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
@@ -21,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
         {
             return GetClaimValue(user, "organisationFunction").Equals(OrganisationFunction.Authority.DisplayName);
         }
+
         public static bool IsBuyer(this ClaimsPrincipal user)
         {
             return GetClaimValue(user, "organisationFunction").Equals(OrganisationFunction.Buyer.DisplayName);

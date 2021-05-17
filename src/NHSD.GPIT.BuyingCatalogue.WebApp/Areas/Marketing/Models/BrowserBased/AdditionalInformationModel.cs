@@ -6,11 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
     public class AdditionalInformationModel : MarketingBaseModel
     {
-        public AdditionalInformationModel() : base(null)
+        public AdditionalInformationModel()
+            : base(null)
         {
         }
 
-        public AdditionalInformationModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public AdditionalInformationModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));

@@ -40,17 +40,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)            
+            if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
             output.Content.Clear();
 
-            var formGroup = TagHelperBuilders.GetFormGroupBuilder(For.Name);
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For,  htmlGenerator, null, LabelText, DisableLabelAndHint);
+            var formGroup = TagHelperBuilders.GetFormGroupBuilder();
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
-            var validation = TagHelperBuilders.GetValidationBuilder(ViewContext,For,htmlGenerator);
+            var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
-            var counter = TagHelperBuilders.GetCounterBuilder(For,DisableCharacterCounter);
+            var counter = TagHelperBuilders.GetCounterBuilder(For, DisableCharacterCounter);
 
             formGroup.InnerHtml.AppendHtml(label);
             formGroup.InnerHtml.AppendHtml(hint);
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 builder.MergeAttribute(TagHelperConstants.Type, "password");
 
             if (!TagHelperFunctions.IsCounterDisabled(For, DisableCharacterCounter))
-                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
+                builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);

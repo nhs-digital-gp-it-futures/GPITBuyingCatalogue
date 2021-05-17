@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public string LabelHint { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.DisableCharacterCounterName)]
-        public bool? DisableCharacterCounter { get; set; } 
+        public bool? DisableCharacterCounter { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
@@ -41,13 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)            
-                throw new ArgumentNullException(nameof(output));            
+            if (output is null)
+                throw new ArgumentNullException(nameof(output));
 
             output.Content.Clear();
 
-            var formGroup = TagHelperBuilders.GetFormGroupBuilder(For.Name);
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText,DisableLabelAndHint);
+            var formGroup = TagHelperBuilders.GetFormGroupBuilder();
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 For.Name,
                 TagHelperFunctions.GetTextAreaNumberOfRows(For, NumberOfRows),
                 0,
-                null);           
+                null);
 
             builder.AddCssClass(TagHelperConstants.NhsTextArea);
             builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, $"{For.Name}-info {For.Name}-summary");
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             if (!TagHelperFunctions.IsCounterDisabled(For, DisableCharacterCounter))
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
 
-            if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext,For))
+            if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
             {
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);
             }
@@ -86,5 +86,4 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             return builder;
         }
     }
-
 }

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionsServiceTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void SaveSupplierContacts_ModelNull_ThrowsException()
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
-            
+
             mockModel.Verify(x => x.SetSolutionId());
         }
 
@@ -57,14 +57,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .Callback((Expression<Func<MarketingContact, bool>> predicate) => predicate.Compile()
-                    .Invoke(new MarketingContact {SolutionId = solutionId}).Should().BeTrue());
+                    .Invoke(new MarketingContact { SolutionId = solutionId }).Should().BeTrue());
 
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
-            
+
             mockMarketingContactRepository.Verify(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()));
         }
 
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var mockModel = new Mock<SupplierContactsModel>();
             mockModel.Setup(x => x.ValidContacts())
                 .Returns(validContacts);
-            
+
             var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(Array.Empty<MarketingContact>());
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
-            
+
             mockModel.Verify(x => x.ValidContacts());
             mockMarketingContactRepository.Verify(x => x.AddAll(validContacts));
         }
@@ -96,14 +96,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var savedModels = new Faker<MarketingContact>()
                 .RuleFor(x => x.Id, f => f.Random.Int(100, 500))
                 .Generate(2);
-            
+
             var mockModel = new Mock<SupplierContactsModel>();
             var mockNewContact = new Mock<MarketingContact>();
             mockNewContact.Setup(x => x.IsEmpty())
                 .Returns(true);
             mockModel.Setup(x => x.ContactFor(savedModels[1].Id))
                 .Returns(mockNewContact.Object);
-            
+
             var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(savedModels.ToArray);
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
-            
+
             mockNewContact.Verify(x => x.IsEmpty());
             mockMarketingContactRepository.Verify(x => x.Remove(It.Is<MarketingContact>(y => y.Id == savedModels[1].Id)));
         }
@@ -121,17 +121,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static async Task SaveSupplierContacts_ContactsInDatabase_UpdatesNonEmptyContacts()
         {
-            var savedModel = new Mock<MarketingContact> {CallBase = true,};
+            var savedModel = new Mock<MarketingContact> { CallBase = true, };
             savedModel.Object.Id = 42;
-            var savedModels = new [] {savedModel.Object,};
-            
+            var savedModels = new[] { savedModel.Object, };
+
             var mockModel = new Mock<SupplierContactsModel>();
             var mockNewContact = new Mock<MarketingContact>();
             mockNewContact.Setup(x => x.IsEmpty())
                 .Returns(false);
             mockModel.Setup(x => x.ContactFor(savedModels[0].Id))
                 .Returns(mockNewContact.Object);
-            
+
             var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(savedModels);
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
-            
+
             mockNewContact.Verify(x => x.IsEmpty());
             savedModel.Verify(x => x.UpdateFrom(mockNewContact.Object));
         }
@@ -153,17 +153,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var newAndValidContacts = new Mock<IList<MarketingContact>>().Object;
             mockModel.Setup(x => x.NewAndValidContacts())
                 .Returns(newAndValidContacts);
-            
+
             var mockMarketingContactRepository = new Mock<IBuyingCatalogueRepository<MarketingContact>>();
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .ReturnsAsync(new []{new MarketingContact()});
-            
+                .ReturnsAsync(new[] { new MarketingContact() });
+
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
                 Mock.Of<BuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(mockModel.Object);
-            
+
             mockModel.Verify(x => x.NewAndValidContacts());
             mockMarketingContactRepository.Verify(x => x.AddAll(newAndValidContacts));
         }
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IBuyingCatalogueRepository<Solution>>(), Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
             await service.SaveSupplierContacts(Mock.Of<SupplierContactsModel>());
-            
+
             mockMarketingContactRepository.Verify(x => x.SaveChangesAsync());
         }
 
@@ -290,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<BuyingCatalogueDbContext>(), Mock.Of<IBuyingCatalogueRepository<MarketingContact>>(),
                 mockSolutionRepository.Object, Mock.Of<IBuyingCatalogueRepository<Supplier>>());
 
-            await service.SaveSolutionFeatures("100000-001", new string[0]);
+            await service.SaveSolutionFeatures("100000-001", Array.Empty<string>());
 
             mockSolutionRepository.Verify(x => x.SaveChangesAsync());
         }
@@ -379,7 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             actual.ParamName.Should().Be("solutionId");
         }
 
-        [Test]        
+        [Test]
         public static void SaveClientApplication_InvalidModel_ThrowsException()
         {
             var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
@@ -419,7 +419,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             actual.ParamName.Should().Be("solutionId");
         }
-
 
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]

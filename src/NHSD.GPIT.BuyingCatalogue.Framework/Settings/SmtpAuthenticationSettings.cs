@@ -16,11 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         /// <summary>
         /// Gets the user name to authenticate with.
         /// </summary>
-        public string? UserName { get; init; }
+        public string UserName { get; init; }
 
         /// <summary>
         /// Gets the password for authentication.
         /// </summary>
-        public string? Password { get; init; }
+        public string Password { get; init; }
     }
 }

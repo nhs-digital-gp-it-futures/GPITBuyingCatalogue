@@ -21,17 +21,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         [Test]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
-            var clientApplication = new ClientApplication 
-            { 
-                Plugins = new Plugins {  Required = true, AdditionalInformation = "Some more information" }               
+            var clientApplication = new ClientApplication
+            {
+                Plugins = new Plugins { Required = true, AdditionalInformation = "Some more information" }
             };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { ClientApplication = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { ClientApplication = json }
+            };
+
             var model = new PlugInsOrExtensionsModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
@@ -53,8 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         [Test]
         [TestCase(null, false)]
         [TestCase(false, true)]
-        [TestCase(true, true)]        
-        public static void IsCompleteIsCorrectlySet(bool? required, bool? expected )
+        [TestCase(true, true)]
+        public static void IsCompleteIsCorrectlySet(bool? required, bool? expected)
         {
             var clientApplication = new ClientApplication
             {
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
             var model = new PlugInsOrExtensionsModel(catalogueItem);
-            
+
             Assert.AreEqual(expected, model.IsComplete);
         }
     }

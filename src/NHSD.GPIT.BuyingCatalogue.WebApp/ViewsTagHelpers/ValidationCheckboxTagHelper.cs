@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         private readonly IHtmlGenerator htmlGenerator;
 
+        public ValidationCheckboxTagHelper(IHtmlGenerator htmlGenerator) => this.htmlGenerator = htmlGenerator;
+
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
@@ -28,11 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
-
-        public ValidationCheckboxTagHelper(IHtmlGenerator htmlGenerator)
-        {
-            this.htmlGenerator = htmlGenerator;
-        }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -51,14 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             output.Content.AppendHtml(input);
             output.Content.AppendHtml(label);
 
-            if(HiddenFor != null)            
+            if (HiddenFor != null)
                 output.Content.AppendHtml(GetHiddenInputBuilder());
-            
         }
 
         private TagBuilder GetCheckboxInputBuilder()
         {
-
             var inputBuilder = htmlGenerator.GenerateCheckBox(
             ViewContext,
             For.ModelExplorer,
@@ -89,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 HiddenFor.Name,
                 HiddenFor.Model,
                 false,
-                null);            
+                null);
         }
     }
 }

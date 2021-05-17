@@ -8,11 +8,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 {
     public class MemoryAndStorageModel : MarketingBaseModel
     {
-        public MemoryAndStorageModel() : base(null)
+        public MemoryAndStorageModel()
+            : base(null)
         {
         }
 
-        public MemoryAndStorageModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public MemoryAndStorageModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
@@ -34,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
             && !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumCpu);
 
         public string SelectedMemorySize { get; set; }
+
         public List<SelectListItem> MemorySizes { get; set; }
 
         [StringLength(300)]
@@ -43,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
         public string MinimumCpu { get; set; }
 
         public string SelectedScreenResolution { get; set; }
+
         public List<SelectListItem> ScreenResolutions { get; set; }
     }
 }

@@ -6,10 +6,10 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
-{        
+{
     public sealed class Result<T> : IEquatable<Result<T>>
     {
-        internal Result(bool isSuccess, IEnumerable<ErrorDetails>? errors, T value)
+        internal Result(bool isSuccess, IEnumerable<ErrorDetails> errors, T value)
         {
             IsSuccess = isSuccess;
             Errors = new ReadOnlyCollection<ErrorDetails>(errors?.ToList() ?? new List<ErrorDetails>());
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
             return IsSuccess ? Result.Success() : Result.Failure(Errors);
         }
 
-        public bool Equals(Result<T>? other)
+        public bool Equals(Result<T> other)
         {
             if (other is null)
                 return false;
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
                 && Equals(Value, other.Value);
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as Result<T>);
         }
@@ -53,5 +53,4 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results
             return first.SequenceEqual(second);
         }
     }
-       
 }

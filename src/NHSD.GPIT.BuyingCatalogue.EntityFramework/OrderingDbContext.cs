@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 
 #nullable disable
@@ -19,33 +17,42 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         }
 
         public virtual DbSet<Address> Addresses { get; set; }
-        public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
-        public virtual DbSet<CatalogueItemType> CatalogueItemTypes { get; set; }
-        public virtual DbSet<CataloguePriceType> CataloguePriceTypes { get; set; }
-        public virtual DbSet<Contact> Contacts { get; set; }
-        public virtual DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
-        public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<OrderItem> OrderItems { get; set; }
-        public virtual DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
-        public virtual DbSet<OrderProgress> OrderProgresses { get; set; }
-        public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
-        public virtual DbSet<OrderingParty> OrderingParties { get; set; }
-        public virtual DbSet<PricingUnit> PricingUnits { get; set; }
-        public virtual DbSet<ProvisioningType> ProvisioningTypes { get; set; }
-        public virtual DbSet<SelectedServiceRecipient> SelectedServiceRecipients { get; set; }
-        public virtual DbSet<ServiceInstanceItem> ServiceInstanceItems { get; set; }
-        public virtual DbSet<ServiceRecipient> ServiceRecipients { get; set; }
-        public virtual DbSet<Supplier> Suppliers { get; set; }
-        public virtual DbSet<TimeUnit> TimeUnits { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=localhost,1450;Database=CatalogueOrdering;user id=sa;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;");
-            }
-        }
+        public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
+
+        public virtual DbSet<CatalogueItemType> CatalogueItemTypes { get; set; }
+
+        public virtual DbSet<CataloguePriceType> CataloguePriceTypes { get; set; }
+
+        public virtual DbSet<Contact> Contacts { get; set; }
+
+        public virtual DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
+
+        public virtual DbSet<Order> Orders { get; set; }
+
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+
+        public virtual DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
+
+        public virtual DbSet<OrderProgress> OrderProgresses { get; set; }
+
+        public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
+
+        public virtual DbSet<OrderingParty> OrderingParties { get; set; }
+
+        public virtual DbSet<PricingUnit> PricingUnits { get; set; }
+
+        public virtual DbSet<ProvisioningType> ProvisioningTypes { get; set; }
+
+        public virtual DbSet<SelectedServiceRecipient> SelectedServiceRecipients { get; set; }
+
+        public virtual DbSet<ServiceInstanceItem> ServiceInstanceItems { get; set; }
+
+        public virtual DbSet<ServiceRecipient> ServiceRecipients { get; set; }
+
+        public virtual DbSet<Supplier> Suppliers { get; set; }
+
+        public virtual DbSet<TimeUnit> TimeUnits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

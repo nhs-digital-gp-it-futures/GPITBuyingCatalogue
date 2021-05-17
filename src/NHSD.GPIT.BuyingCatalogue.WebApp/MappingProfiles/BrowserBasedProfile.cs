@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
@@ -19,12 +19,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.SetMappingOrder(20);
                     opt.MapFrom((_, dest) => dest.ClientApplication?.AdditionalInformation);
                 })
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ConnectivityAndResolutionModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.ConnectionSpeeds, opt => opt.MapFrom(src => ProfileDefaults.ConnectionSpeeds))
                 .ForMember(dest => dest.ScreenResolutions, opt => opt.MapFrom(src => ProfileDefaults.ScreenResolutions))
@@ -39,9 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                         dest.SelectedScreenResolution = dest.ClientApplication.MinimumDesktopResolution;
                     }
                 });
-                
+
             CreateMap<CatalogueItem, HardwareRequirementsModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.Description, opt =>
                 {
@@ -49,9 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                     opt.MapFrom((_, dest) => dest.ClientApplication?.HardwareRequirements);
                 })
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-                
+
             CreateMap<CatalogueItem, MobileFirstApproachModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.MobileFirstApproach, opt =>
                 {
@@ -63,13 +67,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<CatalogueItem, PlugInsOrExtensionsModel>()
                 .ForMember(dest => dest.AdditionalInformation, opt => opt.Ignore())
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.PlugInsRequired, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>()
                 .AfterMap((_, dest) =>
                 {
-                    if (dest.ClientApplication.Plugins is {Required: { }} plugins)
+                    if (dest.ClientApplication.Plugins is { Required: { } } plugins)
                     {
                         dest.PlugInsRequired = plugins.Required.ToYesNo();
                         dest.AdditionalInformation = plugins.AdditionalInformation;
@@ -77,7 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 });
 
             CreateMap<CatalogueItem, SupportedBrowsersModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.Browsers, opt => opt.MapFrom(src => ProfileDefaults.SupportedBrowsers))
                 .ForMember(dest => dest.MobileResponsive, opt => opt.Ignore())
@@ -95,7 +101,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<ConnectivityAndResolutionModel, ClientApplication>()
                 .ForMember(dest => dest.MinimumConnectionSpeed, opt => opt.MapFrom(src => src.SelectedConnectionSpeed))
-                .ForMember(dest => dest.MinimumDesktopResolution,
+                .ForMember(
+                    dest => dest.MinimumDesktopResolution,
                     opt => opt.MapFrom(src => src.SelectedScreenResolution))
                 .ForAllOtherMembers(opt => opt.Ignore());
 
@@ -110,16 +117,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<SupportedBrowsersModel, ClientApplication>()
                 .BeforeMap((_, dest) => dest.BrowsersSupported.Clear())
-                .ForMember(dest => dest.BrowsersSupported,
+                .ForMember(
+                    dest => dest.BrowsersSupported,
                     opt => opt.MapFrom(src =>
                         src.Browsers == null
                             ? new HashSet<string>()
                             : src.Browsers.Where(x => x.Checked).Select(x => x.BrowserName)))
-                .ForMember(dest => dest.MobileResponsive,
+                .ForMember(
+                    dest => dest.MobileResponsive,
                     opt => opt.MapFrom<IMemberValueResolver<object, object, string, bool?>, string>(x =>
                         x.MobileResponsive))
                 .ForAllOtherMembers(opt => opt.Ignore());
-
         }
     }
 }

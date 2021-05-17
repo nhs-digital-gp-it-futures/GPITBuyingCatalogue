@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
@@ -14,12 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         public ClientApplicationTypeProfile()
         {
             CreateMap<CatalogueItem, BrowserBasedModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.BrowserBased, opt =>
                 {
@@ -40,32 +42,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                         x.EqualsIgnoreCase("native-mobile")));
                 })
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<CatalogueItem, NativeDesktopModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<CatalogueItem, NativeMobileModel>()
-                .ForMember(dest => dest.BackLink,
+                .ForMember(
+                    dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<ClientApplicationTypesModel, ClientApplication>()
-                .ForMember(dest => dest.ClientApplicationTypes,
+                .ForMember(
+                    dest => dest.ClientApplicationTypes,
                     opt => opt.MapFrom(src => GetClientApplicationTypes(src)))
                 .ForAllOtherMembers(opt => opt.Ignore());
         }
 
-        private HashSet<string> GetClientApplicationTypes(ClientApplicationTypesModel model)
+        private static HashSet<string> GetClientApplicationTypes(ClientApplicationTypesModel model)
         {
             var result = new HashSet<string>();
-            
-            if (model.BrowserBased) 
+
+            if (model.BrowserBased)
                 result.Add("browser-based");
-            if (model.NativeMobile) 
+            if (model.NativeMobile)
                 result.Add("native-mobile");
-            if (model.NativeDesktop) 
+            if (model.NativeDesktop)
                 result.Add("native-desktop");
 
             return result;

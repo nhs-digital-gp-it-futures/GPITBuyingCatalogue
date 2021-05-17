@@ -8,11 +8,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
     public class OperatingSystemsModel : MarketingBaseModel
     {
-        public OperatingSystemsModel() : base(null)
+        public OperatingSystemsModel()
+            : base(null)
         {
         }
 
-        public OperatingSystemsModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public OperatingSystemsModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
@@ -32,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
         [StringLength(1000)]
         public string Description { get; set; }
-        
+
         private void CheckOperatingSystems()
         {
             foreach (var browser in OperatingSystems)

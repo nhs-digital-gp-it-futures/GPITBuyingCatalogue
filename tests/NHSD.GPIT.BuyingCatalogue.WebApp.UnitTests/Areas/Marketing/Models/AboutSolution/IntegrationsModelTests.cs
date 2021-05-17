@@ -1,9 +1,6 @@
 ﻿using System;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.AboutSolution
@@ -22,12 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [Test]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { IntegrationsUrl = "Some integrations url" } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { IntegrationsUrl = "Some integrations url" }
+            };
+
             var model = new IntegrationsModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
@@ -50,12 +47,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("Some integrations url", true)]
-        public static void IsCompleteIsCorrectlySet(string integrationsUrl, bool? expected )
+        public static void IsCompleteIsCorrectlySet(string integrationsUrl, bool? expected)
         {
             var catalogueItem = new CatalogueItem { Solution = new Solution { IntegrationsUrl = integrationsUrl } };
 
             var model = new IntegrationsModel(catalogueItem);
-            
+
             Assert.AreEqual(expected, model.IsComplete);
         }
     }

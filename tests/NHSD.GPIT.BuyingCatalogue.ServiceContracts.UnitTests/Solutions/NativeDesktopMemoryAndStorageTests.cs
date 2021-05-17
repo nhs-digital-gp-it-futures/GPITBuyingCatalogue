@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 {
@@ -6,6 +6,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     [Parallelizable(ParallelScope.All)]
     internal static class NativeDesktopMemoryAndStorageTests
     {
-        
     }
 }

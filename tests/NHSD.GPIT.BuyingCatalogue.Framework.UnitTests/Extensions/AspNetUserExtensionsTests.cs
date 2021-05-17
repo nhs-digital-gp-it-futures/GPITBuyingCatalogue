@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         public static void AspNetUserExtention_FormatsDisplayName()
         {
             var user = new AspNetUser { FirstName = "Bob", LastName = "Smith" };
-            
+
             Assert.AreEqual("Bob Smith", user.GetDisplayName());
-        }      
+        }
     }
 }

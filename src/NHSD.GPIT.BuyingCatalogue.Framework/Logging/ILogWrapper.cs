@@ -2,7 +2,8 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Logging
 {
-    public interface ILogWrapper<T> where T : class
+    public interface ILogWrapper<T>
+        where T : class
     {
         void LogError(string message, params object[] args);
 

@@ -6,17 +6,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
     public class MobileFirstApproachModel : MarketingBaseModel
     {
-        public MobileFirstApproachModel() : base(null)
+        public MobileFirstApproachModel()
+            : base(null)
         {
         }
 
-        public MobileFirstApproachModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public MobileFirstApproachModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
-            
+
             MobileFirstApproach = ClientApplication?.NativeMobileFirstDesign.ToYesNo();
         }
 
@@ -26,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
         public virtual bool? MobileFirstDesign() =>
             string.IsNullOrWhiteSpace(MobileFirstApproach)
-                ? (bool?) null
+                ? (bool?)null
                 : MobileFirstApproach.Equals("Yes", StringComparison.InvariantCultureIgnoreCase);
     }
 }
