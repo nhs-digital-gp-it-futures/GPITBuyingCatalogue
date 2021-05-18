@@ -60,17 +60,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         [HttpGet("organisation/{odsCode}/order/neworder/description")]
         public IActionResult NewOrderDescription(string odsCode)
-        {            
+        {
             return View(new OrderDescriptionModel());
         }
 
         [HttpPost("organisation/{odsCode}/order/neworder/description")]
-        public IActionResult NewOrderDescription(string odsCode, OrderDescriptionModel model )
+        public IActionResult NewOrderDescription(string odsCode, OrderDescriptionModel model)
         {
             return Redirect($"/order/organisation/03F/order/C01005-01");
         }
-
-
-
     }
 }

@@ -19,28 +19,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-
-
-
         [HttpGet]
         public IActionResult Order(string odsCode, string callOffId)
         {
             return View();
         }
 
-
         [HttpGet("summary")]
         public IActionResult Summary(string odsCode, string callOffId, string print = "false")
         {
             // TODO - obey the print switch
-
             return View();
         }
 
-
         [HttpGet("delete-order")]
         public IActionResult DeleteOrder(string odsCode, string callOffId)
-        {            
+        {
             return View(new DeleteOrderModel());
         }
 
@@ -67,7 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             return Redirect($"/order/organisation/03F/order/C01005-01");
         }
-
 
         [HttpGet("ordering-party")]
         public IActionResult OrderingParty(string odsCode, string callOffId)
@@ -104,6 +97,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             return Redirect($"/order/organisation/03F/order/C01005-01");
         }
-
     }
 }

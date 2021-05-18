@@ -19,13 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-     
         [HttpGet]
         public IActionResult Supplier(string odsCode, string callOffId)
         {
             // TODO - display view if supplier already defined otherwise rediect to select
-
-            //return View(new SupplierModel());
+            // return View(new SupplierModel());
             return Redirect($"/order/organisation/03F/order/C01005-01/supplier/search");
         }
 
@@ -39,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
         {
             // TODO - Display NoSupplierFound if no results
-
             return Redirect($"/order/organisation/03F/order/C01005-01/supplier/search/select");
         }
 

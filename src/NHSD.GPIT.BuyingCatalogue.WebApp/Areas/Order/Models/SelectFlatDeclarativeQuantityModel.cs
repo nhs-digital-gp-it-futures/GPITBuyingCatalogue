@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models
 {
-    public class FundingSourceModel
+    public class SelectFlatDeclarativeQuantityModel
     {
     }
 }

@@ -11004,3 +11004,87 @@ body {
   padding: 16px 0; }
   .bc-c-section-table-row:last-child {
     border-bottom: 0; }
+
+.bc-c-task-list {
+  list-style-type: none;
+  margin-bottom: 0;
+  margin-top: 0;
+  padding-left: 0; }
+  @media (min-width: 40.0625em) {
+    .bc-c-task-list {
+      min-width: 550px; } }
+
+.bc-c-task-list__task {
+  display: table;
+  font-weight: 600;
+  font-size: 20px;
+  font-size: 1.25rem;
+  line-height: 1.4; }
+  @media (min-width: 40.0625em) {
+    .bc-c-task-list__task {
+      font-size: 24px;
+      font-size: 1.5rem;
+      line-height: 1.33333; } }
+  @media print {
+    .bc-c-task-list__task {
+      font-size: 18pt;
+      line-height: 1.15; } }
+
+.bc-c-task-list__task-number {
+  display: table-cell; }
+  @media (min-width: 40.0625em) {
+    .bc-c-task-list__task-number {
+      min-width: 30px;
+      padding-right: 0; } }
+
+.bc-c-task-list__items {
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 56px;
+  list-style: none;
+  padding-left: 0; }
+  @media (min-width: 40.0625em) {
+    .bc-c-task-list__items {
+      font-size: 19px;
+      font-size: 1.1875rem;
+      line-height: 1.47368; } }
+  @media print {
+    .bc-c-task-list__items {
+      font-size: 14pt;
+      line-height: 1.15; } }
+  @media (min-width: 40.0625em) {
+    .bc-c-task-list__items {
+      margin-bottom: 64px; } }
+  @media (min-width: 40.0625em) {
+    .bc-c-task-list__items {
+      padding-left: 30px; } }
+
+.bc-c-task-list__item {
+  border-bottom: 1px solid #b1b4b6;
+  margin-bottom: 0;
+  padding-bottom: 8px;
+  padding-top: 8px; }
+  .bc-c-task-list__item:after {
+    content: "";
+    display: block;
+    clear: both; }
+
+.bc-c-task-list__item:first-child {
+  border-top: 1px solid #b1b4b6; }
+
+.bc-c-task-list__task-name {
+  display: block; }
+  @media (min-width: 28.125em) {
+    .bc-c-task-list__task-name {
+      float: left; } }
+
+.bc-c-task-list__task-completed {
+  margin-bottom: 4px;
+  margin-top: 8px; }
+  @media (min-width: 28.125em) {
+    .bc-c-task-list__task-completed {
+      float: right;
+      margin-bottom: 0;
+      margin-top: 0; } }

@@ -13,30 +13,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class OrganisationControllerTests
+    internal static class DashboardControllerTests
     {
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(OrderController).Should().BeDecoratedWith<AuthorizeAttribute>();
-            typeof(OrderController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Order");
+            typeof(DashboardController).Should().BeDecoratedWith<AuthorizeAttribute>();
+            typeof(DashboardController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Order");
         }
 
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrderController(null));
+                _ = new DashboardController(null));
         }
 
         [Test]
-        public static void Get_Index_NotBuyer_ReturnsNotBuyerView()
+        public static void Get_Order_NotBuyer_ReturnsNotBuyerView()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{
                 new Claim("organisationFunction", "Authority"),
             }, "mock"));
 
-            var controller = new OrderController(Mock.Of<ILogWrapper<OrderController>>())
+            var controller = new DashboardController(Mock.Of<ILogWrapper<OrderController>>())
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -51,32 +51,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Test]
-        public static void Get_Index_Buyer_ReturnsDefaultView()
-        {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{
-                new Claim("organisationFunction", "Buyer"),
-            }, "mock"));
-
-            var controller = new OrderController(Mock.Of<ILogWrapper<OrderController>>())
-            {
-                ControllerContext = new ControllerContext()
-                {
-                    HttpContext = new DefaultHttpContext() { User = user }
-                }
-            };
-
-            var result = controller.Index();
-
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.IsNull(((ViewResult)result).ViewName);
-        }
-
-        [Test]
         public static void Get_NewOrder_ReturnsViewResult()
         {
-            var controller = new OrderController(Mock.Of<ILogWrapper<OrderController>>());
+            var controller = new DashboardController(Mock.Of<ILogWrapper<OrderController>>());
 
-            var result = controller.NewOrder();
+            var result = controller.NewOrder("3OF");
 
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
         }
