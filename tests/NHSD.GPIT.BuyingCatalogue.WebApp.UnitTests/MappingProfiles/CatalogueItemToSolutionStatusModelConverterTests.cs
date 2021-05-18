@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
@@ -20,13 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
     {
         private const string KeyIncomplete = "INCOMPLETE";
 
-        private static object[] ResultSets =
+        private static readonly object[] ResultSets =
         {
             new object[]{null, KeyIncomplete},
             new object[]{false, KeyIncomplete},
             new object[]{true, "COMPLETE"},
         };
-        
+
         [Test, CommonAutoData]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsSimpleMappings(
             CatalogueItem catalogueItem)
@@ -306,7 +306,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 
             var actual = converter.Convert(mockCatalogueItem, default, default);
 
-            mockMapper.Verify(m => m.Map<CatalogueItem,  NativeMobileModel>(mockCatalogueItem));
+            mockMapper.Verify(m => m.Map<CatalogueItem, NativeMobileModel>(mockCatalogueItem));
             mockNativeMobileModel.VerifyGet(a => a.IsComplete);
             actual.NativeMobileStatus.Should().Be(expected);
         }
@@ -331,7 +331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             mockPrivateCloudModel.VerifyGet(a => a.IsComplete);
             actual.PrivateCloudStatus.Should().Be(expected);
         }
-        
+
         [TestCaseSource(nameof(ResultSets))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsPublicCloudStatus(
             bool complete,
@@ -352,7 +352,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             mockPublicCloudModel.VerifyGet(a => a.IsComplete);
             actual.PublicCloudStatus.Should().Be(expected);
         }
-        
+
         [TestCaseSource(nameof(ResultSets))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsRoadmapStatus(
             bool complete,
@@ -394,7 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             mockSolutionDescriptionModel.VerifyGet(a => a.IsComplete);
             actual.SolutionDescriptionStatus.Should().Be(expected);
         }
-        
+
         private static Mock<IMapper> GetMockMapper()
         {
             var mockMapper = new Mock<IMapper>();

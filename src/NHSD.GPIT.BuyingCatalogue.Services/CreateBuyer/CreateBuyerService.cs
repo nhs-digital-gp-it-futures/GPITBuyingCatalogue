@@ -13,15 +13,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
     public class CreateBuyerService : ICreateBuyerService
     {
-        private readonly ILogWrapper<CreateBuyerService> _logger;
-        private readonly IUsersDbRepository<AspNetUser> _userRepository;
-        private readonly IPasswordService _passwordService;
-        private readonly IPasswordResetCallback _passwordResetCallback;
-        private readonly IEmailService _emailService;
-        private readonly RegistrationSettings _settings;
-        private readonly IAspNetUserValidator _aspNetUserValidator;
+        private readonly ILogWrapper<CreateBuyerService> logger;
+        private readonly IUsersDbRepository<AspNetUser> userRepository;
+        private readonly IPasswordService passwordService;
+        private readonly IPasswordResetCallback passwordResetCallback;
+        private readonly IEmailService emailService;
+        private readonly RegistrationSettings settings;
+        private readonly IAspNetUserValidator aspNetUserValidator;
 
-        public CreateBuyerService(ILogWrapper<CreateBuyerService> logger,
+        public CreateBuyerService(
+            ILogWrapper<CreateBuyerService> logger,
             IUsersDbRepository<AspNetUser> userRepository,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
@@ -29,13 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             RegistrationSettings settings,
             IAspNetUserValidator aspNetUserValidator)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
-            _passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _aspNetUserValidator = aspNetUserValidator ?? throw new ArgumentNullException(nameof(aspNetUserValidator));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
+            this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
+            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            this.aspNetUserValidator = aspNetUserValidator ?? throw new ArgumentNullException(nameof(aspNetUserValidator));
         }
 
         public async Task<Result<string>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
@@ -53,18 +54,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
                 PrimaryOrganisationId = primaryOrganisationId,
                 OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString()
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
             };
 
-            var validationResult = await _aspNetUserValidator.ValidateAsync(aspNetUser);
+            var validationResult = await aspNetUserValidator.ValidateAsync(aspNetUser);
             if (!validationResult.IsSuccess)
                 return Result.Failure<string>(validationResult.Errors);
 
-            _userRepository.Add(aspNetUser);
+            userRepository.Add(aspNetUser);
 
-            await _userRepository.SaveChangesAsync();
-            
-            var token = await _passwordService.GeneratePasswordResetTokenAsync(aspNetUser.Email);
+            await userRepository.SaveChangesAsync();
+
+            var token = await passwordService.GeneratePasswordResetTokenAsync(aspNetUser.Email);
 
             await SendInitialEmailAsync(token);
 
@@ -78,10 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             var user = token.User;
 
-            await _emailService.SendEmailAsync(
-                _settings.EmailMessage,
+            await emailService.SendEmailAsync(
+                settings.EmailMessage,
                 new EmailAddress(user.Email, user.GetDisplayName()),
-                _passwordResetCallback.GetPasswordResetCallback(token));
+                passwordResetCallback.GetPasswordResetCallback(token));
         }
-    }        
+    }
 }

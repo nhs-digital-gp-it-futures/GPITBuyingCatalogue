@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     [Parallelizable(ParallelScope.All)]
     internal static class ClientApplicationTests
     {
-        private static object[] ResultSets =
+        private static readonly object[] ResultSets =
         {
             new object[]{"some-value", true},
             new object[]{null, false},
@@ -31,11 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
             clientApplication.AdditionalInformationComplete().Should().Be(expected);
         }
-        
+
         [Test]
         public static void BrowserBasedModelComplete_AllChecksTrue_ReturnsTrue()
         {
-            var clientApplication = new Mock<ClientApplication> {CallBase = true};
+            var clientApplication = new Mock<ClientApplication> { CallBase = true };
             clientApplication.Setup(x => x.SupportedBrowsersComplete())
                 .Returns(true);
             clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Test]
         public static void BrowserBasedModelComplete_SupportedBrowsersCompleteReturnsFalse_ReturnsFalse()
         {
-            var clientApplication = new Mock<ClientApplication> {CallBase = true};
+            var clientApplication = new Mock<ClientApplication> { CallBase = true };
             clientApplication.Setup(x => x.SupportedBrowsersComplete())
                 .Returns(false);
             clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Test]
         public static void BrowserBasedModelComplete_ConnectivityAndResolutionCompleteReturnsFalse_ReturnsFalse()
         {
-            var clientApplication = new Mock<ClientApplication> {CallBase = true};
+            var clientApplication = new Mock<ClientApplication> { CallBase = true };
             clientApplication.Setup(x => x.SupportedBrowsersComplete())
                 .Returns(true);
             clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Test]
         public static void BrowserBasedModelComplete_NativeMobileFirstApproachCompleteReturnsFalse_ReturnsFalse()
         {
-            var clientApplication = new Mock<ClientApplication> {CallBase = true};
+            var clientApplication = new Mock<ClientApplication> { CallBase = true };
             clientApplication.Setup(x => x.SupportedBrowsersComplete())
                 .Returns(true);
             clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Test]
         public static void BrowserBasedModelComplete_PlugInsOrExtensionsCompleteReturnsFalse_ReturnsFalse()
         {
-            var clientApplication = new Mock<ClientApplication> {CallBase = true};
+            var clientApplication = new Mock<ClientApplication> { CallBase = true };
             clientApplication.Setup(x => x.SupportedBrowsersComplete())
                 .Returns(true);
             clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
             clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
         }
-        
+
         [TestCaseSource(nameof(ResultSets))]
         public static void ConnectivityAndResolutionComplete_DifferentInputs_ResultAsExpected(
             string input,
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
             clientApplication.HardwareRequirementsComplete().Should().Be(expected);
         }
-        
+
         [TestCaseSource(nameof(ResultSets))]
         public static void NativeDesktopAdditionalInformationComplete_DifferentInputs_ResultAsExpected(
             string input,
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeDesktopMemoryAndStorageComplete().Should().Be(expected);
             mockNativeDesktopMemoryAndStorage.Verify(x => x.IsValid());
         }
-        
+
         [Test]
         public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageIsNull_ReturnsNull()
         {
@@ -204,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
             clientApplication.NativeDesktopMemoryAndStorageComplete().Should().BeNull();
         }
-        
+
         [TestCase(false)]
         [TestCase(true)]
         public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageNotNull_ReturnsIsValidFromIt(
@@ -221,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileMemoryAndStorageComplete().Should().Be(expected);
             mockMobileMemoryAndStorage.Verify(x => x.IsValid());
         }
-        
+
         [Test]
         public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageIsNull_ReturnsNull()
         {
@@ -232,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
             clientApplication.NativeMobileMemoryAndStorageComplete().Should().BeNull();
         }
-        
+
         [TestCaseSource(nameof(ResultSets))]
         public static void NativeDesktopSupportedOperatingSystemsComplete_DifferentInputs_ResultAsExpected(
             string input,
@@ -317,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
             clientApplication.NativeMobileAdditionalInformationComplete().Should().Be(expected);
         }
-        
+
         [TestCaseSource(nameof(ResultSets))]
         public static void NativeMobileHardwareRequirementsComplete_ValidNativeMobileHardwareRequirements_ReturnsTrue(
             string input,

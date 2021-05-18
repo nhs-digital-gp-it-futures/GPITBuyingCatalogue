@@ -20,7 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public Organisation Organisation { get; set; }
 
-        public Address OrganisationAddress { get { return Organisation.GetAddress(); } }
+        public Address OrganisationAddress
+        {
+            get { return Organisation.GetAddress(); }
+        }
 
         public bool CatalogueAgreementSigned { get; set; }
     }

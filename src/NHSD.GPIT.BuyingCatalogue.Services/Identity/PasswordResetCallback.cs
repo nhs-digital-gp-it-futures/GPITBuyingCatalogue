@@ -29,8 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
 
             var action = generator.GetUriByAction(
                 context,
-                "ResetPassword",                
-                "Account", 
+                "ResetPassword",
+                "Account",
                 new { Token = token.Token, Email = token.User.Email, Area = "Identity" },
                 issuerSettings.IssuerUrl.Scheme,
                 hostString);

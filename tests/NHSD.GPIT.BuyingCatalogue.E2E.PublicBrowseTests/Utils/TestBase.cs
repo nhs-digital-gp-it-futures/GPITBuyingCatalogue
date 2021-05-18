@@ -1,13 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using OpenQA.Selenium;
-using System;
-using System.Linq;
-using System.Net.Http;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
@@ -20,8 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         protected readonly IWebDriver driver;
 
         internal Actions.PublicBrowse.ActionCollection PublicBrowsePages { get; }
+
         internal Actions.Marketing.ActionCollection MarketingPages { get; }
+
         internal Actions.Common.CommonActions CommonActions { get; }
+
         internal Actions.Authorization.ActionCollection  AuthorizationPages{ get; }
 
         internal TextGenerators TextGenerators { get; }

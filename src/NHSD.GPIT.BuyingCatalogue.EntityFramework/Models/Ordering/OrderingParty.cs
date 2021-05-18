@@ -13,11 +13,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         }
 
         public Guid Id { get; set; }
+
         public string OdsCode { get; set; }
+
         public string Name { get; set; }
+
         public int? AddressId { get; set; }
 
         public virtual Address Address { get; set; }
+
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
     {
         Task<IDocument> DownloadAsync(string documentName);
 
-        Task<IDocument> DownloadAsync(string? directoryName, string documentName);
+        Task<IDocument> DownloadAsync(string directoryName, string documentName);
 
         IAsyncEnumerable<string> GetFileNamesAsync(string directory);
     }

@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new VaccinationsController(Mock.Of<ILogWrapper<VaccinationsController>>());
 
             var result = controller.Index();
-            
+
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }

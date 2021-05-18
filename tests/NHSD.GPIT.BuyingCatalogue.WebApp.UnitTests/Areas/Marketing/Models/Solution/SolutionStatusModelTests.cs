@@ -1,6 +1,4 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 // MJRTODO - Getting a namespace vs type clash when using Solution
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.SolutionX
@@ -9,6 +7,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Solu
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionStatusModelTests
     {
-        
     }
 }

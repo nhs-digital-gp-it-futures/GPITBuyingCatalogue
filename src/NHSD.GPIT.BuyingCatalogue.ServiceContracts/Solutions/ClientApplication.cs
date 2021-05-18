@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public bool? MobileResponsive { get; set; }
 
-        public virtual Plugins Plugins { get; set; } 
+        public virtual Plugins Plugins { get; set; }
 
         public virtual string HardwareRequirements { get; set; }
 
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public virtual MobileConnectionDetails MobileConnectionDetails { get; set; }
 
-        public virtual MobileMemoryAndStorage MobileMemoryAndStorage { get; set; } 
+        public virtual MobileMemoryAndStorage MobileMemoryAndStorage { get; set; }
 
         public virtual MobileThirdParty MobileThirdParty { get; set; } = new();
 
@@ -45,14 +45,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public virtual string NativeDesktopMinimumConnectionSpeed { get; set; }
 
-        public virtual NativeDesktopThirdParty NativeDesktopThirdParty { get; set; } 
+        public virtual NativeDesktopThirdParty NativeDesktopThirdParty { get; set; }
 
-        public virtual NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; } 
+        public virtual NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; }
 
         public virtual string NativeDesktopAdditionalInformation { get; set; }
 
         public virtual bool AdditionalInformationComplete() => !string.IsNullOrWhiteSpace(AdditionalInformation);
-        
+
         public virtual bool? BrowserBasedModelComplete() =>
             SupportedBrowsersComplete() &&
             MobileFirstDesignComplete() &&
@@ -73,12 +73,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             !string.IsNullOrWhiteSpace(NativeDesktopHardwareRequirements);
 
         public virtual bool? NativeDesktopMemoryAndStorageComplete() => NativeDesktopMemoryAndStorage?.IsValid();
-        
+
         public virtual bool? NativeMobileMemoryAndStorageComplete() => MobileMemoryAndStorage?.IsValid();
 
         public virtual bool? NativeDesktopSupportedOperatingSystemsComplete() =>
             !string.IsNullOrWhiteSpace(NativeDesktopOperatingSystemsDescription);
-        
+
         public virtual bool? NativeDesktopThirdPartyComplete() => NativeDesktopThirdParty?.IsValid();
 
         public virtual bool? NativeMobileConnectivityComplete() => MobileConnectionDetails?.IsValid();
@@ -95,13 +95,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public virtual bool? NativeMobileHardwareRequirementsComplete() =>
             !string.IsNullOrWhiteSpace(NativeMobileHardwareRequirements);
-        
+
         public virtual bool? PlugInsComplete() => Plugins?.Required.HasValue;
 
         public virtual bool SupportedBrowsersComplete() =>
             BrowsersSupported != null && BrowsersSupported.Any() &&
             MobileResponsive.HasValue;
-        
+
         public virtual bool? NativeMobileThirdPartyComplete() => MobileThirdParty?.IsValid();
     }
 }

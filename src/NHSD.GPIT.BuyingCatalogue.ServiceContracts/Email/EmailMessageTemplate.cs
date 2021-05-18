@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
     /// </summary>
     public sealed record EmailMessageTemplate
     {
-        private EmailAddressTemplate? sender;
+        private EmailAddressTemplate sender;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailMessageTemplate"/> class.
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// Gets or sets the sender (from address) of the message.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-        public EmailAddressTemplate? Sender
+        public EmailAddressTemplate Sender
         {
             get => sender;
             set
@@ -43,22 +43,22 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// <summary>
         /// Gets the subject of the message.
         /// </summary>
-        public string? Subject { get; init; }
+        public string Subject { get; init; }
 
         /// <summary>
         /// Gets the HTML body.
         /// </summary>
-        public string? HtmlContent { get; init; }
+        public string HtmlContent { get; init; }
 
         /// <summary>
         /// Gets the plain text body.
         /// </summary>
-        public string? PlainTextContent { get; init; }
+        public string PlainTextContent { get; init; }
 
         /// <summary>
         /// Returns the <see cref="EmailAddress"/> representation of <see cref="Sender"/>.
         /// </summary>
         /// <returns>The <see cref="EmailAddress"/> representation of <see cref="Sender"/>.</returns>
-        public EmailAddress? GetSenderAsEmailAddress() => Sender?.AsEmailAddress();
+        public EmailAddress GetSenderAsEmailAddress() => Sender?.AsEmailAddress();
     }
 }

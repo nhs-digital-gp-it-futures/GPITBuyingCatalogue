@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 #nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity
-{    
+{
     [Table("AspNetRoles")]
     public partial class AspNetRole : IdentityRole<string>
     {
@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity
         }
 
         public virtual ICollection<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+
         public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
     }
 }

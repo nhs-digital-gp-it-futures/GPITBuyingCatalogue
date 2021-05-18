@@ -21,7 +21,6 @@ var regex = {
     js: /\.js$/
 };
 
-
 gulp.task("sass", function () {
     return gulp.src(paths.scss + '**/*.scss', ['!_variables.scss'])
         .pipe(sass())

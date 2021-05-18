@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             var expected = catalogueItem.Solution.MarketingContacts.First();
 
             var actual = catalogueItem.FirstContact();
-            
+
             actual.Should().BeEquivalentTo(expected);
         }
 
@@ -27,10 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             var expected = new MarketingContact();
 
             var actual = catalogueItem.FirstContact();
-            
+
             actual.Should().BeEquivalentTo(expected);
         }
-        
+
         [Test, CommonAutoData]
         public static void FirstContact_NullSolution_ReturnsEmptyObject(CatalogueItem catalogueItem)
         {
@@ -38,17 +38,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             var expected = new MarketingContact();
 
             var actual = catalogueItem.FirstContact();
-            
+
             actual.Should().BeEquivalentTo(expected);
         }
-        
+
         [Test, CommonAutoData]
         public static void SecondContact_ValidModel_ReturnsSecondContact(CatalogueItem catalogueItem)
         {
             var expected = catalogueItem.Solution.MarketingContacts.Skip(1).First();
 
             var actual = catalogueItem.SecondContact();
-            
+
             actual.Should().BeEquivalentTo(expected);
         }
 
@@ -59,10 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             var expected = new MarketingContact();
 
             var actual = catalogueItem.SecondContact();
-            
+
             actual.Should().BeEquivalentTo(expected);
         }
-        
+
         [Test, CommonAutoData]
         public static void SecondContact_NullSolution_ReturnsEmptyObject(CatalogueItem catalogueItem)
         {
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             var expected = new MarketingContact();
 
             var actual = catalogueItem.SecondContact();
-            
+
             actual.Should().BeEquivalentTo(expected);
         }
     }

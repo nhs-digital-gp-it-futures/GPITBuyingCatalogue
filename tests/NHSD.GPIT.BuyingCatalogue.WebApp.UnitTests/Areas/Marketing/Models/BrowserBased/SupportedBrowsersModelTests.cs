@@ -29,18 +29,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
                 MobileResponsive = true
             };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { ClientApplication = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { ClientApplication = json }
+            };
+
             var model = new SupportedBrowsersModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
-            Assert.AreEqual("Yes", model.MobileResponsive);            
+            Assert.AreEqual("Yes", model.MobileResponsive);
             Assert.True(model.Browsers.Single(x => x.BrowserName == "Microsoft Edge").Checked);
-            Assert.AreEqual(7,model.Browsers.Count(x => x.BrowserName != "Microsoft Edge"));
+            Assert.AreEqual(7, model.Browsers.Count(x => x.BrowserName != "Microsoft Edge"));
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
 
             if (includeBrowser)
                 browsers.Add("Microsoft Edge");
-            
+
             var clientApplication = new ClientApplication
             {
                 BrowsersSupported = browsers,

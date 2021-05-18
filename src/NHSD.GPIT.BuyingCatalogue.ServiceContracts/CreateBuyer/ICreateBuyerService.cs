@@ -1,6 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer
 {

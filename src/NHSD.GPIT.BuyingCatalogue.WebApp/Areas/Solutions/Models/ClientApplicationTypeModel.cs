@@ -1,18 +1,11 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class ClientApplicationTypeModel
     {
-        public enum ClientApplicationType
-        {
-            BrowserBased,
-            NativeMobile,
-            NativeDesktop
-        }
-
         public ClientApplicationTypeModel(ClientApplicationType type, ClientApplication client)
         {
             if (client == null)
@@ -26,14 +19,65 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 case ClientApplicationType.BrowserBased:
                     LoadBrowserBasedDetails(client);
                     break;
+
                 case ClientApplicationType.NativeMobile:
                     LoadNativeMobileDetails(client);
                     break;
+
                 case ClientApplicationType.NativeDesktop:
                     LoadNativeDesktopDetails(client);
                     break;
             }
         }
+
+        public enum ClientApplicationType
+        {
+            BrowserBased,
+            NativeMobile,
+            NativeDesktop,
+        }
+
+        public bool DisplayClientApplication { get; set; }
+
+        public string Label { get; set; }
+
+        public string DataTestTag { get; set; }
+
+        public HashSet<string> BrowsersSupported { get; set; } = new();
+
+        public bool? MobileResponsive { get; set; }
+
+        public bool? MobileFirstDesign { get; set; }
+
+        public bool? PluginsRequired { get; set; }
+
+        public string PluginDetails { get; set; }
+
+        public string MinimumConnectionSpeed { get; set; }
+
+        public string ScreenResolution { get; set; }
+
+        public string HardwareRequirements { get; set; }
+
+        public string AdditionalInformation { get; set; }
+
+        public HashSet<string> MobileOperatingSystems { get; set; } = new();
+
+        public string OperatingSystemDescription { get; set; }
+
+        public HashSet<string> MobileConnectionTypes { get; set; } = new();
+
+        public string ConnectionRequirements { get; set; }
+
+        public string MemoryRequirements { get; set; }
+
+        public string StorageSpace { get; set; }
+
+        public string ThirdPartyComponents { get; set; }
+
+        public string DeviceCapabilities { get; set; }
+
+        public string ProcessingPower { get; set; }
 
         private void LoadBrowserBasedDetails(ClientApplication client)
         {
@@ -86,13 +130,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 !string.IsNullOrWhiteSpace(ThirdPartyComponents) ||
                 !string.IsNullOrWhiteSpace(DeviceCapabilities) ||
                 !string.IsNullOrWhiteSpace(HardwareRequirements) ||
-                !string.IsNullOrWhiteSpace(AdditionalInformation);                
+                !string.IsNullOrWhiteSpace(AdditionalInformation);
         }
 
         private void LoadNativeDesktopDetails(ClientApplication client)
         {
             Label = "Native desktop application";
-            DataTestTag = "native-desktop";            
+            DataTestTag = "native-desktop";
             OperatingSystemDescription = client.NativeDesktopOperatingSystemsDescription;
             MinimumConnectionSpeed = client.NativeDesktopMinimumConnectionSpeed;
             MemoryRequirements = client.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement;
@@ -104,9 +148,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             HardwareRequirements = client.NativeDesktopHardwareRequirements;
             AdditionalInformation = client.NativeDesktopAdditionalInformation;
 
-            DisplayClientApplication = 
+            DisplayClientApplication =
                 !string.IsNullOrWhiteSpace(OperatingSystemDescription) ||
-                !string.IsNullOrWhiteSpace(MinimumConnectionSpeed) ||                                
+                !string.IsNullOrWhiteSpace(MinimumConnectionSpeed) ||
                 !string.IsNullOrWhiteSpace(MemoryRequirements) ||
                 !string.IsNullOrWhiteSpace(StorageSpace) ||
                 !string.IsNullOrWhiteSpace(ProcessingPower) ||
@@ -116,47 +160,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 !string.IsNullOrWhiteSpace(HardwareRequirements) ||
                 !string.IsNullOrWhiteSpace(AdditionalInformation);
         }
-
-        public bool DisplayClientApplication { get; set; }
-
-        public string Label { get; set; }
-
-        public string DataTestTag { get; set; }
-
-        public HashSet<string> BrowsersSupported { get; set; } = new();
-
-        public bool? MobileResponsive { get; set; }
-
-        public bool? MobileFirstDesign { get; set; }
-
-        public bool? PluginsRequired { get; set; }
-
-        public string PluginDetails { get; set; }
-
-        public string MinimumConnectionSpeed { get; set; }
-
-        public string ScreenResolution { get; set; }
-
-        public string HardwareRequirements { get; set; }
-
-        public string AdditionalInformation { get; set; }        
-
-        public HashSet<string> MobileOperatingSystems { get; set; } = new();
-
-        public string OperatingSystemDescription { get; set; }
-
-        public HashSet<string> MobileConnectionTypes { get; set; } = new();
-
-        public string ConnectionRequirements { get; set; }
-
-        public string MemoryRequirements { get; set; }
-
-        public string StorageSpace { get; set; }
-
-        public string ThirdPartyComponents { get; set; }
-
-        public string DeviceCapabilities { get; set; }
-        
-        public string ProcessingPower { get; set; }
     }
 }

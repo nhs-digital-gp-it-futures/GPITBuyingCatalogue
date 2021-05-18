@@ -1,7 +1,7 @@
-﻿using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
@@ -9,13 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
     {
         public string BackLink { get; set; } = "./";
 
-        public string BackLinkText { get; set; } = "Go back to previous page"; 
+        public string BackLinkText { get; set; } = "Go back to previous page";
 
         protected void ProcessCheckboxFields(HashSet<string> fieldinput)
         {
             var checkboxProperties = GetType().GetProperties().Where(prop => prop.IsDefined(typeof(CheckboxAttribute)));
 
-            foreach(var prop in checkboxProperties)
+            foreach (var prop in checkboxProperties)
             {
                 prop.SetValue(this, fieldinput.Contains(prop.GetCustomAttribute<CheckboxAttribute>().FieldText));
             }

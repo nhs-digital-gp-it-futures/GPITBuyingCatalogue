@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
     {
         public HomepageActions(IWebDriver driver) : base(driver)
         {
-
         }
 
         internal bool GpitTileDisplayed()

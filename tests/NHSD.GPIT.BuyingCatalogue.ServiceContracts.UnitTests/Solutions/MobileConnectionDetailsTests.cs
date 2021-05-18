@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     internal static class MobileConnectionDetailsTests
     {
         private static readonly Fixture Fixture = new();
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [TestCaseSource(nameof(InvalidStrings))]
         public static void IsValid_DescriptionHasValidValue_ReturnsTrue(string invalid)
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             var mobileConnectionDetails = new MobileConnectionDetails
             {
-                ConnectionType =  new HashSet<string>(),
+                ConnectionType = new HashSet<string>(),
             };
             mobileConnectionDetails.Description.Should().BeNullOrEmpty();
             mobileConnectionDetails.MinimumConnectionSpeed.Should().BeNullOrEmpty();

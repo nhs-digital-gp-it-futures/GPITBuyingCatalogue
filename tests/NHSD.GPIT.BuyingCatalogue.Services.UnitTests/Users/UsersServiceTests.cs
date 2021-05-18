@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
     [Parallelizable(ParallelScope.All)]
     internal static class UsersServiceTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void Constructor_NullLogger_ThrowsException()
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             mockUsersRepository.Verify(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
         }
 
-        [Test]        
+        [Test]
         public static void GetAllUsersForOrganisation_InvalidId_ThrowsException()
         {
             var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Test]
         [TestCase(true)]
         [TestCase(false)]
-        public async static Task EnableOrDisableUser_GetsUser_SetsDisabled_AndUpdates(bool enabled)
+        public static async Task EnableOrDisableUser_GetsUser_SetsDisabled_AndUpdates(bool enabled)
         {
             var user = new AspNetUser { Disabled = !enabled };
 

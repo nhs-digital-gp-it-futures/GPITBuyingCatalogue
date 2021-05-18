@@ -1,44 +1,45 @@
 .bc-flex-container {
-  display: flex;
+    display: flex;
 }
 
 .bc-align-items-center {
-  align-items: center;
+    align-items: center;
 }
 
 .bc-u-text-align-right {
-  text-align: right;
+    text-align: right;
 }
 
 .bc-u-text-align-left {
-  text-align: left;
+    text-align: left;
 }
 
 .bc-u-display-inline {
-  display: inline;
+    display: inline;
 }
 
 .bc-u-inline-block {
-  display: inline-block;
+    display: inline-block;
 }
 
 .bc-u-block-float-left {
-  display: block;
-  @media (min-width: 641px) {
-    float: left;
-  }
+    display: block;
+
+    @media (min-width: 641px) {
+        float: left;
+    }
 }
 
 .bc-u-float-right {
-  @media (min-width: 641px) {
-    float: right;
-  }
+    @media (min-width: 641px) {
+        float: right;
+    }
 }
 
 .bc-u-max-width-full {
-  max-width: 100%;
+    max-width: 100%;
 }
 
 .bc-u-flex {
-  @include flex();
+    @include flex();
 }

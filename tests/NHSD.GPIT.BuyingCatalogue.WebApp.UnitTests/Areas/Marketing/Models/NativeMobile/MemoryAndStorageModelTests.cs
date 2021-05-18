@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             var clientApplication = new ClientApplication
             {
-                MobileMemoryAndStorage = new MobileMemoryAndStorage                
+                MobileMemoryAndStorage = new MobileMemoryAndStorage
                 {
                     MinimumMemoryRequirement = "1GB",
                     Description = "Storage requirements"
@@ -63,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
             Assert.AreEqual("1GB", model.SelectedMemorySize);
-            Assert.AreEqual("Storage requirements", model.Description);                        
-            model.MemorySizes.Should().BeEquivalentTo(GetMemorySizes());            
+            Assert.AreEqual("Storage requirements", model.Description);
+            model.MemorySizes.Should().BeEquivalentTo(GetMemorySizes());
         }
 
         [Test]
@@ -80,9 +80,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [Test]
         [TestCase(null, null, false)]
         [TestCase("", "", false)]
-        [TestCase(" ", " ", false)]        
+        [TestCase(" ", " ", false)]
         [TestCase("Memory", null, false)]
-        [TestCase(null, "Description", false)]        
+        [TestCase(null, "Description", false)]
         [TestCase("Memory", "Description", true)]
         public void IsCompleteIsCorrectlySet(string memorySize, string description, bool? expected)
         {

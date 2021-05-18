@@ -11,34 +11,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
     public class UsersService : IUsersService
     {
-        private readonly ILogWrapper<UsersService> _logger;
-        private readonly IUsersDbRepository<AspNetUser> _userRepository;
+        private readonly ILogWrapper<UsersService> logger;
+        private readonly IUsersDbRepository<AspNetUser> userRepository;
 
-        public UsersService(ILogWrapper<UsersService> logger,
+        public UsersService(
+            ILogWrapper<UsersService> logger,
             IUsersDbRepository<AspNetUser> userRepository)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<AspNetUser> GetUser(string userId)
         {
             userId.ValidateNotNullOrWhiteSpace(nameof(userId));
-            return await _userRepository.SingleAsync(x => x.Id == userId);
+            return await userRepository.SingleAsync(x => x.Id == userId);
         }
 
         public async Task<List<AspNetUser>> GetAllUsersForOrganisation(Guid organisationId)
         {
             organisationId.ValidateGuid(nameof(organisationId));
-            return (await _userRepository.GetAllAsync(x => x.PrimaryOrganisationId == organisationId)).ToList();
+            return (await userRepository.GetAllAsync(x => x.PrimaryOrganisationId == organisationId)).ToList();
         }
 
         public async Task EnableOrDisableUser(string userId, bool disabled)
         {
             userId.ValidateNotNullOrWhiteSpace(nameof(userId));
-            var user = await _userRepository.SingleAsync(x => x.Id == userId);
+            var user = await userRepository.SingleAsync(x => x.Id == userId);
             user.Disabled = disabled;
-            await _userRepository.SaveChangesAsync();
+            await userRepository.SaveChangesAsync();
         }
     }
 }

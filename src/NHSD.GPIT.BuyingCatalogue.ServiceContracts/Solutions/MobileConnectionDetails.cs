@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         public HashSet<string> ConnectionType { get; set; }
 
         public string Description { get; set; }
-        
+
         public string MinimumConnectionSpeed { get; set; }
 
         public bool? IsValid() =>

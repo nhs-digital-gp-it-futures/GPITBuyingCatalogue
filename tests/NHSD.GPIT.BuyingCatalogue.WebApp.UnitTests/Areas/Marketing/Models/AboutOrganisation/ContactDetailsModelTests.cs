@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
                 Solution = new Solution
                 {
-                    MarketingContacts = new MarketingContact[1] {new MarketingContact { FirstName = "Fred" } }
+                    MarketingContacts = new MarketingContact[1] { new MarketingContact { FirstName = "Fred" } }
                 }
             };
 
@@ -71,7 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
             model.Contact2.Should().BeEquivalentTo(new MarketingContact());
         }
 
-
         [Test]
         public static void WithCatalogueItem_AndTwoContacts_PropertiesCorrectlySet_AndComplete()
         {
@@ -81,8 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
                 Solution = new Solution
                 {
-                    MarketingContacts = new MarketingContact[2] 
-                        { 
+                    MarketingContacts = new MarketingContact[2]
+                        {
                             new MarketingContact { FirstName = "Fred" },
                             new MarketingContact { FirstName = "Bill" }
                         }

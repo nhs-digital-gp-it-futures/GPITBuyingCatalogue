@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
         public static IHealthChecksBuilder AddSmtpHealthCheck(
             this IHealthChecksBuilder healthChecksBuilder,
             SmtpSettings smtpSettings,
-            IEnumerable<string>? tags = null,
+            IEnumerable<string> tags = null,
             TimeSpan? timeout = null)
         {
             if (healthChecksBuilder is null)
@@ -56,12 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection
             if (healthChecksBuilder is null)
                 throw new ArgumentNullException(nameof(healthChecksBuilder));
 
-            if (connectionString is null)
-                throw new ArgumentNullException(nameof(connectionString));
-
             if (string.IsNullOrWhiteSpace(connectionString))
-                throw new ArgumentException();
-            
+                    throw new ArgumentNullException(nameof(connectionString));
+
             healthChecksBuilder.AddCheck(
                     "db-self",
                     () => HealthCheckResult.Healthy(),

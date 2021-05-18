@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 {
                     MinimumMemoryRequirement = "1GB",
                     StorageRequirementsDescription = "Storage requirements",
-                    MinimumCpu = "Xeon", 
+                    MinimumCpu = "Xeon",
                     RecommendedResolution = "4:3 - 1024 x 768"
                 }
             };
@@ -96,10 +96,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase("Memory", null, "Minimum Cpu", null, false)]
         [TestCase(null, "Description", "Minimum Cpu", null, false)]
         [TestCase("Memory", "Description", "Minimum Cpu", null, true)]
-        [TestCase("Memory", "Description", "Minimum Cpu", "Resolution", true)]        
+        [TestCase("Memory", "Description", "Minimum Cpu", "Resolution", true)]
         public void IsCompleteIsCorrectlySet(string memorySize, string description, string minimumCpu, string resolution, bool? expected)
         {
-            var clientApplication = new ClientApplication 
+            var clientApplication = new ClientApplication
             {
                 NativeDesktopMemoryAndStorage = new NativeDesktopMemoryAndStorage
                 {

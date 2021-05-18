@@ -10,20 +10,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Area("Solutions")]
     public class DFOCVCController : Controller
     {
-        private readonly ILogWrapper<DFOCVCController> _logger;
-        private readonly ISolutionsService _solutionsService;
+        private readonly ILogWrapper<DFOCVCController> logger;
+        private readonly ISolutionsService solutionsService;
 
         public DFOCVCController(ILogWrapper<DFOCVCController> logger, ISolutionsService solutionsService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         public async Task<IActionResult> Index()
         {
-            var solutions = await _solutionsService.GetDFOCVCSolutions();
-            
-            return View(new SolutionsModel { CatalogueItems = solutions });            
-        }        
+            var solutions = await solutionsService.GetDFOCVCSolutions();
+
+            return View(new SolutionsModel { CatalogueItems = solutions });
+        }
     }
 }

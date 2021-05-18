@@ -6,11 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
     public class HardwareRequirementsModel : MarketingBaseModel
     {
-        public HardwareRequirementsModel() : base(null)
+        public HardwareRequirementsModel()
+            : base(null)
         {
         }
 
-        public HardwareRequirementsModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public HardwareRequirementsModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));

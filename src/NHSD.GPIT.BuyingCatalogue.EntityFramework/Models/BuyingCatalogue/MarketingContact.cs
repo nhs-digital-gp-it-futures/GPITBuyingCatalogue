@@ -8,6 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
     public partial class MarketingContact
     {
         public int Id { get; set; }
+
         public string SolutionId { get; set; }
 
         [StringLength(35)]
@@ -25,7 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
 
         [StringLength(50)]
         public string Department { get; set; }
+
         public DateTime LastUpdated { get; set; }
+
         public Guid LastUpdatedBy { get; set; }
 
         public virtual Solution Solution { get; set; }
@@ -41,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
         {
             if (sourceContact == null)
                 throw new ArgumentNullException(nameof(sourceContact));
-            
+
             Department = sourceContact.Department;
             Email = sourceContact.Email;
             FirstName = sourceContact.FirstName;

@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
             healthCheckArguments.Timeout.Should().Be(timeout);
         }
 
-        #endregion
+        #endregion SmtpHealthCheck Tests
 
         #region DatabaseHealthCheck Tests
 
@@ -219,10 +219,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
         {
             var builder = Mock.Of<IHealthChecksBuilder>();
 
-            Assert.Throws<ArgumentException>(() => HealthChecksBuilderExtensions.AddDatabaseHealthCheck(builder, " "));
+            Assert.Throws<ArgumentNullException>(() => HealthChecksBuilderExtensions.AddDatabaseHealthCheck(builder, " "));
         }
 
-        #endregion
+        #endregion DatabaseHealthCheck Tests
 
         private static void AddSmtpHealthCheckCallback(
             HealthCheckRegistration registration,
@@ -255,6 +255,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.DependencyInjection
             internal ICollection<string> Tags { get; init; }
 
             internal TimeSpan? Timeout { get; init; }
-        }      
+        }
     }
 }

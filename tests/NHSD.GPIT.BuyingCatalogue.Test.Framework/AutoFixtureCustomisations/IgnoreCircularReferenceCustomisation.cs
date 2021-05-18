@@ -1,5 +1,4 @@
-using AutoFixture;
-using AutoFixture.Kernel;
+﻿using AutoFixture;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {

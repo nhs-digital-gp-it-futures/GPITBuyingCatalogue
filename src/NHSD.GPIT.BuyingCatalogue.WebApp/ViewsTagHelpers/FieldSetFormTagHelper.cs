@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
@@ -32,11 +32,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            string FormName = GetModelKebabNameFromFor();
+            string formName = GetModelKebabNameFromFor();
 
-            var formGroup = TagHelperBuilders.GetFormGroupBuilder(FormName);
-            var fieldset = GetFieldSetLegendHeadingBuilder(FormName);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, FormName, DisableLabelAndHint);
+            var formGroup = TagHelperBuilders.GetFormGroupBuilder();
+            var fieldset = GetFieldSetLegendHeadingBuilder(formName);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName, DisableLabelAndHint);
 
             var content = await output.GetChildContentAsync();
 
@@ -44,32 +44,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             formGroup.InnerHtml.AppendHtml(hint);
             formGroup.InnerHtml.AppendHtml(content);
 
-            TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, formGroup, true, FormName);
+            TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, formGroup, true, formName);
         }
 
-        private TagBuilder GetFieldSetLegendHeadingBuilder(string FormName)
-        {
-            var fieldset = GetFieldsetBuilder(FormName);
-            var fieldsetLegend = GetFieldsetLegendBuilder();
-            var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder();
-
-            fieldsetLegend.InnerHtml.AppendHtml(fieldsetlegendheader);
-            fieldset.InnerHtml.AppendHtml(fieldsetLegend);
-
-            return fieldset;
-        }
-
-        private TagBuilder GetFieldsetBuilder(string FormName)
+        private static TagBuilder GetFieldsetBuilder(string formName)
         {
             var builder = new TagBuilder(TagHelperConstants.FieldSet);
 
             builder.AddCssClass(TagHelperConstants.NhsFieldset);
-            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, $"{FormName}-hint");
+            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, $"{formName}-hint");
 
             return builder;
         }
 
-        private TagBuilder GetFieldsetLegendBuilder()
+        private static TagBuilder GetFieldsetLegendBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.Legend);
 
@@ -79,9 +67,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             return builder;
         }
 
+        private TagBuilder GetFieldSetLegendHeadingBuilder(string formName)
+        {
+            var fieldset = GetFieldsetBuilder(formName);
+            var fieldsetLegend = GetFieldsetLegendBuilder();
+            var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder();
+
+            fieldsetLegend.InnerHtml.AppendHtml(fieldsetlegendheader);
+            fieldset.InnerHtml.AppendHtml(fieldsetLegend);
+
+            return fieldset;
+        }
+
         private TagBuilder GetFieldsetLegendHeadingTagBuilder()
         {
-
             if (LabelText == null || DisableLabelAndHint == true)
                 return new TagBuilder("empty");
 

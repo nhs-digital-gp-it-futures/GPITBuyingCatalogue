@@ -12,20 +12,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
     public class OdsService : IOdsService
     {
-        private readonly ILogWrapper<OdsService> _logger;
-        private readonly OdsSettings _settings;
-        private readonly IMemoryCache _memoryCache;
-        private readonly MemoryCacheEntryOptions _memoryCacheOptions;
+        private const int DefaultCacheDuration = 60;
 
-        private const int DEFAULT_CACHE_DURATION = 60;
+        private readonly ILogWrapper<OdsService> logger;
+        private readonly OdsSettings settings;
+        private readonly IMemoryCache memoryCache;
+        private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
-        public OdsService(ILogWrapper<OdsService> logger, OdsSettings settings, IMemoryCache memoryCache)            
+        public OdsService(ILogWrapper<OdsService> logger, OdsSettings settings, IMemoryCache memoryCache)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
 
-            _memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DEFAULT_CACHE_DURATION));
+            memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DefaultCacheDuration));
         }
 
         public async Task<OdsOrganisation> GetOrganisationByOdsCode(string odsCode)
@@ -35,12 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             var key = $"ODS-{odsCode}";
 
-            OdsOrganisation odsOrganisation;
-
-            if ( _memoryCache.TryGetValue(key, out odsOrganisation))
+            if (memoryCache.TryGetValue(key, out OdsOrganisation odsOrganisation))
                 return odsOrganisation;
-            
-            var response = await _settings.ApiBaseUrl
+
+            var response = await settings.ApiBaseUrl
                 .AppendPathSegment("organisations")
                 .AppendPathSegment(odsCode)
                 .AllowHttpStatus("3xx,4xx")
@@ -48,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             var odsResponseOrganisation = response?.Organisation;
 
-            odsOrganisation =  odsResponseOrganisation is null ? null : new OdsOrganisation
+            odsOrganisation = odsResponseOrganisation is null ? null : new OdsOrganisation
             {
                 OrganisationName = odsResponseOrganisation.Name,
                 OdsCode = odsCode,
@@ -62,17 +60,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 return null;
 
             // TODO
-            //if (!(odsOrganisation.IsActive && odsOrganisation.IsBuyerOrganisation))
+            // if (!(odsOrganisation.IsActive && odsOrganisation.IsBuyerOrganisation))
             //    return new StatusCodeResult(StatusCodes.Status406NotAcceptable);
-
-            _memoryCache.Set(key, odsOrganisation, _memoryCacheOptions);
+            memoryCache.Set(key, odsOrganisation, memoryCacheOptions);
 
             return odsOrganisation;
         }
 
         private static string GetPrimaryRoleId(OdsResponseOrganisation organisation)
         {
-            return organisation.Roles.Role.FirstOrDefault(r => r.primaryRole)?.id;
+            return organisation.Roles.Role.FirstOrDefault(r => r.PrimaryRole)?.Id;
         }
 
         private static Address OdsResponseAddressToAddress(OdsResponseAddress odsAddress)
@@ -97,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         private bool IsBuyerOrganisation(OdsResponseOrganisation organisation)
         {
-            return _settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
+            return settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
         }
     }
 }

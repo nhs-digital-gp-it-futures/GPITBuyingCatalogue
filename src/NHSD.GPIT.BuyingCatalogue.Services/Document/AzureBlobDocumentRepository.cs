@@ -10,26 +10,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 {
     public sealed class AzureBlobDocumentRepository : IAzureBlobDocumentRepository
     {
-        private readonly BlobContainerClient _client;
-        private readonly AzureBlobStorageSettings _blobStorageSettings;
+        private readonly BlobContainerClient client;
+        private readonly AzureBlobStorageSettings blobStorageSettings;
 
         public AzureBlobDocumentRepository(BlobContainerClient client, AzureBlobStorageSettings blobStorageSettings)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _blobStorageSettings = blobStorageSettings ?? throw new ArgumentNullException(nameof(blobStorageSettings));
+            this.client = client ?? throw new ArgumentNullException(nameof(client));
+            this.blobStorageSettings = blobStorageSettings ?? throw new ArgumentNullException(nameof(blobStorageSettings));
         }
 
         public Task<IDocument> DownloadAsync(string documentName)
         {
-            return DownloadAsync(_blobStorageSettings.DocumentDirectory, documentName);
+            return DownloadAsync(blobStorageSettings.DocumentDirectory, documentName);
         }
 
-        public async Task<IDocument> DownloadAsync(string? directoryName, string documentName)
+        public async Task<IDocument> DownloadAsync(string directoryName, string documentName)
         {
             try
             {
                 var blobName = directoryName + "/" + documentName;
-                var downloadInfo = await _client.GetBlobClient(blobName).DownloadAsync();
+                var downloadInfo = await client.GetBlobClient(blobName).DownloadAsync();
 
                 return new AzureBlobDocument(downloadInfo);
             }
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 
         public async IAsyncEnumerable<string> GetFileNamesAsync(string directory)
         {
-            var all = _client.GetBlobsAsync(prefix: $"{directory}/");
+            var all = client.GetBlobsAsync(prefix: $"{directory}/");
 
             await foreach (var blob in all)
             {

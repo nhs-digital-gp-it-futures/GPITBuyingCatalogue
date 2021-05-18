@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static void ValidateNotNullOrWhiteSpace(this string item, string name)
         {
-            if(string.IsNullOrWhiteSpace(item))
+            if (string.IsNullOrWhiteSpace(item))
                 throw new ArgumentException("Argument IsNullOrWhiteSpace", name);
         }
 

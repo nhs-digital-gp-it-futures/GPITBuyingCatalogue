@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(OrganisationController).Should().BeDecoratedWith<AuthorizeAttribute>();
-            typeof(OrganisationController).Should().BeDecoratedWith<AreaAttribute>(x=> x.RouteValue == "Order");
+            typeof(OrganisationController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Order");
         }
 
         [Test]
@@ -32,14 +32,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Test]
         public static void Get_Index_NotBuyer_ReturnsNotBuyerView()
         {
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{    
-                new Claim("organisationFunction", "Authority"),                
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{
+                new Claim("organisationFunction", "Authority"),
             }, "mock"));
 
-            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
-            controller.ControllerContext = new ControllerContext()
+            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>())
             {
-                HttpContext = new DefaultHttpContext() { User = user }
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = new DefaultHttpContext() { User = user }
+                }
             };
 
             var result = controller.Index();
@@ -52,13 +54,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Get_Index_Buyer_ReturnsDefaultView()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{
-                new Claim("organisationFunction", "Buyer"),                
+                new Claim("organisationFunction", "Buyer"),
             }, "mock"));
 
-            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
-            controller.ControllerContext = new ControllerContext()
+            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>())
             {
-                HttpContext = new DefaultHttpContext() { User = user }
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = new DefaultHttpContext() { User = user }
+                }
             };
 
             var result = controller.Index();
@@ -73,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
 
             var result = controller.NewOrder();
-            
+
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
         }
     }

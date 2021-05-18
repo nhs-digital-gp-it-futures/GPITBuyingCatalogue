@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             mapper = null;
         }
 
-
         [Test]
         public void Constructor_NullCatalogueItem_ThrowsException()
         {
@@ -47,11 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         {
             var clientApplication = new ClientApplication { MinimumConnectionSpeed = "15Mbs", MinimumDesktopResolution = "21:9 - 3440 x 1440" };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { ClientApplication = json } 
-                };
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { ClientApplication = json }
+            };
 
             var model = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
 
@@ -77,9 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("15Mbs", true)]
-        public void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, bool? expected )
+        public void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, bool? expected)
         {
-            var clientApplication = new ClientApplication { MinimumConnectionSpeed = minimumConnectionSpeed};
+            var clientApplication = new ClientApplication { MinimumConnectionSpeed = minimumConnectionSpeed };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 

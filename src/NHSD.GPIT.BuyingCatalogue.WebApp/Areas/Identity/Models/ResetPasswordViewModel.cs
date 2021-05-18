@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
         [Compare("Password", ErrorMessage = ErrorMessages.PasswordMismatch)]
         [DisplayName("Confirm password")]
         public string ConfirmPassword { get; set; }
-        
+
         public string Email { get; set; }
 
         public string Token { get; set; }

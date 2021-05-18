@@ -37,12 +37,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var clientApplication = new ClientApplication { NativeDesktopAdditionalInformation = "Some additional information" };
 
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",                    
-                    Solution = new EntityFramework.Models.BuyingCatalogue.Solution { ClientApplication = json }
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new EntityFramework.Models.BuyingCatalogue.Solution { ClientApplication = json }
             };
-            
+
             var model = new AdditionalInformationModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
@@ -64,14 +64,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("Some aditional information", true)]
-        public static void IsCompleteIsCorrectlySet(string additionalInformation, bool? expected )
+        public static void IsCompleteIsCorrectlySet(string additionalInformation, bool? expected)
         {
             var clientApplication = new ClientApplication { NativeDesktopAdditionalInformation = additionalInformation };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new EntityFramework.Models.BuyingCatalogue.Solution { ClientApplication = json } };
 
             var model = new AdditionalInformationModel(catalogueItem);
-            
+
             Assert.AreEqual(expected, model.IsComplete);
         }
     }

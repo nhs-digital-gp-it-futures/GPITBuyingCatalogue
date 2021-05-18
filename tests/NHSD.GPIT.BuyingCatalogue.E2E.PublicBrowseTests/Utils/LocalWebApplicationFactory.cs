@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,10 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
 using Serilog.Events;
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         // Need to find a better way of doing this
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=buyingcatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
+
         private const string ID_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueUsers;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string OPERATING_MODE = "private";
 
@@ -114,7 +115,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     // figure out error logging here
                 }
             });
-
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");
             return builder;

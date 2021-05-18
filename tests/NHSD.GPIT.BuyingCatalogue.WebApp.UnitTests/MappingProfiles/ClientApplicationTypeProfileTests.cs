@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using AutoMapper;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -46,14 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 
             mapperConfiguration.AssertConfigurationIsValid();
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
 
             actual.BackLink.Should()
@@ -74,11 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToBrowserBasedModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
             var actual = mapper.Map<CatalogueItem, BrowserBasedModel>(catalogueItem);
-            
+
             actual.BackLink.Should()
                 .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
@@ -86,16 +86,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToNativeDesktopModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
             var actual = mapper.Map<CatalogueItem, NativeDesktopModel>(catalogueItem);
-            
+
             actual.BackLink.Should()
                 .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
@@ -108,11 +108,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToNativeMobileModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
             var actual = mapper.Map<CatalogueItem, NativeMobileModel>(catalogueItem);
-            
+
             actual.BackLink.Should()
                 .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
             actual.BackLinkText.Should().Be("Return to all sections");
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_ClientApplicationTypesModelToClientApplication_ResultAsExpected(
             ClientApplication clientApplication, ClientApplicationTypesModel model)
@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             var original = clientApplication.CopyObjectToNew();
 
             mapper.Map(model, clientApplication);
-            
+
             clientApplication.ClientApplicationTypes.Contains("browser-based")
                 .Should().Be(model.BrowserBased);
             clientApplication.ClientApplicationTypes.Contains("native-desktop")
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             clientApplication.ClientApplicationTypes.Contains("native-mobile")
                 .Should().Be(model.NativeMobile);
             clientApplication.ValidateAllPropertiesExcept(original,
-                new[] {nameof(ClientApplication.ClientApplicationTypes)});
+                new[] { nameof(ClientApplication.ClientApplicationTypes) });
         }
     }
 }

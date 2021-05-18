@@ -6,19 +6,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 {
     public class SolutionStatusModel : MarketingBaseModel
     {
-        public SolutionStatusModel() : base(null)
+        public SolutionStatusModel()
+            : base(null)
         {
         }
-        
-        public SolutionStatusModel(CatalogueItem catalogueItem) : base(catalogueItem)
+
+        public SolutionStatusModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
             CatalogueItemName = CatalogueItem.Name;
             SupplierName = CatalogueItem.Supplier.Name;
-        }            
-        
+        }
+
         public string CatalogueItemName { get; set; }
 
         public string SupplierName { get; set; }

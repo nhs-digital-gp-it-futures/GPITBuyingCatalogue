@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var controller = new NominateOrganisationController(Mock.Of<ILogWrapper<NominateOrganisationController>>());
 
             var result = controller.Index();
-            
+
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }

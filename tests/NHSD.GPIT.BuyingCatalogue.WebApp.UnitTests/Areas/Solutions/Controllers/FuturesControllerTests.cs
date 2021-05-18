@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
         }
-        
+
         [Test]
         public static async Task Get_CapabilitiesSelector_ReturnsDefaultView()
         {
@@ -82,12 +82,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
                 mockSolutionsService.Object, Mock.Of<IDocumentService>());
 
-            var result = await controller.CapabilitiesSelector() as ViewResult;            
+            var result = await controller.CapabilitiesSelector() as ViewResult;
             result.Should().NotBeNull();
 
             var model = result.Model as CapabilitiesModel;
             model.Should().NotBeNull();
-            
+
             Assert.AreEqual(2, model.LeftCapabilities.Length);
             Assert.AreEqual(2, model.RightCapabilities.Length);
             Assert.AreEqual("./", model.BackLink);
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(x => x.GetFuturesFoundationSolutions()).ReturnsAsync(solutions);
-            
+
             var controller = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
                 mockSolutionsService.Object, Mock.Of<IDocumentService>());
 

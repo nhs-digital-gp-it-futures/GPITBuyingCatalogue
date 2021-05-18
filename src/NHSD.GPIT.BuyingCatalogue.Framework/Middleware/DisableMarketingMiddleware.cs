@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware
-{    
+{
     [ExcludeFromCodeCoverage(Justification = "This will be removed once private browse is removed and marketing protected by auth")]
     public class DisableMarketingMiddleware
     {
@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware
         {
             if (context.Request.Path.HasValue &&
                 context.Request.Path.Value.StartsWith("/marketing"))
-            {                
-                context.Response.StatusCode = 404;                
+            {
+                context.Response.StatusCode = 404;
                 return;
             }
 
