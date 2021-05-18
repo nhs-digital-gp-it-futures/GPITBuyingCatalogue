@@ -31,7 +31,12 @@ jobs:
 - job: dockerBuildAndPush
   displayName: Run all tests and build & push docker containers to the ACR
   variables:
-    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latest
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latestbuild
+
   dependsOn: version
   pool:
     vmImage: 'ubuntu-latest'
@@ -105,8 +110,7 @@ jobs:
       buildContext: './'
       tags: |
         $(semVer)
-        latestbuild
-
+        $(latestTag)
 - job: createBuildArtifact
   displayName: Create Build Artifact
   dependsOn: dockerBuildAndPush
