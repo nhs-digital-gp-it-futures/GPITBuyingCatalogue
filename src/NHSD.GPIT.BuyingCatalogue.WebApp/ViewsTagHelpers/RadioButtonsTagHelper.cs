@@ -16,13 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public const string DisplayNameName = "display-name";
         public const string IsYesOrNoName = "is-yes-no";
 
-
         private const string RadioItemClass = "nhsuk-radios__item";
         private const string RadioItemInputClass = "nhsuk-radios__input";
         private const string RadioLabelClass = "nhsuk-radios__label";
         private const string NhsRadios = "nhsuk-radios";
 
-        private IHtmlGenerator htmlGenerator;
+        private readonly IHtmlGenerator htmlGenerator;
+
+        public RadioButtonsTagHelper(IHtmlGenerator htmlGenerator) => this.htmlGenerator = htmlGenerator;
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -42,11 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         [HtmlAttributeName(IsYesOrNoName)]
         public bool? IsYesNo { get; set; }
-
-        public RadioButtonsTagHelper(IHtmlGenerator htmlGenerator)
-        {
-            this.htmlGenerator = htmlGenerator;
-        }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -74,7 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                     select BuildRadioItem(item)).ToList();
         }
 
-
         private List<TagBuilder> BuildYesNoRadios()
         {
             var yesBuilder = new TagBuilder(TagHelperConstants.Div);
@@ -94,9 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             return new List<TagBuilder>
             {
                 yesBuilder,
-                noBuilder
+                noBuilder,
             };
-
         }
 
         private TagBuilder BuildRadioItem(object item)
@@ -129,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         private TagBuilder BuildRadioInput(string value)
         {
-            var isChecked = value == "Yes" && For.Model?.ToString() == "Yes" || value == "No" && For.Model?.ToString() != "Yes";
+            var isChecked = (value == "Yes" && For.Model?.ToString() == "Yes") || (value == "No" && For.Model?.ToString() != "Yes");
 
             return GenerateRadioButton(isChecked, value, RadioItemInputClass);
         }
@@ -146,14 +140,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 For.ModelExplorer,
                 For.Name,
                 itemDisplay,
-                new {@class = RadioLabelClass });
+                new { @class = RadioLabelClass });
 
-            return builder;        
+            return builder;
         }
 
         private TagBuilder BuildRadioLabel(string display)
         {
-
             var builder = htmlGenerator.GenerateLabel(
                 ViewContext,
                 For.ModelExplorer,
@@ -163,26 +156,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             return builder;
         }
-        
+
         private TagBuilder GenerateRadioButton(bool isChecked, string value, string cssClass)
         {
             var builder = new TagBuilder(TagHelperConstants.Input);
 
-            builder.GenerateId(For.Name, "");
+            builder.GenerateId(For.Name, "_");
 
             builder.MergeAttribute("name", For.Name);
             builder.MergeAttribute(TagHelperConstants.Type, "radio");
             builder.MergeAttribute("value", value);
 
             if (isChecked)
-                builder.MergeAttribute("checked", "");
+                builder.MergeAttribute("checked", string.Empty);
 
             builder.AddCssClass(cssClass);
 
             return builder;
         }
-
-
-
     }
 }

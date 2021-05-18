@@ -8,7 +8,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework;
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [Parallelizable(ParallelScope.All)]
     internal static class ClientApplicationTypeControllerTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Test]
         public static void ClassIsCorrectlyDecorated()
@@ -55,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 _ = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(),
                     Mock.Of<IMapper>(), null));
         }
-        
+
         [Test]
         public static void Get_BrowserBased_HttpGetAttribute_ExpectedTemplate()
         {
@@ -67,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Template
                 .Should().Be(nameof(ClientApplicationTypeController.BrowserBased).ToLowerCaseHyphenated());
         }
-        
+
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_BrowserBased_InvalidId_ThrowsException(string id)
@@ -78,12 +77,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             Assert.ThrowsAsync<ArgumentNullException>(() => controller.BrowserBased(id));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_BrowserBased_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), 
+            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.BrowserBased(id);
@@ -106,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_BrowserBased_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -143,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockBrowserBasedModel);
         }
-        
+
         [Test]
         public static void Get_NativeDesktop_HttpGetAttribute_ExpectedTemplate()
         {
@@ -155,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Template
                 .Should().Be(nameof(ClientApplicationTypeController.NativeDesktop).ToLowerCaseHyphenated());
         }
-        
+
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeDesktop_InvalidId_ThrowsException(string id)
@@ -166,12 +165,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktop(id));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_NativeDesktop_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), 
+            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.NativeDesktop(id);
@@ -194,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_NativeDesktop_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -231,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockNativeDesktopModel);
         }
-        
+
         [Test]
         public static void Get_NativeMobile_HttpGetAttribute_ExpectedTemplate()
         {
@@ -243,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Template
                 .Should().Be(nameof(ClientApplicationTypeController.NativeMobile).ToLowerCaseHyphenated());
         }
-        
+
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_NativeMobile_InvalidId_ThrowsException(string id)
@@ -254,12 +253,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobile(id));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_NativeMobile_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), 
+            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.NativeMobile(id);
@@ -282,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_NativeMobile_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -342,12 +341,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.ClientApplicationTypes(id));
         }
-        
+
         [Test, AutoData]
         public static async Task Get_ClientApplicationTypes_ValidId_CallsGetSolutionOnService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), 
+            var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ClientApplicationTypes(id);
@@ -369,7 +368,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
-        
+
         [Test, AutoData]
         public static async Task Get_ClientApplicationTypes_ValidSolutionFromService_MapsToModel(string id)
         {
@@ -406,7 +405,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockClientApplicationTypesModel);
         }
-        
+
         [Test]
         public static void Post_ClientApplicationTypes_HttpPostAttribute_ExpectedTemplate()
         {
@@ -418,7 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Template
                 .Should().Be(nameof(ClientApplicationTypeController.ClientApplicationTypes).ToLowerCaseHyphenated());
         }
-        
+
         [Test]
         public static void Post_ClientApplicationTypes_NullModel_ThrowsException()
         {
@@ -427,9 +426,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.ClientApplicationTypes((ClientApplicationTypesModel) null));
+                controller.ClientApplicationTypes((ClientApplicationTypesModel)null));
         }
-        
+
         [Test]
         public static async Task Post_ClientApplicationTypes_InvalidModel_ReturnsViewWithModel()
         {
@@ -454,7 +453,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ClientApplicationTypes(model);
-            
+
             mockService.Verify(x => x.GetClientApplication(model.SolutionId));
         }
 
@@ -469,11 +468,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.ClientApplicationTypes(model)).As<BadRequestObjectResult>();
-            
+
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
-        
+
         [Test, AutoData]
         public static async Task Post_ClientApplicationTypes_ValidModel_MapsModelToClientApplication(
             ClientApplicationTypesModel model)
@@ -517,7 +516,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockClientApplication);
             var controller = new ClientApplicationTypeController(Mock.Of<ILogWrapper<ClientApplicationTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
-            
+
             var actual = (await controller.ClientApplicationTypes(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();

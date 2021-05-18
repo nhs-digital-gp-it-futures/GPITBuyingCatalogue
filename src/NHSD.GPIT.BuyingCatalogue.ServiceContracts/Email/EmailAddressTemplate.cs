@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
     /// </summary>
     public sealed record EmailAddressTemplate
     {
-        private readonly string? address;
+        private readonly string address;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailAddressTemplate"/> class.
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// </summary>
         /// <param name="address">The actual e-mail address.</param>
         /// <param name="displayName">An optional display name.</param>
-        public EmailAddressTemplate(string address, string? displayName = null)
+        public EmailAddressTemplate(string address, string displayName = null)
         {
             Address = address;
             DisplayName = displayName;
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// </summary>
         /// <exception cref="ArgumentException"><paramref name="value"/> is <see langword="null"/>, empty or
         /// white space.</exception>
-        public string? Address
+        public string Address
         {
             get => address;
             init
@@ -55,13 +55,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// Gets the display name of the address.
         /// </summary>
         /// <remarks>An optional display name, for example Buying Catalogue Team.</remarks>
-        public string? DisplayName { get; init; }
+        public string DisplayName { get; init; }
 
         /// <summary>
         /// Returns the <see cref="EmailAddress"/> representation of the current instance.
         /// </summary>
         /// <returns>The <see cref="EmailAddress"/> representation of the current instance.</returns>
-        public EmailAddress? AsEmailAddress() => Address is null
+        public EmailAddress AsEmailAddress() => Address is null
             ? null
             : new EmailAddress(Address, DisplayName);
     }

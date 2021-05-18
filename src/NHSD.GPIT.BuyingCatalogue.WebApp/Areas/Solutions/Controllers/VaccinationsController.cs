@@ -7,16 +7,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Area("Solutions")]
     public class VaccinationsController : Controller
     {
-        private readonly ILogWrapper<VaccinationsController> _logger;
-        
+        private readonly ILogWrapper<VaccinationsController> logger;
+
         public VaccinationsController(ILogWrapper<VaccinationsController> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public IActionResult Index()
-        {                                    
+        {
             return View();
-        }        
+        }
     }
 }

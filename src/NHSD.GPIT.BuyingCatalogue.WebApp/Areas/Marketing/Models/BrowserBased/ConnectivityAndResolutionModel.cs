@@ -8,11 +8,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
     public class ConnectivityAndResolutionModel : MarketingBaseModel
     {
-        public ConnectivityAndResolutionModel() : base(null)
+        public ConnectivityAndResolutionModel()
+            : base(null)
         {
         }
 
-        public ConnectivityAndResolutionModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public ConnectivityAndResolutionModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
@@ -27,11 +29,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
         public override bool? IsComplete => !string.IsNullOrWhiteSpace(ClientApplication.MinimumConnectionSpeed);
 
         public string SelectedConnectionSpeed { get; set; }
-        
+
         public List<SelectListItem> ConnectionSpeeds { get; set; }
 
         public string SelectedScreenResolution { get; set; }
-        
+
         public List<SelectListItem> ScreenResolutions { get; set; }
 
         public PageTitleViewModel PageTitle() =>

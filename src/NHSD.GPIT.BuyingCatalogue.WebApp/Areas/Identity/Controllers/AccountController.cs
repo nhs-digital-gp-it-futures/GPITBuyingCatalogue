@@ -22,26 +22,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
 Contact the account administrator at: {0} or call {1}";
 
-        private readonly ILogWrapper<AccountController> _logger;
-        private readonly SignInManager<AspNetUser> _signInManager;
-        private readonly UserManager<AspNetUser> _userManager;
-        private readonly IPasswordService _passwordService;
-        private readonly IPasswordResetCallback _passwordResetCallback;
-        private readonly DisabledErrorMessageSettings _disabledErrorMessageSettings;
+        private readonly ILogWrapper<AccountController> logger;
+        private readonly SignInManager<AspNetUser> signInManager;
+        private readonly UserManager<AspNetUser> userManager;
+        private readonly IPasswordService passwordService;
+        private readonly IPasswordResetCallback passwordResetCallback;
+        private readonly DisabledErrorMessageSettings disabledErrorMessageSettings;
 
         public AccountController(ILogWrapper<AccountController> logger, SignInManager<AspNetUser> signInManager, UserManager<AspNetUser> userManager, IPasswordService passwordService, IPasswordResetCallback passwordResetCallback, DisabledErrorMessageSettings disabledErrorMessageSettings)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
-            _passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
-            _disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
+            this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
+            this.disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
         }
 
         [HttpGet]
         public IActionResult Login(string returnUrl)
-        {            
+        {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
@@ -49,25 +49,25 @@ Contact the account administrator at: {0} or call {1}";
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            if (viewModel is null)            
+            if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
-            
+
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            var signinResult = await _signInManager.PasswordSignInAsync(viewModel.EmailAddress, viewModel.Password, isPersistent: false, lockoutOnFailure: true);
+            var signinResult = await signInManager.PasswordSignInAsync(viewModel.EmailAddress, viewModel.Password, isPersistent: false, lockoutOnFailure: true);
 
             if (signinResult.Succeeded)
             {
-                var user = await _userManager.FindByEmailAsync(viewModel.EmailAddress);
+                var user = await userManager.FindByEmailAsync(viewModel.EmailAddress);
 
-                if(user.Disabled)
+                if (user.Disabled)
                 {
                     var disabledErrorFormat = string.Format(
                         CultureInfo.CurrentCulture,
                         UserDisabledErrorMessageTemplate,
-                        _disabledErrorMessageSettings.EmailAddress,
-                        _disabledErrorMessageSettings.PhoneNumber);
+                        disabledErrorMessageSettings.EmailAddress,
+                        disabledErrorMessageSettings.PhoneNumber);
 
                     ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
 
@@ -88,21 +88,21 @@ Contact the account administrator at: {0} or call {1}";
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            if (_signInManager.IsSignedIn(User))
-                await _signInManager.SignOutAsync().ConfigureAwait(false);
+            if (signInManager.IsSignedIn(User))
+                await signInManager.SignOutAsync().ConfigureAwait(false);
 
             return LocalRedirect("~/");
         }
 
         [HttpGet]
         public IActionResult Registration()
-        {            
+        {
             return View();
         }
 
         [HttpGet]
         public IActionResult ForgotPassword()
-        {            
+        {
             return View();
         }
 
@@ -110,19 +110,19 @@ Contact the account administrator at: {0} or call {1}";
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel viewModel)
         {
-            if (viewModel is null)            
+            if (viewModel is null)
                 throw new ArgumentNullException(nameof(viewModel));
-            
-            if (!ModelState.IsValid)            
-                return View(viewModel);            
-            
-            var resetToken = await _passwordService.GeneratePasswordResetTokenAsync(viewModel.EmailAddress);
+
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            var resetToken = await passwordService.GeneratePasswordResetTokenAsync(viewModel.EmailAddress);
             if (resetToken is null)
                 return RedirectToAction(nameof(ForgotPasswordLinkSent));
 
-            await _passwordService.SendResetEmailAsync(
+            await passwordService.SendResetEmailAsync(
                 resetToken.User,
-                _passwordResetCallback.GetPasswordResetCallback(resetToken));
+                passwordResetCallback.GetPasswordResetCallback(resetToken));
 
             return RedirectToAction(nameof(ForgotPasswordLinkSent));
         }
@@ -135,12 +135,12 @@ Contact the account administrator at: {0} or call {1}";
 
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string email, string token)
-        {            
-            var isValid = await _passwordService.IsValidPasswordResetTokenAsync(email, token);
+        {
+            var isValid = await passwordService.IsValidPasswordResetTokenAsync(email, token);
 
-            if (!isValid)            
+            if (!isValid)
                 return RedirectToAction(nameof(ResetPasswordExpired));
-            
+
             return View(new ResetPasswordViewModel { Email = email, Token = token });
         }
 
@@ -148,19 +148,19 @@ Contact the account administrator at: {0} or call {1}";
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
         {
-            if (viewModel is null)            
-                throw new ArgumentNullException(nameof(viewModel));            
+            if (viewModel is null)
+                throw new ArgumentNullException(nameof(viewModel));
 
-            if (!ModelState.IsValid)            
-                return View(viewModel);            
-            
-            var res = await _passwordService.ResetPasswordAsync(viewModel.Email, viewModel.Token, viewModel.Password);
-            
-            if (res.Succeeded)            
-                return RedirectToAction(nameof(ResetPasswordConfirmation));            
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            var res = await passwordService.ResetPasswordAsync(viewModel.Email, viewModel.Token, viewModel.Password);
+
+            if (res.Succeeded)
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
 
             var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
-            
+
             if (invalidPasswordError is not null)
             {
                 ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), invalidPasswordError.Description);
@@ -168,12 +168,12 @@ Contact the account administrator at: {0} or call {1}";
             }
 
             var invalidTokenError = res.Errors.FirstOrDefault(error => error.Code == IPasswordService.InvalidTokenCode);
-            
-            if (invalidTokenError is not null)            
+
+            if (invalidTokenError is not null)
                 return RedirectToAction(nameof(ResetPasswordExpired));
-            
+
             throw new InvalidOperationException(
-                $"Unexpected errors whilst resetting password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");            
+                $"Unexpected errors whilst resetting password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
         }
 
         [HttpGet]

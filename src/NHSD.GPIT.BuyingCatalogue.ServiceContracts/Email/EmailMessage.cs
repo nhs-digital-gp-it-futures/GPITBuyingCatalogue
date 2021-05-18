@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         public EmailMessage(
             EmailMessageTemplate template,
             ICollection<EmailAddress> recipients,
-            IEnumerable<EmailAttachment>? attachments = null,
+            IEnumerable<EmailAttachment> attachments = null,
             params object[] formatItems)
         {
             if (template is null)
@@ -48,12 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
             if (recipients.Count == 0)
                 throw new ArgumentException("At least one recipient must be specified.", nameof(recipients));
 
-#pragma warning disable CA1508 // Avoid dead conditional code (false positive)
-
             if (formatItems is null)
                 throw new ArgumentNullException(nameof(formatItems));
-
-#pragma warning restore CA1508 // Avoid dead conditional code
 
             this.recipients.AddRange(recipients);
             Subject = template.Subject;
@@ -77,17 +73,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// <summary>
         /// Gets the subject of the message.
         /// </summary>
-        public string? Subject { get; }
+        public string Subject { get; }
 
         /// <summary>
         /// Gets the HTML version of the body.
         /// </summary>
-        public EmailMessageBody? HtmlBody { get; }
+        public EmailMessageBody HtmlBody { get; }
 
         /// <summary>
         /// Gets the plain text version of the body.
         /// </summary>
-        public EmailMessageBody? TextBody { get; }
+        public EmailMessageBody TextBody { get; }
 
         /// <summary>
         /// Gets the collection of message attachments.

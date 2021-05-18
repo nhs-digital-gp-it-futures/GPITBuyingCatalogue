@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
@@ -46,21 +46,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 
             mapperConfiguration.AssertConfigurationIsValid();
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem);
 
-            actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop");
+            actual.AdditionalInformation.Should().Be(clientApplication.NativeDesktopAdditionalInformation);
+            actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.AdditionalInformation.Should().Be(clientApplication.NativeDesktopAdditionalInformation);
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
@@ -69,13 +68,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToConnectivityModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
-            actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop");
+            actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(new List<SelectListItem>
@@ -97,18 +95,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, HardwareRequirementsModel>(catalogueItem);
 
-            actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop");
+            actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Description.Should().Be(clientApplication.NativeDesktopHardwareRequirements);
@@ -120,13 +117,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, MemoryAndStorageModel>(catalogueItem);
-            
-            actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop");
+
+            actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.MemorySizes.Should().BeEquivalentTo(new List<SelectListItem>
@@ -176,31 +172,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, OperatingSystemsModel>(catalogueItem);
 
-            actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop");
+            actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.OperatingSystemsDescription.Should().Be(clientApplication.NativeDesktopOperatingSystemsDescription);
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToThirdPartyModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, ThirdPartyModel>(catalogueItem);
 
-            actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop");
+            actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.DeviceCapabilities.Should().Be(clientApplication.NativeDesktopThirdParty.DeviceCapabilities);
@@ -212,13 +206,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         [Test, AutoData]
         public void Map_MemoryAndStorageModelToNativeDesktopMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
-        {            
+        {
             var actual = mapper.Map<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>(memoryAndStorageModel);
-            
+
             actual.MinimumMemoryRequirement.Should().Be(memoryAndStorageModel.SelectedMemorySize);
             actual.StorageRequirementsDescription.Should().Be(memoryAndStorageModel.StorageDescription);
             actual.MinimumCpu.Should().Be(memoryAndStorageModel.MinimumCpu);
             actual.RecommendedResolution.Should().Be(memoryAndStorageModel.SelectedScreenResolution);
         }
+
+        private static string GetBackLink(CatalogueItem catalogueItem) =>
+            $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop";
     }
 }

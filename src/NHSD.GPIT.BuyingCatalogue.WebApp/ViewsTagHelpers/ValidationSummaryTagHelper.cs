@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)            
+            if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
             if (ViewContext.ViewData.ModelState.IsValid)
@@ -43,16 +43,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             output.Content.AppendHtml(errorList);
         }
 
-        private void BuildOutput(TagHelperOutput output)
+        private static void BuildOutput(TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            var attributes = new List<TagHelperAttribute>{
+            var attributes = new List<TagHelperAttribute>
+            {
                 new TagHelperAttribute(TagHelperConstants.Role, TagHelperConstants.RoleAlert),
                 new TagHelperAttribute(TagHelperConstants.LabelledBy, TagHelperConstants.ErrorSummaryTitle),
                 new TagHelperAttribute(TagHelperConstants.TabIndex, "-1"),
-                new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsValidationSummary)
+                new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsValidationSummary),
             };
 
             attributes.ForEach(a => output.Attributes.Add(a));
@@ -87,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             var viewType = ViewContext.ViewData.Model.GetType();
 
-            if (viewType is null)            
+            if (viewType is null)
                 throw new InvalidOperationException();
 
             var propertyNames = viewType.GetProperties().Select(i => i.Name).ToList();

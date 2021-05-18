@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         private sealed class ApplicationUserValidatorTestContext
         {
             private ApplicationUserValidatorTestContext()
-            {                
+            {
                 UsersRepositoryMock = new Mock<IUsersDbRepository<AspNetUser>>();
                 UsersRepositoryMock
                     .Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))

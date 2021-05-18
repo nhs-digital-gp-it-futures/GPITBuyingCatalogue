@@ -24,12 +24,12 @@
     <h3 data-test-id="organisation-primary-role-id-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Primary Role ID</h3>
     <div data-test-id="organisation-primary-role-id" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.Organisation.PrimaryRoleId</div>
 
-    <form method="post">          
+    <form method="post">
         <div data-test-id="catalogue-agreement-checkbox" class="nhsuk-u-margin-bottom-9">
             <div class="nhsuk-form-group">
                 <div class="nhsuk-checkboxes">
                     <div class="nhsuk-checkboxes__item">
-                        <input class="nhsuk-checkboxes__input" asp-for="@Model.CatalogueAgreementSigned" type="checkbox" >
+                        <input class="nhsuk-checkboxes__input" asp-for="@Model.CatalogueAgreementSigned" type="checkbox">
                         <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.CatalogueAgreementSigned">
                             Organisation End User Agreement has been signed
                         </label>

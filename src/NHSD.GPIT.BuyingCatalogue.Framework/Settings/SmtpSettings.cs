@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         /// <summary>
         /// Gets the host name of the SMTP server.
         /// </summary>
-        public string? Host { get; init; }
+        public string Host { get; init; }
 
         /// <summary>
         /// Gets the port to use to connect to the SMTP server.
@@ -33,6 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         /// <summary>
         /// Gets the value used to prefix the subject in e-mails.
         /// </summary>
-        public string? EmailSubjectPrefix { get; init; }
+        public string EmailSubjectPrefix { get; init; }
     }
 }

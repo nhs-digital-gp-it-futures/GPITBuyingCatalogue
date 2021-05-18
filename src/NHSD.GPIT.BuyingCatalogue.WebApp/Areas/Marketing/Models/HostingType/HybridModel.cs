@@ -8,16 +8,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
     public class HybridModel : MarketingBaseModel
     {
-        public HybridModel() : base(null)
+        public HybridModel()
+            : base(null)
         {
         }
 
-        public HybridModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public HybridModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
             HybridHostingType = CatalogueItem.Solution.GetHosting().HybridHostingType;
         }
 

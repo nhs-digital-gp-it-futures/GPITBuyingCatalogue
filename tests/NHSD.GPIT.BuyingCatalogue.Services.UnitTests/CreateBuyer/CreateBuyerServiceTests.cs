@@ -25,10 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
     [Parallelizable(ParallelScope.All)]
     internal static class CreateBuyerServiceTests
     {
-
         [Test]
         public static void Constructor_NullApplicationUserValidator_ThrowsException()
-        {            
+        {
             Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
                 Mock.Of<ILogWrapper<CreateBuyerService>>(),
                 Mock.Of<IUsersDbRepository<AspNetUser>>(),
@@ -41,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
         [Test]
         public static void Constructor_NullUserRepository_ThrowsException()
-        {            
+        {
             Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
                   Mock.Of<ILogWrapper<CreateBuyerService>>(),
                   null,
@@ -117,13 +116,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                   Mock.Of<IAspNetUserValidator>()));
         }
 
-
         [Test]
         public static async Task CreateAsync_SuccessfulApplicationUserValidation_ReturnsSuccess()
         {
             var context = CreateBuyerServiceTestContext.Setup();
             var sut = context.CreateBuyerService;
-            
+
             var actual = await sut.Create(Guid.NewGuid(), "Test", "Smith", "0123456789", "a.b@c.com");
 
             actual.IsSuccess.Should().BeTrue();
@@ -183,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             context.AspNetUserValidatorResult = Result.Failure(new List<ErrorDetails>());
 
             var sut = context.CreateBuyerService;
-            
+
             var actual = await sut.Create(Guid.NewGuid(), "Test", "Smith", "0123456789", "a.b@c.com");
 
             var expected = Result.Failure<string>(new List<ErrorDetails>());
@@ -220,7 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             context.EmailServiceMock.Verify(x => x.SendEmailAsync(It.IsAny<EmailMessage>()));
         }
-        
+
         [Test]
         public static void SendInitialEmailAsync_NullUser_ThrowsException()
         {
@@ -234,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                     Mock.Of<IEmailService>(),
                     new RegistrationSettings(),
                     Mock.Of<IAspNetUserValidator>());
-                    
+
                 await createBuyerService.SendInitialEmailAsync(null);
             }
 
@@ -259,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 .Create()
                 .WithEmailAddress("ricardo@burton.com")
                 .Build();
-    
+
             var createBuyerService = new CreateBuyerService(
                 Mock.Of<ILogWrapper<CreateBuyerService>>(),
                 Mock.Of<IUsersDbRepository<AspNetUser>>(),
@@ -344,7 +342,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var passwordResetCallback = Mock.Of<IPasswordResetCallback>(
                 c => c.GetPasswordResetCallback(It.IsNotNull<PasswordResetToken>()) == callback);
-                                                
+
             var mockEmailService = new MockEmailService();
 
             var createBuyerService = new CreateBuyerService(

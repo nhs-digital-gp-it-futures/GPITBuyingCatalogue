@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
 
             actual.MobileResponsive.Should().BeNull();
         }
-        
+
         [Test]
         [TestCase("YES")]
         [TestCase("yes")]

@@ -1,9 +1,8 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
 using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             var checkboxes = Driver.FindElements(CapabilitySelectorObjects.CheckboxGroups);
 
             return checkboxes.Select(s => s.FindElement(By.TagName("label")).Text);
-         }
+        }
 
         internal void ClickFirstCheckbox()
         {
@@ -29,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
             var checkboxes = Driver.FindElements(CapabilitySelectorObjects.CheckboxGroups);
 
-            checkboxes[0].FindElement(By.TagName("input")).Click();
+            checkboxes[index].FindElement(By.TagName("input")).Click();
         }
     }
 }

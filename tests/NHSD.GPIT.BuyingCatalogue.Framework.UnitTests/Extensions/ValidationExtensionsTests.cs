@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NUnit.Framework;
@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
     [Parallelizable(ParallelScope.All)]
     internal static class ValidationExtensionsTests
     {
-        private static string[] InvalidStrings = { null, string.Empty, "    " };
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
-        [Test]        
+        [Test]
         public static void NullObject_ThrowsException()
         {
             var val = (string)null;

@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors
 {
     public sealed class ErrorDetails : IEquatable<ErrorDetails>
     {
-        public ErrorDetails(string id, string? field = null)
+        public ErrorDetails(string id, string field = null)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Field = field;
@@ -12,9 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors
 
         public string Id { get; }
 
-        public string? Field { get; }
+        public string Field { get; }
 
-        public bool Equals(ErrorDetails? other)
+        public bool Equals(ErrorDetails other)
         {
             if (other is null)
                 return false;
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors
                 && string.Equals(Field, other.Field, StringComparison.Ordinal);
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as ErrorDetails);
         }

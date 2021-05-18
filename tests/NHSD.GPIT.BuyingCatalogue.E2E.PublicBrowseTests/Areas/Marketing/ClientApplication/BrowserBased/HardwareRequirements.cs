@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using System.Threading.Tasks;
-using System;
-using Xunit;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
 {
@@ -45,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Hardware requirements").Should().BeFalse();
         }
+
         public void Dispose()
         {
             ClearClientApplication("99999-99");

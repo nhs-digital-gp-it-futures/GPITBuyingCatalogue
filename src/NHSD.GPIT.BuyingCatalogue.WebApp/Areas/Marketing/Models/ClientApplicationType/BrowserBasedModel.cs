@@ -1,18 +1,20 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
     public class BrowserBasedModel : MarketingBaseModel
-    { 
-        public BrowserBasedModel() : base(null)
+    {
+        public BrowserBasedModel()
+            : base(null)
         {
             ClientApplication = new ClientApplication();
         }
 
-        public BrowserBasedModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public BrowserBasedModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));

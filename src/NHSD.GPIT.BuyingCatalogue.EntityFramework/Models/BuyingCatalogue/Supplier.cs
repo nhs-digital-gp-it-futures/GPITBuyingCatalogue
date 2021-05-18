@@ -14,18 +14,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
         }
 
         public string Id { get; set; }
+
         public string Name { get; set; }
+
         public string LegalName { get; set; }
+
         public string Summary { get; set; }
+
         public string SupplierUrl { get; set; }
+
         public string Address { get; set; }
+
         public string OdsCode { get; set; }
+
         public Guid? CrmRef { get; set; }
+
         public bool Deleted { get; set; }
+
         public DateTime LastUpdated { get; set; }
+
         public Guid LastUpdatedBy { get; set; }
 
         public virtual ICollection<CatalogueItem> CatalogueItems { get; set; }
+
         public virtual ICollection<SupplierContact> SupplierContacts { get; set; }
     }
 }

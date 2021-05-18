@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var solution = new Solution { ClientApplication = clientApplication };
 
             var result = solution.GetClientApplication();
-            
+
             result.Should().BeEquivalentTo(new ClientApplication());
         }
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var solution = new Solution { Hosting = hosting };
 
             var result = solution.GetHosting();
-            
+
             result.Should().BeEquivalentTo(new Hosting());
         }
 

@@ -4,7 +4,7 @@
 }
 
 <div class="nhsuk-width-container" data-test-id="create-org-page">
-    <partial name="_BackLink" model="Model" />    
+    <partial name="_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <h1 data-test-id="create-org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Create organisation</h1>
@@ -29,7 +29,7 @@
             </div>
             <h4 data-test-id="organisation-primary-role-id-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Primary Role ID</h4>
             <div data-test-id="organisation-primary-role-id" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">RO98</div>
-            <form method="post">                
+            <form method="post">
                 <input type="hidden" asp-for="@Model.OdsOrganisation.OdsCode" />
                 <div data-test-id="catalogue-agreement-checkbox" class="nhsuk-u-margin-bottom-9">
                     <div class="nhsuk-form-group">
@@ -52,4 +52,3 @@
         </div>
     </div>
 </div>
-

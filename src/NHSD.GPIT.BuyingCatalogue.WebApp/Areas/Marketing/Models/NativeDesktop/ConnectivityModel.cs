@@ -8,11 +8,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 {
     public class ConnectivityModel : MarketingBaseModel
     {
-        public ConnectivityModel() : base(null)
+        public ConnectivityModel()
+            : base(null)
         {
         }
 
-        public ConnectivityModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public ConnectivityModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
@@ -25,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
         public List<SelectListItem> ConnectionSpeeds { get; set; }
 
         public string SelectedConnectionSpeed { get; set; }
-        
+
         public override bool? IsComplete =>
             !string.IsNullOrWhiteSpace(ClientApplication?.NativeDesktopMinimumConnectionSpeed);
 

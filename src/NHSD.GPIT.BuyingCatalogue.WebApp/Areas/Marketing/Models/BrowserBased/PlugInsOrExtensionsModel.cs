@@ -8,11 +8,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
     public class PlugInsOrExtensionsModel : MarketingBaseModel
     {
-        public PlugInsOrExtensionsModel() : base(null)
+        public PlugInsOrExtensionsModel()
+            : base(null)
         {
         }
 
-        public PlugInsOrExtensionsModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public PlugInsOrExtensionsModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));

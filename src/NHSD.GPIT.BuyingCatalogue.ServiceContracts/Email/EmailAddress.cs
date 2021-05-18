@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// <param name="displayName">An optional display name.</param>
         /// <exception cref="ArgumentException"><paramref name="address"/> is <see langword="null"/>, empty or consists
         /// only of white space.</exception>
-        public EmailAddress(string address, string? displayName = null)
+        public EmailAddress(string address, string displayName = null)
         {
             if (string.IsNullOrWhiteSpace(address))
                 throw new ArgumentException($"{nameof(address)} must be provided", nameof(address));
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
         /// Gets the display name of the address.
         /// </summary>
         /// <remarks>An optional display name, for example Buying Catalogue Team.</remarks>
-        public string? DisplayName { get; }
+        public string DisplayName { get; }
 
         /// <summary>
         /// Gets the actual e-mail address.

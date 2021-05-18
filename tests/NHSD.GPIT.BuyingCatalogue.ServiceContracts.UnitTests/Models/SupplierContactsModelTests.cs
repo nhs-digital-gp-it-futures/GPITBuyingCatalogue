@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
         public static void ContactFor_ValidId_ReturnsMatchingContact(SupplierContactsModel model)
         {
             var contactId = model.Contacts[1].Id;
-            
+
             var actual = model.ContactFor(contactId);
 
             actual.Should().BeEquivalentTo(model.Contacts[1]);
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
 
             actual.Should().BeNull();
         }
-        
+
         [Test]
         public static void SetSolutionId_Sets_SolutionIdOnContacts()
         {
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             var model = fixture.Create<SupplierContactsModel>();
-            
+
             model.SetSolutionId();
 
             foreach (var contact in model.Contacts)
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             var fixture = new Fixture();
             var model = fixture.Build<SupplierContactsModel>()
                 .Without(x => x.Contacts).Create();
-            
+
             Assert.DoesNotThrow(() => model.SetSolutionId());
         }
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 #nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity
-{    
+{
     [Table("AspNetUserTokens")]
     public partial class AspNetUserToken : IdentityUserToken<string>
     {

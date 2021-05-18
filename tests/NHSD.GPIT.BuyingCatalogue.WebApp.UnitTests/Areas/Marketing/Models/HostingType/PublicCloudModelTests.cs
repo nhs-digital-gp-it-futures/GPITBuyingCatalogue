@@ -24,22 +24,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var hosting = new Hosting
-            {                
+            {
                 PublicCloud = new PublicCloud
-                {                    
+                {
                     Link = "A link",
                     RequiresHscn = "End user devices must be connected to HSCN/N3",
                     Summary = "A summary"
                 }
             };
-            
+
             var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem 
-                { 
-                    CatalogueItemId = "123",
-                    Solution = new Solution { Hosting = json } 
-                };
-            
+            var catalogueItem = new CatalogueItem
+            {
+                CatalogueItemId = "123",
+                Solution = new Solution { Hosting = json }
+            };
+
             var model = new PublicCloudModel(catalogueItem);
 
             Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
@@ -67,16 +67,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         [TestCase(null, "", null, false)]
         [TestCase(null, " ", null, false)]
         [TestCase(null, null, "", false)]
-        [TestCase(null, null, " ", false)]        
+        [TestCase(null, null, " ", false)]
         [TestCase("Link", null, null, true)]
         [TestCase(null, "Requires Hscn", null, true)]
         [TestCase(null, null, "Summary", true)]
-        public static void IsCompleteIsCorrectlySet(string link, string requiresHscn, string summary, bool? expected )
+        public static void IsCompleteIsCorrectlySet(string link, string requiresHscn, string summary, bool? expected)
         {
             var hosting = new Hosting
             {
                 PublicCloud = new PublicCloud
-                {                    
+                {
                     Link = link,
                     RequiresHscn = requiresHscn,
                     Summary = summary
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         {
             var hosting = new Hosting
             {
-                PublicCloud = new PublicCloud()                
+                PublicCloud = new PublicCloud()
             };
 
             var json = JsonConvert.SerializeObject(hosting);
@@ -110,9 +110,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
                 Solution = new Solution { Hosting = json }
             };
 
-            var model = new PublicCloudModel(catalogueItem);
-
-            model.RequiresHscnChecked = false;
+            var model = new PublicCloudModel(catalogueItem)
+            {
+                RequiresHscnChecked = false
+            };
             Assert.Null(model.PublicCloud.RequiresHscn);
             model.RequiresHscnChecked = true;
             Assert.AreEqual("End user devices must be connected to HSCN/N3", model.PublicCloud.RequiresHscn);

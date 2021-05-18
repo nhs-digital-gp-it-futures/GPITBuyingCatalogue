@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<CatalogueItem> GetSolution(string solutionId);
 
         Task<List<CatalogueItem>> GetDFOCVCSolutions();
-        
+
         Task<List<Capability>> GetFuturesCapabilities();
 
         Task SaveSolutionDescription(string solutionId, string summary, string description, string link);

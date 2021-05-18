@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             Name = organisationName;
             BackLink = $"/admin/organisations/{organisationId}";
             BackLinkText = "Back to dashboard";
-        }        
+        }
 
         public string Name { get; set; }
     }

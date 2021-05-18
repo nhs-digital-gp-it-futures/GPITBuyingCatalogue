@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
@@ -56,9 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem);
 
             actual.AdditionalInformation.Should().Be(clientApplication.AdditionalInformation);
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.ClientApplication = null;
-            
+
             var actual = mapper.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem);
 
             actual.AdditionalInformation.Should().BeNull();
@@ -84,9 +84,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         [Test, CommonAutoData]
         public void Map_CatalogueItemToConnectivityAndResolutionModel_ResultAsExpected(
             CatalogueItem catalogueItem)
-        {            
+        {
             var actual = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
-            
+
             actual.BackLink.Should()
                 .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
@@ -137,9 +137,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, HardwareRequirementsModel>(catalogueItem);
 
             actual.BackLink.Should()
@@ -150,13 +150,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToHardwareRequirementsModel_NoClientApplication_DescriptionNotSet(
             CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.ClientApplication = null;
-            
+
             var actual = mapper.Map<CatalogueItem, HardwareRequirementsModel>(catalogueItem);
 
             actual.Description.Should().BeNull();
@@ -166,11 +166,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
             var actual = mapper.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem);
-            
+
             actual.BackLink.Should()
                 .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
@@ -208,9 +208,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         public void Map_CatalogueItemToPlugInsOrExtensionsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var clientApplication = 
+            var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, PlugInsOrExtensionsModel>(catalogueItem);
 
             actual.AdditionalInformation.Should().Be(clientApplication.Plugins.AdditionalInformation);
@@ -222,20 +222,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToPlugInsOrExtensionsModel_PluginsRequiredIsNull_PluginsRequiredAndAdditionalInfoNotSet(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
             clientApplication.Plugins.Required = null;
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
-            
+
             var actual = mapper.Map<CatalogueItem, PlugInsOrExtensionsModel>(catalogueItem);
 
             actual.AdditionalInformation.Should().BeNull();
             actual.PlugInsRequired.Should().BeNull();
         }
-        
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToSupportedBrowsersModel_ResultAsExpected(
             CatalogueItem catalogueItem)
@@ -273,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
-        
+
         [Test, CommonAutoData]
         public void Map_ConnectivityAndResolutionToClientApplication_ResultAsExpected(
             ConnectivityAndResolutionModel model,
@@ -296,8 +296,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             actual.MinimumDesktopResolution.Should().Be(model.SelectedScreenResolution);
             actual.ValidateAllPropertiesExcept(original, new[]
             {
-                nameof(ClientApplication.MinimumConnectionSpeed), 
-                nameof(ClientApplication.MinimumDesktopResolution), 
+                nameof(ClientApplication.MinimumConnectionSpeed),
+                nameof(ClientApplication.MinimumDesktopResolution),
             });
         }
 
@@ -348,8 +348,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
                 .BeEquivalentTo(model.Browsers.Where(x => x.Checked).Select(x => x.BrowserName));
             actual.ValidateAllPropertiesExcept(original, new[]
             {
-                nameof(ClientApplication.BrowsersSupported), 
-                nameof(ClientApplication.MobileResponsive), 
+                nameof(ClientApplication.BrowsersSupported),
+                nameof(ClientApplication.MobileResponsive),
             });
         }
 

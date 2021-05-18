@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class OrganisationsControllerTests
-    { 
+    {
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -79,12 +79,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockOrganisationsService.Setup(x => x.GetAllOrganisations())
                 .ReturnsAsync(organisations);
-            
+
             var controller = new OrganisationsController(Mock.Of<ILogWrapper<OrganisationsController>>(), mockOrganisationsService.Object, Mock.Of<IOdsService>(),
                 Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>());
 
             var result = await controller.Index();
-            
+
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
         }

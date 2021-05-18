@@ -20,6 +20,7 @@
 
         // Attributes
         internal const string For = "asp-for";
+
         internal const string Items = "asp-items";
         internal const string Id = "id";
         internal const string LabelledBy = "aria-labelledy";
@@ -36,8 +37,9 @@
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
 
-        //Attribute Values
+        // Attribute Values
         internal const string AriaLivePolite = "polite";
+
         internal const string TextFieldInput = "text-field-input";
         internal const string TextAreaField = "textarea-field";
         internal const string CheckBoxOptions = "checkbox-options";
@@ -46,6 +48,7 @@
 
         // Classes
         internal const string ErrorSummaryTitle = "error-summary-title";
+
         internal const string NhsErrorMessage = "nhsuk-error-message";
         internal const string NhsFormGroup = "nhsuk-form-group";
         internal const string NhsFormGroupError = "nhsuk-form-group--error";
@@ -79,21 +82,20 @@
         internal const string NhsCheckboxInput = "nhsuk-checkboxes__input";
         internal const string NhsCheckboxLabel = "nhsuk-checkboxes__label";
 
-
-        //Messages
+        // Messages
         internal const string CharacterCountMessage = "(Maximum character length {0})";
+
         internal const string DefaultSelectListMessage = "Please select";
 
-        //Html Attributes
+        // Html Attributes
         internal const string LabelTextName = "label-text";
+
         internal const string LabelHintName = "label-hint";
         internal const string DisableCharacterCounterName = "disable-character-counter";
         internal const string DisableLabelAndHint = "disable-label-and-hint";
         internal const string TextAreaNumberOfRows = "number-of-rows";
 
-        //Defaults
+        // Defaults
         internal const int DefaultNumberOfTextAreaRows = 5;
-
-
     }
 }

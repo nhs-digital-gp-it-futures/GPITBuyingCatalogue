@@ -7,11 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
     public class ThirdPartyModel : MarketingBaseModel
     {
-        public ThirdPartyModel() : base(null)
+        public ThirdPartyModel()
+            : base(null)
         {
         }
 
-        public ThirdPartyModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public ThirdPartyModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));

@@ -6,17 +6,19 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.ViewModels;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation
 {
     public class AboutSupplierModel : MarketingBaseModel
-    { 
-        public AboutSupplierModel() : base(null)
+    {
+        public AboutSupplierModel()
+            : base(null)
         {
         }
 
-        public AboutSupplierModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public AboutSupplierModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                                 
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
             Description = CatalogueItem.Supplier.Summary;
             Link = CatalogueItem.Supplier.SupplierUrl;
         }

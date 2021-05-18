@@ -6,11 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class NominateOrganisationController : Controller
     {
-        private readonly ILogWrapper<NominateOrganisationController> _logger;
+        private readonly ILogWrapper<NominateOrganisationController> logger;
 
         public NominateOrganisationController(ILogWrapper<NominateOrganisationController> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public IActionResult Index()

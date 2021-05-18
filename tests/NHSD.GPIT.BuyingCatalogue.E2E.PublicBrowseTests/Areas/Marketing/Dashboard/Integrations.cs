@@ -1,12 +1,12 @@
-﻿using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
-using Xunit;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             using var context = GetBCContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
+            var solution = await context.Solutions.AsQueryable().SingleAsync(s => s.Id == "99999-99");
             solution.IntegrationsUrl.Should().Be(link);
         }
 
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             driver.Navigate().Refresh();
 
-            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
             CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Integrations").Should().BeTrue();

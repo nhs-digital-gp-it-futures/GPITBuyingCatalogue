@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 CreateHostBuilder(args).Build().Run();
                 return 0;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Fatal(ex, "Host terminated unexpectedly");
                 return 1;

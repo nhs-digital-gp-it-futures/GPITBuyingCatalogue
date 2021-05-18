@@ -1,5 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -8,6 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public CapabilityModel[] LeftCapabilities { get; set; }
 
-        public CapabilityModel[] RightCapabilities { get; set; }        
+        public CapabilityModel[] RightCapabilities { get; set; }
     }
 }

@@ -1,54 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
     public static class TagHelperFunctions
     {
-        public static int? GetMaximumCharacterLength(ModelExpression For)
+        public static int? GetMaximumCharacterLength(ModelExpression aspFor)
         {
-            return GetCustomAttribute<StringLengthAttribute>(For)?.MaximumLength;
+            return GetCustomAttribute<StringLengthAttribute>(aspFor)?.MaximumLength;
         }
 
-        public static T GetCustomAttribute<T>(ModelExpression For) where T : Attribute
+        public static T GetCustomAttribute<T>(ModelExpression aspFor)
+            where T : Attribute
         {
-            return For?.Metadata?
+            return aspFor?.Metadata?
             .ContainerType?
-            .GetProperty(For.Name.Substring(For.Name.LastIndexOf('.') + 1))?
+            .GetProperty(aspFor.Name[(aspFor.Name.LastIndexOf('.') + 1)..])?
             .GetCustomAttribute<T>();
         }
-        public static IEnumerable<T> GetCustomAttributes<T>(ModelExpression For) where T : Attribute
+
+        public static IEnumerable<T> GetCustomAttributes<T>(ModelExpression aspFor)
+            where T : Attribute
         {
-            return For?.Metadata?
+            return aspFor?.Metadata?
             .ContainerType?
-            .GetProperty(For.Name.Substring(For.Name.LastIndexOf('.') + 1))?
+            .GetProperty(aspFor.Name[(aspFor.Name.LastIndexOf('.') + 1)..])?
             .GetCustomAttributes<T>();
         }
 
-        public static bool IsCounterDisabled(ModelExpression For, bool? HtmlAttributeHideCharacterCounter)
+        public static bool IsCounterDisabled(ModelExpression aspFor, bool? htmlAttributeHideCharacterCounter)
         {
-            return GetCustomAttribute<DisableCharacterCounterAttribute>(For) != null
-                   || HtmlAttributeHideCharacterCounter == true
-                   || GetCustomAttribute<PasswordAttribute>(For) != null;
+            return GetCustomAttribute<DisableCharacterCounterAttribute>(aspFor) != null
+                   || htmlAttributeHideCharacterCounter == true
+                   || GetCustomAttribute<PasswordAttribute>(aspFor) != null;
         }
 
-        public static int GetTextAreaNumberOfRows(ModelExpression For, int? HtmlAttributeNumberOfRows)
+        public static int GetTextAreaNumberOfRows(ModelExpression aspFor, int? htmlAttributeNumberOfRows)
         {
-            var NumberOfRowsAttribute = GetCustomAttribute<TextAreaRowsAttribute>(For);
+            var numberOfRowsAttribute = GetCustomAttribute<TextAreaRowsAttribute>(aspFor);
 
-            return HtmlAttributeNumberOfRows ?? NumberOfRowsAttribute?.NumberOfRows ?? TagHelperConstants.DefaultNumberOfTextAreaRows;
+            return htmlAttributeNumberOfRows ?? numberOfRowsAttribute?.NumberOfRows ?? TagHelperConstants.DefaultNumberOfTextAreaRows;
         }
 
-        public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression For, string validationName = null)
+        public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression aspFor, string validationName = null)
         {
             var modelState = viewContext.ViewData?.ModelState;
-            return !(modelState?[For?.Name ?? validationName] is null) && modelState[For?.Name ?? validationName].Errors.Any();
+            return !(modelState?[aspFor?.Name ?? validationName] is null) && modelState[aspFor?.Name ?? validationName].Errors.Any();
         }
     }
 }

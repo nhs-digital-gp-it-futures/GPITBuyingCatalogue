@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
     {
         [Test]
         public static void ClassIsCorrectlyDecorated()
-        {            
+        {
             typeof(AccountController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Identity");
         }
 
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Test]
         public static void Constructor_AllServicesPresent_Success()
-        {            
+        {
             new AccountController(
                 Mock.Of<ILogWrapper<AccountController>>(),
                 CreateDefaultMockSignInManager(),
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
-        {            
+        {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new AccountController(null,
                 CreateDefaultMockSignInManager(),
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 ));
         }
 
-        #endregion
+        #endregion Constructor Tests
 
         [Test]
         public static void Get_Login_ReturnsDefaultViewWithReturnUrlSet()
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         public static void Post_Login_NullModel_ThrowsException()
         {
             var controller = CreateValidController();
-            
+
             Assert.ThrowsAsync<ArgumentNullException>(() =>
               controller.Login((LoginViewModel)null)
              );
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             var result = await controller.Logout();
 
             Assert.That(result, Is.InstanceOf(typeof(LocalRedirectResult)));
-            Assert.AreEqual("~/", ((LocalRedirectResult)result).Url);            
+            Assert.AreEqual("~/", ((LocalRedirectResult)result).Url);
         }
 
         [Test]
@@ -249,7 +249,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             Assert.IsNull(((ViewResult)result).ViewName);
             Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(ResetPasswordViewModel)));
         }
-
 
         [Test]
         public static void Get_ResetPasswordConfirmation_ReturnsDefaultView()

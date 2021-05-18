@@ -8,19 +8,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class DocumentController : Controller
     {
-        private readonly ILogWrapper<DocumentController> _logger;
-        private readonly IDocumentService _documentService;
+        private readonly ILogWrapper<DocumentController> logger;
+        private readonly IDocumentService documentService;
 
         public DocumentController(ILogWrapper<DocumentController> logger, IDocumentService documentService)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _documentService = documentService ?? throw new ArgumentNullException(nameof(documentService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.documentService = documentService ?? throw new ArgumentNullException(nameof(documentService));
         }
 
         [Route("Document/{documentName}")]
         public async Task<IActionResult> GetDocument(string documentName)
         {
-            var document = await _documentService.DownloadDocumentAsync(documentName);
+            var document = await documentService.DownloadDocumentAsync(documentName);
 
             if (document == null)
                 return View("NotFound");

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+﻿namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
     public static class BooleanExtensions
     {

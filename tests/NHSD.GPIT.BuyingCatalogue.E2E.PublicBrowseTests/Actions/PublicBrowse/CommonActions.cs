@@ -1,7 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
 using OpenQA.Selenium;
-using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
@@ -24,6 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         internal void ClickContinueButton()
         {
             Driver.FindElement(CommonObjects.ContinueButton).Click();
+        }
+
+        internal void ClickLoginLink()
+        {
+            Driver.FindElement(CommonObjects.LoginLink).Click();
         }
     }
 }

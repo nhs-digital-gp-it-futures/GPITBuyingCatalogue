@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -14,17 +14,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         {
             CreateMap<CatalogueItem, HybridModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
-                .ForMember(dest => dest.HybridHostingType,
+                .ForMember(
+                    dest => dest.HybridHostingType,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new HybridHostingType() :
                         string.IsNullOrWhiteSpace(src.Solution.Hosting) ? new HybridHostingType() :
                         JsonConvert.DeserializeObject<Hosting>(src.Solution.Hosting).HybridHostingType))
                 .ForMember(dest => dest.RequiresHscnChecked, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<CatalogueItem, OnPremiseModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
-                .ForMember(dest => dest.OnPremise,
+                .ForMember(
+                    dest => dest.OnPremise,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new OnPremise() :
                         string.IsNullOrWhiteSpace(src.Solution.Hosting) ? new OnPremise() :
@@ -34,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<CatalogueItem, PrivateCloudModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
-                .ForMember(dest => dest.PrivateCloud,
+                .ForMember(
+                    dest => dest.PrivateCloud,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new PrivateCloud() :
                         string.IsNullOrWhiteSpace(src.Solution.Hosting) ? new PrivateCloud() :
@@ -44,14 +47,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
             CreateMap<CatalogueItem, PublicCloudModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
-                .ForMember(dest => dest.PublicCloud,
+                .ForMember(
+                    dest => dest.PublicCloud,
                     opt => opt.MapFrom(src =>
                         src.Solution == null ? new PublicCloud() :
                         string.IsNullOrWhiteSpace(src.Solution.Hosting) ? new PublicCloud() :
                         JsonConvert.DeserializeObject<Hosting>(src.Solution.Hosting).PublicCloud))
                 .ForMember(dest => dest.RequiresHscnChecked, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<CatalogueItem, SolutionStatusModel>()
                 .ConvertUsing<ITypeConverter<CatalogueItem, SolutionStatusModel>>();
         }

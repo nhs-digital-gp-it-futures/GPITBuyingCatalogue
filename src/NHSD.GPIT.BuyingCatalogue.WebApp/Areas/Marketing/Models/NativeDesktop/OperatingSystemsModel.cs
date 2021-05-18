@@ -7,11 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
 {
     public class OperatingSystemsModel : MarketingBaseModel
     {
-        public OperatingSystemsModel() : base(null)
+        public OperatingSystemsModel()
+            : base(null)
         {
         }
 
-        public OperatingSystemsModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public OperatingSystemsModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));

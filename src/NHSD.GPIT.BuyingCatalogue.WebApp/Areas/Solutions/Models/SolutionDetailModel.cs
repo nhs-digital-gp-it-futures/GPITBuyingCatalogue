@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             PublicCloud = new HostingTypeModel(CatalogueItem.Solution.GetHosting().PublicCloud);
             PrivateCloud = new HostingTypeModel(CatalogueItem.Solution.GetHosting().PrivateCloud);
             HybridHostingType = new HostingTypeModel(CatalogueItem.Solution.GetHosting().HybridHostingType);
-            OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);            
+            OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
         }
 
         // MJRTODO - Make this private and add appropriate properties
@@ -52,8 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         }
 
         public HostingTypeModel PublicCloud { get; set; }
+
         public HostingTypeModel PrivateCloud { get; set; }
+
         public HostingTypeModel HybridHostingType { get; set; }
+
         public HostingTypeModel OnPremise { get; set; }
 
         public bool DisplayPublicCloud
@@ -62,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             {
                 var publicCloud = CatalogueItem.Solution.GetHosting().PublicCloud;
 
-                if (publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary) ||
+                if ((publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary)) ||
                     !string.IsNullOrWhiteSpace(publicCloud.Link) ||
                     !string.IsNullOrWhiteSpace(publicCloud.RequiresHscn))
                     return true;
@@ -77,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             {
                 var publicCloud = CatalogueItem.Solution.GetHosting().PublicCloud;
 
-                if (publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary) ||
+                if ((publicCloud != null && !string.IsNullOrWhiteSpace(publicCloud.Summary)) ||
                     !string.IsNullOrWhiteSpace(publicCloud.Link))
                     return true;
 
@@ -105,12 +108,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool DisplayContacts
         {
-            get { return CatalogueItem.Solution.MarketingContacts.Any();  }
+            get { return CatalogueItem.Solution.MarketingContacts.Any(); }
         }
 
         public bool DisplaySupplier
         {
-            get 
+            get
             {
                 return !string.IsNullOrWhiteSpace(CatalogueItem.Supplier.Summary) ||
                     !string.IsNullOrWhiteSpace(CatalogueItem.Supplier.SupplierUrl);
@@ -119,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateContactInformation()
         {
-            if( CatalogueItem.Solution.MarketingContacts.Any())
+            if (CatalogueItem.Solution.MarketingContacts.Any())
             {
                 var contact = CatalogueItem.Solution.MarketingContacts.First();
                 Contact1Name = $"{contact.FirstName} {contact.LastName}";
@@ -127,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 Contact1PhoneNumber = contact.PhoneNumber;
                 Contact1EmailAddress = contact.Email;
 
-                if(CatalogueItem.Solution.MarketingContacts.Count() > 1)
+                if (CatalogueItem.Solution.MarketingContacts.Count > 1)
                 {
                     contact = CatalogueItem.Solution.MarketingContacts.Skip(1).First();
                     Contact2Name = $"{contact.FirstName} {contact.LastName}";
@@ -142,13 +145,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
             Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework.ShortName));
         }
-        
+
         private void PopulateCapabilities()
-        {            
+        {
             var capabilities = new List<SolutionCapabilitiesModel>();
 
-            foreach(var capability in CatalogueItem.Solution.SolutionCapabilities.OrderBy(x=>x.Capability.Name))
-            {                
+            foreach (var capability in CatalogueItem.Solution.SolutionCapabilities.OrderBy(x => x.Capability.Name))
+            {
                 capabilities.Add(new SolutionCapabilitiesModel(capability, CatalogueItem.Solution));
             }
 

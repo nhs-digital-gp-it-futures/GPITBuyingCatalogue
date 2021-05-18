@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,10 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
 using Serilog.Events;
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
@@ -21,12 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string LocalhostBaseAddress = "https://127.0.0.1";
 
         private readonly IWebHost host;
-        internal readonly string DbName;
+        internal readonly string BcDbName;
+        internal readonly string UsersDbName;
 
         internal IWebDriver Driver { get; }
 
         // Need to find a better way of doing this
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=buyingcatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
+
         private const string ID_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueUsers;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string OPERATING_MODE = "private";
 
@@ -36,7 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             ClientOptions.BaseAddress = new Uri(LocalhostBaseAddress);
 
-            DbName = Guid.NewGuid().ToString();
+            BcDbName = Guid.NewGuid().ToString();
+            UsersDbName = Guid.NewGuid().ToString();
 
             SetEnvVariables();
 
@@ -69,17 +72,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(BuyingCatalogueDbContext));
+                var dbTypes = new Type[] { typeof(BuyingCatalogueDbContext), typeof(UsersDbContext) };
 
-                if (descriptor is not null)
-                {
-                    services.Remove(descriptor);
+                foreach(var type in dbTypes)
+                { 
+                    var descriptor = services.SingleOrDefault(
+                        d => d.ServiceType == type);
+                    if (descriptor is not null)
+                    {
+                        services.Remove(descriptor);
+                    }
                 }
 
                 services.AddDbContext<BuyingCatalogueDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase(DbName);
+                    options.UseInMemoryDatabase(BcDbName);
+                });
+
+                services.AddDbContext<UsersDbContext>(options =>
+                {
+                    options.UseInMemoryDatabase(UsersDbName);
                 });
 
                 var sp = services.BuildServiceProvider();
@@ -88,19 +100,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 var scopedServices = scope.ServiceProvider;
 
                 var bcDb = scopedServices.GetRequiredService<BuyingCatalogueDbContext>();
+                var usersDb = scopedServices.GetRequiredService<UsersDbContext>();
 
                 bcDb.Database.EnsureCreated();
+                usersDb.Database.EnsureCreated();
 
                 try
                 {
                     BuyingCatalogueSeedData.Initialize(bcDb);
+                    UserSeedData.Initialize(usersDb);
                 }
                 catch
                 {
                     // figure out error logging here
                 }
             });
-
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");
             return builder;

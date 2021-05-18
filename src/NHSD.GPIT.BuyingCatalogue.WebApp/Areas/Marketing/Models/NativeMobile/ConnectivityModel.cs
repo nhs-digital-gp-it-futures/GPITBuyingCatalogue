@@ -10,11 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
     public class ConnectivityModel : MarketingBaseModel
     {
-        public ConnectivityModel() : base(null)
+        public ConnectivityModel()
+            : base(null)
         {
         }
 
-        public ConnectivityModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public ConnectivityModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
@@ -25,12 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             CheckConnectionTypes();
 
-            Description = ClientApplication?.MobileConnectionDetails?.Description;            
+            Description = ClientApplication?.MobileConnectionDetails?.Description;
         }
 
         public override bool? IsComplete
         {
-            get 
+            get
             {
                 if (!string.IsNullOrWhiteSpace(ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed) ||
                   !string.IsNullOrWhiteSpace(ClientApplication?.MobileConnectionDetails?.Description))
@@ -41,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         }
 
         public string SelectedConnectionSpeed { get; set; }
+
         public List<SelectListItem> ConnectionSpeeds { get; set; }
 
         public ConnectionTypeModel[] ConnectionTypes { get; set; }

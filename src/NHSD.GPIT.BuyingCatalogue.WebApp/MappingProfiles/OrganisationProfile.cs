@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoMapper;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
@@ -15,9 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
         public OrganisationProfile()
         {
             CreateMap<CatalogueItem, AboutSupplierModel>()
-                .ForMember(dest => dest.Description,
+                .ForMember(
+                    dest => dest.Description,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Summary))
-                .ForMember(dest => dest.Link,
+                .ForMember(
+                    dest => dest.Link,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.SupplierUrl))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
@@ -57,20 +59,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 });
 
             CreateMap<CatalogueItem, ImplementationTimescalesModel>()
-                .ForMember(dest => dest.Description,
+                .ForMember(
+                    dest => dest.Description,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.ImplementationDetail))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, IntegrationsModel>()
-                .ForMember(dest => dest.Link,
+                .ForMember(
+                    dest => dest.Link,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.IntegrationsUrl))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, MarketingBaseModel>()
-                .ForMember(dest => dest.BackLink,
-                    opt => opt.MapFrom(src => $"/marketing/supplier/solution/{src.CatalogueItemId}"))
+                .ForMember(
+                    dest => dest.BackLink,
+                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
                 .ForMember(dest => dest.BackLinkText, opt => opt.MapFrom(src => "Return to all sections"))
-                .ForMember(dest => dest.ClientApplication,
+                .ForMember(
+                    dest => dest.ClientApplication,
                     opt =>
                     {
                         opt.SetMappingOrder(0);
@@ -80,12 +86,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                                 : new ClientApplication());
                     })
                 .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
-                .ForMember(dest => dest.SupplierId,
+                .ForMember(
+                    dest => dest.SupplierId,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Id))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter();
 
             CreateMap<CatalogueItem, RoadmapModel>()
-                .ForMember(dest => dest.Summary,
+                .ForMember(
+                    dest => dest.Summary,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.RoadMap))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
@@ -94,9 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.Link, opt => opt.MapFrom(src => src.Solution.AboutUrl))
                 .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.Solution.Summary))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
-            
+
             CreateMap<ContactDetailsModel, SupplierContactsModel>()
-                .ForMember(dest => dest.Contacts, opt => opt.MapFrom(src => new[] {src.Contact1, src.Contact2}))
+                .ForMember(dest => dest.Contacts, opt => opt.MapFrom(src => new[] { src.Contact1, src.Contact2 }))
                 .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.SolutionId));
 
             CreateMap<FeaturesModel, string[]>()

@@ -6,11 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class GuideController : Controller
     {
-        private readonly ILogWrapper<GuideController> _logger;
+        private readonly ILogWrapper<GuideController> logger;
 
         public GuideController(ILogWrapper<GuideController> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public IActionResult Index()

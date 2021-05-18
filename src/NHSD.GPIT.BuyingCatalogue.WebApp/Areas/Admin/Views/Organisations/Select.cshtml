@@ -3,8 +3,8 @@
     ViewData["Title"] = "Confirm organisation";
 }
 
-<div class="nhsuk-width-container" data-test-id="select-org-page">    
-    <partial name="_BackLink" model="Model" />    
+<div class="nhsuk-width-container" data-test-id="select-org-page">
+    <partial name="_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <h1 data-test-id="select-org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Confirm organisation</h1>
@@ -25,7 +25,7 @@
             </div>
             <h3 data-test-id="organisation-primary-role-id-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Primary Role ID</h3>
             <div data-test-id="organisation-primary-role-id" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OdsOrganisation.PrimaryRoleId</div>
-            <form method="post">                
+            <form method="post">
                 <input type="hidden" asp-for="@Model.OdsOrganisation.OdsCode" />
                 <div data-test-id="select-org-button">
                     <button class="nhsuk-button nhsuk-u-margin-bottom-9" type="submit">
@@ -36,4 +36,3 @@
         </div>
     </div>
 </div>
-

@@ -8,17 +8,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 {
     public class OnPremiseModel : MarketingBaseModel
     {
-        public OnPremiseModel() : base(null)
+        public OnPremiseModel()
+            : base(null)
         {
         }
 
-        public OnPremiseModel(CatalogueItem catalogueItem) : base(catalogueItem)
+        public OnPremiseModel(CatalogueItem catalogueItem)
+            : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";                        
-            OnPremise = catalogueItem.Solution.GetHosting().OnPremise;          
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
+            OnPremise = catalogueItem.Solution.GetHosting().OnPremise;
         }
 
         public override bool? IsComplete => OnPremise?.IsValid();
@@ -27,7 +29,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
 
         public bool RequiresHscnChecked
         {
-            get { return !string.IsNullOrWhiteSpace(OnPremise?.RequiresHscn); }
+            get
+            {
+                return !string.IsNullOrWhiteSpace(OnPremise?.RequiresHscn);
+            }
+
             set
             {
                 if (value)
