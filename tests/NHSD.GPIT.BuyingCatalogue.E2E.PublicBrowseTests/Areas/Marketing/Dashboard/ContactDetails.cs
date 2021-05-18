@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         public ContactDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/contact-details")
         {
             using var context = GetBCContext();
-            var contacts = context.MarketingContacts.AsQueryable()
-                .Where(s => s.SolutionId == "99999-99");
+            var contacts = context.MarketingContacts.Where(s => s.SolutionId == "99999-99");
             context.MarketingContacts.RemoveRange(contacts);
             context.SaveChanges();
         }

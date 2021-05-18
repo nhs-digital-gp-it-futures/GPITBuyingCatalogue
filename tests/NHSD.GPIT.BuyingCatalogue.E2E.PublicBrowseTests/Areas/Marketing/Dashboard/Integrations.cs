@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             using var context = GetBCContext();
-            var solution = await context.Solutions.AsQueryable().SingleAsync(s => s.Id == "99999-99");
+            var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
             solution.IntegrationsUrl.Should().Be(link);
         }
 
