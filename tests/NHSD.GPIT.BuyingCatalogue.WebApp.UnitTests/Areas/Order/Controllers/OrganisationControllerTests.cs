@@ -18,15 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(OrganisationController).Should().BeDecoratedWith<AuthorizeAttribute>();
-            typeof(OrganisationController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Order");
+            typeof(OrderController).Should().BeDecoratedWith<AuthorizeAttribute>();
+            typeof(OrderController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Order");
         }
 
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationController(null));
+                _ = new OrderController(null));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim("organisationFunction", "Authority"),
             }, "mock"));
 
-            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>())
+            var controller = new OrderController(Mock.Of<ILogWrapper<OrderController>>())
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim("organisationFunction", "Buyer"),
             }, "mock"));
 
-            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>())
+            var controller = new OrderController(Mock.Of<ILogWrapper<OrderController>>())
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Test]
         public static void Get_NewOrder_ReturnsViewResult()
         {
-            var controller = new OrganisationController(Mock.Of<ILogWrapper<OrganisationController>>());
+            var controller = new OrderController(Mock.Of<ILogWrapper<OrderController>>());
 
             var result = controller.NewOrder();
 

@@ -1,0 +1,332 @@
+﻿@{
+    ViewData["Title"] = $"NHS Hull CCG";
+}
+
+
+<div class="nhsuk-width-container" data-test-id="dashboard-page">
+    <div data-test-id="go-back-link">
+        <div class="nhsuk-back-link">
+            <a class="nhsuk-back-link__link" href="/">
+                <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                </svg>
+                Go back to homepage
+            </a>
+        </div>
+
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+
+            <h1 data-test-id="dashboard-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">NHS Hull CCG orders</h1>
+            <p data-test-id="dashboard-page-description" class="nhsuk-heading-l nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">Manage orders currently in progress and view completed orders.</p>
+
+
+
+
+
+
+
+
+
+
+            <div data-test-id="new-order-button">
+
+
+
+
+
+
+
+
+
+
+                <a class="nhsuk-button nhsuk-u-margin-bottom-3 nhsuk-u-padding-left-5 nhsuk-u-padding-right-5" href="/order/organisation/03F/order/neworder" draggable="false">
+                    Create new order
+                </a>
+
+
+
+            </div>
+
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <div data-test-id="incomplete-orders-table">
+
+                <table data-test-id="table" class="" style="page-break-inside:auto">
+
+                    <caption class="">
+                        Incomplete orders
+                    </caption>
+
+
+                    <thead data-test-id="table-headings" style="display:table-header-group;">
+
+                    <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:20%">
+                        <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Call-off Agreement ID</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:20%">
+                        <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Order description</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:20%">
+                        <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Last updated by</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-3" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:20%">
+                        <div data-test-id="column-heading-3-data" class="nhsuk-u-font-weight-bold">Last updated</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-4" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:20%">
+                        <div data-test-id="column-heading-4-data" class="nhsuk-u-font-weight-bold">Date created</div>
+
+
+                    </th>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+                                <a data-test-id="C010001-01-id" href="/order/organisation/03F/order/C010001-01">C010001-01</a>
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010001-01-description" class="bc-c-data-text nhsuk-u-font-size-16">Testing testing</div>
+
+
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010001-01-lastUpdatedBy" class="bc-c-data-text nhsuk-u-font-size-16">Sue Smith</div>
+
+
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010001-01-lastUpdated" class="bc-c-data-text nhsuk-u-font-size-16">18 May 2021</div>
+
+
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010001-01-dateCreated" class="bc-c-data-text nhsuk-u-font-size-16">18 May 2021</div>
+
+
+
+
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div data-test-id="complete-orders-table">
+
+                <table data-test-id="table" class="" style="page-break-inside:auto">
+
+                    <caption class="">
+                        Completed orders
+                    </caption>
+
+
+                    <thead data-test-id="table-headings" style="display:table-header-group;">
+
+                    <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:21%">
+                        <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Call-off Agreement ID</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:21%">
+                        <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Order description</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:17%">
+                        <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Last updated by</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-3" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:17%">
+                        <div data-test-id="column-heading-3-data" class="nhsuk-u-font-weight-bold">Date completed</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-4" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:17%">
+                        <div data-test-id="column-heading-4-data" class="nhsuk-u-font-weight-bold">Date created</div>
+
+
+                    </th>
+
+                    <th data-test-id="column-heading-5" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:7%">
+                        <div data-test-id="column-heading-5-data" class="nhsuk-u-font-weight-bold">Payment centrally processed</div>
+
+
+                    </th>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+                                <a data-test-id="C010000-01-id" href="/order/organisation/03F/order/C010000-01/summary">C010000-01</a>
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010000-01-description" class="bc-c-data-text nhsuk-u-font-size-16">Description of order</div>
+
+
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010000-01-lastUpdatedBy" class="bc-c-data-text nhsuk-u-font-size-16">Sue Smith</div>
+
+
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010000-01-dateCompleted" class="bc-c-data-text nhsuk-u-font-size-16">18 May 2021</div>
+
+
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010000-01-dateCreated" class="bc-c-data-text nhsuk-u-font-size-16">18 May 2021</div>
+
+
+
+
+
+                            </td>
+
+
+                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+
+
+
+
+                                <div data-test-id="C010000-01-automaticallyProcessed" class="bc-c-data-text nhsuk-u-font-size-16">Yes</div>
+
+
+
+
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+  </div>
