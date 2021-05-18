@@ -102,6 +102,7 @@ jobs:
       repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
       command: 'buildAndPush'
       Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
+      buildContext: './'
       tags: |
         $(semVer)
         latestbuild
