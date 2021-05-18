@@ -51,6 +51,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         [StringLength(300)]
         public string Description { get; set; }
 
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Let buyers know about your Catalogue Solution’s connection requirements.",
+                Title = "Native mobile or tablet application – connectivity",
+            };
+
         private void CheckConnectionTypes()
         {
             foreach (var connectionType in ConnectionTypes)
@@ -62,12 +69,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
                 }
             }
         }
-
-        public PageTitleViewModel PageTitle() =>
-            new()
-            {
-                Advice = "Let buyers know about your Catalogue Solution’s connection requirements.",
-                Title = "Native mobile or tablet application – connectivity",
-            };
     }
 }

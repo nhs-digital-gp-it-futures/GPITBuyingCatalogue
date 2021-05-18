@@ -36,6 +36,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         [StringLength(1000)]
         public string Description { get; set; }
 
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Let buyers know which operating systems will work with your Catalogue Solution.",
+                Title = "Native mobile or tablet application – supported operating systems",
+            };
+
         private void CheckOperatingSystems()
         {
             foreach (var browser in OperatingSystems)
@@ -47,12 +54,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
                 }
             }
         }
-
-        public PageTitleViewModel PageTitle() =>
-            new()
-            {
-                Advice = "Let buyers know which operating systems will work with your Catalogue Solution.",
-                Title = "Native mobile or tablet application – supported operating systems",
-            };
     }
 }

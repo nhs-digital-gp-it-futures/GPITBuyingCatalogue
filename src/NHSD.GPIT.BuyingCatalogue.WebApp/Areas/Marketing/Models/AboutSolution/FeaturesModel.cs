@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             new()
             {
                 Advice = "Highlight to buyers the key features of your Catalogue Solution.",
-                Title = "Catalogue Solution Features"
+                Title = "Catalogue Solution Features",
             };
     }
 }

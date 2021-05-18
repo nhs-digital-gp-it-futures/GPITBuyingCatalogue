@@ -40,6 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             ClientApplication?.BrowsersSupported != null && ClientApplication.BrowsersSupported.Any() &&
             ClientApplication.MobileResponsive.HasValue;
 
+        public PageTitleViewModel PageTitle() =>
+            new()
+            {
+                Advice = "Let buyers know which types of browser will work with your Catalogue Solution.",
+                Title = "Browser-based application – supported browsers",
+            };
+
         private void CheckBrowsers()
         {
             foreach (var browser in Browsers)
@@ -51,12 +58,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
                 }
             }
         }
-
-        public PageTitleViewModel PageTitle() =>
-            new()
-            {
-                Advice = "Let buyers know which types of browser will work with your Catalogue Solution.",
-                Title = "Browser-based application – supported browsers",
-            };
     }
 }

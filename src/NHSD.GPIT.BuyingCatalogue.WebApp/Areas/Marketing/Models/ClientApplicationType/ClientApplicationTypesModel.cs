@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
             new()
             {
                 Advice = "Let buyers know which types of application will work with your Catalogue Solution.",
-                Title = "Client application type"
+                Title = "Client application type",
             };
     }
 }
