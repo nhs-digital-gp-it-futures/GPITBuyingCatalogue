@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
     [Authorize]
     [Area("Order")]
-    [Route("order")]
+    [Route("order/organisation/{odsCode}/order/{callOffId}")]
     public class OrderController : Controller
     {
         private readonly ILogWrapper<OrderController> logger;
@@ -19,51 +19,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IActionResult Index()
-        {
-            if (!User.IsBuyer())
-                return View("NotBuyer");
-
-            // TODO - determine ODS code. I assume the proxy pages come in here is user can proxy buy
-            return Redirect($"/order/organisation/03F");
-        }
-
-        [HttpGet("organisation/{odsCode}")]
-        public IActionResult Organisation(string odsCode)
-        {
-            if (!User.IsBuyer())
-                return View("NotBuyer");
-
-            return View();
-        }
-
-        [HttpGet("organisation/{odsCode}/order/neworder")]
-        public IActionResult NewOrder(string odsCode)
-        {
-            return View();
-        }
-
-        [HttpGet("organisation/{odsCode}/order/neworder/description")]
-        public IActionResult NewOrderDescription(string odsCode)
-        {            
-            return View(new OrderDescriptionModel());
-        }
-
-        [HttpPost("organisation/{odsCode}/order/neworder/description")]
-        public IActionResult NewOrderDescription(string odsCode, OrderDescriptionModel model )
-        {
-            return Redirect($"/order/organisation/03F/order/C01005-01");
-        }
 
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}")]
+
+        [HttpGet]
         public IActionResult Order(string odsCode, string callOffId)
         {
             return View();
         }
 
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/summary")]
+        [HttpGet("summary")]
         public IActionResult Summary(string odsCode, string callOffId, string print = "false")
         {
             // TODO - obey the print switch
@@ -72,83 +38,72 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/delete-order")]
+        [HttpGet("delete-order")]
         public IActionResult DeleteOrder(string odsCode, string callOffId)
         {            
             return View(new DeleteOrderModel());
         }
 
-        [HttpPost("organisation/{odsCode}/order/{callOffId}/delete-order")]
+        [HttpPost("delete-order")]
         public IActionResult DeleteOrder(string odsCode, string callOffId, DeleteOrderModel model)
         {
             return Redirect($"/order/organisation/03F");
         }
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/delete-order/confirmation")]
+        [HttpGet("delete-order/confirmation")]
         public IActionResult DeleteOrderConfirmation(string odsCode, string callOffId)
         {
             return View();
         }
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/description")]
+        [HttpGet("description")]
         public IActionResult OrderDescription(string odsCode, string callOffId)
         {
             return View(new OrderDescriptionModel());
         }
 
-        [HttpPost("organisation/{odsCode}/order/{callOffId}/description")]
+        [HttpPost("description")]
         public IActionResult OrderDescription(string odsCode, string callOffId, OrderDescriptionModel model)
         {
             return Redirect($"/order/organisation/03F/order/C01005-01");
         }
 
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/ordering-party")]
+        [HttpGet("ordering-party")]
         public IActionResult OrderingParty(string odsCode, string callOffId)
         {
             return View(new OrderingPartyModel());
         }
 
-        [HttpPost("organisation/{odsCode}/order/{callOffId}/ordering-party")]
+        [HttpPost("ordering-party")]
         public IActionResult OrderingParty(string odsCode, string callOffId, OrderingPartyModel model)
         {
             return Redirect($"/order/organisation/03F/order/C01005-01");
         }
 
-
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/supplier")]
-        public IActionResult Supplier(string odsCode, string callOffId)
+        [HttpGet("commencement-date")]
+        public IActionResult CommencementDate(string odsCode, string callOffId)
         {
-            // TODO - display view if supplier already defined otherwise rediect to select
-
-            //return View(new SupplierModel());
-            return Redirect($"/order/organisation/03F/order/C01005-01/supplier/search");
+            return View(new CommencementDateModel());
         }
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/supplier/search")]
-        public IActionResult SupplierSearch(string odsCode, string callOffId)
+        [HttpPost("commencement-date")]
+        public IActionResult CommencementDate(string odsCode, string callOffId, CommencementDateModel model)
         {
-            return View(new SupplierSearchModel());
+            return Redirect($"/order/organisation/03F/order/C01005-01");
         }
 
-        [HttpPost("organisation/{odsCode}/order/{callOffId}/supplier/search")]
-        public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
+        [HttpGet("funding-source")]
+        public IActionResult FundingSource(string odsCode, string callOffId)
         {
-            // TODO - Display NoSupplierFound if no results
-
-            return Redirect($"/order/organisation/03F/order/C01005-01/supplier/search/select");
+            return View(new FundingSourceModel());
         }
 
-        [HttpGet("organisation/{odsCode}/order/{callOffId}/supplier/search/select")]
-        public IActionResult SupplierSearchSelect(string odsCode, string callOffId)
+        [HttpPost("funding-source")]
+        public IActionResult FundingSource(string odsCode, string callOffId, FundingSourceModel model)
         {
-            return View(new SupplierSearchSelectModel());
+            return Redirect($"/order/organisation/03F/order/C01005-01");
         }
 
-        [HttpPost("organisation/{odsCode}/order/{callOffId}/supplier/search/select")]
-        public IActionResult SupplierSearchSelect(string odsCode, string callOffId, SupplierSearchSelectModel model)
-        {
-            return Redirect($"/order/organisation/03F/order/C01005-01/supplier");
-        }
     }
 }
