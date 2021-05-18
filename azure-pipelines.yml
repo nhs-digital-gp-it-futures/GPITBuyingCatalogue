@@ -101,7 +101,7 @@ jobs:
       containerRegistry: 'gpitfuturesdevacr'
       repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
       command: 'buildAndPush'
-      Dockerfile: '**/Dockerfile'
+      Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
       tags: |
         $(semVer)
         latestbuild
