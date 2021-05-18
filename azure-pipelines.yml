@@ -31,7 +31,12 @@ jobs:
 - job: dockerBuildAndPush
   displayName: Run all tests and build & push docker containers to the ACR
   variables:
-    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latest
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latestbuild
+
   dependsOn: version
   pool:
     vmImage: 'ubuntu-latest'
@@ -94,30 +99,18 @@ jobs:
   - script: docker-compose down -v
     displayName: 'Docker down'
 
-  - task: DockerCompose@0
-    displayName: 'Build: Dev'
+  - task: Docker@2
+    displayName: 'Docker: Build and Push'
     condition: succeeded()
     inputs:
-      containerregistrytype: 'Azure Container Registry'
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
-      dockerComposeFile: '**/docker-compose.yml'
-      action: 'Build services'
-      additionalImageTags: '$(semVer)'
-      includeSourceTags: true
-
-  - task: DockerCompose@0
-    displayName: 'Push: Dev'
-    condition: succeeded()
-    inputs:
-      containerregistrytype: 'Azure Container Registry'
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
-      dockerComposeFile: '**/docker-compose.yml'
-      action: 'Push services'
-      additionalImageTags: '$(semVer)'
-      includeSourceTags: true
-
+      containerRegistry: 'gpitfuturesdevacr'
+      repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+      command: 'buildAndPush'
+      Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
+      buildContext: './'
+      tags: |
+        $(semVer)
+        $(latestTag)
 - job: createBuildArtifact
   displayName: Create Build Artifact
   dependsOn: dockerBuildAndPush
