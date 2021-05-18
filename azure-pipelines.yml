@@ -107,8 +107,8 @@ jobs:
       includeSourceTags: true
 
   - task: DockerCompose@0
-    displayName: 'Push: Dev'
-    condition: succeeded()
+    displayName: 'Push: Dev (no tagging)'
+    condition: and(succeeded(), not(eq(variables['Build.SourceBranch'], 'refs/heads/main')))
     inputs:
       containerregistrytype: 'Azure Container Registry'
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
@@ -117,6 +117,20 @@ jobs:
       action: 'Push services'
       additionalImageTags: '$(semVer)'
       includeSourceTags: true
+      includeLatestTag: false
+
+  - task: DockerCompose@0
+    displayName: 'Push: Dev and Tag Latest'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    inputs:
+      containerregistrytype: 'Azure Container Registry'
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+      dockerComposeFile: '**/docker-compose.yml'
+      action: 'Push services'
+      additionalImageTags: '$(semVer)'
+      includeSourceTags: true
+      includeLatestTag: true
 
 - job: createBuildArtifact
   displayName: Create Build Artifact
