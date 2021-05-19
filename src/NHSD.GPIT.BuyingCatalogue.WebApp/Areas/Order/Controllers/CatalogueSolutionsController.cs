@@ -47,6 +47,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return Redirect($"/order/organisation/03F/order/C01005-01/catalogue-solutions/select/solution/price/recipients");
         }
 
+        [HttpGet("select/solution/price")]
+        public IActionResult SelectSolutionPrice(string odsCode, string callOffId)
+        {
+            // TODO - this is not currently accessed by this skeleton framework
+            return View(new SelectSolutionPriceModel());
+        }
+
+        [HttpPost("select/solution/price")]
+        public IActionResult SelectSolutionPrice(string odsCode, string callOffId, SelectSolutionPriceModel model)
+        {
+            // TODO - this is not currently accessed by this skeleton framework
+            return Redirect($"/order/organisation/03F/order/C01005-01/catalogue-solutions/select/solution/price/recipients");
+        }
+
         [HttpGet("select/solution/price/recipients")]
         public IActionResult SelectSolutionServiceRecipients(string odsCode, string callOffId)
         {
