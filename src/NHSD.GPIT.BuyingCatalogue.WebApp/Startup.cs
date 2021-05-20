@@ -54,6 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureOds(Configuration);
 
+            services.ConfigureSession();
+
             services.ConfigureEmail(Configuration, healthChecksBuilder);
 
             services.ConfigureDisabledErrorMessage(Configuration);
@@ -135,6 +137,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
