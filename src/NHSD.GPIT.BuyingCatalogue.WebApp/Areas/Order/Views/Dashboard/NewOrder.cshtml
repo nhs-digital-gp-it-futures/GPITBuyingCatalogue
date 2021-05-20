@@ -1,0 +1,189 @@
+﻿@{
+    ViewData["Title"] = $"New order";
+}
+
+<div class="nhsuk-width-container" data-test-id="neworder-page">
+    <div data-test-id="go-back-link">
+        <div class="nhsuk-back-link">
+            <a class="nhsuk-back-link__link" href="/order/organisation/03F">
+                @*TODO - set correct ODS code*@
+                <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                </svg>
+                Go back to all orders
+            </a>
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-two-thirds">
+            <h1 data-test-id="neworder-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">New order</h1>
+            <p data-test-id="neworder-page-description" class="nhsuk-heading-l nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">Step 1 must be completed before a summary page and ID number are created for this order.</p>
+        </div>
+    </div>
+
+    <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-3 bc-c-order-table__hr" />
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+
+            <ol data-test-id="task-list" class="bc-c-task-list">
+
+                <li data-test-id="task-0">
+                    <h2 data-test-id="task-0-name" class="bc-c-task-list__task">
+                        <span class="bc-c-task-list__task-number">1.</span>
+                        <div>Start your order</div>
+                    </h2>
+                    <ul class="bc-c-task-list__items">
+
+                        <li data-test-id="task-0-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <a data-test-id="task-0-item-0-description" href="/order/organisation/03F/order/neworder/description">Provide a description of your order</a>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-test-id="task-1">
+                    <h2 data-test-id="task-1-name" class="bc-c-task-list__task">
+                        <span class="bc-c-task-list__task-number">2.</span>
+                        <div>Organisation information</div>
+                    </h2>
+                    <ul class="bc-c-task-list__items">
+
+                        <li data-test-id="task-1-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <div data-test-id="task-1-item-0-description">Provide Call-off Ordering Party information</div>
+                            </span>
+                        </li>
+
+                        <li data-test-id="task-1-item-1" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <div data-test-id="task-1-item-1-description">Provide Supplier information</div>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-test-id="task-2">
+                    <h2 data-test-id="task-2-name" class="bc-c-task-list__task">
+                        <span class="bc-c-task-list__task-number">3.</span>
+                        <div>Commencement date</div>
+                    </h2>
+                    <ul class="bc-c-task-list__items">
+
+                        <li data-test-id="task-2-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <div data-test-id="task-2-item-0-description">Provide commencement date for this agreement</div>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-test-id="task-3">
+                    <h2 data-test-id="task-3-name" class="bc-c-task-list__task">
+                        <span class="bc-c-task-list__task-number">4.</span>
+                        <div>Add Catalogue Solutions</div>
+                    </h2>
+                    <ul class="bc-c-task-list__items">
+
+                        <li data-test-id="task-3-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <div data-test-id="task-3-item-0-description">Add Catalogue Solutions to your order</div>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-test-id="task-4">
+                    <h2 data-test-id="task-4-name" class="bc-c-task-list__task">
+                        <span class="bc-c-task-list__task-number">5.</span>
+                        <div>Add Additional Services</div>
+                    </h2>
+                    <ul class="bc-c-task-list__items">
+
+                        <li data-test-id="task-4-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <div data-test-id="task-4-item-0-description">Add Additional Services to your order</div>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-test-id="task-5">
+                    <h2 data-test-id="task-5-name" class="bc-c-task-list__task">
+                        <span class="bc-c-task-list__task-number">6.</span>
+                        <div>Add Associated Services</div>
+                    </h2>
+                    <ul class="bc-c-task-list__items">
+
+                        <li data-test-id="task-5-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <div data-test-id="task-5-item-0-description">Add Associated Services to your order</div>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-test-id="task-6">
+                    <h2 data-test-id="task-6-name" class="bc-c-task-list__task">
+                        <span class="bc-c-task-list__task-number">7.</span>
+                        <div>Indicate funding source</div>
+                    </h2>
+                    <ul class="bc-c-task-list__items">
+
+                        <li data-test-id="task-6-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
+                            <span class="bc-c-task-list__task-name">
+
+                                <div data-test-id="task-6-item-0-description">Explain how you&#39;re paying for this order</div>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-one-third">
+
+            <div data-test-id="delete-order-button">
+
+                <span class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9 nhsuk-button--disabled" href="#" draggable="false" aria-disabled="true">
+                    Delete order
+                </span>
+            </div>
+        </div>
+
+        <div class="nhsuk-grid-column-two-thirds">
+            <div class="bc-u-float-right">
+                <div class="bc-u-inline-block">
+
+                    <div data-test-id="preview-order-button">
+
+                        <span class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9 nhsuk-u-margin-right-5 nhsuk-button--disabled" href="#" draggable="false" aria-disabled="true">
+                            Preview order summary
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bc-u-inline-block">
+
+                    <div data-test-id="complete-order-button">
+
+                        <span class="nhsuk-button nhsuk-u-margin-bottom-9 nhsuk-button--disabled" href="#" draggable="false" aria-disabled="true">
+                            Complete order
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

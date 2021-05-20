@@ -1,0 +1,1637 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SelectAdditionalServiceRecipientsModel;
+@{
+    ViewData["Title"] = $"Service Recipients for Document Management for C010005";
+}
+
+<div class="nhsuk-width-container" data-test-id="solution-recipients-page">
+    <div data-test-id="go-back-link">
+        <div class="nhsuk-back-link">
+            <a class="nhsuk-back-link__link" href="/order/organisation/03F/order/C010001-01/additional-services/select/additional-service">
+                <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                </svg>
+                Go back
+            </a>
+        </div>
+    </div>
+    <div class="nhsuk-grid-row">
+
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 data-test-id="solution-recipients-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Service Recipients for Document Management for C010001-01</h1>
+            <p data-test-id="solution-recipients-page-description" class="nhsuk-heading-l nhsuk-u-font-size-24 nhsuk-u-margin-bottom-7">These are all the possible Service Recipients for this Call-off Ordering Party. Select those you’ll be ordering this Additional Service for.</p>
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <form method="get" action="/order/organisation/03F/order/C010001-01/additional-services/select/additional-service/price/recipients">
+                <input type="hidden" name="orderItemId" value="" />
+                <input type="hidden" name="selectStatus" value="select" />
+
+                <div data-test-id="select-deselect-button">
+
+                    <button class="nhsuk-button nhsuk-button--secondary" type="submit">
+                        Select all
+                    </button>
+                </div>
+            </form>
+
+            <form method="post">
+
+                <input type="hidden" name="orderItemId" value="" />
+
+                <div id="selectSolutionRecipients" data-test-id="recipients-table" class="">
+
+                    <table data-test-id="table" class="" style="page-break-inside:auto">
+
+                        <thead data-test-id="table-headings" style="display:table-header-group;">
+
+                        <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-12" style="width:50%">
+                            <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Organisation</div>
+                        </th>
+
+                        <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-12" style="width:50%">
+                            <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">ODS Code</div>
+                        </th>
+                        </thead>
+
+                        <tbody>
+
+                            <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03508-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y03508-organisationName" name="Y03508" type="checkbox" value="ASSURA ER LLP HULL DERMATOLOGY">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y03508-organisationName">
+                                                        ASSURA ER LLP HULL DERMATOLOGY
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03508-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y03508</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-1" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y07021-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y07021-organisationName" name="Y07021" type="checkbox" value="BEVAN LIMITED">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y07021-organisationName">
+                                                        BEVAN LIMITED
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y07021-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y07021</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-2" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00427-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y00427-organisationName" name="Y00427" type="checkbox" value="BRANSHOLME MIU">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y00427-organisationName">
+                                                        BRANSHOLME MIU
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00427-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y00427</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-3" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81085-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81085-organisationName" name="B81085" type="checkbox" value="BURNBRAE MEDICAL PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81085-organisationName">
+                                                        BURNBRAE MEDICAL PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81085-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81085</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-4" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00023-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y00023-organisationName" name="Y00023" type="checkbox" value="CHCP - URGENT CARE OOH">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y00023-organisationName">
+                                                        CHCP - URGENT CARE OOH
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00023-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y00023</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-5" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04419-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y04419-organisationName" name="Y04419" type="checkbox" value="CHCP STROKE REHABILITATION">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y04419-organisationName">
+                                                        CHCP STROKE REHABILITATION
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04419-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y04419</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-6" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81002-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81002-organisationName" name="B81002" type="checkbox" value="CHP LTD - BRANSHOLME">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81002-organisationName">
+                                                        CHP LTD - BRANSHOLME
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81002-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81002</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-7" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81074-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81074-organisationName" name="B81074" type="checkbox" value="CITY HEALTH PRACTICE LTD">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81074-organisationName">
+                                                        CITY HEALTH PRACTICE LTD
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81074-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81074</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-8" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81054-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81054-organisationName" name="B81054" type="checkbox" value="CLIFTON HOUSE MEDICAL CENTRE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81054-organisationName">
+                                                        CLIFTON HOUSE MEDICAL CENTRE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81054-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81054</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-9" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04461-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y04461-organisationName" name="Y04461" type="checkbox" value="COMMUNITY PAEDIATRICIAN SERVICE (HULL)">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y04461-organisationName">
+                                                        COMMUNITY PAEDIATRICIAN SERVICE (HULL)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04461-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y04461</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-10" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03834-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y03834-organisationName" name="Y03834" type="checkbox" value="COMMUNITY SERVICES">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y03834-organisationName">
+                                                        COMMUNITY SERVICES
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03834-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y03834</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-11" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03701-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y03701-organisationName" name="Y03701" type="checkbox" value="CONCORDIA COMMUNITY CARDIOLOGY SERVICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y03701-organisationName">
+                                                        CONCORDIA COMMUNITY CARDIOLOGY SERVICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03701-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y03701</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-12" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03450-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y03450-organisationName" name="Y03450" type="checkbox" value="CONIFER HOUSE SEXUAL HEALTH CLINIC">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y03450-organisationName">
+                                                        CONIFER HOUSE SEXUAL HEALTH CLINIC
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03450-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y03450</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-13" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81095-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81095-organisationName" name="B81095" type="checkbox" value="COOK BF">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81095-organisationName">
+                                                        COOK BF
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81095-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81095</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-14" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04568-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y04568-organisationName" name="Y04568" type="checkbox" value="CRI HULL DRUGS INTERVENTION PROGRAMME">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y04568-organisationName">
+                                                        CRI HULL DRUGS INTERVENTION PROGRAMME
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04568-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y04568</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-15" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81097-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81097-organisationName" name="B81097" type="checkbox" value="DELTA HEALTHCARE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81097-organisationName">
+                                                        DELTA HEALTHCARE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81097-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81097</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-16" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00894-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y00894-organisationName" name="Y00894" type="checkbox" value="DERMATOLOGY CLINIC GPSI">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y00894-organisationName">
+                                                        DERMATOLOGY CLINIC GPSI
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00894-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y00894</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-17" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81616-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81616-organisationName" name="B81616" type="checkbox" value="DR GT HENDOW&#39;S PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81616-organisationName">
+                                                        DR GT HENDOW&#39;S PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81616-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81616</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-18" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81038-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81038-organisationName" name="B81038" type="checkbox" value="DR IA GALEA AND PARTNERS">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81038-organisationName">
+                                                        DR IA GALEA AND PARTNERS
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81038-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81038</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-19" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81040-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81040-organisationName" name="B81040" type="checkbox" value="DR JAD WEIR &amp; PARTNERS">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81040-organisationName">
+                                                        DR JAD WEIR &amp; PARTNERS
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81040-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81040</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-20" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81631-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81631-organisationName" name="B81631" type="checkbox" value="DRS RAUT AND THOUFEEQ">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81631-organisationName">
+                                                        DRS RAUT AND THOUFEEQ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81631-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81631</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-21" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81008-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81008-organisationName" name="B81008" type="checkbox" value="EAST HULL FAMILY PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81008-organisationName">
+                                                        EAST HULL FAMILY PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81008-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81008</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-22" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81080-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81080-organisationName" name="B81080" type="checkbox" value="EAST HULL FAMILY PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81080-organisationName">
+                                                        EAST HULL FAMILY PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81080-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81080</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-23" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81066-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81066-organisationName" name="B81066" type="checkbox" value="EAST HULL FAMILY PRACTICE (PARK HC)">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81066-organisationName">
+                                                        EAST HULL FAMILY PRACTICE (PARK HC)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81066-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81066</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-24" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81645-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81645-organisationName" name="B81645" type="checkbox" value="EAST PARK PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81645-organisationName">
+                                                        EAST PARK PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81645-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81645</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-25" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00424-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y00424-organisationName" name="Y00424" type="checkbox" value="ED CLINIC">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y00424-organisationName">
+                                                        ED CLINIC
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00424-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y00424</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-26" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06227-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y06227-organisationName" name="Y06227" type="checkbox" value="EXTENDED ACCESS SERVICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y06227-organisationName">
+                                                        EXTENDED ACCESS SERVICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06227-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y06227</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-27" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81119-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81119-organisationName" name="B81119" type="checkbox" value="GOODHEART SURGERY">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81119-organisationName">
+                                                        GOODHEART SURGERY
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81119-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81119</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-28" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81688-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81688-organisationName" name="B81688" type="checkbox" value="GOODHEART SURGERY">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81688-organisationName">
+                                                        GOODHEART SURGERY
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81688-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81688</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-29" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00426-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y00426-organisationName" name="Y00426" type="checkbox" value="GPSI SEXUAL HEALTH &amp; WOMENS SERVICES">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y00426-organisationName">
+                                                        GPSI SEXUAL HEALTH &amp; WOMENS SERVICES
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y00426-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y00426</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-30" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81075-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81075-organisationName" name="B81075" type="checkbox" value="HASTINGS MEDICAL CENTRE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81075-organisationName">
+                                                        HASTINGS MEDICAL CENTRE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81075-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81075</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-31" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81675-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81675-organisationName" name="B81675" type="checkbox" value="HAXBY GROUP CALVERT &amp; NEWINGTON">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81675-organisationName">
+                                                        HAXBY GROUP CALVERT &amp; NEWINGTON
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81675-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81675</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-32" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y02747-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y02747-organisationName" name="Y02747" type="checkbox" value="HAXBY GROUP HULL">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y02747-organisationName">
+                                                        HAXBY GROUP HULL
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y02747-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y02747</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-33" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="A99976-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="A99976-organisationName" name="A99976" type="checkbox" value="HULL AND EAST YORKSHIRE BOWEL CANCER SCREENING CENTRE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="A99976-organisationName">
+                                                        HULL AND EAST YORKSHIRE BOWEL CANCER SCREENING CENTRE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="A99976-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">A99976</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-34" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06959-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y06959-organisationName" name="Y06959" type="checkbox" value="HULL CCG VOCARENHS111 OOH">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y06959-organisationName">
+                                                        HULL CCG VOCARENHS111 OOH
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06959-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y06959</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-35" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06079-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y06079-organisationName" name="Y06079" type="checkbox" value="INTEGRATED CARE CENTRE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y06079-organisationName">
+                                                        INTEGRATED CARE CENTRE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06079-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y06079</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-36" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04395-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y04395-organisationName" name="Y04395" type="checkbox" value="INTERMEDIATE CARE SERVICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y04395-organisationName">
+                                                        INTERMEDIATE CARE SERVICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y04395-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y04395</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-37" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06056-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y06056-organisationName" name="Y06056" type="checkbox" value="INTERMEDIATE CARE SERVICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y06056-organisationName">
+                                                        INTERMEDIATE CARE SERVICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y06056-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y06056</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-38" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81112-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81112-organisationName" name="B81112" type="checkbox" value="JAMES ALEXANDER FAMILY PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81112-organisationName">
+                                                        JAMES ALEXANDER FAMILY PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81112-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81112</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-39" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81011-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81011-organisationName" name="B81011" type="checkbox" value="KINGSTON HEALTH (HULL)">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81011-organisationName">
+                                                        KINGSTON HEALTH (HULL)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81011-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81011</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-40" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81017-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81017-organisationName" name="B81017" type="checkbox" value="KINGSTON MEDICAL GROUP">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81017-organisationName">
+                                                        KINGSTON MEDICAL GROUP
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81017-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81017</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-41" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81635-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81635-organisationName" name="B81635" type="checkbox" value="LAURBEL SURGERY">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81635-organisationName">
+                                                        LAURBEL SURGERY
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81635-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81635</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-42" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81048-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81048-organisationName" name="B81048" type="checkbox" value="MODALITY PARTNERSHIP (HULL)">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81048-organisationName">
+                                                        MODALITY PARTNERSHIP (HULL)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81048-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81048</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-43" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81104-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81104-organisationName" name="B81104" type="checkbox" value="NAYAR JK">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81104-organisationName">
+                                                        NAYAR JK
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81104-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81104</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-44" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="03F-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="03F-organisationName" name="03F" type="checkbox" value="NHS Hull CCG">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="03F-organisationName">
+                                                        NHS Hull CCG
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="03F-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">03F</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-45" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y02344-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y02344-organisationName" name="Y02344" type="checkbox" value="NORTHPOINT">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y02344-organisationName">
+                                                        NORTHPOINT
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y02344-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y02344</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-46" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81018-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81018-organisationName" name="B81018" type="checkbox" value="ORCHARD 2000 GROUP">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81018-organisationName">
+                                                        ORCHARD 2000 GROUP
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81018-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81018</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-47" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y01218-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y01218-organisationName" name="Y01218" type="checkbox" value="PAIN MANAGEMENT GPSI">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y01218-organisationName">
+                                                        PAIN MANAGEMENT GPSI
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y01218-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y01218</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-48" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03108-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y03108-organisationName" name="Y03108" type="checkbox" value="PALLIATIVE CARE CLINIC">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y03108-organisationName">
+                                                        PALLIATIVE CARE CLINIC
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y03108-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y03108</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-49" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81052-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81052-organisationName" name="B81052" type="checkbox" value="PRINCES MEDICAL CENTRE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81052-organisationName">
+                                                        PRINCES MEDICAL CENTRE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81052-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81052</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-50" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81027-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81027-organisationName" name="B81027" type="checkbox" value="ST ANDREWS SURGERY">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81027-organisationName">
+                                                        ST ANDREWS SURGERY
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81027-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81027</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-51" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81058-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81058-organisationName" name="B81058" type="checkbox" value="SYDENHAM GROUP PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81058-organisationName">
+                                                        SYDENHAM GROUP PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81058-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81058</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-52" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81035-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81035-organisationName" name="B81035" type="checkbox" value="THE AVENUES MEDICAL CENTRE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81035-organisationName">
+                                                        THE AVENUES MEDICAL CENTRE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81035-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81035</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-53" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81046-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81046-organisationName" name="B81046" type="checkbox" value="THE BRIDGE GROUP PRACTICE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81046-organisationName">
+                                                        THE BRIDGE GROUP PRACTICE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81046-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81046</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-54" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81020-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81020-organisationName" name="B81020" type="checkbox" value="THE SUTTON MANOR SURGERY">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81020-organisationName">
+                                                        THE SUTTON MANOR SURGERY
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81020-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81020</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-55" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81032-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81032-organisationName" name="B81032" type="checkbox" value="WILBERFORCE SURGERY">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81032-organisationName">
+                                                        WILBERFORCE SURGERY
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81032-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81032</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-56" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81047-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="B81047-organisationName" name="B81047" type="checkbox" value="WOLSELEY MEDICAL CENTRE">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="B81047-organisationName">
+                                                        WOLSELEY MEDICAL CENTRE
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="B81047-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">B81047</div>
+                                </td>
+                            </tr>
+
+                            <tr data-test-id="table-row-57" style="page-break-inside:avoid; page-break-after:auto">
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y05235-organisationName">
+
+                                        <div class="nhsuk-form-group">
+
+                                            <div class="nhsuk-checkboxes">
+
+                                                <div class="nhsuk-checkboxes__item">
+                                                    <input class="nhsuk-checkboxes__input" id="Y05235-organisationName" name="Y05235" type="checkbox" value="YPS SSM SERVICE (REFRESH)">
+                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="Y05235-organisationName">
+                                                        YPS SSM SERVICE (REFRESH)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                    <div data-test-id="Y05235-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">Y05235</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div data-test-id="continue-button">
+
+                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
+                        Continue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

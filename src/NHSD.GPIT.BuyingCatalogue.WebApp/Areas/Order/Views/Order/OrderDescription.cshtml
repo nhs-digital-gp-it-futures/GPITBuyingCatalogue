@@ -1,0 +1,52 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescriptionModel;
+@{
+    ViewData["Title"] = $"Order description";
+}
+
+<div class="nhsuk-width-container" data-test-id="description-page">
+    <div data-test-id="go-back-link">
+        <div class="nhsuk-back-link">
+            <a class="nhsuk-back-link__link" href="/order/organisation/03F/order/C010004-01">
+                <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                </svg>
+                Go back
+            </a>
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 data-test-id="description-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Order description</h1>
+            <label data-test-id="description-page-description" class="nhsuk-label" for="description">Provide a brief description of your order to help identify it from any others you’ve worked on.</label>
+
+            <form method="post">
+
+                <div data-test-id="question-description">
+
+                    <div data-test-id="textarea-field">
+
+                        <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+
+                            <textarea class="nhsuk-textarea" id="description" name="description" rows=" 3 ">fghfghfghfgh</textarea>
+                        </div>
+                    </div>
+
+                    <div data-test-id="textarea-field-footer">
+                        <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                            (Maximum character length 100)
+                        </span>
+                    </div>
+                </div>
+
+                <div data-test-id="save-button">
+
+                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
+                        Save and return
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

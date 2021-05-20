@@ -1,0 +1,86 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSourceModel;
+@{
+    ViewData["Title"] = $"Funding source for C010005-01";
+}
+
+<div class="nhsuk-width-container" data-test-id="funding-source-page">
+    <div data-test-id="go-back-link">
+        <div class="nhsuk-back-link">
+            <a class="nhsuk-back-link__link" href="/order/organisation/03F/order/C010001-01">
+                <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
+                </svg>
+                Go back
+            </a>
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 data-test-id="funding-source-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Funding source for C010001-01</h1>
+            <p data-test-id="funding-source-page-description" class="nhsuk-heading-l nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">Explain how you’re paying for this order</p>
+
+            <form method="post">
+
+                <div id="selectFundingSource" data-test-id="question-selectFundingSource">
+
+                    <div data-test-id="radiobutton-options">
+
+                        <div class="nhsuk-form-group">
+
+                            <fieldset class="nhsuk-fieldset">
+                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                    Are you paying for this order in full using your GP IT Futures centrally held funding allocation?
+                                </legend>
+
+                                <div class="nhsuk-radios">
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectFundingSource-1" name="selectFundingSource" type="radio" value="true" checked>
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectFundingSource-1">
+                                            Yes
+                                        </label>
+                                    </div>
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectFundingSource-2" name="selectFundingSource" type="radio" value="false">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectFundingSource-2">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-test-id="funding-source-page-insetAdvice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
+
+                    <p>
+                        Only answer ‘Yes’ if you’re using your central funding allocation to pay for the entire value of this order. It’ll then be centrally processed and paid for out of your allocation.
+                    </p>
+
+                    <p>
+                        If you answer ‘No’, the order can still be completed but you’ll need to contact the supplier to arrange payment.
+                    </p>
+
+                    <p>
+                        In both cases completing your order will generate an order summary that you’ll need to include in the contract you send to the supplier.
+                    </p>
+
+                    <p>
+                        If you’re intending to pay using a combination of your central allocation and any other funding sources, you’ll need to create separate orders for each of the funding sources you’re using.
+                    </p>
+                </div>
+
+                <div data-test-id="save-button">
+
+                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
+                        Save and return
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
