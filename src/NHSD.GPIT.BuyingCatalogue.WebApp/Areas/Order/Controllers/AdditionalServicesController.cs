@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         public IActionResult Index(string odsCode, string callOffId)
         {
-            return View();
+            return View(new AdditionalServiceModel());
         }
 
         [HttpGet("select/additional-service")]
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/additional-service")]
         public IActionResult SelectAdditionalService(string odsCode, string callOffId, SelectAdditionalServiceModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/additional-services/select/additional-service/price/recipients");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/recipients");
         }
 
         [HttpGet("select/additional-service/price/recipients")]
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public IActionResult SelectAdditionalServicePriceRecipients(string odsCode, string callOffId, SelectAdditionalServiceRecipientsModel model)
         {
             // TODO this isn't the correct redirect if we got here from the Edit service recipients button
-            return Redirect($"/order/organisation/03F/order/C010001-01/additional-services/select/additional-service/price/recipients/date");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/recipients/date");
         }
 
         [HttpGet("select/additional-service/price/recipients/date")]
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/additional-service/price/recipients/date")]
         public IActionResult SelectAdditionalServicePriceRecipientsDate(string odsCode, string callOffId, SelectAdditionalServiceRecipientsDateModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C010001-01/additional-services/neworderitem");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/additional-services/neworderitem");
         }
 
         [HttpGet("neworderitem")]
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("neworderitem")]
         public IActionResult NewOrderItem(string odsCode, string callOffId, NewAdditionalServiceOrderItemModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C010001-01/additional-services");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/additional-services");
         }
 
         [HttpGet("{id}")]
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("{id}")]
         public IActionResult EditAdditionalService(string odsCode, string callOffId, string id, EditAdditionalServiceModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/additional-services");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/additional-services");
         }
 
         [HttpGet("delete/{id}/confirmation/{serviceName}")]
@@ -93,13 +93,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("delete/{id}/confirmation/{serviceName}")]
         public IActionResult DeleteAdditionalService(string odsCode, string callOffId, string id, string serviceName, DeleteAdditionalServiceModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/additional-services/delete/10001-01/confirmation/AnywereConsult/continue");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/additional-services/delete/{id}/confirmation/{serviceName}/continue");
         }
 
         [HttpGet("delete/{id}/confirmation/{serviceName}/continue")]
         public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string serviceName)
         {
-            return View();
+            return View(new DeleteContinueModel());
         }
     }
 }

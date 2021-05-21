@@ -26,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     {
         private const string IdentityDbConnectionEnvironmentVariable = "ID_DB_CONNECTION";
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
+        private const string CatalogueOrderingDbConnectionEnvironmentVariable = "CO_DB_CONNECTION";
+        private const string RedisEnvironmentVariable = "REDIS";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -76,23 +78,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(odsSettings);
         }
 
+        public static void ConfigureSession(this IServiceCollection services)
+        {
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            var redisConnectionString = Environment.GetEnvironmentVariable(RedisEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(redisConnectionString))
+                throw new InvalidOperationException($"Environment variable '{RedisEnvironmentVariable}' must be set for the redis connection string");
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+                options.InstanceName = "BuyingCatalogueInstance";
+            });
+        }
+
         public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
         {
             var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
 
             if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
-            {
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
-            }
+
+            var catalogueOrderingConnectionString = Environment.GetEnvironmentVariable(CatalogueOrderingDbConnectionEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(catalogueOrderingConnectionString))
+                throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
             var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
 
             if (string.IsNullOrWhiteSpace(identityConnectionString))
-            {
                 throw new InvalidOperationException($"Environment variable '{IdentityDbConnectionEnvironmentVariable}' must be set for the database connection string");
-            }
 
             services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
+            services.AddDbContext<OrderingDbContext>(options => options.UseSqlServer(catalogueOrderingConnectionString));
             services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(identityConnectionString));
 
             healthCheckBuilder.AddDatabaseHealthCheck(identityConnectionString);

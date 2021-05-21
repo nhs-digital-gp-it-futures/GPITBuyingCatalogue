@@ -16,6 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             return GetClaimValue(user, "userDisplayName");
         }
 
+        public static string GetPrimaryOdsCode(this ClaimsPrincipal user)
+        {
+            return GetClaimValue(user, "primaryOrganisationOdsCode");
+        }
+
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
             return GetClaimValue(user, "organisationFunction").Equals(OrganisationFunction.Authority.DisplayName);

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -20,19 +20,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         public IActionResult Index(string odsCode, string callOffId)
         {
-            return View();
+            return View(new AssociatedServiceModel());
         }
 
         [HttpGet("select/associated-service")]
-        public IActionResult SelectAssocaitedService(string odsCode, string callOffId)
+        public IActionResult SelectAssociatedService(string odsCode, string callOffId)
         {
             return View(new SelectAssociatedServiceModel());
         }
 
         [HttpPost("select/associated-service")]
-        public IActionResult SelectAssocaitedService(string odsCode, string callOffId, SelectAssociatedServiceModel model)
+        public IActionResult SelectAssociatedService(string odsCode, string callOffId, SelectAssociatedServiceModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/associated-services/neworderitem");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/associated-services/neworderitem");
         }
 
         [HttpGet("neworderitem")]
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("neworderitem")]
         public IActionResult NewOrderItem(string odsCode, string callOffId, NewAssociatedServiceOrderItemModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/associated-services");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/associated-services");
         }
 
         [HttpGet("{id}")]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("{id}")]
         public IActionResult EditAssociatedService(string odsCode, string callOffId, string id, EditAssociatedServiceModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/associated-services");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/associated-services");
         }
 
         [HttpGet("delete/{id}/confirmation/{serviceName}")]
@@ -68,13 +68,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("delete/{id}/confirmation/{serviceName}")]
         public IActionResult DeleteAssociatedService(string odsCode, string callOffId, string id, string serviceName, DeleteAssociatedServiceModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/associated-services/delete/10001-01/confirmation/AnywereConsult/continue");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/associated-services/delete/10001-01/confirmation/AnywereConsult/continue");
         }
 
         [HttpGet("delete/{id}/confirmation/{serviceName}/continue")]
         public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string serviceName)
         {
-            return View();
+            return View(new DeleteContinueModel());
         }
     }
 }
