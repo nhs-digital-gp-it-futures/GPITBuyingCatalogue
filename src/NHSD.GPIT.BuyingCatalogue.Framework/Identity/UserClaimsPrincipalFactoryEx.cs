@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
@@ -12,14 +13,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
         where TUser : AspNetUser
     {
         private readonly ILogWrapper<UserClaimsPrincipalFactoryEx<TUser>> logger;
+        private readonly IOrganisationsService organisationService;
 
         public UserClaimsPrincipalFactoryEx(
             UserManager<TUser> userManager,
             IOptions<IdentityOptions> optionsAccessor,
-            ILogWrapper<UserClaimsPrincipalFactoryEx<TUser>> logger)
+            ILogWrapper<UserClaimsPrincipalFactoryEx<TUser>> logger,
+            IOrganisationsService organisationService)
             : base(userManager, optionsAccessor)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(TUser user)
@@ -32,6 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
             id.AddClaim(new Claim("userDisplayName", $"{aspNetUser.FirstName} {aspNetUser.LastName}"));
             id.AddClaim(new Claim("organisationFunction", aspNetUser.OrganisationFunction));
+
+            var organisation = await organisationService.GetOrganisation(aspNetUser.PrimaryOrganisationId);
+            id.AddClaim(new Claim("primaryOrganisationOdsCode", organisation.OdsCode));
 
             return id;
         }

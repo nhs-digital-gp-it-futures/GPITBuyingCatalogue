@@ -80,7 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureSession(this IServiceCollection services)
         {
-            services.AddSession(options => {
+            services.AddSession(options =>
+            {
                 options.IdleTimeout = TimeSpan.FromMinutes(1);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
@@ -108,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             var catalogueOrderingConnectionString = Environment.GetEnvironmentVariable(CatalogueOrderingDbConnectionEnvironmentVariable);
 
             if (string.IsNullOrWhiteSpace(catalogueOrderingConnectionString))
-                throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");            
+                throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
             var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
 

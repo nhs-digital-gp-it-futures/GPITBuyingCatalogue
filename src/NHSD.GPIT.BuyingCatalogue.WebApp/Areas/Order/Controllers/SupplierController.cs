@@ -1,9 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
         {
             // TODO - Display NoSupplierFound if no results
-            return Redirect($"/order/organisation/03F/order/C01005-01/supplier/search/select");
+            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search/select");
         }
 
         [HttpGet("search/select")]
