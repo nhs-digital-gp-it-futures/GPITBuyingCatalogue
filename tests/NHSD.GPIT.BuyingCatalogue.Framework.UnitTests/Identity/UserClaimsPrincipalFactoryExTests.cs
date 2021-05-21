@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
@@ -44,6 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             userManager.Setup(m => m.GetUserIdAsync(user)).ReturnsAsync(user.Id);
             userManager.Setup(m => m.GetUserNameAsync(user)).ReturnsAsync(user.UserName);
 
+            var orgService = new Mock<IOrganisationsService>();
+            orgService.Setup(m => m.GetOrganisation(It.IsAny<Guid>())).ReturnsAsync(new Organisation { OdsCode = "123" });
+
             var options = new Mock<IOptions<IdentityOptions>>();
             var identityOptions = new IdentityOptions();
             options.Setup(a => a.Value).Returns(identityOptions);
@@ -54,12 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
                 userManager.Object,
                 options.Object,
                 Mock.Of<ILogWrapper<UserClaimsPrincipalFactoryEx<AspNetUser>>>(),
-                Mock.Of<IOrganisationsService>());
+                orgService.Object);
 
             var principal = await factory.CreateAsync(user);
 
             Assert.AreEqual(organisationFunction, GetClaimValue(principal, "organisationFunction"));
             Assert.AreEqual("Fred Smith", GetClaimValue(principal, "userDisplayName"));
+            Assert.AreEqual("123", GetClaimValue(principal, "primaryOrganisationOdsCode"));
         }
 
         public static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
