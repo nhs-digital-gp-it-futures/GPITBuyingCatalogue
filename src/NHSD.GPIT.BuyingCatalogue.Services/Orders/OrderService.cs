@@ -36,15 +36,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.Supplier).ThenInclude(s => s.Address)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.ServiceInstanceItems).Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                .Include(o => o.OrderItems).ThenInclude(i => i.PricingUnit)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
+                .Include(o => o.OrderItems).ThenInclude(i => i.PricingUnitNameNavigation)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
 
         public async Task<IList<Order>> GetOrders(Guid organisationId)
         {
-            return await dbContext.OrderingParty
+            return await dbContext.OrderingParties
                 .Where(o => o.Id == organisationId)
                 .SelectMany(o => o.Orders)
                 .AsNoTracking()
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.SupplierContact)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients)
-                .Include(o => o.Progress)
+                .Include(o => o.OrderProgress)
                 .AsQueryable()
                 .SingleOrDefaultAsync();
         }
@@ -72,9 +72,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderingParty)
                 .Include(o => o.Supplier)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
-                .Include(o => o.OrderItems).ThenInclude(i => i.PricingUnit)
-                .Include(o => o.Progress)
+                .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
+                .Include(o => o.OrderItems).ThenInclude(i => i.PricingUnitNameNavigation)
+                .Include(o => o.OrderProgress)
                 .SingleOrDefaultAsync();
         }
 
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private async Task<OrderingParty> GetOrderingParty(Guid organisationId)
         {
-            return await dbContext.OrderingParty.FindAsync(organisationId);
+            return await dbContext.OrderingParties.FindAsync(organisationId);
         }
     }
 }

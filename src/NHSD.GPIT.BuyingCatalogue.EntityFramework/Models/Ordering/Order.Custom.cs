@@ -8,6 +8,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
     public partial class Order
     {
+        private readonly List<DefaultDeliveryDate> defaultDeliveryDates = new();
+        private readonly List<OrderItem> orderItems = new();
+        private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
+
+        public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
+
         public decimal CalculateCostPerYear(CostType costType)
         {
             return OrderItems.Where(i => i.CostType == costType).Sum(i => i.CalculateTotalCostPerYear());

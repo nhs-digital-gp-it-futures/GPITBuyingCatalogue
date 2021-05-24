@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
             modelBuilder.Entity<ServiceInstanceItem>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(i => new { i.OrderId, i.CatalogueItemId, i.OdsCode });
                 entity.ToView("ServiceInstanceItem");
                 entity.Property(e => e.CatalogueItemId)
                     .IsRequired()

@@ -7,6 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
     public partial class OrderItem
     {
         private readonly List<OrderItemRecipient> recipients = new();
+        private DateTime lastUpdated = DateTime.UtcNow;
 
         public CostType CostType =>
             CatalogueItem.CatalogueItemType.Name == "Associated Service" &&

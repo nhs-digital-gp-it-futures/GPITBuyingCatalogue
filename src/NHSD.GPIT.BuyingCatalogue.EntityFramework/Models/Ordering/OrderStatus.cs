@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 #nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public partial class OrderStatus
+    public partial class OrderStatus : IEquatable<OrderStatus>
     {
         public OrderStatus()
         {

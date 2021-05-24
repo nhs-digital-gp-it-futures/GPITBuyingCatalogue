@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
@@ -197,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         {
             private ApplicationUserValidatorTestContext()
             {
-                UsersRepositoryMock = new Mock<IUsersDbRepository<AspNetUser>>();
+                UsersRepositoryMock = new Mock<IDbRepository<AspNetUser, UsersDbContext>>();
                 UsersRepositoryMock
                     .Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                     .ReturnsAsync(() => new[] { ApplicationUserByEmail });
@@ -209,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             internal AspNetUser ApplicationUserByEmail { get; set; }
 
-            private Mock<IUsersDbRepository<AspNetUser>> UsersRepositoryMock { get; }
+            private Mock<IDbRepository<AspNetUser, UsersDbContext>> UsersRepositoryMock { get; }
 
             public static ApplicationUserValidatorTestContext Setup()
             {

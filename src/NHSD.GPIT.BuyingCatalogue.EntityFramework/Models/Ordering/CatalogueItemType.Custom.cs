@@ -20,5 +20,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
                 _ => provisioningType.InferEstimationPeriod(estimationPeriod),
             };
         }
+
+        public void MarkOrderSectionAsViewed(Order order)
+        {
+            if (order is null)
+                throw new ArgumentNullException(nameof(order));
+
+            switch (Name)
+            {
+                case "Solution":
+                    order.OrderProgress.CatalogueSolutionsViewed = true;
+                    break;
+
+                case "AdditionalService":
+                    order.OrderProgress.AdditionalServicesViewed = true;
+                    break;
+
+                case "AssociatedService":
+                    order.OrderProgress.AssociatedServicesViewed = true;
+                    break;
+
+                default:
+                    throw new ArgumentException($"{nameof(Name)} must be a valid {nameof(CatalogueItemType)}", nameof(Name));
+            }
+        }
     }
 }

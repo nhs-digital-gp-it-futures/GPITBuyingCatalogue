@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
@@ -21,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         {
             Assert.Throws<ArgumentNullException>(() => _ = new UsersService(
                 null,
-                Mock.Of<IUsersDbRepository<AspNetUser>>()));
+                Mock.Of<IDbRepository<AspNetUser, UsersDbContext>>()));
         }
 
         [Test]
@@ -37,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static void GetUser_InvalidUserId_ThrowsException(string userId)
         {
             var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
-                Mock.Of<IUsersDbRepository<AspNetUser>>());
+                Mock.Of<IDbRepository<AspNetUser, UsersDbContext>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.GetUser(userId));
 
@@ -47,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Test]
         public static async Task GetUser_CallsSingleAsync_OnRepository()
         {
-            var mockUsersRepository = new Mock<IUsersDbRepository<AspNetUser>>();
+            var mockUsersRepository = new Mock<IDbRepository<AspNetUser, UsersDbContext>>();
             mockUsersRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(new AspNetUser());
 
@@ -63,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static void GetAllUsersForOrganisation_InvalidId_ThrowsException()
         {
             var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
-                Mock.Of<IUsersDbRepository<AspNetUser>>());
+                Mock.Of<IDbRepository<AspNetUser, UsersDbContext>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.GetAllUsersForOrganisation(Guid.Empty));
 
@@ -79,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 new AspNetUser{UserName = "Two" },
             };
 
-            var mockUsersRepository = new Mock<IUsersDbRepository<AspNetUser>>();
+            var mockUsersRepository = new Mock<IDbRepository<AspNetUser, UsersDbContext>>();
             mockUsersRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(users);
 
@@ -96,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static void EnableOrDisableUser_InvalidUserId_ThrowsException(string userId)
         {
             var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
-                Mock.Of<IUsersDbRepository<AspNetUser>>());
+                Mock.Of<IDbRepository<AspNetUser, UsersDbContext>>());
 
             var actual = Assert.ThrowsAsync<ArgumentException>(() => service.EnableOrDisableUser(userId, true));
 
@@ -110,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         {
             var user = new AspNetUser { Disabled = !enabled };
 
-            var mockUsersRepository = new Mock<IUsersDbRepository<AspNetUser>>();
+            var mockUsersRepository = new Mock<IDbRepository<AspNetUser, UsersDbContext>>();
             mockUsersRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(user);
 
