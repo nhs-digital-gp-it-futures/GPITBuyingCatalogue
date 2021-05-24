@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
@@ -19,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
         private static readonly EmailAddressAttribute EmailAddressAttribute = new();
 
-        private readonly IUsersDbRepository<AspNetUser> usersRepository;
+        private readonly IDbRepository<AspNetUser, UsersDbContext> usersRepository;
 
-        public AspNetUserValidator(IUsersDbRepository<AspNetUser> usersRepository)
+        public AspNetUserValidator(IDbRepository<AspNetUser, UsersDbContext> usersRepository)
         {
             this.usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
         }
