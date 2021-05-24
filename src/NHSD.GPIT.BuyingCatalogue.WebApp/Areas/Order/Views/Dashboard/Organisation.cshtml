@@ -14,11 +14,11 @@
             @*TODO - Only if user can act on behalf of other organisations*@
             <h2>Current organisation</h2>
             <p class="nhsuk-u-margin-bottom-2">You are currently acting on behalf of:</p>
-            <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">NHS Hull CCG <a href=/order/organisation/03F/select class="nhsuk-u-margin-left-4">Change organisation</a></p>
+            <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">@Model.OrganisationName <a href=/order/organisation/@Model.OdsCode/select class="nhsuk-u-margin-left-4">Change organisation</a></p>
 
             <div data-test-id="new-order-button">
 
-                <a class="nhsuk-button nhsuk-u-margin-bottom-3 nhsuk-u-padding-left-5 nhsuk-u-padding-right-5" href="/order/organisation/03F/order/neworder" draggable="false">
+                <a class="nhsuk-button nhsuk-u-margin-bottom-3 nhsuk-u-padding-left-5 nhsuk-u-padding-right-5" href="/order/organisation/@Model.OdsCode/order/neworder" draggable="false">
                     Create new order
                 </a>
             </div>
@@ -62,7 +62,7 @@
 
                             <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
 
-                                <a data-test-id="C010001-01-id" href="/order/organisation/03F/order/C010001-01">C010001-01</a>
+                                <a data-test-id="C010001-01-id" href="/order/organisation/@Model.OdsCode/order/C010001-01">C010001-01</a>
                             </td>
 
                             <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
@@ -130,7 +130,7 @@
 
                             <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
 
-                                <a data-test-id="C010000-01-id" href="/order/organisation/03F/order/C010000-01/summary">C010000-01</a>
+                                <a data-test-id="C010000-01-id" href="/order/organisation/@Model.OdsCode/order/C010000-01/summary">C010000-01</a>
                             </td>
 
                             <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">

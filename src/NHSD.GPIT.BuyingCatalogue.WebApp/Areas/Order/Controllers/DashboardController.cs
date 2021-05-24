@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -13,10 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public class DashboardController : Controller
     {
         private readonly ILogWrapper<OrderController> logger;
+        private readonly IOrganisationsService organisationsService;
 
-        public DashboardController(ILogWrapper<OrderController> logger)
+        public DashboardController(
+            ILogWrapper<OrderController> logger,
+            IOrganisationsService organisationsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         }
 
         public IActionResult Index()
@@ -29,15 +35,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return Redirect($"/order/organisation/{odsCode}");
         }
 
-        // TODO - allroutes containing {odsCode} should be checked in pipeline to ensue user can use that odsCode
         [HttpGet("organisation/{odsCode}")]
-        public IActionResult Organisation(string odsCode)
+        public async Task<IActionResult> Organisation(string odsCode)
         {
-            // TODO - This check needs applying everywhere, ideally middleware
-            if (!User.IsBuyer())
-                return View("NotBuyer");
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
 
-            return View(new OrganisationModel());
+            var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
+
+            return View(new OrganisationModel(organisation));
         }
 
         [HttpGet("organisation/{odsCode}/select")]

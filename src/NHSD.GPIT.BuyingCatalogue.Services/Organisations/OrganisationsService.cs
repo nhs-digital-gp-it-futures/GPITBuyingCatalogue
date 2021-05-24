@@ -57,6 +57,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return await organisationRepository.SingleAsync(x => x.OrganisationId == id);
         }
 
+        public async Task<Organisation> GetOrganisationByOdsCode(string odsCode)
+        {
+            return await organisationRepository.SingleAsync(x => x.OdsCode == odsCode);
+        }
+
         public async Task UpdateCatalogueAgreementSigned(Guid organisationId, bool signed)
         {
             var organisation = await organisationRepository.SingleAsync(x => x.OrganisationId == organisationId);

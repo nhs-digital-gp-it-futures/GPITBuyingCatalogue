@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
 using NHSD.GPIT.BuyingCatalogue.Services;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using Serilog;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
@@ -34,7 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(typeof(OrdersActionFilter));
+            });
 
             var healthChecksBuilder = services.AddHealthChecks();
 
