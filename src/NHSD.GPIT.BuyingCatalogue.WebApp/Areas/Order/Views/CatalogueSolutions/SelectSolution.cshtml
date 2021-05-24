@@ -1,0 +1,71 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.SelectSolutionModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="solution-select-page">
+    <partial name="Partials/_BackLink" model="Model" />
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <nhs-page-title title="@Model.Title" title-advice="These are the Catalogue Solutions provided by the supplier you’ve chosen. Select the one you want to purchase from the list." />
+
+            <form method="post">
+
+                <div id="selectSolution" data-test-id="question-selectSolution">
+
+                    <div data-test-id="radiobutton-options">
+
+                        <div class="nhsuk-form-group">
+
+                            <fieldset class="nhsuk-fieldset">
+                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                    Select Catalogue Solution
+                                </legend>
+
+                                <div class="nhsuk-radios">
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectSolution-1" name="selectSolution" type="radio" value="10000-002">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-1">
+                                            Anywhere Consult
+                                        </label>
+                                    </div>
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectSolution-2" name="selectSolution" type="radio" value="10000-001">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-2">
+                                            Emis Web GP
+                                        </label>
+                                    </div>
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectSolution-3" name="selectSolution" type="radio" value="10000-054">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-3">
+                                            Online and Video Consult
+                                        </label>
+                                    </div>
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectSolution-4" name="selectSolution" type="radio" value="10000-062">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-4">
+                                            Video Consult
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-test-id="continue-button">
+
+                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
+                        Continue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

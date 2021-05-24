@@ -1,0 +1,17 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.DeleteContinueModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="delete-catalogue-confirmation-page">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-page-title title="@Model.Title" title-advice="This Associated Service has been deleted from your order." />
+            <div data-test-id="continue-button">
+                <a class="nhsuk-button nhsuk-u-margin-top-9" href="@Model.ContinueLink" draggable="false">
+                    Continue
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

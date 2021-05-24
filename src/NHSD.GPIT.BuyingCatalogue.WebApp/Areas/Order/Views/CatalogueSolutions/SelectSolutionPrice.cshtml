@@ -1,0 +1,64 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.SelectSolutionPriceModel;
+@{
+    ViewData["Title"] = $"List price for Write on Time";
+}
+
+<div class="nhsuk-width-container" data-test-id="solution-price-page">
+    <partial name="Partials/_BackLink" model="Model" />
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <nhs-page-title title="@Model.Title" title-advice="Select the list price for this Catalogue Solution. If you’ve agreed a different price with the supplier, the values can be altered later." />
+
+            <form method="post">
+
+                <div id="selectSolutionPrice" data-test-id="question-selectSolutionPrice">
+
+                    <div data-test-id="radiobutton-options">
+
+                        <div class="nhsuk-form-group">
+
+                            <fieldset class="nhsuk-fieldset">
+                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
+                                    Select list price
+                                </legend>
+
+                                <div class="nhsuk-radios">
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectSolutionPrice-1" name="selectSolutionPrice" type="radio" value="1">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolutionPrice-1">
+                                            £99.99 per patient per year
+                                        </label>
+                                    </div>
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectSolutionPrice-2" name="selectSolutionPrice" type="radio" value="2">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolutionPrice-2">
+                                            <div>1 - 999 patients £123.45 per patient per year</div><div>1000 - 1999 patients £49.99 per patient per year</div><div>2000+ patients £19.99 per patient per year</div>
+                                        </label>
+                                    </div>
+
+                                    <div class="nhsuk-radios__item">
+                                        <input class="nhsuk-radios__input" id="selectSolutionPrice-3" name="selectSolutionPrice" type="radio" value="3">
+                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolutionPrice-3">
+                                            £1,001.01 per consultation
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-test-id="continue-button">
+
+                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
+                        Continue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

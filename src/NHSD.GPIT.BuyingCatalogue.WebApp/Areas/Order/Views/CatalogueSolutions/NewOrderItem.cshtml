@@ -1,0 +1,334 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.NewOrderItemModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="order-item-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-page-title title="@Model.Title" title-advice="The information we have about this order has been included, but can be changed if required." />
+        </div>
+
+        <form method="post">
+            <div class="nhsuk-grid-column-two-thirds">
+
+                <div class="nhsuk-u-margin-bottom-5">
+                    <div class="">
+
+                        <div data-test-id="question-price">
+                            <div data-test-id="text-field-input">
+                                <div class="nhsuk-form-group">
+                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="price">
+                                        What price have you agreed? (£)
+                                    </label>
+                                    <span class="bc-flex-container bc-align-items-center">
+                                        <input class="nhsuk-input nhsuk-input--width-10" id="price" name="price" type="text" value="37.92">
+                                        <label for="price" class="bc-margin-left">per licence per month</label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div data-test-id="view-section-price-id" class="">
+                            <details class="nhsuk-details">
+                                <summary class="nhsuk-details__summary">
+                                    <span class="nhsuk-details__summary-text">
+                                        What price should I enter?
+                                    </span>
+                                </summary>
+                                <div class="nhsuk-details__text">
+                                    You can change the list price if you’ve agreed a different rate with the supplier.
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nhsuk-grid-column-full">
+                <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-3 bc-c-order-table__hr" />
+                <div data-test-id="solution-table" class="nhsuk-u-margin-left-5 nhsuk-u-margin-top-0">
+
+                    <div id="solution-table" data-test-id="solution-table" class="">
+
+                        <table data-test-id="table" class="" style="page-break-inside:auto">
+
+                            <thead data-test-id="table-headings" style="display:table-header-group;">
+
+                            <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0  nhsuk-u-padding-bottom-5 nhsuk-u-font-size-20" style="width:33%">
+                                <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Recipient name (ODS code)</div>
+                            </th>
+
+                            <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-padding-bottom-5 nhsuk-u-font-size-20" style="width:33%">
+                                <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Quantity</div>
+                            </th>
+
+                            <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 nhsuk-u-padding-bottom-3 nhsuk-u-font-size-20" style="width:33%">
+                                <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Planned delivery date</div>
+
+                                <span data-test-id="column-heading-2-hint" class="nhsuk-hint">For example 14 01 2020</span>
+                            </th>
+                            </thead>
+
+                            <tbody>
+
+                                <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
+
+                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                        <div data-test-id="ASSURA ER LLP HULL DERMATOLOGY-Y03508-recipient" class="bc-c-data-text nhsuk-u-padding-top-5">ASSURA ER LLP HULL DERMATOLOGY (Y03508)</div>
+                                    </td>
+
+                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                        <div data-test-id="">
+
+                                            <div data-test-id="question-quantity">
+
+                                                <div data-test-id="text-field-input">
+
+                                                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+
+                                                        <input class="nhsuk-input nhsuk-u-margin-top-5 nhsuk-input--width-10" id="quantity" name="quantity" type="text" value="7">
+                                                    </div>
+                                                </div>
+
+                                                <div data-test-id="text-field-footer">
+                                                    <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+
+                                            <div data-test-id="view-section-input-id-practice" class="">
+                                                <details class="nhsuk-details">
+                                                    <summary class="nhsuk-details__summary">
+                                                        <span class="nhsuk-details__summary-text">
+                                                            What quantity should I enter?
+                                                        </span>
+                                                    </summary>
+                                                    <div class="nhsuk-details__text">
+                                                        Enter the total amount you think you'll need for the entire duration of the order.
+                                                    </div>
+                                                </details>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                        <div data-test-id="">
+
+                                            <div data-test-id="question-deliveryDate">
+
+                                                <div data-test-id="date-field-input">
+
+                                                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                                                        <fieldset class="nhsuk-fieldset" role="group">
+                                                            <div class="nhsuk-date-input" id="deliveryDate">
+                                                                <div class="nhsuk-date-input__item">
+                                                                    <div class="nhsuk-form-group">
+                                                                        <label class="nhsuk-label nhsuk-date-input__label" for="deliveryDate-day">
+                                                                            Day
+                                                                        </label>
+                                                                        <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="deliveryDate-day" name="deliveryDate-day" type="text" value="01" pattern="[0-9]*" inputmode="numeric">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="nhsuk-date-input__item">
+                                                                    <div class="nhsuk-form-group">
+                                                                        <label class="nhsuk-label nhsuk-date-input__label" for="deliveryDate-month">
+                                                                            Month
+                                                                        </label>
+                                                                        <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="deliveryDate-month" name="deliveryDate-month" type="text" value="02" pattern="[0-9]*" inputmode="numeric">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="nhsuk-date-input__item">
+                                                                    <div class="nhsuk-form-group">
+                                                                        <label class="nhsuk-label nhsuk-date-input__label" for="deliveryDate-year">
+                                                                            Year
+                                                                        </label>
+                                                                        <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4" id="deliveryDate-year" name="deliveryDate-year" type="text" value="2022" pattern="[0-9]*" inputmode="numeric">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+
+                                                <div data-test-id="date-field-footer">
+                                                    <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+
+                                            <div data-test-id="view-section-input-id-date" class="">
+                                                <details class="nhsuk-details">
+                                                    <summary class="nhsuk-details__summary">
+                                                        <span class="nhsuk-details__summary-text">
+                                                            What date should I enter?
+                                                        </span>
+                                                    </summary>
+                                                    <div class="nhsuk-details__text">
+                                                        Enter the planned delivery date you've agreed with the supplier. This is the day that each of the listed Service Recipients will start using this Catalogue Solution.<br><br>We've included the commencement date for this Call-off Agreement, but you can change it if you’ve agreed a different delivery date.
+                                                    </div>
+                                                </details>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr data-test-id="table-row-1" style="page-break-inside:avoid; page-break-after:auto">
+
+                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                        <div data-test-id="BEVAN LIMITED-Y07021-recipient" class="bc-c-data-text nhsuk-u-padding-top-5">BEVAN LIMITED (Y07021)</div>
+                                    </td>
+
+                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                        <div data-test-id="">
+
+                                            <div data-test-id="question-quantity">
+
+                                                <div data-test-id="text-field-input">
+
+                                                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+
+                                                        <input class="nhsuk-input nhsuk-u-margin-top-5 nhsuk-input--width-10" id="quantity" name="quantity" type="text" value="7">
+                                                    </div>
+                                                </div>
+
+                                                <div data-test-id="text-field-footer">
+                                                    <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+
+                                            <div data-test-id="view-section-input-id-practice" class="">
+                                                <details class="nhsuk-details">
+                                                    <summary class="nhsuk-details__summary">
+                                                        <span class="nhsuk-details__summary-text">
+                                                            What quantity should I enter?
+                                                        </span>
+                                                    </summary>
+                                                    <div class="nhsuk-details__text">
+                                                        Enter the total amount you think you'll need for the entire duration of the order.
+                                                    </div>
+                                                </details>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
+
+                                        <div data-test-id="">
+
+                                            <div data-test-id="question-deliveryDate">
+
+                                                <div data-test-id="date-field-input">
+
+                                                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                                                        <fieldset class="nhsuk-fieldset" role="group">
+                                                            <div class="nhsuk-date-input" id="deliveryDate">
+                                                                <div class="nhsuk-date-input__item">
+                                                                    <div class="nhsuk-form-group">
+                                                                        <label class="nhsuk-label nhsuk-date-input__label" for="deliveryDate-day">
+                                                                            Day
+                                                                        </label>
+                                                                        <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="deliveryDate-day" name="deliveryDate-day" type="text" value="01" pattern="[0-9]*" inputmode="numeric">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="nhsuk-date-input__item">
+                                                                    <div class="nhsuk-form-group">
+                                                                        <label class="nhsuk-label nhsuk-date-input__label" for="deliveryDate-month">
+                                                                            Month
+                                                                        </label>
+                                                                        <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="deliveryDate-month" name="deliveryDate-month" type="text" value="02" pattern="[0-9]*" inputmode="numeric">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="nhsuk-date-input__item">
+                                                                    <div class="nhsuk-form-group">
+                                                                        <label class="nhsuk-label nhsuk-date-input__label" for="deliveryDate-year">
+                                                                            Year
+                                                                        </label>
+                                                                        <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4" id="deliveryDate-year" name="deliveryDate-year" type="text" value="2022" pattern="[0-9]*" inputmode="numeric">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+
+                                                <div data-test-id="date-field-footer">
+                                                    <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+
+                                            <div data-test-id="view-section-input-id-date" class="">
+                                                <details class="nhsuk-details">
+                                                    <summary class="nhsuk-details__summary">
+                                                        <span class="nhsuk-details__summary-text">
+                                                            What date should I enter?
+                                                        </span>
+                                                    </summary>
+                                                    <div class="nhsuk-details__text">
+                                                        Enter the planned delivery date you've agreed with the supplier. This is the day that each of the listed Service Recipients will start using this Catalogue Solution.<br><br>We've included the commencement date for this Call-off Agreement, but you can change it if you’ve agreed a different delivery date.
+                                                    </div>
+                                                </details>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nhsuk-grid-column-full">
+                <div class="bc-u-inline-block">
+
+                    <div data-test-id="delete-button">
+
+                        <span class="nhsuk-button nhsuk-u-margin-top-9 nhsuk-button--secondary nhsuk-u-margin-right-5 nhsuk-button--disabled" href="/order/organisation/03F/order/C010001-01/catalogue-solutions/delete/neworderitem/confirmation/Anywhere Consult" draggable="false" aria-disabled="true">
+                            Delete Catalogue Solution
+                        </span>
+                    </div>
+                </div>
+                <div class="bc-u-float-right">
+                    <div class="bc-u-inline-block">
+
+                        <div data-test-id="edit-button">
+
+                            <span class="nhsuk-button nhsuk-u-margin-top-9 nhsuk-button--secondary nhsuk-u-margin-right-5 nhsuk-button--disabled" href="/order/organisation/03F/order/C010001-01/catalogue-solutions/select/solution/price/recipients" draggable="false" aria-disabled="true">
+                                Edit Service Recipients
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bc-u-inline-block">
+
+                        <div data-test-id="save-button">
+
+                            <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

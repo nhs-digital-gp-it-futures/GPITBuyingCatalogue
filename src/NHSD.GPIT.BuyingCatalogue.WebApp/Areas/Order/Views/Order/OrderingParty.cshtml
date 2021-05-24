@@ -1,0 +1,147 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderingPartyModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="ordering-party-page">
+    <partial name="Partials/_BackLink" model="Model" />
+
+    <form method="post">
+
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+
+                <nhs-page-title title="@Model.Title" title-advice="Check the organisation information and edit details for the primary contact for this order." />
+
+                <h2 data-test-id="organisation-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Organisation name</h2>
+                <div data-test-id="organisation-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">NHS Hull CCG</div>
+                <input type="hidden" name="name" value="NHS Hull CCG" />
+
+                <h2 data-test-id="organisation-ods-code-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">ODS code</h2>
+                <div data-test-id="organisation-ods-code" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">03F</div>
+                <input type="hidden" name="odsCode" value="03F" />
+
+                <h2 data-test-id="organisation-address-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Organisation address</h2>
+                <div data-test-id="organisation-address-1" class="nhsuk-u-font-size-19">WILBERFORCE COURT</div>
+                <input type="hidden" name="line1" value="WILBERFORCE COURT" />
+                <div data-test-id="organisation-address-2" class="nhsuk-u-font-size-19">ALFRED GELDER STREET</div>
+                <input type="hidden" name="line2" value="ALFRED GELDER STREET" />
+                <div data-test-id="organisation-address-3" class="nhsuk-u-font-size-19"></div>
+                <input type="hidden" name="line3" value="" />
+                <div data-test-id="organisation-address-4" class="nhsuk-u-font-size-19"></div>
+                <input type="hidden" name="line4" value="" />
+                <div data-test-id="organisation-address-5" class="nhsuk-u-font-size-19"></div>
+                <input type="hidden" name="line5" value="" />
+                <div data-test-id="organisation-address-town" class="nhsuk-u-font-size-19">HULL</div>
+                <input type="hidden" name="town" value="HULL" />
+                <div data-test-id="organisation-address-county" class="nhsuk-u-font-size-19"></div>
+                <input type="hidden" name="county" value="" />
+                <div data-test-id="organisation-address-postcode" class="nhsuk-u-font-size-19">HU1 1UY</div>
+                <input type="hidden" name="postcode" value="HU1 1UY" />
+                <div data-test-id="organisation-address-country" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">ENGLAND</div>
+                <input type="hidden" name="country" value="ENGLAND" />
+            </div>
+        </div>
+        <hr class="bc-c-order-table__hr" />
+        <div class="nhsuk-grid-row">
+            <div data-test-id="primary-contact-fields" class="nhsuk-grid-column-two-thirds">
+                <h2 data-test-id="primary-contact-details-heading" class="nhsuk-u-font-size-32 nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-3">Primary contact’s details</h2>
+
+                <div class="nhsuk-u-margin-bottom-5">
+
+                    <div data-test-id="question-firstName">
+
+                        <div data-test-id="text-field-input">
+
+                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="firstName">
+                                    First name
+                                </label>
+                                <input class="nhsuk-input" id="firstName" name="firstName" type="text">
+                            </div>
+                        </div>
+
+                        <div data-test-id="text-field-footer">
+                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                (Maximum character length 100)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nhsuk-u-margin-bottom-5">
+
+                    <div data-test-id="question-lastName">
+
+                        <div data-test-id="text-field-input">
+
+                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="lastName">
+                                    Last name
+                                </label>
+                                <input class="nhsuk-input" id="lastName" name="lastName" type="text">
+                            </div>
+                        </div>
+
+                        <div data-test-id="text-field-footer">
+                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                (Maximum character length 100)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nhsuk-u-margin-bottom-5">
+
+                    <div data-test-id="question-emailAddress">
+
+                        <div data-test-id="text-field-input">
+
+                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="emailAddress">
+                                    Email address
+                                </label>
+                                <input class="nhsuk-input" id="emailAddress" name="emailAddress" type="text">
+                            </div>
+                        </div>
+
+                        <div data-test-id="text-field-footer">
+                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                (Maximum character length 256)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nhsuk-u-margin-bottom-5">
+
+                    <div data-test-id="question-telephoneNumber">
+
+                        <div data-test-id="text-field-input">
+
+                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="telephoneNumber">
+                                    Telephone number
+                                </label>
+                                <input class="nhsuk-input" id="telephoneNumber" name="telephoneNumber" type="text">
+                            </div>
+                        </div>
+
+                        <div data-test-id="text-field-footer">
+                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
+                                (Maximum character length 35)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-test-id="save-button">
+
+                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
+                        Save and return
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

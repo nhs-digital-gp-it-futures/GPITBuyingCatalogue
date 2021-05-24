@@ -28,9 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         // Need to find a better way of doing this
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=buyingcatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
+        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
 
         private const string ID_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueUsers;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string OPERATING_MODE = "private";
+        private const string REDIS = "localhost:6380,abortConnect=false";
 
         private const string Browser = "chrome";
 
@@ -127,14 +129,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 Environment.SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
             }
 
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(CO_DB_CONNECTION))))
+            {
+                Environment.SetEnvironmentVariable(nameof(CO_DB_CONNECTION), CO_DB_CONNECTION);
+            }
+
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(ID_DB_CONNECTION))))
             {
-                Environment.SetEnvironmentVariable(nameof(ID_DB_CONNECTION), BC_DB_CONNECTION);
+                Environment.SetEnvironmentVariable(nameof(ID_DB_CONNECTION), ID_DB_CONNECTION);
             }
 
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(OPERATING_MODE))))
             {
                 Environment.SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
+            }
+
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(REDIS))))
+            {
+                Environment.SetEnvironmentVariable(nameof(REDIS), REDIS);
             }
         }
 
