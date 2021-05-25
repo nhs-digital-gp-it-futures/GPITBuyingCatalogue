@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public byte Revision { get; set; }
 
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public string Description { get; set; }
 

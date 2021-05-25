@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             OrderItems = new HashSet<OrderItem>();
         }
 
-        public string Id { get; set; }
+        public CatalogueItemId Id { get; set; }
 
         public int CatalogueItemTypeId { get; set; }
 

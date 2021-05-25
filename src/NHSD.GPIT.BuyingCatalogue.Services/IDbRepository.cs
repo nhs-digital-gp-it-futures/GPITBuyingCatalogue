@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
-    public interface IBuyingCatalogueRepository<T>
+    public interface IDbRepository<T, TDbContext>
         where T : class
+        where TDbContext : DbContext
     {
         void Add(T item);
 
