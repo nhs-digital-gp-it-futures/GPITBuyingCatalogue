@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
     public class YesNoRadioButtonTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-yesno-radio-buttons";
-        public const string ValueName = "value";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -21,17 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.For)]
         public ModelExpression For { get; set; }
 
-        [HtmlAttributeName(ValueName)]
-        public string Value { get; set; }
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (string.IsNullOrWhiteSpace(Value))
-            {
-                output.SuppressOutput();
-                return;
-            }
-
             var isYesChecked = For.Model?.ToString() == "Yes";
 
             var yesRadio = BuildYesRadio(isYesChecked);
@@ -54,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var yesBuilder = new TagBuilder(TagHelperConstants.Div);
             yesBuilder.AddCssClass(TagHelperConstants.RadioItemClass);
 
-            var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, isChecked);
+            var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "Yes", isChecked);
             var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "Yes");
 
             yesBuilder.InnerHtml
@@ -69,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var yesBuilder = new TagBuilder(TagHelperConstants.Div);
             yesBuilder.AddCssClass(TagHelperConstants.RadioItemClass);
 
-            var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, isChecked);
+            var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "No", isChecked);
             var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "No");
 
             yesBuilder.InnerHtml
