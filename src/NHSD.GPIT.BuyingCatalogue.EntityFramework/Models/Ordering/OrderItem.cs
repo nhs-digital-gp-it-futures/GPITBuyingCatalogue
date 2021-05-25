@@ -26,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public int? EstimationPeriodId { get; set; }
 
+        public int? PriceId { get; set; }
+
         public string CurrencyCode { get; set; }
 
         public decimal? Price { get; set; }
