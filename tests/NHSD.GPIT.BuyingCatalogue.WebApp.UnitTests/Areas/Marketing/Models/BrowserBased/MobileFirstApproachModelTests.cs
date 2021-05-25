@@ -1,7 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NUnit.Framework;
 
@@ -11,53 +8,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
     [Parallelizable(ParallelScope.All)]
     internal static class MobileFirstApproachModelTests
     {
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
+        
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        public static void IsComplete_MobileFirstApproachHasValue_ReturnsTrue()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new MobileFirstApproachModel(null));
+            var model = new MobileFirstApproachModel { MobileFirstApproach = "someValue" };
+
+            model.IsComplete.Should().BeTrue();
         }
 
-        [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void IsComplete_MobileFirstApproachHasNoValue_ReturnsFalse(string invalid)
         {
-            var clientApplication = new ClientApplication { MobileFirstDesign = true };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
-            };
+            var model = new MobileFirstApproachModel { MobileFirstApproach = invalid };
 
-            var model = new MobileFirstApproachModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
-            Assert.AreEqual("Yes", model.MobileFirstApproach);
-        }
-
-        [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
-        {
-            var model = new MobileFirstApproachModel();
-
-            Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.IsComplete);
-            Assert.Null(model.MobileFirstApproach);
-        }
-
-        [Test]
-        [TestCase(null, false)]
-        [TestCase(false, true)]
-        [TestCase(true, true)]
-        public static void IsCompleteIsCorrectlySet(bool? mobileFirstDesign, bool? expected)
-        {
-            var clientApplication = new ClientApplication { MobileFirstDesign = mobileFirstDesign };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
-
-            var model = new MobileFirstApproachModel(catalogueItem);
-
-            Assert.AreEqual(expected, model.IsComplete);
+            model.IsComplete.Should().BeFalse();
         }
     }
 }

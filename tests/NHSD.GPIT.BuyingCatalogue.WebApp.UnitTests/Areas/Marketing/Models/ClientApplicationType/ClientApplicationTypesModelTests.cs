@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -14,114 +15,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
     internal static class ClientApplicationTypesModelTests
     {
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        public static void IsComplete_BrowserBasedIsTrue_ReturnsTrue()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new ClientApplicationTypesModel(null));
+            var model = new ClientApplicationTypesModel{ BrowserBased = true, };
+
+            model.IsComplete.Should().BeTrue();
+        }
+        
+        [Test]
+        public static void IsComplete_NativeDesktopIsTrue_ReturnsTrue()
+        {
+            var model = new ClientApplicationTypesModel{ NativeDesktop = true, };
+
+            model.IsComplete.Should().BeTrue();
         }
 
         [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        public static void IsComplete_NativeMobileIsTrue_ReturnsTrue()
+        {
+            var model = new ClientApplicationTypesModel{ NativeMobile = true, };
+
+            model.IsComplete.Should().BeTrue();
+        }
+
+        [Test]
+        public static void IsComplete_AllBooleanPropertiesFalse_ReturnsFalse()
         {
             var model = new ClientApplicationTypesModel();
 
-            Assert.AreEqual("./", model.BackLink);
-            Assert.False(model.IsComplete);
-            Assert.False(model.BrowserBased);
-            Assert.False(model.NativeMobile);
-            Assert.False(model.NativeDesktop);
-        }
-
-        [Test]
-        public static void WithAllBrowserTypesChecked_PropertiesAreTrue_AndIsComplete()
-        {
-            var clientApplication = new ClientApplication
-            {
-                ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" }
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
-            };
-
-            var model = new ClientApplicationTypesModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-            Assert.True(model.IsComplete);
-            Assert.True(model.BrowserBased);
-            Assert.True(model.NativeMobile);
-            Assert.True(model.NativeDesktop);
-        }
-
-        [Test]
-        public static void WithBrowserBasedOnlyChecked_IsComplete()
-        {
-            var clientApplication = new ClientApplication
-            {
-                ClientApplicationTypes = new HashSet<string> { "browser-based" }
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
-            };
-
-            var model = new ClientApplicationTypesModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-            Assert.True(model.IsComplete);
-            Assert.True(model.BrowserBased);
-            Assert.False(model.NativeMobile);
-            Assert.False(model.NativeDesktop);
-        }
-
-        [Test]
-        public static void WithNativeMobileOnlyChecked_IsComplete()
-        {
-            var clientApplication = new ClientApplication
-            {
-                ClientApplicationTypes = new HashSet<string> { "native-mobile" }
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
-            };
-
-            var model = new ClientApplicationTypesModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-            Assert.True(model.IsComplete);
-            Assert.False(model.BrowserBased);
-            Assert.True(model.NativeMobile);
-            Assert.False(model.NativeDesktop);
-        }
-
-        [Test]
-        public static void WithNativeDesktopOnlyChecked_IsComplete()
-        {
-            var clientApplication = new ClientApplication
-            {
-                ClientApplicationTypes = new HashSet<string> { "native-desktop" }
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
-            };
-
-            var model = new ClientApplicationTypesModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-            Assert.True(model.IsComplete);
-            Assert.False(model.BrowserBased);
-            Assert.False(model.NativeMobile);
-            Assert.True(model.NativeDesktop);
+            model.IsComplete.Should().BeFalse();
         }
     }
 }

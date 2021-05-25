@@ -1,7 +1,6 @@
-﻿using System;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 using NUnit.Framework;
@@ -13,113 +12,75 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
     [Parallelizable(ParallelScope.All)]
     internal static class HybridModelTests
     {
-        [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
+        
+        [TestCase(false)]
+        [TestCase(true)]
+        [TestCase(null)]
+        public static void IsComplete_HybridHostingTypeNotNull_ReturnsIsValid(bool? expected)
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new HybridModel(null));
+            var mockHybridHostingType = new Mock<HybridHostingType>();
+            mockHybridHostingType.Setup(h => h.IsValid())
+                .Returns(expected);
+            var model = new HybridModel { HybridHostingType = mockHybridHostingType.Object, };
+
+            var actual = model.IsComplete;
+            
+            mockHybridHostingType.Verify(h => h.IsValid());
+            actual.Should().Be(expected);
         }
 
         [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
-        {
-            var hosting = new Hosting
-            {
-                HybridHostingType = new HybridHostingType
-                {
-                    HostingModel = "A hosting model",
-                    Link = "A link",
-                    RequiresHscn = "End user devices must be connected to HSCN/N3",
-                    Summary = "A summary"
-                }
-            };
-
-            var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { Hosting = json }
-            };
-
-            var model = new HybridModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-            model.HybridHostingType.Should().BeEquivalentTo(hosting.HybridHostingType);
-            Assert.True(model.RequiresHscnChecked);
-        }
-
-        [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        public static void IsComplete_HybridHostingTypeIsNull_ReturnsNull()
         {
             var model = new HybridModel();
+            model.HybridHostingType.Should().BeNull();
 
-            Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.IsComplete);
-            Assert.Null(model.HybridHostingType);
-            Assert.False(model.RequiresHscnChecked);
+            var actual = model.IsComplete;
+            
+            actual.Should().BeNull();
         }
 
+        [AutoData]
         [Test]
-        [TestCase(null, null, null, null, false)]
-        [TestCase("", null, null, null, false)]
-        [TestCase(" ", null, null, null, false)]
-        [TestCase(null, "", null, null, false)]
-        [TestCase(null, " ", null, null, false)]
-        [TestCase(null, null, "", null, false)]
-        [TestCase(null, null, " ", null, false)]
-        [TestCase(null, null, null, "", false)]
-        [TestCase(null, null, null, " ", false)]
-        [TestCase("Hosting model", null, null, null, true)]
-        [TestCase(null, "Link", null, null, true)]
-        [TestCase(null, null, "Requires Hscn", null, true)]
-        [TestCase(null, null, null, "Summary", true)]
-        public static void IsCompleteIsCorrectlySet(string hostingModel, string link, string requiresHscn, string summary, bool? expected)
+        public static void Get_RequiresHscnChecked_HybridHostingTypeHasValidRequiresHscn_ReturnsTrue(HybridModel model)
         {
-            var hosting = new Hosting
-            {
-                HybridHostingType = new HybridHostingType
-                {
-                    HostingModel = hostingModel,
-                    Link = link,
-                    RequiresHscn = requiresHscn,
-                    Summary = summary
-                }
-            };
+            model.HybridHostingType.RequiresHscn.Should().NotBeNullOrWhiteSpace();
 
-            var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { Hosting = json }
-            };
+            var actual = model.RequiresHscnChecked;
 
-            var model = new HybridModel(catalogueItem);
-
-            Assert.AreEqual(expected, model.IsComplete);
+            actual.Should().BeTrue();
         }
 
-        [Test]
-        public static void RequiresHscnChecked_CorrectlySetsStringValue()
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void Get_RequiresHscnChecked_HybridHostingTypeHasInvalidRequiresHscn_ReturnsFalse(
+            string requiresHscn)
         {
-            var hosting = new Hosting
-            {
-                HybridHostingType = new HybridHostingType()
-            };
+            var model = new HybridModel { HybridHostingType = new HybridHostingType { RequiresHscn = requiresHscn, }, };
 
-            var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { Hosting = json }
-            };
+            var actual = model.RequiresHscnChecked;
 
-            var model = new HybridModel(catalogueItem)
-            {
-                RequiresHscnChecked = false
-            };
-            Assert.Null(model.HybridHostingType.RequiresHscn);
+            actual.Should().BeFalse();
+        }
+
+        [AutoData]
+        [Test]
+        public static void Set_RequiresHscnChecked_TrueInput_SetsExpectedValueOnHybridHostingTypeRequiresHscn(
+            HybridModel model)
+        {
             model.RequiresHscnChecked = true;
-            Assert.AreEqual("End user devices must be connected to HSCN/N3", model.HybridHostingType.RequiresHscn);
+
+            model.HybridHostingType.RequiresHscn.Should().Be("End user devices must be connected to HSCN/N3");
+        }
+
+        [AutoData]
+        [Test]
+        public static void Set_RequiresHscnChecked_FalseInput_SetsNullOnHybridHostingTypeRequiresHscn(
+            HybridModel model)
+        {
+            model.RequiresHscnChecked = false;
+
+            model.HybridHostingType.RequiresHscn.Should().BeNull();
         }
     }
 }

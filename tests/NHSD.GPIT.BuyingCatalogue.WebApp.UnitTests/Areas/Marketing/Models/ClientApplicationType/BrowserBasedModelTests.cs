@@ -14,13 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
     internal static class BrowserBasedModelTests
     {
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new BrowserBasedModel(null));
-        }
-
-        [Test]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new BrowserBasedModel();
@@ -32,11 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithEmptyCatalogueItem_AllStatusesIncomplete()
         {
-            var catalogueItem = new CatalogueItem { Solution = new EntityFramework.Models.BuyingCatalogue.Solution(), CatalogueItemId = "123" };
+            var model = new BrowserBasedModel();
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
@@ -50,21 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithSupportedBrowsersStatusComplete_SupportedBrowsersStatus_IsComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
-                MobileResponsive = true
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
+                    MobileResponsive = true,
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
@@ -78,20 +62,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithMobileFirstApproachComplete_MobileFirstApproachStatus_IsComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                MobileFirstDesign = true
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    MobileFirstDesign = true,
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
@@ -105,20 +83,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithPlugInsStatusComplete_PlugInsStatusStatus_IsComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                Plugins = new Plugins { Required = true }
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    Plugins = new Plugins { Required = true }
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
@@ -132,20 +104,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithConnectivityStatusComplete_ConnectivityStatusStatus_IsComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                MinimumConnectionSpeed = "15Mbs"
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    MinimumConnectionSpeed = "15Mbs"
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
@@ -159,20 +125,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithHardwareRequirementsComplete_HardwareRequirementsStatus_IsComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                HardwareRequirements = "Some hardware requirements"
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    HardwareRequirements = "Some hardware requirements"
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
@@ -186,20 +146,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithAdditionalInformationStatusComplete_AdditionalInformationStatus_IsComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                AdditionalInformation = "Some additional information"
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    AdditionalInformation = "Some additional information"
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
@@ -213,24 +167,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WithMandatorySectionsComplete_IsComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
-                MobileResponsive = true,
-                MobileFirstDesign = true,
-                Plugins = new Plugins { Required = true },
-                MinimumConnectionSpeed = "15Mbs"
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
+                    MobileResponsive = true,
+                    MobileFirstDesign = true,
+                    Plugins = new Plugins { Required = true },
+                    MinimumConnectionSpeed = "15Mbs"
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.True(model.IsComplete);
 
             Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
@@ -244,22 +192,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WhenSupportedBrowsersIncomplete_IsntComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                MobileFirstDesign = true,
-                Plugins = new Plugins { Required = true },
-                MinimumConnectionSpeed = "15Mbs"
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    MobileFirstDesign = true,
+                    Plugins = new Plugins { Required = true },
+                    MinimumConnectionSpeed = "15Mbs"
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
@@ -273,23 +215,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WhenMobileFirstApproachIncomplete_IsntComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
-                MobileResponsive = true,
-                Plugins = new Plugins { Required = true },
-                MinimumConnectionSpeed = "15Mbs"
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
+                    MobileResponsive = true,
+                    Plugins = new Plugins { Required = true },
+                    MinimumConnectionSpeed = "15Mbs"
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
@@ -303,24 +239,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WhenPluginsIncomplete_IsntComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
-                MobileResponsive = true,
-                MobileFirstDesign = true,
-                //Plugins = new Plugins { Required = true },
-                MinimumConnectionSpeed = "15Mbs"
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
+                    MobileResponsive = true,
+                    MobileFirstDesign = true,
+                    //Plugins = new Plugins { Required = true },
+                    MinimumConnectionSpeed = "15Mbs"
+                },
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
@@ -334,23 +264,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
         [Test]
         public static void WhenConnectivityIncomplete_IsntComplete()
         {
-            var clientApplication = new ClientApplication
+            var model = new BrowserBasedModel
             {
-                BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
-                MobileResponsive = true,
-                MobileFirstDesign = true,
-                Plugins = new Plugins { Required = true },
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                ClientApplication = new ClientApplication
+                {
+                    BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
+                    MobileResponsive = true,
+                    MobileFirstDesign = true,
+                    Plugins = new Plugins { Required = true },
+                }
             };
 
-            var model = new BrowserBasedModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
             Assert.False(model.IsComplete);
 
             Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);

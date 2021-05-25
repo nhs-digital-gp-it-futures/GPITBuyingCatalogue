@@ -12,34 +12,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
         {
         }
 
-        public OnPremiseModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
-        {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
-
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
-            OnPremise = catalogueItem.Solution.GetHosting().OnPremise;
-        }
-
         public override bool? IsComplete => OnPremise?.IsValid();
 
         public OnPremise OnPremise { get; set; }
 
         public bool RequiresHscnChecked
         {
-            get
-            {
-                return !string.IsNullOrWhiteSpace(OnPremise?.RequiresHscn);
-            }
+            get => !string.IsNullOrWhiteSpace(OnPremise?.RequiresHscn);
 
-            set
-            {
-                if (value)
-                    OnPremise.RequiresHscn = "End user devices must be connected to HSCN/N3";
-                else
-                    OnPremise.RequiresHscn = null;
-            }
+            set => OnPremise.RequiresHscn = value ? "End user devices must be connected to HSCN/N3" : null;
         }
     }
 }
