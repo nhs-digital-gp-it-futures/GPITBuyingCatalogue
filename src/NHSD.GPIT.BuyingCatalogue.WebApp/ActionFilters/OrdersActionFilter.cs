@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -31,8 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 
                 if (!odsCode.Equals(context.HttpContext.User.GetPrimaryOdsCode(), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    // TODO - Now we need to do a service lookup to see if the user has permission to order on behalf of this ODS code
-                    if (odsCode == "03P")
+                    if (!context.HttpContext.User.GetSecondaryOdsCodes().Any(x => x.EqualsIgnoreCase(odsCode)))
                     {
                         logger.LogWarning($"Attempt was made to access {context.HttpContext.Request.Path} when user cannot access {odsCode}.");
                         context.Result = new NotFoundResult();

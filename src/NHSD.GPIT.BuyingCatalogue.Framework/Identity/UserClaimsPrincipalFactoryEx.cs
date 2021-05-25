@@ -40,6 +40,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
             var organisation = await organisationService.GetOrganisation(aspNetUser.PrimaryOrganisationId);
             id.AddClaim(new Claim("primaryOrganisationOdsCode", organisation.OdsCode));
 
+            var relatedOrganisations = await organisationService.GetRelatedOrganisations(aspNetUser.PrimaryOrganisationId);
+
+            foreach (var relatedOrganisation in relatedOrganisations)
+                id.AddClaim(new Claim("secondaryOrganisationOdsCode", relatedOrganisation.OdsCode));
+
             return id;
         }
     }

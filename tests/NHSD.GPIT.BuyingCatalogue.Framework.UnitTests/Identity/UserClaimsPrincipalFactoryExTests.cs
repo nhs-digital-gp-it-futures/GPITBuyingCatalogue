@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -48,6 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             var orgService = new Mock<IOrganisationsService>();
             orgService.Setup(m => m.GetOrganisation(It.IsAny<Guid>())).ReturnsAsync(new Organisation { OdsCode = "123" });
 
+            orgService.Setup(m => m.GetRelatedOrganisations(It.IsAny<Guid>())).ReturnsAsync(new List<Organisation> {
+                new Organisation { OdsCode = "ABC" },
+                new Organisation { OdsCode = "DEF" },
+                new Organisation { OdsCode = "GHI" },
+            });
+
             var options = new Mock<IOptions<IdentityOptions>>();
             var identityOptions = new IdentityOptions();
             options.Setup(a => a.Value).Returns(identityOptions);
@@ -65,6 +73,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             Assert.AreEqual(organisationFunction, GetClaimValue(principal, "organisationFunction"));
             Assert.AreEqual("Fred Smith", GetClaimValue(principal, "userDisplayName"));
             Assert.AreEqual("123", GetClaimValue(principal, "primaryOrganisationOdsCode"));
+            Assert.AreEqual(3, GetClaimValues(principal, "secondaryOrganisationOdsCode").Length);
+            Assert.True(GetClaimValues(principal, "secondaryOrganisationOdsCode").Any(x => x.EqualsIgnoreCase("ABC")));
+            Assert.True(GetClaimValues(principal, "secondaryOrganisationOdsCode").Any(x => x.EqualsIgnoreCase("DEF")));
+            Assert.True(GetClaimValues(principal, "secondaryOrganisationOdsCode").Any(x => x.EqualsIgnoreCase("GHI")));
         }
 
         public static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
@@ -81,6 +93,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             var claim = user.Claims.FirstOrDefault(x => x.Type.Equals(claimType, StringComparison.InvariantCultureIgnoreCase));
 
             return claim != null ? claim.Value : string.Empty;
+        }
+
+        private static string[] GetClaimValues(ClaimsPrincipal user, string claimType)
+        {
+            return user.Claims.Where(x => x.Type.Equals(claimType, StringComparison.InvariantCultureIgnoreCase)).Select(x=>x.Value).ToArray();            
         }
     }
 }
