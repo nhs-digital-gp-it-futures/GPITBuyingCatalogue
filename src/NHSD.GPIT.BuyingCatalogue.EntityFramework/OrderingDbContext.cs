@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using static NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.TimeUnit;
 
 #nullable disable
 
@@ -61,50 +64,37 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("Address");
-
                 entity.Property(e => e.Country).HasMaxLength(256);
-
                 entity.Property(e => e.County).HasMaxLength(256);
-
                 entity.Property(e => e.Line1)
                     .IsRequired()
                     .HasMaxLength(256);
-
                 entity.Property(e => e.Line2).HasMaxLength(256);
-
                 entity.Property(e => e.Line3).HasMaxLength(256);
-
                 entity.Property(e => e.Line4).HasMaxLength(256);
-
                 entity.Property(e => e.Line5).HasMaxLength(256);
-
                 entity.Property(e => e.Postcode)
                     .IsRequired()
                     .HasMaxLength(10);
-
                 entity.Property(e => e.Town).HasMaxLength(256);
             });
 
             modelBuilder.Entity<CatalogueItem>(entity =>
             {
                 entity.ToTable("CatalogueItem");
-
                 entity.HasIndex(e => new { e.CatalogueItemTypeId, e.Name }, "IX_CatalogueItem_Type");
-
-                entity.Property(e => e.Id).HasMaxLength(14);
-
+                entity.Property(e => e.Id)
+                .HasMaxLength(14)
+                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(256);
-
                 entity.Property(e => e.ParentCatalogueItemId).HasMaxLength(14);
-
                 entity.HasOne(d => d.CatalogueItemType)
                     .WithMany(p => p.CatalogueItems)
                     .HasForeignKey(d => d.CatalogueItemTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CatalogueItem_CatalogueItemType");
-
                 entity.HasOne(d => d.ParentCatalogueItem)
                     .WithMany(p => p.InverseParentCatalogueItem)
                     .HasForeignKey(d => d.ParentCatalogueItemId)
@@ -114,12 +104,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<CatalogueItemType>(entity =>
             {
                 entity.ToTable("CatalogueItemType");
-
                 entity.HasIndex(e => e.Name, "AK_CatalogueItemType_Name")
                     .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(20);
@@ -128,12 +115,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<CataloguePriceType>(entity =>
             {
                 entity.ToTable("CataloguePriceType");
-
                 entity.HasIndex(e => e.Name, "AK_CataloguePriceType_Name")
                     .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(10);
@@ -142,26 +126,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<Contact>(entity =>
             {
                 entity.ToTable("Contact");
-
                 entity.Property(e => e.Email).HasMaxLength(256);
-
                 entity.Property(e => e.FirstName).HasMaxLength(100);
-
                 entity.Property(e => e.LastName).HasMaxLength(100);
-
                 entity.Property(e => e.Phone).HasMaxLength(35);
             });
 
             modelBuilder.Entity<DefaultDeliveryDate>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.CatalogueItemId });
-
                 entity.ToTable("DefaultDeliveryDate");
-
-                entity.Property(e => e.CatalogueItemId).HasMaxLength(14);
-
+                entity.Property(e => e.CatalogueItemId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
                 entity.Property(e => e.DeliveryDate).HasColumnType("date");
-
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.DefaultDeliveryDates)
                     .HasForeignKey(d => d.OrderId)
@@ -171,31 +149,26 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.ToTable("Order");
-
                 entity.HasIndex(e => e.IsDeleted, "IX_Order_IsDeleted");
-
                 entity.Property(e => e.CallOffId)
                     .IsRequired()
                     .HasMaxLength(4000)
-                    .HasComputedColumnSql("(concat('C',format([Id],'000000'),'-',format([Revision],'00')))", false);
+                    .HasComputedColumnSql("(concat('C',format([Id],'000000'),'-',format([Revision],'00')))", false)
+                    .HasConversion(id => id.ToString(), id => CallOffId.Parse(id).Id);
 
                 entity.Property(e => e.CommencementDate).HasColumnType("date");
-
                 entity.Property(e => e.Created).HasDefaultValueSql("(getutcdate())");
-
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(100);
-
                 entity.Property(e => e.FundingSourceOnlyGms).HasColumnName("FundingSourceOnlyGMS");
-
                 entity.Property(e => e.LastUpdated).HasDefaultValueSql("(getutcdate())");
-
+                entity.Property(e => e.LastUpdatedBy);
                 entity.Property(e => e.LastUpdatedByName).HasMaxLength(256);
-
                 entity.Property(e => e.Revision).HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.SupplierId).HasMaxLength(6);
+                entity.Property(e => e.OrderStatus)
+                    .HasConversion(status => status.Id, id => OrderStatus.FromId(id));
 
                 entity.HasOne(d => d.OrderStatus)
                     .WithMany(p => p.Orders)
@@ -292,13 +265,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<OrderItemRecipient>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.CatalogueItemId, e.OdsCode });
-
                 entity.Property(e => e.CatalogueItemId).HasMaxLength(14);
-
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
-
                 entity.Property(e => e.DeliveryDate).HasColumnType("date");
-
                 entity.HasOne(d => d.OdsCodeNavigation)
                     .WithMany(p => p.OrderItemRecipients)
                     .HasForeignKey(d => d.OdsCode)
@@ -314,11 +283,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<OrderProgress>(entity =>
             {
                 entity.HasKey(e => e.OrderId);
-
                 entity.ToTable("OrderProgress");
-
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
-
                 entity.HasOne(d => d.Order)
                     .WithOne(p => p.OrderProgress)
                     .HasForeignKey<OrderProgress>(d => d.OrderId)
@@ -328,12 +294,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<OrderStatus>(entity =>
             {
                 entity.ToTable("OrderStatus");
-
                 entity.HasIndex(e => e.Name, "AK_OrderStatus_Name")
                     .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(30);
@@ -343,19 +306,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             {
                 entity.HasKey(e => e.Id)
                     .IsClustered(false);
-
                 entity.ToTable("OrderingParty");
-
                 entity.HasIndex(e => e.OdsCode, "AK_OrderingParty_OdsCode")
                     .IsUnique()
                     .IsClustered();
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name).HasMaxLength(256);
-
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
-
                 entity.HasOne(d => d.Address)
                     .WithMany(p => p.OrderingParties)
                     .HasForeignKey(d => d.AddressId)
@@ -365,11 +322,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<PricingUnit>(entity =>
             {
                 entity.HasKey(e => e.Name);
-
                 entity.ToTable("PricingUnit");
-
                 entity.Property(e => e.Name).HasMaxLength(20);
-
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(40);
@@ -378,12 +332,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<ProvisioningType>(entity =>
             {
                 entity.ToTable("ProvisioningType");
-
                 entity.HasIndex(e => e.Name, "AK_ProvisioningType_Name")
                     .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(35);
@@ -392,9 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<SelectedServiceRecipient>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.OdsCode });
-
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
-
                 entity.HasOne(d => d.OdsCodeNavigation)
                     .WithMany(p => p.SelectedServiceRecipients)
                     .HasForeignKey(d => d.OdsCode)
@@ -409,42 +358,32 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
             modelBuilder.Entity<ServiceInstanceItem>(entity =>
             {
-                entity.HasNoKey();
-
+                entity.HasKey(i => new { i.OrderId, i.CatalogueItemId, i.OdsCode });
                 entity.ToView("ServiceInstanceItem");
-
                 entity.Property(e => e.CatalogueItemId)
                     .IsRequired()
                     .HasMaxLength(14);
-
                 entity.Property(e => e.OdsCode)
                     .IsRequired()
                     .HasMaxLength(8);
-
                 entity.Property(e => e.ServiceInstanceId).HasMaxLength(35);
             });
 
             modelBuilder.Entity<ServiceRecipient>(entity =>
             {
                 entity.HasKey(e => e.OdsCode);
-
                 entity.ToTable("ServiceRecipient");
-
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
-
                 entity.Property(e => e.Name).HasMaxLength(256);
             });
 
             modelBuilder.Entity<Supplier>(entity =>
             {
                 entity.ToTable("Supplier");
-
                 entity.Property(e => e.Id).HasMaxLength(6);
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(256);
-
                 entity.HasOne(d => d.Address)
                     .WithMany(p => p.Suppliers)
                     .HasForeignKey(d => d.AddressId)
@@ -455,19 +394,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<TimeUnit>(entity =>
             {
                 entity.ToTable("TimeUnit");
-
                 entity.HasIndex(e => e.Description, "AK_TimeUnit_Description")
                     .IsUnique();
-
                 entity.HasIndex(e => e.Name, "AK_TimeUnit_Name")
                     .IsUnique();
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(32);
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(20);

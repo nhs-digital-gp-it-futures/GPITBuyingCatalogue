@@ -15,12 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     {
         private readonly ILogWrapper<OrganisationsService> logger;
         private readonly UsersDbContext dbContext;
-        private readonly IUsersDbRepository<Organisation> organisationRepository;
+        private readonly IDbRepository<Organisation, UsersDbContext> organisationRepository;
 
         public OrganisationsService(
             ILogWrapper<OrganisationsService> logger,
             UsersDbContext dbContext,
-            IUsersDbRepository<Organisation> organisationRepository)
+            IDbRepository<Organisation, UsersDbContext> organisationRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.organisationRepository = organisationRepository ?? throw new ArgumentNullException(nameof(organisationRepository));

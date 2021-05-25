@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
-    [ExcludeFromCodeCoverage]
-    public abstract class BuyingCatalogueRepositoryBase<T> : IBuyingCatalogueRepository<T>
+    public abstract class DbRepositoryBase<T, TDbContext> : IDbRepository<T, TDbContext>
+        where TDbContext : DbContext
         where T : class
     {
-        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly TDbContext dbContext;
 
-        protected BuyingCatalogueRepositoryBase(BuyingCatalogueDbContext dbContext)
+        protected DbRepositoryBase(TDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
