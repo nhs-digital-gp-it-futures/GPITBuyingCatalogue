@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -12,11 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
     public class UsersService : IUsersService
     {
         private readonly ILogWrapper<UsersService> logger;
-        private readonly IUsersDbRepository<AspNetUser> userRepository;
+        private readonly IDbRepository<AspNetUser, UsersDbContext> userRepository;
 
         public UsersService(
             ILogWrapper<UsersService> logger,
-            IUsersDbRepository<AspNetUser> userRepository)
+            IDbRepository<AspNetUser, UsersDbContext> userRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
