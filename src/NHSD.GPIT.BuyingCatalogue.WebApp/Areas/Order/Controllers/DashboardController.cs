@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,19 +43,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
 
-            return View(new OrganisationModel(organisation));
+            return View(new OrganisationModel(organisation, User));
         }
 
         [HttpGet("organisation/{odsCode}/select")]
-        public IActionResult SelectOrganisation(string odsCode)
+        public async Task<IActionResult> SelectOrganisation(string odsCode)
         {
-            return View(new SelectOrganisationModel());
+            var odsCodes = new List<string>(User.GetSecondaryOdsCodes());
+            odsCodes.Add(User.GetPrimaryOdsCode());
+
+            var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
+
+            return View(new SelectOrganisationModel(odsCode, organisations));
         }
 
         [HttpPost("organisation/{odsCode}/select")]
         public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
         {
-            return Redirect($"/order/organisation/{odsCode}");
+            return Redirect($"/order/organisation/{model.SelectedOrganisation}");
         }
 
         [HttpGet("organisation/{odsCode}/order/neworder")]

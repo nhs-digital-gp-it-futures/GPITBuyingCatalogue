@@ -11,13 +11,14 @@
 
             <nhs-page-title title="@Model.Title" title-advice="Manage orders currently in progress and view completed orders." />
 
-            @*TODO - Only if user can act on behalf of other organisations*@
-            <h2>Current organisation</h2>
-            <p class="nhsuk-u-margin-bottom-2">You are currently acting on behalf of:</p>
-            <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">@Model.OrganisationName <a href=/order/organisation/@Model.OdsCode/select class="nhsuk-u-margin-left-4">Change organisation</a></p>
+            @if (Model.CanActOnBehalf)
+            {
+                <h2>Current organisation</h2>
+                <p class="nhsuk-u-margin-bottom-2">You are currently acting on behalf of:</p>
+                <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">@Model.OrganisationName <a href=/order/organisation/@Model.OdsCode/select class="nhsuk-u-margin-left-4">Change organisation</a></p>
+            }
 
             <div data-test-id="new-order-button">
-
                 <a class="nhsuk-button nhsuk-u-margin-bottom-3 nhsuk-u-padding-left-5 nhsuk-u-padding-right-5" href="/order/organisation/@Model.OdsCode/order/neworder" draggable="false">
                     Create new order
                 </a>

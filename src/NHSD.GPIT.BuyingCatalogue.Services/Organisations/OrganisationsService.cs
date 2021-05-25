@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
@@ -60,6 +61,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         public async Task<Organisation> GetOrganisationByOdsCode(string odsCode)
         {
             return await organisationRepository.SingleAsync(x => x.OdsCode == odsCode);
+        }
+
+        public async Task<List<Organisation>> GetOrganisationsByOdsCodes(string[] odsCodes)
+        {
+            return (await organisationRepository.GetAllAsync(x => odsCodes.Contains(x.OdsCode))).OrderBy(x => x.Name).ToList();
         }
 
         public async Task UpdateCatalogueAgreementSigned(Guid organisationId, bool signed)

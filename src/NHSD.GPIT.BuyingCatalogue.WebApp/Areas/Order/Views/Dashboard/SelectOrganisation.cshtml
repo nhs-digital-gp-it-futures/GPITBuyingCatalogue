@@ -14,7 +14,16 @@
         <div class="nhsuk-grid-column-full">
             <form method="post">
 
-                <div class="nhsuk-form-group">
+                <nhs-fieldset-form asp-for="@Model">
+                                   @*label-text="Which organisation are you looking for?"
+                                   label-hint="Select one option.">*@
+                    <nhs-radio-buttons asp-for="@Model.SelectedOrganisation" values="@Model.AvailableOrganisations" value-name="OdsCode" display-name="Name" />
+                </nhs-fieldset-form>
+                <nhs-submit-button text="Continue" />
+
+
+
+                @*<div class="nhsuk-form-group">
 
                     <div class="nhsuk-radios">
 
@@ -46,7 +55,7 @@
                     <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
                         Continue
                     </button>
-                </div>
+                </div>*@
             </form>
         </div>
     </div>
