@@ -52,11 +52,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For, DisableCharacterCounter);
 
-            formGroup.InnerHtml.AppendHtml(label);
-            formGroup.InnerHtml.AppendHtml(hint);
-            formGroup.InnerHtml.AppendHtml(validation);
-            formGroup.InnerHtml.AppendHtml(input);
-            formGroup.InnerHtml.AppendHtml(counter);
+            formGroup.InnerHtml
+                .AppendHtml(label)
+                .AppendHtml(hint)
+                .AppendHtml(validation)
+                .AppendHtml(input)
+                .AppendHtml(counter);
 
             TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, DisableCharacterCounter);
         }

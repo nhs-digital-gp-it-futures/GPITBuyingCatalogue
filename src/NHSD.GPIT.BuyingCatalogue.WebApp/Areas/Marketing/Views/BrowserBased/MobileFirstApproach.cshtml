@@ -18,7 +18,7 @@
             <nhs-fieldset-form asp-for="@Model"
                                label-text="Mobile first approach"
                                label-hint="Is your Catalogue Solution designed with a mobile first approach?">
-                <nhs-radio-buttons asp-for="@Model.MobileFirstApproach" is-yes-no="true" />
+                <nhs-yesno-radio-buttons asp-for="@Model.MobileFirstApproach" />
             </nhs-fieldset-form>
             <nhs-submit-button />
         </form>

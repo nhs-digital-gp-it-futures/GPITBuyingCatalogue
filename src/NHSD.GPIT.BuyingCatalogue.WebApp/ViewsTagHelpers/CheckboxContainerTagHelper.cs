@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(CheckBoxTagName)]
+    [RestrictChildren(ValidationCheckboxTagHelper.TagHelperName)]
     public class CheckboxContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-checkbox-container";
-        public const string CheckBoxTagName = "nhs-validation-checkbox";
+
+        private const string NhsCheckboxes = "nhsuk-checkboxes";
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsCheckboxes));
+            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, NhsCheckboxes));
 
             var content = await output.GetChildContentAsync();
 

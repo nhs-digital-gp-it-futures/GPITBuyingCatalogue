@@ -28,8 +28,7 @@
             <nhs-fieldset-form asp-for="@Model"
                                label-text="Mobile responsive"
                                label-hint="Does the design of your Catalogue Solution adapt for use on mobile or tablet devices?">
-                <nhs-radio-buttons asp-for="MobileResponsive"
-                                   is-yes-no="true" />
+            <nhs-yesno-radio-buttons asp-for="MobileResponsive" />
             </nhs-fieldset-form>
             <nhs-submit-button />
         </form>

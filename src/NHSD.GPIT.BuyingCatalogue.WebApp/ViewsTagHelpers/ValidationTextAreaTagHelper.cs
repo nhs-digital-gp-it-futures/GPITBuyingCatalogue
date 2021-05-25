@@ -10,6 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
     {
         public const string TagHelperName = "nhs-validation-textarea";
 
+        private const string TextAreaNumberOfRows = "number-of-rows";
+        private const string NhsTextArea = "nhsuk-textarea";
+
+        private const int DefaultNumberOfTextAreaRows = 5;
+
         private readonly IHtmlGenerator htmlGenerator;
 
         public ValidationTextAreaTagHelper(IHtmlGenerator htmlGenerator)
@@ -36,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.TextAreaNumberOfRows)]
+        [HtmlAttributeName(TextAreaNumberOfRows)]
         public int? NumberOfRows { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -53,11 +58,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For, DisableCharacterCounter);
 
-            formGroup.InnerHtml.AppendHtml(label);
-            formGroup.InnerHtml.AppendHtml(hint);
-            formGroup.InnerHtml.AppendHtml(validation);
-            formGroup.InnerHtml.AppendHtml(input);
-            formGroup.InnerHtml.AppendHtml(counter);
+            formGroup.InnerHtml
+                .AppendHtml(label)
+                .AppendHtml(hint)
+                .AppendHtml(validation)
+                .AppendHtml(input)
+                .AppendHtml(counter);
 
             TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, DisableCharacterCounter);
         }
@@ -68,12 +74,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 ViewContext,
                 For.ModelExplorer,
                 For.Name,
-                TagHelperFunctions.GetTextAreaNumberOfRows(For, NumberOfRows),
+                NumberOfRows ?? DefaultNumberOfTextAreaRows,
                 0,
-                null);
-
-            builder.AddCssClass(TagHelperConstants.NhsTextArea);
-            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, $"{For.Name}-info {For.Name}-summary");
+                new
+                {
+                    @class = NhsTextArea,
+                    aria_describedby = $"{For.Name}-info {For.Name}-summary",
+                });
 
             if (!TagHelperFunctions.IsCounterDisabled(For, DisableCharacterCounter))
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);

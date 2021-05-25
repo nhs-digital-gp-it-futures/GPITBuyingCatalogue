@@ -9,7 +9,9 @@
     </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="Catalogue Solution description" title-advice="Give buyers as much detail as possible about your Catalogue Solution." />
+        <nhs-page-title title="Catalogue Solution description"
+                        title-advice="Give buyers as much detail as possible about your Catalogue Solution." />
+                        
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
@@ -17,7 +19,9 @@
                                      label-text="Summary"
                                      label-hint="Provide a brief overview of your Catalogue Solution."
                                      number-of-rows="5" />
-            <nhs-validation-textarea asp-for="Description" />
+            <nhs-validation-textarea asp-for="Description"
+                                     label-text="Full Description (optional)"
+                                     label-hint="Provide a more detailed description of your Catalogue Solution, for example how it can be used and how it benefits users."/>
             <nhs-validation-input asp-for="Link"
                                   label-text="Link to more information (optional)"
                                   label-hint="Provide a URL to a page that gives buyers further information about your Catalogue Solution." />

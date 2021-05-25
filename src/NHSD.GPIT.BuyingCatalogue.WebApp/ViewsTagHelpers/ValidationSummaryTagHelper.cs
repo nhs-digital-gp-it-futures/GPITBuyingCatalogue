@@ -14,6 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public const string TagHelperName = "nhs-validation-summary";
         public const string TitleName = "title";
 
+        private const string NhsValidationSummaryTitle = "nhsuk-error-summary__title";
+        private const string ErrorSummaryTitle = "error-summary-title";
+        private const string NhsValidationSummary = "nhsuk-error-summary";
+        private const string NhsValidationSummaryList = "nhsuk-error-summary__list";
+
         private const string DefaultTitle = "There is a problem";
 
         [HtmlAttributeNotBound]
@@ -51,9 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var attributes = new List<TagHelperAttribute>
             {
                 new TagHelperAttribute(TagHelperConstants.Role, TagHelperConstants.RoleAlert),
-                new TagHelperAttribute(TagHelperConstants.LabelledBy, TagHelperConstants.ErrorSummaryTitle),
+                new TagHelperAttribute(TagHelperConstants.LabelledBy, ErrorSummaryTitle),
                 new TagHelperAttribute(TagHelperConstants.TabIndex, "-1"),
-                new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsValidationSummary),
+                new TagHelperAttribute(TagHelperConstants.Class, NhsValidationSummary),
             };
 
             attributes.ForEach(a => output.Attributes.Add(a));
@@ -62,6 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         private static TagBuilder GetListItemBuilder(string linkElement, string errorMessage)
         {
             var listItemBuilder = new TagBuilder(TagHelperConstants.ListItem);
+
             var linkBuilder = new TagBuilder(TagHelperConstants.Anchor);
             linkBuilder.Attributes.Add(TagHelperConstants.Link, $"#{linkElement}");
             linkBuilder.InnerHtml.Append(errorMessage);
@@ -73,8 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         private TagBuilder GetHeaderBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.SubHeader);
-            builder.AddCssClass(TagHelperConstants.NhsValidationSummaryTitle);
-            builder.MergeAttribute(TagHelperConstants.Id, TagHelperConstants.ErrorSummaryTitle);
+            builder.AddCssClass(NhsValidationSummaryTitle);
+            builder.GenerateId(ErrorSummaryTitle, "_");
+
             builder.InnerHtml.Append(Title ?? DefaultTitle);
 
             return builder;
@@ -84,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         {
             var builder = new TagBuilder(TagHelperConstants.UnorderedList);
             builder.AddCssClass(TagHelperConstants.NhsList);
-            builder.AddCssClass(TagHelperConstants.NhsValidationSummaryList);
+            builder.AddCssClass(NhsValidationSummaryList);
 
             var viewType = ViewContext.ViewData.Model.GetType();
 
