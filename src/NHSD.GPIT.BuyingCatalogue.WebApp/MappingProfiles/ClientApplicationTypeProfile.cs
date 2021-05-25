@@ -11,6 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 {
     public class ClientApplicationTypeProfile : Profile
     {
+        private const string KeyBrowserBased = "browser-based";
+        private const string KeyNativeDesktop = "native-desktop";
+        private const string KeyNativeMobile = "native-mobile";
+
         public ClientApplicationTypeProfile()
         {
             CreateMap<CatalogueItem, BrowserBasedModel>()
@@ -27,19 +31,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 {
                     opt.SetMappingOrder(20);
                     opt.MapFrom((_, dest) => dest.ClientApplication.ClientApplicationTypes.Any(x =>
-                        x.EqualsIgnoreCase("browser-based")));
+                        x.EqualsIgnoreCase(KeyBrowserBased)));
                 })
                 .ForMember(dest => dest.NativeDesktop, opt =>
                 {
                     opt.SetMappingOrder(21);
                     opt.MapFrom((_, dest) => dest.ClientApplication.ClientApplicationTypes.Any(x =>
-                        x.EqualsIgnoreCase("native-desktop")));
+                        x.EqualsIgnoreCase(KeyNativeDesktop)));
                 })
                 .ForMember(dest => dest.NativeMobile, opt =>
                 {
                     opt.SetMappingOrder(22);
                     opt.MapFrom((_, dest) => dest.ClientApplication.ClientApplicationTypes.Any(x =>
-                        x.EqualsIgnoreCase("native-mobile")));
+                        x.EqualsIgnoreCase(KeyNativeMobile)));
                 })
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
@@ -67,11 +71,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
             var result = new HashSet<string>();
 
             if (model.BrowserBased)
-                result.Add("browser-based");
-            if (model.NativeMobile)
-                result.Add("native-mobile");
+                result.Add(KeyBrowserBased);
             if (model.NativeDesktop)
-                result.Add("native-desktop");
+                result.Add(KeyNativeDesktop);
+            if (model.NativeMobile)
+                result.Add(KeyNativeMobile);
 
             return result;
         }

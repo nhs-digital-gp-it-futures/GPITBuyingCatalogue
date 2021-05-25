@@ -2,15 +2,17 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 {
     public sealed class Hybrid : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
+
         public Hybrid(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-hybrid")
         {
         }
@@ -21,6 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
             var summary = TextGenerators.TextInputAddText(HostingTypesObjects.HybridHostingType_Summary, 500);
             var link = TextGenerators.UrlInputAddText(HostingTypesObjects.HybridHostingType_Link, 1000);
             var hostingModel = TextGenerators.TextInputAddText(HostingTypesObjects.HybridHostingType_HostingModel, 1000);
+            var expected = new HybridHostingType
+            {
+                HostingModel = hostingModel,
+                Link = link,
+                Summary = summary,
+            };
 
             MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
 
@@ -28,8 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 
             using var context = GetBCContext();
             var hosting = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).Hosting;
-
-            hosting.Should().ContainEquivalentOf($"\"HybridHostingType\":{{\"Summary\":\"{summary}\",\"Link\":\"{link}\",\"HostingModel\":\"{hostingModel}\"");
+            
+            var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
+            actual.HybridHostingType.Should().BeEquivalentTo(expected, opt => opt.Excluding(h => h.RequiresHscn));
         }
 
         [Fact]

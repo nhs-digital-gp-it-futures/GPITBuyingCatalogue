@@ -20,14 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             new object[]{false, KeyIncomplete},
             new object[]{true, "COMPLETE"},
         };
-
-        [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ = new NativeMobileModel(null))
-                .ParamName.Should().Be("catalogueItem");
-        }
-
+        
         [TestCase(false, KeyIncomplete)]
         [TestCase(true, "COMPLETE")]
         public static void AdditionalInformationStatus_Various_NativeMobileAdditionalInformationComplete_ResultAsExpected(

@@ -3,12 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    [ExcludeFromCodeCoverage]
     public class HybridHostingType
     {
-        [StringLength(500)]
-        public string Summary { get; set; }
-
         [StringLength(1000)]
         [Url]
         public string Link { get; set; }
@@ -18,10 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string RequiresHscn { get; set; }
 
+        [StringLength(500)]
+        public string Summary { get; set; }
+
         public virtual bool? IsValid() =>
-            !string.IsNullOrWhiteSpace(Summary) ||
-            !string.IsNullOrWhiteSpace(Link) ||
-            !string.IsNullOrWhiteSpace(RequiresHscn) ||
-            !string.IsNullOrWhiteSpace(HostingModel);
+            !string.IsNullOrEmpty(Summary) ||
+            !string.IsNullOrEmpty(Link) ||
+            !string.IsNullOrEmpty(RequiresHscn) ||
+            !string.IsNullOrEmpty(HostingModel);
     }
 }
