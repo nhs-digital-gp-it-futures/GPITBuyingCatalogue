@@ -27,17 +27,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         [OneTimeSetUp]
         public void SetUp()
         {
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(x =>
+                    x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
+                .Returns(new Mock<IMemberValueResolver<object, object, string, bool?>>().Object);
+            
             mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BrowserBasedProfile>();
                 cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
+            }).CreateMapper(serviceProvider.Object.GetService);
         }
 
         [OneTimeTearDown]
         public void CleanUp()
         {
             mapper = null;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            foreach (var browser in ProfileDefaults.SupportedBrowsers)
+            {
+                browser.Checked = false;
+            }
         }
 
         [Test]
@@ -242,15 +256,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         {
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Setup(x =>
-                    x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
-                .Returns(new Mock<IMemberValueResolver<object, object, string, bool?>>().Object);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BrowserBasedProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper(serviceProvider.Object.GetService);
 
             var actual = mapper.Map<CatalogueItem, SupportedBrowsersModel>(catalogueItem);
 
@@ -275,20 +280,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
+        public void Map_CatalogueItemToSupportedBrowsersModel_NoClientApplication_DependentValuesNotSet(
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.ClientApplication = null;
+
+            var actual = mapper.Map<CatalogueItem, SupportedBrowsersModel>(catalogueItem);
+            
+            actual.Browsers.ToList().ForEach(b => b.Checked.Should().BeFalse());
+            actual.MobileResponsive.Should().BeNullOrEmpty();
+        }
+
+        [Test, CommonAutoData]
         public void Map_ConnectivityAndResolutionToClientApplication_ResultAsExpected(
             ConnectivityAndResolutionModel model,
             ClientApplication clientApplication)
         {
             var original = clientApplication.CopyObjectToNew();
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Setup(x =>
-                    x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
-                .Returns(new Mock<IMemberValueResolver<object, object, string, bool?>>().Object);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BrowserBasedProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper(serviceProvider.Object.GetService);
 
             var actual = mapper.Map(model, clientApplication);
 
@@ -314,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             serviceProvider.Setup(x =>
                     x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
                 .Returns(requiredResolver.Object);
-            var mapper = new MapperConfiguration(cfg =>
+            mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BrowserBasedProfile>();
                 cfg.AddProfile<OrganisationProfile>();
@@ -332,15 +340,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             ClientApplication clientApplication)
         {
             var original = clientApplication.CopyObjectToNew();
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Setup(x =>
-                    x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
-                .Returns(new Mock<IMemberValueResolver<object, object, string, bool?>>().Object);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BrowserBasedProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper(serviceProvider.Object.GetService);
 
             var actual = mapper.Map(model, clientApplication);
 
@@ -367,13 +366,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             serviceProvider.Setup(x =>
                     x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
                 .Returns(mobileResponsiveResolver.Object);
-            var mapper = new MapperConfiguration(cfg =>
+            var autoMapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BrowserBasedProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper(serviceProvider.Object.GetService);
-
-            mapper.Map(model, clientApplication);
+            
+            autoMapper.Map(model, clientApplication);
 
             mobileResponsiveResolver.Verify(x => x.Resolve(It.IsAny<object>(), It.IsAny<object>(),
                 model.MobileResponsive, It.IsAny<bool?>(), It.IsAny<ResolutionContext>()));

@@ -1,7 +1,6 @@
-﻿using System;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NUnit.Framework;
 
@@ -11,61 +10,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
     [Parallelizable(ParallelScope.All)]
     internal static class PlugInsOrExtensionsModelTests
     {
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
+
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        public static void AdditionalInformation_StringLengthAttribute_ExpectedValue()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new PlugInsOrExtensionsModel(null));
+            typeof(AdditionalInformationModel)
+                .GetProperty(nameof(PlugInsOrExtensionsModel.AdditionalInformation))
+                .GetCustomAttribute<StringLengthAttribute>()
+                .MaximumLength.Should().Be(500);
         }
 
         [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
+        public static void IsComplete_PluginsRequiredValue_ReturnsTrue()
         {
-            var clientApplication = new ClientApplication
-            {
-                Plugins = new Plugins { Required = true, AdditionalInformation = "Some more information" }
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
-            };
+            var model = new PlugInsOrExtensionsModel { PlugInsRequired = "some-value" };
 
-            var model = new PlugInsOrExtensionsModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
-            Assert.AreEqual("Yes", model.PlugInsRequired);
-            Assert.AreEqual("Some more information", model.AdditionalInformation);
+            model.IsComplete.Should().BeTrue();
         }
 
-        [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void IsComplete_PlugInsRequiredInvalid_ReturnsFalse(string invalid)
         {
-            var model = new PlugInsOrExtensionsModel();
+            var model = new PlugInsOrExtensionsModel { PlugInsRequired = invalid };
 
-            Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.IsComplete);
-            Assert.Null(model.PlugInsRequired);
-            Assert.Null(model.AdditionalInformation);
-        }
-
-        [Test]
-        [TestCase(null, false)]
-        [TestCase(false, true)]
-        [TestCase(true, true)]
-        public static void IsCompleteIsCorrectlySet(bool? required, bool? expected)
-        {
-            var clientApplication = new ClientApplication
-            {
-                Plugins = new Plugins { Required = required, AdditionalInformation = "Some more information" }
-            };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
-
-            var model = new PlugInsOrExtensionsModel(catalogueItem);
-
-            Assert.AreEqual(expected, model.IsComplete);
+            model.IsComplete.Should().BeFalse();
         }
     }
 }

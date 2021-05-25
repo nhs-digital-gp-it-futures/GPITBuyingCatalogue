@@ -85,17 +85,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(
                     dest => dest.BackLink,
                     opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
-                .ForMember(dest => dest.Browsers, opt => opt.MapFrom(src => ProfileDefaults.SupportedBrowsers))
+                .ForMember(dest => dest.Browsers, opt => opt.MapFrom(src => new SupportedBrowserModel[]
+                {
+                    new() { BrowserName = "Google Chrome" },
+                    new() { BrowserName = "Microsoft Edge" },
+                    new() { BrowserName = "Mozilla Firefox" },
+                    new() { BrowserName = "Opera" },
+                    new() { BrowserName = "Safari" },
+                    new() { BrowserName = "Chromium" },
+                    new() { BrowserName = "Internet Explorer 11" },
+                    new() { BrowserName = "Internet Explorer 10" },
+                }))
                 .ForMember(dest => dest.MobileResponsive, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>()
                 .AfterMap((_, dest) =>
                 {
-                    dest.MobileResponsive = dest.ClientApplication.MobileResponsive.ToYesNo();
+                    if (dest.ClientApplication.MobileResponsive.HasValue)
+                        dest.MobileResponsive = dest.ClientApplication.MobileResponsive.ToYesNo();
+
+                    var supportedBrowsers = dest.ClientApplication.BrowsersSupported;
+                    if (supportedBrowsers == null || !supportedBrowsers.Any())
+                        return;
+
                     foreach (var browser in dest.Browsers)
                     {
-                        browser.Checked = dest.ClientApplication.BrowsersSupported != null &&
-                                          dest.ClientApplication.BrowsersSupported.Any(x =>
-                                              x.EqualsIgnoreCase(browser.BrowserName));
+                        browser.Checked = supportedBrowsers.Any(x => x.EqualsIgnoreCase(browser.BrowserName));
                     }
                 });
 
