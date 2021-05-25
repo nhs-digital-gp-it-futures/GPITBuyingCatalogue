@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
-    [HtmlTargetElement(TagHelperName, ParentTag = ParentTagName)]
+    [HtmlTargetElement(TagHelperName, ParentTag = FieldSetFormTagHelper.TagHelperName)]
     public class YesNoRadioButtonTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-yesno-radio-buttons";
-        public const string ParentTagName = "nhs-fieldset-form";
         public const string ValueName = "value";
 
         private readonly IHtmlGenerator htmlGenerator;
