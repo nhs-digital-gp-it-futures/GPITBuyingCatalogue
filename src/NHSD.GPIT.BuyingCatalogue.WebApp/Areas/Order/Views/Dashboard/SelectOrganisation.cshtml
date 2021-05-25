@@ -5,57 +5,16 @@
 
 <div class="nhsuk-width-container" data-test-id="organisation-select-page">
     <partial name="Partials/_BackLink" model="Model" />
-
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-page-title title="@Model.Title" title-advice="Select the organisation you want to act on behalf of." />
         </div>
-
         <div class="nhsuk-grid-column-full">
             <form method="post">
-
                 <nhs-fieldset-form asp-for="@Model">
-                                   @*label-text="Which organisation are you looking for?"
-                                   label-hint="Select one option.">*@
                     <nhs-radio-buttons asp-for="@Model.SelectedOrganisation" values="@Model.AvailableOrganisations" value-name="OdsCode" display-name="Name" />
                 </nhs-fieldset-form>
-                <nhs-submit-button text="Continue" />
-
-
-
-                @*<div class="nhsuk-form-group">
-
-                    <div class="nhsuk-radios">
-
-                        <div class="nhsuk-radios__item">
-                            <input class="nhsuk-radios__input" id="organisation-1" name="organisation" type="radio" value="9173b946-793a-4b28-906d-270db18dd82a">
-                            <label class="nhsuk-label nhsuk-radios__label" for="organisation-1">
-                                NHS Hull CCG
-                            </label>
-                        </div>
-
-                        <div class="nhsuk-radios__item">
-                            <input class="nhsuk-radios__input" id="organisation-2" name="organisation" type="radio" value="b7ee5261-43e7-4589-907b-5eef5e98c085">
-                            <label class="nhsuk-label nhsuk-radios__label" for="organisation-2">
-                                Cheshire and Merseyside Commissioning Hub
-                            </label>
-                        </div>
-
-                        <div class="nhsuk-radios__item">
-                            <input class="nhsuk-radios__input" id="organisation-3" name="organisation" type="radio" value="6d37d7fb-df06-403c-9c46-d649919f9158">
-                            <label class="nhsuk-label nhsuk-radios__label" for="organisation-3">
-                                East – H&amp;J Commissioning Hub
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div data-test-id="continue-button">
-
-                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                        Continue
-                    </button>
-                </div>*@
+                <nhs-submit-button text="Continue" />               
             </form>
         </div>
     </div>
