@@ -36,16 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public static bool IsCounterDisabled(ModelExpression aspFor, bool? htmlAttributeHideCharacterCounter)
         {
-            return GetCustomAttribute<DisableCharacterCounterAttribute>(aspFor) != null
-                   || htmlAttributeHideCharacterCounter == true
+            return htmlAttributeHideCharacterCounter == true
                    || GetCustomAttribute<PasswordAttribute>(aspFor) != null;
-        }
-
-        public static int GetTextAreaNumberOfRows(ModelExpression aspFor, int? htmlAttributeNumberOfRows)
-        {
-            var numberOfRowsAttribute = GetCustomAttribute<TextAreaRowsAttribute>(aspFor);
-
-            return htmlAttributeNumberOfRows ?? numberOfRowsAttribute?.NumberOfRows ?? TagHelperConstants.DefaultNumberOfTextAreaRows;
         }
 
         public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression aspFor, string validationName = null)

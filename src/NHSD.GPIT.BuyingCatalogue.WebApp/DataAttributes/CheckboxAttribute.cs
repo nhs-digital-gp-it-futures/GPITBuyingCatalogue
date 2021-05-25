@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes
 
         public string FieldText { get; init; }
 
-        private string PascalCaseToKebabCase(string input)
+        private static string PascalCaseToKebabCase(string input)
         {
             if (string.IsNullOrEmpty(input))
                 return string.Empty;

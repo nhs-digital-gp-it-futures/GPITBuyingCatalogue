@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
@@ -50,6 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public static TagBuilder GetValidationBuilder(ViewContext viewContext, ModelExpression aspFor, IHtmlGenerator htmlGenerator)
         {
+            if (!TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, aspFor))
+                return null;
+
             return htmlGenerator.GenerateValidationMessage(
                 viewContext,
                 aspFor.ModelExplorer,
@@ -61,15 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         public static TagBuilder GetLabelHintBuilder(ModelExpression aspFor, string hintText, string formName = null, bool? htmlAttributeDisableLabelAndHint = null)
         {
-            if ((string.IsNullOrEmpty(aspFor.Name)
-                && string.IsNullOrEmpty(formName))
-                || (htmlAttributeDisableLabelAndHint.HasValue
-                && htmlAttributeDisableLabelAndHint.Value)
-                || TagHelperFunctions.GetCustomAttribute<DisableLabelAndHintAttribute>(aspFor) != null
-                || (string.IsNullOrEmpty(hintText)
-                && string.IsNullOrEmpty(TagHelperFunctions.GetCustomAttribute<LabelHintAttribute>(aspFor)?.Text)))
+            if ((string.IsNullOrEmpty(aspFor.Name) && string.IsNullOrEmpty(formName))
+                || htmlAttributeDisableLabelAndHint == true
+                || string.IsNullOrEmpty(hintText))
             {
-                return new TagBuilder("empty");
+                return null;
             }
 
             var name = !string.IsNullOrEmpty(aspFor.Name) ? aspFor.Name : formName;
@@ -77,7 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             var builder = new TagBuilder(TagHelperConstants.Div);
 
             builder.GenerateId($"{name}-hint", "_");
-
             builder.AddCssClass(TagHelperConstants.NhsHint);
 
             builder.InnerHtml.Append(hintText);
@@ -93,31 +90,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             string htmlAttributeLabelText = null,
             bool? htmlAttributeDisableLabelAndHint = null)
         {
-            if ((string.IsNullOrEmpty(aspFor.Name)
-                && string.IsNullOrEmpty(formName))
-                || (htmlAttributeDisableLabelAndHint.HasValue
-                && htmlAttributeDisableLabelAndHint.Value)
-                || TagHelperFunctions.GetCustomAttribute<DisableLabelAndHintAttribute>(aspFor) != null
-                || (string.IsNullOrEmpty(htmlAttributeLabelText)
-                && string.IsNullOrEmpty(TagHelperFunctions.GetCustomAttribute<LabelTextAttribute>(aspFor)?.Text)))
+            if ((string.IsNullOrEmpty(aspFor.Name) && string.IsNullOrEmpty(formName))
+                || htmlAttributeDisableLabelAndHint == true
+                || string.IsNullOrEmpty(htmlAttributeLabelText))
             {
-                return new TagBuilder("empty");
+                return null;
             }
-
-            var name = !string.IsNullOrEmpty(aspFor.Name) ? aspFor.Name : formName;
 
             return htmlGenerator.GenerateLabel(
                 viewContext,
                 aspFor.ModelExplorer,
-                name,
-                htmlAttributeLabelText ?? TagHelperFunctions.GetCustomAttribute<LabelTextAttribute>(aspFor)?.Text,
+                string.IsNullOrWhiteSpace(aspFor.Name) ? formName : aspFor.Name,
+                htmlAttributeLabelText,
                 new { @class = TagHelperConstants.NhsLabel });
         }
 
         public static TagBuilder GetCounterBuilder(ModelExpression aspFor, bool? disableCharacterCounter)
         {
             if (TagHelperFunctions.IsCounterDisabled(aspFor, disableCharacterCounter))
-                return new TagBuilder("empty");
+                return null;
 
             var builder = new TagBuilder(TagHelperConstants.Div);
 
@@ -129,6 +120,66 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             builder.InnerHtml.Append(string.Format(TagHelperConstants.CharacterCountMessage, TagHelperFunctions.GetCustomAttribute<StringLengthAttribute>(aspFor).MaximumLength));
 
             return builder;
+        }
+
+        public static TagBuilder GetRadioLabelBuilder(
+            ViewContext viewContext,
+            ModelExpression aspFor,
+            IHtmlGenerator htmlGenerator,
+            object item,
+            string displayName)
+        {
+            var itemText = item.GetType().GetProperty(displayName).GetValue(item).ToString();
+
+            if (string.IsNullOrWhiteSpace(itemText))
+                return null;
+
+            return GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText);
+        }
+
+        public static TagBuilder GetRadioLabelBuilder(
+            ViewContext viewContext,
+            ModelExpression aspFor,
+            IHtmlGenerator htmlGenerator,
+            string display)
+        {
+            return htmlGenerator.GenerateLabel(
+                viewContext,
+                aspFor.ModelExplorer,
+                aspFor.Name,
+                display,
+                new { @class = TagHelperConstants.RadioLabelClass });
+        }
+
+        public static TagBuilder GetRadioInputBuilder(
+                ViewContext viewContext,
+                ModelExpression aspFor,
+                IHtmlGenerator htmlGenerator,
+                object item,
+                string valueName)
+        {
+            var itemValue = item.GetType().GetProperty(valueName).GetValue(item).ToString();
+
+            if (string.IsNullOrWhiteSpace(itemValue))
+                return null;
+
+            return GetRadioInputBuilder(viewContext, aspFor, htmlGenerator, itemValue);
+        }
+
+        public static TagBuilder GetRadioInputBuilder(
+            ViewContext viewContext,
+            ModelExpression aspFor,
+            IHtmlGenerator htmlGenerator,
+            string value,
+            bool? isChecked = null)
+        {
+            return htmlGenerator.GenerateRadioButton(
+                viewContext,
+                aspFor.ModelExplorer,
+                aspFor.Name,
+                value,
+                isChecked,
+                new { @class = TagHelperConstants.RadioItemInputClass });
         }
     }
 }

@@ -5,11 +5,16 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    public class ValidationSelectListTagHelper : TagHelper
+    public sealed class ValidationSelectListTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-validation-select";
-        public const string ItemsName = "asp-items";
-        public const string AllowMultipleName = "allow-multiple";
+
+        private const string ItemsName = "asp-items";
+
+        private const string AllowMultipleName = "allow-multiple";
+        private const string NhsSelect = "nhsuk-select";
+
+        private const string DefaultSelectListMessage = "Please select";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -25,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         [HtmlAttributeName(TagHelperConstants.For)]
         public ModelExpression For { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.Items)]
+        [HtmlAttributeName(ItemsName)]
         public SelectList Items { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
@@ -59,11 +64,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             return htmlGenerator.GenerateSelect(
                 ViewContext,
                 For.ModelExplorer,
-                TagHelperConstants.DefaultSelectListMessage,
+                DefaultSelectListMessage,
                 For.Name,
                 Items,
                 AllowMultiple == true,
-                new { @class = TagHelperConstants.NhsSelect });
+                new { @class = NhsSelect });
         }
     }
 }
