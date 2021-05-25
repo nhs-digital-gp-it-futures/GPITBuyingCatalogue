@@ -11,17 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
         {
         }
 
-        public ClientApplicationTypesModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
-        {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
-
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
-
-            ProcessCheckboxFields(ClientApplication.ClientApplicationTypes);
-        }
-
         public override bool? IsComplete => BrowserBased || NativeDesktop || NativeMobile;
 
         [Checkbox("Browser-based")]

@@ -1,7 +1,7 @@
-﻿using System;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NUnit.Framework;
 
@@ -11,54 +11,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
     [Parallelizable(ParallelScope.All)]
     internal static class HardwareRequirementsModelTests
     {
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
+        
         [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        public static void Description_StringLengthAttribute_ExpectedMaxLength()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new HardwareRequirementsModel(null));
+            typeof(HardwareRequirementsModel)
+                .GetProperty(nameof(HardwareRequirementsModel.Description))
+                .GetCustomAttribute<StringLengthAttribute>()
+                .MaximumLength.Should()
+                .Be(500);
         }
 
+        [AutoData]
         [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
+        public static void IsComplete_DescriptionValid_ReturnsTrue(string description)
         {
-            var clientApplication = new ClientApplication { HardwareRequirements = "Some hardware requirements" };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
-            };
+            var model = new HardwareRequirementsModel { Description = description };
 
-            var model = new HardwareRequirementsModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
-            Assert.AreEqual("Some hardware requirements", model.Description);
+            model.IsComplete.Should().BeTrue();
         }
 
-        [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void IsComplete_DescriptionNotValid_ReturnsFalse(string invalid)
         {
-            var model = new HardwareRequirementsModel();
+            var model = new HardwareRequirementsModel { Description = invalid };
 
-            Assert.AreEqual("./", model.BackLink);
-            Assert.False(model.IsComplete);
-            Assert.Null(model.Description);
-        }
-
-        [Test]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("Some hardware requirements", true)]
-        public static void IsCompleteIsCorrectlySet(string hardwareRequirements, bool? expected)
-        {
-            var clientApplication = new ClientApplication { HardwareRequirements = hardwareRequirements };
-            var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
-
-            var model = new HardwareRequirementsModel(catalogueItem);
-
-            Assert.AreEqual(expected, model.IsComplete);
+            model.IsComplete.Should().BeFalse();
         }
     }
 }

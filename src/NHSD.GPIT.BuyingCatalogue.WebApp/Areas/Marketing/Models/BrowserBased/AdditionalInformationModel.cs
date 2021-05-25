@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {
@@ -11,18 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
         {
         }
 
-        public AdditionalInformationModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
-        {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
-
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
-
-            AdditionalInformation = ClientApplication.AdditionalInformation;
-        }
-
-        public override bool? IsComplete => !string.IsNullOrWhiteSpace(ClientApplication?.AdditionalInformation);
+        public override bool? IsComplete => !string.IsNullOrWhiteSpace(AdditionalInformation);
 
         [StringLength(500)]
         public string AdditionalInformation { get; set; }

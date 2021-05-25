@@ -12,16 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType
         {
         }
 
-        public PublicCloudModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
-        {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
-
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
-            PublicCloud = catalogueItem.Solution.GetHosting().PublicCloud;
-        }
-
         public override bool? IsComplete => PublicCloud?.IsValid();
 
         public PublicCloud PublicCloud { get; set; }

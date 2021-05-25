@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
 {
@@ -11,28 +11,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
         {
         }
 
-        public SolutionStatusModel(CatalogueItem catalogueItem)
-            : base(catalogueItem)
-        {
-            if (catalogueItem is null)
-                throw new ArgumentNullException(nameof(catalogueItem));
-
-            CatalogueItemName = CatalogueItem.Name;
-            SupplierName = CatalogueItem.Supplier.Name;
-        }
-
         public string CatalogueItemName { get; set; }
 
         public string SupplierName { get; set; }
 
-        public bool IsBrowserBased => ClientApplication.ClientApplicationTypes.Any(x =>
-            x.Equals("browser-based", StringComparison.InvariantCultureIgnoreCase));
+        public bool IsBrowserBased => ClientApplication != null && ClientApplication.ClientApplicationTypes.Any(
+            x => x.EqualsIgnoreCase("browser-based"));
 
-        public bool IsNativeMobile => ClientApplication.ClientApplicationTypes.Any(x =>
-            x.Equals("native-mobile", StringComparison.InvariantCultureIgnoreCase));
+        public bool IsNativeDesktop => ClientApplication != null && ClientApplication.ClientApplicationTypes.Any(
+            x => x.EqualsIgnoreCase("native-desktop"));
 
-        public bool IsNativeDesktop => ClientApplication.ClientApplicationTypes.Any(x =>
-            x.Equals("native-desktop", StringComparison.InvariantCultureIgnoreCase));
+        public bool IsNativeMobile => ClientApplication != null && ClientApplication.ClientApplicationTypes.Any(
+            x => x.EqualsIgnoreCase("native-mobile"));
 
         public override bool? IsComplete => throw new NotImplementedException();
 

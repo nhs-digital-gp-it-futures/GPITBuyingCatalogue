@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -20,6 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         {
             var summary = TextGenerators.TextInputAddText(HostingTypesObjects.PublicCloud_Summary, 500);
             var link = TextGenerators.UrlInputAddText(HostingTypesObjects.PublicCloud_Link, 1000);
+            var expected = new ServiceContracts.Solutions.PublicCloud
+            {
+                Link = link,
+                Summary = summary,
+            };
+            
             MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
 
             CommonActions.ClickSave();
@@ -27,7 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
             using var context = GetBCContext();
             var hosting = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).Hosting;
 
-            hosting.Should().ContainEquivalentOf($"\"PublicCloud\":{{\"Summary\":\"{summary}\",\"Link\":\"{link}\"");
+            var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
+            actual.PublicCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
         }
 
         [Fact]

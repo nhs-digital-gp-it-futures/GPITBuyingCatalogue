@@ -1,5 +1,7 @@
 ﻿using System;
+using AutoFixture.NUnit3;
 using FluentAssertions;
+using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -13,110 +15,75 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
     [Parallelizable(ParallelScope.All)]
     internal static class PublicCloudModelTests
     {
-        [Test]
-        public static void Constructor_NullCatalogueItem_ThrowsException()
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
+
+        [TestCase(false)]
+        [TestCase(true)]
+        [TestCase(null)]
+        public static void IsComplete_PublicCloudNotNull_ReturnsIsValid(bool? expected)
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new PublicCloudModel(null));
+            var mockPublicCloud = new Mock<PublicCloud>();
+            mockPublicCloud.Setup(h => h.IsValid())
+                .Returns(expected);
+            var model = new PublicCloudModel { PublicCloud = mockPublicCloud.Object, };
+
+            var actual = model.IsComplete;
+
+            mockPublicCloud.Verify(h => h.IsValid());
+            actual.Should().Be(expected);
         }
 
         [Test]
-        public static void WithCatalogueItem_PropertiesCorrectlySet()
-        {
-            var hosting = new Hosting
-            {
-                PublicCloud = new PublicCloud
-                {
-                    Link = "A link",
-                    RequiresHscn = "End user devices must be connected to HSCN/N3",
-                    Summary = "A summary"
-                }
-            };
-
-            var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { Hosting = json }
-            };
-
-            var model = new PublicCloudModel(catalogueItem);
-
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
-            model.PublicCloud.Should().BeEquivalentTo(hosting.PublicCloud);
-            Assert.True(model.RequiresHscnChecked);
-        }
-
-        [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        public static void IsComplete_PublicCloudIsNull_ReturnsNull()
         {
             var model = new PublicCloudModel();
+            model.PublicCloud.Should().BeNull();
 
-            Assert.AreEqual("./", model.BackLink);
-            Assert.Null(model.IsComplete);
-            Assert.Null(model.PublicCloud);
-            Assert.False(model.RequiresHscnChecked);
+            var actual = model.IsComplete;
+
+            actual.Should().BeNull();
         }
 
+        [AutoData]
         [Test]
-        [TestCase(null, null, null, false)]
-        [TestCase(null, null, null, false)]
-        [TestCase(null, null, null, false)]
-        [TestCase("", null, null, false)]
-        [TestCase(" ", null, null, false)]
-        [TestCase(null, "", null, false)]
-        [TestCase(null, " ", null, false)]
-        [TestCase(null, null, "", false)]
-        [TestCase(null, null, " ", false)]
-        [TestCase("Link", null, null, true)]
-        [TestCase(null, "Requires Hscn", null, true)]
-        [TestCase(null, null, "Summary", true)]
-        public static void IsCompleteIsCorrectlySet(string link, string requiresHscn, string summary, bool? expected)
+        public static void Get_RequiresHscnChecked_PublicCloudHasValidRequiresHscn_ReturnsTrue(PublicCloudModel model)
         {
-            var hosting = new Hosting
-            {
-                PublicCloud = new PublicCloud
-                {
-                    Link = link,
-                    RequiresHscn = requiresHscn,
-                    Summary = summary
-                }
-            };
+            model.PublicCloud.RequiresHscn.Should().NotBeNullOrWhiteSpace();
 
-            var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { Hosting = json }
-            };
+            var actual = model.RequiresHscnChecked;
 
-            var model = new PublicCloudModel(catalogueItem);
-
-            Assert.AreEqual(expected, model.IsComplete);
+            actual.Should().BeTrue();
         }
 
-        [Test]
-        public static void RequiresHscnChecked_CorrectlySetsStringValue()
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void Get_RequiresHscnChecked_PublicCloudHasInvalidRequiresHscn_ReturnsFalse(
+            string requiresHscn)
         {
-            var hosting = new Hosting
-            {
-                PublicCloud = new PublicCloud()
-            };
+            var model = new PublicCloudModel { PublicCloud = new PublicCloud { RequiresHscn = requiresHscn, }, };
 
-            var json = JsonConvert.SerializeObject(hosting);
-            var catalogueItem = new CatalogueItem
-            {
-                CatalogueItemId = "123",
-                Solution = new Solution { Hosting = json }
-            };
+            var actual = model.RequiresHscnChecked;
 
-            var model = new PublicCloudModel(catalogueItem)
-            {
-                RequiresHscnChecked = false
-            };
-            Assert.Null(model.PublicCloud.RequiresHscn);
+            actual.Should().BeFalse();
+        }
+
+        [AutoData]
+        [Test]
+        public static void Set_RequiresHscnChecked_TrueInput_SetsExpectedValueOnPublicCloudRequiresHscn(
+            PublicCloudModel model)
+        {
             model.RequiresHscnChecked = true;
-            Assert.AreEqual("End user devices must be connected to HSCN/N3", model.PublicCloud.RequiresHscn);
+
+            model.PublicCloud.RequiresHscn.Should().Be("End user devices must be connected to HSCN/N3");
+        }
+
+        [AutoData]
+        [Test]
+        public static void Set_RequiresHscnChecked_FalseInput_SetsNullOnPublicCloudRequiresHscn(
+            PublicCloudModel model)
+        {
+            model.RequiresHscnChecked = false;
+
+            model.PublicCloud.RequiresHscn.Should().BeNull();
         }
     }
 }

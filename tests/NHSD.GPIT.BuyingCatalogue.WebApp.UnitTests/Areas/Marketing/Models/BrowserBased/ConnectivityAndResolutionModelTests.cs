@@ -33,18 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
         {
             mapper = null;
         }
-
-        [Test]
-        public void Constructor_NullCatalogueItem_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new ConnectivityAndResolutionModel(null));
-        }
-
+        
         [Test]
         public void WithCatalogueItem_PropertiesCorrectlySet()
         {
-            var clientApplication = new ClientApplication { MinimumConnectionSpeed = "15Mbs", MinimumDesktopResolution = "21:9 - 3440 x 1440" };
+            var clientApplication = new ClientApplication
+            {
+                MinimumConnectionSpeed = "15Mbs", MinimumDesktopResolution = "21:9 - 3440 x 1440"
+            };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
