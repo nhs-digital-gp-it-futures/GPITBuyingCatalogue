@@ -12,10 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         private const string DefaultButtonText = "Save and return";
 
-        [ViewContext]
-        [HtmlAttributeNotBound]
-        public ViewContext ViewContext { get; set; }
-
         [HtmlAttributeName(ButtonTextOverrideName)]
         public string Text { get; set; }
 

@@ -6,13 +6,15 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
-    [HtmlTargetElement(TagHelperName, ParentTag = ParentTagName)]
+    [HtmlTargetElement(TagHelperName, ParentTag = CheckboxContainerTagHelper.TagHelperName)]
     public sealed class ValidationCheckboxTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-validation-checkbox";
-        public const string ParentTagName = "nhs-checkbox-container";
 
         private const string HiddenAttributeName = "hidden-input";
+        private const string NhsCheckboxItem = "nhsuk-checkboxes__item";
+        private const string NhsCheckboxInput = "nhsuk-checkboxes__input";
+        private const string NhsCheckboxLabel = "nhsuk-checkboxes__label";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -43,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
-            output.Attributes.Add(TagHelperConstants.Class, TagHelperConstants.NhsCheckboxItem);
+            output.Attributes.Add(TagHelperConstants.Class, NhsCheckboxItem);
 
             output.Content.AppendHtml(input);
             output.Content.AppendHtml(label);
@@ -54,16 +56,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         private TagBuilder GetCheckboxInputBuilder()
         {
-            var inputBuilder = htmlGenerator.GenerateCheckBox(
-            ViewContext,
-            For.ModelExplorer,
-            For.Name,
-            (bool)For.Model,
-            null);
-
-            inputBuilder.AddCssClass(TagHelperConstants.NhsCheckboxInput);
-
-            return inputBuilder;
+            return htmlGenerator.GenerateCheckBox(
+                ViewContext,
+                For.ModelExplorer,
+                For.Name,
+                (bool)For.Model,
+                new { @class = NhsCheckboxInput });
         }
 
         private TagBuilder GetCheckboxLabelBuilder()
@@ -73,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                 For.ModelExplorer,
                 For.Name,
                 LabelText ?? TagHelperFunctions.GetCustomAttribute<CheckboxAttribute>(For).DisplayText,
-                new { @class = $"{TagHelperConstants.NhsLabel} {TagHelperConstants.NhsCheckboxLabel}" });
+                new { @class = $"{TagHelperConstants.NhsLabel} {NhsCheckboxLabel}" });
         }
 
         private TagBuilder GetHiddenInputBuilder()

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
@@ -11,10 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         public const string TitleName = "title";
         public const string TitleAdviceName = "title-advice";
         public const string TitleAdviceAdditionalName = "title-advice-additional";
-
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
 
         [HtmlAttributeName(TitleName)]
         public string Title { get; set; }
@@ -34,7 +29,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
             output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = TagHelperConstants.Div;
 
-            output.Attributes.Add(new TagHelperAttribute("class", $"{TagHelperConstants.NhsMarginTop}-5 {TagHelperConstants.NhsMarginBottom}-7"));
+            output.Attributes.Add(
+                new TagHelperAttribute(
+                    TagHelperConstants.Class,
+                    $"{TagHelperConstants.NhsMarginTop}-5 {TagHelperConstants.NhsMarginBottom}-7"));
 
             output.Content.AppendHtml(title);
             output.Content.AppendHtml(advice);
@@ -43,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         private TagBuilder GetTitleBuilder()
         {
-            var builder = new TagBuilder(TagHelperConstants.H1);
+            var builder = new TagBuilder(TagHelperConstants.Header);
 
             builder.AddCssClass($"{TagHelperConstants.NhsMarginBottom}-3");
 
@@ -54,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 
         private TagBuilder GetAdviceBuilder()
         {
-            var builder = new TagBuilder(TagHelperConstants.H2);
+            var builder = new TagBuilder(TagHelperConstants.SubHeader);
 
             builder.AddCssClass($"{TagHelperConstants.NhsFontSize}-22");
 

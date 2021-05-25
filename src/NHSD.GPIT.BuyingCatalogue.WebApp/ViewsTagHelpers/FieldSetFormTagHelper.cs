@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(CheckBoxContainerTagName, RadioButtonTagName)]
+    [RestrictChildren(
+        CheckboxContainerTagHelper.TagHelperName,
+        RadioButtonsTagHelper.TagHelperName,
+        YesNoRadioButtonTagHelper.TagHelperName)]
     public sealed class FieldSetFormTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-fieldset-form";
-        public const string CheckBoxContainerTagName = CheckboxContainerTagHelper.TagHelperName;
-        public const string RadioButtonTagName = RadioButtonsTagHelper.TagHelperName;
+
+        private const string NhsFieldset = "nhsuk-fieldset";
+        private const string NhsFieldsetLegend = "nhsuk-fieldset__legend";
+        private const string NhsFieldsetLegendOne = "nhsuk-fieldset__legend--1";
+        private const string NhsFieldSetLegendHeading = "nhsuk-fieldset__heading";
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -51,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         {
             var builder = new TagBuilder(TagHelperConstants.FieldSet);
 
-            builder.AddCssClass(TagHelperConstants.NhsFieldset);
+            builder.AddCssClass(NhsFieldset);
             builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, $"{formName}-hint");
 
             return builder;
@@ -61,8 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         {
             var builder = new TagBuilder(TagHelperConstants.Legend);
 
-            builder.AddCssClass(TagHelperConstants.NhsFieldsetLegend);
-            builder.AddCssClass(TagHelperConstants.NhsFieldsetLegendOne);
+            builder.AddCssClass(NhsFieldsetLegend);
+            builder.AddCssClass(NhsFieldsetLegendOne);
 
             return builder;
         }
@@ -82,11 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         private TagBuilder GetFieldsetLegendHeadingTagBuilder()
         {
             if (LabelText == null || DisableLabelAndHint == true)
-                return new TagBuilder("empty");
+                return null;
 
-            var builder = new TagBuilder(TagHelperConstants.H1);
-
-            builder.AddCssClass(TagHelperConstants.NhsFieldSetLegendHeading);
+            var builder = new TagBuilder(TagHelperConstants.Header);
+            builder.AddCssClass(NhsFieldSetLegendHeading);
 
             builder.InnerHtml.Append(LabelText);
 
@@ -96,6 +101,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         private string GetModelKebabNameFromFor()
         {
             string name = For.Model.GetType().Name;
+
+            // removes the word Model from the end of the Model, e.g SolutionDescriptionModel becomes SolutionDescription
             name = name.Remove(name.Length - 5);
 
             var pattern = new Regex(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+");
