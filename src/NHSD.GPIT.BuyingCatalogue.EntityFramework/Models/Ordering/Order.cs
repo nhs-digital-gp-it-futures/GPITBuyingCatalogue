@@ -12,6 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             DefaultDeliveryDates = new HashSet<DefaultDeliveryDate>();
             OrderItems = new HashSet<OrderItem>();
             SelectedServiceRecipients = new HashSet<SelectedServiceRecipient>();
+
+            if(OrderStatus == null)
+            {
+                OrderStatus = OrderStatus.Incomplete;
+            }
+
         }
 
         public int Id { get; set; }
@@ -44,7 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public DateTime? Completed { get; set; }
 
-        public int OrderStatusId { get; set; }
+        //LEE
+        //public int OrderStatusId { get; set; }
 
         public bool IsDeleted { get; set; }
 

@@ -39,7 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<OrderProgress> OrderProgresses { get; set; }
 
-        public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
+        //LEE
+        //public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
 
         public virtual DbSet<OrderingParty> OrderingParties { get; set; }
 
@@ -172,6 +173,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasConversion(status => status.Id, id => OrderStatus.FromId(id))
                     .HasColumnName("OrderStatusId");
 
+                //LEE
+                //entity.HasOne(d => d.OrderStatus)
+                //      .WithMany(o => o.Orders)
+                //      .HasForeignKey(d => d.OrderStatusId)
+                //      .IsRequired()
+                //      .HasConstraintName("FK_Order_OrderStatus")
+                //      .OnDelete(DeleteBehavior.ClientSetNull);
+
                 entity.HasOne(d => d.OrderingPartyContact)
                     .WithMany(p => p.OrderOrderingPartyContacts)
                     .HasForeignKey(d => d.OrderingPartyContactId)
@@ -197,23 +206,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<OrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.CatalogueItemId });
-
                 entity.ToTable("OrderItem");
-
-                entity.Property(e => e.CatalogueItemId).HasMaxLength(14);
-
+                entity.Property(e => e.CatalogueItemId)
+                .HasMaxLength(14)
+                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
                 entity.Property(e => e.Created).HasDefaultValueSql("(getutcdate())");
-
                 entity.Property(e => e.CurrencyCode)
                     .IsRequired()
                     .HasMaxLength(3);
-
                 entity.Property(e => e.DefaultDeliveryDate).HasColumnType("date");
-
                 entity.Property(e => e.LastUpdated).HasDefaultValueSql("(getutcdate())");
-
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 4)");
-
                 entity.Property(e => e.PricingUnitName)
                     .IsRequired()
                     .HasMaxLength(20);
@@ -261,7 +264,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<OrderItemRecipient>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.CatalogueItemId, e.OdsCode });
-                entity.Property(e => e.CatalogueItemId).HasMaxLength(14);
+                entity.Property(e => e.CatalogueItemId)
+                .HasMaxLength(14)
+                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
                 entity.Property(e => e.DeliveryDate).HasColumnType("date");
                 entity.HasOne(d => d.OdsCodeNavigation)
@@ -286,17 +291,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey<OrderProgress>(d => d.OrderId)
                     .HasConstraintName("FK_OrderProgress_Order");
             });
-
-            modelBuilder.Entity<OrderStatus>(entity =>
-            {
-                entity.ToTable("OrderStatus");
-                entity.HasIndex(e => e.Name, "AK_OrderStatus_Name")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(30);
-            });
+            //LEE
+            //modelBuilder.Entity<OrderStatus>(entity =>
+            //{
+            //    entity.ToTable("OrderStatus");
+            //    entity.HasIndex(e => e.Name, "AK_OrderStatus_Name")
+            //        .IsUnique();
+            //    entity.Property(e => e.Id).ValueGeneratedNever();
+            //    entity.Property(e => e.Name)
+            //        .IsRequired()
+            //        .HasMaxLength(30);
+            //});
 
             modelBuilder.Entity<OrderingParty>(entity =>
             {

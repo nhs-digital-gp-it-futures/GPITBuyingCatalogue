@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
     {
         public int OrderId { get; set; }
 
-        public string CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string OdsCode { get; set; }
 
