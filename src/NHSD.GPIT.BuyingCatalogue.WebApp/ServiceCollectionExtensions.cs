@@ -78,27 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(odsSettings);
         }
 
-        public static void ConfigureSession(this IServiceCollection services)
-        {
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(1);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
-
-            var redisConnectionString = Environment.GetEnvironmentVariable(RedisEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(redisConnectionString))
-                throw new InvalidOperationException($"Environment variable '{RedisEnvironmentVariable}' must be set for the redis connection string");
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = "BuyingCatalogueInstance";
-            });
-        }
-
         public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
         {
             var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);

@@ -58,8 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureOds(Configuration);
 
-            services.ConfigureSession();
-
             services.ConfigureEmail(Configuration, healthChecksBuilder);
 
             services.ConfigureDisabledErrorMessage(Configuration);

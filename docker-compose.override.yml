@@ -106,10 +106,4 @@ services:
             context: .
             dockerfile: azurite/Dockerfile
         depends_on:
-            - "blob.store"  
-
-    redis:
-        image: redis
-        container_name: bc-redis
-        ports:
-          - "6380:6379"        
+            - "blob.store"       
