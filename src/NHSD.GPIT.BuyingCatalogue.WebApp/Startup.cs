@@ -140,8 +140,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.UseAuthorization();
 
-            app.UseSession();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

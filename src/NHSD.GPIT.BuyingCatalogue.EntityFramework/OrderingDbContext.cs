@@ -89,7 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(256);
-                entity.Property(e => e.ParentCatalogueItemId).HasMaxLength(14);
+                entity.Property(e => e.ParentCatalogueItemId).HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
                 entity.HasOne(d => d.CatalogueItemType)
                     .WithMany(p => p.CatalogueItems)
                     .HasForeignKey(d => d.CatalogueItemTypeId)
@@ -167,14 +168,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.LastUpdatedByName).HasMaxLength(256);
                 entity.Property(e => e.Revision).HasDefaultValueSql("((1))");
                 entity.Property(e => e.SupplierId).HasMaxLength(6);
-                entity.Property(e => e.OrderStatus)
-                    .HasConversion(status => status.Id, id => OrderStatus.FromId(id));
-
-                entity.HasOne(d => d.OrderStatus)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.OrderStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Order_OrderStatus");
+                entity.Property(o => o.OrderStatus)
+                    .HasConversion(status => status.Id, id => OrderStatus.FromId(id))
+                    .HasColumnName("OrderStatusId");
 
                 entity.HasOne(d => d.OrderingPartyContact)
                     .WithMany(p => p.OrderOrderingPartyContacts)

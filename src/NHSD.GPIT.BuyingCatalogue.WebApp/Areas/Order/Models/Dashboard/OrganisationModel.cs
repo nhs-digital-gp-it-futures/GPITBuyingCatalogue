@@ -21,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 
         public string OrganisationName { get; set; }
 
-        public string OdsCode { get; set; }
-
         public bool CanActOnBehalf { get; set; }
     }
 }
