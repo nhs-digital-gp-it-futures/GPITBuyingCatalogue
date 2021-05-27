@@ -47,12 +47,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
 
-            return View(new OrganisationModel(organisation, User));
+            var allOrders = await orderService.GetOrders(organisation.OrganisationId);
+
+            return View(new OrganisationModel(organisation, User, allOrders));
         }
 
         [HttpGet("organisation/{odsCode}/select")]
         public async Task<IActionResult> SelectOrganisation(string odsCode)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+
             var odsCodes = new List<string>(User.GetSecondaryOdsCodes());
             odsCodes.Add(User.GetPrimaryOdsCode());
 
@@ -64,6 +68,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("organisation/{odsCode}/select")]
         public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            model.ValidateNotNull(nameof(model));
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -73,18 +80,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}/order/neworder")]
         public IActionResult NewOrder(string odsCode)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+
             return View(new NewOrderModel(odsCode));
         }
 
         [HttpGet("organisation/{odsCode}/order/neworder/description")]
         public IActionResult NewOrderDescription(string odsCode)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+
             return View(new NewOrderDescriptionModel(odsCode));
         }
 
         [HttpPost("organisation/{odsCode}/order/neworder/description")]
         public async Task<IActionResult> NewOrderDescription(string odsCode, NewOrderDescriptionModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            model.ValidateNotNull(nameof(model));
+
             if (!ModelState.IsValid)
                 return View(model);
 

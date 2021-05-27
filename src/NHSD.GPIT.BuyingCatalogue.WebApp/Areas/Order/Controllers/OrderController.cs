@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -12,41 +15,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public class OrderController : Controller
     {
         private readonly ILogWrapper<OrderController> logger;
+        private readonly IOrderService orderService;
 
-        public OrderController(ILogWrapper<OrderController> logger)
+        public OrderController(
+            ILogWrapper<OrderController> logger,
+            IOrderService orderService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
         [HttpGet]
-        public IActionResult Order(string odsCode, string callOffId)
+        public async Task<IActionResult> Order(string odsCode, string callOffId)
         {
-            return View(new OrderModel());
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new OrderModel(odsCode, order));
         }
 
         [HttpGet("summary")]
-        public IActionResult Summary(string odsCode, string callOffId, string print = "false")
+        public async Task<IActionResult> Summary(string odsCode, string callOffId, string print = "false")
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
             // TODO - obey the print switch
-            return View(new SummaryModel());
+            return View(new SummaryModel(odsCode, order));
         }
 
         [HttpGet("delete-order")]
-        public IActionResult DeleteOrder(string odsCode, string callOffId)
+        public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId)
         {
-            return View(new DeleteOrderModel());
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new DeleteOrderModel(odsCode, callOffId, order));
         }
 
         [HttpPost("delete-order")]
-        public IActionResult DeleteOrder(string odsCode, string callOffId, DeleteOrderModel model)
+        public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId, DeleteOrderModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            await orderService.DeleteOrder(callOffId);
+
             return Redirect($"/order/organisation/{odsCode}");
         }
 
         [HttpGet("delete-order/confirmation")]
-        public IActionResult DeleteOrderConfirmation(string odsCode, string callOffId)
+        public async Task<IActionResult> DeleteOrderConfirmation(string odsCode, string callOffId)
         {
-            return View(new DeleteConfirmationModel());
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new DeleteConfirmationModel(odsCode, callOffId, order));
         }
 
         [HttpGet("description")]

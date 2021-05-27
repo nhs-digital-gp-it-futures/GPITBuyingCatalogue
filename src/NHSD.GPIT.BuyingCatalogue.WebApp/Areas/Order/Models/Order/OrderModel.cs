@@ -2,11 +2,11 @@
 {
     public class OrderModel : OrderingBaseModel
     {
-        public OrderModel()
+        public OrderModel(string odsCode, EntityFramework.Models.Ordering.Order order)
         {
             BackLinkText = "Go back to all orders";
-            BackLink = "/order/organisation/03F"; // TODO
-            Title = "Order C010001-01"; // TODO
+            BackLink = $"/order/organisation/{odsCode}";
+            Title = $"Order {order.CallOffId}";
         }
     }
 }

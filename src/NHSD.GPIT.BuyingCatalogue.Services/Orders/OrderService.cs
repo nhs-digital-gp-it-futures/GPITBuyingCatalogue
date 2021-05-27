@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -30,10 +31,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
-        public async Task<Order> GetOrder(CallOffId callOffId)
+        public async Task<Order> GetOrder(string callOffId)
         {
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var (success, id) = CallOffId.Parse(callOffId);
+
+            if (!success)
+                throw new ArgumentException("CallOffId could not be parsed", nameof(callOffId));
+
             return await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id)
+                .Where(o => o.Id == id.Id)
                 .Include(o => o.OrderingParty).ThenInclude(p => p.Address)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier).ThenInclude(s => s.Address)
@@ -99,8 +107,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return order;
         }
 
-        public async Task DeleteOrder(Order order)
+        public async Task DeleteOrder(string callOffId)
         {
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await GetOrder(callOffId);
+
             if (order is null)
                 throw new ArgumentNullException(nameof(order));
 
