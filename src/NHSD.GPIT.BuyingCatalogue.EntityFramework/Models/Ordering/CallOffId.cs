@@ -26,6 +26,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             Revision = revision;
         }
 
+        public CallOffId(string callOffId)
+        {
+            if (string.IsNullOrWhiteSpace(callOffId))
+                throw new ArgumentException("Argument IsNullOrWhiteSpace", callOffId);
+
+            var (success, id) = CallOffId.Parse(callOffId);
+
+            if (!success)
+                throw new ArgumentException("CallOffId could not be parsed", nameof(callOffId));
+
+            this = id;
+        }
+
         public int Id { get; }
 
         public byte Revision { get; }

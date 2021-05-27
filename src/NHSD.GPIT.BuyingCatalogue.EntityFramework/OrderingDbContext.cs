@@ -23,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
 
-        public virtual DbSet<CatalogueItemType> CatalogueItemTypes { get; set; }
-
         public virtual DbSet<CataloguePriceType> CataloguePriceTypes { get; set; }
 
         public virtual DbSet<Contact> Contacts { get; set; }
@@ -39,13 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<OrderProgress> OrderProgresses { get; set; }
 
-        // LEE
-        // public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
         public virtual DbSet<OrderingParty> OrderingParties { get; set; }
 
         public virtual DbSet<PricingUnit> PricingUnits { get; set; }
-
-        public virtual DbSet<ProvisioningType> ProvisioningTypes { get; set; }
 
         public virtual DbSet<SelectedServiceRecipient> SelectedServiceRecipients { get; set; }
 
@@ -54,8 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public virtual DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
         public virtual DbSet<Supplier> Suppliers { get; set; }
-
-        public virtual DbSet<TimeUnit> TimeUnits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -82,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<CatalogueItem>(entity =>
             {
                 entity.ToTable("CatalogueItem");
-                entity.HasIndex(e => new { e.CatalogueItemTypeId, e.Name }, "IX_CatalogueItem_Type");
                 entity.Property(e => e.Id)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
@@ -91,26 +82,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasMaxLength(256);
                 entity.Property(e => e.ParentCatalogueItemId).HasMaxLength(14)
                     .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-                entity.HasOne(d => d.CatalogueItemType)
-                    .WithMany(p => p.CatalogueItems)
-                    .HasForeignKey(d => d.CatalogueItemTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CatalogueItem_CatalogueItemType");
+                entity.Property(e => e.CatalogueItemType)
+                .HasConversion(cit => (int)cit, cit => (CatalogueItemType)cit)
+                .HasColumnName("CatalogueItemTypeId");
+
                 entity.HasOne(d => d.ParentCatalogueItem)
                     .WithMany(p => p.InverseParentCatalogueItem)
                     .HasForeignKey(d => d.ParentCatalogueItemId)
                     .HasConstraintName("FK_CatalogueItem_ParentCatalogueItem");
-            });
-
-            modelBuilder.Entity<CatalogueItemType>(entity =>
-            {
-                entity.ToTable("CatalogueItemType");
-                entity.HasIndex(e => e.Name, "AK_CatalogueItemType_Name")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<CataloguePriceType>(entity =>
@@ -169,16 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.Revision).HasDefaultValueSql("((1))");
                 entity.Property(e => e.SupplierId).HasMaxLength(6);
                 entity.Property(o => o.OrderStatus)
-                    .HasConversion(status => status.Id, id => OrderStatus.FromId(id))
+                    .HasConversion(status => (int)status, id => (OrderStatus)id)
                     .HasColumnName("OrderStatusId");
-
-                //LEE
-                //entity.HasOne(d => d.OrderStatus)
-                //      .WithMany(o => o.Orders)
-                //      .HasForeignKey(d => d.OrderStatusId)
-                //      .IsRequired()
-                //      .HasConstraintName("FK_Order_OrderStatus")
-                //      .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.OrderingPartyContact)
                     .WithMany(p => p.OrderOrderingPartyContacts)
@@ -219,6 +190,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.PricingUnitName)
                     .IsRequired()
                     .HasMaxLength(20);
+                entity.Property(e => e.EstimationPeriod)
+                    .HasConversion(ep => (int)ep, ep => (TimeUnit)ep)
+                    .HasColumnName("EstimationPeriodId");
+                entity.Property(e => e.TimeUnit)
+                    .HasConversion(tu => (int)tu, tu => (TimeUnit)tu)
+                    .HasColumnName("TimeUnitId");
+                entity.Property(e => e.ProvisioningType)
+                .HasConversion(pt => (int)pt, pt => (ProvisioningType)pt)
+                .HasColumnName("ProvisioningTypeId");
 
                 entity.HasOne(d => d.CatalogueItem)
                     .WithMany(p => p.OrderItems)
@@ -232,11 +212,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderItem_CataloguePriceType");
 
-                entity.HasOne(d => d.EstimationPeriod)
-                    .WithMany(p => p.OrderItemEstimationPeriods)
-                    .HasForeignKey(d => d.EstimationPeriodId)
-                    .HasConstraintName("FK_OrderItem_EstimationPeriod");
-
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.OrderId)
@@ -247,17 +222,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey(d => d.PricingUnitName)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderItem_PricingUnit");
-
-                entity.HasOne(d => d.ProvisioningType)
-                    .WithMany(p => p.OrderItems)
-                    .HasForeignKey(d => d.ProvisioningTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderItem_ProvisioningType");
-
-                entity.HasOne(d => d.TimeUnit)
-                    .WithMany(p => p.OrderItemTimeUnits)
-                    .HasForeignKey(d => d.TimeUnitId)
-                    .HasConstraintName("FK_OrderItem_TimeUnit");
             });
 
             modelBuilder.Entity<OrderItemRecipient>(entity =>
@@ -290,17 +254,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey<OrderProgress>(d => d.OrderId)
                     .HasConstraintName("FK_OrderProgress_Order");
             });
-            //LEE
-            //modelBuilder.Entity<OrderStatus>(entity =>
-            //{
-            //    entity.ToTable("OrderStatus");
-            //    entity.HasIndex(e => e.Name, "AK_OrderStatus_Name")
-            //        .IsUnique();
-            //    entity.Property(e => e.Id).ValueGeneratedNever();
-            //    entity.Property(e => e.Name)
-            //        .IsRequired()
-            //        .HasMaxLength(30);
-            //});
 
             modelBuilder.Entity<OrderingParty>(entity =>
             {
@@ -327,17 +280,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(40);
-            });
-
-            modelBuilder.Entity<ProvisioningType>(entity =>
-            {
-                entity.ToTable("ProvisioningType");
-                entity.HasIndex(e => e.Name, "AK_ProvisioningType_Name")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(35);
             });
 
             modelBuilder.Entity<SelectedServiceRecipient>(entity =>
@@ -389,22 +331,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey(d => d.AddressId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Supplier_Address");
-            });
-
-            modelBuilder.Entity<TimeUnit>(entity =>
-            {
-                entity.ToTable("TimeUnit");
-                entity.HasIndex(e => e.Description, "AK_TimeUnit_Description")
-                    .IsUnique();
-                entity.HasIndex(e => e.Name, "AK_TimeUnit_Name")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(32);
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(20);
             });
 
             OnModelCreatingPartial(modelBuilder);

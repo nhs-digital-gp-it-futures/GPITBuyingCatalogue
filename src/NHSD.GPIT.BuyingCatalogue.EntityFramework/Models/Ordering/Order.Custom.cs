@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
@@ -80,8 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             if (!FundingSourceOnlyGms.HasValue)
                 return false;
 
-            int catalogueSolutionsCount = OrderItems.Count(o => o.CatalogueItem.CatalogueItemType.Name == "Solution");
-            int associatedServicesCount = OrderItems.Count(o => o.CatalogueItem.CatalogueItemType.Name == "Associated Service");
+            int catalogueSolutionsCount = OrderItems.Count(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+            int associatedServicesCount = OrderItems.Count(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);
 
             var solutionAndAssociatedServices = catalogueSolutionsCount > 0
                 && associatedServicesCount > 0;
@@ -98,17 +96,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
                 || solutionAndAssociatedServices
                 || noSolutionsAndAssociatedServices;
         }
-
-        /*public Result Complete()
-        {
-            if (!CanComplete())
-                return Result.Failure(OrderErrors.OrderNotComplete());
-
-            OrderStatus = OrderStatus.Complete;
-            completed = DateTime.UtcNow;
-
-            return Result.Success();
-        }*/
 
         public int DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
         {
@@ -130,12 +117,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public bool HasAssociatedService()
         {
-            return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType.Name == "Associated Service");
+            return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);
         }
 
         public bool HasSolution()
         {
-            return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType.Name == "Solution");
+            return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
         }
 
         public bool Equals(Order other)

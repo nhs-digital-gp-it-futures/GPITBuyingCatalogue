@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public partial class CatalogueItemType
+    public enum CatalogueItemType
     {
-        public CatalogueItemType()
-        {
-            CatalogueItems = new HashSet<CatalogueItem>();
-        }
+        [Display(Name = "Catalogue Solution")]
+        Solution = 1,
 
-        public int Id { get; set; }
+        [Display(Name = "Additional Service")]
+        AdditionalService = 2,
 
-        public string Name { get; set; }
-
-        public virtual ICollection<CatalogueItem> CatalogueItems { get; set; }
+        [Display(Name = "Associated Service")]
+        AssociatedService = 3,
     }
 }
