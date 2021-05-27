@@ -7,6 +7,10 @@
             BackLinkText = "Go back to all orders";
             BackLink = $"/order/organisation/{odsCode}";
             Title = $"Order {order.CallOffId}";
+            OdsCode = odsCode;
+            CallOffId = order.CallOffId.ToString();
         }
+
+        public string CallOffId { get; set; }
     }
 }

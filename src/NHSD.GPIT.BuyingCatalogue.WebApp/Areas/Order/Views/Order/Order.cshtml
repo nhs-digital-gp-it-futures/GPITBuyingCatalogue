@@ -3,17 +3,14 @@
     ViewData["Title"] = Model.Title;
 }
 
-<div class="nhsuk-width-container" data-test-id="C010001-01-page">
+<div class="nhsuk-width-container" data-test-id="@Model.CallOffId-page">
     <partial name="Partials/_BackLink" model="Model" />
-
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-two-thirds">
-
             <nhs-page-title title="@Model.Title" title-advice="Complete the following steps to create an order" />
-
             <div>
-                <h2 data-test-id="C010001-01-order-description-title" class="nhsuk-u-margin-bottom-3">Order description</h2>
-                <p data-test-id="C010001-01-order-description" class="nhsuk-heading-s nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">Testing testing</p>
+                <h2 data-test-id="@Model.CallOffId-order-description-title" class="nhsuk-u-margin-bottom-3">Order description</h2>
+                <p data-test-id="@Model.CallOffId-order-description" class="nhsuk-heading-s nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">Testing testing</p>
             </div>
         </div>
     </div>
@@ -31,13 +28,10 @@
                         <div>Start your order</div>
                     </h2>
                     <ul class="bc-c-task-list__items">
-
                         <li data-test-id="task-0-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-0-item-0-description" href="/order/organisation/03F/order/C010001-01/description">Provide a description of your order</a>
+                                <a data-test-id="task-0-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/description">Provide a description of your order</a>
                             </span>
-
                             <strong data-test-id="task-0-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
                     </ul>
@@ -49,22 +43,17 @@
                         <div>Organisation information</div>
                     </h2>
                     <ul class="bc-c-task-list__items">
-
                         <li data-test-id="task-1-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-1-item-0-description" href="/order/organisation/03F/order/C010001-01/ordering-party">Provide Call-off Ordering Party information</a>
+                                <a data-test-id="task-1-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/ordering-party">Provide Call-off Ordering Party information</a>
                             </span>
-
                             <strong data-test-id="task-1-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
 
                         <li data-test-id="task-1-item-1" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-1-item-1-description" href="/order/organisation/03F/order/C010001-01/supplier">Provide Supplier information</a>
+                                <a data-test-id="task-1-item-1-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/supplier">Provide Supplier information</a>
                             </span>
-
                             <strong data-test-id="task-1-item-1-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
                     </ul>
@@ -76,13 +65,10 @@
                         <div>Commencement date</div>
                     </h2>
                     <ul class="bc-c-task-list__items">
-
                         <li data-test-id="task-2-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-2-item-0-description" href="/order/organisation/03F/order/C010001-01/commencement-date">Provide commencement date for this agreement</a>
+                                <a data-test-id="task-2-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/commencement-date">Provide commencement date for this agreement</a>
                             </span>
-
                             <strong data-test-id="task-2-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
                     </ul>
@@ -94,13 +80,10 @@
                         <div>Add Catalogue Solutions</div>
                     </h2>
                     <ul class="bc-c-task-list__items">
-
                         <li data-test-id="task-3-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-3-item-0-description" href="/order/organisation/03F/order/C010001-01/catalogue-solutions">Add Catalogue Solutions to your order</a>
+                                <a data-test-id="task-3-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions">Add Catalogue Solutions to your order</a>
                             </span>
-
                             <strong data-test-id="task-3-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
                     </ul>
@@ -112,13 +95,10 @@
                         <div>Add Additional Services</div>
                     </h2>
                     <ul class="bc-c-task-list__items">
-
                         <li data-test-id="task-4-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-4-item-0-description" href="/order/organisation/03F/order/C010001-01/additional-services">Add Additional Services to your order</a>
+                                <a data-test-id="task-4-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services">Add Additional Services to your order</a>
                             </span>
-
                             <strong data-test-id="task-4-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
                     </ul>
@@ -130,13 +110,10 @@
                         <div>Add Associated Services</div>
                     </h2>
                     <ul class="bc-c-task-list__items">
-
                         <li data-test-id="task-5-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-5-item-0-description" href="/order/organisation/03F/order/C010001-01/associated-services">Add Associated Services to your order</a>
+                                <a data-test-id="task-5-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/associated-services">Add Associated Services to your order</a>
                             </span>
-
                             <strong data-test-id="task-5-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
                     </ul>
@@ -148,13 +125,10 @@
                         <div>Indicate funding source</div>
                     </h2>
                     <ul class="bc-c-task-list__items">
-
                         <li data-test-id="task-6-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
                             <span class="bc-c-task-list__task-name">
-
-                                <a data-test-id="task-6-item-0-description" href="/order/organisation/03F/order/C010001-01/funding-source">Explain how you&#39;re paying for this order</a>
+                                <a data-test-id="task-6-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/funding-source">Explain how you&#39;re paying for this order</a>
                             </span>
-
                             <strong data-test-id="task-6-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
                         </li>
                     </ul>
@@ -165,32 +139,24 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-one-third">
-
             <div data-test-id="delete-order-button">
-
-                <a class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9" href="/order/organisation/03F/order/C010001-01/delete-order" draggable="false">
+                <a class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/delete-order" draggable="false">
                     Delete order
                 </a>
             </div>
         </div>
-
         <div class="nhsuk-grid-column-two-thirds">
             <div class="bc-u-float-right">
                 <div class="bc-u-inline-block">
-
                     <div data-test-id="preview-order-button">
-
-                        <a class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9 nhsuk-u-margin-right-5" href="/order/organisation/03F/order/C010001-01/summary" draggable="false">
+                        <a class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9 nhsuk-u-margin-right-5" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/summary" draggable="false">
                             Preview order summary
                         </a>
                     </div>
                 </div>
-
                 <div class="bc-u-inline-block">
-
                     <div data-test-id="complete-order-button">
-
-                        <a class="nhsuk-button nhsuk-u-margin-bottom-9" href="/order/organisation/03F/order/C010001-01/complete-order" draggable="false">
+                        <a class="nhsuk-button nhsuk-u-margin-bottom-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/complete-order" draggable="false">
                             Complete order
                         </a>
                     </div>
