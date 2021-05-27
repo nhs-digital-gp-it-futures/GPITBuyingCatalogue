@@ -7,6 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 {
     public static class ProfileDefaults
     {
+        public const string Framework = "GP IT Futures";
+
         public static readonly List<SelectListItem> ConnectionSpeeds = new()
         {
             new() { Text = "0.5Mbps", Value = "0.5Mbps" },
@@ -98,7 +100,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
         public static string GetSolutionBackLink(string catalogueItemId) =>
             $"/marketing/supplier/solution/{catalogueItemId}";
-
-        public const string Framework = "GP IT Futures";
     }
 }
