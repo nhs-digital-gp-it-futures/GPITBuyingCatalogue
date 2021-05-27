@@ -16,13 +16,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly ILogWrapper<OrderController> logger;
         private readonly IOrderService orderService;
+        private readonly IOrderDescriptionService orderDescriptionService;
 
         public OrderController(
             ILogWrapper<OrderController> logger,
-            IOrderService orderService)
+            IOrderService orderService,
+            IOrderDescriptionService orderDescriptionService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.orderDescriptionService = orderDescriptionService ?? throw new ArgumentNullException(nameof(orderDescriptionService));
         }
 
         [HttpGet]
@@ -56,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new DeleteOrderModel(odsCode, callOffId, order));
+            return View(new DeleteOrderModel(odsCode, order));
         }
 
         [HttpPost("delete-order")]
@@ -79,18 +82,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new DeleteConfirmationModel(odsCode, callOffId, order));
+            return View(new DeleteConfirmationModel(odsCode, order));
         }
 
         [HttpGet("description")]
-        public IActionResult OrderDescription(string odsCode, string callOffId)
+        public async Task<IActionResult> OrderDescription(string odsCode, string callOffId)
         {
-            return View(new OrderDescriptionModel());
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new OrderDescriptionModel(odsCode, order));
         }
 
         [HttpPost("description")]
-        public IActionResult OrderDescription(string odsCode, string callOffId, OrderDescriptionModel model)
+        public async Task<IActionResult> OrderDescription(string odsCode, string callOffId, OrderDescriptionModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await orderDescriptionService.SetOrderDescription(callOffId, model.Description);
+
             return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
         }
 
