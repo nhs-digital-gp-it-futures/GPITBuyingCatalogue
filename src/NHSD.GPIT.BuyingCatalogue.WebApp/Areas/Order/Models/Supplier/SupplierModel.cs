@@ -2,11 +2,18 @@
 {
     public class SupplierModel : OrderingBaseModel
     {
-        public SupplierModel()
+        public SupplierModel(string odsCode, EntityFramework.Models.Ordering.Order order)
         {
             BackLinkText = "Go back";
-            BackLink = "/order/organisation/03F/order/C010004-01"; // TOOD
-            Title = "Supplier information for C010004-01"; // TODO
+            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
+            Title = $"Supplier information for {order.CallOffId}";
+            OdsCode = odsCode;
+            Id = order.Supplier.Id;
+            Name = order.Supplier.Name;
         }
+
+        public string Id { get; set; }
+
+        public string Name { get; set; }
     }
 }

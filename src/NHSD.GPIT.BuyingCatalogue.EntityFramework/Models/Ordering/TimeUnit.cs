@@ -1,20 +1,19 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
-#nullable disable
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public enum TimeUnit
+    public class TimeUnit : EnumerationBase
     {
-        [Display(Name = "month")]
-        [Description("per month")]
-        [AmountInYear(12)]
-        PerMonth = 1,
+        public static readonly TimeUnit PerMonth = new(1, "month", "per month", 12);
+        public static readonly TimeUnit PerYear = new(2, "year", "per year", 1);
 
-        [Display(Name = "year")]
-        [Description("per year")]
-        [AmountInYear(1)]
-        PerYear = 2,
+        public TimeUnit(int id, string name, string description, int amountInYear)
+            : base(id, name)
+        {
+            AmountInYear = amountInYear;
+            Description = description;
+        }
+
+        public string Description { get; private set; }
+
+        public int AmountInYear { get; private set; }
     }
 }

@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-001",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Full",
                     Solution = new Solution
@@ -180,17 +180,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             }
                         }
                     },
-                    PublishedStatusId = 3,
+                    PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-99",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Empty",
                     SupplierId = "99999",
-                    PublishedStatusId = 1,
+                    PublishedStatus = PublicationStatus.Draft,
                     Solution = new Solution
                     {
                         Id = "99999-99",
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-002",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full",
                     Solution = new Solution
@@ -307,14 +307,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             }
                         }
                     },
-                    PublishedStatusId = 3,
+                    PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
 
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-003",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full 2",
                     Solution = new Solution
@@ -419,7 +419,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             }
                         }
                     },
-                    PublishedStatusId = 3,
+                    PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
             };
@@ -447,9 +447,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             // CatalogueItemType
             List<CatalogueItemType> catalogueItemTypes = new()
             {
-                new CatalogueItemType { CatalogueItemTypeId = 1, Name = "Solution" },
-                new CatalogueItemType { CatalogueItemTypeId = 2, Name = "Additional Service" },
-                new CatalogueItemType { CatalogueItemTypeId = 3, Name = "Associated Service" },
+                CatalogueItemType.Solution,
+                CatalogueItemType.AdditionalService,
+                CatalogueItemType.AssociatedService,
+
             };
             context.AddRange(catalogueItemTypes);
 
@@ -1042,11 +1043,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             // PublicationStatus
             List<PublicationStatus> publicationStatuses = new()
             {
-                new PublicationStatus { Id = 1, Name = "Draft" },
-                new PublicationStatus { Id = 2, Name = "Unpublished" },
-                new PublicationStatus { Id = 3, Name = "Published" },
-                new PublicationStatus { Id = 4, Name = "Withdrawn" },
+                PublicationStatus.Draft,
+                PublicationStatus.Unpublished,
+                PublicationStatus.Published,
+                PublicationStatus.Withdrawn,
             };
+
+
             context.AddRange(publicationStatuses);
 
             // SolutionCapabilityStatus
