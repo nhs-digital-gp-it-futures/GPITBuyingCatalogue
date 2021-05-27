@@ -9,8 +9,11 @@
             Title = $"Order {order.CallOffId}";
             OdsCode = odsCode;
             CallOffId = order.CallOffId.ToString();
+            Description = order.Description;
         }
 
         public string CallOffId { get; set; }
+
+        public string Description { get; set; }
     }
 }

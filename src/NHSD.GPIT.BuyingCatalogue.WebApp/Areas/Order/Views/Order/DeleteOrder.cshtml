@@ -11,6 +11,10 @@
             <h2 data-test-id="order-description-title">Order description</h2>
             <p data-test-id="order-description">@Model.Description</p>
             <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
                 <div class="nhsuk-grid-row">
                     <div class="nhsuk-grid-column-two-thirds">
                         <div class="bc-u-inline-block">
@@ -21,12 +25,12 @@
                             </div>
                         </div>
                         <div class="bc-u-inline-block">
-                            <div data-test-id="yes-button">        
+                            <div data-test-id="yes-button">
                                 <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
                                     Confirm delete
                                 </button>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
             </form>

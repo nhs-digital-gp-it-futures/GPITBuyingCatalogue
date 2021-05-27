@@ -6,11 +6,11 @@
         {
         }
 
-        public DeleteOrderModel(string odsCode, string callOffId, EntityFramework.Models.Ordering.Order order)
+        public DeleteOrderModel(string odsCode, EntityFramework.Models.Ordering.Order order)
         {
             BackLinkText = "Go back";
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}";
-            Title = $"Delete order {callOffId}?";
+            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
+            Title = $"Delete order {order.CallOffId}?";
             Description = order.Description;
         }
 

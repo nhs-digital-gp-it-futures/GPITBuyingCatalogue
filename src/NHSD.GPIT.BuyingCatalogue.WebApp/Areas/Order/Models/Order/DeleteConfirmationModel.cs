@@ -2,11 +2,11 @@
 {
     public class DeleteConfirmationModel : OrderingBaseModel
     {
-        public DeleteConfirmationModel(string odsCode, string callOffId, EntityFramework.Models.Ordering.Order order)
+        public DeleteConfirmationModel(string odsCode, EntityFramework.Models.Ordering.Order order)
         {
             BackLinkText = "Go back to all orders";
             BackLink = $"/order/organisation/{odsCode}";
-            Title = $"Order {callOffId} deleted";
+            Title = $"Order {order.CallOffId} deleted";
             OdsCode = odsCode;
             Description = order.Description;
         }
