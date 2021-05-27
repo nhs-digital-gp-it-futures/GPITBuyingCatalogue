@@ -39,9 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<OrderProgress> OrderProgresses { get; set; }
 
-        //LEE
-        //public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
-
+        // LEE
+        // public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
         public virtual DbSet<OrderingParty> OrderingParties { get; set; }
 
         public virtual DbSet<PricingUnit> PricingUnits { get; set; }
