@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IOrderingPartyService orderingPartyService;
         private readonly IOrganisationsService organisationService;
         private readonly IContactDetailsService contactDetailsService;
+        private readonly ICommencementDateService commencementDateService;
 
         public OrderController(
             ILogWrapper<OrderController> logger,
@@ -30,7 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IOrderDescriptionService orderDescriptionService,
             IOrderingPartyService orderingPartyService,
             IOrganisationsService organisationService,
-            IContactDetailsService contactDetailsService)
+            IContactDetailsService contactDetailsService,
+            ICommencementDateService commencementDateService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
@@ -38,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.orderingPartyService = orderingPartyService ?? throw new ArgumentNullException(nameof(orderingPartyService));
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
             this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
+            this.commencementDateService = commencementDateService ?? throw new ArgumentNullException(nameof(commencementDateService));
         }
 
         [HttpGet]
@@ -165,14 +168,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("commencement-date")]
-        public IActionResult CommencementDate(string odsCode, string callOffId)
+        public async Task<IActionResult> CommencementDate(string odsCode, string callOffId)
         {
-            return View(new CommencementDateModel());
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new CommencementDateModel(odsCode, callOffId, order.CommencementDate));
         }
 
         [HttpPost("commencement-date")]
-        public IActionResult CommencementDate(string odsCode, string callOffId, CommencementDateModel model)
+        public async Task<IActionResult> CommencementDate(string odsCode, string callOffId, CommencementDateModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            (var date, var error) = model.ToDateTime();
+
+            if (error != null)
+                ModelState.AddModelError("Day", error);
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await commencementDateService.SetCommencementDate(callOffId, date);
+
             return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
         }
 
