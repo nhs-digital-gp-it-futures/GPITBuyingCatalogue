@@ -2,9 +2,12 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -17,15 +20,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly ILogWrapper<OrderController> logger;
         private readonly IOrderService orderService;
         private readonly IOrderDescriptionService orderDescriptionService;
+        private readonly IOrderingPartyService orderingPartyService;
+        private readonly IOrganisationsService organisationService;
+        private readonly IContactDetailsService contactDetailsService;
 
         public OrderController(
             ILogWrapper<OrderController> logger,
             IOrderService orderService,
-            IOrderDescriptionService orderDescriptionService)
+            IOrderDescriptionService orderDescriptionService,
+            IOrderingPartyService orderingPartyService,
+            IOrganisationsService organisationService,
+            IContactDetailsService contactDetailsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderDescriptionService = orderDescriptionService ?? throw new ArgumentNullException(nameof(orderDescriptionService));
+            this.orderingPartyService = orderingPartyService ?? throw new ArgumentNullException(nameof(orderingPartyService));
+            this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
+            this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
         }
 
         [HttpGet]
@@ -101,7 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             model.ValidateNotNull(nameof(model));
 
             if (!ModelState.IsValid)
@@ -113,14 +124,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("ordering-party")]
-        public IActionResult OrderingParty(string odsCode, string callOffId)
+        public async Task<IActionResult> OrderingParty(string odsCode, string callOffId)
         {
-            return View(new OrderingPartyModel());
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
+            var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
+
+            return View(new OrderingPartyModel(odsCode, order, organisation));
         }
 
         [HttpPost("ordering-party")]
-        public IActionResult OrderingParty(string odsCode, string callOffId, OrderingPartyModel model)
+        public async Task<IActionResult> OrderingParty(string odsCode, string callOffId, OrderingPartyModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var order = await orderService.GetOrder(callOffId);
+
+            var orderingParty = new OrderingParty
+            {
+                Name = model.OrganisationName,
+                OdsCode = model.OdsCode,
+                Address = contactDetailsService.AddOrUpdateAddress(order.OrderingParty.Address, model.Address),
+            };
+
+            Contact contact = contactDetailsService.AddOrUpdatePrimaryContact(
+                order.OrderingPartyContact,
+                model.Contact);
+
+            await orderingPartyService.SetOrderingParty(order, orderingParty, contact);
+
             return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
         }
 
