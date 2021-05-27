@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -33,12 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<Order> GetOrder(string callOffId)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
-            var (success, id) = CallOffId.Parse(callOffId);
-
-            if (!success)
-                throw new ArgumentException("CallOffId could not be parsed", nameof(callOffId));
+            var id = new CallOffId(callOffId);
 
             return await dbContext.Orders
                 .Where(o => o.Id == id.Id)
@@ -109,12 +103,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DeleteOrder(string callOffId)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            var id = new CallOffId(callOffId);
 
-            var order = await GetOrder(callOffId);
-
-            if (order is null)
-                throw new ArgumentNullException(nameof(order));
+            var order = await dbContext.Orders.Where(o => o.Id == id.Id).SingleAsync();
 
             order.IsDeleted = true;
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
@@ -29,12 +30,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 
         public IList<EntityFramework.Models.Ordering.Order> InCompleteOrders
         {
-            get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus.Name == "Incomplete").ToList();  }
+            get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus == OrderStatus.Incomplete).ToList(); }
         }
 
         public IList<EntityFramework.Models.Ordering.Order> CompleteOrders
         {
-            get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus.Name == "Complete").ToList(); }
+            get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus == OrderStatus.Complete).ToList(); }
         }
     }
 }
