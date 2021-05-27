@@ -98,5 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
 
         public static string GetSolutionBackLink(string catalogueItemId) =>
             $"/marketing/supplier/solution/{catalogueItemId}";
+
+        public const string Framework = "GP IT Futures";
     }
 }

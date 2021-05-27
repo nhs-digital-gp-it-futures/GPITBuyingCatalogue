@@ -389,6 +389,12 @@ caption {
       margin: 0 32px;
       /* [3] */ } }
 
+.nhsuk-footer .nhsuk-width-container {
+    max-width: 100%;
+    padding-right: 32px;
+    padding-left: 32px;
+}
+
 /* ==========================================================================
    STYLES / #ICONS
    ========================================================================== */
@@ -5299,6 +5305,16 @@ b {
     .nhsuk-pagination__page {
       font-size: 14pt;
       line-height: 1.2; } }
+
+/* ==========================================================================
+   COMPONENTS / #REVIEW-DATE
+   ========================================================================== */
+.nhsuk-review-date {
+    margin-top: 40px;
+    color: #4c6272; }
+@media (min-width: 40.0625em) {
+    .nhsuk-review-date {
+        margin-top: 20px; } }
 
 /* ==========================================================================
    COMPONENTS/ #RADIOS

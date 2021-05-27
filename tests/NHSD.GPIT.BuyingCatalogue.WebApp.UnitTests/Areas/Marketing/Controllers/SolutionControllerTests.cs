@@ -6,7 +6,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
@@ -25,20 +24,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             typeof(SolutionController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
         }
-
-        [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
-                .ParamName.Should().Be("logger");
-        }
-
+        
         [Test]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), null,
+                _ = new SolutionController(
+                    null,
                     Mock.Of<ISolutionsService>()))
                 .ParamName.Should().Be("mapper");
         }
@@ -47,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(), null))
+                _ = new SolutionController(Mock.Of<IMapper>(), null))
                 .ParamName.Should().Be("solutionsService");
         }
 
@@ -55,7 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Index_InvalidId_ThrowsException(string id)
         {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController(
+                Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentException>(() => controller.Index(id));
@@ -65,7 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_Index_ValidId_GetsSolutionFromService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController(
+                Mock.Of<IMapper>(),
                 mockService.Object);
 
             await controller.Index(id);
@@ -79,7 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController(
+                Mock.Of<IMapper>(),
                 mockService.Object);
 
             var actual = (await controller.Index(id)).As<BadRequestObjectResult>();
@@ -96,7 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockMapper.Object,
+            var controller = new SolutionController(
+                mockMapper.Object,
                 mockService.Object);
 
             await controller.Index(id);
@@ -116,7 +112,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, SolutionStatusModel>(mockCatalogueItem))
                 .Returns(mockSolutionStatusModel);
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockMapper.Object,
+            var controller = new SolutionController(
+                mockMapper.Object,
                 mockService.Object);
 
             var actual = (await controller.Index(id)).As<ViewResult>();
@@ -130,7 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [TestCaseSource(nameof(InvalidStrings))]
         public static void Get_Preview_InvalidId_ThrowsException(string id)
         {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController(
+                Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
 
             Assert.Throws<ArgumentException>(() => controller.Preview(id));
@@ -139,7 +137,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Test]
         public static void Get_Preview_RedirectsToPreview()
         {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController(
+                Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
 
             var result = (controller.Preview("123")).As<RedirectToActionResult>();

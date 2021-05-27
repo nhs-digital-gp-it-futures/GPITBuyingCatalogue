@@ -1,403 +1,87 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution.SolutionStatusModel;
 @{
-    ViewData["Title"] = "listing page - all sections";
+    ViewData["Title"] = "listing page - all the sections";
 }
 
-<div data-test-id="dashboard">
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-two-thirds">
-        </div>
-        <div class="nhsuk-grid-column-two-thirds">
-            <div data-test-id="supplier-name-tag" class="bc-c-tag nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-5 bc-c-tag-outline">@Model.SupplierName</div>
-            <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-7">
-                <h1 data-test-id="dashboard-title" class="nhsuk-u-margin-bottom-3">@Model.CatalogueItemName listing page - all sections</h1>
-                <h2 data-test-id="dashboard-main-advice" class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-5">Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs.</h2>
-                <div data-test-id="dashboard-additional-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
-                    <span class="nhsuk-u-visually-hidden">Information: </span>
-                    <p class="nhsuk-u-font-size-14">Provide as much information as possible for buyers. You can save your progress at any point, but a Catalogue Solution listing page cannot be published until all mandatory fields have been completed.</p>
-                </div>
-                <div data-test-id="dashboard-preview-button">
-                    <a class="nhsuk-button nhsuk-button--secondary" href="~/solutions/preview/@Model.SolutionId" draggable="false">
-                        Preview your page
-                    </a>
-                </div>
+<div class="nhsuk-width-container ">
+    <main id="maincontent" role="main">
+
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <h1>
+                    <span role="text">
+                        @Model.Section
+                        <span class="nhsuk-caption-xl nhsuk-caption--bottom">
+                            <span class="nhsuk-u-visually-hidden"> - </span>
+                            @Model.SolutionName
+                        </span>
+                    </span>
+                </h1>
             </div>
         </div>
 
-        <div class="nhsuk-grid-column-full">
-
-            <div data-test-id="dashboard-sectionGroup-about-your-solution" class="nhsuk-u-padding-bottom-7">
-                <div class="bc-c-title">
-                    <h2 class="nhsuk-u-font-size-24">
-                        About Catalogue Solution
-                    </h2>
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-two-thirds">
-                            <p>
-                                Tell buyers about your Catalogue Solution, describe its features and provide information on how it integrates with NHS systems.
-                            </p>
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
+                    <dl class="nhsuk-summary-list">
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Solution name
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.SolutionName
+                            </dd>
                         </div>
-                    </div>
-                </div>
-
-                <ul class="bc-c-section-list__items">
-                    <div id="solution-description" data-test-id="dashboard-section-solution-description">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/solution-description">
-                                    Solution description
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.SolutionDescriptionStatus
-                            </strong>
-                        </li>
-                    </div>
-
-                    <div id="features" data-test-id="dashboard-section-features">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/features">
-                                    Features
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.FeaturesStatus
-                            </strong>
-                        </li>
-                    </div>
-
-                    <div id="integrations" data-test-id="dashboard-section-integrations">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/integrations">
-                                    Integrations
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.IntegrationsStatus
-                            </strong>
-                        </li>
-                    </div>
-
-                    <div id="implementation-timescales" data-test-id="dashboard-section-implementation-timescales">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/implementation-timescales">
-                                    Implementation timescales
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.ImplementationTimescalesStatus
-                            </strong>
-                        </li>
-                    </div>
-
-                    <div id="roadmap" data-test-id="dashboard-section-roadmap">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/roadmap">
-                                    Roadmap
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.RoadmapStatus
-                            </strong>
-                        </li>
-                    </div>
-                </ul>
-            </div>
-
-            <div data-test-id="dashboard-sectionGroup-client-application-type" class="nhsuk-u-padding-bottom-7">
-                <div class="bc-c-title">
-                    <h2 class="nhsuk-u-font-size-24">
-                        Client application type
-                    </h2>
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-two-thirds">
-                            <p>
-                                Let buyers know which types of application will work with your Catalogue Solution.
-                            </p>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Supplier name
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.SupplierName
+                            </dd>
                         </div>
-                    </div>
-                </div>
-
-                <ul class="bc-c-section-list__items">
-
-                    <div id="client-application-types" data-test-id="dashboard-section-client-application-types">
-
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/client-application-types">
-                                    Client application type
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.ClientApplicationTypeStatus
-                            </strong>
-                        </li>
-
-                        <ul class="bc-c-section-list__items-sub-section nhsuk-u-font-size-19 nhsuk-u-margin-bottom-0">
-                            <div class="nhsuk-inset-text nhsuk-u-margin-0 nhsuk-u-margin-top-3 nhsuk-u-padding-0 bc-u-max-width-full">
-
-                                <div id="browser-based" data-test-id="dashboard-sub-section-browser-based">
-                                    <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                                        @if (Model.IsBrowserBased)
-                                        {
-                                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                <a href="@Model.SolutionId/section/browser-based">
-                                                    Browser-based
-                                                </a>
-                                            </div>
-                                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                                <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
-                                            </span>
-                                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                                @Model.BrowserBasedStatus
-                                            </strong>
-                                        }
-                                        else
-                                        {
-                                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                Browser-based
-                                            </div>
-                                            <span data-test-id="dashboard-section-default-message" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                                Select from client application types
-                                            </span>
-                                        }
-                                    </li>
-                                </div>
-
-                                <div id="native-mobile" data-test-id="dashboard-sub-section-native-mobile">
-                                    <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                                        @if (Model.IsNativeMobile)
-                                        {
-                                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                <a href="@Model.SolutionId/section/native-mobile">
-                                                    Native mobile or tablet
-                                                </a>
-                                            </div>
-                                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                                <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
-                                            </span>
-                                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                                @Model.NativeMobileStatus
-                                            </strong>
-                                        }
-                                        else
-                                        {
-                                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                Native mobile or tablet
-                                            </div>
-                                            <span data-test-id="dashboard-section-default-message" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                                Select from client application types
-                                            </span>
-                                        }
-                                    </li>
-                                </div>
-
-                                <div id="native-desktop" data-test-id="dashboard-sub-section-native-desktop">
-                                    <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                                        @if (Model.IsNativeDesktop)
-                                        {
-                                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                <a href="@Model.SolutionId/section/native-desktop">
-                                                    Native desktop
-                                                </a>
-                                            </div>
-                                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                                <p class="nhsuk-u-margin-bottom-0">Mandatory</p>
-                                            </span>
-                                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                                @Model.NativeDesktopStatus
-                                            </strong>
-                                        }
-                                        else
-                                        {
-                                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                                Native desktop
-                                            </div>
-                                            <span data-test-id="dashboard-section-default-message" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                                Select from client application types
-                                            </span>
-                                        }
-                                    </li>
-                                </div>
-                            </div>
-                        </ul>
-                    </div>
-                </ul>
-            </div>
-
-            <div data-test-id="dashboard-sectionGroup-hosting-type" class="nhsuk-u-padding-bottom-7">
-                <div class="bc-c-title">
-                    <h2 class="nhsuk-u-font-size-24">
-                        Hosting type
-                    </h2>
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-two-thirds">
-                            <p>
-                                Provide information to buyers about how your Catalogue Solution can be hosted.
-                            </p>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Solution ID
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.SolutionId
+                            </dd>
                         </div>
-                    </div>
-                </div>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Framework
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.Framework
+                            </dd>
 
-                <ul class="bc-c-section-list__items">
-
-                    <div id="hosting-type-public-cloud" data-test-id="dashboard-section-hosting-type-public-cloud">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/hosting-type-public-cloud">
-                                    Public cloud
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.PublicCloudStatus
-                            </strong>
-                        </li>
-                    </div>
-
-                    <div id="hosting-type-private-cloud" data-test-id="dashboard-section-hosting-type-private-cloud">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/hosting-type-private-cloud">
-                                    Private cloud
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.PrivateCloudStatus
-                            </strong>
-                        </li>
-                    </div>
-
-                    <div id="hosting-type-hybrid" data-test-id="dashboard-section-hosting-type-hybrid">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/hosting-type-hybrid">
-                                    Hybrid
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.HybridStatus
-                            </strong>
-                        </li>
-                    </div>
-
-                    <div id="hosting-type-on-premise" data-test-id="dashboard-section-hosting-type-on-premise">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/hosting-type-on-premise">
-                                    On premise
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.OnPremisesStatus
-                            </strong>
-                        </li>
-                    </div>
-                </ul>
-            </div>
-
-            <div data-test-id="dashboard-sectionGroup-about-your-organisation" class="nhsuk-u-padding-bottom-7">
-                <div class="bc-c-title">
-                    <h2 class="nhsuk-u-font-size-24">
-                        About organisation
-                    </h2>
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-two-thirds">
-                            <p>
-                                Give details about your organisation and let buyers know how to get in touch.
-                            </p>
                         </div>
-                    </div>
-                </div>
 
-                <ul class="bc-c-section-list__items">
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Foundation Solution
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                Yes
+                            </dd>
 
-                    <div id="about-supplier" data-test-id="dashboard-section-about-supplier">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/about-supplier">
-                                    About supplier
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.AboutSupplierStatus
-                            </strong>
-                        </li>
-                    </div>
+                        </div>
 
-                    <div id="contact-details" data-test-id="dashboard-section-contact-details">
-                        <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
-                            <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/contact-details">
-                                    Contact details
-                                </a>
-                            </div>
-                            <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
-                                <p class="nhsuk-u-margin-bottom-0">Optional</p>
-                            </span>
-                            <strong data-test-id="dashboard-section-status" class="bc-c-section-list__task-tag">
-                                @Model.ContactDetailsStatus
-                            </strong>
-                        </li>
-                    </div>
-                </ul>
-            </div>
-        </div>
+                    </dl>
 
-        <div class="nhsuk-grid-column-two-thirds">
-            <div data-test-id="dashboard-sections-box" class="bc-c-section-box-border nhsuk-u-padding-4 nhsuk-u-margin-bottom-5">
-                <h3>Sections added by NHS Digital</h3>
-                <p>The following sections of your Catalogue Solution page will be completed for you by NHS Digital. The information will be taken from your Catalogue Solution’s framework tender and capabilities assessment.</p>
-                <div data-test-id="" class="bc-c-data-bulletlist ">
-                    <ul class="nhsuk-u-margin-bottom-0">
-                        <li>Price</li>
-                        <li>Capabilities met</li>
-                        <li>NHS standards met</li>
-                        <li>Compliance work-off plans</li>
-                        <li>Additional services</li>
-                        <li>Associated services</li>
-                        <li>Service level information</li>
-                        <li>Transition timescales</li>
-                        <li>Framework</li>
-                    </ul>
+
+                    <h2>Summary</h2>
+
+                    <p>@Model.Summary</p>
+
+                    <h2>Full description</h2>
+
+                    <p>@Model.Description</p>
+                    
                 </div>
             </div>
-        </div>
-    </div>
+        </article>
+
+    </main>
 </div>

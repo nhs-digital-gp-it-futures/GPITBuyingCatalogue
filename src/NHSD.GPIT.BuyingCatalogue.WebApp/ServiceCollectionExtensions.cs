@@ -46,9 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services
                 .AddTransient<IMemberValueResolver<object, object, string, bool?>,
                     StringToNullableBoolResolver>();
-            services
-                .AddTransient<ITypeConverter<CatalogueItem, SolutionStatusModel>,
-                    CatalogueItemToSolutionStatusModelConverter>();
             services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }

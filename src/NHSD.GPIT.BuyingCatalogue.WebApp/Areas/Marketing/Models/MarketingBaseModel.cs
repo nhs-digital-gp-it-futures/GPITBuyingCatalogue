@@ -25,8 +25,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
         public ClientApplication ClientApplication { get; set; }
 
         protected CatalogueItem CatalogueItem { get; set; }
-
-        protected string GetStatus(MarketingBaseModel model) =>
-            model.IsComplete.GetValueOrDefault() ? "COMPLETE" : "INCOMPLETE";
     }
 }

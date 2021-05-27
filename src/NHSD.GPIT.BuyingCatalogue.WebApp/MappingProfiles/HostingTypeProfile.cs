@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using AutoMapper;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
@@ -56,8 +59,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.RequiresHscnChecked, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
+            CreateMap<CatalogueItem, MarketingDisplayBaseModel>()
+                .ForMember(dest => dest.LastReviewed, opt => opt.Ignore())
+                .ForMember(dest => dest.PaginationFooter, opt => opt.Ignore())
+                .ForMember(dest => dest.Section, opt => opt.Ignore())
+                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
+                .IgnoreAllPropertiesWithAnInaccessibleSetter();
+
             CreateMap<CatalogueItem, SolutionStatusModel>()
-                .ConvertUsing<ITypeConverter<CatalogueItem, SolutionStatusModel>>();
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.FullDescription))
+                .ForMember(dest => dest.Framework, opt => opt.MapFrom(src => ProfileDefaults.Framework))
+                .ForMember(dest => dest.LastReviewed, opt => opt.MapFrom(src => new DateTime(2020, 3, 31)))
+                .ForMember(dest => dest.PaginationFooter, opt => opt.MapFrom(src => new PaginationFooterModel()))
+                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Description"))
+                .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(
+                    dest => dest.Summary,
+                    opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.Summary))
+                .ForMember(
+                    dest => dest.SupplierName,
+                    opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
+                .IncludeBase<CatalogueItem, MarketingDisplayBaseModel>()
+                .AfterMap(
+                    (_, dest) =>
+                    {
+                        dest.PaginationFooter.Next = dest.GetSectionFor("Features");
+                    });
         }
     }
 }

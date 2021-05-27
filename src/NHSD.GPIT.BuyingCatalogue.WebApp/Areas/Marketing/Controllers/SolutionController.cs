@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 
@@ -13,16 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Route("marketing/supplier/solution/{id}")]
     public class SolutionController : Controller
     {
-        private readonly ILogWrapper<SolutionController> logger;
         private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
 
         public SolutionController(
-            ILogWrapper<SolutionController> logger,
             IMapper mapper,
             ISolutionsService solutionsService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }

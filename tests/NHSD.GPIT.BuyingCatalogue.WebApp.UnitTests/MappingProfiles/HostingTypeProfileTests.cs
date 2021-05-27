@@ -4,8 +4,11 @@ using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
@@ -120,29 +123,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [Test, CommonAutoData]
-        public void Map_CatalogueItemToSolutionStatusModel_MapsFromConverter(
+        public void Map_CatalogueItemToSolutionStatusModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-            var mockSolutionStatusModel = new Mock<SolutionStatusModel>().Object;
-            var mockConverter = new Mock<ITypeConverter<CatalogueItem, SolutionStatusModel>>();
-            mockConverter.Setup(c =>
-                    c.Convert(catalogueItem, It.IsAny<SolutionStatusModel>(), It.IsAny<ResolutionContext>()))
-                .Returns(mockSolutionStatusModel);
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Setup(x =>
-                    x.GetService(typeof(ITypeConverter<CatalogueItem, SolutionStatusModel>)))
-                .Returns(mockConverter.Object);
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<OrganisationProfile>();
-                cfg.AddProfile<HostingTypeProfile>();
-            }).CreateMapper(serviceProvider.Object.GetService);
-
             var actual = mapper.Map<CatalogueItem, SolutionStatusModel>(catalogueItem);
 
-            mockConverter.Verify(c =>
-                c.Convert(catalogueItem, It.IsAny<SolutionStatusModel>(), It.IsAny<ResolutionContext>()));
-            actual.Should().Be(mockSolutionStatusModel);
+            actual.Description.Should().Be(catalogueItem.Solution.FullDescription);
+            actual.Framework.Should().Be("GP IT Futures");
+            actual.LastReviewed.Should().Be(new DateTime(2020, 3, 31));
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                Next = new SectionModel()
+                {
+                    Action = "Features",
+                    Controller = "AboutSolution",
+                    Name = "Features",
+                },
+            });
+            actual.Section.Should().Be("Description");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+            actual.Summary.Should().Be(catalogueItem.Solution.Summary);
+            actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
         }
     }
 }
