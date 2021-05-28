@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
@@ -10,21 +11,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Area("Solutions")]
     public class SolutionDetailsController : Controller
     {
-        private readonly ILogWrapper<SolutionDetailsController> logger;
+        private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
 
-        public SolutionDetailsController(ILogWrapper<SolutionDetailsController> logger, ISolutionsService solutionsService)
+        public SolutionDetailsController(IMapper mapper, ISolutionsService solutionsService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [Route("solutions/futures/{id}")]
-        public async Task<IActionResult> SolutionDetail(string id)
+        public async Task<IActionResult> Description(string id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"index-{nameof(id)}");
 
-            return View(new SolutionDetailModel(solution));
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, SolutionDescriptionModel>(solution));
         }
 
         [Route("solutions/futures/foundation/{id}")]

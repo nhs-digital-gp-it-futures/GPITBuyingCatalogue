@@ -1,0 +1,67 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDescriptionModel;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Solution Description";
+}
+
+<div class="nhsuk-width-container ">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
+                    <dl class="nhsuk-summary-list">
+                        <div data-test-id="view-solution-page-solution-name" class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Solution name
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.SolutionName
+                            </dd>
+                        </div>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Supplier name
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.SupplierName
+                            </dd>
+                        </div>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Solution ID
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.SolutionId
+                            </dd>
+                        </div>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Framework
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.Framework
+                            </dd>
+                        </div>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Foundation Solution
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @Model.IsFoundation
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <h2>Summary</h2>
+
+                    <p>@Model.Summary</p>
+
+                    <h2>Full description</h2>
+
+                    <p>@Model.Description</p>
+                    
+                </div>
+            </div>
+        </article>
+    </main>
+</div>
