@@ -7,7 +7,11 @@
     <partial name="Partials/_BackLink" model="Model" />
 
     <form method="post">
-
+        <input type="hidden" asp-for="@Model.BackLink" />
+        <input type="hidden" asp-for="@Model.BackLinkText" />
+        <input type="hidden" asp-for="@Model.OdsCode" />
+        <input type="hidden" asp-for="@Model.Title" />
+        <input type="hidden" asp-for="@Model.OrganisationName" />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <nhs-validation-summary />
@@ -15,11 +19,10 @@
 
                 <h2 data-test-id="organisation-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Organisation name</h2>
                 <div data-test-id="organisation-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OrganisationName</div>
-                <input type="hidden" asp-for="@Model.OrganisationName" />
 
                 <h2 data-test-id="organisation-ods-code-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">ODS code</h2>
                 <div data-test-id="organisation-ods-code" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OdsCode</div>
-                <input type="hidden" asp-for="@Model.OdsCode" />
+
 
                 <h2 data-test-id="organisation-address-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Organisation address</h2>
                 <div data-test-id="organisation-address-1" class="nhsuk-u-font-size-19">@Model.Address.Line1</div>
@@ -46,8 +49,7 @@
         <div class="nhsuk-grid-row">
             <div data-test-id="primary-contact-fields" class="nhsuk-grid-column-two-thirds">
                 <h2 data-test-id="primary-contact-details-heading" class="nhsuk-u-font-size-32 nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-3">Primary contact’s details</h2>
-
-                @*TODO - How do we make the title style different? Question for Lee re: tag helpers*@
+                
                 <div data-test-id="multi-question-questions">
                     <nhs-validation-input asp-for="@Model.Contact.FirstName"
                                           label-text="First name" />
@@ -58,7 +60,7 @@
                     <nhs-validation-input asp-for="@Model.Contact.TelephoneNumber"
                                           label-text="Phone number" />
                 </div>
-   
+
                 <div data-test-id="save-button">
                     <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
                         Save and return

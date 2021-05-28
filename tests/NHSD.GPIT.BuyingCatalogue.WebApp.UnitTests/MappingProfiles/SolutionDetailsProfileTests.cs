@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
         }
 
         [TestCase(false, "No")]
-        [TestCase(null, "No")]
+        [TestCase(null, "")]
         [TestCase(true, "Yes")]
         public void Map_CatalogueItemToSolutionDescriptionModel_SetsIsFoundationAsExpected(
             bool? isFoundation,

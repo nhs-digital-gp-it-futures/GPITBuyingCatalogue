@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IOrganisationsService organisationService;
         private readonly IContactDetailsService contactDetailsService;
         private readonly ICommencementDateService commencementDateService;
+        private readonly IFundingSourceService fundingSourceService;
 
         public OrderController(
             ILogWrapper<OrderController> logger,
@@ -32,7 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IOrderingPartyService orderingPartyService,
             IOrganisationsService organisationService,
             IContactDetailsService contactDetailsService,
-            ICommencementDateService commencementDateService)
+            ICommencementDateService commencementDateService,
+            IFundingSourceService fundingSourceService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
@@ -41,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
             this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
             this.commencementDateService = commencementDateService ?? throw new ArgumentNullException(nameof(commencementDateService));
+            this.fundingSourceService = fundingSourceService ?? throw new ArgumentNullException(nameof(fundingSourceService));
         }
 
         [HttpGet]
@@ -198,14 +201,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("funding-source")]
-        public IActionResult FundingSource(string odsCode, string callOffId)
+        public async Task<IActionResult> FundingSource(string odsCode, string callOffId)
         {
-            return View(new FundingSourceModel());
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new FundingSourceModel(odsCode, callOffId, order.FundingSourceOnlyGms));
         }
 
         [HttpPost("funding-source")]
-        public IActionResult FundingSource(string odsCode, string callOffId, FundingSourceModel model)
+        public async Task<IActionResult> FundingSource(string odsCode, string callOffId, FundingSourceModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var onlyGms = model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes") ? true : false;
+
+            await fundingSourceService.SetFundingSource(callOffId, onlyGms);
+
             return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
         }
     }
