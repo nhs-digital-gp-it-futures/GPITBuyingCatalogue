@@ -43,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureAutoMapper(this IServiceCollection services)
         {
+            services.AddTransient<IMemberValueResolver<object, object, string, string>,
+                ConfigSettingResolver>();
             services
                 .AddTransient<IMemberValueResolver<object, object, string, bool?>,
                     StringToNullableBoolResolver>();
