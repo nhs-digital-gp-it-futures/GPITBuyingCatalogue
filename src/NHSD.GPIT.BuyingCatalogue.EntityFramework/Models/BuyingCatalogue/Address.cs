@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
 {
-    public partial class Address
+    public sealed class Address
     {
-        public int Id { get; set; }
-
         public string Line1 { get; set; }
 
         public string Line2 { get; set; }
@@ -23,9 +19,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         public string Postcode { get; set; }
 
         public string Country { get; set; }
-
-        public virtual ICollection<OrderingParty> OrderingParties { get; set; }
-
-        public virtual ICollection<Supplier> Suppliers { get; set; }
     }
 }

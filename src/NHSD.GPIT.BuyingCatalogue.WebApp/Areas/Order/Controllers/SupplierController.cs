@@ -33,9 +33,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var order = await orderService.GetOrder(callOffId);
 
             if (order.Supplier is null)
-                return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search");
+            {
+                return RedirectToAction(
+                    actionName: nameof(SupplierSearch),
+                    controllerName: "Supplier",
+                    routeValues: new { odsCode, callOffId });
+            }
 
             return View(new SupplierModel(odsCode, order));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Supplier(string odsCode, string callOffId, SupplierModel model)
+        {
+            if (model is null)
+                throw new ArgumentException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await supplierService.AddOrUpdateOrderSupplierContact(callOffId, model.PrimaryContact);
+
+            return RedirectToAction();
         }
 
         [HttpGet("search")]
@@ -44,35 +63,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var order = await orderService.GetOrder(callOffId);
 
             if (order.Supplier is not null)
-                return Redirect($"/order/organisations/{odsCode}/order/{callOffId}/supplier");
+            {
+                return RedirectToAction(
+                    actionName: nameof(Supplier),
+                    controllerName: "Supplier",
+                    routeValues: new { odsCode, callOffId });
+            }
 
             return View(new SupplierSearchModel(odsCode, order));
         }
 
         [HttpPost("search")]
-        public async Task<IActionResult> SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
+        public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
         {
-            var suppliers = await supplierService.GetList(model.SearchString, null, null);
+            return RedirectToAction(
+                actionName: nameof(SupplierSearchSelect),
+                controllerName: "Supplier",
+                routeValues: new { odsCode, callOffId, search = model.SearchString });
+        }
+
+        [HttpGet("search/select")]
+        public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, [FromQuery]string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+                return View("NoSupplierFound");
+
+            var suppliers = await supplierService.GetListFromBuyingCatalogue(search, null, null);
 
             if (suppliers.Count == 0)
                 return View("NoSupplierFound");
 
-            return View(new SupplierSearchSelectModel());
-
-            // TODO - Display NoSupplierFound if no results
-            // return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search/select");
-        }
-
-        [HttpGet("search/select")]
-        public IActionResult SupplierSearchSelect(string odsCode, string callOffId)
-        {
-            return View(new SupplierSearchSelectModel());
+            return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers));
         }
 
         [HttpPost("search/select")]
-        public IActionResult SupplierSearchSelect(string odsCode, string callOffId, SupplierSearchSelectModel model)
+        public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, SupplierSearchSelectModel model)
         {
-            return Redirect($"/order/organisation/03F/order/C01005-01/supplier");
+            if (model is null)
+                throw new ArgumentException(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await supplierService.AddOrderSupplier(callOffId, model.SelectedSupplierId);
+
+            return RedirectToAction(
+                actionName: nameof(Supplier),
+                controllerName: "Supplier",
+                routeValues: new { odsCode, callOffId });
         }
     }
 }

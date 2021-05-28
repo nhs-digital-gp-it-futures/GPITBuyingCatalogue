@@ -116,8 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasMaxLength(20);
             });
 
-
-
             modelBuilder.Entity<CataloguePriceType>(entity =>
             {
                 entity.ToTable("CataloguePriceType");

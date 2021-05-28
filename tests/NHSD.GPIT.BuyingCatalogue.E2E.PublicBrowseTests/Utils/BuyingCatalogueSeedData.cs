@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
@@ -1081,7 +1082,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     LastUpdatedBy = Guid.Empty,
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
-                    Address = @"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}",
+                    Address = JsonConvert.DeserializeObject<Address>(@"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}"),
                     Summary = "About this supplier",
                     SupplierUrl = "https://www.e2etest.com",
                 }
