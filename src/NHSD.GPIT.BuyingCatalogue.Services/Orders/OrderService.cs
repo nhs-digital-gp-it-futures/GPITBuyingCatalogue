@@ -43,7 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.ServiceInstanceItems).Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
                 .Include(o => o.OrderItems).ThenInclude(i => i.PricingUnitNameNavigation)
-               // .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
 

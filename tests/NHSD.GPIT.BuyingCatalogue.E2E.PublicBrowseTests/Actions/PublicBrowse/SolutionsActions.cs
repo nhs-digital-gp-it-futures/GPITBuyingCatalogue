@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         internal static void ClickSolutionName(IWebElement selectedSolution)
         {
-            selectedSolution.FindElement(Objects.PublicBrowse.SolutionsObjects.SolutionName).FindElement(By.TagName("a")).Click();
+            selectedSolution.FindElement(CustomBy.DataTestId("solution-card-view-link")).FindElement(By.TagName("a")).Click();
         }
     }
 }
