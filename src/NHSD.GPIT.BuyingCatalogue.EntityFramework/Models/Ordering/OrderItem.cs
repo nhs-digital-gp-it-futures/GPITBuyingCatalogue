@@ -22,9 +22,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public int? PriceId { get; set; }
 
+        public int TimeUnitId { get; set; }
+
+        public int EstimationPeriodId { get; set; }
+
         public string CurrencyCode { get; set; }
 
         public decimal? Price { get; set; }
+
+        public int ProvisioningTypeId { get; set; }
 
         public DateTime? DefaultDeliveryDate { get; set; }
 
@@ -36,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public virtual CataloguePriceType CataloguePriceType { get; set; }
 
-        public virtual TimeUnit? EstimationPeriod { get; set; }
+        public virtual TimeUnit EstimationPeriod { get; set; }
 
         public virtual Order Order { get; set; }
 
@@ -44,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public virtual ProvisioningType ProvisioningType { get; set; }
 
-        public virtual TimeUnit? TimeUnit { get; set; }
+        public virtual TimeUnit TimeUnit { get; set; }
 
         public virtual ICollection<OrderItemRecipient> OrderItemRecipients { get; set; }
     }

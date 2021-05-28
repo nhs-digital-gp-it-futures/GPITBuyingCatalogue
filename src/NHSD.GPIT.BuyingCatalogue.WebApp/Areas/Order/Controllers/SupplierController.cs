@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -12,31 +14,53 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public class SupplierController : Controller
     {
         private readonly ILogWrapper<OrderController> logger;
+        private readonly IOrderService orderService;
+        private readonly ISupplierService supplierService;
 
-        public SupplierController(ILogWrapper<OrderController> logger)
+        public SupplierController(
+            ILogWrapper<OrderController> logger,
+            IOrderService orderService,
+            ISupplierService supplierService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         }
 
         [HttpGet]
-        public IActionResult Supplier(string odsCode, string callOffId)
+        public async Task<IActionResult> Supplier(string odsCode, string callOffId)
         {
-            // TODO - display view if supplier already defined otherwise rediect to select
-            // return View(new SupplierModel());
-            return Redirect($"/order/organisation/03F/order/C01005-01/supplier/search");
+            var order = await orderService.GetOrder(callOffId);
+
+            if (order.Supplier is null)
+                return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search");
+
+            return View(new SupplierModel(odsCode, order));
         }
 
         [HttpGet("search")]
-        public IActionResult SupplierSearch(string odsCode, string callOffId)
+        public async Task<IActionResult> SupplierSearch(string odsCode, string callOffId)
         {
-            return View(new SupplierSearchModel());
+            var order = await orderService.GetOrder(callOffId);
+
+            if (order.Supplier is not null)
+                return Redirect($"/order/organisations/{odsCode}/order/{callOffId}/supplier");
+
+            return View(new SupplierSearchModel(odsCode, order));
         }
 
         [HttpPost("search")]
-        public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
+        public async Task<IActionResult> SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
         {
+            var suppliers = await supplierService.GetList(model.SearchString, null, null);
+
+            if (suppliers.Count == 0)
+                return View("NoSupplierFound");
+
+            return View(new SupplierSearchSelectModel());
+
             // TODO - Display NoSupplierFound if no results
-            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search/select");
+            // return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/supplier/search/select");
         }
 
         [HttpGet("search/select")]

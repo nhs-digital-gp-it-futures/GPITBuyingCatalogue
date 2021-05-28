@@ -2,9 +2,9 @@
 {
     public partial class OrderItemRecipient
     {
-        public decimal CalculateTotalCostPerYear(decimal price, TimeUnit? timePeriod)
+        public decimal CalculateTotalCostPerYear(decimal price, TimeUnit timePeriod)
         {
-            return price * Quantity * (timePeriod?.AmountInYear() ?? 1);
+            return price * Quantity * (timePeriod?.AmountInYear ?? 1);
         }
     }
 }
