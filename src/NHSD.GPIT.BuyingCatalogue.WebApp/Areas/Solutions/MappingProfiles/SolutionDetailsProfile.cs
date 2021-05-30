@@ -1,10 +1,10 @@
-﻿using System.Linq;
+﻿using System;
 using AutoMapper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 {
     public class SolutionDetailsProfile : Profile
     {
@@ -19,7 +19,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(dest => dest.Section, opt => opt.Ignore())
                 .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
                 .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
-                .IgnoreAllPropertiesWithAnInaccessibleSetter();
+                .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                .AfterMap(
+                    (_, dest) =>
+                    {
+                        (SectionModel previous, SectionModel next) = dest.PreviousAndNextModels();
+                        dest.PaginationFooter.Next = next;
+                        dest.PaginationFooter.Previous = previous;
+                    });
+
+            CreateMap<CatalogueItem, ImplementationTimescalesModel>()
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.ImplementationDetail))
+                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Implementation timescales"))
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CatalogueItem, SolutionDescriptionModel>()
                 .ForMember(
@@ -34,12 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
                 .ForMember(
                     dest => dest.SupplierName,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
-                .AfterMap(
-                    (_, dest) =>
-                    {
-                        dest.PaginationFooter.Next = dest.GetSectionFor("Features");
-                    });
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
     }
 }

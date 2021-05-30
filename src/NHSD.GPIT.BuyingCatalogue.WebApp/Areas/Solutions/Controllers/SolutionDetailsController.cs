@@ -24,13 +24,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> Description(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"index-{nameof(id)}");
+                throw new ArgumentException($"{nameof(Description)}-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, SolutionDescriptionModel>(solution));
+        }
+
+        [Route("solutions/futures/{id}/implementation-timescales")]
+        public async Task<IActionResult> ImplementationTimescales(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(ImplementationTimescales)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
         }
 
         [Route("solutions/futures/foundation/{id}")]

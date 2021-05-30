@@ -6,11 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 using NUnit.Framework;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
@@ -18,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
     {
         private IMapper mapper;
         private Mock<IConfiguration> configuration;
+        private MapperConfiguration mapperConfiguration;
         private const string LastReviewedDate = "26 Aug 2025";
 
         [OneTimeSetUp]
@@ -31,17 +33,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
             serviceProvider.Setup(x =>
                     x.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
                 .Returns(new ConfigSettingResolver(configuration.Object));
-            mapper = new MapperConfiguration(cfg =>
+            mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<SolutionDetailsProfile>();
-            }).CreateMapper(serviceProvider.Object.GetService);
+            });
+            mapper = mapperConfiguration.CreateMapper(serviceProvider.Object.GetService);
         }
 
         [OneTimeTearDown]
         public void CleanUp()
         {
             configuration = null;
+            mapperConfiguration = null;
             mapper = null;
+        }
+
+        [Test]
+        public void Mapper_Configuration_Valid()
+        {
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
+
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, ImplementationTimescalesModel>(catalogueItem);
+            
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.Description.Should().Be(catalogueItem.Solution.ImplementationDetail);
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                Next = new SectionModel
+                {
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Client application type",
+                },
+                Previous = new SectionModel
+                {
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Interoperability",
+                },
+            });
+            actual.Section.Should().Be("Implementation timescales");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
         }
         
         [Test, CommonAutoData]
