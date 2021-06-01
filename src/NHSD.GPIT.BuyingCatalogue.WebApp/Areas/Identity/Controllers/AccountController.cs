@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return LocalRedirect("~/");
         }
 
-        [HttpGet("Logout")]
+        [HttpGet("Registration")]
         public IActionResult Registration()
         {
             return View();
