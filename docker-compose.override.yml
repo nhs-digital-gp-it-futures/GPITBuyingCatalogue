@@ -13,10 +13,11 @@ services:
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-        depends_on:
+        depends_on:           
             - "nhsd_bcdb_deploy"
             - "nhsd_codb_deploy"
             - "nhsd_cudb_deploy"
+            - "nhsd_gpitbcdb_deploy"
             - "maildev"
             - "file.upload"
 
@@ -98,6 +99,30 @@ services:
 
         depends_on:
             - "sqlserver"   
+
+    nhsd_gpitbcdb_deploy:
+        image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase
+        container_name: nhsd_gpitbcdb_deploy
+        build:
+            context: .
+            dockerfile: database/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile
+        environment:
+            SA_PASSWORD: "Abc123Abc123"
+            NHSD_PASSWORD: "DisruptTheMarket1!"
+            DB_NAME: "GPITBuyingCatalogue"
+            DB_SERVER: sqlserver            
+            INCLUDE_IMPORT: "TRUE"
+            INCLUDE_PUBLISH: "TRUE"
+            INSERT_TEST_DATA: "TRUE"
+            CREATE_EA_USER: "True"
+            EA_USER_FIRST_NAME: "Agency"
+            EA_USER_LAST_NAME: "User"
+            EA_USER_EMAIL: "user@agency.com"
+            EA_USER_PASSWORD_HASH: "AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg=="
+            EA_USER_PHONE: "01234567890"
+
+        depends_on:
+            - "sqlserver"  
 
     file.upload:
         image: ${DOCKER_REGISTRY}file-uploader
