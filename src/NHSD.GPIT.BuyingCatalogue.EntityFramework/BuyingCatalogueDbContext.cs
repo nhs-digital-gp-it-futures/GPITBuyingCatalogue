@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
 #nullable disable
@@ -503,7 +504,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.ToTable("Supplier");
                 entity.HasIndex(e => e.Name, "IX_SupplierName");
                 entity.Property(e => e.Id).HasMaxLength(6);
-                entity.Property(e => e.Address).HasMaxLength(500);
+                entity.Property(e => e.Address)
+                .HasMaxLength(500)
+                .HasConversion(
+                    a => JsonConvert.SerializeObject(a),
+                    a => JsonConvert.DeserializeObject<Address>(a));
                 entity.Property(e => e.LegalName)
                     .IsRequired()
                     .HasMaxLength(255);

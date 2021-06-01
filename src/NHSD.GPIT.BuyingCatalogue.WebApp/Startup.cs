@@ -142,13 +142,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "areas",
-                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
 
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
 
                 endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
                 {
