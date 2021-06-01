@@ -37,7 +37,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var odsCode = User.GetPrimaryOdsCode();
 
-            return Redirect($"/order/organisation/{odsCode}");
+            return RedirectToAction(
+                actionName: nameof(Organisation),
+                controllerName: "Dashboard",
+                routeValues: new { odsCode });
         }
 
         [HttpGet("organisation/{odsCode}")]
@@ -74,7 +77,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            return Redirect($"/order/organisation/{model.SelectedOrganisation}");
+            return RedirectToAction(
+                actionName: nameof(Organisation),
+                controllerName: "Dashboard",
+                routeValues: new { odsCode = model.SelectedOrganisation });
         }
 
         [HttpGet("organisation/{odsCode}/order/neworder")]
@@ -104,7 +110,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.CreateOrder(model.Description, model.OdsCode);
 
-            return Redirect($"/order/organisation/{odsCode}/order/{order.CallOffId}");
+            return RedirectToAction(
+                actionName: nameof(OrderController.Order),
+                controllerName: "Order",
+                routeValues: new { odsCode = odsCode, callOffId = order.CallOffId });
         }
     }
 }

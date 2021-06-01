@@ -89,7 +89,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             await orderService.DeleteOrder(callOffId);
 
-            return Redirect($"/order/organisation/{odsCode}");
+            return RedirectToAction(
+                actionName: nameof(DashboardController.Organisation),
+                controllerName: "Dashboard",
+                routeValues: new { odsCode });
         }
 
         [HttpGet("delete-order/confirmation")]
@@ -126,7 +129,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             await orderDescriptionService.SetOrderDescription(callOffId, model.Description);
 
-            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
+            return RedirectToAction(
+                actionName: nameof(Order),
+                controllerName: "Order",
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("ordering-party")]
@@ -167,7 +173,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             await orderingPartyService.SetOrderingParty(order, orderingParty, contact);
 
-            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
+            return RedirectToAction(
+                actionName: nameof(Order),
+                controllerName: "Order",
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("commencement-date")]
@@ -197,7 +206,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             await commencementDateService.SetCommencementDate(callOffId, date);
 
-            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
+            return RedirectToAction(
+                actionName: nameof(Order),
+                controllerName: "Order",
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("funding-source")]
@@ -224,7 +236,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             await fundingSourceService.SetFundingSource(callOffId, onlyGms);
 
-            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}");
+            return RedirectToAction(
+                actionName: nameof(Order),
+                controllerName: "Order",
+                routeValues: new { odsCode, callOffId });
         }
     }
 }

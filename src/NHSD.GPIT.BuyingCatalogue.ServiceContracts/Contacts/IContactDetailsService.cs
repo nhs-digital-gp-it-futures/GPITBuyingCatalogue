@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts
 {
     public interface IContactDetailsService
     {
-        Address AddOrUpdateAddress(Address existingAddress, Address newOrUpdatedAddress);
+        Address AddOrUpdateAddress(Address existingAddress, Organisations.Address newOrUpdatedAddress);
 
         Address AddOrUpdateAddress(Address existingAddress, BC.Address newOrUpdatedAddress);
 

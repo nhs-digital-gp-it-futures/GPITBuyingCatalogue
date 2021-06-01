@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
@@ -15,8 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             Title = $"Call-off Ordering Party information for {order.CallOffId}";
+            OdsCode = odsCode;
             OrganisationName = organisation.Name;
-            Address = order.OrderingParty.Address;
+            Address = organisation.GetAddress();
             Contact = new PrimaryContactModel
             {
                 FirstName = order.OrderingPartyContact?.FirstName,
@@ -28,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         public string OrganisationName { get; set; }
 
-        public Address Address { get; set; }
+        public ServiceContracts.Organisations.Address Address { get; set; }
 
         public PrimaryContactModel Contact { get; set; }
     }

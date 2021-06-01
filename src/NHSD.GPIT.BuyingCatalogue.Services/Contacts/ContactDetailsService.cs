@@ -8,10 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class ContactDetailsService : IContactDetailsService
     {
-        public Address AddOrUpdateAddress(Address existingAddress, Address newOrUpdatedAddress)
+        public Address AddOrUpdateAddress(Address existingAddress, ServiceContracts.Organisations.Address newOrUpdatedAddress)
         {
             if (existingAddress is null)
-                return newOrUpdatedAddress;
+                existingAddress = new Address();
 
             if (newOrUpdatedAddress is null)
                 return existingAddress;
