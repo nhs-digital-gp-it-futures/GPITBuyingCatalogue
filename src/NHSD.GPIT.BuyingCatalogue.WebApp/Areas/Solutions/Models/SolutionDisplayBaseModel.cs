@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
@@ -9,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public abstract class SolutionDisplayBaseModel
     {
         private static readonly string ControllerName = typeof(SolutionDetailsController).ControllerName();
-
         private readonly IList<SectionModel> sections = new List<SectionModel>
         {
             new()
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.ClientApplicationTypes),
                 Controller = ControllerName,
                 Name = "Client application type",
             },
@@ -91,6 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 Name = "Supplier details",
             },
         };
+
+        public ClientApplication ClientApplication { get; set; }
 
         public string LastReviewed { get; set; }
 
@@ -130,5 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 index > 0 ? sections[index - 1] : null,
                 index < (sections.Count - 1) ? sections[index + 1] : null);
         }
+
+        public void SetClientApplication(ClientApplication clientApp) => ClientApplication = clientApp;
     }
 }

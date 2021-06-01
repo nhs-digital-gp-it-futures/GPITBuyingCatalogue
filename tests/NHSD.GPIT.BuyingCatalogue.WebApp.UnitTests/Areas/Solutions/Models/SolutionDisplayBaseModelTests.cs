@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionDisplayBaseModelTests
     {
+        [TestCase(typeof(ClientApplicationTypesModel))]
         [TestCase(typeof(ImplementationTimescalesModel))]
         [TestCase(typeof(SolutionDescriptionModel))]
         public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)

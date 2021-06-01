@@ -1,0 +1,13 @@
+@model IEnumerable<string>
+
+@if (Model != null && Model.Any())
+{
+    <dd class="nhsuk-summary-list__value">
+        <ul>
+            @foreach (var item in Model)
+            {
+                <li>@item</li>
+            }
+        </ul>
+    </dd>
+}

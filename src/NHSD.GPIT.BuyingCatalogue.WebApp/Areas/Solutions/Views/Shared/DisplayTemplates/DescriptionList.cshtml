@@ -1,0 +1,19 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.DescriptionListViewModel
+
+@if (Model != null && Model.HasValues())
+{
+    <h2>@Model.Heading</h2>
+
+    <dl class="nhsuk-summary-list">
+        @foreach (var (title, value) in Model.Items)
+        {
+            <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">@title</dt>
+                
+                @Html.DisplayFor(m => value.Text)
+                
+                @Html.DisplayFor(m => value.List)
+            </div>
+        }
+    </dl>
+}
