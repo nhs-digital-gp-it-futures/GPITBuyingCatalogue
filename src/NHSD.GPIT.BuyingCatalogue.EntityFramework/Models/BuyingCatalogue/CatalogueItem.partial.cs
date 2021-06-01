@@ -1,4 +1,5 @@
-using System.Linq;
+﻿using System.Linq;
+using Newtonsoft.Json;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
 {
@@ -15,5 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
 
         public MarketingContact SecondContact() =>
             Solution?.MarketingContacts?.Skip(1).FirstOrDefault() ?? new MarketingContact();
+
+        public virtual string[] Features() =>
+            string.IsNullOrEmpty(Solution?.Features) ? null : JsonConvert.DeserializeObject<string[]>(Solution.Features);
     }
 }
