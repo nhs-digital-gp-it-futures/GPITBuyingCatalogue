@@ -377,6 +377,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey(d => d.AddressId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Supplier_Address");
+
+                entity.HasMany(s => s.Orders)
+                    .WithOne(o => o.Supplier)
+                    .HasForeignKey(o => o.SupplierId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<TimeUnit>(entity =>
