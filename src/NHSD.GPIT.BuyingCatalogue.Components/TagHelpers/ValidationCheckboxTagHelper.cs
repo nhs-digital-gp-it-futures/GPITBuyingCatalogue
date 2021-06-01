@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName, ParentTag = CheckboxContainerTagHelper.TagHelperName)]
     public sealed class ValidationCheckboxTagHelper : TagHelper

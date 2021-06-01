@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
     [RestrictChildren(ValidationCheckboxTagHelper.TagHelperName)]
