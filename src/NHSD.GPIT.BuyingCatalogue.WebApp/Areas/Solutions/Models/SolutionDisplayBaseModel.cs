@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -55,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.ImplementationTimescales),
                 Controller = ControllerName,
                 Name = "Implementation timescales",
             },
@@ -115,6 +116,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 sectionModel.Selected = true;
 
             return sectionModels;
+        }
+
+        public Tuple<SectionModel, SectionModel> PreviousAndNextModels()
+        {
+            var section = GetSectionFor(Section);
+            if (section == null)
+                return new Tuple<SectionModel, SectionModel>(null, null);
+
+            var index = sections.IndexOf(section);
+
+            return new Tuple<SectionModel, SectionModel>(
+                index > 0 ? sections[index - 1] : null,
+                index < (sections.Count - 1) ? sections[index + 1] : null);
         }
     }
 }

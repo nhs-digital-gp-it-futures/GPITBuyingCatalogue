@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -11,21 +12,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal static class SolutionDescriptionModelTests
-    {
-        [Test]
-        public static void SolutionDescriptionModel_Inherits_SolutionDisplayBaseModel()
-        {
-            typeof(SolutionDescriptionModel)
-                .Should()
-                .BeAssignableTo<SolutionDisplayBaseModel>();
-        }
-    }
-
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
     internal static class SolutionDisplayBaseModelTests
     {
+        [TestCase(typeof(ImplementationTimescalesModel))]
+        [TestCase(typeof(SolutionDescriptionModel))]
+        public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
+        {
+            childType.Should().BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+        
         [TestCase("FEATURES")]
         [TestCase("features")]
         [TestCase("feaTURes")]
@@ -121,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.ImplementationTimescales),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
                 Name = "Implementation timescales",
             },
