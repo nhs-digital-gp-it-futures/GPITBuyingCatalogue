@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         public string Line4 { get; set; }
 
+        public string Line5 { get; set; }
+
         public string Town { get; set; }
 
         public string County { get; set; }

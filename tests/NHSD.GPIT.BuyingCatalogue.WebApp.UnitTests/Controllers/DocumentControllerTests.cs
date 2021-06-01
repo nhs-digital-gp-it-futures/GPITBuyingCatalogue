@@ -12,17 +12,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
     internal static class DocumentControllerTests
     {
         [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new DocumentController(null, Mock.Of<IDocumentService>()));
-        }
-
-        [Test]
         public static void Constructor_NullDocumentService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new DocumentController(Mock.Of<ILogWrapper<DocumentController>>(), null));
+                _ = new DocumentController(null));
         }
     }
 }

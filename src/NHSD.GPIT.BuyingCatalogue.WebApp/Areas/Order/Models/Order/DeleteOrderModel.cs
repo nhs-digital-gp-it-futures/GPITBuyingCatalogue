@@ -4,9 +4,16 @@
     {
         public DeleteOrderModel()
         {
-            BackLinkText = "Go back";
-            BackLink = "/order/organisation/03F/order/C010005-01"; // TODO
-            Title = "Delete order C010005-01?"; // TODO
         }
+
+        public DeleteOrderModel(string odsCode, EntityFramework.Models.Ordering.Order order)
+        {
+            BackLinkText = "Go back";
+            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
+            Title = $"Delete order {order.CallOffId}?";
+            Description = order.Description;
+        }
+
+        public string Description { get; set; }
     }
 }

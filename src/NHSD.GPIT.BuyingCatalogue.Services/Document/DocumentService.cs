@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
         {
             try
             {
+                logger.LogInformation($"Attempting to download document '{name}'");
                 var downloadInfo = await documentRepository.DownloadAsync(name);
                 return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
             }
@@ -38,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
         {
             try
             {
+                logger.LogInformation($"Attempting to download document '{id} {name}'");
                 var downloadInfo = await documentRepository.DownloadAsync(id, name);
                 return new FileStreamResult(downloadInfo.Content, downloadInfo.ContentType);
             }
@@ -50,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 
         public IAsyncEnumerable<string> GetDocumentsBySolutionId(string id)
         {
+            logger.LogInformation($"Getting document list for {id}");
             return documentRepository.GetFileNamesAsync(id);
         }
     }

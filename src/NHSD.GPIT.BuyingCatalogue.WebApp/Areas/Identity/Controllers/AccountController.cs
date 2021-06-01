@@ -14,13 +14,13 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
     [Area("Identity")]
+    [Route("Identity/Account")]
     public class AccountController : Controller
     {
         public const string SignInErrorMessage = "Enter a valid email address and password";
 
         public const string UserDisabledErrorMessageTemplate = @"There is a problem accessing your account.
-
-Contact the account administrator at: {0} or call {1}";
+                Contact the account administrator at: {0} or call {1}";
 
         private readonly ILogWrapper<AccountController> logger;
         private readonly SignInManager<AspNetUser> signInManager;
@@ -39,13 +39,13 @@ Contact the account administrator at: {0} or call {1}";
             this.disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
         }
 
-        [HttpGet]
+        [HttpGet("Login")]
         public IActionResult Login(string returnUrl)
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
-        [HttpPost]
+        [HttpPost("Login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
@@ -85,7 +85,7 @@ Contact the account administrator at: {0} or call {1}";
             return View(viewModel);
         }
 
-        [HttpGet]
+        [HttpGet("Logout")]
         public async Task<IActionResult> Logout()
         {
             if (signInManager.IsSignedIn(User))
@@ -94,19 +94,19 @@ Contact the account administrator at: {0} or call {1}";
             return LocalRedirect("~/");
         }
 
-        [HttpGet]
+        [HttpGet("Registration")]
         public IActionResult Registration()
         {
             return View();
         }
 
-        [HttpGet]
+        [HttpGet("ForgotPassword")]
         public IActionResult ForgotPassword()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("ForgotPassword")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel viewModel)
         {
@@ -127,13 +127,13 @@ Contact the account administrator at: {0} or call {1}";
             return RedirectToAction(nameof(ForgotPasswordLinkSent));
         }
 
-        [HttpGet]
+        [HttpGet("ForgotPasswordLinkSent")]
         public IActionResult ForgotPasswordLinkSent()
         {
             return View();
         }
 
-        [HttpGet]
+        [HttpGet("ResetPassword")]
         public async Task<IActionResult> ResetPassword(string email, string token)
         {
             var isValid = await passwordService.IsValidPasswordResetTokenAsync(email, token);
@@ -144,7 +144,7 @@ Contact the account administrator at: {0} or call {1}";
             return View(new ResetPasswordViewModel { Email = email, Token = token });
         }
 
-        [HttpPost]
+        [HttpPost("ResetPassword")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
         {
@@ -176,7 +176,7 @@ Contact the account administrator at: {0} or call {1}";
                 $"Unexpected errors whilst resetting password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
         }
 
-        [HttpGet]
+        [HttpGet("ResetPasswordConfirmation")]
         public IActionResult ResetPasswordConfirmation()
         {
             return View();

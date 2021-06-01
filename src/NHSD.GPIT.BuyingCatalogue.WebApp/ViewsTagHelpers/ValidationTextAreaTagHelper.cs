@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -14,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
         private const string NhsTextArea = "nhsuk-textarea";
 
         private const int DefaultNumberOfTextAreaRows = 5;
+        private const int DefaultMaxLength = 1500;
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -81,6 +83,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                     @class = NhsTextArea,
                     aria_describedby = $"{For.Name}-info {For.Name}-summary",
                 });
+
+            if (!builder.Attributes.Any(a => a.Key == "maxlength"))
+                builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
 
             if (!TagHelperFunctions.IsCounterDisabled(For, DisableCharacterCounter))
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);

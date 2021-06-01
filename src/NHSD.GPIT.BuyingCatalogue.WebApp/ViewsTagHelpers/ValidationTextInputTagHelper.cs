@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
     {
         public const string TagHelperName = "nhs-validation-input";
 
+        private const int DefaultMaxLength = 500;
+
         private readonly IHtmlGenerator htmlGenerator;
 
         public ValidationTextInputTagHelper(IHtmlGenerator htmlGenerator)
@@ -75,6 +77,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
                     @class = TagHelperConstants.NhsInput,
                     aria_describedby = $"{For.Name}-info {For.Name}-summary",
                 });
+
+            if (!builder.Attributes.Any(a => a.Key == "maxlength"))
+                builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
 
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
                 builder.MergeAttribute(TagHelperConstants.Type, "password");

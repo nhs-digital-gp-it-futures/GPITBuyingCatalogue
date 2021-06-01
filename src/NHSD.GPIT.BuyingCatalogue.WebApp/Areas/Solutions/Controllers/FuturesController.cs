@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.documentService = documentService ?? throw new ArgumentNullException(nameof(documentService));
         }
 
+        [Route("Solutions/Futures")]
         public IActionResult Index()
         {
             return View();

@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{currentOdsCode}";
             Title = "Which organisation are you looking for?";
+            OdsCode = currentOdsCode;
             AvailableOrganisations = organisations;
             SelectedOrganisation = organisations.Single(x => x.OdsCode.EqualsIgnoreCase(currentOdsCode)).OdsCode;
         }
