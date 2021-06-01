@@ -27,10 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             description.ValidateNotNullOrWhiteSpace(nameof(description));
 
-            var order = (await orderRepository.GetAllAsync(o => o.Id == new CallOffId(callOffId).Id)).Single();
+            logger.LogInformation($"Setting order descripion for {callOffId} to {description}");
 
+            var order = (await orderRepository.GetAllAsync(o => o.Id == CallOffId.Parse(callOffId).Id)).Single();
             order.Description = description;
-
             await orderRepository.SaveChangesAsync();
         }
     }

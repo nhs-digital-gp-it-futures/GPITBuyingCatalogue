@@ -27,12 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             commencementDate.ValidateNotNull(nameof(commencementDate));
 
-            var id = new CallOffId(callOffId);
+            logger.LogInformation($"Setting commencement date for {callOffId} to {commencementDate.Value.ToLongDateString()}");
 
+            var id = CallOffId.Parse(callOffId);
             var order = await dbContext.Orders.SingleAsync(x => x.Id == id.Id);
-
             order.CommencementDate = commencementDate.Value;
-
             await dbContext.SaveChangesAsync();
         }
     }

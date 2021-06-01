@@ -53,8 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         /// <exception cref="ArgumentException"><paramref name="emailAddress"/> is empty or white space.</exception>
         public async Task<PasswordResetToken> GeneratePasswordResetTokenAsync(string emailAddress)
         {
-            if (string.IsNullOrWhiteSpace(emailAddress))
-                throw new ArgumentException($"{nameof(emailAddress)} must be provided", nameof(emailAddress));
+            emailAddress.ValidateNotNullOrWhiteSpace(nameof(emailAddress));
 
             var user = await userManager.FindByEmailAsync(emailAddress);
 
@@ -73,11 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langref="null"/>.</exception>
         public async Task SendResetEmailAsync(AspNetUser user, Uri callback)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
-
-            if (callback is null)
-                throw new ArgumentNullException(nameof(callback));
+            user.ValidateNotNull(nameof(user));
+            callback.ValidateNotNull(nameof(callback));
 
             await emailService.SendEmailAsync(
                 settings.EmailMessageTemplate,

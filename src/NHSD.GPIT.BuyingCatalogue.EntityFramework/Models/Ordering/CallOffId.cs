@@ -26,19 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             Revision = revision;
         }
 
-        public CallOffId(string callOffId)
-        {
-            if (string.IsNullOrWhiteSpace(callOffId))
-                throw new ArgumentException("Argument IsNullOrWhiteSpace", callOffId);
-
-            var (success, id) = CallOffId.Parse(callOffId);
-
-            if (!success)
-                throw new ArgumentException("CallOffId could not be parsed", nameof(callOffId));
-
-            this = id;
-        }
-
         public int Id { get; }
 
         public byte Revision { get; }
@@ -53,16 +40,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             return !(left == right);
         }
 
-        public static (bool Success, CallOffId Id) Parse(string callOffId)
+        public static CallOffId Parse(string callOffId)
         {
+            if (string.IsNullOrWhiteSpace(callOffId))
+                throw new ArgumentException("Argument IsNullOrWhiteSpace", callOffId);
+
             var match = Regex.Value.Match(callOffId);
             if (!match.Success)
-                return (false, default);
+                throw new ArgumentException("CallOffId could not be parsed", nameof(callOffId));
 
             var id = int.Parse(match.Groups["id"].Value, CultureInfo.InvariantCulture);
             var revision = byte.Parse(match.Groups["revision"].Value, CultureInfo.InvariantCulture);
 
-            return (true, new CallOffId(id, revision));
+            return new CallOffId(id, revision);
         }
 
         public bool Equals(CallOffId other)

@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<Order> GetOrder(string callOffId)
         {
-            var id = new CallOffId(callOffId);
+            var id = CallOffId.Parse(callOffId);
 
             return await dbContext.Orders
                 .Where(o => o.Id == id.Id)
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DeleteOrder(string callOffId)
         {
-            var id = new CallOffId(callOffId);
+            var id = CallOffId.Parse(callOffId);
 
             var order = await dbContext.Orders.Where(o => o.Id == id.Id).SingleAsync();
 

@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using MailKit;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -51,8 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
         /// <see langword="null" />.</exception>
         public async Task SendEmailAsync(EmailMessage emailMessage)
         {
-            if (emailMessage is null)
-                throw new ArgumentNullException(nameof(emailMessage));
+            emailMessage.ValidateNotNull(nameof(emailMessage));
 
             await client.ConnectAsync(settings.Host, settings.Port).ConfigureAwait(false);
 

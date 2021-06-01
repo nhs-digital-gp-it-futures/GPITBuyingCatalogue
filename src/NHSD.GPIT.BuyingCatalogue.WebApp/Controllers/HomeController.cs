@@ -16,13 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         public IActionResult Index()
         {
-            logger.LogInformation("Taking user to Home Index page");
-
-            return View();
-        }
-
-        public IActionResult TestLinks()
-        {
+            logger.LogInformation($"Taking user to {nameof(HomeController)}.{nameof(Index)}");
             return View();
         }
 
@@ -33,9 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             {
                 var feature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
                 ViewData["BadUrl"] = $"Incorrect url {feature?.OriginalPath}";
+                logger.LogWarning($"Taking user to {nameof(HomeController)}.PageNotFound. Request was {feature?.OriginalPath}");
                 return View("PageNotFound");
             }
 
+            logger.LogWarning($"Taking user to {nameof(HomeController)}.{nameof(Error)} with error {statusCode.GetValueOrDefault()}");
             return View();
         }
     }

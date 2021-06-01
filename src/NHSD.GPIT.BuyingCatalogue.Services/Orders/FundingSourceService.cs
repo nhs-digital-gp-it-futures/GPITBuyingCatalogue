@@ -27,12 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             onlyGms.ValidateNotNull(nameof(onlyGms));
 
-            var id = new CallOffId(callOffId);
+            logger.LogInformation($"Setting funding source for {callOffId} to {onlyGms.Value}");
 
+            var id = CallOffId.Parse(callOffId);
             var order = await dbContext.Orders.SingleAsync(x => x.Id == id.Id);
-
             order.FundingSourceOnlyGms = onlyGms.Value;
-
             await dbContext.SaveChangesAsync();
         }
     }

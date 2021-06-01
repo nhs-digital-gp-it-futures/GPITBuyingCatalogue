@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .IsRequired()
                     .HasMaxLength(4000)
                     .HasComputedColumnSql("(concat('C',format([Id],'000000'),'-',format([Revision],'00')))", false)
-                    .HasConversion(id => id.ToString(), id => CallOffId.Parse(id).Id);
+                    .HasConversion(id => id.ToString(), id => CallOffId.Parse(id));
 
                 entity.Property(e => e.CommencementDate).HasColumnType("date");
                 entity.Property(e => e.Created).HasDefaultValueSql("(getutcdate())");
