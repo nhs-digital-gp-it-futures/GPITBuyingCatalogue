@@ -18,23 +18,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly ILogWrapper<SupplierService> logger;
         private readonly OrderingDbContext oDbContext;
         private readonly BuyingCatalogueDbContext bcDbContext;
-        private readonly IDbRepository<Order, OrderingDbContext> orderRepository;
         private readonly IDbRepository<EntityFramework.Models.BuyingCatalogue.Supplier, BuyingCatalogueDbContext> bcRepository;
         private readonly IContactDetailsService contactDetailsService;
-        private readonly IOrderService orderService;
 
         public SupplierService(
             ILogWrapper<SupplierService> logger,
             OrderingDbContext oDbContext,
             BuyingCatalogueDbContext bcDbContext,
-            IDbRepository<Order, OrderingDbContext> orderRepository,
             IDbRepository<EntityFramework.Models.BuyingCatalogue.Supplier, BuyingCatalogueDbContext> bcRepository,
             IContactDetailsService contactDetailsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.oDbContext = oDbContext ?? throw new ArgumentNullException(nameof(oDbContext));
             this.bcDbContext = bcDbContext ?? throw new ArgumentNullException(nameof(bcDbContext));
-            this.orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
             this.bcRepository = bcRepository ?? throw new ArgumentNullException(nameof(bcRepository));
             this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
         }
@@ -72,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
 
-            var order = await oDbContext.Orders.Where(o => o.CallOffId == new CallOffId(callOffId)).SingleAsync();
+            var order = await oDbContext.Orders.Where(o => o.CallOffId == CallOffId.Parse(callOffId)).SingleAsync();
 
             var supplierModel = new EntityFramework.Models.Ordering.Supplier
             {
@@ -90,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
-            var order = await oDbContext.Orders.Where(o => o.CallOffId == new CallOffId(callOffId)).SingleAsync();
+            var order = await oDbContext.Orders.Where(o => o.CallOffId == CallOffId.Parse(callOffId)).SingleAsync();
 
             switch (order.SupplierContact)
             {

@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
+        [Route("Solutions/DFOCVC")]
         public async Task<IActionResult> Index()
         {
             var solutions = await solutionsService.GetDFOCVCSolutions();
