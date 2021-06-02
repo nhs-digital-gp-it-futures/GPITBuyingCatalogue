@@ -10,8 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         private DateTime lastUpdated = DateTime.UtcNow;
 
         public CostType CostType =>
-            CatalogueItem.CatalogueItemType.Name == "Associated Service" &&
-            ProvisioningType.Name == "Declarative"
+            CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService &&
+            ProvisioningType == ProvisioningType.Declarative
                 ? CostType.OneOff
                 : CostType.Recurring;
 

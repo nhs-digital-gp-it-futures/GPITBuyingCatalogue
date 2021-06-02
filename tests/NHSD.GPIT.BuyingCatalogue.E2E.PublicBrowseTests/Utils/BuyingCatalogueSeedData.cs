@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 
@@ -22,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-001",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Full",
                     Solution = new Solution
@@ -180,17 +181,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             }
                         }
                     },
-                    PublishedStatusId = 3,
+                    PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-99",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Empty",
                     SupplierId = "99999",
-                    PublishedStatusId = 1,
+                    PublishedStatus = PublicationStatus.Draft,
                     Solution = new Solution
                     {
                         Id = "99999-99",
@@ -202,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-002",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full",
                     Solution = new Solution
@@ -307,14 +308,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             }
                         }
                     },
-                    PublishedStatusId = 3,
+                    PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
 
                 new CatalogueItem
                 {
                     CatalogueItemId = "99999-003",
-                    CatalogueItemTypeId = 1,
+                    CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full 2",
                     Solution = new Solution
@@ -419,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             }
                         }
                     },
-                    PublishedStatusId = 3,
+                    PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
             };
@@ -447,9 +448,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             // CatalogueItemType
             List<CatalogueItemType> catalogueItemTypes = new()
             {
-                new CatalogueItemType { CatalogueItemTypeId = 1, Name = "Solution" },
-                new CatalogueItemType { CatalogueItemTypeId = 2, Name = "Additional Service" },
-                new CatalogueItemType { CatalogueItemTypeId = 3, Name = "Associated Service" },
+                CatalogueItemType.Solution,
+                CatalogueItemType.AdditionalService,
+                CatalogueItemType.AssociatedService,
+
             };
             context.AddRange(catalogueItemTypes);
 
@@ -1042,11 +1044,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             // PublicationStatus
             List<PublicationStatus> publicationStatuses = new()
             {
-                new PublicationStatus { Id = 1, Name = "Draft" },
-                new PublicationStatus { Id = 2, Name = "Unpublished" },
-                new PublicationStatus { Id = 3, Name = "Published" },
-                new PublicationStatus { Id = 4, Name = "Withdrawn" },
+                PublicationStatus.Draft,
+                PublicationStatus.Unpublished,
+                PublicationStatus.Published,
+                PublicationStatus.Withdrawn,
             };
+
+
             context.AddRange(publicationStatuses);
 
             // SolutionCapabilityStatus
@@ -1078,7 +1082,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     LastUpdatedBy = Guid.Empty,
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
-                    Address = @"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}",
+                    Address = JsonConvert.DeserializeObject<Address>(@"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}"),
                     Summary = "About this supplier",
                     SupplierUrl = "https://www.e2etest.com",
                 }

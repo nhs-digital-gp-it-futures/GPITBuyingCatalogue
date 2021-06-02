@@ -1,20 +1,43 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
+﻿using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public partial class CatalogueItemType
+    public class CatalogueItemType
+        : EnumerationBase
     {
-        public CatalogueItemType()
+        public static readonly CatalogueItemType Solution = new(1, "Catalogue Solution");
+        public static readonly CatalogueItemType AdditionalService = new(2, "Additional Service");
+        public static readonly CatalogueItemType AssociatedService = new(3, "Associated Service");
+
+        public CatalogueItemType(int id, string name)
+                : base(id, name)
         {
-            CatalogueItems = new HashSet<CatalogueItem>();
         }
 
-        public int Id { get; set; }
+        public TimeUnit InferEstimationPeriod(ProvisioningType provisioningType, TimeUnit estimationPeriod)
+        {
+            return this == AssociatedService
+                ? provisioningType == ProvisioningType.OnDemand
+                    ? provisioningType.InferEstimationPeriod(estimationPeriod)
+                    : null
+                : provisioningType.InferEstimationPeriod(estimationPeriod);
+        }
 
-        public string Name { get; set; }
+        public string DisplayName() => Name;
 
-        public virtual ICollection<CatalogueItem> CatalogueItems { get; set; }
+        public void MarkOrderSectionAsViewed(Order order)
+        {
+            if (order is null)
+                throw new ArgumentNullException(nameof(order));
+
+            if (this == Solution)
+                order.OrderProgress.CatalogueSolutionsViewed = true;
+            else if (this == AdditionalService)
+                order.OrderProgress.AdditionalServicesViewed = true;
+            else if (this == AssociatedService)
+                order.OrderProgress.AssociatedServicesViewed = true;
+            else
+                throw new InvalidOperationException();
+        }
     }
 }

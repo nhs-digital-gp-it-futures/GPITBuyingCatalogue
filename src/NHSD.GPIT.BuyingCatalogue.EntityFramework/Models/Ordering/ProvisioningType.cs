@@ -1,20 +1,29 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
+﻿using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public partial class ProvisioningType
+    public class ProvisioningType
+        : EnumerationBase
     {
-        public ProvisioningType()
+        public static readonly ProvisioningType Patient = new(1, "Patient");
+        public static readonly ProvisioningType Declarative = new(2, "Declarative");
+        public static readonly ProvisioningType OnDemand = new(3, "On Demand");
+
+        public ProvisioningType(int id, string name)
+            : base(id, name)
         {
-            OrderItems = new HashSet<OrderItem>();
         }
 
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public TimeUnit InferEstimationPeriod(TimeUnit estimationPeriod)
+        {
+            if (this == Patient)
+                return TimeUnit.PerMonth;
+            else if (this == Declarative)
+                return TimeUnit.PerYear;
+            else if (this == OnDemand)
+                return estimationPeriod;
+            else
+                throw new InvalidOperationException();
+        }
     }
 }

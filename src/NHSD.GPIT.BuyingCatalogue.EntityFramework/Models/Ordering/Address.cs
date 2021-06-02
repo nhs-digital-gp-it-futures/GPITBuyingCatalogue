@@ -1,17 +1,9 @@
 ﻿using System.Collections.Generic;
 
-#nullable disable
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
     public partial class Address
     {
-        public Address()
-        {
-            OrderingParties = new HashSet<OrderingParty>();
-            Suppliers = new HashSet<Supplier>();
-        }
-
         public int Id { get; set; }
 
         public string Line1 { get; set; }

@@ -14,11 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public CatalogueItemId Id { get; set; }
 
-        public int CatalogueItemTypeId { get; set; }
-
         public string Name { get; set; }
 
-        public string ParentCatalogueItemId { get; set; }
+        public int CatalogueItemTypeId { get; set; }
+
+        public CatalogueItemId ParentCatalogueItemId { get; set; }
 
         public virtual CatalogueItemType CatalogueItemType { get; set; }
 

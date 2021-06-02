@@ -36,8 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=ID_Catalog;Trusted_Connection=True;");
             Environment.SetEnvironmentVariable("CO_DB_CONNECTION",
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=ID_Catalog;Trusted_Connection=True;");
-            Environment.SetEnvironmentVariable("REDIS",
-                "localhost:6380,abortConnect=false");
         }
 
         [TestCase(typeof(DisabledErrorMessageSettings))]

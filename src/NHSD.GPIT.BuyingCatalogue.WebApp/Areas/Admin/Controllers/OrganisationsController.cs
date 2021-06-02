@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public class OrganisationsController : Controller
     {
         private readonly ILogWrapper<OrganisationsController> logger;
-        private readonly IOrganisationsService organisationService;
+        private readonly IOrganisationsService organisationsService;
         private readonly IOdsService odsService;
         private readonly ICreateBuyerService createBuyerService;
         private readonly IUsersService userService;
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             IUsersService userService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            organisationService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.createBuyerService = createBuyerService ?? throw new ArgumentNullException(nameof(createBuyerService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
@@ -39,51 +39,64 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var organisations = await organisationService.GetAllOrganisations();
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Index)}");
+            var organisations = await organisationsService.GetAllOrganisations();
             return View(new ListOrganisationsModel(organisations));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(Guid id)
         {
-            var organisation = await organisationService.GetOrganisation(id);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Details)} for {nameof(id)} {id}");
+            var organisation = await organisationsService.GetOrganisation(id);
             var users = await userService.GetAllUsersForOrganisation(id);
-            var relatedOrganisations = await organisationService.GetRelatedOrganisations(id);
+            var relatedOrganisations = await organisationsService.GetRelatedOrganisations(id);
             return View(new DetailsModel(organisation, users, relatedOrganisations));
         }
 
         [HttpGet("{id}/edit")]
         public async Task<IActionResult> EditOrganisation(Guid id)
         {
-            var organisation = await organisationService.GetOrganisation(id);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(EditOrganisation)} for {nameof(id)} {id}");
+            var organisation = await organisationsService.GetOrganisation(id);
             return View(new EditOrganisationModel(organisation));
         }
 
         [HttpPost("{id}/edit")]
         public async Task<IActionResult> EditOrganisation(string id, EditOrganisationModel model)
         {
-            await organisationService.UpdateCatalogueAgreementSigned(model.Organisation.OrganisationId, model.CatalogueAgreementSigned);
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(EditOrganisation)} for {nameof(id)} {id}");
+
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await organisationsService.UpdateCatalogueAgreementSigned(model.Organisation.OrganisationId, model.CatalogueAgreementSigned);
             return RedirectToAction("EditConfirmation", "Organisations", new { id });
         }
 
         [HttpGet("{id}/edit/confirmation")]
         public async Task<IActionResult> EditConfirmation(Guid id)
         {
-            var organisation = await organisationService.GetOrganisation(id);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(EditConfirmation)} for {nameof(id)} {id}");
+            var organisation = await organisationsService.GetOrganisation(id);
             return View(new EditConfirmationModel(organisation.Name, id));
         }
 
         [HttpGet("find")]
         public IActionResult Find(string ods)
         {
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Find)} for {nameof(ods)} {ods}");
             return View(new FindOrganisationModel(ods));
         }
 
         [HttpPost("find")]
         public IActionResult Find(FindOrganisationModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(Find)}");
+
+            model.ValidateNotNull(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -96,6 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select")]
         public async Task<IActionResult> Select(string ods)
         {
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Select)} for {nameof(ods)} {ods}");
             var organisation = await odsService.GetOrganisationByOdsCode(ods);
             return View(new SelectOrganisationModel(organisation));
         }
@@ -103,8 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("find/select")]
         public IActionResult Select(SelectOrganisationModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(Select)}");
+
+            model.ValidateNotNull(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -115,6 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select/create")]
         public async Task<IActionResult> Create(string ods)
         {
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Create)} for {nameof(ods)} {ods}");
             var organisation = await odsService.GetOrganisationByOdsCode(ods);
             return View(new CreateOrganisationModel(organisation));
         }
@@ -122,34 +138,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("find/select/create")]
         public async Task<IActionResult> Create(CreateOrganisationModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(Create)}");
+
+            model.ValidateNotNull(nameof(model));
 
             if (!ModelState.IsValid)
                 return View(model);
 
             var organisation = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
-            var orgId = await organisationService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
+            var orgId = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
             return RedirectToAction("Confirmation", "Organisations", new { id = orgId.ToString() });
         }
 
         [HttpGet("find/select/create/confirmation")]
         public async Task<IActionResult> Confirmation(string id)
         {
-            var organisation = await organisationService.GetOrganisation(new Guid(id));
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Confirmation)} for {nameof(id)} {id}");
+            var organisation = await organisationsService.GetOrganisation(new Guid(id));
             return View(new ConfirmationModel(organisation.Name));
         }
 
         [HttpGet("{id}/adduser")]
         public async Task<IActionResult> AddUser(Guid id)
         {
-            var organisation = await organisationService.GetOrganisation(id);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(AddUser)} for {nameof(id)} {id}");
+            var organisation = await organisationsService.GetOrganisation(id);
             return View(new AddUserModel(organisation));
         }
 
         [HttpPost("{organisationId}/adduser")]
         public async Task<IActionResult> AddUser(Guid organisationId, AddUserModel model)
         {
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(AddUser)} for {nameof(organisationId)} {organisationId}");
+
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
             var result = await createBuyerService.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress);
 
             // TODO - Check result
@@ -161,6 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/adduser/confirmation")]
         public async Task<IActionResult> AddUserConfirmation(Guid organisationId, string id)
         {
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(AddUserConfirmation)} for {nameof(organisationId)} {organisationId} {nameof(id)} {id}");
             var user = await userService.GetUser(id);
             return View(new AddUserConfirmationModel(user.GetDisplayName(), organisationId));
         }
@@ -168,15 +195,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/{userId}")]
         public async Task<IActionResult> UserDetails(Guid organisationId, string userId)
         {
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(UserDetails)} for {nameof(organisationId)} {organisationId} {nameof(userId)} {userId}");
             var user = await userService.GetUser(userId);
-            var organisation = await organisationService.GetOrganisation(organisationId);
+            var organisation = await organisationsService.GetOrganisation(organisationId);
             return View(new UserDetailsModel(organisation, user));
         }
 
         [HttpGet("{organisationId}/{userId}/disable")]
         public async Task<IActionResult> UserDisabled(Guid organisationId, string userId)
         {
-            var organisation = await organisationService.GetOrganisation(organisationId);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(UserDisabled)} for {nameof(organisationId)} {organisationId} {nameof(userId)} {userId}");
+            var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
             return View(new UserEnablingModel(organisation, user));
         }
@@ -184,6 +213,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{organisationId}/{userId}/disable")]
         public async Task<IActionResult> UserDisabled(UserDetailsModel model)
         {
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(UserDisabled)}");
+
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
             await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
             return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}/{model.User.Id}/disable");
         }
@@ -191,7 +227,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/{userId}/enable")]
         public async Task<IActionResult> UserEnabled(Guid organisationId, string userId)
         {
-            var organisation = await organisationService.GetOrganisation(organisationId);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(UserEnabled)} for {nameof(organisationId)} {organisationId} {nameof(userId)} {userId}");
+            var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
             return View(new UserEnablingModel(organisation, user));
         }
@@ -199,6 +236,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{organisationId}/{userId}/enable")]
         public async Task<IActionResult> UserEnabled(UserDetailsModel model)
         {
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(UserEnabled)}");
+
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
             await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
             return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}/{model.User.Id}/enable");
         }
@@ -206,29 +250,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("proxy/{organisationId}")]
         public async Task<IActionResult> AddAnOrganisation(Guid organisationId)
         {
-            var organisation = await organisationService.GetOrganisation(organisationId);
-            var availableOrganisations = await organisationService.GetUnrelatedOrganisations(organisationId);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(AddAnOrganisation)} for {nameof(organisationId)} {organisationId}");
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var availableOrganisations = await organisationsService.GetUnrelatedOrganisations(organisationId);
             return View(new AddAnOrganisationModel(organisation, availableOrganisations));
         }
 
         [HttpPost("proxy/{organisationId}")]
         public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model)
         {
-            await organisationService.AddRelatedOrganisations(model.Organisation.OrganisationId, model.SelectedOrganisation);
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(AddAnOrganisation)}");
+
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await organisationsService.AddRelatedOrganisations(model.Organisation.OrganisationId, model.SelectedOrganisation);
             return RedirectToAction("Details", "Organisations", new { id = model.Organisation.OrganisationId });
         }
 
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId)
         {
-            var relatedOrganisation = await organisationService.GetOrganisation(relatedOrganisationId);
+            logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(RemoveAnOrganisation)} for {nameof(organisationId)} {organisationId}, {nameof(relatedOrganisationId)} {relatedOrganisationId}");
+            var relatedOrganisation = await organisationsService.GetOrganisation(relatedOrganisationId);
             return View(new RemoveAnOrganisationModel(organisationId, relatedOrganisation));
         }
 
         [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId, RemoveAnOrganisationModel model)
         {
-            await organisationService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
+            logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(RemoveAnOrganisation)}");
+
+            model.ValidateNotNull(nameof(model));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await organisationsService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
             return RedirectToAction("Details", "Organisations", new { id = organisationId });
         }
     }

@@ -2,11 +2,12 @@
 {
     public class NewOrderModel : OrderingBaseModel
     {
-        public NewOrderModel()
+        public NewOrderModel(string odsCode)
         {
             BackLinkText = "Go back to all orders";
-            BackLink = "/order/organisation/03F"; // TODO
+            BackLink = $"/order/organisation/{odsCode}";
             Title = "New order";
+            OdsCode = odsCode;
         }
     }
 }

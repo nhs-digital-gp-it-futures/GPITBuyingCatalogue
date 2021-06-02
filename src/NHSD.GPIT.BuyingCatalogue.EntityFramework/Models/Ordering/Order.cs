@@ -44,11 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public DateTime? Completed { get; set; }
 
-        public int OrderStatusId { get; set; }
-
         public bool IsDeleted { get; set; }
 
-        public virtual OrderStatus OrderStatus { get; set; }
+        public virtual OrderStatus OrderStatus { get; set; } = OrderStatus.Incomplete;
 
         public virtual OrderingParty OrderingParty { get; set; }
 

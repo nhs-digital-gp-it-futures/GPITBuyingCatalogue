@@ -1,12 +1,24 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
     public class OrderDescriptionModel : OrderingBaseModel
     {
         public OrderDescriptionModel()
         {
-            BackLinkText = "Go back";
-            BackLink = "/order/organisation/03F/order/C010004-01"; // TOOD
-            Title = "Order description";
         }
+
+        public OrderDescriptionModel(string odsCode, EntityFramework.Models.Ordering.Order order)
+        {
+            BackLinkText = "Go back";
+            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
+            Title = "Order description";
+            OdsCode = odsCode;
+            Description = order.Description;
+        }
+
+        [Required(ErrorMessage = "Enter a description")]
+        [StringLength(100)]
+        public string Description { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Text.Json;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NUnit.Framework;
 
@@ -29,6 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Settings
             var settings = new AzureBlobStorageSettings { ConnectionString = connectionString };
 
             settings.Uri.Should().BeNull();
-        }
+        }      
     }
 }
