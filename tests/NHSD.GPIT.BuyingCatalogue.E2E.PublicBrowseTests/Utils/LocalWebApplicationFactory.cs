@@ -19,21 +19,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
     public class LocalWebApplicationFactory : WebApplicationFactory<Startup>
     {
         private const string LocalhostBaseAddress = "https://127.0.0.1";
-
+        
         private readonly IWebHost host;
         internal readonly string BcDbName;
-        internal readonly string UsersDbName;
+        internal readonly string GpitBcDbName;        
 
         internal IWebDriver Driver { get; }
 
         // Need to find a better way of doing this
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=buyingcatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-
-        private const string ID_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueUsers;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
+        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";        
+        private const string GPITBC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string OPERATING_MODE = "private";
-        private const string REDIS = "localhost:6380,abortConnect=false";
-
+        
         private const string Browser = "chrome";
 
         public LocalWebApplicationFactory()
@@ -41,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             ClientOptions.BaseAddress = new Uri(LocalhostBaseAddress);
 
             BcDbName = Guid.NewGuid().ToString();
-            UsersDbName = Guid.NewGuid().ToString();
+            GpitBcDbName = Guid.NewGuid().ToString();
 
             SetEnvVariables();
 
@@ -74,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                var dbTypes = new Type[] { typeof(BuyingCatalogueDbContext), typeof(UsersDbContext) };
+                var dbTypes = new Type[] { typeof(BuyingCatalogueDbContext), typeof(GPITBuyingCatalogueDbContext) };
 
                 foreach(var type in dbTypes)
                 { 
@@ -91,9 +89,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     options.UseInMemoryDatabase(BcDbName);
                 });
 
-                services.AddDbContext<UsersDbContext>(options =>
+                services.AddDbContext<GPITBuyingCatalogueDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase(UsersDbName);
+                    options.UseInMemoryDatabase(GpitBcDbName);
                 });
 
                 var sp = services.BuildServiceProvider();
@@ -102,15 +100,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 var scopedServices = scope.ServiceProvider;
 
                 var bcDb = scopedServices.GetRequiredService<BuyingCatalogueDbContext>();
-                var usersDb = scopedServices.GetRequiredService<UsersDbContext>();
+                var gpitBcDb = scopedServices.GetRequiredService<GPITBuyingCatalogueDbContext>();                
 
                 bcDb.Database.EnsureCreated();
-                usersDb.Database.EnsureCreated();
-
+                gpitBcDb.Database.EnsureCreated();
+                
                 try
                 {
                     BuyingCatalogueSeedData.Initialize(bcDb);
-                    UserSeedData.Initialize(usersDb);
+                    UserSeedData.Initialize(gpitBcDb);
                 }
                 catch
                 {
@@ -124,6 +122,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private void SetEnvVariables()
         {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(GPITBC_DB_CONNECTION))))
+            {
+                Environment.SetEnvironmentVariable(nameof(GPITBC_DB_CONNECTION), GPITBC_DB_CONNECTION);
+            }
+
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(BC_DB_CONNECTION))))
             {
                 Environment.SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
@@ -134,19 +137,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 Environment.SetEnvironmentVariable(nameof(CO_DB_CONNECTION), CO_DB_CONNECTION);
             }
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(ID_DB_CONNECTION))))
-            {
-                Environment.SetEnvironmentVariable(nameof(ID_DB_CONNECTION), ID_DB_CONNECTION);
-            }
-
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(OPERATING_MODE))))
             {
                 Environment.SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
-            }
-
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(REDIS))))
-            {
-                Environment.SetEnvironmentVariable(nameof(REDIS), REDIS);
             }
         }
 

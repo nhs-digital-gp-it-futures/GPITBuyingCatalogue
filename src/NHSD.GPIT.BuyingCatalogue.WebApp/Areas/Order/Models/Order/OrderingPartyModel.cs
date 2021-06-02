@@ -1,4 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         public string OrganisationName { get; set; }
 
-        public ServiceContracts.Organisations.Address Address { get; set; }
+        public EntityFramework.Models.GPITBuyingCatalogue.Address Address { get; set; }
 
         public PrimaryContactModel Contact { get; set; }
     }
