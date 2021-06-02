@@ -20,6 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         }
 
         [Test]
+        public static void ValidObject_DoesntThrowException()
+        {
+            var val = "123";
+            Assert.DoesNotThrow(() => val.ValidateNotNull("arg"));
+        }
+
+        [Test]
         [TestCaseSource(nameof(InvalidStrings))]
         public static void InvalidString_ThrowsException(string value)
         {
@@ -27,11 +34,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             actual.ParamName.Should().Be("arg");
         }
 
+        [Test]        
+        public static void ValidString_DoesntThrowException()
+        {
+            var val = "123";
+            Assert.DoesNotThrow(() => val.ValidateNotNullOrWhiteSpace("arg"));
+        }
+
         [Test]
         public static void InvalidGuid_ThrowsException()
         {
             var actual = Assert.Throws<ArgumentException>(() => Guid.Empty.ValidateGuid("id"));
             actual.ParamName.Should().Be("id");
+        }
+
+        [Test]
+        public static void ValidGuid_DoesntThrowsException()
+        {
+            var val = Guid.NewGuid();
+            Assert.DoesNotThrow(() => val.ValidateGuid("arg"));
         }
     }
 }

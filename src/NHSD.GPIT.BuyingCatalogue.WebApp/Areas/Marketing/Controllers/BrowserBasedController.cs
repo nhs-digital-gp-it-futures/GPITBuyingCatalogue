@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
@@ -225,9 +226,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        private RedirectResult RedirectBack(string solutionId)
+        private RedirectToActionResult RedirectBack(string solutionId)
         {
-            return Redirect($"/marketing/supplier/solution/{solutionId}/section/browser-based");
+            return RedirectToAction(
+                nameof(ClientApplicationTypeController.BrowserBased),
+                typeof(ClientApplicationTypeController).ControllerName(),
+                new { id = solutionId });
         }
     }
 }
