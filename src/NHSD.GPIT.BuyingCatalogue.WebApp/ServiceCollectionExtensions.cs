@@ -2,6 +2,8 @@
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -113,6 +115,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();
             healthCheckBuilder.AddSmtpHealthCheck(smtpSettings);
+        }
+
+        public static void ConfigureCookiePolicy(this IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.ConsentCookie.Name = "buyingcatalogue-cookie-consent";
+            });
         }
 
         public static void ConfigureIdentity(this IServiceCollection services)
