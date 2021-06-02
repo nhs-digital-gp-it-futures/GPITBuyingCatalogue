@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -17,16 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
     {
         private readonly ILogWrapper<SupplierService> logger;
         private readonly OrderingDbContext oDbContext;
-        private readonly BuyingCatalogueDbContext bcDbContext;
-        private readonly IDbRepository<EntityFramework.Models.BuyingCatalogue.Supplier, BuyingCatalogueDbContext> bcRepository;
+        private readonly GPITBuyingCatalogueDbContext bcDbContext;
+        private readonly IDbRepository<EntityFramework.Models.GPITBuyingCatalogue.Supplier, GPITBuyingCatalogueDbContext> bcRepository;
         private readonly IContactDetailsService contactDetailsService;
         private readonly IOrderService orderService;
 
         public SupplierService(
             ILogWrapper<SupplierService> logger,
             OrderingDbContext oDbContext,
-            BuyingCatalogueDbContext bcDbContext,
-            IDbRepository<EntityFramework.Models.BuyingCatalogue.Supplier, BuyingCatalogueDbContext> bcRepository,
+            GPITBuyingCatalogueDbContext bcDbContext,
+            IDbRepository<EntityFramework.Models.GPITBuyingCatalogue.Supplier, GPITBuyingCatalogueDbContext> bcRepository,
             IContactDetailsService contactDetailsService,
             IOrderService orderService)
         {
@@ -38,15 +38,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public async Task<List<EntityFramework.Models.BuyingCatalogue.Supplier>> GetListFromBuyingCatalogue(
+        public async Task<List<EntityFramework.Models.GPITBuyingCatalogue.Supplier>> GetListFromBuyingCatalogue(
             string searchString,
-            EntityFramework.Models.BuyingCatalogue.CatalogueItemType catalogueItemType,
+            EntityFramework.Models.GPITBuyingCatalogue.CatalogueItemType catalogueItemType,
             PublicationStatus publicationStatus = null)
         {
-            EntityFramework.Models.BuyingCatalogue.CatalogueItemType cIType =
-                catalogueItemType ?? EntityFramework.Models.BuyingCatalogue.CatalogueItemType.Solution;
+            EntityFramework.Models.GPITBuyingCatalogue.CatalogueItemType cIType =
+                catalogueItemType ?? EntityFramework.Models.GPITBuyingCatalogue.CatalogueItemType.Solution;
 
-            IQueryable<EntityFramework.Models.BuyingCatalogue.CatalogueItem> query =
+            IQueryable<EntityFramework.Models.GPITBuyingCatalogue.CatalogueItem> query =
                 bcDbContext.CatalogueItems.Where(ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType);
 
             if (publicationStatus is not null)
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToListAsync();
         }
 
-        public async Task<EntityFramework.Models.BuyingCatalogue.Supplier> GetSupplierFromBuyingCatalogue(string id)
+        public async Task<EntityFramework.Models.GPITBuyingCatalogue.Supplier> GetSupplierFromBuyingCatalogue(string id)
         {
             return await bcDbContext.Suppliers.Where(s => s.Id == id).SingleAsync();
         }

@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     internal static class BuyingCatalogueSeedData
     {
-        internal static void Initialize(BuyingCatalogueDbContext context)
+        internal static void Initialize(GPITBuyingCatalogueDbContext context)
         {
             AddDefaultData(context);
             AddCatalogueItems(context);
             context.SaveChanges();
         }
 
-        private static void AddCatalogueItems(BuyingCatalogueDbContext context)
+        private static void AddCatalogueItems(GPITBuyingCatalogueDbContext context)
         {
             List<CatalogueItem> dfocvcSolutions = new()
             {
@@ -436,7 +436,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.AddRange(frameworkSolutions);
         }
 
-        private static void AddDefaultData(BuyingCatalogueDbContext context)
+        private static void AddDefaultData(GPITBuyingCatalogueDbContext context)
         {
             // CapabilityStatus
             List<CapabilityStatus> capabilityStatuses = new()
@@ -472,10 +472,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             };
 
             // Frameworks
-            List<EntityFramework.Models.BuyingCatalogue.Framework> frameworks = new()
+            List<EntityFramework.Models.GPITBuyingCatalogue.Framework> frameworks = new()
             {
-                new EntityFramework.Models.BuyingCatalogue.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital" },
-                new EntityFramework.Models.BuyingCatalogue.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England" },
+                new EntityFramework.Models.GPITBuyingCatalogue.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital" },
+                new EntityFramework.Models.GPITBuyingCatalogue.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England" },
             };
             context.AddRange(frameworks);
 

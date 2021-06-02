@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -16,17 +16,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     public class SolutionsService : ISolutionsService
     {
         private readonly ILogWrapper<SolutionsService> logger;
-        private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
-        private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
-        private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
+        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository;
+        private readonly IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository;
+        private readonly IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository;
 
         public SolutionsService(
             ILogWrapper<SolutionsService> logger,
-            BuyingCatalogueDbContext dbContext,
-            IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
-            IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
+            GPITBuyingCatalogueDbContext dbContext,
+            IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository,
+            IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository,
+            IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

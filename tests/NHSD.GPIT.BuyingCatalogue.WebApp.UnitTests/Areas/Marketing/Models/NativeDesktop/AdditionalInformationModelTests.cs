@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using FluentAssertions;
 using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
 using NUnit.Framework;
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemId = "123",
-                Solution = new EntityFramework.Models.BuyingCatalogue.Solution { ClientApplication = json }
+                Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json }
             };
 
             var model = new AdditionalInformationModel(catalogueItem);
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             var clientApplication = new ClientApplication { NativeDesktopAdditionalInformation = additionalInformation };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem { Solution = new EntityFramework.Models.BuyingCatalogue.Solution { ClientApplication = json } };
+            var catalogueItem = new CatalogueItem { Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json } };
 
             var model = new AdditionalInformationModel(catalogueItem);
 
