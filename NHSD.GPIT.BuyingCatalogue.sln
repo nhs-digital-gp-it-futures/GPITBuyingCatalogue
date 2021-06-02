@@ -149,7 +149,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "NHSD.GPITBuyingCatalogue.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPITBuyingCatalogue.Database.Deployment", "database\NHSD.GPITBuyingCatalogue.Database.Deployment\NHSD.GPITBuyingCatalogue.Database.Deployment.csproj", "{9835305A-D8EF-4542-9853-81A354B47E43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.Components", "src\NHSD.GPIT.BuyingCatalogue.Components\NHSD.GPIT.BuyingCatalogue.Components.csproj", "{424E04B9-A569-4287-96CC-21D288456267}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.UI.Components", "src\NHSD.GPIT.BuyingCatalogue.Components\NHSD.GPIT.BuyingCatalogue.UI.Components.csproj", "{424E04B9-A569-4287-96CC-21D288456267}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

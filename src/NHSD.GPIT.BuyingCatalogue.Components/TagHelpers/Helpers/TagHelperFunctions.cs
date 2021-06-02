@@ -5,9 +5,9 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
 
-namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     public static class TagHelperFunctions
     {

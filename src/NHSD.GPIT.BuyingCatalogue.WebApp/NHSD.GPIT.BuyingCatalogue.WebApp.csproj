@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Components\NHSD.GPIT.BuyingCatalogue.Components.csproj" />
+    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Components\NHSD.GPIT.BuyingCatalogue.UI.Components.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.EntityFramework\NHSD.GPIT.BuyingCatalogue.EntityFramework.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Framework\NHSD.GPIT.BuyingCatalogue.Framework.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.ServiceContracts\NHSD.GPIT.BuyingCatalogue.ServiceContracts.csproj" />

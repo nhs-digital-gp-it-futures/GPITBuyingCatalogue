@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
     public class SubmitButtonTagHelper : TagHelper

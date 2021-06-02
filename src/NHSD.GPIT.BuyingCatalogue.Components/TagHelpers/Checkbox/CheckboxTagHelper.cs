@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
 
-namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName, ParentTag = CheckboxContainerTagHelper.TagHelperName)]
     public sealed class CheckboxTagHelper : TagHelper
