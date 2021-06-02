@@ -20,6 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return View();
         }
 
+        [Route("privacy-policy")]
+        public IActionResult PrivacyPolicy()
+        {
+            logger.LogInformation($"Taking user to {nameof(HomeController)}.{nameof(PrivacyPolicy)}");
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode)
         {

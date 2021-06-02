@@ -48,9 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             driver.Navigate().GoToUrl(combinedUri);
         }
 
-        internal BuyingCatalogueDbContext GetBCContext()
+        internal GPITBuyingCatalogueDbContext GetBCContext()
         {
-            var options = new DbContextOptionsBuilder<BuyingCatalogueDbContext>()
+            var options = new DbContextOptionsBuilder<GPITBuyingCatalogueDbContext>()
                 .UseInMemoryDatabase(factory.BcDbName)
                 .Options;
 
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         internal GPITBuyingCatalogueDbContext GetUsersContext()
         {
             var options = new DbContextOptionsBuilder<GPITBuyingCatalogueDbContext>()
-                .UseInMemoryDatabase(factory.GpitBcDbName)
+                .UseInMemoryDatabase(factory.BcDbName)
                 .Options;
 
             return new(options);

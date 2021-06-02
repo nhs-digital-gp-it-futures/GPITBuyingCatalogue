@@ -42,6 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             var healthChecksBuilder = services.AddHealthChecks();
 
+            services.ConfigureCookiePolicy();
+
             services.ConfigureDbContexts(healthChecksBuilder);
 
             services.ConfigureIdentity();
@@ -123,6 +125,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     context.Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
                 },
             });
+
+            app.UseCookiePolicy();
 
             app.Use(async (context, next) =>
             {

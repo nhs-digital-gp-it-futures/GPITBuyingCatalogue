@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Http.Features
+@{
+    var consentFeatureFlag = Context.Features.Get<ITrackingConsentFeature>();
+    var showBannerFlag = !consentFeatureFlag?.CanTrack ?? false;
+    var cookieString = consentFeatureFlag?.CreateConsentCookie();
+}
+
+@if (showBannerFlag)
+{
+    <div id="cookie-banner-div" data-test-id="cookie-banner" class="bc-c-cookies nhsuk-header--white nhsuk-u-padding-top-3" aria-labelledby="cookies" role="banner">
+        <div class="nhsuk-width-container">
+            <h2 class="nhsuk-heading-m">Cookies on the Buying Catalogue</h2>
+            <p class="hsuk-body">We've put small files called cookies on your device to make the Buying Catalogue website work.</p>
+            <p class="hsuk-body">You can read more about our <a href="~/privacy-policy">cookies and privacy policy</a>.</p>
+            <div data-test-id="cookie-dismiss">
+                <button id="dismiss-button" type="button" class="nhsuk-button nhsuk-button--primary" onclick="onDismiss()" aria-label="Close" data-cookie-string="@cookieString">
+                    <span aria-hidden="true">Dismiss</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        cookiebannerdiv = document.getElementById("cookie-banner-div");
+        dismissbutton = document.getElementById("dismiss-button");
+
+        function onDismiss() {
+            document.cookie = dismissbutton.dataset.cookieString;
+            cookiebannerdiv.style.display = (cookiebannerdiv.style.display !== "none") ? "none" : "block";            
+        }
+    </script>
+}

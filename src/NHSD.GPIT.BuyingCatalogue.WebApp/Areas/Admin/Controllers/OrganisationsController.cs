@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{id}/edit")]
-        public async Task<IActionResult> EditOrganisation(string id, EditOrganisationModel model)
+        public async Task<IActionResult> EditOrganisation(Guid id, EditOrganisationModel model)
         {
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(EditOrganisation)} for {nameof(id)} {id}");
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await organisationsService.UpdateCatalogueAgreementSigned(model.Organisation.OrganisationId, model.CatalogueAgreementSigned);
+            await organisationsService.UpdateCatalogueAgreementSigned(id, model.CatalogueAgreementSigned);
             return RedirectToAction("EditConfirmation", "Organisations", new { id });
         }
 

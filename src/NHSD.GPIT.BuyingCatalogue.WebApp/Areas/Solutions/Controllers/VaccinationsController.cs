@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        [Route("Solutions/Vaccinations")]
         public IActionResult Index()
         {
             return View();

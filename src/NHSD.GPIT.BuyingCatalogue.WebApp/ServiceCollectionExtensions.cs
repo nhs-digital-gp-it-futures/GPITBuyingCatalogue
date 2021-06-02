@@ -2,12 +2,13 @@
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
@@ -26,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     {
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
         private const string CatalogueOrderingDbConnectionEnvironmentVariable = "CO_DB_CONNECTION";
-        private const string GPITBuyingCatalogueDbConnectionEnvironmentVariable = "GPITBC_DB_CONNECTION";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .AddTransient<IMemberValueResolver<object, object, string, bool?>,
                     StringToNullableBoolResolver>();
             services
-                .AddTransient<ITypeConverter<EntityFramework.Models.BuyingCatalogue.CatalogueItem, SolutionStatusModel>,
+                .AddTransient<ITypeConverter<EntityFramework.Models.GPITBuyingCatalogue.CatalogueItem, SolutionStatusModel>,
                     CatalogueItemToSolutionStatusModelConverter>();
             services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -91,16 +91,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             if (string.IsNullOrWhiteSpace(catalogueOrderingConnectionString))
                 throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
-            var gpitBuyingCatalogueConnectionString = Environment.GetEnvironmentVariable(GPITBuyingCatalogueDbConnectionEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(gpitBuyingCatalogueConnectionString))
-                throw new InvalidOperationException($"Environment variable '{GPITBuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
-
-            services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
+            services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
             services.AddDbContext<OrderingDbContext>(options => options.UseSqlServer(catalogueOrderingConnectionString));
-            services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(gpitBuyingCatalogueConnectionString));
 
-            healthCheckBuilder.AddDatabaseHealthCheck(gpitBuyingCatalogueConnectionString);
+            healthCheckBuilder.AddDatabaseHealthCheck(buyingCatalogueConnectionString);
         }
 
         public static void ConfigureDisabledErrorMessage(this IServiceCollection services, IConfiguration configuration)
@@ -121,6 +115,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();
             healthCheckBuilder.AddSmtpHealthCheck(smtpSettings);
+        }
+
+        public static void ConfigureCookiePolicy(this IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.ConsentCookie.Name = "buyingcatalogue-cookie-consent";
+            });
         }
 
         public static void ConfigureIdentity(this IServiceCollection services)

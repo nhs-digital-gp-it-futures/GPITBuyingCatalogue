@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -32,17 +31,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         {
             Environment.SetEnvironmentVariable("BC_DB_CONNECTION",
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=BC_Catalog;Trusted_Connection=True;");
-            Environment.SetEnvironmentVariable("GPITBC_DB_CONNECTION",
-                "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=GPITBC_Catalog;Trusted_Connection=True;");
             Environment.SetEnvironmentVariable("CO_DB_CONNECTION",
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=ID_Catalog;Trusted_Connection=True;");
         }
 
         [TestCase(typeof(DisabledErrorMessageSettings))]
-        [TestCase(typeof(BuyingCatalogueDbContext))]
-        [TestCase(typeof(DataProtectorTokenProvider<AspNetUser>))]
-        [TestCase(typeof(SmtpSettings))]
         [TestCase(typeof(GPITBuyingCatalogueDbContext))]
+        [TestCase(typeof(DataProtectorTokenProvider<AspNetUser>))]
+        [TestCase(typeof(SmtpSettings))]        
         public static void ContainsTheExpectedServiceInstances(Type expectedType)
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<StartupTest>().Build();
@@ -58,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         [TestCase(typeof(IPasswordService), typeof(PasswordService))]
         [TestCase(typeof(IPasswordValidator<AspNetUser>), typeof(PasswordValidator))]
         [TestCase(
-            typeof(ITypeConverter<EntityFramework.Models.BuyingCatalogue.CatalogueItem, SolutionStatusModel>),
+            typeof(ITypeConverter<EntityFramework.Models.GPITBuyingCatalogue.CatalogueItem, SolutionStatusModel>),
             typeof(CatalogueItemToSolutionStatusModelConverter))]
         [TestCase(typeof(ITypeConverter<string, bool?>), typeof(StringToNullableBoolResolver))]
         [TestCase(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx<AspNetUser>))]
