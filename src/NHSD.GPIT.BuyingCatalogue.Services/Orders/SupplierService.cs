@@ -20,19 +20,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly BuyingCatalogueDbContext bcDbContext;
         private readonly IDbRepository<EntityFramework.Models.BuyingCatalogue.Supplier, BuyingCatalogueDbContext> bcRepository;
         private readonly IContactDetailsService contactDetailsService;
+        private readonly IOrderService orderService;
 
         public SupplierService(
             ILogWrapper<SupplierService> logger,
             OrderingDbContext oDbContext,
             BuyingCatalogueDbContext bcDbContext,
             IDbRepository<EntityFramework.Models.BuyingCatalogue.Supplier, BuyingCatalogueDbContext> bcRepository,
-            IContactDetailsService contactDetailsService)
+            IContactDetailsService contactDetailsService,
+            IOrderService orderService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.oDbContext = oDbContext ?? throw new ArgumentNullException(nameof(oDbContext));
             this.bcDbContext = bcDbContext ?? throw new ArgumentNullException(nameof(bcDbContext));
             this.bcRepository = bcRepository ?? throw new ArgumentNullException(nameof(bcRepository));
             this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
         public async Task<List<EntityFramework.Models.BuyingCatalogue.Supplier>> GetListFromBuyingCatalogue(
@@ -61,6 +64,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return await bcDbContext.Suppliers.Where(s => s.Id == id).SingleAsync();
         }
 
+        public async Task<EntityFramework.Models.Ordering.Supplier> GetSupplierFromCatalogueOrdering(string id)
+        {
+            return await oDbContext.Suppliers.Where(s => s.Id == id).SingleOrDefaultAsync();
+        }
+
         public async Task AddOrderSupplier(string callOffId, string supplierId)
         {
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
@@ -68,9 +76,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
 
-            var order = await oDbContext.Orders.Where(o => o.CallOffId == CallOffId.Parse(callOffId)).SingleAsync();
+            var existingSupplier = await GetSupplierFromCatalogueOrdering(supplierId);
 
-            var supplierModel = new EntityFramework.Models.Ordering.Supplier
+            var order = await orderService.GetOrder(callOffId);
+
+            var supplierModel = existingSupplier ?? new EntityFramework.Models.Ordering.Supplier
             {
                 Id = supplier.Id,
                 Name = supplier.Name,
@@ -86,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
-            var order = await oDbContext.Orders.Where(o => o.CallOffId == CallOffId.Parse(callOffId)).SingleAsync();
+            var order = await orderService.GetOrder(callOffId);
 
             switch (order.SupplierContact)
             {

@@ -16,8 +16,8 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "OPERATING_MODE": "Private",
         "BC_DB_CONNECTION": "Server=localhost,1432;Database=BuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
-        "CO_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueOrdering;User=SA;password=Abc123Abc123;Integrated Security=false",
-        "ID_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueUsers;User=SA;password=Abc123Abc123;Integrated Security=false"
+        "CO_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueOrdering;User=SA;password=Abc123Abc123;Integrated Security=false",        
+        "GPITBC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false"
       }
     },
     "NHSD.GPIT.BuyingCatalogue.WebApp": {
@@ -28,8 +28,8 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "OPERATING_MODE": "Private",
         "BC_DB_CONNECTION": "Server=localhost,1432;Database=BuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
-        "CO_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueOrdering;User=SA;password=Abc123Abc123;Integrated Security=false",
-        "ID_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueUsers;User=SA;password=Abc123Abc123;Integrated Security=false"
+        "CO_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueOrdering;User=SA;password=Abc123Abc123;Integrated Security=false",        
+        "GPITBC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
