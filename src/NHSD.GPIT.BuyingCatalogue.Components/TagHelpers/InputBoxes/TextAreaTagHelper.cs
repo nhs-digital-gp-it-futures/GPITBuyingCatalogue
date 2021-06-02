@@ -3,20 +3,23 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    public sealed class ValidationTextInputTagHelper : TagHelper
+    public sealed class TextAreaTagHelper : TagHelper
     {
-        public const string TagHelperName = "nhs-validation-input";
+        public const string TagHelperName = "nhs-textarea";
 
-        private const int DefaultMaxLength = 500;
+        private const string TextAreaNumberOfRows = "number-of-rows";
+        private const string NhsTextArea = "nhsuk-textarea";
+
+        private const int DefaultNumberOfTextAreaRows = 5;
+        private const int DefaultMaxLength = 1500;
 
         private readonly IHtmlGenerator htmlGenerator;
 
-        public ValidationTextInputTagHelper(IHtmlGenerator htmlGenerator)
+        public TextAreaTagHelper(IHtmlGenerator htmlGenerator)
         {
             this.htmlGenerator = htmlGenerator;
         }
@@ -39,6 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
+
+        [HtmlAttributeName(TextAreaNumberOfRows)]
+        public int? NumberOfRows { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -66,29 +72,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 
         private TagBuilder GetInputBuilder()
         {
-            var builder = htmlGenerator.GenerateTextBox(
+            var builder = htmlGenerator.GenerateTextArea(
                 ViewContext,
                 For.ModelExplorer,
                 For.Name,
-                For.Model,
-                null,
+                NumberOfRows ?? DefaultNumberOfTextAreaRows,
+                0,
                 new
                 {
-                    @class = TagHelperConstants.NhsInput,
+                    @class = NhsTextArea,
                     aria_describedby = $"{For.Name}-info {For.Name}-summary",
                 });
 
             if (!builder.Attributes.Any(a => a.Key == "maxlength"))
                 builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
 
-            if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
-                builder.MergeAttribute(TagHelperConstants.Type, "password");
-
             if (!TagHelperFunctions.IsCounterDisabled(For, DisableCharacterCounter))
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
+            {
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);
+            }
 
             return builder;
         }

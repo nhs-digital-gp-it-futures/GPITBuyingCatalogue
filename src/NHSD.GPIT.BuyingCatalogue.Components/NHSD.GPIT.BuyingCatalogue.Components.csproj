@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ViewComponents\" />
+    <Folder Include="ViewComponents\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>

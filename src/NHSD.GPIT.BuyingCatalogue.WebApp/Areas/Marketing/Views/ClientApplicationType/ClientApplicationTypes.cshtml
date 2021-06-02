@@ -16,9 +16,9 @@
                                label-text="Client application types supported"
                                label-hint="Select at least one client application type. You’ll need to provide further information for each type you select.">
                 <nhs-checkbox-container>
-                    <nhs-validation-checkbox asp-for="BrowserBased" label-text="Browser-based" />
-                    <nhs-validation-checkbox asp-for="NativeMobile" label-text="Native mobile or tablet" />
-                    <nhs-validation-checkbox asp-for="NativeDesktop" label-text="Native Desktop" />
+                    <nhs-checkbox asp-for="BrowserBased" label-text="Browser-based" />
+                    <nhs-checkbox asp-for="NativeMobile" label-text="Native mobile or tablet" />
+                    <nhs-checkbox asp-for="NativeDesktop" label-text="Native Desktop" />
                 </nhs-checkbox-container>
             </nhs-fieldset-form>
             <nhs-submit-button />

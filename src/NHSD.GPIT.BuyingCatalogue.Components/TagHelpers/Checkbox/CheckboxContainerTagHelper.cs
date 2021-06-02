@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(ValidationCheckboxTagHelper.TagHelperName)]
+    [RestrictChildren(CheckboxTagHelper.TagHelperName)]
     public class CheckboxContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-checkbox-container";

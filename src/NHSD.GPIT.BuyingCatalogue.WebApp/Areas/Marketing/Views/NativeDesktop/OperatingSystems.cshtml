@@ -14,7 +14,7 @@
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-validation-textarea asp-for="OperatingSystemsDescription"
+            <nhs-textarea asp-for="OperatingSystemsDescription"
                                      label-text="Supported operating systems"
                                      label-hint="Provide information on the operating systems supported by your Catalogue Solution." />
             <nhs-submit-button />

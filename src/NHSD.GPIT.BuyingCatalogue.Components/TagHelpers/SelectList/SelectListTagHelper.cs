@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    public sealed class ValidationSelectListTagHelper : TagHelper
+    public sealed class SelectListTagHelper : TagHelper
     {
-        public const string TagHelperName = "nhs-validation-select";
+        public const string TagHelperName = "nhs-select";
 
         private const string ItemsName = "asp-items";
 
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 
         private readonly IHtmlGenerator htmlGenerator;
 
-        public ValidationSelectListTagHelper(IHtmlGenerator htmlGenerator)
+        public SelectListTagHelper(IHtmlGenerator htmlGenerator)
         {
             this.htmlGenerator = htmlGenerator;
         }

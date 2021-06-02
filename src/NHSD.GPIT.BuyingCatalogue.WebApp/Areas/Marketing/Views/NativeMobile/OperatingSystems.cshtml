@@ -20,13 +20,13 @@
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.OperatingSystems.Length; i++)
                     {
-                        <nhs-validation-checkbox asp-for="@Model.OperatingSystems[i].Checked"
+                        <nhs-checkbox asp-for="@Model.OperatingSystems[i].Checked"
                                                  label-text="@Model.OperatingSystems[i].OperatingSystemName"
                                                  hidden-input="@Model.OperatingSystems[i].OperatingSystemName" />
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form>
-            <nhs-validation-textarea asp-for="Description"
+            <nhs-textarea asp-for="Description"
                                      label-text="Description of supported operating systems (optional)"
                                      label-hint="Provide any additional information that may be helpful to buyers, for example which version of the operating system is supported." />
             <nhs-submit-button />

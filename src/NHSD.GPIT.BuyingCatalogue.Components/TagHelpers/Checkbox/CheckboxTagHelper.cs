@@ -7,9 +7,9 @@ using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
 namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName, ParentTag = CheckboxContainerTagHelper.TagHelperName)]
-    public sealed class ValidationCheckboxTagHelper : TagHelper
+    public sealed class CheckboxTagHelper : TagHelper
     {
-        public const string TagHelperName = "nhs-validation-checkbox";
+        public const string TagHelperName = "nhs-checkbox";
 
         private const string HiddenAttributeName = "hidden-input";
         private const string NhsCheckboxItem = "nhsuk-checkboxes__item";
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 
         private readonly IHtmlGenerator htmlGenerator;
 
-        public ValidationCheckboxTagHelper(IHtmlGenerator htmlGenerator) => this.htmlGenerator = htmlGenerator;
+        public CheckboxTagHelper(IHtmlGenerator htmlGenerator) => this.htmlGenerator = htmlGenerator;
 
         [HtmlAttributeNotBound]
         [ViewContext]

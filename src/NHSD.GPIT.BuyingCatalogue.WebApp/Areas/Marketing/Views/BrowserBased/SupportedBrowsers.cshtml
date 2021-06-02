@@ -21,7 +21,7 @@
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.Browsers.Length; i++)
                     {
-                        <nhs-validation-checkbox asp-for="@Model.Browsers[i].Checked" label-text="@Model.Browsers[i].BrowserName" hidden-input="@Model.Browsers[i].BrowserName" />
+                        <nhs-checkbox asp-for="@Model.Browsers[i].Checked" label-text="@Model.Browsers[i].BrowserName" hidden-input="@Model.Browsers[i].BrowserName" />
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form>
