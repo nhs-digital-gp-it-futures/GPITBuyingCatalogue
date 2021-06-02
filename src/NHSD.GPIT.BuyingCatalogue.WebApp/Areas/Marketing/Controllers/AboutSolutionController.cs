@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
@@ -34,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"Features-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -52,7 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             var features = mapper.Map<FeaturesModel, string[]>(model);
             await solutionsService.SaveSolutionFeatures(model.SolutionId, features);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("implementation-timescales")]
@@ -79,7 +84,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveImplementationDetail(model.SolutionId, model.Description);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("integrations")]
@@ -106,7 +114,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveIntegrationLink(model.SolutionId, model.Link);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("roadmap")]
@@ -133,7 +144,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveRoadmap(model.SolutionId, model.Summary);
 
-            return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("solution-description")]
@@ -166,7 +180,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 model.Description,
                 model.Link);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
     }
 }

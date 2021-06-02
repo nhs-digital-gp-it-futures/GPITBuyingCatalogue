@@ -6,10 +6,12 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
@@ -145,8 +147,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var result = (controller.Preview("123")).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be("preview");
-            result.ControllerName.Should().Be("solutions");
+            result.ActionName.Should().Be(nameof(SolutionDetailsController.PreviewSolutionDetail));
+            result.ControllerName.Should().Be(typeof(SolutionDetailsController).ControllerName());
             result.RouteValues["id"].Should().Be("123");
         }
     }

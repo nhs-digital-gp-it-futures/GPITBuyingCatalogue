@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
@@ -36,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             {
                 return RedirectToAction(
                     actionName: nameof(SupplierSearch),
-                    controllerName: "Supplier",
+                    controllerName: typeof(SupplierController).ControllerName(),
                     routeValues: new { odsCode, callOffId });
             }
 
@@ -54,7 +55,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             await supplierService.AddOrUpdateOrderSupplierContact(callOffId, model.PrimaryContact);
 
-            return RedirectToAction();
+            return RedirectToAction(
+                actionName: nameof(OrderController.Order),
+                controllerName: typeof(OrderController).ControllerName(),
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("search")]
@@ -66,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             {
                 return RedirectToAction(
                     actionName: nameof(Supplier),
-                    controllerName: "Supplier",
+                    controllerName: typeof(SupplierController).ControllerName(),
                     routeValues: new { odsCode, callOffId });
             }
 
@@ -78,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             return RedirectToAction(
                 actionName: nameof(SupplierSearchSelect),
-                controllerName: "Supplier",
+                controllerName: typeof(SupplierController).ControllerName(),
                 routeValues: new { odsCode, callOffId, search = model.SearchString });
         }
 
@@ -109,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             return RedirectToAction(
                 actionName: nameof(Supplier),
-                controllerName: "Supplier",
+                controllerName: typeof(SupplierController).ControllerName(),
                 routeValues: new { odsCode, callOffId });
         }
     }

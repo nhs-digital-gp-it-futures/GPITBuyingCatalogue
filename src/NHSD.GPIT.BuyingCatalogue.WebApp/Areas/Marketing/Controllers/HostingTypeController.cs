@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
@@ -57,7 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("hosting-type-private-cloud")]
@@ -90,7 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("hosting-type-hybrid")]
@@ -123,7 +130,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("hosting-type-on-premise")]
@@ -156,7 +166,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveHosting(model.SolutionId, hosting);
 
-            return RedirectToAction("Index", "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
     }
 }
