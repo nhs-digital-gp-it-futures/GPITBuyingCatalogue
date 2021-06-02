@@ -18,13 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [TestCase(typeof(SolutionDescriptionModel))]
         public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
         {
-            childType.Should().BeAssignableTo<SolutionDisplayBaseModel>();
+            typeof(SolutionDescriptionModel)
+                .Should()
+                .BeAssignableTo<SolutionDisplayBaseModel>();
         }
-        
-        [TestCase("FEATURES")]
-        [TestCase("features")]
-        [TestCase("feaTURes")]
-        public static void GetSectionFor_SectionValid_ReturnsExpectedSectionModel(string section)
+
+        [TestCase("DESCRIPTION")]
+        [TestCase("description")]
+        [TestCase("desCRIPtion")]
+        public static void GetSectionForDescription_SectionValid_ReturnsExpectedSectionModel(string section)
         {
             var model = new TestMarketingDisplayBaseModel();
 
@@ -32,7 +34,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             actual.Should()
                 .BeEquivalentTo(
-                    new SectionModel { Action = "Description", Controller = "SolutionDetails", Name = "Features", });
+                    new SectionModel { Action = "Description", Controller = "SolutionDetails", Name = "Description", });
+        }
+        
+        [TestCase("FEATURES")]
+        [TestCase("features")]
+        [TestCase("feaTUres")]
+        public static void GetSectionForFeatures_SectionValid_ReturnsExpectedSectionModel(string section)
+        {
+            var model = new TestMarketingDisplayBaseModel();
+
+            var actual = model.GetSectionFor(section);
+
+            actual.Should()
+                .BeEquivalentTo(
+                    new SectionModel { Action = "Features", Controller = "SolutionDetails", Name = "Features", });
+        }
+
+        [TestCase("Description","Description")]
+        [TestCase("Features", "Features")]
+        public static void GetSectionFor_SectionValid_ReturnsExpectedSectionModel(string action, string section)
+        {
+            var model = new TestMarketingDisplayBaseModel();
+
+            var actual = model.GetSectionFor(section);
+
+            actual.Should()
+                .BeEquivalentTo(
+                    new SectionModel { Action = action, Controller = "SolutionDetails", Name = section, });
         }
 
         [TestCase(null)]
@@ -80,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.Features),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
                 Name = "Features",
             },
