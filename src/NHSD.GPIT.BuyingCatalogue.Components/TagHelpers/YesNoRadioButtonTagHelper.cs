@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName, ParentTag = FieldSetFormTagHelper.TagHelperName)]
     public class YesNoRadioButtonTagHelper : TagHelper

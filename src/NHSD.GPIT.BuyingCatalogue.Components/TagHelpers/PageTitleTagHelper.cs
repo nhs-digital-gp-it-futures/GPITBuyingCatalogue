@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
     public sealed class PageTitleTagHelper : TagHelper

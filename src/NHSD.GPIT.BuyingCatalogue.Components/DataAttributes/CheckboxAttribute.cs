@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes
+namespace NHSD.GPIT.BuyingCatalogue.Components.DataAttributes
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class CheckboxAttribute : Attribute

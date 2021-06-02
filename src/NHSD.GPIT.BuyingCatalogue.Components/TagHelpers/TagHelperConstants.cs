@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.ViewsTagHelpers
+﻿namespace NHSD.GPIT.BuyingCatalogue.Components.TagHelpers
 {
     public sealed class TagHelperConstants
     {
