@@ -57,10 +57,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             return new(options);
         }
 
-        internal UsersDbContext GetUsersContext()
+        internal GPITBuyingCatalogueDbContext GetUsersContext()
         {
-            var options = new DbContextOptionsBuilder<UsersDbContext>()
-                .UseInMemoryDatabase(factory.UsersDbName)
+            var options = new DbContextOptionsBuilder<GPITBuyingCatalogueDbContext>()
+                .UseInMemoryDatabase(factory.GpitBcDbName)
                 .Options;
 
             return new(options);
