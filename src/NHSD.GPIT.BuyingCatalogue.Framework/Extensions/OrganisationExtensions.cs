@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static Address GetAddress(this Organisation organisation)
         {
-            if (string.IsNullOrWhiteSpace(organisation.Address))
+            if (string.IsNullOrWhiteSpace(organisation?.Address)) // MJRTODO
                 return new Address();
 
             return JsonConvert.DeserializeObject<Address>(organisation.Address);

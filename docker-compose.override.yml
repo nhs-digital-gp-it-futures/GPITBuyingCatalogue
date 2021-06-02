@@ -6,15 +6,13 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=http://+:80
             - OPERATING_MODE=Private
-            - BC_DB_CONNECTION=Server=sqlserver,1433;Database=buyingcatalogue;User=SA;password=Abc123Abc123;Integrated Security=false
-            - GPITBC_DB_CONNECTION=Server=sqlserver,1433;Database=gpitbuyingcatalogue;User=SA;password=Abc123Abc123;Integrated Security=false
+            - BC_DB_CONNECTION=Server=sqlserver,1433;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false            
         ports:
             - "8000:80"      
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-        depends_on:           
-            - "nhsd_bcdb_deploy"
+        depends_on:                       
             - "nhsd_codb_deploy"            
             - "nhsd_gpitbcdb_deploy"
             - "maildev"
@@ -40,23 +38,6 @@ services:
         ports:
         - "10100:10000"
         - "10101:10001"
-
-    nhsd_bcdb_deploy:
-        image: ${DOCKER_REGISTRY}buyingcataloguedatabase
-        container_name: nhsd_bcdb_deploy
-        build:
-            context: .
-            dockerfile: database/NHSD.BuyingCatalogue.Database.Deployment/Docker/Dockerfile
-        environment:
-            SA_PASSWORD: "Abc123Abc123"
-            NHSD_PASSWORD: "DisruptTheMarket1!"
-            DB_NAME: "BuyingCatalogue"
-            DB_SERVER: sqlserver            
-            INCLUDE_IMPORT: "TRUE"
-            INCLUDE_PUBLISH: "TRUE"
-            INSERT_TEST_DATA: "TRUE"
-        depends_on:
-            - "sqlserver"   
 
     nhsd_codb_deploy:
         image: ${DOCKER_REGISTRY}catalogueorderingdatabase
