@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NUnit.Framework;
@@ -119,11 +120,53 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Test, CommonAutoData]
         public static void IsFoundation_NullSolution_ReturnsNull(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.FrameworkSolutions = null;
+            catalogueItem.Solution = null;
 
             var actual = catalogueItem.IsFoundation();
 
             actual.Should().BeNull();
+        }
+
+        [Test, CommonAutoData]
+        public static void Features_NullSolution_ReturnsNull(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution = null;
+
+            var actual = catalogueItem.Features();
+
+            actual.Should().BeNull();
+        }
+
+        [Test, CommonAutoData]
+        public static void Features_NullFeatures_ReturnsNull(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.Features = null;
+
+            var actual = catalogueItem.Features();
+
+            actual.Should().BeNull();
+        }
+
+        [Test, CommonAutoData]
+        public static void Features_EmptyFeatures_ReturnsNull(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.Features = string.Empty;
+
+            var actual = catalogueItem.Features();
+
+            actual.Should().BeNull();
+        }
+
+        [Test, CommonAutoData]
+        public static void Features_SolutionHasValidFeatures_ReturnsFeatures(
+            CatalogueItem catalogueItem,
+            string[] expected)
+        {
+            catalogueItem.Solution.Features = JsonConvert.SerializeObject(expected);
+
+            var actual = catalogueItem.Features();
+
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Test, CommonAutoData]

@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.Features),
                 Controller = ControllerName,
                 Name = "Features",
             },
