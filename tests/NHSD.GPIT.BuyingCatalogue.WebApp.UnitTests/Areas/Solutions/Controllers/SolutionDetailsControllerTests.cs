@@ -207,6 +207,91 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockSolutionDescriptionModel);
         }
+
+        [Test]
+        public static void Get_Features_RouteAttribute_ExpectedTemplate()
+        {
+            typeof(SolutionDetailsController)
+                .GetMethod(nameof(SolutionDetailsController.Features))
+                .GetCustomAttribute<RouteAttribute>()
+                .Template.Should()
+                .Be("solutions/futures/{id}/features");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void Get_Features_InvalidId_ThrowsException(string id)
+        {
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.Features(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Features_ValidId_InvokesGetSolution(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            await controller.Features(id);
+
+            mockService.Verify(s => s.GetSolution(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Features_NullSolutionForId_ReturnsBadRequestResult(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.Features(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Features_ValidSolutionForId_MapsToModel(string id)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            await controller.Features(id);
+
+            mockMapper.Verify(m => m.Map<CatalogueItem, SolutionFeaturesModel>(mockCatalogueItem));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Features_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        {
+            var mockSolutionFeaturesModel = new Mock<SolutionFeaturesModel>().Object;
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            mockMapper.Setup(m => m.Map<CatalogueItem, SolutionFeaturesModel>(mockCatalogueItem))
+                .Returns(mockSolutionFeaturesModel);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            var actual = (await controller.Features(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().Be(mockSolutionFeaturesModel);
+        }
         
         [Test]
         public static void Get_ImplementationTimescales_RouteAttribute_ExpectedTemplate()

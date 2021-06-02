@@ -135,6 +135,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     dest => dest.SupplierName,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<CatalogueItem, SolutionFeaturesModel>()
+                .ForMember(dest => dest.Features, opt => opt.MapFrom(src => src.Features()))
+                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Features"))
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                .AfterMap(
+                    (_, dest) =>
+                    {
+                        dest.PaginationFooter.Previous = dest.GetSectionFor("Description");
+                        dest.PaginationFooter.Next = dest.GetSectionFor("Capabilities");
+                    });
         }
     }
 }

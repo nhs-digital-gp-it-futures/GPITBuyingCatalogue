@@ -8,49 +8,17 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-
+            <form method="post">
             <nhs-page-title title="@Model.Title" title-advice="These are the suppliers that match the search terms you provided. Select the one you&#39;re looking for." />
 
-            <form method="post">
-
-                <div id="selectSupplier" data-test-id="question-selectSupplier">
-
-                    <div data-test-id="radiobutton-options">
-
-                        <div class="nhsuk-form-group">
-
-                            <fieldset class="nhsuk-fieldset">
-                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Select Supplier
-                                </legend>
-
-                                <div class="nhsuk-radios">
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectSupplier-1" name="selectSupplier" type="radio" value="10000">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSupplier-1">
-                                            EMIS Health
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectSupplier-2" name="selectSupplier" type="radio" value="99999">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSupplier-2">
-                                            NotEmis Health
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-
-                <div data-test-id="continue-button">
-
-                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                        Continue
-                    </button>
-                </div>
+            <nhs-fieldset-form asp-for="@Model"
+                               label-text="Select Supplier" >
+                <nhs-radio-buttons asp-for="SelectedSupplierId"
+                                   values="@Model.Suppliers"
+                                   value-name="Id"
+                                   display-name="Name" />
+            </nhs-fieldset-form>
+            <nhs-submit-button text="Continue" />
             </form>
         </div>
     </div>

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -15,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     public class OrganisationsService : IOrganisationsService
     {
         private readonly ILogWrapper<OrganisationsService> logger;
-        private readonly UsersDbContext dbContext;
-        private readonly IDbRepository<Organisation, UsersDbContext> organisationRepository;
+        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly IDbRepository<Organisation, GPITBuyingCatalogueDbContext> organisationRepository;
 
         public OrganisationsService(
             ILogWrapper<OrganisationsService> logger,
-            UsersDbContext dbContext,
-            IDbRepository<Organisation, UsersDbContext> organisationRepository)
+            GPITBuyingCatalogueDbContext dbContext,
+            IDbRepository<Organisation, GPITBuyingCatalogueDbContext> organisationRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.organisationRepository = organisationRepository ?? throw new ArgumentNullException(nameof(organisationRepository));

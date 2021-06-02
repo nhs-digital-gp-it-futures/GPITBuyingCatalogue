@@ -7,30 +7,35 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public class OrderService : IOrderService
     {
-        // private readonly ApplicationDbContext context;
         private readonly ILogWrapper<OrderService> logger;
         private readonly OrderingDbContext dbContext;
         private readonly IDbRepository<Order, OrderingDbContext> orderRepository;
+        private readonly IOrganisationsService organisationService;
 
         public OrderService(
             ILogWrapper<OrderService> logger,
             OrderingDbContext dbContext,
-            IDbRepository<Order, OrderingDbContext> orderRepository)
+            IDbRepository<Order, OrderingDbContext> orderRepository,
+            IOrganisationsService organisationService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
-        public async Task<Order> GetOrder(CallOffId callOffId)
+        public async Task<Order> GetOrder(string callOffId)
         {
+            var id = CallOffId.Parse(callOffId);
+
             return await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id)
+                .Where(o => o.Id == id.Id)
                 .Include(o => o.OrderingParty).ThenInclude(p => p.Address)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier).ThenInclude(s => s.Address)
@@ -38,7 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.ServiceInstanceItems).Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
                 .Include(o => o.OrderItems).ThenInclude(i => i.PricingUnitNameNavigation)
-                .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
 
@@ -78,8 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<Order> CreateOrder(string description, Guid organisationId)
+        public async Task<Order> CreateOrder(string description, string odsCode)
         {
+            var organisationId = (await organisationService.GetOrganisationByOdsCode(odsCode)).OrganisationId;
+
             OrderingParty orderingParty = (await GetOrderingParty(organisationId)) ?? new OrderingParty { Id = organisationId };
 
             var order = new Order
@@ -94,10 +100,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return order;
         }
 
-        public async Task DeleteOrder(Order order)
+        public async Task DeleteOrder(string callOffId)
         {
-            if (order is null)
-                throw new ArgumentNullException(nameof(order));
+            var id = CallOffId.Parse(callOffId);
+
+            var order = await dbContext.Orders.Where(o => o.Id == id.Id).SingleAsync();
 
             order.IsDeleted = true;
 

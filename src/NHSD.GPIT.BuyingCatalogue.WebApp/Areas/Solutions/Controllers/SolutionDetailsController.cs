@@ -51,6 +51,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(model);
         }
 
+        [Route("solutions/futures/{id}/features")]
+        public async Task<IActionResult> Features(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"index-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, SolutionFeaturesModel>(solution));
+        }
+
         [Route("solutions/futures/{id}/implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(string id)
         {

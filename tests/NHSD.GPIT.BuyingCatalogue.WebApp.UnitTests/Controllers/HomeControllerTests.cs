@@ -33,17 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Test]
-        public static void Get_TestLinks_ReturnsDefaultView()
-        {
-            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
-
-            var result = controller.TestLinks();
-
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.IsNull(((ViewResult)result).ViewName);
-        }
-
-        [Test]
         public static void Get_Error500_ReturnsDefaultErrorView()
         {
             var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());

@@ -1,21 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-#nullable disable
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public partial class OrderStatus : IEquatable<OrderStatus>
+    public enum OrderStatus
     {
-        public OrderStatus()
-        {
-            Orders = new HashSet<Order>();
-        }
-
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public virtual ICollection<Order> Orders { get; set; }
+        Complete = 1,
+        Incomplete = 2,
     }
 }

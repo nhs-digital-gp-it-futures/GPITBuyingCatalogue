@@ -5,28 +5,18 @@
 
 <div class="nhsuk-width-container" data-test-id="description-page">
     <partial name="Partials/_BackLink" model="Model" />
-
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-
+            <nhs-validation-summary />
             <nhs-page-title title="@Model.Title" title-advice="Provide a brief description of your order to help identify it from any others you’ve worked on." />
-
             <form method="post">
-                <div data-test-id="question-description">
-                    <div data-test-id="textarea-field">
-                        <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                            <textarea class="nhsuk-textarea" id="description" name="description" rows=" 3 "></textarea>
-                        </div>
-                    </div>
-                    <div data-test-id="textarea-field-footer">
-                        <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                            (Maximum character length 100)
-                        </span>
-                    </div>
-                </div>
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <nhs-validation-textarea asp-for="Description" />
                 <nhs-submit-button />
             </form>
-
         </div>
     </div>
 </div>

@@ -1,25 +1,19 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public partial class TimeUnit
+    public class TimeUnit : EnumerationBase
     {
-        public TimeUnit()
+        public static readonly TimeUnit PerMonth = new(1, "month", "per month", 12);
+        public static readonly TimeUnit PerYear = new(2, "year", "per year", 1);
+
+        public TimeUnit(int id, string name, string description, int amountInYear)
+            : base(id, name)
         {
-            OrderItemEstimationPeriods = new HashSet<OrderItem>();
-            OrderItemTimeUnits = new HashSet<OrderItem>();
+            AmountInYear = amountInYear;
+            Description = description;
         }
 
-        public int Id { get; set; }
+        public string Description { get; private set; }
 
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItemEstimationPeriods { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItemTimeUnits { get; set; }
+        public int AmountInYear { get; private set; }
     }
 }

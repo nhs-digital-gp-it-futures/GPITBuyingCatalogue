@@ -1,6 +1,6 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {

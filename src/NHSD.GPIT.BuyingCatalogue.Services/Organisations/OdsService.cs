@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Microsoft.Extensions.Caching.Memory;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;

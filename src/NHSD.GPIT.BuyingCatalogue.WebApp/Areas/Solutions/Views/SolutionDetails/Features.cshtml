@@ -1,0 +1,16 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Solution Features";
+}
+
+<div>
+    <p><b>This Catalogue Solution has the following features:</b></p>
+    <ul class="nhsuk-u-margin-bottom-0">
+        @foreach (string feature in Model.Features)
+        {
+            <li>@feature</li>
+        }
+    </ul>
+
+</div>

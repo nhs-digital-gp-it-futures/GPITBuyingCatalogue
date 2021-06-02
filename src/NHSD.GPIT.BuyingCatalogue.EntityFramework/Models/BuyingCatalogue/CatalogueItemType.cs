@@ -1,20 +1,15 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
 {
-    public partial class CatalogueItemType
+    public class CatalogueItemType
+        : EnumerationBase
     {
-        public CatalogueItemType()
+        public static readonly CatalogueItemType Solution = new(1, "Solution");
+        public static readonly CatalogueItemType AdditionalService = new(2, "Additional Service");
+        public static readonly CatalogueItemType AssociatedService = new(3, "Associated Service");
+
+        public CatalogueItemType(int id, string name)
+            : base(id, name)
         {
-            CatalogueItems = new HashSet<CatalogueItem>();
         }
-
-        public int CatalogueItemTypeId { get; set; }
-
-        public string Name { get; set; }
-
-        public virtual ICollection<CatalogueItem> CatalogueItems { get; set; }
     }
 }

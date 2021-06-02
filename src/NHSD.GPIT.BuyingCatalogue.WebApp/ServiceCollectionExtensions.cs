@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -24,10 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
     public static class ServiceCollectionExtensions
     {
-        private const string IdentityDbConnectionEnvironmentVariable = "ID_DB_CONNECTION";
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
         private const string CatalogueOrderingDbConnectionEnvironmentVariable = "CO_DB_CONNECTION";
-        private const string RedisEnvironmentVariable = "REDIS";
+        private const string GPITBuyingCatalogueDbConnectionEnvironmentVariable = "GPITBC_DB_CONNECTION";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -49,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .AddTransient<IMemberValueResolver<object, object, string, bool?>,
                     StringToNullableBoolResolver>();
             services
-                .AddTransient<ITypeConverter<CatalogueItem, SolutionStatusModel>,
+                .AddTransient<ITypeConverter<EntityFramework.Models.BuyingCatalogue.CatalogueItem, SolutionStatusModel>,
                     CatalogueItemToSolutionStatusModelConverter>();
             services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -80,27 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(odsSettings);
         }
 
-        public static void ConfigureSession(this IServiceCollection services)
-        {
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(1);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
-
-            var redisConnectionString = Environment.GetEnvironmentVariable(RedisEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(redisConnectionString))
-                throw new InvalidOperationException($"Environment variable '{RedisEnvironmentVariable}' must be set for the redis connection string");
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = "BuyingCatalogueInstance";
-            });
-        }
-
         public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
         {
             var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
@@ -113,16 +91,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             if (string.IsNullOrWhiteSpace(catalogueOrderingConnectionString))
                 throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
-            var identityConnectionString = Environment.GetEnvironmentVariable(IdentityDbConnectionEnvironmentVariable);
+            var gpitBuyingCatalogueConnectionString = Environment.GetEnvironmentVariable(GPITBuyingCatalogueDbConnectionEnvironmentVariable);
 
-            if (string.IsNullOrWhiteSpace(identityConnectionString))
-                throw new InvalidOperationException($"Environment variable '{IdentityDbConnectionEnvironmentVariable}' must be set for the database connection string");
+            if (string.IsNullOrWhiteSpace(gpitBuyingCatalogueConnectionString))
+                throw new InvalidOperationException($"Environment variable '{GPITBuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
             services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
             services.AddDbContext<OrderingDbContext>(options => options.UseSqlServer(catalogueOrderingConnectionString));
-            services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(identityConnectionString));
+            services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(gpitBuyingCatalogueConnectionString));
 
-            healthCheckBuilder.AddDatabaseHealthCheck(identityConnectionString);
+            healthCheckBuilder.AddDatabaseHealthCheck(gpitBuyingCatalogueConnectionString);
         }
 
         public static void ConfigureDisabledErrorMessage(this IServiceCollection services, IConfiguration configuration)
@@ -159,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                     o.Lockout.MaxFailedAccessAttempts = 6;
                 })
-                .AddEntityFrameworkStores<UsersDbContext>()
+                .AddEntityFrameworkStores<GPITBuyingCatalogueDbContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
                 .AddPasswordValidator<PasswordValidator>();
         }

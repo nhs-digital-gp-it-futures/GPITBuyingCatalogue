@@ -25,7 +25,6 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
@@ -37,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DataAttributes\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
@@ -45,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Components\NHSD.GPIT.BuyingCatalogue.Components.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.EntityFramework\NHSD.GPIT.BuyingCatalogue.EntityFramework.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Framework\NHSD.GPIT.BuyingCatalogue.Framework.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.ServiceContracts\NHSD.GPIT.BuyingCatalogue.ServiceContracts.csproj" />

@@ -4,11 +4,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
-using NHSD.GPIT.BuyingCatalogue.WebApp.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {

@@ -11,10 +11,14 @@
         </div>
         <div class="nhsuk-grid-column-full">
             <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
                 <nhs-fieldset-form asp-for="@Model">
                     <nhs-radio-buttons asp-for="@Model.SelectedOrganisation" values="@Model.AvailableOrganisations" value-name="OdsCode" display-name="Name" />
                 </nhs-fieldset-form>
-                <nhs-submit-button text="Continue" />               
+                <nhs-submit-button text="Continue" />
             </form>
         </div>
     </div>

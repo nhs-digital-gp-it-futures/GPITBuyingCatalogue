@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue
 
         public string SupplierUrl { get; set; }
 
-        public string Address { get; set; }
+        public Address Address { get; set; }
 
         public string OdsCode { get; set; }
 

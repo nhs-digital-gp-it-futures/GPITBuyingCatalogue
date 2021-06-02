@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NUnit.Framework;
@@ -27,14 +28,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new DashboardController(null, Mock.Of<IOrganisationsService>()));
+                _ = new DashboardController(null, Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>()));
         }
 
         [Test]
         public static void Constructor_NullOrganisationService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), null));
+                _ = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), null, Mock.Of<IOrderService>()));
+        }
+
+        [Test]
+        public static void Constructor_NullOrderService_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), Mock.Of<IOrganisationsService>(), null));
         }
 
         [Test]
@@ -44,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim("organisationFunction", "Authority"),
             }, "mock"));
 
-            var controller = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), Mock.Of<IOrganisationsService>())
+            var controller = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>())
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -61,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Test]
         public static void Get_NewOrder_ReturnsViewResult()
         {
-            var controller = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), Mock.Of<IOrganisationsService>());
+            var controller = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>());
 
             var result = controller.NewOrder("3OF");
 

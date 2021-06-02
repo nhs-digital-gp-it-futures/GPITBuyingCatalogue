@@ -7,16 +7,16 @@ services:
             - ASPNETCORE_URLS=http://+:80
             - OPERATING_MODE=Private
             - BC_DB_CONNECTION=Server=sqlserver,1433;Database=buyingcatalogue;User=SA;password=Abc123Abc123;Integrated Security=false
-            - ID_DB_CONNECTION=Server=sqlserver,1433;Database=CatalogueUsers;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false
+            - GPITBC_DB_CONNECTION=Server=sqlserver,1433;Database=gpitbuyingcatalogue;User=SA;password=Abc123Abc123;Integrated Security=false
         ports:
             - "8000:80"      
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-        depends_on:
+        depends_on:           
             - "nhsd_bcdb_deploy"
-            - "nhsd_codb_deploy"
-            - "nhsd_cudb_deploy"
+            - "nhsd_codb_deploy"            
+            - "nhsd_gpitbcdb_deploy"
             - "maildev"
             - "file.upload"
 
@@ -74,21 +74,21 @@ services:
             INSERT_TEST_DATA: "TRUE"
         depends_on:
             - "sqlserver"  
-            
-    nhsd_cudb_deploy:
-        image: ${DOCKER_REGISTRY}catalogueusersdatabase
-        container_name: nhsd_cudb_deploy
+                 
+    nhsd_gpitbcdb_deploy:
+        image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase
+        container_name: nhsd_gpitbcdb_deploy
         build:
             context: .
-            dockerfile: database/NHSD.BuyingCatalogue.Identity.UserDatabase.Deployment/Docker/Dockerfile
+            dockerfile: database/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile
         environment:
             SA_PASSWORD: "Abc123Abc123"
             NHSD_PASSWORD: "DisruptTheMarket1!"
-            DB_NAME: "CatalogueUsers"
+            DB_NAME: "GPITBuyingCatalogue"
             DB_SERVER: sqlserver            
             INCLUDE_IMPORT: "TRUE"
             INCLUDE_PUBLISH: "TRUE"
-            INSERT_TEST_DATA: "TRUE"                                    
+            INSERT_TEST_DATA: "TRUE"
             CREATE_EA_USER: "True"
             EA_USER_FIRST_NAME: "Agency"
             EA_USER_LAST_NAME: "User"
@@ -97,7 +97,7 @@ services:
             EA_USER_PHONE: "01234567890"
 
         depends_on:
-            - "sqlserver"   
+            - "sqlserver"  
 
     file.upload:
         image: ${DOCKER_REGISTRY}file-uploader
@@ -106,10 +106,4 @@ services:
             context: .
             dockerfile: azurite/Dockerfile
         depends_on:
-            - "blob.store"  
-
-    redis:
-        image: redis
-        container_name: bc-redis
-        ports:
-          - "6380:6379"        
+            - "blob.store"       

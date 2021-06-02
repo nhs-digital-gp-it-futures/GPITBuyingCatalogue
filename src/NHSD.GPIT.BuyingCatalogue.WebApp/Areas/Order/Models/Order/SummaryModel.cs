@@ -2,11 +2,11 @@
 {
     public class SummaryModel : OrderingBaseModel
     {
-        public SummaryModel()
+        public SummaryModel(string odsCode, EntityFramework.Models.Ordering.Order order)
         {
             BackLinkText = "Go back";
-            BackLink = "/order/organisation/03F"; // TODO
-            Title = "Order summary for C010000-01"; // TODO
+            BackLink = $"/order/organisation/{odsCode}";
+            Title = $"Order summary for {order.CallOffId}";
         }
     }
 }

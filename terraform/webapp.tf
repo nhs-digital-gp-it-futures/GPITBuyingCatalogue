@@ -20,7 +20,7 @@ module "webapp" {
   repository_name  = "nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp"
   always_on        = local.shortenv != "production" ? "false" : "true"
   db_name_main     = module.sql_databases_pri.sql_main_dbname # in cluster "bc-${var.environment}-bapi"
-  db_name_identity = module.sql_databases_pri.sql_user_dbname # in cluster "bc-${var.environment}-isapi"
+  db_name_gpitbc   = module.sql_databases_pri.sql_gpitbc_dbname # in cluster "bc-${var.environment}-isapi"
   auth_pwd         = data.azurerm_key_vault_secret.sqladminpassword.value
   cert_name        = data.azurerm_key_vault_secret.certname.value
   webapp_cname_url = local.gw_webappURL

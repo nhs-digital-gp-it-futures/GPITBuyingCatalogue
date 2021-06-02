@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 {
@@ -12,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 
         [Required(ErrorMessage = ErrorMessages.PasswordRequired)]
         [DataType(DataType.Password)]
+
+        [Password]
         public string Password { get; set; }
 
         public string ReturnUrl { get; set; }
