@@ -247,5 +247,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await marketingContactRepository.SaveChangesAsync();
         }
+
+        public async Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
+        {
+            return await dbContext.CatalogueItems
+                .Include(x => x.Solution)
+                .ThenInclude(x => x.SolutionCapabilities)
+                .ThenInclude(x => x.Capability)
+                .Include(x => x.Supplier)
+                .Where(x => x.SupplierId == supplierId 
+                            && x.CatalogueItemType.Name == "Solution"
+                            && x.PublishedStatus.Name == "Published")
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+        }
     }
 }

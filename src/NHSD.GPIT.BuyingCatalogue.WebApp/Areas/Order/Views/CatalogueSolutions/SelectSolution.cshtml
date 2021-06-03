@@ -12,55 +12,19 @@
             <nhs-page-title title="@Model.Title" title-advice="These are the Catalogue Solutions provided by the supplier you’ve chosen. Select the one you want to purchase from the list." />
 
             <form method="post">
-
-                <div id="selectSolution" data-test-id="question-selectSolution">
-
-                    <div data-test-id="radiobutton-options">
-
-                        <div class="nhsuk-form-group">
-
-                            <fieldset class="nhsuk-fieldset">
-                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Select Catalogue Solution
-                                </legend>
-
-                                <div class="nhsuk-radios">
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectSolution-1" name="selectSolution" type="radio" value="10000-002">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-1">
-                                            Anywhere Consult
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectSolution-2" name="selectSolution" type="radio" value="10000-001">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-2">
-                                            Emis Web GP
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectSolution-3" name="selectSolution" type="radio" value="10000-054">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-3">
-                                            Online and Video Consult
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectSolution-4" name="selectSolution" type="radio" value="10000-062">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectSolution-4">
-                                            Video Consult
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <nhs-fieldset-form asp-for="@Model"
+                                   label-text="Select Catalogue Solution">
+                    <nhs-radio-buttons asp-for="SelectedSolutionId"
+                                       values="@Model.Solutions"
+                                       value-name="CatalogueItemId"
+                                       display-name="Name" />
+                </nhs-fieldset-form>
+                
                 <div data-test-id="continue-button">
-
                     <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
                         Continue
                     </button>

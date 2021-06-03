@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions;
 
@@ -13,15 +16,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     public class CatalogueSolutionsController : Controller
     {
         private readonly ILogWrapper<OrderController> logger;
+        private readonly IOrderService orderService;
+        private readonly ISolutionsService solutionsService;
 
-        public CatalogueSolutionsController(ILogWrapper<OrderController> logger)
+        public CatalogueSolutionsController(
+            ILogWrapper<OrderController> logger,
+            IOrderService orderService,
+            ISolutionsService solutionsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        public IActionResult Index(string odsCode, string callOffId)
+        public async Task<IActionResult> Index(string odsCode, string callOffId)
         {
-            return View(new CatalogueSolutionsModel());
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new CatalogueSolutionsModel(odsCode, order));
         }
 
         [HttpGet("{id}")]
@@ -37,9 +49,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("select/solution")]
-        public IActionResult SelectSolution(string odsCode, string callOffId)
+        public async Task<IActionResult> SelectSolution(string odsCode, string callOffId)
         {
-            return View(new SelectSolutionModel());
+            var order = await orderService.GetOrder(callOffId);
+
+            var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
+
+            // TODO - handle no solutions returned
+
+            return View(new SelectSolutionModel(odsCode, callOffId, solutions));
         }
 
         [HttpPost("select/solution")]
