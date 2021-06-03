@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Azure.Core;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
+    [ExcludeFromCodeCoverage]
     public sealed class AzureBlobStorageRetrySettings
     {
         public TimeSpan Delay { get; set; }

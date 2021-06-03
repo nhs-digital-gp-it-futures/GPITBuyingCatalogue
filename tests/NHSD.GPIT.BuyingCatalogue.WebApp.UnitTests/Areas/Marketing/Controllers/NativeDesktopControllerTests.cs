@@ -7,7 +7,8 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework;
@@ -270,10 +271,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.AdditionalInformation(model)).As<RedirectResult>();
+            var actual = (await controller.AdditionalInformation(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.NativeDesktop));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -487,10 +490,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.Connectivity(model)).As<RedirectResult>();
+            var actual = (await controller.Connectivity(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.NativeDesktop));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -704,10 +709,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.HardwareRequirements(model)).As<RedirectResult>();
+            var actual = (await controller.HardwareRequirements(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.NativeDesktop));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -925,10 +932,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.MemoryAndStorage(model)).As<RedirectResult>();
+            var actual = (await controller.MemoryAndStorage(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.NativeDesktop));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -1140,10 +1149,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.OperatingSystems(model)).As<RedirectResult>();
+            var actual = (await controller.OperatingSystems(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.NativeDesktop));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -1361,10 +1372,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new NativeDesktopController(Mock.Of<ILogWrapper<NativeDesktopController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.ThirdParty(model)).As<RedirectResult>();
+            var actual = (await controller.ThirdParty(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/native-desktop");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.NativeDesktop));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
     }
 }

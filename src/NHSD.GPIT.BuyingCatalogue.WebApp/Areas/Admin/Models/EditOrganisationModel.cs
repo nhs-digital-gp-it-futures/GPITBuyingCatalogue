@@ -1,6 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -13,17 +12,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public EditOrganisationModel(Organisation organisation)
         {
-            Organisation = organisation;
             CatalogueAgreementSigned = organisation.CatalogueAgreementSigned;
             BackLink = $"/admin/organisations/{organisation.OrganisationId}";
+            Organisation = organisation;
+            OrganisationAddress = organisation.GetAddress();
         }
 
         public Organisation Organisation { get; set; }
 
-        public Address OrganisationAddress
-        {
-            get { return Organisation.GetAddress(); }
-        }
+        public Address OrganisationAddress { get; set; }
 
         public bool CatalogueAgreementSigned { get; set; }
     }

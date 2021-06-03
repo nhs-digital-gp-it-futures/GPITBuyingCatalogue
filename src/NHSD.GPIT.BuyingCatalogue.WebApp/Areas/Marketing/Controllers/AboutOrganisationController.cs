@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -35,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"about-supplier-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -52,7 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveSupplierDescriptionAndLink(model.SupplierId, model.Description, model.Link);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("contact-details")]
@@ -62,6 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"contact-details-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -81,7 +87,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveSupplierContacts(supplierContactsModel);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
     }
 }

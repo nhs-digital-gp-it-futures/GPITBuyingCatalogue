@@ -7,7 +7,8 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
@@ -252,10 +253,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.AdditionalInformation(model)).As<RedirectResult>();
+            var actual = (await controller.AdditionalInformation(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -456,10 +459,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.ConnectivityAndResolution(model)).As<RedirectResult>();
+            var actual = (await controller.ConnectivityAndResolution(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -659,10 +664,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.HardwareRequirements(model)).As<RedirectResult>();
+            var actual = (await controller.HardwareRequirements(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -863,10 +870,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.SupportedBrowsers(model)).As<RedirectResult>();
+            var actual = (await controller.SupportedBrowsers(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -1071,10 +1080,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.MobileFirstApproach(model)).As<RedirectResult>();
+            var actual = (await controller.MobileFirstApproach(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -1280,10 +1291,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.PlugInsOrExtensions(model)).As<RedirectResult>();
+            var actual = (await controller.PlugInsOrExtensions(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.Url.Should().Be($"/marketing/supplier/solution/{model.SolutionId}/section/browser-based");
+            actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
+            actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
+            actual.RouteValues["id"].Should().Be(model.SolutionId);
         }
 
         [Test]

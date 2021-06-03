@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             return RedirectToAction(
                 actionName: nameof(DashboardController.Organisation),
-                controllerName: "Dashboard",
+                controllerName: typeof(DashboardController).ControllerName(),
                 routeValues: new { odsCode });
         }
 
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             return RedirectToAction(
                 actionName: nameof(Order),
-                controllerName: "Order",
+                controllerName: typeof(OrderController).ControllerName(),
                 routeValues: new { odsCode, callOffId });
         }
 
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             return RedirectToAction(
                 actionName: nameof(Order),
-                controllerName: "Order",
+                controllerName: typeof(OrderController).ControllerName(),
                 routeValues: new { odsCode, callOffId });
         }
 
@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             return RedirectToAction(
                 actionName: nameof(Order),
-                controllerName: "Order",
+                controllerName: typeof(OrderController).ControllerName(),
                 routeValues: new { odsCode, callOffId });
         }
 
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             return RedirectToAction(
                 actionName: nameof(Order),
-                controllerName: "Order",
+                controllerName: typeof(OrderController).ControllerName(),
                 routeValues: new { odsCode, callOffId });
         }
     }

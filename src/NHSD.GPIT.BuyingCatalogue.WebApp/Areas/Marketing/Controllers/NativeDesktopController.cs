@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
@@ -50,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await solutionsService.GetClientApplication(model.SolutionId);
+
             if (clientApplication == null)
                 return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
@@ -67,6 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"connectivity-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -83,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await solutionsService.GetClientApplication(model.SolutionId);
+
             if (clientApplication == null)
                 return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
@@ -100,6 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"memory-and-storage-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -116,6 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await solutionsService.GetClientApplication(model.SolutionId);
+
             if (clientApplication == null)
                 return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
@@ -134,6 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"third-party-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -150,6 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await solutionsService.GetClientApplication(model.SolutionId);
+
             if (clientApplication == null)
                 return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
@@ -167,6 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"hardware-requirments-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -183,6 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await solutionsService.GetClientApplication(model.SolutionId);
+
             if (clientApplication == null)
                 return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
@@ -200,6 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"additional-information-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -216,6 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await solutionsService.GetClientApplication(model.SolutionId);
+
             if (clientApplication == null)
                 return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
@@ -226,7 +238,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return RedirectBack(model.SolutionId);
         }
 
-        private RedirectResult RedirectBack(string solutionId) =>
-            Redirect($"/marketing/supplier/solution/{solutionId}/section/native-desktop");
+        private RedirectToActionResult RedirectBack(string solutionId)
+        {
+            return RedirectToAction(
+                nameof(ClientApplicationTypeController.NativeDesktop),
+                typeof(ClientApplicationTypeController).ControllerName(),
+                new { id = solutionId });
+        }
     }
 }

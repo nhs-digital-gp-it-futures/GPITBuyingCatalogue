@@ -2,10 +2,12 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
@@ -34,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"index-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -48,7 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException($"preview-{nameof(id)}");
 
-            return RedirectToAction("preview", "solutions", new { id });
+            return RedirectToAction(
+                nameof(SolutionDetailsController.PreviewSolutionDetail),
+                typeof(SolutionDetailsController).ControllerName(),
+                new { id });
         }
     }
 }

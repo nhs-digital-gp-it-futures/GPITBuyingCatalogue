@@ -22,14 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         
         private readonly IWebHost host;
         internal readonly string BcDbName;
-        internal readonly string GpitBcDbName;        
 
         internal IWebDriver Driver { get; }
 
         // Need to find a better way of doing this
-        private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=buyingcatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";        
-        private const string GPITBC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
+        private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
+        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";                
         private const string OPERATING_MODE = "private";
         
         private const string Browser = "chrome";
@@ -39,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             ClientOptions.BaseAddress = new Uri(LocalhostBaseAddress);
 
             BcDbName = Guid.NewGuid().ToString();
-            GpitBcDbName = Guid.NewGuid().ToString();
 
             SetEnvVariables();
 
@@ -72,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                var dbTypes = new Type[] { typeof(BuyingCatalogueDbContext), typeof(GPITBuyingCatalogueDbContext) };
+                var dbTypes = new Type[] { typeof(GPITBuyingCatalogueDbContext), typeof(GPITBuyingCatalogueDbContext) };
 
                 foreach(var type in dbTypes)
                 { 
@@ -84,31 +81,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     }
                 }
 
-                services.AddDbContext<BuyingCatalogueDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase(BcDbName);
-                });
-
                 services.AddDbContext<GPITBuyingCatalogueDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase(GpitBcDbName);
+                    options.UseInMemoryDatabase(BcDbName);
                 });
 
                 var sp = services.BuildServiceProvider();
 
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-
-                var bcDb = scopedServices.GetRequiredService<BuyingCatalogueDbContext>();
-                var gpitBcDb = scopedServices.GetRequiredService<GPITBuyingCatalogueDbContext>();                
+                
+                var bcDb = scopedServices.GetRequiredService<GPITBuyingCatalogueDbContext>();                
 
                 bcDb.Database.EnsureCreated();
-                gpitBcDb.Database.EnsureCreated();
                 
                 try
                 {
                     BuyingCatalogueSeedData.Initialize(bcDb);
-                    UserSeedData.Initialize(gpitBcDb);
+                    UserSeedData.Initialize(bcDb);
                 }
                 catch
                 {
@@ -122,11 +112,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private void SetEnvVariables()
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(GPITBC_DB_CONNECTION))))
-            {
-                Environment.SetEnvironmentVariable(nameof(GPITBC_DB_CONNECTION), GPITBC_DB_CONNECTION);
-            }
-
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(BC_DB_CONNECTION))))
             {
                 Environment.SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);

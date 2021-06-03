@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.BuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 using NUnit.Framework;
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemId = "123",
-                Solution = new EntityFramework.Models.BuyingCatalogue.Solution { ClientApplication = json }
+                Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json }
             };
 
             var model = new OperatingSystemsModel(catalogueItem);
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemId = "123",
-                Solution = new EntityFramework.Models.BuyingCatalogue.Solution { ClientApplication = json }
+                Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json }
             };
 
             var model = new OperatingSystemsModel(catalogueItem);
