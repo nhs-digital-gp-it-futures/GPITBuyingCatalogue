@@ -4,9 +4,13 @@
     {
         public NewOrderItemModel()
         {
-            BackLink = "/order/organisation/03F/order/C010001-01/catalogue-solutions/select/solution/price/flat/declarative"; // TODO
+        }
+
+        public NewOrderItemModel(string odsCode, string callOffId, string solutionName)
+        {
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/declarative";
             BackLinkText = "Go back";
-            Title = "Anywhere Consult information for C010001-01"; // TODO
+            Title = $"{solutionName} information for {callOffId}";
         }
     }
 }

@@ -156,6 +156,7 @@
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
     <None Include="PostDeployment\CreateTables.sql" />
+    <Build Include="Tables\SQLSessions.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
