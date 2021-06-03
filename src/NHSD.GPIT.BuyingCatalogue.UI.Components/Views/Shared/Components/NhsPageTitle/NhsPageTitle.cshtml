@@ -1,0 +1,15 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.ViewComponents.PageTitle.NhsPageTitleModel;
+@{
+}
+    @if (!string.IsNullOrWhiteSpace(Model.Title))
+    {
+    <h1>@Model.Title</h1>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Advice))
+    {
+    <p class="nhsuk-lede-text">@Model.Advice</p>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.AdditionalAdvice))
+    {
+    <vc:nhs-inset-text text="@Model.AdditionalAdvice"/>
+    }

@@ -10,7 +10,8 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="Catalogue Solution description"
-                        title-advice="Give buyers as much detail as possible about your Catalogue Solution." />
+                        title-advice="Give buyers as much detail as possible about your Catalogue Solution."
+                        title-advice-additional="TEST ADDITIONAL ADVICE"/>
                         
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
@@ -26,12 +27,6 @@
                                   label-text="Link to more information (optional)"
                                   label-hint="Provide a URL to a page that gives buyers further information about your Catalogue Solution." />
             <nhs-submit-button />
-
-            <nhs-textarea asp-for="Description"
-                                     label-text="BLAH"
-                                     label-hint="BLASHLHDO*UDAFHUODSHFUHSDFO"
-                                     disable-label-and-hint="true"
-                                     disable-character-counter="true"/>
         </form>
     </div>
 </div>

@@ -69,6 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ServicesStartup.Configure(services);
 
             services.ConfigureAutoMapper();
+
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

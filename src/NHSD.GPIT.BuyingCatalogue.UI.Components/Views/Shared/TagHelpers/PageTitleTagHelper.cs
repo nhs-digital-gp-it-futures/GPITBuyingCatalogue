@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
@@ -11,6 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         public const string TitleAdviceName = "title-advice";
         public const string TitleAdviceAdditionalName = "title-advice-additional";
 
+        private readonly IViewComponentHelper viewComponentHelper;
+
+        public PageTitleTagHelper(IViewComponentHelper viewComponentHelper)
+        {
+            this.viewComponentHelper = viewComponentHelper;
+        }
+
         [HtmlAttributeName(TitleName)]
         public string Title { get; set; }
 
@@ -20,19 +31,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TitleAdviceAdditionalName)]
         public string TitleAdviceAditional { get; set; }
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        [HtmlAttributeNotBound]
+        [ViewContext]
+        public ViewContext ViewContext { get; set; }
+
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var title = GetTitleBuilder();
             var advice = GetAdviceBuilder();
-            var additional = GetAdditionalAdviceBuilder();
+            var additional = await GetAdditionalAdviceBuilder();
 
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.TagName = TagHelperConstants.Div;
-
-            output.Attributes.Add(
-                new TagHelperAttribute(
-                    TagHelperConstants.Class,
-                    $"{TagHelperConstants.NhsMarginTop}-5 {TagHelperConstants.NhsMarginBottom}-7"));
+            output.TagName = string.Empty;
 
             output.Content.AppendHtml(title);
             output.Content.AppendHtml(advice);
@@ -43,8 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             var builder = new TagBuilder(TagHelperConstants.Header);
 
-            builder.AddCssClass($"{TagHelperConstants.NhsMarginBottom}-3");
-
             builder.InnerHtml.Append(Title);
 
             return builder;
@@ -52,22 +59,26 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private TagBuilder GetAdviceBuilder()
         {
-            var builder = new TagBuilder(TagHelperConstants.SubHeader);
+            if (string.IsNullOrWhiteSpace(TitleAdvice))
+                return null;
 
-            builder.AddCssClass($"{TagHelperConstants.NhsFontSize}-22");
+            var builder = new TagBuilder(TagHelperConstants.Paragraph);
+
+            builder.AddCssClass(TagHelperConstants.NhsLedeText);
 
             builder.InnerHtml.Append(TitleAdvice);
 
             return builder;
         }
 
-        private TagBuilder GetAdditionalAdviceBuilder()
+        private async Task<IHtmlContent> GetAdditionalAdviceBuilder()
         {
-            var builder = new TagBuilder(TagHelperConstants.Div);
+            if (string.IsNullOrWhiteSpace(TitleAdviceAditional))
+                return null;
 
-            builder.InnerHtml.Append(TitleAdviceAditional);
+            ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
 
-            return builder;
+            return await viewComponentHelper.InvokeAsync("NhsInsetText", new { text = TitleAdviceAditional });
         }
     }
 }

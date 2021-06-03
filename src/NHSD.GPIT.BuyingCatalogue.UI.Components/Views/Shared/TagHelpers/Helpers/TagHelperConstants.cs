@@ -8,6 +8,7 @@
         internal const string ListItem = "li";
         internal const string Header = "h1";
         internal const string SubHeader = "h2";
+        internal const string Paragraph = "p";
         internal const string Span = "span";
         internal const string UnorderedList = "ul";
         internal const string Svg = "svg";
@@ -66,6 +67,7 @@
         internal const string RadioItemInputClass = "nhsuk-radios__input";
         internal const string RadioLabelClass = "nhsuk-radios__label";
         internal const string NhsRadios = "nhsuk-radios";
+        internal const string NhsLedeText = "nhsuk-lede-text";
 
         // Messages
         internal const string CharacterCountMessage = "(Maximum character length {0})";
