@@ -14,6 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         [UIHint("DescriptionList")]
         public DescriptionListViewModel BrowserBasedApplication { get; set; }
 
+        [UIHint("DescriptionList")]
+        public DescriptionListViewModel NativeMobileApplication { get; set; }
+
+        [UIHint("DescriptionList")]
+        public DescriptionListViewModel NativeDesktopApplication { get; set; }
+
         public string HasApplicationType(string key) =>
             (ClientApplication?.ClientApplicationTypes?.Any(
                 x => x.EqualsIgnoreCase(key))).ToYesNo();

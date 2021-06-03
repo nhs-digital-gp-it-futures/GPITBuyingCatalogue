@@ -32,6 +32,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .Be("DescriptionList");
         }
 
+        [Test]
+        public static void NativeMobileApplication_UIHintAttribute_ExpectedHint()
+        {
+            typeof(ClientApplicationTypesModel)
+                .GetProperty(nameof(ClientApplicationTypesModel.NativeMobileApplication))
+                .GetCustomAttribute<UIHintAttribute>()
+                .UIHint.Should()
+                .Be("DescriptionList");
+        }
+
+        [Test]
+        public static void NativeDesktopApplication_UIHintAttribute_ExpectedHint()
+        {
+            typeof(ClientApplicationTypesModel)
+                .GetProperty(nameof(ClientApplicationTypesModel.NativeDesktopApplication))
+                .GetCustomAttribute<UIHintAttribute>()
+                .UIHint.Should()
+                .Be("DescriptionList");
+        }
+
         [TestCase("some-value")]
         [TestCase("some-VALUE")]
         public static void HasApplicationType_ValueValid_ReturnsYes(string valid)

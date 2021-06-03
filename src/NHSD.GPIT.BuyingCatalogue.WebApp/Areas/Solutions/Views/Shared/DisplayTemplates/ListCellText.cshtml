@@ -3,6 +3,6 @@
 @if (!string.IsNullOrWhiteSpace(Model))
 {
     <dd class="nhsuk-summary-list__value">
-        @Model
+        @Html.Raw(Model.Replace(Environment.NewLine,"<br/>"))
     </dd>
 }

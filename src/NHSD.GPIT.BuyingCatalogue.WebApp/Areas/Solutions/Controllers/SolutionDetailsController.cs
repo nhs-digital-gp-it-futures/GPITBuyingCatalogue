@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> Features(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"index-{nameof(id)}");
+                throw new ArgumentException($"{nameof(Features)}-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
