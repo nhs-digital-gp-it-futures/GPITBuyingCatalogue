@@ -10,18 +10,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectSolutionModel(string odsCode, string callOffId, List<CatalogueItem> solutions)
+        public SelectSolutionModel(string odsCode, string callOffId, List<CatalogueItem> solutions, string selectedSolutionId)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
             BackLinkText = "Go back";
             Title = $"Add Catalogue Solution for {callOffId}";
             OdsCode = odsCode;
             Solutions = solutions;
+            SelectedSolutionId = selectedSolutionId;
         }
 
-        public List<CatalogueItem> Solutions { get; init; }
+        public List<CatalogueItem> Solutions { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Select a Catalogue Solution")]
         public string SelectedSolutionId { get; set; }
     }
 }

@@ -255,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.SupplierId == supplierId 
+                .Where(x => x.SupplierId == supplierId
                             && x.CatalogueItemType.Name == "Solution"
                             && x.PublishedStatus.Name == "Published")
                 .OrderBy(x => x.Name)
