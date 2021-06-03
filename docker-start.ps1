@@ -1,1 +1,1 @@
-docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --force-recreate --remove-orphans
+docker compose -f docker-compose.yml up -d --force-recreate --remove-orphans
