@@ -127,11 +127,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Description",
+                    Show = true,
                 },
                 //TODO: Update Next to Capabilities once Capabilities page implemented
                 Next = new SectionModel
                 {
                     Action = "Description",
+                    
                     Controller = "SolutionDetails",
                     Name = "Capabilities",
                 },
@@ -158,6 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "ImplementationTimescales",
                     Controller = "SolutionDetails",
                     Name = "Implementation timescales",
+                    Show = true,
                 },
                 //TODO: Update Next to HostingType once Capabilities page implemented
                 Next = new SectionModel
