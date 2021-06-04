@@ -51,6 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
+        public DbSet<DefaultDeliveryDate> DefaultDeliveryDate { get; set; }
+
         public virtual DbSet<Supplier> Suppliers { get; set; }
 
         public virtual DbSet<TimeUnit> TimeUnit { get; set; }
@@ -226,11 +228,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderItem_CatalogueItem");
 
-                entity.HasOne(d => d.CataloguePriceType)
-                    .WithMany(p => p.OrderItems)
-                    .HasForeignKey(d => d.CataloguePriceTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderItem_CataloguePriceType");
+                entity.HasOne(e => e.CataloguePriceType)
+                     .WithMany()
+                     .HasForeignKey(e => e.CataloguePriceTypeId)
+                     .HasConstraintName("CataloguePriceType")
+                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderItems)
@@ -363,6 +365,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.ToTable("ServiceRecipient");
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
                 entity.Property(e => e.Name).HasMaxLength(256);
+            });
+
+            modelBuilder.Entity<DefaultDeliveryDate>(entity =>
+            {
+                entity.ToTable("DefaultDeliveryDate");
+                entity.HasKey(d => new { d.OrderId, d.CatalogueItemId });
+                entity
+                    .Property(d => d.CatalogueItemId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
+                entity.Property(d => d.DeliveryDate).HasColumnType("date");
+
+                entity.HasOne<Order>()
+                    .WithMany(o => o.DefaultDeliveryDates)
+                    .HasForeignKey(d => d.OrderId)
+                    .HasConstraintName("FK_DefaultDeliveryDate_OrderId");
             });
 
             modelBuilder.Entity<Supplier>(entity =>

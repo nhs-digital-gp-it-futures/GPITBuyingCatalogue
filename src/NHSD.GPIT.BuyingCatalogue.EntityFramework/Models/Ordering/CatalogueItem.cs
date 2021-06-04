@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public int CatalogueItemTypeId { get; set; }
 
-        public CatalogueItemId ParentCatalogueItemId { get; set; }
+        public CatalogueItemId? ParentCatalogueItemId { get; set; }
 
         public virtual CatalogueItemType CatalogueItemType { get; set; }
 

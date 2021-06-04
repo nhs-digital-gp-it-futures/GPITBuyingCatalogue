@@ -23,19 +23,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly ISolutionsService solutionsService;
         private readonly ISessionService sessionService;
         private readonly IOdsService odsService;
+        private readonly IOrderItemService orderItemService;
 
         public CatalogueSolutionsController(
             ILogWrapper<OrderController> logger,
             IOrderService orderService,
             ISolutionsService solutionsService,
             ISessionService sessionService,
-            IOdsService odsService)
+            IOdsService odsService,
+            IOrderItemService orderItemService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
+            this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
         }
 
         public async Task<IActionResult> Index(string odsCode, string callOffId)
