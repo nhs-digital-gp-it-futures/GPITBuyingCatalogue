@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
@@ -53,6 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 return View(model);
 
             var clientApplication = await solutionsService.GetClientApplication(model.SolutionId);
+
             if (clientApplication == null)
                 return BadRequest($"No Client Application found for Solution Id: {model.SolutionId}");
 
@@ -67,7 +69,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             await solutionsService.SaveClientApplication(model.SolutionId, clientApplication);
 
-            return RedirectToAction(nameof(SolutionController.Index), "Solution", new { id = model.SolutionId });
+            return RedirectToAction(
+                nameof(SolutionController.Index),
+                typeof(SolutionController).ControllerName(),
+                new { id = model.SolutionId });
         }
 
         [HttpGet("browser-based")]
@@ -77,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentNullException(nameof(id));
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -90,6 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"native-mobile-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -103,6 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 throw new ArgumentException($"native-desktop-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
+
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 

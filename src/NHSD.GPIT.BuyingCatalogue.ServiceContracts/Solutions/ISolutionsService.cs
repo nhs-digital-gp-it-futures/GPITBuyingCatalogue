@@ -40,5 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link);
 
         Task SaveSupplierContacts(SupplierContactsModel model);
+
+        Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId);
     }
 }

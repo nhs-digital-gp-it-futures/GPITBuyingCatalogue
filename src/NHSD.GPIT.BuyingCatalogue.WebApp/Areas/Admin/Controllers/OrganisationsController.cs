@@ -73,7 +73,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model);
 
             await organisationsService.UpdateCatalogueAgreementSigned(id, model.CatalogueAgreementSigned);
-            return RedirectToAction("EditConfirmation", "Organisations", new { id });
+            return RedirectToAction(
+                nameof(EditConfirmation),
+                typeof(OrganisationsController).ControllerName(),
+                new { id });
         }
 
         [HttpGet("{id}/edit/confirmation")]
@@ -103,7 +106,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             // TODO - Check ODS code has not already been added
             // TODO - Check the ODS code is valid
-            return RedirectToAction("Select", "Organisations", new { ods = model.OdsCode });
+            return RedirectToAction(
+                nameof(Select),
+                typeof(OrganisationsController).ControllerName(),
+                new { ods = model.OdsCode });
         }
 
         [HttpGet("find/select")]
@@ -124,7 +130,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            return RedirectToAction("Create", "Organisations", new { ods = model.OdsOrganisation.OdsCode });
+            return RedirectToAction(
+                nameof(Create),
+                typeof(OrganisationsController).ControllerName(),
+                new { ods = model.OdsOrganisation.OdsCode });
         }
 
         [HttpGet("find/select/create")]
@@ -147,7 +156,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var organisation = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
             var orgId = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
-            return RedirectToAction("Confirmation", "Organisations", new { id = orgId.ToString() });
+            return RedirectToAction(
+                nameof(Confirmation),
+                typeof(OrganisationsController).ControllerName(),
+                new { id = orgId.ToString() });
         }
 
         [HttpGet("find/select/create/confirmation")]
@@ -267,7 +279,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model);
 
             await organisationsService.AddRelatedOrganisations(model.Organisation.OrganisationId, model.SelectedOrganisation);
-            return RedirectToAction("Details", "Organisations", new { id = model.Organisation.OrganisationId });
+            return RedirectToAction(
+                nameof(Details),
+                typeof(OrganisationsController).ControllerName(),
+                new { id = model.Organisation.OrganisationId });
         }
 
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
@@ -289,7 +304,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model);
 
             await organisationsService.RemoveRelatedOrganisations(organisationId, relatedOrganisationId);
-            return RedirectToAction("Details", "Organisations", new { id = organisationId });
+            return RedirectToAction(
+                nameof(Details),
+                typeof(OrganisationsController).ControllerName(),
+                new { id = organisationId });
         }
     }
 }

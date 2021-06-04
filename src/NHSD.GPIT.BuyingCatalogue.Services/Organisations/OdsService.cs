@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Flurl;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
@@ -68,6 +70,56 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return odsOrganisation;
         }
 
+        public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentOdsCode(string odsCode)
+        {
+            if (string.IsNullOrWhiteSpace(odsCode))
+                throw new ArgumentException(odsCode);
+
+            var key = $"ServiceRecipients-ODS-{odsCode}";
+
+            if (memoryCache.TryGetValue(key, out IEnumerable<ServiceRecipient> cachedResults))
+                return cachedResults;
+
+            var retrievedAll = false;
+
+            var costCentres = new List<ServiceRecipient>();
+            int offset = 0;
+            int searchLimit = settings.GetChildOrganisationSearchLimit;
+
+            while (!retrievedAll)
+            {
+                var query = settings.ApiBaseUrl
+                    .AppendPathSegment("organisations")
+                    .SetQueryParam("RelTypeId", "RE4")
+                    .SetQueryParam("TargetOrgId", odsCode)
+                    .SetQueryParam("RelStatus", "active")
+                    .SetQueryParam("Limit", searchLimit)
+                    .AllowHttpStatus("3xx,4xx");
+
+                if (offset > 0)
+                {
+                    query.SetQueryParam("Offset", offset);
+                }
+
+                var serviceRecipientResponse = await query.GetJsonAsync<ServiceRecipientResponse>();
+
+                if (serviceRecipientResponse.Organisations is null)
+                {
+                    break;
+                }
+
+                var centres = serviceRecipientResponse.Organisations.Where(o => o.PrimaryRoleId == settings.GpPracticeRoleId);
+                costCentres.AddRange(centres);
+
+                retrievedAll = serviceRecipientResponse.Organisations.Count() != searchLimit;
+                offset += searchLimit;
+            }
+
+            memoryCache.Set(key, costCentres, memoryCacheOptions);
+
+            return costCentres;
+        }
+
         private static string GetPrimaryRoleId(OdsResponseOrganisation organisation)
         {
             return organisation.Roles.Role.FirstOrDefault(r => r.PrimaryRole)?.Id;
@@ -96,6 +148,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         private bool IsBuyerOrganisation(OdsResponseOrganisation organisation)
         {
             return settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
+        }
+
+        internal sealed class ServiceRecipientResponse
+        {
+            public IEnumerable<ServiceRecipient> Organisations { get; set; }
         }
     }
 }
