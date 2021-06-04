@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public virtual Contact SupplierContact { get; set; }
 
-        public virtual OrderProgress OrderProgress { get; set; }
+        public virtual OrderProgress OrderProgress { get; init; } = new();
 
         public virtual ICollection<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
 

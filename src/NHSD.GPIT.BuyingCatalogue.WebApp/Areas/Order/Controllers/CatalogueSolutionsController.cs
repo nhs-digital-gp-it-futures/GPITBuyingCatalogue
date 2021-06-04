@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
@@ -48,7 +49,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.GetOrder(callOffId);
 
-            var state = new CatalogueSolutionStateModel { CommencementDate = order.CommencementDate, SupplierId = order.SupplierId };
+            // TODO - wonder if the types can use the enums rather than strings
+            var state = new CreateOrderItemModel
+            {
+                CommencementDate = order.CommencementDate,
+                SupplierId = order.SupplierId,
+
+                // TODO - Should this use Solution or Catalogue Solution based on CatalogueItemType (either way shouldn't use string literals)
+                CatalogueItemType = "Solution",
+
+                // TODO - based on the solution. This will also drive the flow
+                ProvisioningType = "Declarative",
+
+                // TODO -based on the solution
+                EstimationPeriod = "PerYear",
+
+                // TODO - whats this?
+                ItemUnit = new ItemUnitModel { Name = "callOff", Description = "per Call-off" },
+
+                // TODO - based on solution
+                Type = "Flat",
+
+                // TODO - where is this from?
+                CurrencyCode = "GB",
+            };
 
             SetStateModel(state);
 
@@ -65,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var solutions = await solutionsService.GetSupplierSolutions(state.SupplierId);
 
-            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.SelectedSolutionId));
+            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueSolutionId));
         }
 
         [HttpPost("select/solution")]
@@ -83,9 +107,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            state.SelectedSolutionId = model.SelectedSolutionId;
+            state.CatalogueSolutionId = model.SelectedSolutionId;
 
-            state.SolutionName = (await solutionsService.GetSolution(state.SelectedSolutionId)).Name;
+            state.CatalogueItemName = (await solutionsService.GetSolution(state.CatalogueSolutionId)).Name;
 
             SetStateModel(state);
 
@@ -107,11 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (state.ServiceRecipients == null)
             {
                 var recpients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recpients.Select(x => new ServiceRecipientsModel(x)).ToList();
+                state.ServiceRecipients = recpients.Select(x => new OrderItemRecipientModel(x)).ToList();
                 SetStateModel(state);
             }
 
-            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.SolutionName, state.ServiceRecipients, selectionMode));
+            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode));
         }
 
         [HttpPost("select/solution/price/recipients")]
@@ -145,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
-            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.SolutionName, state.CommencementDate, state.PlannedDeliveryDate));
+            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate));
         }
 
         [HttpPost("select/solution/price/recipients/date")]
@@ -169,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             state.ServiceRecipients.All(c =>
             {
-                c.PlannedDeliveryDate = date;
+                c.DeliveryDate = date;
                 return true;
             });
 
@@ -190,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             // TODO - this is not always asked. Does it for Anywhere Consult but not EMIS Web GP
             var state = GetStateModel();
 
-            return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.SolutionName, state.Quantity));
+            return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
         }
 
         [HttpPost("select/solution/price/flat/declarative")]
@@ -234,11 +258,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
-            return View(new NewOrderItemModel(odsCode, callOffId, state.SolutionName));
+            return View(new NewOrderItemModel(odsCode, callOffId, state.CatalogueItemName));
         }
 
         [HttpPost("neworderitem")]
-        public IActionResult NewOrderItem(string odsCode, string callOffId, NewOrderItemModel model)
+        public async Task<IActionResult> NewOrderItem(string odsCode, string callOffId, NewOrderItemModel model)
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
@@ -246,6 +270,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!ModelState.IsValid)
                 return View(model);
+
+            var state = GetStateModel();
+
+            // TODO - handle errors
+            var result = await orderItemService.Create(callOffId, state);
 
             return RedirectToAction(
                 actionName: nameof(Index),
@@ -303,14 +332,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteContinueModel());
         }
 
-        private CatalogueSolutionStateModel GetStateModel()
+        private CreateOrderItemModel GetStateModel()
         {
-            var state = sessionService.GetObject<CatalogueSolutionStateModel>("CatalogueItemState");
+            var state = sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
 
-            return state ?? new CatalogueSolutionStateModel();
+            return state ?? new CreateOrderItemModel();
         }
 
-        private void SetStateModel(CatalogueSolutionStateModel state)
+        private void SetStateModel(CreateOrderItemModel state)
         {
             sessionService.SetObject("CatalogueItemState", state);
         }

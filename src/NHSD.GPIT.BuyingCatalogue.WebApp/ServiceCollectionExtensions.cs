@@ -147,6 +147,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
         }
 
+        public static void ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var validationSettings = new ValidationSettings
+            {
+                MaxDeliveryDateWeekOffset = configuration.GetValue<int>("MaxDeliveryDateWeekOffset"),
+            };
+            services.AddSingleton(validationSettings);
+        }
+
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, UserClaimsPrincipalFactoryEx<AspNetUser>>();

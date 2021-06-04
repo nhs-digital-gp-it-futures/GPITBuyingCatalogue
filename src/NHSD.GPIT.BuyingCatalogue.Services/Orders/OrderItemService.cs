@@ -16,26 +16,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly OrderingDbContext dbContext;
         private readonly ICreateOrderItemValidator orderItemValidator;
         private readonly IServiceRecipientService serviceRecipientService;
+        private readonly IOrderService orderService;
 
         public OrderItemService(
             ILogWrapper<OrderItemService> logger,
             OrderingDbContext dbContext,
             ICreateOrderItemValidator orderItemValidator,
-            IServiceRecipientService serviceRecipientService)
+            IServiceRecipientService serviceRecipientService,
+            IOrderService orderService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.orderItemValidator = orderItemValidator ?? throw new ArgumentNullException(nameof(orderItemValidator));
             this.serviceRecipientService = serviceRecipientService ?? throw new ArgumentNullException(nameof(serviceRecipientService));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public async Task<AggregateValidationResult> Create(Order order, CatalogueItemId catalogueItemId, CreateOrderItemModel model)
+        public async Task<AggregateValidationResult> Create(string callOffId, CreateOrderItemModel model)
         {
+            var order = await orderService.GetOrder(callOffId);
+
             var catalogueItemType = CatalogueItemType.Parse(model.CatalogueItemType);
 
             var aggregateValidationResult = orderItemValidator.Validate(order, model, catalogueItemType);
             if (!aggregateValidationResult.Success)
                 return aggregateValidationResult;
+
+            // TODO - handle case of non-success
+            (var success, var catalogueItemId) = CatalogueItemId.Parse(model.CatalogueSolutionId);
 
             var catalogueItem = await AddOrUpdateCatalogueItem(catalogueItemId, model, catalogueItemType);
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);
@@ -62,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 ProvisioningType = ProvisioningType.Parse(model.ProvisioningType),
             });
 
-            item.SetRecipients(model.ServiceRecipients.Select(r => new OrderItemRecipient
+            item.SetRecipients(model.ServiceRecipients.Where(x => x.Checked).Select(r => new OrderItemRecipient
             {
                 DeliveryDate = r.DeliveryDate,
                 Quantity = r.Quantity.GetValueOrDefault(),
@@ -102,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private async Task<IReadOnlyDictionary<string, EntityFramework.Models.Ordering.ServiceRecipient>> AddOrUpdateServiceRecipients(CreateOrderItemModel model)
         {
-            var serviceRecipients = model.ServiceRecipients.Select(s => new EntityFramework.Models.Ordering.ServiceRecipient { OdsCode = s.OdsCode, Name = s.Name });
+            var serviceRecipients = model.ServiceRecipients.Where(x => x.Checked).Select(s => new EntityFramework.Models.Ordering.ServiceRecipient { OdsCode = s.OdsCode, Name = s.Name });
 
             return await serviceRecipientService.AddOrUpdateServiceRecipients(serviceRecipients);
         }

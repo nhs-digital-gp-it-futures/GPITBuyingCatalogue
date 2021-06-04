@@ -6,8 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
     {
         public int OrderId { get; set; }
 
-        public bool ServiceRecipientsViewed { get; set; }
-
         public bool CatalogueSolutionsViewed { get; set; }
 
         public bool AdditionalServicesViewed { get; set; }

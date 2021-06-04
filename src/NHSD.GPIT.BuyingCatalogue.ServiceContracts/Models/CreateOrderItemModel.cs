@@ -1,10 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
     public sealed class CreateOrderItemModel
     {
-        public string CatalogueItemName { get; init; }
+        public DateTime? CommencementDate { get; set; }
+
+        public string SupplierId { get; set; }
+
+        public DateTime? PlannedDeliveryDate { get; set; }
+
+        public int? Quantity { get; set; }
+
+        public string CatalogueItemName { get; set; }
 
         public string CatalogueItemType { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
@@ -13,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
                 : base(id, name)
         {
         }
+
+        // MJRTODO - not sure this is required. Take is out and check create order item still works
+        public ICollection<CatalogueItem> CatalogueItems { get; set; }
 
         public static CatalogueItemType Parse(string name)
         {

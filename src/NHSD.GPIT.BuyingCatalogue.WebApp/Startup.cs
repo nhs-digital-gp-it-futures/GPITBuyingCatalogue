@@ -14,7 +14,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using Serilog;
@@ -41,13 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
             });
 
-            // MJRTODO - shift
-            var validationSettings = new ValidationSettings
-            {
-                MaxDeliveryDateWeekOffset = Configuration.GetValue<int>("MaxDeliveryDateWeekOffset"),
-            };
-            services.AddSingleton(validationSettings);
-
             var healthChecksBuilder = services.AddHealthChecks();
 
             services.ConfigureCookiePolicy();
@@ -57,6 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureSession();
 
             services.ConfigureIdentity();
+
+            services.ConfigureValidationSettings(Configuration);
 
             services.ConfigureCookies(Configuration);
 

@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             foreach (var recipient in existingServiceRecipients)
                 recipient.Name = requestRecipients[recipient.OdsCode].Name;
 
-            var newServiceRecipients = requestRecipients.Values.Except(existingServiceRecipients).ToList();
+            var newServiceRecipients = requestRecipients.Values.Where(p => !existingServiceRecipients.Any(p2 => p2.OdsCode == p.OdsCode));
 
             // ReSharper disable once MethodHasAsyncOverload
             // Non-async method recommended over async version for most cases (see EF Core docs)

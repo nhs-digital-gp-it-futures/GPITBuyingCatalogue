@@ -16,21 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public int CataloguePriceTypeId { get; set; }
-
         public string PricingUnitName { get; set; }
 
         public int? PriceId { get; set; }
 
-        public int TimeUnitId { get; set; }
-
-        public int EstimationPeriodId { get; set; }
-
         public string CurrencyCode { get; set; }
 
         public decimal? Price { get; set; }
-
-        public int ProvisioningTypeId { get; set; }
 
         public DateTime? DefaultDeliveryDate { get; set; }
 
