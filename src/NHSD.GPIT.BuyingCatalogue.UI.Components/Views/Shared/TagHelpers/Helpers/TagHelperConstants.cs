@@ -6,8 +6,10 @@
         internal const string Anchor = "a";
         internal const string Link = "href";
         internal const string ListItem = "li";
-        internal const string Header = "h1";
-        internal const string SubHeader = "h2";
+        internal const string HeaderOne = "h1";
+        internal const string HeaderTwo = "h2";
+        internal const string HeaderThree = "h3";
+        internal const string HeaderFour = "h4";
         internal const string Paragraph = "p";
         internal const string Span = "span";
         internal const string UnorderedList = "ul";
@@ -76,6 +78,7 @@
         internal const string LabelTextName = "label-text";
         internal const string LabelHintName = "label-hint";
         internal const string DisableCharacterCounterName = "disable-character-counter";
+        internal const string EnableCharacterCounterName = "enable-character-counter";
         internal const string DisableLabelAndHint = "disable-label-and-hint";
     }
 }

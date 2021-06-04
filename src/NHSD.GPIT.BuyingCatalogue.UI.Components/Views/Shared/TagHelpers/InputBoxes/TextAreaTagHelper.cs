@@ -51,8 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
-            output.Content.Clear();
-
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);

@@ -34,8 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.DisableCharacterCounterName)]
-        public bool? DisableCharacterCounter { get; set; }
+        [HtmlAttributeName(TagHelperConstants.EnableCharacterCounterName)]
+        public bool? EnableCharacterCounter { get; set; } = false;
 
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
@@ -45,14 +45,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
-            output.Content.Clear();
-
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
-            var counter = TagHelperBuilders.GetCounterBuilder(For, DisableCharacterCounter);
+            var counter = TagHelperBuilders.GetCounterBuilder(For, EnableCharacterCounter);
 
             formGroup.InnerHtml
                 .AppendHtml(label)
@@ -61,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 .AppendHtml(input)
                 .AppendHtml(counter);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, DisableCharacterCounter);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, EnableCharacterCounter);
         }
 
         private TagBuilder GetInputBuilder()
@@ -84,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
                 builder.MergeAttribute(TagHelperConstants.Type, "password");
 
-            if (!TagHelperFunctions.IsCounterDisabled(For, DisableCharacterCounter))
+            if (!TagHelperFunctions.IsCounterDisabled(For, EnableCharacterCounter))
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))

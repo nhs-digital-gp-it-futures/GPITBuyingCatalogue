@@ -50,8 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private static void BuildOutput(TagHelperOutput output)
         {
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
+            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
             var attributes = new List<TagHelperAttribute>
             {
@@ -78,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private TagBuilder GetHeaderBuilder()
         {
-            var builder = new TagBuilder(TagHelperConstants.SubHeader);
+            var builder = new TagBuilder(TagHelperConstants.HeaderTwo);
             builder.AddCssClass(NhsValidationSummaryTitle);
             builder.GenerateId(ErrorSummaryTitle, "_");
 

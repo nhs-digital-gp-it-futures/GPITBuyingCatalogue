@@ -16,8 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             bool? disableCharacterCounter,
             string validationName = null)
         {
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
+            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
+
             output.Content.AppendHtml(htmlContent);
 
             var attributes = new List<TagHelperAttribute>();

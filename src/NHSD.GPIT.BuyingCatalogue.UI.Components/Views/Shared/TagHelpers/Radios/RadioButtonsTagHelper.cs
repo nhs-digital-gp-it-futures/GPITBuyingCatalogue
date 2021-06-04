@@ -44,10 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             List<TagBuilder> radioItems = BuildRadiosFromValueList();
 
-            output.Content.Clear();
-
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
+            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsRadios));
 

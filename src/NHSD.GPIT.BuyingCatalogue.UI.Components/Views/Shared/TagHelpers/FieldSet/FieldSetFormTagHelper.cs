@@ -7,18 +7,27 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(
-        CheckboxContainerTagHelper.TagHelperName,
-        RadioButtonsTagHelper.TagHelperName,
-        YesNoRadioButtonTagHelper.TagHelperName)]
     public sealed class FieldSetFormTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-fieldset-form";
 
+        private const string FieldSetSizeName = "size";
+
         private const string NhsFieldset = "nhsuk-fieldset";
         private const string NhsFieldsetLegend = "nhsuk-fieldset__legend";
-        private const string NhsFieldsetLegendOne = "nhsuk-fieldset__legend--1";
+        private const string NhsFieldsetLegendExtraLarge = "nhsuk-fieldset__legend--xl";
+        private const string NhsFieldsetLegendLarge = "nhsuk-fieldset__legend--l";
+        private const string NhsFieldsetLegendMedium = "nhsuk-fieldset__legend--m";
+        private const string NhsFieldsetLegendSmall = "nhsuk-fieldset__legend--s";
         private const string NhsFieldSetLegendHeading = "nhsuk-fieldset__heading";
+
+        public enum FieldSetSize
+        {
+            ExtraLarge = 1,
+            Large = 0,
+            Medium = 2,
+            Small = 3,
+        }
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -36,9 +45,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
 
+        [HtmlAttributeName(FieldSetSizeName)]
+        public FieldSetSize SelectedSize { get; set; } = FieldSetSize.Large;
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            string formName = GetModelKebabNameFromFor();
+            string formName = TagHelperFunctions.GetModelKebabNameFromFor(For);
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var fieldset = GetFieldSetLegendHeadingBuilder(formName);
@@ -63,12 +75,21 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return builder;
         }
 
-        private static TagBuilder GetFieldsetLegendBuilder()
+        private TagBuilder GetFieldsetLegendBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.Legend);
 
+            var selectedLedgendClass = SelectedSize switch
+            {
+                FieldSetSize.ExtraLarge => NhsFieldsetLegendExtraLarge,
+                FieldSetSize.Large => NhsFieldsetLegendLarge,
+                FieldSetSize.Medium => NhsFieldsetLegendMedium,
+                FieldSetSize.Small => NhsFieldsetLegendSmall,
+                _ => throw new System.InvalidCastException(),
+            };
+
             builder.AddCssClass(NhsFieldsetLegend);
-            builder.AddCssClass(NhsFieldsetLegendOne);
+            builder.AddCssClass(selectedLedgendClass);
 
             return builder;
         }
@@ -90,23 +111,21 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (LabelText == null || DisableLabelAndHint == true)
                 return null;
 
-            var builder = new TagBuilder(TagHelperConstants.Header);
+            var selectedLedgendTag = SelectedSize switch
+            {
+                FieldSetSize.ExtraLarge => TagHelperConstants.HeaderOne,
+                FieldSetSize.Large => TagHelperConstants.HeaderTwo,
+                FieldSetSize.Medium => TagHelperConstants.HeaderThree,
+                FieldSetSize.Small => "label",
+                _ => throw new System.InvalidCastException(),
+            };
+
+            var builder = new TagBuilder(selectedLedgendTag);
             builder.AddCssClass(NhsFieldSetLegendHeading);
 
             builder.InnerHtml.Append(LabelText);
 
             return builder;
-        }
-
-        private string GetModelKebabNameFromFor()
-        {
-            string name = For.Model.GetType().Name;
-
-            // removes the word Model from the end of the Model, e.g SolutionDescriptionModel becomes SolutionDescription
-            name = name.Remove(name.Length - 5);
-
-            var pattern = new Regex(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+");
-            return string.Join("-", pattern.Matches(name)).ToLower();
         }
     }
 }

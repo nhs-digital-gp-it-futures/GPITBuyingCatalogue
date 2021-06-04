@@ -27,10 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var yesRadio = BuildYesRadio(isYesChecked);
             var noRadio = BuildNoRadio(!isYesChecked);
 
-            output.Content.Clear();
-
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
+            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsRadios));
 

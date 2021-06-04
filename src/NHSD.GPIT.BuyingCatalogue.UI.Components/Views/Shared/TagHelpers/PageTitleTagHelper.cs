@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -29,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         public string TitleAdvice { get; set; }
 
         [HtmlAttributeName(TitleAdviceAdditionalName)]
-        public string TitleAdviceAditional { get; set; }
+        public string TitleAdviceAdditional { get; set; }
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -37,48 +36,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            var title = GetTitleBuilder();
-            var advice = GetAdviceBuilder();
-            var additional = await GetAdditionalAdviceBuilder();
+            // this tag helper uses the NhsPageTitleViewComponent for all its rendering.
+            // this tag helper will be removed when we move to .NET 6.0 which will allow optional parameters for
+            // view components, when we'll move over to using the NhsPageTitle View Component Explicitally
+            ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
+
+            var pageTitleFromViewComponent = await viewComponentHelper.InvokeAsync(
+                "NhsPageTitle",
+                new
+                {
+                    title = Title,
+                    titleAdvice = TitleAdvice,
+                    titleAdditionalAdvice = TitleAdviceAdditional,
+                });
 
             output.TagName = string.Empty;
 
-            output.Content.AppendHtml(title);
-            output.Content.AppendHtml(advice);
-            output.Content.AppendHtml(additional);
-        }
-
-        private TagBuilder GetTitleBuilder()
-        {
-            var builder = new TagBuilder(TagHelperConstants.Header);
-
-            builder.InnerHtml.Append(Title);
-
-            return builder;
-        }
-
-        private TagBuilder GetAdviceBuilder()
-        {
-            if (string.IsNullOrWhiteSpace(TitleAdvice))
-                return null;
-
-            var builder = new TagBuilder(TagHelperConstants.Paragraph);
-
-            builder.AddCssClass(TagHelperConstants.NhsLedeText);
-
-            builder.InnerHtml.Append(TitleAdvice);
-
-            return builder;
-        }
-
-        private async Task<IHtmlContent> GetAdditionalAdviceBuilder()
-        {
-            if (string.IsNullOrWhiteSpace(TitleAdviceAditional))
-                return null;
-
-            ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
-
-            return await viewComponentHelper.InvokeAsync("NhsInsetText", new { text = TitleAdviceAditional });
+            output.Content.AppendHtml(pageTitleFromViewComponent);
         }
     }
 }
