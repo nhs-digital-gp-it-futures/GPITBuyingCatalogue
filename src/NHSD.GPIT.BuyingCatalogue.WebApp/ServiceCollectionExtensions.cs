@@ -97,6 +97,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             healthCheckBuilder.AddDatabaseHealthCheck(buyingCatalogueConnectionString);
         }
 
+        public static void ConfigureSession(this IServiceCollection services)
+        {
+            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
+
+            services.AddDistributedSqlServerCache(options =>
+            {
+                options.ConnectionString = buyingCatalogueConnectionString;
+                options.SchemaName = "dbo";
+                options.TableName = "SQLSessions";
+            });
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
+        }
+
         public static void ConfigureDisabledErrorMessage(this IServiceCollection services, IConfiguration configuration)
         {
             var disabledErrorMessage = configuration.GetSection("disabledErrorMessage").Get<DisabledErrorMessageSettings>();

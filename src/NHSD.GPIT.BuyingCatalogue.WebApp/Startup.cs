@@ -46,6 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureDbContexts(healthChecksBuilder);
 
+            services.ConfigureSession();
+
             services.ConfigureIdentity();
 
             services.ConfigureCookies(Configuration);
@@ -107,6 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             }
 
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
+            app.UseSession();
 
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
