@@ -1,0 +1,28 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ClientApplicationTypesModel;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = $"Solution {Model.Section}";
+}
+
+<div class="nhsuk-width-container ">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+
+                    <p>
+                        <b>This Catalogue Solution is supported by the following client application types:</b>
+                    </p>
+
+                    @Html.DisplayFor(m => m.ApplicationTypes)
+
+                    @Html.DisplayFor(m => m.BrowserBasedApplication)
+
+                    @Html.DisplayFor(m => m.NativeDesktopApplication)
+
+                    @Html.DisplayFor(m => m.NativeMobileApplication)
+                </div>
+            </div>
+        </article>
+    </main>
+</div>

@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             {
                 Next = new SectionModel
                 {
-                    Action = "Description",
+                    Action = "ClientApplicationTypes",
                     Controller = "SolutionDetails",
                     Name = "Client application type",
                 },
@@ -137,6 +137,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 },
             });
             actual.Section.Should().Be("Features");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+
+
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToClientApplicationTypesModel_ResultAsExpected(
+           CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                Previous = new SectionModel
+                {
+                    Action = "ImplementationTimescales",
+                    Controller = "SolutionDetails",
+                    Name = "Implementation timescales",
+                },
+                //TODO: Update Next to HostingType once Capabilities page implemented
+                Next = new SectionModel
+                {
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Hosting type",
+                },
+            });
+            actual.Section.Should().Be("Client application type");
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
