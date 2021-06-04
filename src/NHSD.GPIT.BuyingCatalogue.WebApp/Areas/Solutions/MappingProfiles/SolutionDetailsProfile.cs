@@ -302,55 +302,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                             dest.SetShowTrue("Features");
                         }
 
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.SolutionCapabilities))
-                        //{
-                        //    dest.SetShowTrue("Capabilities");
-                        //}
-
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.ListPrice))
-                        //{
-                        //    dest.SetShowTrue("List price");
-                        //}
-
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.AssociatedServices))
-                        //{
-                        //    dest.SetShowTrue("Associated Services");
-                        //}
-
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.Interoperability))
-                        //{
-                        //    dest.SetShowTrue("Interoperability");
-                        //}
+                        if (src.Solution?.SolutionCapabilities != null)
+                        {
+                            dest.SetShowTrue("Capabilities");
+                        }
 
                         if (!string.IsNullOrWhiteSpace(src.Solution?.ImplementationDetail))
                         {
                             dest.SetShowTrue("Implementation timescales");
                         }
 
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.ClientApplication))
-                        //{
-                        //    dest.SetShowTrue("Client application type");
-                        //}
+                        if (!string.IsNullOrWhiteSpace(src.Solution?.ClientApplication))
+                        {
+                            dest.SetShowTrue("Client application type");
+                        }
 
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.Hosting))
-                        //{
-                        //    dest.SetShowTrue("Hosting type");
-                        //}
+                        if (!string.IsNullOrWhiteSpace(src.Solution?.Hosting))
+                        {
+                            dest.SetShowTrue("Hosting type");
+                        }
 
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.ServiceLevelAgreement))
-                        //{
-                        //    dest.SetShowTrue("Service Level Agreement");
-                        //}
-
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.DevelopmentPlans))
-                        //{
-                        //    dest.SetShowTrue("Development plans");
-                        //}
-
-                        //if (!string.IsNullOrWhiteSpace(src.Solution?.SupplierDetails))
-                        //{
-                        //    dest.SetShowTrue("Supplier details");
-                        //}
+                        if (!string.IsNullOrWhiteSpace(src.Solution?.ServiceLevelAgreement))
+                        {
+                            dest.SetShowTrue("Service Level Agreement");
+                        }
                     });
 
             CreateMap<CatalogueItem, ImplementationTimescalesModel>()
