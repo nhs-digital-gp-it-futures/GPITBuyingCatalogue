@@ -105,13 +105,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string SolutionName { get; set; }
 
         public SectionModel GetSectionFor(string section) =>
-            sections.FirstOrDefault(s => s.Name.EqualsIgnoreCase(section)) is { } sectionModel
+            sections
+                .FirstOrDefault(s => s.Name.EqualsIgnoreCase(section)) is { } sectionModel
                 ? sectionModel
                 : null;
 
         public virtual IList<SectionModel> GetSections()
         {
-            var sectionModels = new List<SectionModel>(sections);
+            var sectionModels = new List<SectionModel>(sections.Where(s => s.Show));
             sectionModels.ForEach(s => s.Id = SolutionId);
 
             if (GetSectionFor(Section) is { } sectionModel)
@@ -134,5 +135,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         }
 
         public void SetClientApplication(ClientApplication clientApp) => ClientApplication = clientApp;
+
+        public void SetShowTrue(string section)
+        {
+            if (GetSectionFor(section) is { } sectionModel)
+                sectionModel.Show = true;
+        }
     }
 }

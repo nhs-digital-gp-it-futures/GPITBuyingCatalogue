@@ -287,10 +287,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .AfterMap(
-                    (_, dest) =>
+                    (src, dest) =>
                     {
                         (SectionModel previous, SectionModel next) = dest.PreviousAndNextModels();
                         dest.PaginationFooter = new PaginationFooterModel { Next = next, Previous = previous, };
+
+                        if (!string.IsNullOrWhiteSpace(src.Solution?.FullDescription))
+                        {
+                            dest.SetShowTrue("Description");
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(src.Solution?.Features))
+                        {
+                            dest.SetShowTrue("Features");
+                        }
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.SolutionCapabilities))
+                        //{
+                        //    dest.SetShowTrue("Capabilities");
+                        //}
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.ListPrice))
+                        //{
+                        //    dest.SetShowTrue("List price");
+                        //}
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.AssociatedServices))
+                        //{
+                        //    dest.SetShowTrue("Associated Services");
+                        //}
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.Interoperability))
+                        //{
+                        //    dest.SetShowTrue("Interoperability");
+                        //}
+
+                        if (!string.IsNullOrWhiteSpace(src.Solution?.ImplementationDetail))
+                        {
+                            dest.SetShowTrue("Implementation timescales");
+                        }
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.ClientApplication))
+                        //{
+                        //    dest.SetShowTrue("Client application type");
+                        //}
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.Hosting))
+                        //{
+                        //    dest.SetShowTrue("Hosting type");
+                        //}
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.ServiceLevelAgreement))
+                        //{
+                        //    dest.SetShowTrue("Service Level Agreement");
+                        //}
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.DevelopmentPlans))
+                        //{
+                        //    dest.SetShowTrue("Development plans");
+                        //}
+
+                        //if (!string.IsNullOrWhiteSpace(src.Solution?.SupplierDetails))
+                        //{
+                        //    dest.SetShowTrue("Supplier details");
+                        //}
                     });
 
             CreateMap<CatalogueItem, ImplementationTimescalesModel>()
