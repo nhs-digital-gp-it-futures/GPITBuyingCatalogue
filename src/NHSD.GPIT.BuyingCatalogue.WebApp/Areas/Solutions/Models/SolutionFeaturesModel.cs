@@ -2,8 +2,8 @@
 {
     public class SolutionFeaturesModel : SolutionDisplayBaseModel
     {
-        public override string Section { get; set; }
-
         public string[] Features { get; set; }
+
+        public override int Index => 1;
     }
 }

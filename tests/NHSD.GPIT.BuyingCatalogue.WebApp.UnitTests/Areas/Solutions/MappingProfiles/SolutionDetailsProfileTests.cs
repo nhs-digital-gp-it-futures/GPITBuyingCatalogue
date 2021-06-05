@@ -71,12 +71,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "ClientApplicationTypes",
                     Controller = "SolutionDetails",
                     Name = "Client application type",
+                    Show = true,
                 },
                 Previous = new SectionModel
                 {
                     Action = "Description",
                     Controller = "SolutionDetails",
-                    Name = "Interoperability",
+                    Name = "Capabilities",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Implementation timescales");
@@ -100,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Features",
                     Controller = "SolutionDetails",
                     Name = "Features",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Description");
@@ -136,6 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     
                     Controller = "SolutionDetails",
                     Name = "Capabilities",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Features");
@@ -168,6 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Hosting type",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Client application type");

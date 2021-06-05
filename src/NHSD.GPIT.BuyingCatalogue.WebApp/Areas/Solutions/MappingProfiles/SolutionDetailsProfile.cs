@@ -16,6 +16,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
 
+        private static readonly Dictionary<int, Func<CatalogueItem, bool>> ShowFunctions = new()
+        {
+            { 0, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.FullDescription) },
+            { 1, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.Features) },
+            { 2, catalogueItem => catalogueItem.Solution?.SolutionCapabilities != null },
+            { 7, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.ImplementationDetail) },
+            { 8, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.ClientApplication) },
+            { 9, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.Hosting) },
+            { 10, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.ServiceLevelAgreement) },
+        };
+
         public SolutionDetailsProfile()
         {
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
@@ -68,10 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
             CreateMap<CatalogueItem, SolutionDisplayBaseModel>()
                 .BeforeMap(
-                    (src, dest) => dest.SetClientApplication(
+                    (src, dest) => dest.ClientApplication =
                         src.Solution != null && !string.IsNullOrEmpty(src.Solution.ClientApplication)
                             ? JsonConvert.DeserializeObject<ClientApplication>(src.Solution.ClientApplication)
-                            : new ClientApplication()))
+                            : new ClientApplication())
                 .ForMember(dest => dest.ClientApplication, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.LastReviewed,
@@ -85,43 +96,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .AfterMap(
                     (src, dest) =>
                     {
-                        (SectionModel previous, SectionModel next) = dest.PreviousAndNextModels();
+                        foreach (var (index, predicate) in ShowFunctions)
+                        {
+                            if (predicate(src))
+                            {
+                                dest.SetShowTrue(index);
+                            }
+                        }
+
+                        var (previous, next) = dest.PreviousAndNextModels();
                         dest.PaginationFooter = new PaginationFooterModel { Next = next, Previous = previous, };
-                        
-                        if (!string.IsNullOrWhiteSpace(src.Solution?.FullDescription))
-                        {
-                            dest.SetShowTrue("Description");
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(src.Solution?.Features))
-                        {
-                            dest.SetShowTrue("Features");
-                        }
-
-                        if (src.Solution?.SolutionCapabilities != null)
-                        {
-                            dest.SetShowTrue("Capabilities");
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(src.Solution?.ImplementationDetail))
-                        {
-                            dest.SetShowTrue("Implementation timescales");
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(src.Solution?.ClientApplication))
-                        {
-                            dest.SetShowTrue("Client application type");
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(src.Solution?.Hosting))
-                        {
-                            dest.SetShowTrue("Hosting type");
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(src.Solution?.ServiceLevelAgreement))
-                        {
-                            dest.SetShowTrue("Service Level Agreement");
-                        }
                     });
 
             CreateMap<CatalogueItem, ImplementationTimescalesModel>()
@@ -265,24 +249,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     });
             }
 
-            if (!string.IsNullOrWhiteSpace(
-                clientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu))
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu))
             {
                 result.Add(
                     "Processing power",
                     new ListViewModel { Text = clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu });
             }
 
-            if (!string.IsNullOrWhiteSpace(
-                clientApplication.NativeDesktopThirdParty?.ThirdPartyComponents))
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopThirdParty?.ThirdPartyComponents))
             {
                 result.Add(
                     "Third-party components",
                     new ListViewModel { Text = clientApplication.NativeDesktopThirdParty.ThirdPartyComponents });
             }
 
-            if (!string.IsNullOrWhiteSpace(
-                clientApplication.NativeDesktopThirdParty?.DeviceCapabilities))
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopThirdParty?.DeviceCapabilities))
             {
                 result.Add(
                     "Device capabilities",
