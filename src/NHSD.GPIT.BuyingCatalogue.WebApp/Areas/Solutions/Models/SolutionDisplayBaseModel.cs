@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -98,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string LastReviewed { get; set; }
 
-        public PaginationFooterModel PaginationFooter { get; set; }
+        public PaginationFooterModel PaginationFooter { get; set; } = new();
 
         public string Section => sections[Index].Name;
 
@@ -117,19 +116,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             return sectionsToShow;
         }
 
-        public Tuple<SectionModel, SectionModel> PreviousAndNextModels()
+        public void SetPaginationFooter()
         {
             var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
             if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is not { } sectionModel)
-            {
-                return new Tuple<SectionModel, SectionModel>(null, null);
-            }
+                return;
 
             var index = sectionsToShow.IndexOf(sectionModel);
 
-            return new Tuple<SectionModel, SectionModel>(
-                index > 0 ? sectionsToShow[index - 1] : null,
-                index < (sectionsToShow.Count - 1) ? sectionsToShow[index + 1] : null);
+            PaginationFooter.Previous = index > 0 ? sectionsToShow[index - 1] : null;
+            PaginationFooter.Next = index < (sectionsToShow.Count - 1) ? sectionsToShow[index + 1] : null;
         }
 
         public void SetShowTrue(int index) => sections[index].Show = true;

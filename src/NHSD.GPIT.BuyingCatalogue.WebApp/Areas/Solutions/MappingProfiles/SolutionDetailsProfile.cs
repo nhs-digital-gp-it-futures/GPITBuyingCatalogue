@@ -18,13 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
         private static readonly Dictionary<int, Func<CatalogueItem, bool>> ShowFunctions = new()
         {
-            { 0, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.FullDescription) },
-            { 1, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.Features) },
-            { 2, catalogueItem => catalogueItem.Solution?.SolutionCapabilities != null },
-            { 7, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.ImplementationDetail) },
-            { 8, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.ClientApplication) },
-            { 9, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.Hosting) },
-            { 10, catalogueItem => !string.IsNullOrWhiteSpace(catalogueItem.Solution?.ServiceLevelAgreement) },
+            { 0, _ => true },
+            { 1, catalogueItem => catalogueItem.HasFeatures() },
+            { 2, catalogueItem => catalogueItem.HasCapabilities() },
+            { 7, catalogueItem => catalogueItem.HasImplementationDetail() },
+            { 8, catalogueItem => catalogueItem.HasClientApplication() },
+            { 9, catalogueItem => catalogueItem.HasHosting() },
+            { 10, catalogueItem => catalogueItem.HasServiceLevelAgreement() },
         };
 
         public SolutionDetailsProfile()
@@ -74,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         {
                             Heading = "Mobile application", Items = GetNativeMobileItems(dest.ClientApplication),
                         }))
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Client application type"))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CatalogueItem, SolutionDisplayBaseModel>()
@@ -96,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .AfterMap(
                     (src, dest) =>
                     {
-                        foreach (var (index, predicate) in ShowFunctions)
+                        foreach ((int index, Func<CatalogueItem, bool> predicate) in ShowFunctions)
                         {
                             if (predicate(src))
                             {
@@ -104,15 +103,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                             }
                         }
 
-                        var (previous, next) = dest.PreviousAndNextModels();
-                        dest.PaginationFooter = new PaginationFooterModel { Next = next, Previous = previous, };
+                        dest.SetPaginationFooter();
                     });
 
             CreateMap<CatalogueItem, ImplementationTimescalesModel>()
                 .ForMember(
                     dest => dest.Description,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.ImplementationDetail))
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Implementation timescales"))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CatalogueItem, SolutionDescriptionModel>()
@@ -121,7 +118,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.FullDescription))
                 .ForMember(dest => dest.Framework, opt => opt.MapFrom(src => src.Framework()))
                 .ForMember(dest => dest.IsFoundation, opt => opt.MapFrom(src => src.IsFoundation().ToYesNo()))
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Description"))
                 .ForMember(
                     dest => dest.Summary,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.Summary))
@@ -132,7 +128,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
             CreateMap<CatalogueItem, SolutionFeaturesModel>()
                 .ForMember(dest => dest.Features, opt => opt.MapFrom(src => src.Features()))
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Features"))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
 
