@@ -29,10 +29,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Test]
         public static void GetSections_ValidSectionProperty_ReturnsSectionsWithSelected(string solutionId)
         {
-            var model = new TestMarketingDisplayBaseModel
+            var model = new TestSolutionDisplayBaseModel { SolutionId = solutionId, };
+            for (int i = 0; i < 12; i++)
             {
-                SolutionId = solutionId,
-            };
+                if (i % 2 != 0) continue;
+                model.SetShowTrue(i);
+                SectionModels[i].Show = true;
+            }
+            
             var expected = new List<SectionModel>(SectionModels.Where(s => s.Show));
             expected.ForEach(s => s.Id = solutionId);
             expected.Single(s => s.Name.EqualsIgnoreCase(model.Section)).Selected = true;
@@ -41,25 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             actual.Should().BeEquivalentTo(expected);
         }
-
-        public class TestMarketingDisplayBaseModel : SolutionDisplayBaseModel
-        {
-            public TestMarketingDisplayBaseModel()
-            {
-                for (int i = 0; i < 12; i++)
-                {
-                    if(i % 2 == 0)
-                    {
-                        SetShowTrue(i);
-                        SectionModels[i].Show = true;
-                    }
-                }
-            }
-            
-            public override int Index => 8;
-        }
-
-        private static readonly IList<SectionModel> SectionModels = new List<SectionModel>
+        
+        public static readonly IList<SectionModel> SectionModels = new List<SectionModel>
         {
             new()
             {

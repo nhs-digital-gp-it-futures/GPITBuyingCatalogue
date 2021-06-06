@@ -15,17 +15,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
                 ? null
                 : frameSolution.Framework?.Name;
 
-        public bool HasCapabilities() => Solution?.SolutionCapabilities?.Any() == true;
+        public virtual bool HasAdditionalServices() => Solution?.AdditionalServices?.Any() == true;
 
-        public bool HasClientApplication() => !string.IsNullOrWhiteSpace(Solution?.ClientApplication);
+        public virtual bool HasAssociatedServices() => AssociatedService != null;
 
-        public bool HasFeatures() => !string.IsNullOrWhiteSpace(Solution?.Features);
+        public virtual bool HasCapabilities() => Solution?.SolutionCapabilities?.Any() == true;
 
-        public bool HasHosting() => !string.IsNullOrWhiteSpace(Solution?.Hosting);
+        public virtual bool HasClientApplication() => !string.IsNullOrWhiteSpace(Solution?.ClientApplication);
 
-        public bool HasImplementationDetail() => !string.IsNullOrWhiteSpace(Solution?.ImplementationDetail);
+        public virtual bool HasDevelopmentPlans() => !string.IsNullOrWhiteSpace(Solution?.RoadMap);
 
-        public bool HasServiceLevelAgreement() => !string.IsNullOrWhiteSpace(Solution?.ServiceLevelAgreement);
+        public virtual bool HasFeatures() => !string.IsNullOrWhiteSpace(Solution?.Features);
+
+        public virtual bool HasHosting() => !string.IsNullOrWhiteSpace(Solution?.Hosting);
+
+        public virtual bool HasImplementationDetail() => !string.IsNullOrWhiteSpace(Solution?.ImplementationDetail);
+
+        public virtual bool HasInteroperability() => !string.IsNullOrWhiteSpace(Solution?.IntegrationsUrl);
+
+        public virtual bool HasListPrice() => CataloguePrices?.Any() == true;
+
+        public virtual bool HasServiceLevelAgreement() => !string.IsNullOrWhiteSpace(Solution?.ServiceLevelAgreement);
+
+        public virtual bool HasSupplierDetails() => Supplier != null;
 
         public virtual bool? IsFoundation() => Solution?.FrameworkSolutions?.Any(f => f.IsFoundation);
 

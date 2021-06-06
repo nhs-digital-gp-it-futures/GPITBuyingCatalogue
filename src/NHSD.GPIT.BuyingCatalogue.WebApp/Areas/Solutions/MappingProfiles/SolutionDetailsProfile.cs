@@ -16,15 +16,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
 
-        private static readonly Dictionary<int, Func<CatalogueItem, bool>> ShowFunctions = new()
+        private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
         {
-            { 0, _ => true },
-            { 1, catalogueItem => catalogueItem.HasFeatures() },
-            { 2, catalogueItem => catalogueItem.HasCapabilities() },
-            { 7, catalogueItem => catalogueItem.HasImplementationDetail() },
-            { 8, catalogueItem => catalogueItem.HasClientApplication() },
-            { 9, catalogueItem => catalogueItem.HasHosting() },
-            { 10, catalogueItem => catalogueItem.HasServiceLevelAgreement() },
+            { _ => true },
+            { catalogueItem => catalogueItem.HasFeatures() },
+            { catalogueItem => catalogueItem.HasCapabilities() },
+            { catalogueItem => catalogueItem.HasListPrice() },
+            { catalogueItem => catalogueItem.HasAdditionalServices() },
+            { catalogueItem => catalogueItem.HasAssociatedServices() },
+            { catalogueItem => catalogueItem.HasInteroperability() },
+            { catalogueItem => catalogueItem.HasImplementationDetail() },
+            { catalogueItem => catalogueItem.HasClientApplication() },
+            { catalogueItem => catalogueItem.HasHosting() },
+            { catalogueItem => catalogueItem.HasServiceLevelAgreement() },
+            { catalogueItem => catalogueItem.HasDevelopmentPlans() },
+            { catalogueItem => catalogueItem.HasSupplierDetails() },
         };
 
         public SolutionDetailsProfile()
@@ -95,11 +101,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .AfterMap(
                     (src, dest) =>
                     {
-                        foreach ((int index, Func<CatalogueItem, bool> predicate) in ShowFunctions)
+                        for (int i = 0; i < ShowSectionFunctions.Count; i++)
                         {
-                            if (predicate(src))
+                            if (ShowSectionFunctions[i](src))
                             {
-                                dest.SetShowTrue(index);
+                                dest.SetShowTrue(i);
                             }
                         }
 

@@ -131,6 +131,79 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Test, CommonAutoData]
+        public static void HasAdditionalServices_SolutionCapabilitiesNotEmpty_ReturnsTrue(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.AdditionalServices.Should().NotBeNullOrEmpty();
+            
+            var actual = catalogueItem.HasAdditionalServices();
+
+            actual.Should().BeTrue();
+        }
+
+        [Test]
+        public static void HasAdditionalServices_AdditionalServicesEmpty_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem
+            {
+                Solution = new Solution { AdditionalServices = new List<AdditionalService>() }
+            };
+            
+            var actual = catalogueItem.HasAdditionalServices();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public static void HasAdditionalServices_AdditionalServicesNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { Solution = new Solution { AdditionalServices = null, } };
+            
+            var actual = catalogueItem.HasAdditionalServices();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public static void HasAdditionalServices_SolutionNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { Solution = null };
+            
+            var actual = catalogueItem.HasAdditionalServices();
+
+            actual.Should().BeFalse();
+        }
+        
+        [Test, CommonAutoData]
+        public static void HasAssociatedServices_AssociatedServiceNotNull_ReturnsTrue(CatalogueItem catalogueItem)
+        {
+            catalogueItem.AssociatedService.Should().NotBeNull();
+            
+            var actual = catalogueItem.HasAssociatedServices();
+
+            actual.Should().BeTrue();
+        }
+
+        [Test]
+        public static void HasAssociatedServices_AssociatedServiceNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { AssociatedService = null, };
+            
+            var actual = catalogueItem.HasAssociatedServices();
+
+            actual.Should().BeFalse();
+        }
+        
+        [Test]
+        public static void HasAssociatedServices_SolutionNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { Solution = null };
+            
+            var actual = catalogueItem.HasAssociatedServices();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test, CommonAutoData]
         public static void HasCapabilities_SolutionCapabilitiesNotEmpty_ReturnsTrue(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.SolutionCapabilities.Any().Should().BeTrue();
@@ -200,6 +273,36 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             actual.Should().BeFalse();
         }
         
+        [Test, CommonAutoData]
+        public static void HasDevelopmentPlans_SolutionHasDevelopmentPlans_ReturnsTrue(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.RoadMap.Should().NotBeNullOrWhiteSpace();
+            
+            var actual = catalogueItem.HasDevelopmentPlans();
+
+            actual.Should().BeTrue();
+        }
+
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void HasDevelopmentPlans_SolutionHasInvalidDevelopmentPlans_ReturnsFalse(string invalid)
+        {
+            var catalogueItem = new CatalogueItem { Solution = new Solution { RoadMap = invalid } };
+            
+            var actual = catalogueItem.HasDevelopmentPlans();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public static void HasDevelopmentPlans_SolutionHasIsNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { Solution = null };
+            
+            var actual = catalogueItem.HasDevelopmentPlans();
+
+            actual.Should().BeFalse();
+        }
+
         [Test, CommonAutoData]
         public static void HasFeatures_SolutionHasFeatures_ReturnsTrue(CatalogueItem catalogueItem)
         {
@@ -291,6 +394,66 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
         
         [Test, CommonAutoData]
+        public static void HasInteroperability_SolutionHasInteroperability_ReturnsTrue(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.IntegrationsUrl.Should().NotBeNullOrWhiteSpace();
+            
+            var actual = catalogueItem.HasInteroperability();
+
+            actual.Should().BeTrue();
+        }
+
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void HasInteroperability_SolutionHasInvalidImplementationDetail_ReturnsFalse(string invalid)
+        {
+            var catalogueItem = new CatalogueItem { Solution = new Solution { IntegrationsUrl = invalid } };
+            
+            var actual = catalogueItem.HasInteroperability();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public static void HasInteroperability_SolutionHasIsNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { Solution = null };
+            
+            var actual = catalogueItem.HasInteroperability();
+
+            actual.Should().BeFalse();
+        }
+        
+        [Test, CommonAutoData]
+        public static void HasListPrice_CataloguePricesNotEmpty_ReturnsTrue(CatalogueItem catalogueItem)
+        {
+            catalogueItem.CataloguePrices.Any().Should().BeTrue();
+            
+            var actual = catalogueItem.HasListPrice();
+
+            actual.Should().BeTrue();
+        }
+
+        [Test]
+        public static void HasListPrice_CataloguePricesIsEmpty_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { CataloguePrices = new List<CataloguePrice>() };
+            
+            var actual = catalogueItem.HasListPrice();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public static void HasListPrice_CataloguePricesNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { CataloguePrices = null };
+            
+            var actual = catalogueItem.HasListPrice();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test, CommonAutoData]
         public static void HasServiceLevelAgreement_SolutionHasServiceLevelAgreement_ReturnsTrue(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.ServiceLevelAgreement.Should().NotBeNullOrWhiteSpace();
@@ -311,11 +474,41 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Test]
-        public static void HasServiceLevelAgreement_SolutionHasIsNull_ReturnsFalse()
+        public static void HasServiceLevelAgreement_SolutionIsNull_ReturnsFalse()
         {
             var catalogueItem = new CatalogueItem { Solution = null };
             
             var actual = catalogueItem.HasServiceLevelAgreement();
+
+            actual.Should().BeFalse();
+        }
+        
+        [Test, CommonAutoData]
+        public static void HasSupplierDetails_SupplierNotNull_ReturnsTrue(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Supplier.Should().NotBeNull();
+            
+            var actual = catalogueItem.HasSupplierDetails();
+
+            actual.Should().BeTrue();
+        }
+
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void HasSupplierDetails_SupplierIsNull_ReturnsFalse(string invalid)
+        {
+            var catalogueItem = new CatalogueItem { Supplier = null, };
+            
+            var actual = catalogueItem.HasSupplierDetails();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public static void HasSupplierDetails_SolutionIsNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem { Solution = null };
+            
+            var actual = catalogueItem.HasSupplierDetails();
 
             actual.Should().BeFalse();
         }
