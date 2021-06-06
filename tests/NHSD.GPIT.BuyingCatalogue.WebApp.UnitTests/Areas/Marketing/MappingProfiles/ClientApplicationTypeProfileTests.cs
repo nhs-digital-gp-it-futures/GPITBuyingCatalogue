@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 using NUnit.Framework;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
