@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [TestCase(typeof(ClientApplicationTypesModel))]
         [TestCase(typeof(ImplementationTimescalesModel))]
         [TestCase(typeof(SolutionDescriptionModel))]
+        [TestCase(typeof(SolutionFeaturesModel))]
         public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
         {
             childType
@@ -35,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var expected = new List<SectionModel>(SectionModels.Where(s => s.Show));
             expected.ForEach(s => s.Id = solutionId);
             expected.Single(s => s.Name.EqualsIgnoreCase(model.Section)).Selected = true;
-
+            
             var actual = model.GetSections();
 
             actual.Should().BeEquivalentTo(expected);
@@ -47,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             {
                 for (int i = 0; i < 12; i++)
                 {
-                    if(DateTime.Now.Ticks % 2 == 0)
+                    if(i % 2 == 0)
                     {
                         SetShowTrue(i);
                         SectionModels[i].Show = true;
