@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -25,31 +26,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 
             CreateMap<CatalogueItem, ConnectivityModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => GetBackLink(src)))
-                .ForMember(dest => dest.ConnectionSpeeds, opt => opt.MapFrom(src => ProfileDefaults.ConnectionSpeeds))
-                .ForMember(dest => dest.ConnectionTypes, opt => opt.MapFrom(src => ProfileDefaults.MobileConnectionTypes))
-                .ForMember(dest => dest.Description, opt =>
-                {
-                    opt.SetMappingOrder(10);
-                    opt.MapFrom((_, dest) => dest.ClientApplication?.MobileConnectionDetails?.Description);
-                })
-                .ForMember(dest => dest.SelectedConnectionSpeed, opt =>
-                {
-                    opt.SetMappingOrder(20);
-                    opt.MapFrom((_, dest) => dest.ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed);
-                })
-                .IncludeBase<CatalogueItem, MarketingBaseModel>()
-                .AfterMap((src, dest) =>
-                {
-                    var mobilConnectionTypes = dest.ClientApplication?.MobileConnectionDetails?.ConnectionType;
-                    if (mobilConnectionTypes == null)
-                        return;
-
-                    foreach (var connectionType in dest.ConnectionTypes)
+                .ForMember(
+                    dest => dest.ConnectionSpeeds,
+                    opt => opt.MapFrom(src => new List<SelectListItem>(ProfileDefaults.ConnectionSpeeds)))
+                .ForMember(
+                    dest => dest.ConnectionTypes,
+                    opt => opt.MapFrom(src => new List<ConnectionTypeModel>(ProfileDefaults.MobileConnectionTypes)))
+                .ForMember(
+                    dest => dest.Description,
+                    opt =>
                     {
-                        connectionType.Checked = mobilConnectionTypes.Any(x =>
-                            x.Equals(connectionType.ConnectionType, StringComparison.InvariantCultureIgnoreCase));
-                    }
-                });
+                        opt.SetMappingOrder(10);
+                        opt.MapFrom((_, dest) => dest.ClientApplication?.MobileConnectionDetails?.Description);
+                    })
+                .ForMember(
+                    dest => dest.SelectedConnectionSpeed,
+                    opt =>
+                    {
+                        opt.SetMappingOrder(20);
+                        opt.MapFrom(
+                            (_, dest) => dest.ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed);
+                    })
+                .IncludeBase<CatalogueItem, MarketingBaseModel>()
+                .AfterMap(
+                    (_, dest) =>
+                    {
+                        var mobilConnectionTypes = dest.ClientApplication?.MobileConnectionDetails?.ConnectionType;
+                        if (mobilConnectionTypes == null)
+                            return;
+
+                        foreach (var connectionType in dest.ConnectionTypes)
+                        {
+                            connectionType.Checked = mobilConnectionTypes.Any(
+                                x =>
+                                    x.Equals(
+                                        connectionType.ConnectionType,
+                                        StringComparison.InvariantCultureIgnoreCase));
+                        }
+                    });
 
             CreateMap<CatalogueItem, HardwareRequirementsModel>()
                 .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => GetBackLink(src)))

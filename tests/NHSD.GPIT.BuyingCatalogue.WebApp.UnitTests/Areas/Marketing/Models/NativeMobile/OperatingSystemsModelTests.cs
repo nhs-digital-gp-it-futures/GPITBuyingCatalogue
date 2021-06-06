@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemId = "123",
-                Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json }
+                Solution = new Solution { ClientApplication = json }
             };
 
             var model = new OperatingSystemsModel(catalogueItem);
