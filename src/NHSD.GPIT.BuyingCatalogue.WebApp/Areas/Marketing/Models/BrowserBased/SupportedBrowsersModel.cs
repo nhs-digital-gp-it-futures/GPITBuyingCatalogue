@@ -2,7 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 {

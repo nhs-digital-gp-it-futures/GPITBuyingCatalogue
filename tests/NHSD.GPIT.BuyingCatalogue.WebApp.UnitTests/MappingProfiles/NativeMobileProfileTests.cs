@@ -11,8 +11,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
-using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.MappingProfiles

@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 {
     public class NativeMobileProfile : Profile
     {
