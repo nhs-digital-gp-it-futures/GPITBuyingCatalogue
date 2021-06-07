@@ -16,13 +16,13 @@
                 <input type="hidden" asp-for="@Model.BackLinkText" />
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
-                <nhs-fieldset-form asp-for="@Model"
+                <nhs-fieldset-form-label asp-for="@Model"
                                    label-text="Select Catalogue Solution">
                     <nhs-radio-buttons asp-for="SelectedSolutionId"
                                        values="@Model.Solutions"
                                        value-name="CatalogueItemId"
                                        display-name="Name" />
-                </nhs-fieldset-form>
+                </nhs-fieldset-form-label>
                 
                 <div data-test-id="continue-button">
                     <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">

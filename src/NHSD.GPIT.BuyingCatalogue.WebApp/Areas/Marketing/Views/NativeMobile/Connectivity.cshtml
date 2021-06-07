@@ -19,7 +19,7 @@
                                    asp-items="@(new SelectList(Model.ConnectionSpeeds,"Value","Text"))"
                                    label-text="Connection speed (optional)"
                                    label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
-            <nhs-fieldset-form asp-for="@Model"
+            <nhs-fieldset-form-label asp-for="@Model"
                                label-text="Connection types supported (optional)"
                                label-hint="Select all of the connection types that will work with your Catalogue Solution.">
                 <nhs-checkbox-container>
@@ -30,7 +30,7 @@
                                                  hidden-input="@Model.ConnectionTypes[i].ConnectionType" />
                     }
                 </nhs-checkbox-container>
-            </nhs-fieldset-form>
+            </nhs-fieldset-form-label>
             <nhs-textarea asp-for="Description"
                                      label-text="Connection requirements (optional)"
                                      label-hint="Provide information on any connection requirements for your Catalogue Solution." />

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.ViewComponents.PageTitle
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.PageTitle
 {
     public sealed class NhsPageTitleViewComponent : ViewComponent
     {

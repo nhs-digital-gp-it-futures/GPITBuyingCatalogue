@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
-    [HtmlTargetElement(TagHelperName, ParentTag = FieldSetFormTagHelper.TagHelperName)]
+    [HtmlTargetElement(TagHelperName, ParentTag = FieldSetFormLabelTagHelper.TagHelperName)]
     public sealed class RadioButtonsTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-radio-buttons";

@@ -15,9 +15,9 @@
                 <input type="hidden" asp-for="@Model.BackLinkText" />
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
-                <nhs-fieldset-form asp-for="@Model">
+                <nhs-fieldset-form-label asp-for="@Model">
                     <nhs-radio-buttons asp-for="@Model.SelectedOrganisation" values="@Model.AvailableOrganisations" value-name="OdsCode" display-name="Name" />
-                </nhs-fieldset-form>
+                </nhs-fieldset-form-label>
                 <nhs-submit-button text="Continue" />
             </form>
         </div>

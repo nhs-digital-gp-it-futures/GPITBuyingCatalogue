@@ -13,7 +13,7 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
 
-                <nhs-fieldset-form
+                <nhs-fieldset-form-label
                     asp-for="@Model"
                     label-text="Which organisation are you looking for?"
                     label-hint="Select one option.">
@@ -21,7 +21,7 @@
                                        values="@Model.AvailableOrganisations"
                                        value-name="OrganisationId" 
                                        display-name="Name" />
-                </nhs-fieldset-form>
+                </nhs-fieldset-form-label>
                 <nhs-submit-button text="Confirm" />
             </form>
         </div>

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DateInput
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
-    [HtmlTargetElement(TagHelperName, ParentTag = FieldSetFormTagHelper.TagHelperName)]
+    [HtmlTargetElement(TagHelperName, ParentTag = FieldSetFormLabelTagHelper.TagHelperName)]
     public sealed class NhsDateInputTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-date-input";
@@ -64,16 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DateIn
             List<TagHelperAttribute> attributes = new List<TagHelperAttribute>
             {
                 new TagHelperAttribute(TagHelperConstants.Id, id),
+                new TagHelperAttribute(TagHelperConstants.Class, DateInputClass),
             };
-
-            if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, Day))
-            {
-                attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, $"{DateInputClass} {TagHelperConstants.NhsFormGroupError}"));
-            }
-            else
-            {
-                attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, DateInputClass));
-            }
 
             attributes.ForEach(a => output.Attributes.Add(a));
 
@@ -81,6 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DateIn
                 .AppendHtml(day)
                 .AppendHtml(month)
                 .AppendHtml(year);
+
+            TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Day);
         }
 
         private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText, string selectedWidthClass)
@@ -114,6 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DateIn
                 new { @class = $"{TagHelperConstants.NhsLabel} {DateInputLabelClass}" });
         }
 
+
+
         private TagBuilder BuildDateInput(ModelExpression modelExpression, string widthClass)
         {
             var builder = htmlGenerator.GenerateTextBox(
@@ -130,7 +126,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DateIn
                 });
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, Day))
+            {
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);
+            }
 
             return builder;
         }

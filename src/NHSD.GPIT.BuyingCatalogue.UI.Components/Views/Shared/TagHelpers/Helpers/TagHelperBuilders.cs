@@ -14,7 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             ViewContext viewContext,
             TagBuilder htmlContent,
             bool? disableCharacterCounter,
-            string validationName = null)
+            string validationName = null,
+            bool isInError = false)
         {
             output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
@@ -30,11 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             attributes.ForEach(a => output.Attributes.Add(a));
 
-            var modelState = viewContext.ViewData.ModelState;
-            if (!modelState.ContainsKey(aspFor?.Name ?? validationName))
-                return;
-
-            if (TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, aspFor))
+            if (TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, aspFor, validationName) || isInError)
             {
                 output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsFormGroupError));
             }

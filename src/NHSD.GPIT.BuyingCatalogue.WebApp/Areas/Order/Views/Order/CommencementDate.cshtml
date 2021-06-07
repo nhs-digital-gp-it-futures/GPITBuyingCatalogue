@@ -16,12 +16,14 @@
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
 
-                <nhs-fieldset-form asp-for="@Model"
+                <nhs-fieldset-form-label asp-for="@Model"
                                    label-text="Commencement date"
                                    label-hint="For example 14 01 2020">
                     <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
-                </nhs-fieldset-form>
-               
+                </nhs-fieldset-form-label>
+
+                <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
+
                 <nhs-submit-button />
             </form>
         </div>
