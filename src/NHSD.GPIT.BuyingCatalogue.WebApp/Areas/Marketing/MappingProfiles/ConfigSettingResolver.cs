@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 {
     public class ConfigSettingResolver : IMemberValueResolver<object, object, string, string>
     {
