@@ -4,13 +4,24 @@
     ViewData["Title"] = "Solution Features";
 }
 
-<div>
-    <p><b>This Catalogue Solution has the following features:</b></p>
-    <ul class="nhsuk-u-margin-bottom-0">
-        @foreach (string feature in Model.Features)
-        {
-            <li>@feature</li>
-        }
-    </ul>
+<div class="nhsuk-width-container">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
 
+                    <p>
+                        <b>This Catalogue Solution has the following features:</b>
+                    </p>
+
+                    <ul>
+                        @foreach (string feature in Model.Features)
+                        {
+                            <li>@feature</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </article>
+    </main>
 </div>
