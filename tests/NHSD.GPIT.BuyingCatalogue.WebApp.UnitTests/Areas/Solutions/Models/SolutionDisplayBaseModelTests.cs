@@ -14,13 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionDisplayBaseModelTests
     {
+        [TestCase(typeof(ClientApplicationTypesModel))]
         [TestCase(typeof(ImplementationTimescalesModel))]
         [TestCase(typeof(SolutionDescriptionModel))]
         public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
         {
-            typeof(SolutionDescriptionModel)
-                .Should()
-                .BeAssignableTo<SolutionDisplayBaseModel>();
+            childType
+            .Should()
+            .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
         [TestCase("DESCRIPTION")]
@@ -53,6 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
         [TestCase("Description","Description")]
         [TestCase("Features", "Features")]
+        [TestCase("ClientApplicationTypes", "Client application type")]
+        [TestCase("ImplementationTimescales", "Implementation timescales")]
         public static void GetSectionFor_SectionValid_ReturnsExpectedSectionModel(string action, string section)
         {
             var model = new TestMarketingDisplayBaseModel();
@@ -151,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.ClientApplicationTypes),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
                 Name = "Client application type",
             },

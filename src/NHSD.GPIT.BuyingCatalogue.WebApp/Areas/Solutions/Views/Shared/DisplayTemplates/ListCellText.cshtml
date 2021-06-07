@@ -1,0 +1,8 @@
+@model string
+
+@if (!string.IsNullOrWhiteSpace(Model))
+{
+    <dd class="nhsuk-summary-list__value">
+        @Html.Raw(Model.Replace(Environment.NewLine,"<br/>"))
+    </dd>
+}

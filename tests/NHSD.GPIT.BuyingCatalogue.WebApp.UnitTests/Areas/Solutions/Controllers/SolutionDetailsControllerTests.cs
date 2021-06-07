@@ -47,13 +47,89 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Test]
-        public static void Get_Description_RouteAttribute_ExpectedTemplate()
+        public static void Get_ClientApplicationTypes_RouteAttribute_ExpectedTemplate()
         {
             typeof(SolutionDetailsController)
-                .GetMethod(nameof(SolutionDetailsController.Description))
+                .GetMethod(nameof(SolutionDetailsController.ClientApplicationTypes))
                 .GetCustomAttribute<RouteAttribute>()
                 .Template.Should()
-                .Be("solutions/futures/{id}");
+                .Be("solutions/futures/{id}/client-application-types");
+        }
+        
+        [Test]
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void Get_ClientApplicationTypes_InvalidId_ThrowsException(string id)
+        {
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.ClientApplicationTypes(id))
+                .Message.Should().Be($"{nameof(SolutionDetailsController.ClientApplicationTypes)}-{nameof(id)}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ClientApplicationTypes_ValidId_GetsSolutionFromService(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            await controller.ClientApplicationTypes(id);
+
+            mockService.Verify(s => s.GetSolution(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ClientApplicationTypes_NullSolutionForId_ReturnsBadRequestResult(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.ClientApplicationTypes(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ClientApplicationTypes_ValidSolutionForId_MapsToModel(string id)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            await controller.ClientApplicationTypes(id);
+
+            mockMapper.Verify(m => m.Map<CatalogueItem, ClientApplicationTypesModel>(mockCatalogueItem));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ClientApplicationTypes_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        {
+            var mockSolutionClientApplicationTypesModel = new Mock<ClientApplicationTypesModel>().Object;
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            mockMapper.Setup(m => m.Map<CatalogueItem, ClientApplicationTypesModel>(mockCatalogueItem))
+                .Returns(mockSolutionClientApplicationTypesModel);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            var actual = (await controller.ClientApplicationTypes(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().Be(mockSolutionClientApplicationTypesModel);
         }
         
         [Test]
