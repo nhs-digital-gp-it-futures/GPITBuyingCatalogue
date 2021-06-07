@@ -9,10 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         [UIHint("DescriptionList")]
         public DescriptionListViewModel ApplicationTypes { get; set; }
 
-        public override string Section { get; set; }
-
         [UIHint("DescriptionList")]
         public DescriptionListViewModel BrowserBasedApplication { get; set; }
+
+        public override int Index => 8;
 
         [UIHint("DescriptionList")]
         public DescriptionListViewModel NativeMobileApplication { get; set; }

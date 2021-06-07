@@ -8,7 +8,7 @@
 
         public string IsFoundation { get; set; }
 
-        public override string Section { get; set; }
+        public override int Index => 0;
 
         public string Summary { get; set; }
 

@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
@@ -37,6 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<SolutionDetailsProfile>();
+                cfg.CreateMap<CatalogueItem, TestSolutionDisplayBaseModel>()
+                    .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                    .ForAllOtherMembers(opt => opt.Ignore());
             });
             mapper = mapperConfiguration.CreateMapper(serviceProvider.Object.GetService);
         }
@@ -55,6 +59,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
+        [Test]
+        public void Map_CatalogueItemToSolutionDisplayBaseModel_ShowFunctionsCalled()
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>();
+            
+            mapper.Map<CatalogueItem, TestSolutionDisplayBaseModel>(mockCatalogueItem.Object);
+            
+            mockCatalogueItem.Verify(c => c.HasFeatures());
+            mockCatalogueItem.Verify(c => c.HasCapabilities());
+            mockCatalogueItem.Verify(c => c.HasListPrice());
+            mockCatalogueItem.Verify(c => c.HasAdditionalServices());
+            mockCatalogueItem.Verify(c => c.HasAssociatedServices());
+            mockCatalogueItem.Verify(c => c.HasInteroperability());
+            mockCatalogueItem.Verify(c => c.HasImplementationDetail());
+            mockCatalogueItem.Verify(c => c.HasClientApplication());
+            mockCatalogueItem.Verify(c => c.HasHosting());
+            mockCatalogueItem.Verify(c => c.HasServiceLevelAgreement());
+            mockCatalogueItem.Verify(c => c.HasDevelopmentPlans());
+            mockCatalogueItem.Verify(c => c.HasSupplierDetails());
+        }
+        
         [Test, CommonAutoData]
         public void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
@@ -71,12 +96,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "ClientApplicationTypes",
                     Controller = "SolutionDetails",
                     Name = "Client application type",
+                    Show = true,
                 },
                 Previous = new SectionModel
                 {
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Interoperability",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Implementation timescales");
@@ -100,6 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Features",
                     Controller = "SolutionDetails",
                     Name = "Features",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Description");
@@ -127,21 +155,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Description",
+                    Show = true,
                 },
                 //TODO: Update Next to Capabilities once Capabilities page implemented
                 Next = new SectionModel
                 {
                     Action = "Description",
+                    
                     Controller = "SolutionDetails",
                     Name = "Capabilities",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Features");
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-
-
+        
         [Test, CommonAutoData]
         public void Map_CatalogueItemToClientApplicationTypesModel_ResultAsExpected(
            CatalogueItem catalogueItem)
@@ -158,6 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "ImplementationTimescales",
                     Controller = "SolutionDetails",
                     Name = "Implementation timescales",
+                    Show = true,
                 },
                 //TODO: Update Next to HostingType once Capabilities page implemented
                 Next = new SectionModel
@@ -165,6 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Hosting type",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Client application type");
