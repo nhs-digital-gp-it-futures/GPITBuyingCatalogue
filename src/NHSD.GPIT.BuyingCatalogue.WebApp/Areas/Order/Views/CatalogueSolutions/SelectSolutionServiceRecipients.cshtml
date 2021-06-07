@@ -35,7 +35,7 @@
                             {
                                 <tr data-test-id="table-row-@i" style="page-break-inside:avoid; page-break-after:auto">
                                     <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                        <div data-test-id="@Model.ServiceRecipients[i].OrgId-organisationName">
+                                        <div data-test-id="@Model.ServiceRecipients[i].OdsCode-organisationName">
                                             <div class="nhsuk-form-group">
                                                 <div class="nhsuk-checkboxes">
                                                     <div class="nhsuk-checkboxes__item">
@@ -44,16 +44,14 @@
                                                             @Model.ServiceRecipients[i].Name
                                                         </label>
                                                         <input type="hidden" asp-for="@Model.ServiceRecipients[i].Name" />
-                                                        <input type="hidden" asp-for="@Model.ServiceRecipients[i].OrgId" />
-                                                        <input type="hidden" asp-for="@Model.ServiceRecipients[i].Status" />
-                                                        <input type="hidden" asp-for="@Model.ServiceRecipients[i].PrimaryRoleId" />
+                                                        <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode" />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                        <div data-test-id="@Model.ServiceRecipients[i].OrgId-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">@Model.ServiceRecipients[i].OrgId</div>
+                                        <div data-test-id="@Model.ServiceRecipients[i].OdsCode-odsCode" class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">@Model.ServiceRecipients[i].OdsCode</div>
                                     </td>
                                 </tr>
                             }

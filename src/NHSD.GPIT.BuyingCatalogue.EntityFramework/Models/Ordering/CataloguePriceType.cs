@@ -1,20 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 #nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public partial class CataloguePriceType
+    public class CataloguePriceType
+        : EnumerationBase
     {
-        public CataloguePriceType()
+        public static readonly CataloguePriceType Flat = new(1, "Flat");
+        public static readonly CataloguePriceType Tiered = new(2, "Tiered");
+
+        public CataloguePriceType(int id, string name)
+            : base(id, name)
         {
-            OrderItems = new HashSet<OrderItem>();
         }
 
-        public int Id { get; set; }
+        public static CataloguePriceType Parse(string name)
+        {
+            if (name.Equals(nameof(Flat), System.StringComparison.InvariantCultureIgnoreCase))
+                return Flat;
+            else if (name.Equals(nameof(Tiered), System.StringComparison.InvariantCultureIgnoreCase))
+                return Tiered;
 
-        public string Name { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+            throw new ArgumentException("Invalid CataloguePriceType", nameof(name));
+        }
     }
 }

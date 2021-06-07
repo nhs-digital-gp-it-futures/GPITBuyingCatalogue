@@ -1,6 +1,0 @@
-﻿CREATE PROCEDURE test.DropRole AS
-    SET NOCOUNT ON;
-
-    ALTER ROLE Api
-    DROP MEMBER [NHSD-BAPI];
-GO

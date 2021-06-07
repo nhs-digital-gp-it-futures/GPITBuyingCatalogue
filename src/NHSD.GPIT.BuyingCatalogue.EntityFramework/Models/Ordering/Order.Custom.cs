@@ -9,6 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         private readonly List<DefaultDeliveryDate> defaultDeliveryDates = new();
         private readonly List<OrderItem> orderItems = new();
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
+        private DateTime lastUpdated;
+        private Guid lastUpdatedBy;
+        private string lastUpdatedByName;
+        private DateTime? completed;
 
         public IReadOnlyList<ServiceInstanceItem> ServiceInstanceItems => serviceInstanceItems.AsReadOnly();
 
@@ -22,6 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             const int defaultContractLength = 3;
 
             return CalculateCostPerYear(CostType.OneOff) + (defaultContractLength * CalculateCostPerYear(CostType.Recurring));
+        }
+
+        public void Complete()
+        {
+            // TODO - review error handling in OAPI
+            OrderStatus = OrderStatus.Complete;
+            completed = DateTime.UtcNow;
         }
 
         public DeliveryDateResult SetDefaultDeliveryDate(CatalogueItemId catalogueItemId, DateTime date)
@@ -47,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public void SetLastUpdatedBy(Guid userId, string userName)
         {
-            LastUpdatedBy = userId;
-            LastUpdatedByName = userName ?? throw new ArgumentNullException(nameof(userName));
-            LastUpdated = Completed ?? DateTime.UtcNow;
+            lastUpdatedBy = userId;
+            lastUpdatedByName = userName ?? throw new ArgumentNullException(nameof(userName));
+            lastUpdated = completed ?? DateTime.UtcNow;
         }
 
         public OrderItem AddOrUpdateOrderItem(OrderItem orderItem)
@@ -57,10 +68,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             if (orderItem is null)
                 throw new ArgumentNullException(nameof(orderItem));
 
-            var existingItem = OrderItems.SingleOrDefault(o => o.Equals(orderItem));
+            // Included to force EF Core to track order as changed so audit information is updated
+            lastUpdated = DateTime.UtcNow;
+
+            var existingItem = orderItems.SingleOrDefault(o => o.Equals(orderItem));
             if (existingItem is null)
             {
-                OrderItems.Add(orderItem);
+                orderItems.Add(orderItem);
                 orderItem.MarkOrderSectionAsViewed(this);
 
                 return orderItem;
@@ -99,15 +113,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public int DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
         {
-            var result = OrderItems.ToList().RemoveAll(o => o.CatalogueItem.Id == catalogueItemId
-                || o.CatalogueItem.ParentCatalogueItem.Id == catalogueItemId);
+            var result = orderItems.RemoveAll(o => o.CatalogueItem.Id == catalogueItemId
+                || o.CatalogueItem.ParentCatalogueItemId == catalogueItemId);
 
             if (!HasSolution())
             {
                 OrderProgress.AdditionalServicesViewed = false;
             }
 
-            if (OrderItems.Count == 0)
+            if (orderItems.Count == 0)
             {
                 FundingSourceOnlyGms = null;
             }
