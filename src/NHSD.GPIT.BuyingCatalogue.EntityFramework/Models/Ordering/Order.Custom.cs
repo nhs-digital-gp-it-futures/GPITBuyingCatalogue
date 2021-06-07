@@ -28,6 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             return CalculateCostPerYear(CostType.OneOff) + (defaultContractLength * CalculateCostPerYear(CostType.Recurring));
         }
 
+        public void Complete()
+        {
+            // TODO - review error handling in OAPI
+            OrderStatus = OrderStatus.Complete;
+            completed = DateTime.UtcNow;
+        }
+
         public DeliveryDateResult SetDefaultDeliveryDate(CatalogueItemId catalogueItemId, DateTime date)
         {
             var result = DeliveryDateResult.Updated;
