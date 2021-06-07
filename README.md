@@ -50,4 +50,4 @@ You can also simply open the solution in Visual Studio and run/debug NHSD.GPIT.B
 ### SQL Server is running but there is no database
 
 The `dacpac` deployment takes a few seconds to initialize and complete so it is not unusual for there to be a slight delay between SQL server initializing and the database being ready for use; upon completion `<DB Name> database setup complete` is logged to the console.
-.
+
