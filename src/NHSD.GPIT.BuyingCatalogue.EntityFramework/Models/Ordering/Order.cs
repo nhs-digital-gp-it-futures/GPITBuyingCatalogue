@@ -10,7 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         public Order()
         {
             DefaultDeliveryDates = new HashSet<DefaultDeliveryDate>();
-            OrderItems = new HashSet<OrderItem>();
             SelectedServiceRecipients = new HashSet<SelectedServiceRecipient>();
         }
 
@@ -36,13 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public DateTime Created { get; set; }
 
-        public DateTime LastUpdated { get; set; }
+        public DateTime LastUpdated => lastUpdated;
 
-        public Guid LastUpdatedBy { get; set; }
+        public Guid LastUpdatedBy => lastUpdatedBy;
 
-        public string LastUpdatedByName { get; set; }
+        public string LastUpdatedByName => lastUpdatedByName;
 
-        public DateTime? Completed { get; set; }
+        public DateTime? Completed => completed;
 
         public bool IsDeleted { get; set; }
 
@@ -60,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public virtual ICollection<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
 
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public IReadOnlyList<OrderItem> OrderItems => orderItems.AsReadOnly();
 
         public virtual ICollection<SelectedServiceRecipient> SelectedServiceRecipients { get; set; }
     }

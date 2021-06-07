@@ -2,11 +2,18 @@
 {
     public class EditSolutionModel : OrderingBaseModel
     {
-        public EditSolutionModel()
+        public EditSolutionModel(string odsCode, string callOffId, string solutionName)
         {
-            BackLink = "/order/organisation/03F/order/C010001-01/catalogue-solutions"; // TODO
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
             BackLinkText = "Go back";
-            Title = "Anywhere Consult information for C010001-01"; // TODO
+            Title = $"{solutionName} information for {callOffId}";
+            OdsCode = odsCode;
+            CallOffId = callOffId;
+            SolutionName = solutionName;
         }
+
+        public string CallOffId { get; set; }
+
+        public string SolutionName { get; set; }
     }
 }

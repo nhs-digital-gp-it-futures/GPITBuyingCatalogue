@@ -4,9 +4,26 @@
     {
         public DeleteSolutionModel()
         {
-            BackLink = "/order/organisation/03F/order/C010001-01/catalogue-solutions/10000-002"; // TODO
-            BackLinkText = "Go back";
-            Title = "Delete Anywhere Consult from C010001-01?"; // TODO
         }
+
+        public DeleteSolutionModel(string odsCode, string callOffId, string orderItemId, string solutionName, string orderDescription)
+        {
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/{orderItemId}";
+            BackLinkText = "Go back";
+            Title = $"Delete {solutionName} from {callOffId}?";
+            OdsCode = odsCode;
+            CallOffId = callOffId;
+            OrderItemId = orderItemId;
+            SolutionName = solutionName;
+            OrderDescription = orderDescription;
+        }
+
+        public string CallOffId { get; set; }
+
+        public string OrderItemId { get; set; }
+
+        public string SolutionName { get; set; }
+
+        public string OrderDescription { get; set; }
     }
 }

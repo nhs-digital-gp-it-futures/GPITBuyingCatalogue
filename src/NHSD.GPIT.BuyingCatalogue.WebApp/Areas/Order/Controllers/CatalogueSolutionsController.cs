@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -49,6 +50,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.GetOrder(callOffId);
 
+            var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
+
+            return View(new CatalogueSolutionsModel(odsCode, order, orderItems));
+        }
+
+        [HttpGet("select/solution")]
+        public async Task<IActionResult> SelectSolution(string odsCode, string callOffId)
+        {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var order = await orderService.GetOrder(callOffId);
+
             // TODO - wonder if the types can use the enums rather than strings
             var state = new CreateOrderItemModel
             {
@@ -75,17 +89,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             };
 
             SetStateModel(state);
-
-            return View(new CatalogueSolutionsModel(odsCode, order));
-        }
-
-        [HttpGet("select/solution")]
-        public async Task<IActionResult> SelectSolution(string odsCode, string callOffId)
-        {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
-            var state = GetStateModel();
 
             var solutions = await solutionsService.GetSupplierSolutions(state.SupplierId);
 
@@ -283,9 +286,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult EditSolution(string odsCode, string callOffId, string id)
+        public async Task<IActionResult> EditSolution(string odsCode, string callOffId, string id)
         {
-            return View(new EditSolutionModel());
+            var orderItem = await orderItemService.GetOrderItem(callOffId, id);
+
+            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
+
+            return View(new EditSolutionModel(odsCode, callOffId, solution.Name));
         }
 
         [HttpPost("{id}")]
@@ -312,24 +319,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("delete/{id}/confirmation/{solutionName}")]
-        public IActionResult DeleteSolution(string odsCode, string callOffId, string id, string solutionName)
+        public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName)
         {
-            return View(new DeleteSolutionModel());
+            var order = await orderService.GetOrder(callOffId);
+
+            return View(new DeleteSolutionModel(odsCode, callOffId, id, solutionName, order.Description));
         }
 
         [HttpPost("delete/{id}/confirmation/{solutionName}")]
-        public IActionResult DeleteSolution(string odsCode, string callOffId, string id, string solutionName, DeleteSolutionModel model)
+        public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName, DeleteSolutionModel model)
         {
+            await orderItemService.DeleteOrderItem(callOffId, id);
+
             return RedirectToAction(
                 actionName: nameof(DeleteContinue),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode = odsCode, callOffId = callOffId, id = id, solutionName = solutionName });
         }
 
         [HttpGet("delete/{id}/confirmation/{solutionName}/continue")]
         public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string solutionName)
         {
-            return View(new DeleteContinueModel());
+            return View(new DeleteContinueModel(odsCode, callOffId, solutionName));
         }
 
         private CreateOrderItemModel GetStateModel()

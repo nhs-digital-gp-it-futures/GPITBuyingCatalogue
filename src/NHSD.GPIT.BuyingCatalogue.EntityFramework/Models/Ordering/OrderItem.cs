@@ -7,11 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
     public partial class OrderItem
     {
-        public OrderItem()
-        {
-            OrderItemRecipients = new HashSet<OrderItemRecipient>();
-        }
-
         public int OrderId { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
@@ -46,6 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         // TODO - Called PriceTimeUnit in old code
         public virtual TimeUnit TimeUnit { get; set; }
 
-        public virtual ICollection<OrderItemRecipient> OrderItemRecipients { get; set; }
+        public IReadOnlyList<OrderItemRecipient> OrderItemRecipients => recipients;
     }
 }

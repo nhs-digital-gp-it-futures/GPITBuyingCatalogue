@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -83,6 +85,63 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
 
             return aggregateValidationResult;
+        }
+
+        public async Task<List<OrderItem>> GetOrderItems(string callOffId, CatalogueItemType catalogueItemType)
+        {
+            Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = catalogueItemType is null
+                ? o => o.OrderItems
+                : o => o.OrderItems.Where(i => i.CatalogueItem.CatalogueItemType == catalogueItemType);
+
+            var callOffIdStruct = CallOffId.Parse(callOffId);
+
+            if (!await dbContext.Orders.AnyAsync(o => o.Id == callOffIdStruct.Id))
+                return null;
+
+            return await dbContext.Orders
+                .Where(o => o.Id == callOffIdStruct.Id)
+                .Include(orderItems).ThenInclude(i => i.CatalogueItem)
+                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
+                .Include(orderItems).ThenInclude(i => i.PricingUnitNameNavigation)
+                .SelectMany(orderItems)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<OrderItem> GetOrderItem(string callOffId, string catalogueItemId)
+        {
+            // TODO - handle non-success
+            (bool success, CatalogueItemId itemId) = CatalogueItemId.Parse(catalogueItemId);
+
+            Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = o =>
+                o.OrderItems.Where(i => i.CatalogueItem.Id == itemId);
+
+            var callOffIdStruct = CallOffId.Parse(callOffId);
+
+            return await dbContext.Orders
+                .Where(o => o.Id == callOffIdStruct.Id)
+                .Include(orderItems).ThenInclude(i => i.CatalogueItem)
+                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
+                .Include(orderItems).ThenInclude(i => i.PricingUnitNameNavigation)
+                .SelectMany(orderItems)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<int> DeleteOrderItem(string callOffId, string catalogueItemId)
+        {
+            // TODO - handle non-success
+            (bool success, CatalogueItemId itemId) = CatalogueItemId.Parse(catalogueItemId);
+
+            var order = await orderService.GetOrder(callOffId);
+
+            if (order is null)
+                throw new ArgumentNullException(nameof(order));
+
+            var result = order.DeleteOrderItemAndUpdateProgress(itemId);
+
+            await dbContext.SaveChangesAsync();
+
+            return result;
         }
 
         private async Task<CatalogueItem> AddOrUpdateCatalogueItem(
