@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 {
     public class OrganisationProfile : Profile
     {

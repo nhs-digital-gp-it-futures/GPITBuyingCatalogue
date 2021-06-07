@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 {
     public class HostingTypeProfile : Profile
     {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 {
     public class StringToNullableBoolResolver : IMemberValueResolver<object, object, string, bool?>,
         ITypeConverter<string, bool?>
