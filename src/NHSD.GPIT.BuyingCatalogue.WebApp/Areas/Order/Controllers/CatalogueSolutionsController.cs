@@ -63,29 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.GetOrder(callOffId);
 
-            // TODO - wonder if the types can use the enums rather than strings
             var state = new CreateOrderItemModel
             {
                 CommencementDate = order.CommencementDate,
                 SupplierId = order.SupplierId,
-
-                // TODO - Should this use Solution or Catalogue Solution based on CatalogueItemType (either way shouldn't use string literals)
-                CatalogueItemType = "Solution",
-
-                // TODO - based on the solution. This will also drive the flow
-                ProvisioningType = "Declarative",
-
-                // TODO -based on the solution
-                EstimationPeriod = "PerYear",
-
-                // TODO - whats this?
-                ItemUnit = new ItemUnitModel { Name = "callOff", Description = "per Call-off" },
-
-                // TODO - based on solution
-                Type = "Flat",
-
-                // TODO - where is this from?
-                CurrencyCode = "GB",
+                CatalogueItemType = CatalogueItemType.Solution,
             };
 
             SetStateModel(state);
@@ -112,7 +94,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             state.CatalogueSolutionId = model.SelectedSolutionId;
 
-            state.CatalogueItemName = (await solutionsService.GetSolution(state.CatalogueSolutionId)).Name;
+            var solution = await solutionsService.GetSolution(state.CatalogueSolutionId);
+            state.CatalogueItemName = solution.Name;
+
+            var cataloguePrice = solution.CataloguePrices.Single(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id);
+            state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
+            state.CurrencyCode = cataloguePrice.CurrencyCode;
+            state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
+            state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
+            state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
+
+            // TODO - where does this come from?
+            state.EstimationPeriod = TimeUnit.PerYear;
 
             SetStateModel(state);
 

@@ -44,7 +44,7 @@
                                         <a data-test-id="@Model.OrderItems[i].CatalogueItemId-catalogueItemName" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/10000-002">@Model.OrderItems[i].CatalogueItem.Name</a>
                                     </td>
                                     <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                        <div data-test-id="@Model.OrderItems[i].CatalogueItemId-unitOfOrder" class="bc-c-data-text ">@Model.OrderItems[i].PricingUnitNameNavigation.Description</div>
+                                        <div data-test-id="@Model.OrderItems[i].CatalogueItemId-unitOfOrder" class="bc-c-data-text ">@Model.OrderItems[i].PricingUnitNameNavigation.Description @Model.OrderItems[i].TimeUnit.Description</div>
                                     </td>
                                     <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
                                         <div>

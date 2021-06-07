@@ -38,29 +38,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = await orderService.GetOrder(callOffId);
 
-            var catalogueItemType = CatalogueItemType.Parse(model.CatalogueItemType);
-
-            var aggregateValidationResult = orderItemValidator.Validate(order, model, catalogueItemType);
+            var aggregateValidationResult = orderItemValidator.Validate(order, model, model.CatalogueItemType);
             if (!aggregateValidationResult.Success)
                 return aggregateValidationResult;
 
             // TODO - handle case of non-success
             (var success, var catalogueItemId) = CatalogueItemId.Parse(model.CatalogueSolutionId);
 
-            var catalogueItem = await AddOrUpdateCatalogueItem(catalogueItemId, model, catalogueItemType);
+            var catalogueItem = await AddOrUpdateCatalogueItem(catalogueItemId, model, model.CatalogueItemType);
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);
             var pricingUnit = await AddOrUpdatePricingUnit(model);
-
             var defaultDeliveryDate = order.DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
-            var provisioningType = ProvisioningType.Parse(model.ProvisioningType);
-            var estimationPeriod = catalogueItemType.InferEstimationPeriod(
-                provisioningType,
-                TimeUnit.Parse(model.EstimationPeriod));
+            var estimationPeriod = model.CatalogueItemType.InferEstimationPeriod(model.ProvisioningType, model.EstimationPeriod);
 
             var item = order.AddOrUpdateOrderItem(new OrderItem
             {
                 CatalogueItem = catalogueItem,
-                CataloguePriceType = CataloguePriceType.Parse(model.Type),
+                CataloguePriceType = model.Type,
                 CurrencyCode = model.CurrencyCode,
                 DefaultDeliveryDate = defaultDeliveryDate?.DeliveryDate,
                 EstimationPeriod = estimationPeriod,
@@ -68,8 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 PriceId = model.PriceId,
                 Price = model.Price,
                 PricingUnitNameNavigation = pricingUnit,
-                TimeUnit = model.TimeUnit?.ToTimeUnit(),
-                ProvisioningType = ProvisioningType.Parse(model.ProvisioningType),
+                TimeUnit = model.TimeUnit,
+                ProvisioningType = model.ProvisioningType,
             });
 
             item.SetRecipients(model.ServiceRecipients.Where(x => x.Checked).Select(r => new OrderItemRecipient

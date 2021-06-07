@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -15,26 +16,26 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public string CatalogueItemName { get; set; }
 
-        public string CatalogueItemType { get; set; }
+        public CatalogueItemType CatalogueItemType { get; set; }
 
         public string CatalogueSolutionId { get; set; }
 
-        public string CurrencyCode { get; init; }
+        public string CurrencyCode { get; set; }
 
-        public string EstimationPeriod { get; set; }
+        public TimeUnit EstimationPeriod { get; set; }
 
-        public ItemUnitModel ItemUnit { get; init; }
+        public ItemUnitModel ItemUnit { get; set; }
 
         public int? PriceId { get; init; }
 
         public decimal? Price { get; init; }
 
-        public string ProvisioningType { get; set; }
+        public ProvisioningType ProvisioningType { get; set; }
 
         public List<OrderItemRecipientModel> ServiceRecipients { get; set; }
 
-        public TimeUnitModel TimeUnit { get; set; }
+        public TimeUnit TimeUnit { get; set; }
 
-        public string Type { get; init; }
+        public CataloguePriceType Type { get; set; }
     }
 }

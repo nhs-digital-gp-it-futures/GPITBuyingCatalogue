@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public TimeUnit InferEstimationPeriod(ProvisioningType provisioningType, TimeUnit estimationPeriod)
         {
-            return this == AssociatedService
+            return Id == AssociatedService.Id
                 ? provisioningType == ProvisioningType.OnDemand
                     ? provisioningType.InferEstimationPeriod(estimationPeriod)
                     : null
@@ -46,11 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             if (order is null)
                 throw new ArgumentNullException(nameof(order));
 
-            if (this == Solution)
+            if (Id == Solution.Id)
                 order.OrderProgress.CatalogueSolutionsViewed = true;
-            else if (this == AdditionalService)
+            else if (Id == AdditionalService.Id)
                 order.OrderProgress.AdditionalServicesViewed = true;
-            else if (this == AssociatedService)
+            else if (Id == AssociatedService.Id)
                 order.OrderProgress.AssociatedServicesViewed = true;
             else
                 throw new InvalidOperationException();

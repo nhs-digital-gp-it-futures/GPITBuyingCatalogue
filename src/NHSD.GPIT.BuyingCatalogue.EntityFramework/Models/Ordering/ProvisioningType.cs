@@ -28,11 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public TimeUnit InferEstimationPeriod(TimeUnit estimationPeriod)
         {
-            if (this == Patient)
+            if (Id == Patient.Id)
                 return TimeUnit.PerMonth;
-            else if (this == Declarative)
+            else if (Id == Declarative.Id)
                 return TimeUnit.PerYear;
-            else if (this == OnDemand)
+            else if (Id == OnDemand.Id)
                 return estimationPeriod;
             else
                 throw new InvalidOperationException();
