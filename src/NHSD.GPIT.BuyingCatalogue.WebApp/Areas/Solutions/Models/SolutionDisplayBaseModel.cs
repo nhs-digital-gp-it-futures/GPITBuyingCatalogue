@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -94,45 +93,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public ClientApplication ClientApplication { get; set; }
 
+        public abstract int Index { get; }
+
         public string LastReviewed { get; set; }
 
-        public PaginationFooterModel PaginationFooter { get; set; }
+        public PaginationFooterModel PaginationFooter { get; set; } = new();
 
-        public abstract string Section { get; set; }
+        public string Section => sections[Index].Name;
 
         public string SolutionId { get; set; }
 
         public string SolutionName { get; set; }
 
-        public SectionModel GetSectionFor(string section) =>
-            sections.FirstOrDefault(s => s.Name.EqualsIgnoreCase(section)) is { } sectionModel
-                ? sectionModel
-                : null;
-
         public virtual IList<SectionModel> GetSections()
         {
-            var sectionModels = new List<SectionModel>(sections);
-            sectionModels.ForEach(s => s.Id = SolutionId);
+            var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
+            sectionsToShow.ForEach(s => s.Id = SolutionId);
 
-            if (GetSectionFor(Section) is { } sectionModel)
+            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is { } sectionModel)
                 sectionModel.Selected = true;
 
-            return sectionModels;
+            return sectionsToShow;
         }
 
-        public Tuple<SectionModel, SectionModel> PreviousAndNextModels()
+        public void SetPaginationFooter()
         {
-            var section = GetSectionFor(Section);
-            if (section == null)
-                return new Tuple<SectionModel, SectionModel>(null, null);
+            var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
+            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is not { } sectionModel)
+                return;
 
-            var index = sections.IndexOf(section);
+            var index = sectionsToShow.IndexOf(sectionModel);
 
-            return new Tuple<SectionModel, SectionModel>(
-                index > 0 ? sections[index - 1] : null,
-                index < (sections.Count - 1) ? sections[index + 1] : null);
+            PaginationFooter.Previous = index > 0 ? sectionsToShow[index - 1] : null;
+            PaginationFooter.Next = index < (sectionsToShow.Count - 1) ? sectionsToShow[index + 1] : null;
         }
 
-        public void SetClientApplication(ClientApplication clientApp) => ClientApplication = clientApp;
+        public void SetShowTrue(int index) => sections[index].Show = true;
     }
 }

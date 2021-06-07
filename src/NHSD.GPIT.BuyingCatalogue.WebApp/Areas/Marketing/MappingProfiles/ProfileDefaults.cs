@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 {
     public static class ProfileDefaults
     {
