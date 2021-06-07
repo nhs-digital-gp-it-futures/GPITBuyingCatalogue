@@ -8,10 +8,10 @@ variables:
   - group: dev-acr-secrets
 
 trigger:
-- main
+- feature/14102-dacpack-deploymnet
 
 pr:
-- main
+- feature/14102-dacpack-deploymnet
 
 jobs:
 - job: version
