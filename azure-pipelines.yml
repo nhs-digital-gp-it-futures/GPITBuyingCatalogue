@@ -133,7 +133,7 @@ jobs:
       containerRegistry: 'gpitfuturesdevacr'
       repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
       command: 'build'
-      Dockerfile: 'database/**/NHSD.BuyingCatalogue.Database.Deployment/Docker/Dockerfile.Pipeline'
+      Dockerfile: 'database/**/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile.Pipeline'
       buildContext: './'
       tags: |
         $(semVer)
