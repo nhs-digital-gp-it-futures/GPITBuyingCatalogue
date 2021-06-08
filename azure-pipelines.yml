@@ -31,6 +31,7 @@ jobs:
 - job: dockerBuildAndPush
   displayName: Run all tests and build & push docker containers to the ACR
   variables:
+    dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ] 
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latest
@@ -114,7 +115,7 @@ jobs:
 
 - job: buildDatabaseDacpacs
   displayName: Build all Dacpacs and push
-  variables:
+  variables:    
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latest
@@ -140,7 +141,7 @@ jobs:
         $(latestTag)
 
   - pwsh: |
-      $id=docker images --filter "label=dacpac=$" -q | Select-Object -First 1
+      $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
       docker create --name dacpaccontainer $id
       docker cp dacpaccontainer:/dacpacs $(Build.ArtifactStagingDirectory)/dacpacs
       docker rm dacpaccontainer

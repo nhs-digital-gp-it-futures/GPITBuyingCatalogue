@@ -19,4 +19,6 @@ RUN cp /dacpac/build/*.dacpac /deploy-db
 COPY database/NHSD.BuyingCatalogue.Database/PreDeployment PreDeployment/
 COPY database/NHSD.BuyingCatalogue.Database/PostDeployment PostDeployment/
 
+LABEL dacpac=true
+
 CMD [ "node" ]
