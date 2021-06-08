@@ -11,7 +11,7 @@ trigger:
 - feature/14102-dacpack-deploymnet
 
 pr:
-- main
+- feature/14102-dacpack-deploymnet
 
 jobs:
 - job: version
@@ -111,6 +111,48 @@ jobs:
       tags: |
         $(semVer)
         $(latestTag)
+
+- job: buildDatabaseDacpacs
+  displayName: Build all Dacpacs and push
+  variables:
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latest
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latestbuild
+
+  dependsOn: dockerBuildAndPush
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: Docker@2
+    displayName: 'Docker: Build Dacpacs'
+    condition: succeeded()
+    inputs:
+      containerRegistry: 'gpitfuturesdevacr'
+      repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+      command: 'build'
+      Dockerfile: 'database/**/NHSD.BuyingCatalogue.Database.Deployment/Docker/Dockerfile.Pipeline'
+      buildContext: './'
+      tags: |
+        $(semVer)
+        $(latestTag)
+
+  - pwsh: |
+      $id=docker images --filter "label=dacpac=$" -q | Select-Object -First 1
+      docker create --name dacpaccontainer $id
+      docker cp dacpaccontainer:/dacpacs $(Build.ArtifactStagingDirectory)/dacpacs
+      docker rm dacpaccontainer
+    displayName: 'Copy DACPACs'
+
+  - task: PublishBuildArtifacts@1    
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/dacpacs'
+      ArtifactName: 'dacpacs'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: 'Publish DACPAC'
+  
 - job: createBuildArtifact
   displayName: Create Build Artifact
   dependsOn: dockerBuildAndPush
