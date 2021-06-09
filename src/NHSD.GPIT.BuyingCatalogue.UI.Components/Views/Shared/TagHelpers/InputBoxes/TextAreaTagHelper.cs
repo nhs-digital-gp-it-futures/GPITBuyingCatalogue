@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
-            var counter = TagHelperBuilders.GetCounterBuilder(For, DisableCharacterCounter);
+            var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, DisableCharacterCounter);
 
             formGroup.InnerHtml
                 .AppendHtml(label)

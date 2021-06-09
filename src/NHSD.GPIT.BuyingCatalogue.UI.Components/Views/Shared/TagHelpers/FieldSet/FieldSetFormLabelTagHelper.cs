@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var fieldset = GetFieldSetLegendHeadingBuilder(formName, SelectedSize, LabelText, DisableLabelAndHint);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName, DisableLabelAndHint);          
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName, DisableLabelAndHint);
 
             var content = await output.GetChildContentAsync();
 

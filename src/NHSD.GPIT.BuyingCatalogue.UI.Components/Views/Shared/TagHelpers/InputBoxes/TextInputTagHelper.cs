@@ -50,7 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
-            var counter = TagHelperBuilders.GetCounterBuilder(For, EnableCharacterCounter);
+
+            // EnableCharacterCounter is passed as a not because the check for disabling the charactercounter expected the value to tell it it's disabled, not enabled
+            var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, !EnableCharacterCounter);
 
             formGroup.InnerHtml
                 .AppendHtml(label)
@@ -80,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
 
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
-                builder.MergeAttribute(TagHelperConstants.Type, "password");
+                builder.Attributes[TagHelperConstants.Type] = "password";
 
             if (!TagHelperFunctions.IsCounterDisabled(For, EnableCharacterCounter))
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);

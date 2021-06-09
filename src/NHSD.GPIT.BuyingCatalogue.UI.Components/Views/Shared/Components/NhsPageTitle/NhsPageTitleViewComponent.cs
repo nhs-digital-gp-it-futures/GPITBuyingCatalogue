@@ -5,11 +5,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.PageTi
 {
     public sealed class NhsPageTitleViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(string title, string titleAdvice, string titleAdditionalAdvice)
+        public async Task<IViewComponentResult> InvokeAsync(string title, string titleCaption, string titleAdvice, string titleAdditionalAdvice)
         {
            var model = new NhsPageTitleModel
            {
                 Title = title,
+                Caption = titleCaption,
                 Advice = titleAdvice,
                 AdditionalAdvice = titleAdditionalAdvice,
            };

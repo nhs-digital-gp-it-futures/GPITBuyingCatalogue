@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsCar
 {
     public sealed class NhsCareCardViewComponent : ViewComponent
     {
-
         private const string NhsCareCardNonUrgent = "nhsuk-care-card--non-urgent";
         private const string NhsCareCardUrgent = "nhsuk-care-card--urgent";
         private const string NhsCareCardImmediate = "nhsuk-care-card--immediate";

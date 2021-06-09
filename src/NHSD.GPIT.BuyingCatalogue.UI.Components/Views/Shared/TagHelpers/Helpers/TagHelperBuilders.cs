@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 new { @class = TagHelperConstants.NhsLabel });
         }
 
-        public static TagBuilder GetCounterBuilder(ModelExpression aspFor, bool? disableCharacterCounter)
+        public static TagBuilder GetCounterBuilder(ModelExpression aspFor, int defaultMaxLength, bool? disableCharacterCounter)
         {
             if (TagHelperFunctions.IsCounterDisabled(aspFor, disableCharacterCounter))
                 return null;
@@ -114,7 +114,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             builder.AddCssClass(TagHelperConstants.GovUkCharacterCountMessage);
             builder.GenerateId($"{aspFor.Name}-info", "_");
 
-            builder.InnerHtml.Append(string.Format(TagHelperConstants.CharacterCountMessage, TagHelperFunctions.GetCustomAttribute<StringLengthAttribute>(aspFor).MaximumLength));
+            var characterLength = TagHelperFunctions.GetCustomAttribute<StringLengthAttribute>(aspFor)?.MaximumLength ?? defaultMaxLength;
+
+            builder.InnerHtml.Append(string.Format(TagHelperConstants.CharacterCountMessage, characterLength));
 
             return builder;
         }

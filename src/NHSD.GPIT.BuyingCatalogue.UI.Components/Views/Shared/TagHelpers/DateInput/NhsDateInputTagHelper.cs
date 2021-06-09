@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -77,6 +76,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Day);
         }
 
+        private static TagBuilder BuildDateInputContainerItem()
+        {
+            var inputitem = new TagBuilder(TagHelperConstants.Div);
+
+            inputitem.AddCssClass(DateInputItemClass);
+
+            return inputitem;
+        }
+
         private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText, string selectedWidthClass)
         {
             var item = BuildDateInputContainerItem();
@@ -89,15 +97,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return item;
         }
 
-        private TagBuilder BuildDateInputContainerItem()
-        {
-            var inputitem = new TagBuilder(TagHelperConstants.Div);
-
-            inputitem.AddCssClass(DateInputItemClass);
-
-            return inputitem;
-        }
-
         private TagBuilder BuildDateLabel(ModelExpression modelExpression, string labelText)
         {
             return htmlGenerator.GenerateLabel(
@@ -107,8 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 labelText,
                 new { @class = $"{TagHelperConstants.NhsLabel} {DateInputLabelClass}" });
         }
-
-
 
         private TagBuilder BuildDateInput(ModelExpression modelExpression, string widthClass)
         {

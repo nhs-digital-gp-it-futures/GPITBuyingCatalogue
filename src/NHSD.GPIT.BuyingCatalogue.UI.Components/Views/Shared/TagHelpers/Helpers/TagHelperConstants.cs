@@ -25,6 +25,7 @@
         internal const string Id = "id";
         internal const string LabelledBy = "aria-labelledy";
         internal const string Role = "role";
+        internal const string Scope = "scope";
         internal const string RoleAlert = "alert";
         internal const string Type = "type";
         internal const string TabIndex = "tabindex";
