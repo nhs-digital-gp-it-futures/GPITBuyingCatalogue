@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
     [HtmlTargetElement(TagHelperName, ParentTag = TableRowContainerTagHelper.TagHelperName)]
     public sealed class TableCellTagHelper : TagHelper
     {
-        public const string TagHelperName = "nhs-table-row";
+        public const string TagHelperName = "nhs-table-cell";
 
         private const string ColumnNameName = "column-name";
 
