@@ -50,6 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureIdentity();
 
+            services.ConfigureValidationSettings(Configuration);
+
             services.ConfigureCookies(Configuration);
 
             services.ConfigureIssuer(Configuration);

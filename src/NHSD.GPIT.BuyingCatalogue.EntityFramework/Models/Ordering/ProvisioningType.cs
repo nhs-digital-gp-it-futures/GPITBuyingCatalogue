@@ -14,13 +14,25 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         {
         }
 
+        public static ProvisioningType Parse(string name)
+        {
+            if (name.Equals(nameof(Patient), System.StringComparison.InvariantCultureIgnoreCase))
+                return Patient;
+            else if (name.Equals(nameof(Declarative), System.StringComparison.InvariantCultureIgnoreCase))
+                return Declarative;
+            else if (name.Equals(nameof(OnDemand), System.StringComparison.InvariantCultureIgnoreCase))
+                return OnDemand;
+
+            throw new ArgumentException("Invalid ProvisioningType", nameof(name));
+        }
+
         public TimeUnit InferEstimationPeriod(TimeUnit estimationPeriod)
         {
-            if (this == Patient)
+            if (Id == Patient.Id)
                 return TimeUnit.PerMonth;
-            else if (this == Declarative)
+            else if (Id == Declarative.Id)
                 return TimeUnit.PerYear;
-            else if (this == OnDemand)
+            else if (Id == OnDemand.Id)
                 return estimationPeriod;
             else
                 throw new InvalidOperationException();

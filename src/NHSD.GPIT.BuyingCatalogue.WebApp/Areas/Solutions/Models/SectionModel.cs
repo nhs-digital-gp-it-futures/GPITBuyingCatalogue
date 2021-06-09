@@ -11,5 +11,7 @@
         public string Name { get; set; }
 
         public bool Selected { get; set; }
+
+        public bool Show { get; set; }
     }
 }

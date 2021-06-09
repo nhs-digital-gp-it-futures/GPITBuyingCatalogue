@@ -18,8 +18,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Document;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
-using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -145,6 +145,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
                 options.ConsentCookie.Name = "buyingcatalogue-cookie-consent";
             });
+        }
+
+        public static void ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var validationSettings = new ValidationSettings
+            {
+                MaxDeliveryDateWeekOffset = configuration.GetValue<int>("MaxDeliveryDateWeekOffset"),
+            };
+            services.AddSingleton(validationSettings);
         }
 
         public static void ConfigureIdentity(this IServiceCollection services)

@@ -14,92 +14,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionDisplayBaseModelTests
     {
+        [TestCase(typeof(ClientApplicationTypesModel))]
         [TestCase(typeof(ImplementationTimescalesModel))]
         [TestCase(typeof(SolutionDescriptionModel))]
+        [TestCase(typeof(SolutionFeaturesModel))]
         public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
         {
-            typeof(SolutionDescriptionModel)
-                .Should()
-                .BeAssignableTo<SolutionDisplayBaseModel>();
-        }
-
-        [TestCase("DESCRIPTION")]
-        [TestCase("description")]
-        [TestCase("desCRIPtion")]
-        public static void GetSectionForDescription_SectionValid_ReturnsExpectedSectionModel(string section)
-        {
-            var model = new TestMarketingDisplayBaseModel();
-
-            var actual = model.GetSectionFor(section);
-
-            actual.Should()
-                .BeEquivalentTo(
-                    new SectionModel { Action = "Description", Controller = "SolutionDetails", Name = "Description", });
+            childType
+            .Should()
+            .BeAssignableTo<SolutionDisplayBaseModel>();
         }
         
-        [TestCase("FEATURES")]
-        [TestCase("features")]
-        [TestCase("feaTUres")]
-        public static void GetSectionForFeatures_SectionValid_ReturnsExpectedSectionModel(string section)
-        {
-            var model = new TestMarketingDisplayBaseModel();
-
-            var actual = model.GetSectionFor(section);
-
-            actual.Should()
-                .BeEquivalentTo(
-                    new SectionModel { Action = "Features", Controller = "SolutionDetails", Name = "Features", });
-        }
-
-        [TestCase("Description","Description")]
-        [TestCase("Features", "Features")]
-        public static void GetSectionFor_SectionValid_ReturnsExpectedSectionModel(string action, string section)
-        {
-            var model = new TestMarketingDisplayBaseModel();
-
-            var actual = model.GetSectionFor(section);
-
-            actual.Should()
-                .BeEquivalentTo(
-                    new SectionModel { Action = action, Controller = "SolutionDetails", Name = section, });
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("    ")]
-        [TestCase("abc123")]
-        public static void GetSectionFor_SectionInvalid_ReturnsExpectedSectionModel(string section)
-        {
-            var model = new TestMarketingDisplayBaseModel();
-
-            var actual = model.GetSectionFor(section);
-
-            actual.Should().BeNull();
-        }
-
         [AutoData]
         [Test]
         public static void GetSections_ValidSectionProperty_ReturnsSectionsWithSelected(string solutionId)
         {
-            var model = new TestMarketingDisplayBaseModel
+            var model = new TestSolutionDisplayBaseModel { SolutionId = solutionId, };
+            for (int i = 0; i < 12; i++)
             {
-                Section = "implementation TIMESCALES", SolutionId = solutionId,
-            };
-            var expected = new List<SectionModel>(SectionModels);
+                if (i % 2 != 0) continue;
+                model.SetShowTrue(i);
+                SectionModels[i].Show = true;
+            }
+            
+            var expected = new List<SectionModel>(SectionModels.Where(s => s.Show));
             expected.ForEach(s => s.Id = solutionId);
             expected.Single(s => s.Name.EqualsIgnoreCase(model.Section)).Selected = true;
-
+            
             var actual = model.GetSections();
 
             actual.Should().BeEquivalentTo(expected);
         }
-
-        public class TestMarketingDisplayBaseModel : SolutionDisplayBaseModel
-        {
-            public override string Section { get; set; }
-        }
-
-        private static readonly IList<SectionModel> SectionModels = new List<SectionModel>
+        
+        public static readonly IList<SectionModel> SectionModels = new List<SectionModel>
         {
             new()
             {
@@ -151,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.ClientApplicationTypes),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
                 Name = "Client application type",
             },
