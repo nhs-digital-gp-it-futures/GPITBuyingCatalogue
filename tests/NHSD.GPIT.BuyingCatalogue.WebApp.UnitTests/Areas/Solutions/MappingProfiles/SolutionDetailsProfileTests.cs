@@ -171,7 +171,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-        
+
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToHostingTypesModel_ResultAsExpected(
+           CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, HostingTypesModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                Previous = new SectionModel
+                {
+                    Action = "ClientApplicationTypes",
+                    Controller = "SolutionDetails",
+                    Name = "Client application type",
+                    Show = true,
+                },
+
+                Next = new SectionModel
+                {
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Service Level Agreement",
+                    Show = true,
+                },
+            });
+            actual.Section.Should().Be("Hosting type");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToClientApplicationTypesModel_ResultAsExpected(
            CatalogueItem catalogueItem)
@@ -190,10 +221,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Name = "Implementation timescales",
                     Show = true,
                 },
-                //TODO: Update Next to HostingType once Capabilities page implemented
                 Next = new SectionModel
                 {
-                    Action = "Description",
+                    Action = "HostingType",
                     Controller = "SolutionDetails",
                     Name = "Hosting type",
                     Show = true,

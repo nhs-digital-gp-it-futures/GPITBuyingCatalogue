@@ -155,6 +155,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
             CreateMap<CatalogueItem, SolutionFeaturesModel>()
                 .ForMember(dest => dest.Features, opt => opt.MapFrom(src => src.Features()))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<CatalogueItem, HostingTypesModel>()
+                .BeforeMap(
+                (src, dest) =>
+                {
+                    dest.PublicCloud = src.Solution.GetHosting()?.PublicCloud;
+                    dest.PrivateCloud = src.Solution.GetHosting()?.PrivateCloud;
+                    dest.HybridHostingType = src.Solution.GetHosting()?.HybridHostingType;
+                    dest.OnPremise = src.Solution.GetHosting()?.OnPremise;
+                })
+                .ForMember(dest => dest.PublicCloud, opt => opt.Ignore())
+                .ForMember(dest => dest.PrivateCloud, opt => opt.Ignore())
+                .ForMember(dest => dest.HybridHostingType, opt => opt.Ignore())
+                .ForMember(dest => dest.OnPremise, opt => opt.Ignore())
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
 
         private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)
