@@ -36,51 +36,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         public SolutionDetailsProfile()
         {
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
-                .ForMember(
-                    dest => dest.ApplicationTypes,
-                    opt => opt.MapFrom(
-                        (_, dest, _) => new DescriptionListViewModel
-                        {
-                            Heading = "Type of application",
-                            Items = new Dictionary<string, ListViewModel>
-                            {
-                                {
-                                    "Browser-based application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyBrowserBased) }
-                                },
-                                {
-                                    "Desktop application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyNativeDesktop) }
-                                },
-                                {
-                                    "Mobile application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyNativeMobile) }
-                                },
-                            },
-                        }))
+                .ForMember(dest => dest.ApplicationTypes, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.BrowserBasedApplication,
                     opt => opt.MapFrom(
-                        (_, dest) => new DescriptionListViewModel
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyBrowserBased)) ?? false) ?
+                        new DescriptionListViewModel
                         {
                             Heading = "Browser-based application",
                             Items = GetBrowserBasedItems(dest.ClientApplication),
-                        }))
+                        }
+                        : null)))
                 .ForMember(
                     dest => dest.NativeDesktopApplication,
                     opt => opt.MapFrom(
-                        (_, dest) => new DescriptionListViewModel
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeDesktop)) ?? false) ?
+                        new DescriptionListViewModel
                         {
-                            Heading = "Desktop application", Items = GetNativeDesktopItems(dest.ClientApplication),
-                        }))
+                            Heading = "Desktop application",
+                            Items = GetNativeDesktopItems(dest.ClientApplication),
+                        }
+                        : null)))
                 .ForMember(
                     dest => dest.NativeMobileApplication,
                     opt => opt.MapFrom(
-                        (_, dest) => new DescriptionListViewModel
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false) ?
+                        new DescriptionListViewModel
                         {
-                            Heading = "Mobile application", Items = GetNativeMobileItems(dest.ClientApplication),
-                        }))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+                            Heading = "Mobile application",
+                            Items = GetNativeMobileItems(dest.ClientApplication),
+                        }
+                        : null)))
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                .AfterMap(
+                    (_, dest) =>
+                    {
+                        dest.ApplicationTypes = new DescriptionListViewModel
+                        {
+                            Heading = "Application Type",
+                            Items = new Dictionary<string, ListViewModel>(),
+                        };
+
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyBrowserBased)) ?? false)
+                        {
+                            dest.ApplicationTypes.Items.Add(
+                                "Browser-based application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyBrowserBased) });
+                        }
+
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeDesktop)) ?? false)
+                        {
+                            dest.ApplicationTypes.Items.Add(
+                                "Desktop application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyNativeDesktop) });
+                        }
+
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false)
+                        {
+                            dest.ApplicationTypes.Items.Add(
+                                "Mobile application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyNativeMobile) });
+                        }
+                    });
 
             CreateMap<CatalogueItem, SolutionDisplayBaseModel>()
                 .BeforeMap(
