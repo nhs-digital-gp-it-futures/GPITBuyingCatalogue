@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
         private const string GovUkInputPrefixClass = "govuk-input__prefix";
         private const string GovUkInputSuffixClass = "govuk-input__suffix";
         private const string GovUkInputWrapperClass = "govuk-input__wrapper";
+        private const string GovUkFormGroup = "govuk-form-group";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -59,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
             if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
-            var formGroup = TagHelperBuilders.GetFormGroupBuilder();
+            var formGroup = GetGovFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
@@ -88,6 +89,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
             var builder = new TagBuilder(TagHelperConstants.Div);
             builder.AddCssClass(GovUkInputWrapperClass);
 
+            return builder;
+        }
+
+        private static TagBuilder GetGovFormGroupBuilder()
+        {
+            var builder = new TagBuilder(TagHelperConstants.Div);
+            builder.AddCssClass(GovUkFormGroup);
             return builder;
         }
 
@@ -123,6 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
             var builder = new TagBuilder(TagHelperConstants.Div);
             builder.AddCssClass(GovUkInputPrefixClass);
 
+            builder.MergeAttribute(TagHelperConstants.AriaHidden, "true");
+
             builder.InnerHtml.Append(PrefixText);
 
             return builder;
@@ -135,6 +145,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
 
             var builder = new TagBuilder(TagHelperConstants.Div);
             builder.AddCssClass(GovUkInputSuffixClass);
+
+            builder.MergeAttribute(TagHelperConstants.AriaHidden, "true");
 
             builder.InnerHtml.Append(SuffixText);
 

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     {
         public const string TagHelperName = "nhs-page-title";
         public const string TitleName = "title";
-        public const string TitleCaptionName = "title-caption";
+        public const string TitleCaptionName = "caption";
         public const string TitleAdviceName = "title-advice";
         public const string TitleAdviceAdditionalName = "title-advice-additional";
 
