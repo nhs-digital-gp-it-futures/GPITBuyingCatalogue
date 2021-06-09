@@ -14,6 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
+        public override void Init(TagHelperContext context)
+        {
+            if (!context.Items.TryGetValue("InExpanderContext", out _))
+                context.Items.Add("InExpanderContext", true);
+        }
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var summary = DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText);

@@ -9,10 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
 
         public const string NhsFieldset = "nhsuk-fieldset";
         public const string NhsFieldsetLegend = "nhsuk-fieldset__legend";
-        public const string NhsFieldsetLegendExtraLarge = "nhsuk-fieldset__legend--xl";
-        public const string NhsFieldsetLegendLarge = "nhsuk-fieldset__legend--l";
-        public const string NhsFieldsetLegendMedium = "nhsuk-fieldset__legend--m";
-        public const string NhsFieldsetLegendSmall = "nhsuk-fieldset__legend--s";
+        public const string NhsFieldsetLegendExtraLarge = "nhsuk-label--xl";
+        public const string NhsFieldsetLegendLarge = "nhsuk-label--l";
+        public const string NhsFieldsetLegendMedium = "nhsuk-label--m";
+        public const string NhsFieldsetLegendSmall = "nhsuk-label--s";
         public const string NhsFieldSetLegendHeading = "nhsuk-fieldset__heading";
 
         public enum FieldSetSize
@@ -40,10 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             var selectedLedgendClass = selectedSize switch
             {
                 FieldSetSize.ExtraLarge => NhsFieldsetLegendExtraLarge,
-                FieldSetSize.Large => NhsFieldsetLegendLarge,
                 FieldSetSize.Medium => NhsFieldsetLegendMedium,
                 FieldSetSize.Small => NhsFieldsetLegendSmall,
-                _ => throw new System.InvalidCastException(),
+                FieldSetSize.Large or _ => NhsFieldsetLegendLarge,
             };
 
             builder.AddCssClass(NhsFieldsetLegend);
@@ -52,16 +51,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             return builder;
         }
 
-        public static TagBuilder GetFieldSetLegendHeadingBuilder(string formName, FieldSetSize selectedSize, string labelText, bool? disableLabelAndHint)
+        public static TagBuilder GetFieldSetLegendHeadingBuilder(FieldSetSize selectedSize, string labelText, bool? disableLabelAndHint)
         {
-            var fieldset = GetFieldsetBuilder(formName);
             var fieldsetLegend = GetFieldsetLegendBuilder(selectedSize);
             var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder(labelText, disableLabelAndHint, selectedSize);
 
             fieldsetLegend.InnerHtml.AppendHtml(fieldsetlegendheader);
-            fieldset.InnerHtml.AppendHtml(fieldsetLegend);
 
-            return fieldset;
+            return fieldsetLegend;
         }
 
         public static TagBuilder GetFieldsetLegendHeadingTagBuilder(string labelText, bool? disableLabelAndHint, FieldSetSize selectedSize)
@@ -72,10 +69,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             var selectedLedgendTag = selectedSize switch
             {
                 FieldSetSize.ExtraLarge => TagHelperConstants.HeaderOne,
-                FieldSetSize.Large => TagHelperConstants.HeaderTwo,
                 FieldSetSize.Medium => TagHelperConstants.HeaderThree,
                 FieldSetSize.Small => "label",
-                _ => throw new System.InvalidCastException(),
+                _ or FieldSetSize.Large => TagHelperConstants.HeaderTwo,
             };
 
             var builder = new TagBuilder(selectedLedgendTag);

@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
     {
         public const string TagHelperName = "nhs-details";
 
+        private const string ArrowsClass = "details-arrow";
+
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
@@ -22,13 +24,25 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
             output.Reinitialize("details", TagMode.StartTagAndEndTag);
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, DetailsAndExpanderTagHelperBuilders.DetailsClass));
+            var addArrowClass = InExpanderContext(context) == true ? ArrowsClass : string.Empty;
+
+            output.Attributes.Add(new TagHelperAttribute(
+                TagHelperConstants.Class,
+                $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {addArrowClass}"));
 
             textItem.InnerHtml.AppendHtml(children);
 
             output.Content
                 .AppendHtml(summary)
                 .AppendHtml(textItem);
+        }
+
+        private static bool InExpanderContext(TagHelperContext context)
+        {
+            if (!context.Items.TryGetValue("InExpanderContext", out _))
+                return false;
+
+            return true;
         }
     }
 }
