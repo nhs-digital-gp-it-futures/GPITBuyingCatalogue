@@ -143,7 +143,7 @@ jobs:
   - pwsh: |
       $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
       docker create --name dacpaccontainer $id
-      docker cp dacpaccontainer:/deploy-db/ $(Build.ArtifactStagingDirectory)/
+      docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)
       docker rm dacpaccontainer
     displayName: 'Copy DACPACs'
 
