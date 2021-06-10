@@ -149,7 +149,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1    
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/NHSD.GPITBuyingCatalogue.Database.Deployment.dacpac'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'dacpacs'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     displayName: 'Publish DACPAC'
