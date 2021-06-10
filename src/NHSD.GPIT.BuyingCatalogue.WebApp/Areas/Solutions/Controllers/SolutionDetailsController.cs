@@ -113,5 +113,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             return View("SolutionDetail", model);
         }
+
+        [Route("solutions/futures/{id}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(AssociatedServices)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+
+            var supplier = await solutionsService.GetSupplier(solution.Supplier.Id);
+
+            return View(mapper.Map<Supplier, SolutionAssociatedServicesModel>(supplier));
+        }
     }
 }
