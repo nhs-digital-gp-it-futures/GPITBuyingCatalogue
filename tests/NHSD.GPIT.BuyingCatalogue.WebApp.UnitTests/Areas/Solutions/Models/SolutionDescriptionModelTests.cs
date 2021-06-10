@@ -1,4 +1,6 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NUnit.Framework;
@@ -17,6 +19,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             typeof(SolutionDescriptionModel)
                 .Should()
                 .BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+
+        [Test]
+        public static void Frameworks_UIHintAttribute_ExpectedHint()
+        {
+            typeof(SolutionDescriptionModel)
+                .GetProperty(nameof(SolutionDescriptionModel.Frameworks))
+                .GetCustomAttribute<UIHintAttribute>()
+                .UIHint.Should()
+                .Be("TableListCell");
+        }
+
+        [Test, AutoData]
+        public static void FrameworkTitle_FrameworksMoreThanOne_ReturnsPlural(SolutionDescriptionModel model)
+        {
+            model.Frameworks.Length.Should().BeGreaterThan(1);
+
+            var actual = model.FrameworkTitle();
+
+            actual.Should().Be("Frameworks");
+        }
+
+        [Test, AutoData]
+        public static void FrameworkTitle_OneFramework_ReturnsSingle(string framework)
+        {
+            var model = new SolutionDescriptionModel { Frameworks = new[] { framework, } };
+
+            var actual = model.FrameworkTitle();
+
+            actual.Should().Be("Framework");
+        }
+
+        [Test, AutoData]
+        public static void FrameworkTitle_NoFramework_ReturnsSingle(string framework)
+        {
+            var model = new SolutionDescriptionModel { Frameworks = System.Array.Empty<string>(), };
+
+            var actual = model.FrameworkTitle();
+
+            actual.Should().Be("Framework");
+        }
+
+        [Test]
+        public static void FrameworkTitle_NullFramework_ReturnsSingle()
+        {
+            var model = new SolutionDescriptionModel { Frameworks = null, };
+
+            var actual = model.FrameworkTitle();
+
+            actual.Should().Be("Framework");
         }
 
         [Test, AutoData]

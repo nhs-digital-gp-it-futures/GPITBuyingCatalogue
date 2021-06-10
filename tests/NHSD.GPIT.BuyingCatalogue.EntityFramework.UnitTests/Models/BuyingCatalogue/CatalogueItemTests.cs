@@ -89,45 +89,45 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Test, CommonAutoData]
-        public static void Framework_SolutionHasValidFrameworkSet_ReturnsFramework(
-            CatalogueItem catalogueItem,
-            string expected)
+        public static void Frameworks_SolutionHasValidFrameworksSet_ReturnsFrameworkNames(
+            CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.FrameworkSolutions.First().Framework.Name = expected;
+            var expected = catalogueItem.Solution.FrameworkSolutions.Select(f => f.Framework.Name).ToList();
+            expected.Count.Should().BeGreaterThan(1);
 
-            var actual = catalogueItem.Framework();
+            var actual = catalogueItem.Frameworks();
 
-            actual.Should().Be(expected);
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Test, CommonAutoData]
-        public static void Framework_SolutionHasNullFramework_ReturnsNull(CatalogueItem catalogueItem)
-        {
-            catalogueItem.Solution.FrameworkSolutions.First().Framework = null;
-
-            var actual = catalogueItem.Framework();
-
-            actual.Should().BeNull();
-        }
-
-        [Test, CommonAutoData]
-        public static void Framework_FrameworkSolutionNull_ReturnsNull(CatalogueItem catalogueItem)
+        public static void Frameworks_SolutionHasNullFrameworks_ReturnsEmptyList(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.FrameworkSolutions = null;
 
-            var actual = catalogueItem.Framework();
+            var actual = catalogueItem.Frameworks();
 
-            actual.Should().BeNull();
+            actual.Should().BeEmpty();
         }
 
         [Test, CommonAutoData]
-        public static void Framework_SolutionNull_ReturnsNull(CatalogueItem catalogueItem)
+        public static void Frameworks_FrameworkSolutionNull_ReturnsEmptyList(CatalogueItem catalogueItem)
+        {
+            catalogueItem.Solution.FrameworkSolutions = null;
+
+            var actual = catalogueItem.Frameworks();
+
+            actual.Should().BeEmpty();
+        }
+
+        [Test, CommonAutoData]
+        public static void Frameworks_SolutionNull_ReturnsEmptyList(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution = null;
 
-            var actual = catalogueItem.Framework();
+            var actual = catalogueItem.Frameworks();
 
-            actual.Should().BeNull();
+            actual.Should().BeEmpty();
         }
 
         [Test, CommonAutoData]
