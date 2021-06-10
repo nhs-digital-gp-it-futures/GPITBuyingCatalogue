@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             ModelExpression aspFor,
             ViewContext viewContext,
             TagBuilder htmlContent,
-            bool? disableCharacterCounter,
+            bool enableCharacterCounter,
             string validationName = null,
             bool isInError = false)
         {
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var attributes = new List<TagHelperAttribute>();
 
-            if (!TagHelperFunctions.IsCounterDisabled(aspFor, disableCharacterCounter))
+            if (!TagHelperFunctions.IsCounterDisabled(aspFor, enableCharacterCounter))
             {
                 attributes.Add(new TagHelperAttribute(TagHelperConstants.DataModule, TagHelperConstants.GovUkCharacterCount));
                 attributes.Add(new TagHelperAttribute(TagHelperConstants.DataMaxLength, TagHelperFunctions.GetMaximumCharacterLength(aspFor).ToString()));
@@ -102,9 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 new { @class = TagHelperConstants.NhsLabel });
         }
 
-        public static TagBuilder GetCounterBuilder(ModelExpression aspFor, int defaultMaxLength, bool? disableCharacterCounter)
+        public static TagBuilder GetCounterBuilder(ModelExpression aspFor, int defaultMaxLength, bool enableCharacterCounter)
         {
-            if (TagHelperFunctions.IsCounterDisabled(aspFor, disableCharacterCounter))
+            if (TagHelperFunctions.IsCounterDisabled(aspFor, enableCharacterCounter))
                 return null;
 
             var builder = new TagBuilder(TagHelperConstants.Div);
@@ -179,6 +179,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 value,
                 isChecked,
                 new { @class = TagHelperConstants.RadioItemInputClass });
+        }
+
+        public static TagBuilder GetVisuallHiddenSpanClassBuilder()
+        {
+            var builder = new TagBuilder(TagHelperConstants.Span);
+            builder.AddCssClass(TagHelperConstants.NhsVisuallyHidden);
+            builder.InnerHtml.Append(TagHelperConstants.NhsVisuallyHiddenSpanContent);
+
+            return builder;
         }
     }
 }

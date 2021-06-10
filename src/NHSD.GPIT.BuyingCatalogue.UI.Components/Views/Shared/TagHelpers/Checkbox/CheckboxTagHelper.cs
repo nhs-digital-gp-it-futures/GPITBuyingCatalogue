@@ -38,14 +38,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
-            output.Content.Clear();
+            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
+
+            output.Attributes.Add(TagHelperConstants.Class, NhsCheckboxItem);
 
             var label = GetCheckboxLabelBuilder();
             var input = GetCheckboxInputBuilder();
-
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.Attributes.Add(TagHelperConstants.Class, NhsCheckboxItem);
 
             output.Content.AppendHtml(input);
             output.Content.AppendHtml(label);
@@ -66,11 +64,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private TagBuilder GetCheckboxLabelBuilder()
         {
+            var labelText = LabelText ?? TagHelperFunctions.GetCustomAttribute<CheckboxAttribute>(For)?.DisplayText ?? string.Empty;
+
             return htmlGenerator.GenerateLabel(
                 ViewContext,
                 For.ModelExplorer,
                 For.Name,
-                LabelText ?? TagHelperFunctions.GetCustomAttribute<CheckboxAttribute>(For).DisplayText,
+                labelText,
                 new { @class = $"{TagHelperConstants.NhsLabel} {NhsCheckboxLabel}" });
         }
 

@@ -21,5 +21,7 @@
 }
 @if (!string.IsNullOrWhiteSpace(Model.AdditionalAdvice))
 {
-    <vc:nhs-inset-text text="@Model.AdditionalAdvice" />
+    <nhs-inset-text>
+        @Model.AdditionalAdvice
+    </nhs-inset-text>
 }

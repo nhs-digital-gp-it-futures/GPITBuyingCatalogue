@@ -49,8 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
         [HtmlAttributeName(SuffixName)]
         public string SuffixText { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.EnableCharacterCounterName)]
-        public bool? EnableCharacterCounter { get; set; } = false;
+        [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
+        public bool EnableCharacterCounter { get; set; } = false;
 
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }

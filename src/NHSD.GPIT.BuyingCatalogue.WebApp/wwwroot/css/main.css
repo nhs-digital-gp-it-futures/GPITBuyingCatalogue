@@ -8167,9 +8167,12 @@ b {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 auto;
   flex: 0 0 auto; }
-  @media print {
-    .govuk-input__prefix,
-    .govuk-input__suffix {
+.govuk-input__prefix,
+.govuk-input__suffix{
+    border-color: #4c6272 !important;
+}
+@media print {
+    .govuk-input__prefix, .govuk-input__suffix {
       font-family: sans-serif; } }
   @media (min-width: 40.0625em) {
     .govuk-input__prefix,
@@ -11146,3 +11149,5 @@ body {
     border-width: 12.124px 7px 0 7px !important;
     border-top-color: inherit;
 }
+
+

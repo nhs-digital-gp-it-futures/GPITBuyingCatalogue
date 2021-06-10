@@ -36,9 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             .GetCustomAttributes<T>();
         }
 
-        public static bool IsCounterDisabled(ModelExpression aspFor, bool? htmlAttributeDisableCharacterCounter)
+        public static bool IsCounterDisabled(ModelExpression aspFor, bool htmlAttributeEnableCharacterCounter)
         {
-            return htmlAttributeDisableCharacterCounter == true
+            return htmlAttributeEnableCharacterCounter == false
                    || GetCustomAttribute<PasswordAttribute>(aspFor) != null;
         }
 

@@ -44,11 +44,20 @@
                           alt="helth"
                           caption="my helth so stronk my stonks go up" />
 
-            <vc:nhs-inset-text text="This is some Inset Text" />
+            <nhs-inset-text>
+                this is some inset text
+            </nhs-inset-text>
+
+            <nhs-inset-text>
+                this is some inset text with some text and a component
+                <vc:nhs-action-link url="some/blah" text="go somewhere laddy" />
+            </nhs-inset-text>
 
             <nhs-details label-text="This is an NHS Details">
                 <p>And this is some random Html that i put into the details</p>
-                <vc:nhs-inset-text text="and this is the NHS inset text view component i put in here aswell" />
+                <nhs-inset-text>
+                    and this is the NHS inset text view component i put in here aswell
+                </nhs-inset-text>
                 <nhs-details label-text="and here is another details i put inside the other details">
                     <p>and some more random html besides</p>
                 </nhs-details>
@@ -56,7 +65,9 @@
 
             <nhs-expander label-text="And this is an expander">
                 <p>and this is some random Html that i put into the expander</p>
-                <vc:nhs-inset-text text="and this is the NHS inset text view component running under the expander" />
+                <nhs-inset-text>
+                    and this is the NHS inset text view component running under the expander
+                </nhs-inset-text>
                 <nhs-expander label-text="and here is another expander">
                     <nhs-details label-text="that contains a details">
                         <vc:nhs-image url="https://i.kym-cdn.com/entries/icons/original/000/029/959/Screen_Shot_2019-06-05_at_1.26.32_PM.jpg"
@@ -73,7 +84,9 @@
                     <vc:nhs-address address="@Model.Adress" />
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="And another row">
-                    <vc:nhs-inset-text text="that contains a view component" />
+                    <nhs-inset-text>
+                        that contains another component
+                    </nhs-inset-text>
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="and a final row with input">
                     <nhs-input asp-for="UnpostedInputText" label-text="a test" />
@@ -91,14 +104,22 @@
             <vc:nhs-action-link url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
                                 text="This is an Action Link" />
 
-            <vc:nhs-warning-callout title="This is a warning callout"
-                                    text="and its well spooky i swear" />
+            <nhs-warning-callout label-text="This is a warning callout">
+                and this is some text content
+            </nhs-warning-callout>
+
+            <nhs-warning-callout label-text="This is another warning callout">
+                and this is some text content and a component
+                <nhs-inset-text>
+                    which also has some random text
+                </nhs-inset-text>
+            </nhs-warning-callout>
 
             <nhs-table label-text="This is a Table">
                 <nhs-table-row-container>
-                    <nhs-table-row column-name="Test 1">SOME TEXT OR SOMMIT</nhs-table-row>
-                    <nhs-table-row column-name="TEST 2">SOME MORE TEXT OR SOMMIT</nhs-table-row>
-                    <nhs-table-row column-name="An Input"><nhs-input asp-for="UnpostedInputText" /></nhs-table-row>
+                    <nhs-table-cell column-name="Test 1">SOME TEXT OR SOMMIT</nhs-table-cell>
+                    <nhs-table-cell column-name="TEST 2">SOME MORE TEXT OR SOMMIT</nhs-table-cell>
+                    <nhs-table-cell column-name="An Input"><nhs-input asp-for="UnpostedInputText" /></nhs-table-cell>
                 </nhs-table-row-container>
             </nhs-table>
             <br />
@@ -107,15 +128,18 @@
                 @foreach (var item in Model.TableRows)
                 {
                     <nhs-table-row-container>
-                        <nhs-table-row column-name="Column 1">@item.Col1</nhs-table-row>
-                        <nhs-table-row column-name="Column 2">@item.Col2</nhs-table-row>
-                        <nhs-table-row>@item.Col3</nhs-table-row>
-                        <nhs-table-row column-name="Column 4">@item.Col4</nhs-table-row>
-                        <nhs-table-row column-name="Column 5">@item.Col5</nhs-table-row>
-                        <nhs-table-row column-name="Column 6">@item.Col6</nhs-table-row>
+                        <nhs-table-cell column-name="Column 1">@item.Col1</nhs-table-cell>
+                        <nhs-table-cell column-name="Column 2">@item.Col2</nhs-table-cell>
+                        <nhs-table-cell>@item.Col3</nhs-table-cell>
+                        <nhs-table-cell column-name="Column 4">@item.Col4</nhs-table-cell>
+                        <nhs-table-cell column-name="Column 5">@item.Col5</nhs-table-cell>
+                        <nhs-table-cell column-name="Column 6">@item.Col6</nhs-table-cell>
                     </nhs-table-row-container>
                 }
             </nhs-table>
+            <nhs-endnote>
+                Page last reviewed : 10 June 2021
+            </nhs-endnote>
             <br />
             <br />
 
@@ -127,7 +151,7 @@
                 <nhs-input asp-for="InputText"
                            label-text="This is an input with a label"
                            label-hint="and a hint (counter is turned on)"
-                           enable-character-counter="true" />
+                           character-count="true" />
 
                 <nhs-input asp-for="InputTextSecond"
                            label-text="this is an input with no counter or hint" />
@@ -155,7 +179,7 @@
 
                 <nhs-textarea asp-for="TextAreaTextSecond"
                               label-text="This is a text are with no hint or counter"
-                              disable-character-counter="true" />
+                              character-count="false" />
 
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="This is a date input"
@@ -181,10 +205,9 @@
                                          label-hint="And another from an object">
 
                     <nhs-checkbox-container>
-                        <nhs-checkbox asp-for="CheckBox" label-text="From A BOOL" />
+                        <nhs-checkbox asp-for="CheckBox" />
 
                         <nhs-checkbox asp-for="@Model.SecondCheckBox.Checked"
-                                      label-text="@Model.SecondCheckBox.Name"
                                       hidden-input="@Model.SecondCheckBox.Name" />
                     </nhs-checkbox-container>
                 </nhs-fieldset-form-label>
@@ -203,7 +226,7 @@
                                disable-label-and-hint="true" />
                     <nhs-input asp-for="FormLine3"
                                disable-label-and-hint="true" />
-                    <nhs-input asp-for="FormLine4"
+                    <nhs-input asp-for="SelectedRadio"
                                label-text="this also has a label" />
                 </nhs-fieldset-form-container>
 

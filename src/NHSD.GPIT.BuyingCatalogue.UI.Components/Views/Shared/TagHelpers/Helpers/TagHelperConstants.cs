@@ -71,15 +71,16 @@
         internal const string RadioLabelClass = "nhsuk-radios__label";
         internal const string NhsRadios = "nhsuk-radios";
         internal const string NhsLedeText = "nhsuk-lede-text";
+        internal const string NhsVisuallyHidden = "nhsuk-u-visually-hidden";
+        internal const string NhsVisuallyHiddenSpanContent = "Information: ";
 
         // Messages
-        internal const string CharacterCountMessage = "(Maximum character length {0})";
+        internal const string CharacterCountMessage = "Maximum character length {0}";
 
         // Html Attributes
         internal const string LabelTextName = "label-text";
         internal const string LabelHintName = "label-hint";
-        internal const string DisableCharacterCounterName = "disable-character-counter";
-        internal const string EnableCharacterCounterName = "enable-character-counter";
+        internal const string CharacterCountName = "character-count";
         internal const string DisableLabelAndHint = "disable-label-and-hint";
     }
 }

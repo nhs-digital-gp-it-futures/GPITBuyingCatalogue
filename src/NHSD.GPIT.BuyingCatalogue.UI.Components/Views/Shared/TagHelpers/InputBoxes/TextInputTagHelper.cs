@@ -34,8 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.EnableCharacterCounterName)]
-        public bool? EnableCharacterCounter { get; set; } = false;
+        [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
+        public bool EnableCharacterCounter { get; set; } = false;
 
         [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
         public bool? DisableLabelAndHint { get; set; }
@@ -50,9 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
-
-            // EnableCharacterCounter is passed as a not because the check for disabling the charactercounter expected the value to tell it it's disabled, not enabled
-            var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, !EnableCharacterCounter);
+            var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, EnableCharacterCounter);
 
             formGroup.InnerHtml
                 .AppendHtml(label)
