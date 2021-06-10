@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipients),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("select/solution/price/recipients")]
@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipientsDate),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("select/solution/price/recipients/date")]
@@ -211,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(SelectFlatDeclarativeQuantity),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("select/solution/price/flat/declarative")]
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(NewOrderItem),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("neworderitem")]
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("{id}")]
@@ -326,7 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("select/solution/price")]
@@ -374,7 +374,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(DeleteContinue),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId, id = id, solutionName = solutionName });
+                routeValues: new { odsCode, callOffId, id, solutionName });
         }
 
         [HttpGet("delete/{id}/confirmation/{solutionName}/continue")]
