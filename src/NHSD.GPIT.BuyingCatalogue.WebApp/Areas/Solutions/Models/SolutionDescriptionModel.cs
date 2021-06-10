@@ -13,5 +13,9 @@
         public string Summary { get; set; }
 
         public string SupplierName { get; set; }
+
+        public bool HasDescription() => !string.IsNullOrWhiteSpace(Description);
+
+        public bool HasSummary() => !string.IsNullOrWhiteSpace(Summary);
     }
 }
