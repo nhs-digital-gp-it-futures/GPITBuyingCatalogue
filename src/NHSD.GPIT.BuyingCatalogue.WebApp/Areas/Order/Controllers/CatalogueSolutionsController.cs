@@ -48,8 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
-            var order = await orderService.GetOrder(callOffId);
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
+            var order = await orderService.GetOrder(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
 
             return View(new CatalogueSolutionsModel(odsCode, order, orderItems));
@@ -60,6 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
 
@@ -83,6 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = GetStateModel();
 
@@ -122,6 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var state = GetStateModel();
 
             if (state.ServiceRecipients == null)
@@ -140,6 +147,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = GetStateModel();
 
@@ -163,6 +172,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var state = GetStateModel();
 
             return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate));
@@ -174,6 +185,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = GetStateModel();
 
@@ -207,6 +220,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             // TODO - this is not always asked. Does it for Anywhere Consult but not EMIS Web GP
             var state = GetStateModel();
 
@@ -219,6 +234,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             (var quantity, var error) = model.GetQuantity();
 
@@ -252,6 +269,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(NewOrderItem)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var state = GetStateModel();
 
             return View(new NewOrderItemModel(odsCode, callOffId, state.CatalogueItemName));
@@ -263,6 +282,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(NewOrderItem)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -281,6 +302,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> EditSolution(string odsCode, string callOffId, string id)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var orderItem = await orderItemService.GetOrderItem(callOffId, id);
 
             var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
@@ -291,6 +317,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("{id}")]
         public IActionResult EditSolution(string odsCode, string callOffId, string id, EditSolutionModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -314,6 +346,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("delete/{id}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
+
             var order = await orderService.GetOrder(callOffId);
 
             return View(new DeleteSolutionModel(odsCode, callOffId, id, solutionName, order.Description));
@@ -322,6 +361,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("delete/{id}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName, DeleteSolutionModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
+
             await orderItemService.DeleteOrderItem(callOffId, id);
 
             return RedirectToAction(
@@ -333,13 +380,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("delete/{id}/confirmation/{solutionName}/continue")]
         public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string solutionName)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
+
             return View(new DeleteContinueModel(odsCode, callOffId, solutionName));
         }
 
         private CreateOrderItemModel GetStateModel()
         {
             var state = sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
-
             return state ?? new CreateOrderItemModel();
         }
 

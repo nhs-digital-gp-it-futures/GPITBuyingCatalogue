@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public class CatalogueItemType
-        : EnumerationBase
+    public class CatalogueItemType : EnumerationBase
     {
         public static readonly CatalogueItemType Solution = new(1, "Catalogue Solution");
         public static readonly CatalogueItemType AdditionalService = new(2, "Additional Service");
@@ -14,9 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
                 : base(id, name)
         {
         }
-
-        // MJRTODO - not sure this is required. Take is out and check create order item still works
-        public ICollection<CatalogueItem> CatalogueItems { get; set; }
 
         public static CatalogueItemType Parse(string name)
         {

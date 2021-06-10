@@ -20,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public static TimeUnit Parse(string name)
         {
-            if (name.Equals(nameof(PerMonth), System.StringComparison.InvariantCultureIgnoreCase))
+            if (name.Equals(PerMonth.Name, StringComparison.InvariantCultureIgnoreCase))
                 return PerMonth;
-            else if (name.Equals(nameof(PerYear), System.StringComparison.InvariantCultureIgnoreCase))
+            else if (name.Equals(PerYear.Name, StringComparison.InvariantCultureIgnoreCase))
                 return PerMonth;
 
             throw new ArgumentException("Invalid TimeUnit", nameof(name));
