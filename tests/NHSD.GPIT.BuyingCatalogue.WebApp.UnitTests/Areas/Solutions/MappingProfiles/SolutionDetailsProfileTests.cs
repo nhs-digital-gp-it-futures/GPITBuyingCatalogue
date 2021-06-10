@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
@@ -253,16 +254,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         
         [AutoData]
         [Test]
-        public void Map_CatalogueItemToSolutionDescriptionModel_SetsFrameworkAsExpected(string expected)
+        public void Map_CatalogueItemToSolutionDescriptionModel_SetsFrameworkAsExpected(List<string> expected)
         {
             var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.Setup(c => c.Framework())
+            mockCatalogueItem.Setup(c => c.Frameworks())
                 .Returns(expected);
 
             var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem.Object);
 
-            mockCatalogueItem.Verify(c => c.Framework());
-            actual.Framework.Should().Be(expected);
+            mockCatalogueItem.Verify(c => c.Frameworks());
+            actual.Frameworks.Should().BeEquivalentTo(expected);
         }
 
         [AutoData]

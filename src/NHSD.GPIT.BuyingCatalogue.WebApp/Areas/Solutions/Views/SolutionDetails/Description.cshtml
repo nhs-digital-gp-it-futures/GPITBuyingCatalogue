@@ -36,10 +36,10 @@
                         </div>
                         <div class="nhsuk-summary-list__row">
                             <dt class="nhsuk-summary-list__key">
-                                Framework(s)
+                                @Model.FrameworkTitle()
                             </dt>
                             <dd class="nhsuk-summary-list__value">
-                                @Model.Framework
+                                @Html.DisplayFor(m => m.Frameworks)
                             </dd>
                         </div>
                         <div class="nhsuk-summary-list__row">
