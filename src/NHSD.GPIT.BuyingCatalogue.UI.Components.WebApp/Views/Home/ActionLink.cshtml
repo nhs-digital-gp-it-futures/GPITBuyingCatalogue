@@ -1,0 +1,55 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.ActionLinkModel
+@{
+    ViewData["Title"] = "Action Links";
+}
+
+<nhs-page-title title="Action Links"
+                caption="View Components"
+                advice="Use action links to help users get to the next stage of a journey quickly by signposting the start of a digital service."
+                additional-advice="This page is rendered from ActionLink.cshtml using the ActionLinkModel" />
+
+<vc:nhs-action-link url="action-link" text="This is an Action Link" />
+
+<p>Action links are used when you want a user to go to the start of a use journey from another page</p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Action Link"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-action link url</span>
+        <span class="vs-light-theme-blue">="action-link"&nbsp;</span>
+        <span class="vs-light-theme-purple">text</span>
+        <span class="vs-light-theme-blue">="This is an Action Link" </span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+<br />
+<br />
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">text</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>Setting this attribute will set the text that is displayed for the Action Link</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>url</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will set the url the action Link will redirect too.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated: 10 June 2021
+</nhs-endnote>
+
+
+

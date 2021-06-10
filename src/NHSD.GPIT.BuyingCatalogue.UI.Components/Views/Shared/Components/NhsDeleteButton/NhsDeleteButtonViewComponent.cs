@@ -5,12 +5,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDel
 {
     public sealed class NhsDeleteButtonViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(string text, string href)
+        public async Task<IViewComponentResult> InvokeAsync(string text, string url)
         {
             var model = new NhsDeleteButtonModel
             {
                 Text = text,
-                Href = href,
+                Url = url,
             };
 
             return await Task.FromResult(View("NhsDeleteButton", model));

@@ -5,12 +5,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
 {
     public sealed class NhsSecondaryButtonViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(string text, string href)
+        public async Task<IViewComponentResult> InvokeAsync(string text, string url)
         {
             var model = new NhsSecondaryButtonModel
             {
                 Text = text,
-                Href = href,
+                Url = url,
             };
 
             return await Task.FromResult(View("NhsSecondaryButton", model));

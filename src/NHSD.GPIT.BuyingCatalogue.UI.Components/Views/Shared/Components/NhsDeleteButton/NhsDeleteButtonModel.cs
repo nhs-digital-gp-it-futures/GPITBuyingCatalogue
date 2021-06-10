@@ -2,7 +2,7 @@
 {
     public sealed class NhsDeleteButtonModel
     {
-        public string Href { get; set; }
+        public string Url { get; set; }
 
         public string Text { get; set; }
     }

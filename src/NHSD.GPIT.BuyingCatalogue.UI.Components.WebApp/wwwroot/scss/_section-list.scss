@@ -1,0 +1,56 @@
+.bc-c-section-list__task-requirement {
+    @include mq($until: tablet) {
+        margin-left: nhsuk-spacing(3);
+    }
+}
+
+.bc-c-section-list__items-sub-section {
+    @include mq($from: desktop) {
+        padding-left: 30px;
+    }
+    // only needed for subsection alignment
+    .bc-c-section-list__task-requirement {
+        margin-left: nhsuk-spacing(3);
+
+        @include mq($from: tablet, $until: desktop) {
+            margin-left: 0;
+        }
+
+        @include mq($from: desktop) {
+            margin-left: -(nhsuk-spacing(4));
+        }
+    }
+}
+
+.bc-c-section-list__items {
+    list-style: none;
+
+    @include mq($from: desktop) {
+        padding-left: 30px;
+    }
+}
+
+.bc-c-section-list__item {
+    list-style: none;
+    padding-bottom: nhsuk-spacing(2);
+    padding-top: nhsuk-spacing(2);
+}
+
+.bc-c-section-list__item:after {
+    clear: both;
+    content: '';
+    display: block;
+}
+
+.bc-c-section-list__task-tag {
+    @extend .bc-c-tag;
+    display: inline-block;
+    margin-bottom: nhsuk-spacing(2);
+    margin-left: nhsuk-spacing(3);
+
+    @include mq($from: tablet) {
+        float: right;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+}

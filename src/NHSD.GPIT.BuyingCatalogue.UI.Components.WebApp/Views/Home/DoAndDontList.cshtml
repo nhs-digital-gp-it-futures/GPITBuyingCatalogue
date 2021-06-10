@@ -1,0 +1,48 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.DoDontModel
+@{
+    ViewData["Title"] = "Do and Dont Lists";
+}
+
+<nhs-page-title title="Do and Dont Lists"
+                advice="Use Do and Don't lists to help users understand more easily what they should and shouldn't do."
+                caption="View Components"
+                additional-advice="This page is rendered from DoAndDontList.cshtml using the DoDontModel.
+                This model has been initialised in the controller." />
+
+<vc:nhs-do-list items="@Model.Options" />
+
+<vc:nhs-dont-list items="@Model.Options" />
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Examples for the above lists"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-do-list items</span>
+        <span class="vs-light-theme-blue">="@@Model.Options"</span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-dont-list items</span>
+        <span class="vs-light-theme-blue">="@@Model.Options"</span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">items</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This attribute requires a List&lt;string&gt; Model, where each string is a single list item</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated: 10 June 2021
+</nhs-endnote>
