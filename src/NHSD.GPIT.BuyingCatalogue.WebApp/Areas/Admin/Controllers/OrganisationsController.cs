@@ -40,7 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Index)}");
+
             var organisations = await organisationsService.GetAllOrganisations();
+
             return View(new ListOrganisationsModel(organisations));
         }
 
