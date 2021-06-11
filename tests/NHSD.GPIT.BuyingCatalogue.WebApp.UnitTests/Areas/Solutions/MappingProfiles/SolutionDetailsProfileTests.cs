@@ -184,8 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             {
                 Previous = new SectionModel
                 {
-                    //TODO: Update actio to 'Capabilities'
-                    Action = "Description",
+                    Action = "Capabilities",
                     Controller = "SolutionDetails",
                     Name = "Capabilities",
                     Show = true,
@@ -288,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 //TODO: Update Next to List price once List price page implemented
                 Next = new SectionModel
                 {
-                    Action = "Description",
+                    Action = "ListPrice",
                     Controller = "SolutionDetails",
                     Name = "List price",
                     Show = true,
