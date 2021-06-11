@@ -369,9 +369,12 @@
                         <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Associated Services</h3>
                     </div>
                     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4 nhsuk-u-padding-left-3">
-
-                        <p>Associated Services page</p>
-
+                        <ul class="nhsuk-u-margin-bottom-0">
+                            @foreach (var service in Model.AssociatedServices)
+                            {
+                                <li>Description: @service.Description</li>
+                            }
+                        </ul>
                     </div>
                 </div>
             }
