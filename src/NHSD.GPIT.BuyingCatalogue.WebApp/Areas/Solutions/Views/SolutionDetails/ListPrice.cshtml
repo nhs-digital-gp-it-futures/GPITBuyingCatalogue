@@ -14,20 +14,20 @@
 
                     @if (Model.FlatListPrices.Count() > 0)
                     {
-                        <table class="nhsuk-table">
-                            <caption class="nhsuk-table__caption">Flat list price</caption>
-                            <thead role="rowgroup" class="nhsuk-table__head">
+                        <table>
+                            <caption>Flat list price</caption>
+                            <thead role="rowgroup">
                                 <tr role="row">
-                                    <th role="columnheader" class="" scope="col">Price</th>
-                                    <th role="columnheader" class="" scope="col">Unit</th>
+                                    <th>Price</th>
+                                    <th>Unit</th>
                                 </tr>
                             </thead>
-                            <tbody class="nhsuk-table__body">
+                            <tbody>
                                 @foreach (var item in Model.FlatListPrices)
                                 {
-                                    <tr role="row" class="nhsuk-table__row">
-                                        <td class="nhsuk-table__cell">@item.CurrencyCode@item.Price</td>
-                                        <td class="nhsuk-table__cell ">@item.Unit</td>
+                                    <tr role="row">
+                                        <td>@item.CurrencyCode@item.Price</td>
+                                        <td>@item.Unit</td>
                                     </tr>
                                 }
                             </tbody>
@@ -36,27 +36,21 @@
 
                     @if (Model.TierListPrices.Count() > 0)
                     {
-                        <table class="nhsuk-table">
-                            <caption class="nhsuk-table__caption">Tiered list price</caption>
-                            <thead role="rowgroup" class="nhsuk-table__head">
+                        <table>
+                            <caption>Tiered list price</caption>
+                            <thead role="rowgroup">
                                 <tr role="row">
-                                    <th role="columnheader" class="" scope="col">
-                                        Price
-                                    </th>
-                                    <th role="columnheader" class="" scope="col">
-                                        Unit
-                                    </th>
-                                    <th role="columnheader" class="" scope="col">
-                                        Volume
-                                    </th>
+                                    <th>Price</th>
+                                    <th>Unit</th>
+                                    <th>Volume</th>
                                 </tr>
                             </thead>
-                            <tbody class="nhsuk-table__body">
+                            <tbody>
                                 @foreach (var item in Model.TierListPrices)
                                 {
-                                    <tr role="row" class="nhsuk-table__row">
-                                        <td class="nhsuk-table__cell">@item.Price</td>
-                                        <td class="nhsuk-table__cell ">@item.Unit</td>
+                                    <tr role="row">
+                                        <td>@item.CurrencyCode@item.Price</td>
+                                        <td>@item.Unit</td>
                                         <td>Volume</td>
                                     </tr>
                                 }
