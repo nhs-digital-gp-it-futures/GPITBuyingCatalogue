@@ -1,0 +1,71 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = $"Solution {Model.Section}";
+}
+
+<div class="nhsuk-width-container ">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
+
+                    <p><b>This Catalogue Solution is available at the following price:</b></p>
+
+                    @if (Model.FlatListPrices.Count() > 0)
+                    {
+                        <table class="nhsuk-table">
+                            <caption class="nhsuk-table__caption">Flat list price</caption>
+                            <thead role="rowgroup" class="nhsuk-table__head">
+                                <tr role="row">
+                                    <th role="columnheader" class="" scope="col">Price</th>
+                                    <th role="columnheader" class="" scope="col">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody class="nhsuk-table__body">
+                                @foreach (var item in Model.FlatListPrices)
+                                {
+                                    <tr role="row" class="nhsuk-table__row">
+                                        <td class="nhsuk-table__cell">@item.CurrencyCode@item.Price</td>
+                                        <td class="nhsuk-table__cell ">@item.Unit</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                    @if (Model.TierListPrices.Count() > 0)
+                    {
+                        <table class="nhsuk-table">
+                            <caption class="nhsuk-table__caption">Tiered list price</caption>
+                            <thead role="rowgroup" class="nhsuk-table__head">
+                                <tr role="row">
+                                    <th role="columnheader" class="" scope="col">
+                                        Price
+                                    </th>
+                                    <th role="columnheader" class="" scope="col">
+                                        Unit
+                                    </th>
+                                    <th role="columnheader" class="" scope="col">
+                                        Volume
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="nhsuk-table__body">
+                                @foreach (var item in Model.TierListPrices)
+                                {
+                                    <tr role="row" class="nhsuk-table__row">
+                                        <td class="nhsuk-table__cell">@item.Price</td>
+                                        <td class="nhsuk-table__cell ">@item.Unit</td>
+                                        <td>Volume</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                </div>
+            </div>
+        </article>
+    </main>
+</div>

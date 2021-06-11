@@ -174,6 +174,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         }
 
         [Test, CommonAutoData]
+        public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
+           CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, ListPriceModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                Previous = new SectionModel
+                {
+                    //TODO: Update actio to 'Capabilities'
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Capabilities",
+                    Show = true,
+                },
+
+                Next = new SectionModel
+                {
+                    //TODO: Update action to 'AdditionalServices'
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Additional Services",
+                    Show = true,
+                },
+            });
+            actual.Section.Should().Be("List price");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+
+        [Test, CommonAutoData]
         public void Map_CatalogueItemToHostingTypesModel_ResultAsExpected(
            CatalogueItem catalogueItem)
         {

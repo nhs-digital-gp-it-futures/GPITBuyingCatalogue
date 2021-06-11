@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -15,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         private const string KeyBrowserBased = "browser-based";
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
+        private const string FlatPriceType = "Flat";
+        private const string TieredPriceType = "Tiered";
 
         private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
         {
@@ -160,15 +163,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .BeforeMap(
                 (src, dest) =>
                 {
-                    dest.PublicCloud = src.Solution.GetHosting()?.PublicCloud;
-                    dest.PrivateCloud = src.Solution.GetHosting()?.PrivateCloud;
-                    dest.HybridHostingType = src.Solution.GetHosting()?.HybridHostingType;
-                    dest.OnPremise = src.Solution.GetHosting()?.OnPremise;
+                    var hosting = src.Solution.GetHosting();
+
+                    dest.PublicCloud = hosting?.PublicCloud;
+                    dest.PrivateCloud = hosting?.PrivateCloud;
+                    dest.HybridHostingType = hosting?.HybridHostingType;
+                    dest.OnPremise = hosting?.OnPremise;
                 })
                 .ForMember(dest => dest.PublicCloud, opt => opt.Ignore())
                 .ForMember(dest => dest.PrivateCloud, opt => opt.Ignore())
                 .ForMember(dest => dest.HybridHostingType, opt => opt.Ignore())
                 .ForMember(dest => dest.OnPremise, opt => opt.Ignore())
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<CataloguePrice, PriceViewModel>()
+                .BeforeMap(
+                (src, dest) =>
+                {
+                    dest.Price = src.Price == null ? null : Math.Round(src.Price.Value, 2);
+                })
+                .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode == null ? null : CurrencyCodeSigns.Code[src.CurrencyCode]))
+                .ForMember(dest => dest.Price, opt => opt.Ignore())
+                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => string.Concat(
+                    src.PricingUnit == null ? string.Empty : src.PricingUnit.Description, 
+                    " ",
+                    src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)));
+
+            CreateMap<CatalogueItem, ListPriceModel>()
+                .ForMember(
+                    dest => dest.FlatListPrices,
+                    opt => opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(FlatPriceType))))
+                .ForMember(
+                    dest => dest.TierListPrices,
+                    opt => opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(TieredPriceType))))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
 
