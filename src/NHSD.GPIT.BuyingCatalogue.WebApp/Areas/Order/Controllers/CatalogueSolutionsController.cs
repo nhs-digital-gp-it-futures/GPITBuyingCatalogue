@@ -108,6 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
             state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
             state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
+            state.Price = cataloguePrice.Price;
+            state.PriceId = cataloguePrice.CataloguePriceId;
 
             // TODO - where does this come from?
             state.EstimationPeriod = TimeUnit.PerYear;
@@ -273,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
-            return View(new NewOrderItemModel(odsCode, callOffId, state.CatalogueItemName));
+            return View(new NewOrderItemModel(odsCode, callOffId, state));
         }
 
         [HttpPost("neworderitem")]
@@ -285,10 +287,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(NewOrderItem)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            if (!ModelState.IsValid)
-                return View(model);
-
             var state = GetStateModel();
+
+            foreach (var recipient in model.OrderItem.ServiceRecipients)
+            {
+                (var date, var error) = recipient.ToDateTime(state.CommencementDate);
+
+                if (error != null)
+                {
+                    ModelState.AddModelError("Day", error);
+                    break;
+                }
+
+                recipient.DeliveryDate = date;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.OrderItem.ItemUnit = state.ItemUnit;
+                model.OrderItem.TimeUnit = state.TimeUnit;
+                return View(model);
+            }
+
+            state.Price = model.OrderItem.Price;
+            state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
             // TODO - handle errors
             var result = await orderItemService.Create(callOffId, state);
