@@ -177,25 +177,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CataloguePrice, PriceViewModel>()
-                .BeforeMap(
-                (src, dest) =>
-                {
-                    dest.Price = src.Price == null ? null : Math.Round(src.Price.Value, 2);
-                })
                 .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode == null ? null : CurrencyCodeSigns.Code[src.CurrencyCode]))
-                .ForMember(dest => dest.Price, opt => opt.Ignore())
-                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => string.Concat(
-                    src.PricingUnit == null ? string.Empty : src.PricingUnit.Description, 
-                    " ",
-                    src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)));
+                .ForMember(dest => dest.Price, opt =>
+                {
+                    opt.PreCondition(src => src.Price != null);
+                    opt.MapFrom(src => Math.Round(src.Price.Value, 2));
+                })
+                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src =>
+                $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
 
             CreateMap<CatalogueItem, ListPriceModel>()
                 .ForMember(
                     dest => dest.FlatListPrices,
-                    opt => opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(FlatPriceType))))
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.CataloguePrices != null);
+                        opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(FlatPriceType)));
+                    })
                 .ForMember(
                     dest => dest.TierListPrices,
-                    opt => opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(TieredPriceType))))
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.CataloguePrices != null);
+                        opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(TieredPriceType)));
+                    })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
 
