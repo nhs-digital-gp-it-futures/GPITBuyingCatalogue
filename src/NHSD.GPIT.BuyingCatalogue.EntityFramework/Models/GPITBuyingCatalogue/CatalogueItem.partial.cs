@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public virtual IList<string> Frameworks() =>
             Solution?.FrameworkSolutions?.Any() == true
-                ? Solution?.FrameworkSolutions.Select(s => s.Framework?.Name).ToList()
+                ? Solution?.FrameworkSolutions.Select(s => s.Framework?.ShortName).ToList()
                 : new List<string>();
 
         public virtual bool HasAdditionalServices() => Solution?.AdditionalServices?.Any() == true;
