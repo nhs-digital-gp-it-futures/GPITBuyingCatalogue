@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         public static void Frameworks_SolutionHasValidFrameworksSet_ReturnsFrameworkNames(
             CatalogueItem catalogueItem)
         {
-            var expected = catalogueItem.Solution.FrameworkSolutions.Select(f => f.Framework.Name).ToList();
+            var expected = catalogueItem.Solution.FrameworkSolutions.Select(f => f.Framework.ShortName).ToList();
             expected.Count.Should().BeGreaterThan(1);
 
             var actual = catalogueItem.Frameworks();
