@@ -26,8 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             PrivateCloud = new HostingTypeModel(CatalogueItem.Solution.GetHosting().PrivateCloud);
             HybridHostingType = new HostingTypeModel(CatalogueItem.Solution.GetHosting().HybridHostingType);
             OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
-
-            AssociatedServices = false;
         }
 
         public CatalogueItem CatalogueItem { get; private set; }
@@ -112,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             get { return CatalogueItem.Solution.MarketingContacts.Any(); }
         }
 
-        public bool AssociatedServices { get; private set; }
+        public List<AssociatedService> AssociatedServices { get; set; }
 
         public bool DisplaySupplier
         {
