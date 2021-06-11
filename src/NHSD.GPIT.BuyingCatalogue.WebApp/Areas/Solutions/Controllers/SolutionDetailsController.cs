@@ -124,10 +124,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
+            var associatedService = await solutionsService.GetAssociatedServices(solution.Supplier.Id);
 
-            var supplier = await solutionsService.GetSupplier(solution.Supplier.Id);
-
-            return View(mapper.Map<Supplier, SolutionAssociatedServicesModel>(supplier));
+            return View();
+            //return View(mapper.Map<Supplier, SolutionAssociatedServicesModel>(associatedService));
         }
     }
 }
