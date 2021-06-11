@@ -202,6 +202,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(TieredPriceType)));
                     })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<SolutionCapability, RowViewModel>()
+                .ForMember(
+                    dest => dest.Heading,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
+                .ForMember(dest => dest.CheckEpicsUrl, opt => opt.MapFrom(src => "#"));
+            CreateMap<CatalogueItem, CapabilitiesViewModel>()
+                .ForMember(
+                    dest => dest.RowViewModels,
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.Solution?.SolutionCapabilities != null);
+                        opt.MapFrom(src => src.Solution.SolutionCapabilities);
+                    })
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
 
         private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)
