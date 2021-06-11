@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .ForMember(
                     dest => dest.Description,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.FullDescription))
-                .ForMember(dest => dest.Framework, opt => opt.MapFrom(src => src.Framework()))
+                .ForMember(dest => dest.Frameworks, opt => opt.MapFrom(src => src.Frameworks()))
                 .ForMember(dest => dest.IsFoundation, opt => opt.MapFrom(src => src.IsFoundation().ToYesNo()))
                 .ForMember(
                     dest => dest.Summary,
