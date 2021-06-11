@@ -1,5 +1,60 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
+    ViewData["Title"] = "End Note";
 }
+
+<nhs-page-title title="End Note"
+                advice="Used to impart extra information related to the content above it. For Example, telling the user when the page was last updated"
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from EndNote.cshtml using the BlankModel" />
+
+<nhs-endnote>
+    This endnote was last updated: 11 June 2021
+</nhs-endnote>
+
+<nhs-endnote>
+    This Endnote has multiple lines<br />
+    Both Seperated by a BreakRow
+</nhs-endnote>
+
+<p style="margin-bottom:30px;"></p>
+
+<p>End Notes are a "wrapper tag". This means that this tag can wrap around any arbitrary mixture of raw Html and View Components to generate the content it encapsulates.</p>
+<p>The reason for this is that the NHS have yet to finalise on a correct design for this component. and due to it potential complex use of classes, is easier to define as a wrapper tag.</p>
+<p>While this tag can contain any View Component, its main usecase is for small amounts of text that add some extra information for the content above it</p>
+<p>For Example:</p>
+<nhs-endnote>
+    The Paragraphs Above were written to describe when to use endnotes.
+</nhs-endnote>
+
+<p style="margin-bottom:30px;"></p>
+
+<p>The main use in Buying Catalogue will be for storing when a page was last updated. but may be used for other things also</p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above endnote"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+
+
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-endnote</span>
+        <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">The Paragraphs Above were written to describe when to use endnotes.</span><br/>
+
+
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-endnote</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-inset-text>
+    This Tag Contains No Attributes and is a Pure Wrapper Tag.
+</nhs-inset-text>
+
+<nhs-endnote>
+    Page last Updated: 11 June 2021
+</nhs-endnote>
+

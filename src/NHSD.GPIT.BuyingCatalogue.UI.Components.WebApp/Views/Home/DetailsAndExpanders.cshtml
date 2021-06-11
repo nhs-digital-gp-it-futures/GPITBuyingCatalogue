@@ -1,5 +1,175 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
+    ViewData["Title"] = "Details and Expanders";
 }
+
+<nhs-page-title title="Details and Expanders"
+                caption="Tag Helper"
+                advice="Make a complex topic easier to digest by letting users reveal more detailed information only if they need it."
+                additional-advice="This page is rendered from DetailsAndExpanders.cshtml using the BlankModel." />
+
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Details Dropdown"
+                             size="ExtraLarge">
+
+    <nhs-details label-text="This is a Details Dropdown With Some <p> text">
+        <p>And it contains a Paragraph of Text</p>
+    </nhs-details>
+
+    <nhs-details label-text="This is a Details Dropdown with another component inside it">
+        <nhs-inset-text>
+            This is an inset text encapulated by a details.
+        </nhs-inset-text>
+    </nhs-details>
+
+    <nhs-details label-text="This is a Details Dropdown that contains another details">
+        <nhs-details label-text="And this is the contained details">
+            <p>That contains some more text.</p>
+        </nhs-details>
+    </nhs-details>
+
+
+    <p>Details are a "wrapper tag". This means that this tag can wrap around any arbitrary mixture of raw Html and View Components to generate the content it encapsulates.</p>
+    <p>They are nestable to an arbitrary depth on a techincal level, but to keep a decent design, it's recommended to only do one level of encapulation.</p>
+
+    <nhs-details label-text="This is a Details Dropdown that contains lots of other details">
+        <nhs-details label-text="While this is completly doable on a techincal level">
+            <nhs-details label-text="as you can see, the deeper we go">
+                <nhs-details label-text="the worse the design looks">
+                    <nhs-details label-text="and since this squishes all the content">
+                        <nhs-details label-text="anything this deep will look awful">
+                            <p>As you can now see. while this amount of text would look ok in a normal details. it becomes very unreadable very quickly.</p>
+                        </nhs-details>
+                    </nhs-details>
+                </nhs-details>
+            </nhs-details>
+        </nhs-details>
+    </nhs-details>
+
+    <p>A details can also contain an Expander object. But this isn't a recommended use case, since an Expander is concidered a higher level container. so details should be nested inside of it.</p>
+
+    <nhs-details label-text="This is a details with an expander inside">
+        <nhs-expander label-text="This is the expander, it looks very odd">
+            <p>So isn't advised.</p>
+        </nhs-expander>
+    </nhs-details>
+
+    <nhs-warning-callout label-text="Edge Case When Nesting Inside An Expander">
+        <p>Due to the close nature of the expander and details designs, When a normal details is placed inside of an Expander, it ends up gaining the expanders CSS.</p>
+        <p>To combat this, if nested inside of an expander, the details will gain a new class called arrow-details to fix this issue.</p>
+        <p>This is done due to the fact that Tag Helpers can pass information between each other when nested. So the Details Tag helper will check to see if it's inside an Expander when Rendering.</p>
+        <p>If it finds it's inside an Expander, this class is applied.</p>
+    </nhs-warning-callout>
+
+    <p style="margin-bottom:30px;"></p>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example of the details with a Paragraph inside"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-details label-text</span>
+            <span class="vs-light-theme-blue">="This is a Details Dropdown With Some &lt;p&gt; text"</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+
+            <span class="vs-light-theme-blue first-layer">&lt;p&gt; And it contains a Paragraph of Text &lt;/p&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-details</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+    <nhs-table label-text="Attributes">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">label-text</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>Setting this attribute will set the text that is displayed on the details.</p>
+                <p>While not required, it will create very odd looking details that could be missed by a user</p>
+                <p>Like this example here: </p>
+                <nhs-details><p>Some Content</p></nhs-details>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Recommended" colour="Orange" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+</nhs-fieldset-form-container>
+
+<p style="margin-bottom:30px;"></p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Expander Dropdowns"
+                             size="ExtraLarge">
+
+    <nhs-expander label-text="This is a Expander Dropdown With Some <p> text">
+        <p>And it contains a Paragraph of Text</p>
+    </nhs-expander>
+
+    <nhs-expander label-text="This is a Expander Dropdown with another component inside it">
+        <nhs-inset-text>
+            This is an inset text encapulated by an Expander.
+        </nhs-inset-text>
+    </nhs-expander>
+
+    <nhs-expander label-text="This is a Expander Dropdown that contains a details">
+        <nhs-details label-text="And this is the contained details">
+            <p>That contains some more text.</p>
+        </nhs-details>
+    </nhs-expander>
+
+    <p>Expander are a "wrapper tag". This means that this tag can wrap around any arbitrary mixture of raw Html and View Components to generate the content it encapsulates.</p>
+    <p>They are nestable to an arbitrary depth on a techincal level, but it is recommended you don't nest an Expander inside an Expander, and instead use a Details.</p>
+
+    <nhs-expander label-text="This is an Expander that contains lots of other Expanders">
+        <nhs-expander label-text="While this is completly doable on a techincal level">
+            <nhs-expander label-text="as you can see, the deeper we go">
+                <nhs-expander label-text="the worse the design looks">
+                    <nhs-expander label-text="and since this squishes all the content">
+                        <nhs-expander label-text="anything this deep will look awful">
+                            <p>As you can now see. while this amount of text would look ok in a normal expander. it becomes very unreadable very quickly.</p>
+                            <p>Also you'll notice that the Plus and Minus Arrow Css is broken due to the way the CSS of this component works.</p>
+                        </nhs-expander>
+                    </nhs-expander>
+                </nhs-expander>
+            </nhs-expander>
+        </nhs-expander>
+    </nhs-expander>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example of the expander with a Paragraph inside"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-expander label-text</span>
+            <span class="vs-light-theme-blue">="This is a Details Dropdown With Some &lt;p&gt; text"</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+
+            <span class="vs-light-theme-blue first-layer">&lt;p&gt; And it contains a Paragraph of Text &lt;/p&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-expander</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+    <nhs-table label-text="Attributes">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">label-text</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>Setting this attribute will set the text that is displayed on the expander.</p>
+                <p>While not required, it will create very odd looking expander that has broken css.</p>
+                <p>Like this example here: </p>
+                <nhs-expander><p>Some Content</p></nhs-expander>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Yes" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+</nhs-fieldset-form-container>
+
+<nhs-endnote>
+    Page last Updated 11 June 2021
+</nhs-endnote>

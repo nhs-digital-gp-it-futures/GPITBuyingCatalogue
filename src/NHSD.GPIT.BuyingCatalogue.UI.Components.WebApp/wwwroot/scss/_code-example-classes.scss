@@ -7,9 +7,16 @@
 
 }
 
-.bracket {
-    margin-left: 4px;
-    margin-right: 4px;
+.first-layer {
+    margin-left: 20px;
+}
+
+.second-layer {
+    margin-left: 40px;
+}
+
+.third-layer{
+    margin-left: 60px;
 }
 
 .bc-code-snippet {
@@ -19,3 +26,7 @@
     margin-bottom: 30px;
     min-height:150px;
 }
+
+
+
+

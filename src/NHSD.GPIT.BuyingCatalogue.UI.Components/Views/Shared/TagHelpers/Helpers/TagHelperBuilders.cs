@@ -15,7 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagBuilder htmlContent,
             bool enableCharacterCounter,
             string validationName = null,
-            bool isInError = false)
+            bool isInError = false,
+            int defaultMaxLength = 0)
         {
             output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
@@ -25,8 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             if (!TagHelperFunctions.IsCounterDisabled(aspFor, enableCharacterCounter))
             {
+                var maxCharacterLength = TagHelperFunctions.GetMaximumCharacterLength(aspFor) ?? defaultMaxLength;
+
                 attributes.Add(new TagHelperAttribute(TagHelperConstants.DataModule, TagHelperConstants.GovUkCharacterCount));
-                attributes.Add(new TagHelperAttribute(TagHelperConstants.DataMaxLength, TagHelperFunctions.GetMaximumCharacterLength(aspFor).ToString()));
+                attributes.Add(new TagHelperAttribute(TagHelperConstants.DataMaxLength, maxCharacterLength.ToString()));
             }
 
             attributes.ForEach(a => output.Attributes.Add(a));

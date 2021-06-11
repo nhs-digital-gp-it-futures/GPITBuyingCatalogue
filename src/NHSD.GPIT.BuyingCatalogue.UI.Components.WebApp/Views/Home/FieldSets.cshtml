@@ -1,5 +1,262 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
+    ViewData["Title"] = "FieldSets";
 }
+
+<nhs-page-title title="FieldSets"
+                advice="Used as a Wrapper around other content"
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from FieldSets.cshtml using the BlankModel." />
+
+<p>Fieldsets are used to wrap around other components for mostly Styling or Grouping Purpouses</p>
+<p>The are two distinct types of Fieldsets in the Component Libray, fieldset-form-containers and fieldset-form-Labels</p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Fieldset Form Labels"
+                             size="ExtraLarge">
+
+    <p>Fieldset form labels are used for adding labels to certain other components in the component library.</p>
+    <p>Because of this they are designed to only contain a few certain types of Components and are not for general grouping.</p>
+    <p>While they are designed to only contain one type of component at a time, they can be used to mix different types of components on a techincal level.</p>
+    <p>This however is not a recommended practice.</p>
+    <p>The List of Components that use this type of label are:</p>
+    <ul>
+        <li>Checkboxes <vc:nhs-action-link url="checkboxes" text="Click here to view how they look on checkboxes" /></li>
+        <li>Radio Lists<vc:nhs-action-link url="radio lists" text="Click here to view how they look on Radio Lists" /></li>
+        <li>Yes No Radios<vc:nhs-action-link url="yes-no-radios" text="Click here to view how they look on Yes No Radios" /></li>
+        <li>Date Inputs<vc:nhs-action-link url="date-input" text="Click here to view how they look on Date Inputs" /></li>
+    </ul>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example for a Date input that contains a Fieldset-Label"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span>
+            <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span>
+            <span class="vs-light-theme-blue">="This is a date input"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-date-input</span><br />
+            <span class="vs-light-theme-purple second-layer">asp-for</span>
+            <span class="vs-light-theme-blue">"@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">day</span>
+            <span class="vs-light-theme-blue">="Day"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">month</span>
+            <span class="vs-light-theme-blue">="Month"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">year</span>
+            <span class="vs-light-theme-blue">="Year"&nbsp;</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+    <nhs-table label-text="Attributes">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>This is a Reference to the Model as a Whole. It's Required for generated Correct Id's and aria attributes</p>
+                <p>This should Typically always be @@Model</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>label-text</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>label-hint</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will add a hint under the Label Text.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>size</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will set the size of the label</p>
+                <p>It uses an Enum inside the tag to choose the correct size. The Available Options Are:</p>
+                <ul>
+                    <li>Small</li>
+                    <li>Medium</li>
+                    <li>Large</li>
+                    <li>ExtraLarge</li>
+                </ul>
+
+                <p>Attempting to put in another option will force the tag to fail to compile.</p>
+                <p>Defaults to Large.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>disable-label-and-hint</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is recommended to use if you do not wish to show either a label or hint, since it will stop the tag from rendering empty HTML.</p>
+                <p>The primary use for this is if you wish to use one of the components that require this tag inside a fieldset-form-container</p>
+                <p>Defaults to False</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+</nhs-fieldset-form-container>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Fieldset Form Container"
+                             size="ExtraLarge">
+
+
+    <p>Fieldset Form Containers are used for Grouping together an arbitrary amount of different Components or Raw Html under a label.</p>
+    <p>For Example, Each section of this page are grouped under a fieldset-form-container.</p>
+    <p>But the main use will be setting a label for multiple different Components where you wished for a unified label look.</p>
+    <p>For Example:</p>
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="This is a Fieldset Form Container Grouping Inputs together with a Large Label"
+                                 label-hint="And this is the Hint"
+                                 size="Large">
+        <nhs-input asp-for="ARandomField"
+                   disable-label-and-hint="true" />
+        <nhs-input asp-for="ARandomField"
+                   disable-label-and-hint="true" />
+        <nhs-input asp-for="ARandomField"
+                   disable-label-and-hint="true" />
+        <nhs-input asp-for="ARandomField"
+                   disable-label-and-hint="true" />
+        <nhs-textarea asp-for="ARandomField"
+                      disable-label-and-hint="true"
+                      character-count="false" />
+        <nhs-fieldset-form-label asp-for="@Model"
+                                 disable-label-and-hint="true">
+            <nhs-checkbox-container>
+                <nhs-checkbox asp-for="ARandomBool" label-text="Tick to Confirm" />
+            </nhs-checkbox-container>
+        </nhs-fieldset-form-label>
+
+    </nhs-fieldset-form-container>
+
+    <p style="margin-bottom:30px;" />
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example for the above Fieldset Form Container"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-container</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span>
+            <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span>
+            <span class="vs-light-theme-blue">="This is a Fieldset Form Container Grouping Inputs together with a Large Label"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-hint</span>
+            <span class="vs-light-theme-blue">="This is a hint"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">Size</span>
+            <span class="vs-light-theme-blue">="Large"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-container</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Size Examples - Extra Large"
+                                 size="ExtraLarge">
+        <nhs-fieldset-form-container asp-for="@Model"
+                                     label-text="Size Examples - Large"
+                                     size="Large">
+        </nhs-fieldset-form-container>
+        <nhs-fieldset-form-container asp-for="@Model"
+                                     label-text="Size Examples - Medium"
+                                     size="Medium">
+        </nhs-fieldset-form-container>
+        <nhs-fieldset-form-container asp-for="@Model"
+                                     label-text="Size Examples - Small"
+                                     size="Small">
+        </nhs-fieldset-form-container>
+    </nhs-fieldset-form-container>
+
+    <nhs-table label-text="Attributes">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>This is a Reference to the Model as a Whole. It's Required for generated Correct Id's and aria attributes</p>
+                <p>This should Typically always be @@Model</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>label-text</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>label-hint</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will add a hint under the Label Text.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>size</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will set the size of the label</p>
+                <p>It uses an Enum inside the tag to choose the correct size. The Available Options Are:</p>
+                <ul>
+                    <li>Small</li>
+                    <li>Medium</li>
+                    <li>Large</li>
+                    <li>ExtraLarge</li>
+                </ul>
+
+                <p>Attempting to put in another option will force the tag to fail to compile.</p>
+                <p>Defaults to Large.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>disable-label-and-hint</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is recommended to use if you do not wish to show either a label or hint, since it will stop the tag from rendering empty HTML.</p>
+                <p>Defaults to False</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+</nhs-fieldset-form-container>
+
+<nhs-endnote>
+    Page last Updated: 11 June 2021
+</nhs-endnote>

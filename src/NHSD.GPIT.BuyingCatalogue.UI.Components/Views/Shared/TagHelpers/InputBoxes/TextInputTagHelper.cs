@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 .AppendHtml(input)
                 .AppendHtml(counter);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, EnableCharacterCounter);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, EnableCharacterCounter, defaultMaxLength: DefaultMaxLength);
         }
 
         private TagBuilder GetInputBuilder()
@@ -76,8 +76,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     aria_describedby = $"{For.Name}-info {For.Name}-summary",
                 });
 
-            if (!builder.Attributes.Any(a => a.Key == "maxlength"))
+            if (!builder.Attributes.Any(a => a.Key == "maxlength")) 
+            {
                 builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
+                builder.MergeAttribute("data-val-length-max", DefaultMaxLength.ToString());
+                builder.MergeAttribute("data-val", "true");
+            }
 
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
                 builder.Attributes[TagHelperConstants.Type] = "password";
