@@ -38,6 +38,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
         public SolutionDetailsProfile()
         {
+            CreateMap<CatalogueItem, CapabilitiesViewModel>()
+                .ForMember(
+                    dest => dest.RowViewModels,
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.Solution?.SolutionCapabilities != null);
+                        opt.MapFrom(src => src.Solution.SolutionCapabilities);
+                    })
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
+
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
                 .ForMember(dest => dest.ApplicationTypes, opt => opt.Ignore())
                 .ForMember(
@@ -77,6 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .AfterMap(
                     (_, dest) =>
                     {
+                        dest.PaginationFooter.FullWidth = true;
+
                         dest.ApplicationTypes = new DescriptionListViewModel
                         {
                             Heading = "Application Type",
@@ -211,15 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     dest => dest.Description,
                     opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
                 .ForMember(dest => dest.CheckEpicsUrl, opt => opt.MapFrom(src => "#"));
-            CreateMap<CatalogueItem, CapabilitiesViewModel>()
-                .ForMember(
-                    dest => dest.RowViewModels,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.Solution?.SolutionCapabilities != null);
-                        opt.MapFrom(src => src.Solution.SolutionCapabilities);
-                    })
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
 
         private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)
