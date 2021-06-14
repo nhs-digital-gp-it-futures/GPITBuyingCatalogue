@@ -3476,6 +3476,12 @@ b {
     .nhsuk-footer {
       padding-top: 32px; } }
 
+.nhsuk-footer .nhsuk-width-container {
+    max-width: 100%;
+    padding-right: 32px;
+    padding-left: 32px;
+}
+
 .nhsuk-footer__list {
   padding-bottom: 16px;
   list-style-type: none;
