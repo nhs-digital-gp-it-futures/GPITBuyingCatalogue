@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models;
+using static NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
 {
@@ -159,16 +160,22 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             return View(new TextInputModel());
         }
 
+        [Route("inset-text")]
+        public IActionResult InsetText()
+        {
+            return View(new BlankModel());
+        }
+
         [Route("radio-lists")]
         public IActionResult RadioLists()
         {
             var model = new RadioListModel()
             {
-                Options = new List<string>
+                Options = new List<RadioListOptions>
                 {
-                    "First Option",
-                    "Second Option",
-                    "Third Option",
+                    new RadioListOptions { Name = "First Option", Value = "1" },
+                    new RadioListOptions { Name = "Second Option", Value = "2" },
+                    new RadioListOptions { Name = "Third Option", Value = "3" },
                 },
             };
 
@@ -206,7 +213,44 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         [Route("table")]
         public IActionResult Table()
         {
-            return View(new BlankModel());
+            var model = new TableModel
+            {
+                Rows = new List<TableModel.TableRowModel>
+                {
+                    new TableModel.TableRowModel
+                    {
+                        FirstColumn = "First Column",
+                        SecondColumn = "Second Column",
+                        ThirdColumn = "Third Column",
+                        FourthColumn = "Fourth Column",
+                        FifthColumn = "Fifth Column",
+                        SixthColumn = "Sixth Column",
+                        SeventhColumn = "Seventh Column",
+                    },
+                    new TableModel.TableRowModel
+                    {
+                        FirstColumn = "First Column",
+                        SecondColumn = "Second Column",
+                        ThirdColumn = string.Empty,
+                        FourthColumn = "Fourth Column",
+                        FifthColumn = "Fifth Column",
+                        SixthColumn = "Sixth Column",
+                        SeventhColumn = "Seventh Column",
+                    },
+                    new TableModel.TableRowModel
+                    {
+                        FirstColumn = "First Column",
+                        SecondColumn = "Second Column",
+                        ThirdColumn = "Third Column",
+                        FourthColumn = "Fourth Column",
+                        FifthColumn = "Fifth Column",
+                        SixthColumn = "Sixth Column",
+                        SeventhColumn = string.Empty,
+                    },
+                },
+            };
+
+            return View(model);
         }
 
         [Route("tags")]
@@ -218,6 +262,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         [Route("validation-summary")]
         public IActionResult ValidationSummary()
         {
+            var error = "This Input is in Error.";
+            var secondError = "I am an Input in Error at the bottom of the Page.";
+
+            ModelState.AddModelError("ARandomField", error);
+            ModelState.AddModelError("SecondRandomField", secondError);
+
             return View(new BlankModel());
         }
 

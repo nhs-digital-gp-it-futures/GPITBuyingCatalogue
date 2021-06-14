@@ -1,5 +1,51 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
 @{
+    ViewData["Title"] = "Validation Summary";
 }
+
+<nhs-page-title title="Validation Summary"
+                caption="Tag Helper"
+                advice="Showing the user a list of errors on the page"
+                additional-advice="This page is rendered from ValidationSummary.cshtml using the BlankModel.
+                The Error on this page has been hard coded in the Controller." />
+
+<nhs-validation-summary />
+
+<nhs-input asp-for="ARandomField"
+           label-text="The Input In Error" />
+
+<p>The Validation Summary at the top of this page shows a list of errors that can come from multiple fields.</p>
+<p>In this example, the field above has been hard coded to be in error.</p>
+<p>The validation summary contains a copy of the error message ("This Input is in Error") and a link to the field.</p>
+<p>Clicking on the Error in the Validation Summary Will take scroll the page to the referenced error field. (Clicking on the bottom error will take you to the error field at the bottom of this page.</p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text=" Code Example of the Validation Summary"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-validation-summary</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes For Validation Summary">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">title</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This will override the title text of the Validation Summary if you wish for a different title.</p>
+            <p>Will default to "There is a problem" if not set.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-input asp-for="SecondRandomField"
+           label-text="The Other Input in Error" />
+
+<nhs-endnote>
+    Page last Updatd 14 June 2021
+</nhs-endnote>
+

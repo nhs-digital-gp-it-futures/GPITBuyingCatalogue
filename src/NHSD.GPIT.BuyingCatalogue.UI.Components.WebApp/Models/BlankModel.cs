@@ -4,6 +4,8 @@
     {
         public string ARandomField { get; set; }
 
+        public string SecondRandomField { get; set; }
+
         public bool ARandomBool { get; set; }
     }
 }

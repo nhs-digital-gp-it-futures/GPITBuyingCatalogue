@@ -1,5 +1,63 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel
 @{
+    ViewData["Title"] = "Yes No Radios";
 }
+
+<nhs-page-title title="Yes No Radios"
+                advice="Allow a user to agree or disagree with a selection"
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from YesNoRadios.cshtml using the RadioListModel." />
+
+
+<nhs-fieldset-form-label asp-for="@Model"
+                         label-text="This is a Yes No Radio List"
+                         label-hint="And a Hint">
+<nhs-yesno-radio-buttons asp-for="RadioItemYesNo" />
+</nhs-fieldset-form-label>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Radio List"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span>
+        <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span>
+        <span class="vs-light-theme-blue">="This is a Yes No Radio List"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-hint</span>
+        <span class="vs-light-theme-blue">="And a Hint"&nbsp;</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-yesno-radio-buttons</span><br />
+        <span class="vs-light-theme-purple second-layer">asp-for</span>
+        <span class="vs-light-theme-blue">"@@Model.RadioItemYesNo"&nbsp;</span><br />
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+        <span class="vs-light-theme-blue">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<p>This object requires a fieldset-form-label to work correctly, to see about how to set a fieldset-form-label, please check fieldsets.</p>
+<vc:nhs-action-link url="fieldsets" text="Click here to see about fieldsets" />
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This is a reference to the field that the input will load and save the selected value for this Yes/No too/from.</p>
+            <p>This should be a string since the Value saved will save the string "Yes" or "No" Depending on the selected Option.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated 14 June 2021
+</nhs-endnote>

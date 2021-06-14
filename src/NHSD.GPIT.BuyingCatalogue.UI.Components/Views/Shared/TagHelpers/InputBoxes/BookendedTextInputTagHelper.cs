@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
         private const string SuffixName = "Suffix";
 
         private const int DefaultMaxLength = 10;
+        private const bool DefaultEnableCharacterCounter = false;
 
         private const string TextInputWidthClass = "nhsuk-input--width-5";
         private const string GovUkInputPrefixClass = "govuk-input__prefix";
@@ -49,20 +50,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
         [HtmlAttributeName(SuffixName)]
         public string SuffixText { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
-        public bool EnableCharacterCounter { get; set; } = false;
-
-        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
-        public bool? DisableLabelAndHint { get; set; }
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
             var formGroup = GetGovFormGroupBuilder();
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var inputWrapper = GetInputWrapper();
 
@@ -81,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
                 .AppendHtml(validation)
                 .AppendHtml(inputWrapper);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, EnableCharacterCounter);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, DefaultEnableCharacterCounter);
         }
 
         private static TagBuilder GetInputWrapper()

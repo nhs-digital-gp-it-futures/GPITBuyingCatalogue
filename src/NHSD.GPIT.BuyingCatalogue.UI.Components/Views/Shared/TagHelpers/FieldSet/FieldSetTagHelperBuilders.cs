@@ -51,19 +51,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             return builder;
         }
 
-        public static TagBuilder GetFieldSetLegendHeadingBuilder(FieldSetSize selectedSize, string labelText, bool? disableLabelAndHint)
+        public static TagBuilder GetFieldSetLegendHeadingBuilder(FieldSetSize selectedSize, string labelText)
         {
             var fieldsetLegend = GetFieldsetLegendBuilder(selectedSize);
-            var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder(labelText, disableLabelAndHint, selectedSize);
+            var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder(labelText, selectedSize);
 
             fieldsetLegend.InnerHtml.AppendHtml(fieldsetlegendheader);
 
             return fieldsetLegend;
         }
 
-        public static TagBuilder GetFieldsetLegendHeadingTagBuilder(string labelText, bool? disableLabelAndHint, FieldSetSize selectedSize)
+        public static TagBuilder GetFieldsetLegendHeadingTagBuilder(string labelText, FieldSetSize selectedSize)
         {
-            if (labelText == null || disableLabelAndHint == true)
+            if (labelText == null)
                 return null;
 
             var selectedLedgendTag = selectedSize switch

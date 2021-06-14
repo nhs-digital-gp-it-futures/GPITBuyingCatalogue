@@ -1,5 +1,78 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.SelectListModel
 @{
+    ViewData["Title"] = "Select List";
 }
+
+<nhs-page-title title="Select List"
+                advice="Allow The Selection of a single item from a list of objects"
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from SelectList.cshtml using the SelectListModel." />
+
+<nhs-select asp-for="SelectListItem"
+            asp-items="@(new SelectList(Model.SelectListItems, "Value", "Text"))"
+            label-text="A Select List From a List of SelectListItems"
+            label-hint="And a Hint" />
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Select List"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-select</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span>
+        <span class="vs-light-theme-blue">="@@Model.SelectListItem"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-items</span>
+        <span class="vs-light-theme-blue">="(new SelectList(@@Model.SelectListItems, "Value", "Text"))" </span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span>
+        <span class="vs-light-theme-blue">="A Select List From a List of SelectListItems" </span><br />
+        <span class="vs-light-theme-purple first-layer">label-hint</span>
+        <span class="vs-light-theme-blue">="And a Hint" </span><br />
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This is a reference to the field that the input will load and save the selected value for this list too/from.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>asp-items</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This is the field that contains the list of values. This should initially be a list of List&lt;SelectListItem&gt; that will be converted as shown in the above code.</p>
+            <p>However any object can work as a list source, as long as it is eventually converted to a list SelectList Item.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>label-text</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will set the title of the input.</p>
+            <p>If not set, no label will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>label-hint</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will add a hint under the title on the input.</p>
+            <p>If not set, no hint will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated 14 June 2021
+</nhs-endnote>

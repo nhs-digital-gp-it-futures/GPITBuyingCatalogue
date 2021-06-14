@@ -1,5 +1,89 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.TextInputModel
 @{
+    ViewData["Title"] = "Text Area";
 }
+
+<nhs-page-title title="Bookended Inputs"
+                advice="Used for Allowing users to input data while providing extra information on the input information required."
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from BookendedTextInput.cshtml using the TextInputModel." />
+
+
+
+<nhs-textarea asp-for="TextInput100Character"
+                     label-text="Text Area for 100 Characters"
+                     label-hint="And a Hint" />
+
+<nhs-textarea asp-for="TextInputNoLength"
+                     label-text="Defaults to 1500 Characters Maximum" />
+
+<nhs-textarea asp-for="TextInputNoLength"
+                     label-text="Character Count is Turned off"
+                     character-count="false"/>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the first Text Area"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-textarea</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span>
+        <span class="vs-light-theme-blue">="TextInput100Character"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">Label-text</span>
+        <span class="vs-light-theme-blue">="Text Area for 100 Characters" </span><br />
+        <span class="vs-light-theme-purple first-layer">label-hint</span>
+        <span class="vs-light-theme-blue">="And a Hint" </span><br />
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This is a reference to the field that the input will load and save its value too/from.</p>
+            <p>This Property on the model can also store other validation attributes.</p>
+            <ul>
+                <li>[StringLength(1000)] Will force the inputs max-length to be set to 1000. If missing it will default to 500.</li>
+            </ul>
+            <p>Due to the Large Natrue of this input, 1500 characters is the recommended maximum.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>label-text</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will set the title of the input.</p>
+            <p>If not set, no label will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>label-hint</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will add a hint under the title on the input.</p>
+            <p>If not set, no hint will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>character-count</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this to false will hide the Character Count Under the text area.</p>
+            <p>Defaults to true</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated 14 June 2021
+</nhs-endnote>

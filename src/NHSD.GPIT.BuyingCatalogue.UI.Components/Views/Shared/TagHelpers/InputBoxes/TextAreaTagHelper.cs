@@ -40,9 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
         public bool CharacterCountEnabled { get; set; } = true;
 
-        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
-        public bool? DisableLabelAndHint { get; set; }
-
         [HtmlAttributeName(TextAreaNumberOfRows)]
         public int? NumberOfRows { get; set; }
 
@@ -52,8 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 throw new ArgumentNullException(nameof(output));
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, CharacterCountEnabled);

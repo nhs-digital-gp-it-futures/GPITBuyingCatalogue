@@ -106,17 +106,6 @@
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
-        <nhs-table-row-container>
-            <nhs-table-cell>disable-label-and-hint</nhs-table-cell>
-            <nhs-table-cell>
-                <p>This is recommended to use if you do not wish to show either a label or hint, since it will stop the tag from rendering empty HTML.</p>
-                <p>The primary use for this is if you wish to use one of the components that require this tag inside a fieldset-form-container</p>
-                <p>Defaults to False</p>
-            </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
-                <nhs-tag text="No" colour="Green" />
-            </nhs-table-cell>
-        </nhs-table-row-container>
     </nhs-table>
 
 </nhs-fieldset-form-container>
@@ -134,19 +123,13 @@
                                  label-text="This is a Fieldset Form Container Grouping Inputs together with a Large Label"
                                  label-hint="And this is the Hint"
                                  size="Large">
-        <nhs-input asp-for="ARandomField"
-                   disable-label-and-hint="true" />
-        <nhs-input asp-for="ARandomField"
-                   disable-label-and-hint="true" />
-        <nhs-input asp-for="ARandomField"
-                   disable-label-and-hint="true" />
-        <nhs-input asp-for="ARandomField"
-                   disable-label-and-hint="true" />
+        <nhs-input asp-for="ARandomField" />
+        <nhs-input asp-for="ARandomField" />
+        <nhs-input asp-for="ARandomField" />
+        <nhs-input asp-for="ARandomField" />
         <nhs-textarea asp-for="ARandomField"
-                      disable-label-and-hint="true"
                       character-count="false" />
-        <nhs-fieldset-form-label asp-for="@Model"
-                                 disable-label-and-hint="true">
+        <nhs-fieldset-form-label asp-for="@Model">
             <nhs-checkbox-container>
                 <nhs-checkbox asp-for="ARandomBool" label-text="Tick to Confirm" />
             </nhs-checkbox-container>
@@ -239,16 +222,6 @@
 
                 <p>Attempting to put in another option will force the tag to fail to compile.</p>
                 <p>Defaults to Large.</p>
-            </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
-                <nhs-tag text="No" colour="Green" />
-            </nhs-table-cell>
-        </nhs-table-row-container>
-        <nhs-table-row-container>
-            <nhs-table-cell>disable-label-and-hint</nhs-table-cell>
-            <nhs-table-cell>
-                <p>This is recommended to use if you do not wish to show either a label or hint, since it will stop the tag from rendering empty HTML.</p>
-                <p>Defaults to False</p>
             </nhs-table-cell>
             <nhs-table-cell column-name="Required">
                 <nhs-tag text="No" colour="Green" />

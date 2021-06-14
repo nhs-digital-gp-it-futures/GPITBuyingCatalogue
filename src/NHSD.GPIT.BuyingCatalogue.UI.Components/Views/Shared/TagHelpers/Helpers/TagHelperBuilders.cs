@@ -61,10 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 new { @class = TagHelperConstants.NhsErrorMessage });
         }
 
-        public static TagBuilder GetLabelHintBuilder(ModelExpression aspFor, string hintText, string formName = null, bool? htmlAttributeDisableLabelAndHint = null)
+        public static TagBuilder GetLabelHintBuilder(ModelExpression aspFor, string hintText, string formName = null)
         {
             if ((string.IsNullOrEmpty(aspFor.Name) && string.IsNullOrEmpty(formName))
-                || htmlAttributeDisableLabelAndHint == true
                 || string.IsNullOrEmpty(hintText))
             {
                 return null;
@@ -87,11 +86,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             ModelExpression aspFor,
             IHtmlGenerator htmlGenerator,
             string formName = null,
-            string htmlAttributeLabelText = null,
-            bool? htmlAttributeDisableLabelAndHint = null)
+            string htmlAttributeLabelText = null)
         {
             if ((string.IsNullOrEmpty(aspFor.Name) && string.IsNullOrEmpty(formName))
-                || htmlAttributeDisableLabelAndHint == true
                 || string.IsNullOrEmpty(htmlAttributeLabelText))
             {
                 return null;

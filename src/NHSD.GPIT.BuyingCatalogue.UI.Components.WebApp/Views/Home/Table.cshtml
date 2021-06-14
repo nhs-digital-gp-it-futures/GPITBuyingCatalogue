@@ -1,5 +1,399 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.TableModel
 @{
+    ViewData["Title"] = "Tables";
 }
+
+<nhs-page-title title="Tables"
+                caption="Tag Helper"
+                advice="Used for grouping different pieces of information into a single table of values"
+                additional-advice="This page is rendered from Table.cshtml using the TableModel.
+                This Model has been initialised in the controller." />
+
+<p>Tables can be initialised in two different ways</p>
+<ul>
+    <li>By Manually Defining Each Row</li>
+    <li>By Looping through an arbitrary List</li>
+</ul>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Looping Table">
+    <nhs-table>
+        @foreach (var item in Model.Rows)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell column-name="First Column">
+                    @item.FirstColumn
+                </nhs-table-cell>
+                <nhs-table-cell column-name="Second Column">
+                    @item.SecondColumn
+                </nhs-table-cell>
+                <nhs-table-cell column-name="Third Column">
+                    @item.ThirdColumn
+                </nhs-table-cell>
+                <nhs-table-cell column-name="Fourth Column">
+                    @item.FourthColumn
+                </nhs-table-cell>
+                <nhs-table-cell column-name="Fifth Column">
+                    @item.FifthColumn
+                </nhs-table-cell>
+                <nhs-table-cell column-name="Sixth Column">
+                    @item.SixthColumn
+                </nhs-table-cell>
+                <nhs-table-cell column-name="Seventh Column">
+                    @item.SeventhColumn
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+
+    <p style="margin-bottom:30px;"/>
+
+
+    <p>The above table was produced by looping through a list of an object called TableRow. It contains 7 Properties called FirstColumn through to SeventhColumn.</p>
+    <p>On The Second Row, the value for Third Column has been set to an empty string and the same for the Seventh Column on the Third Row. This in Intentional.</p>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text=" Code Example of the Above Table"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">@@foreach (var item in Model.Rows)</span><br />
+            <span class="vs-light-theme-blue">{</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-row-container</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="First Column"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">@@item.FirstColumn</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Second Column"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">@@item.SecondColumn</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Third Column"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">@@item.ThirdColumn</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Fourth Column"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">@@item.FourthColumn</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Fifth Column"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">@@item.FifthColumn</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Sixth Column"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">@@item.SixthColumn</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Seventh Column"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">@@item.SeventhColumn</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-row-container</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue">}</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+    <p>nhs-table-cell is a "Wrapper Tag" that can contain any amount of raw Html and Components split by columns.</p>
+
+    <p>This means that the looping structure above doesn't have to just display values, but can also be used to set the inputs on other Components</p>
+    <p>For example, each cell could contain a text input where the referenced field is the asp-for for the input. It is completly flexable.</p>
+
+
+    <p>The Structure of a Loop based table Must Follow this tag order:</p>
+    <p>
+        <ul>
+            <li>&lt;nhs-table&gt;</li>
+            <li>@@Foreach(var item from SomeList)</li>
+            <li>&lt;nhs-table-row-container&gt;</li>
+            <li>&lt;nhs-table-cell&gt;</li>
+        </ul>
+    </p>
+    <p>This order is enforced by razor, and will throw a compiler error if you try to use it in a different way.</p>
+
+    <nhs-table label-text="Attributes For Table Cell">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">column-name</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>This Attribute defines the Column name the cell is a part of.</p>
+                <p>If you do not supply this value, the column will still be created, but will have a blank title.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+</nhs-fieldset-form-container>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Table From Manual Rows">
+
+    <nhs-table>
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Contains some Text">
+                This Column Contains Some Text
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Contains another Component">
+                <nhs-inset-text>
+                    Here is some text inside an inset
+                </nhs-inset-text>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Contains a Random Tag">
+                <nhs-tag text="This is a Nice Purple Tag" colour="Purple" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>
+                This is another row with some more text
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-input asp-for="SelectableString"
+                           label-text="Here is a Text Input" />
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="This is a Nice Aqua Green Tag" colour="AquaGreen" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+    <p style="margin-bottom:30px" />
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text=" Code Example of the Above Table"
+                                 size="Medium">
+
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-row-container</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Contains some Text"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">This Column Contains Some Text</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Contains another Component"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-inset-text</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">Here is some text inside an inset</span><br />
+
+            <span class="vs-light-theme-blue third-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-inset-text</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Contains a Random Tag"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="This is a Nice Purple Tag" </span>
+            <span class="vs-light-theme-purple">colour</span>
+            <span class="vs-light-theme-blue"> ="Purple" /&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-row-container</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-row-container</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">This is another row with some more text</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-input</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span>
+            <span class="vs-light-theme-blue"> ="SelectableString"</span><br />
+            <span class="vs-light-theme-purple third-layer">label-text</span>
+            <span class="vs-light-theme-blue"> ="Here is a Text Input"</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-purple">column-name</span>
+            <span class="vs-light-theme-blue"> ="Contains a Random Tag"</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue third-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="This is a Nice Aqua Green Tag" </span>
+            <span class="vs-light-theme-purple">colour</span>
+            <span class="vs-light-theme-blue"> ="AquaGreen" /&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span>
+            <span class="vs-light-theme-purple">nhs-table-cell</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table-row-container</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-table</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+
+
+    <p>As you can see in the above Code Example, Only the first Row-containers table-cells define the column-name.</p>
+    <p>
+        This is because the cells for each row are matched ordinally (the first cell of each row will always be the first column).
+        Because of this, you only need to define the column names on the first set of rows.
+    <p />
+    <p>While it is techincally possible to define column-names on any of the rows, any duplicate name in the same ordinal position will be ignored.</p>
+    <p>E.g if on the first row in the first cell you called a column name "Hello", and on the second row in the first cell also called a column name "Hello", the second repition would be ignored.</p>
+
+
+    <nhs-warning-callout label-text="Column Name Ordinality Issues">
+        <p>Because any cell can define a column name, Rendering order should be taken into account if you wish for multiple rows to define columns</p>
+        <p>Given the two row, three column example above, the rendering order would be this.</p>
+        <ul>
+            <li>First Row - First Cell</li>
+            <li>First Row - Second Cell</li>
+            <li>First Row - Third Cell</li>
+            <li>Second Row - First Cell</li>
+            <li>Second Row - Second Cell</li>
+            <li>Second Row - Third Cell</li>
+        </ul>
+
+        <p>
+            This means if you have a column title on all three cells of the first row, and the first cell of the second row, if both first cell column names are different, the second rows first cell
+            column name would come after all the first row column names and in this case, creating a blank column.
+        </p>
+    </nhs-warning-callout>
+
+    <nhs-table label-text="Attributes For Table Cell">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">column-name</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>This Attribute defines the Column name the cell is a part of.</p>
+                <p>If you do not supply this value, the column will still be created, but will have a blank title.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+</nhs-fieldset-form-container>
+
+<nhs-endnote>
+    Page last Updated 14 June 2021
+</nhs-endnote>

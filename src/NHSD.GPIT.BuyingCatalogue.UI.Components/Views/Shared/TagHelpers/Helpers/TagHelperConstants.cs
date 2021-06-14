@@ -81,6 +81,5 @@
         internal const string LabelTextName = "label-text";
         internal const string LabelHintName = "label-hint";
         internal const string CharacterCountName = "character-count";
-        internal const string DisableLabelAndHint = "disable-label-and-hint";
     }
 }

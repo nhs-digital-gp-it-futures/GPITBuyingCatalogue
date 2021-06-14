@@ -25,9 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
-        public bool? DisableLabelAndHint { get; set; }
-
         [HtmlAttributeName(FieldSetSizeName)]
         public FieldSetSize SelectedSize { get; set; } = FieldSetSize.Large;
 
@@ -37,8 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var fieldset = GetFieldsetBuilder(formName);
-            var fieldsetheading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText, DisableLabelAndHint);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName, DisableLabelAndHint);
+            var fieldsetheading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName);
 
             var content = await output.GetChildContentAsync();
 

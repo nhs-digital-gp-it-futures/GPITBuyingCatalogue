@@ -37,17 +37,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
         public bool EnableCharacterCounter { get; set; } = false;
 
-        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
-        public bool? DisableLabelAndHint { get; set; }
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, EnableCharacterCounter);
@@ -76,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     aria_describedby = $"{For.Name}-info {For.Name}-summary",
                 });
 
-            if (!builder.Attributes.Any(a => a.Key == "maxlength")) 
+            if (!builder.Attributes.Any(a => a.Key == "maxlength"))
             {
                 builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
                 builder.MergeAttribute("data-val-length-max", DefaultMaxLength.ToString());

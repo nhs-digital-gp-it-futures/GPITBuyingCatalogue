@@ -39,17 +39,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
 
-        [HtmlAttributeName(TagHelperConstants.DisableLabelAndHint)]
-        public bool? DisableLabelAndHint { get; set; }
-
         [HtmlAttributeName(AllowMultipleName)]
         public bool? AllowMultiple { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var formgroup = TagHelperBuilders.GetFormGroupBuilder();
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText, DisableLabelAndHint);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null, DisableLabelAndHint);
+            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
             var selectlist = GetSelectListBuilder();
 
             formgroup.InnerHtml.AppendHtml(label);
