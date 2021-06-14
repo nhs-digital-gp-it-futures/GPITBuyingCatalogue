@@ -61,6 +61,6 @@
   </ItemGroup>
 
   <Target Name="Build CSS" BeforeTargets="Build">
-    <Exec Command="gulp min" WorkingDirectory="$(ProjectDir)" Condition="'$(Configuration)' != 'Release'" />
+    <Exec Command="gulp min" WorkingDirectory="$(ProjectDir)" Condition="'$(Configuration)'=='DEBUG'" />
   </Target>
 </Project>
