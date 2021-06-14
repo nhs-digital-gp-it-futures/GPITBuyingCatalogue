@@ -3,7 +3,7 @@ $projectPath="Z:\repos\nhs\GPITBuyingCatalogue\database\NHSD.GPITBuyingCatalogue
 $postDeploymentPath = "$($projectPath)$($slash)\PostDeployment"
 $slash = [IO.Path]::DirectorySeparatorChar
 
-$outFile = "$projectPath\PostDeployment\PostDeploymentBuilt.sql"
+$outFile = "$projectPath\PostDeployment\PostDeploymentCombined.sql"
  
 cls
 if((Test-Path $outFile) -eq $true) {Remove-Item -Path $outFile -Force}
