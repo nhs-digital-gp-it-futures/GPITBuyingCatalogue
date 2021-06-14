@@ -9,6 +9,7 @@
      Hosting nvarchar(max) NULL,
      ImplementationDetail nvarchar(1100) NULL,
      RoadMap nvarchar(1000) NULL,
+     Integrations nvarchar(max) NULL,
      IntegrationsUrl nvarchar(1000) NULL,
      AboutUrl nvarchar(1000) NULL,
      ServiceLevelAgreement nvarchar(1000) NULL,

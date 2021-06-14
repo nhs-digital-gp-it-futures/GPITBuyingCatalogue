@@ -127,7 +127,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt => opt.MapFrom<IMemberValueResolver<object, object, string, string>, string>(
                         x => "SolutionsLastReviewedDate"))
                 .ForMember(dest => dest.PaginationFooter, opt => opt.Ignore())
-                .ForMember(dest => dest.Section, opt => opt.Ignore())
                 .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
                 .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()

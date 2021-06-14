@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
@@ -20,6 +21,8 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -48,9 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .AddTransient<IMemberValueResolver<object, object, string, bool?>,
                     StringToNullableBoolResolver>();
             services
-                .AddTransient<ITypeConverter<EntityFramework.Models.GPITBuyingCatalogue.CatalogueItem, SolutionStatusModel>,
+                .AddTransient<ITypeConverter<CatalogueItem, SolutionStatusModel>,
                     CatalogueItemToSolutionStatusModelConverter>();
             services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
+            services
+                .AddTransient<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>,
+                    IntegrationModelsResolver>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 

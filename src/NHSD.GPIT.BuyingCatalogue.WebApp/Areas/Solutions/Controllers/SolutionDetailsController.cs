@@ -77,6 +77,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
         }
 
+        [Route("solutions/futures/{id}/hosting-type")]
+        public async Task<IActionResult> HostingType(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(HostingType)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, HostingTypesModel>(solution));
+        }
+
         [Route("solutions/futures/{id}/implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(string id)
         {
@@ -90,17 +103,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/hosting-type")]
-        public async Task<IActionResult> HostingType(string id)
+        [Route("solutions/futures/{id}/interoperability")]
+        public async Task<IActionResult> Interoperability(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(HostingType)}-{nameof(id)}");
+                throw new ArgumentException($"{nameof(Interoperability)}-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
-            return View(mapper.Map<CatalogueItem, HostingTypesModel>(solution));
+            var viewModel = mapper.Map<CatalogueItem, InteroperabilityModel>(solution);
+            return View(viewModel);
         }
 
         [Route("solutions/futures/foundation/{id}")]
