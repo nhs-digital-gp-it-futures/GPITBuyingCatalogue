@@ -1,5 +1,5 @@
 ﻿$projectPath=$args[0]
-$projectPath="Z:\repos\nhs\GPITBuyingCatalogue\database\NHSD.GPITBuyingCatalogue.Database"
+
 $postDeploymentPath = "$($projectPath)$($slash)\PostDeployment"
 $slash = [IO.Path]::DirectorySeparatorChar
 
@@ -13,6 +13,8 @@ New-Item -ItemType file -Path $outFile -Force | Out-Null
 Add-Content -Path $outFile "----------------------------------------------------------------------------------------------------------------------------------------------------------------"
 Add-Content -Path $outFile "--      IMPORTANT - please do not manually edit this file.  It is generated automatically on build.  Any changes made will be lost."
 Add-Content -Path $outFile "----------------------------------------------------------------------------------------------------------------------------------------------------------------"
+
+Get-ChildItem -Recurse $projectPath
 
 foreach($line in Get-Content -ErrorAction Stop $postDeploymentPath\PostDeployment.sql) {
     $trimmedLine = $line.Trim()

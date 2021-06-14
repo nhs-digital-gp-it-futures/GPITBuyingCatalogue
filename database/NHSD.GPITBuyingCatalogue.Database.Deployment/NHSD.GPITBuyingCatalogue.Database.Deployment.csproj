@@ -13,9 +13,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Include="..\NHSD.GPITBuyingCatalogue.Database\PostDeployment\PostDeploymentCombined.sql" />    
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

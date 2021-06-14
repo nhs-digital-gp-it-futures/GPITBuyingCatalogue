@@ -3,8 +3,10 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS dacpacbuild
 WORKDIR /dacpac
 COPY database/NHSD.GPITBuyingCatalogue.Database.Deployment/*.csproj .
 COPY database/NHSD.GPITBuyingCatalogue.Database .
-RUN rm -rf PostDeployment && rm -rf PreDeployment \
-    && dotnet build "NHSD.GPITBuyingCatalogue.Database.Deployment.csproj" -c Release -o build
+RUN pwsh -ExecutionPolicy Bypass -NoProfile -NonInteractive -File ./BuildUtils/ScriptMerge.ps1 . \
+    && mv PostDeployment/PostDeploymentCombined.sql .. \    
+    && rm -rf PostDeployment && rm -rf PreDeployment \
+    && dotnet build "NHSD.GPITBuyingCatalogue.Database.Deployment.csproj" -c Release -o build 
 
 RUN apk add --update nodejs nodejs-npm
 
@@ -16,8 +18,11 @@ LABEL "com.azure.dev.pipelines.agent.handler.node.path"="/usr/local/bin/node"
 
 WORKDIR /deploy-db
 RUN cp /dacpac/build/*.dacpac /deploy-db
-COPY database/NHSD.BuyingCatalogue.Database/PreDeployment PreDeployment/
-COPY database/NHSD.BuyingCatalogue.Database/PostDeployment PostDeployment/
+
+#COPY database/NHSD.BuyingCatalogue.Database/PreDeployment PreDeployment/
+#COPY database/NHSD.BuyingCatalogue.Database/PostDeployment PostDeployment/
+RUN mkdir PostDeployment
+RUN mv ../PostDeploymentCombined.sql /deploy-db/PostDeployment
 
 LABEL dacpac=true
 
