@@ -1,0 +1,66 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Solution Capabilities";
+}
+
+<div class="nhsuk-width-container">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+
+                    <p>
+                        <b>This Catalogue Solution has demonstrated that it can help meet the following business
+                            needs:</b>
+                    </p>
+                    <details class="nhsuk-details" nhsuk-polyfilled="true" id="nhsuk-details0" open="">
+                        <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0"
+                            tabindex="0" aria-expanded="true">
+                            <span class="nhsuk-details__summary-text">
+                                What are Capabilities?
+                            </span>
+                        </summary>
+                        <div class="nhsuk-details__text" id="nhsuk-details__text0" aria-hidden="false">
+                            <p>Capabilities are how you can match a Catalogue Solution to a business need. For example,
+                                you may want to enable GP staff to make a digital record of any consultation with a
+                                patient. You can therefore identify Catalogue Solutions which offer the 'Recording
+                                Consultations' Capability.</p>
+                            <p>Each Capability is a set of requirements that are defined using short descriptions called
+                                Epics. The more functionality a Catalogue Solution has, the more Epics it will be able
+                                to meet for a particular Capability.</p>
+                        </div>
+                    </details>
+                    <table role="table" class="nhsuk-table-responsive nhsuk-u-margin-bottom-7">
+                        <caption class="nhsuk-table__caption">Capabilities met</caption>
+                        <thead role="rowgroup" class="nhsuk-table__head">
+                            <tr role="row">
+                                <th role="columnheader" class="" scope="col">
+                                    Capability
+                                </th>
+                                <th role="columnheader" class="" scope="col">
+                                    Details
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="nhsuk-table__body">
+                            @foreach (var rowViewModel in Model.RowViewModels)
+                            {
+                                <tr role="row" class="nhsuk-table__row">
+                                    <td role="cell" class="nhsuk-table__cell">
+                                        <span class="nhsuk-table-responsive__heading">Capability
+                                        </span><b>@rowViewModel.Heading</b><br>@rowViewModel.Description
+                                    </td>
+                                    <td role="cell" class="nhsuk-table__cell">
+                                        <span class="nhsuk-table-responsive__heading">Action </span><a
+                                        href="@rowViewModel.CheckEpicsUrl" style="white-space: nowrap;">Check Epics</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </article>
+    </main>
+</div>
