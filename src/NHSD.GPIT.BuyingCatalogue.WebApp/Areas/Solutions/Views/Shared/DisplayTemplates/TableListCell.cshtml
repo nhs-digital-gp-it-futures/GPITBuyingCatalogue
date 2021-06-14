@@ -1,0 +1,14 @@
+@model string[]
+
+<td role="cell" class="nhsuk-table__cell">
+    @if (Model?.Any() == true)
+    {
+        @foreach (var item in Model)
+        {
+            <span style="white-space: nowrap;">
+                @item
+            </span>
+            <br>
+        }
+    }
+</td>
