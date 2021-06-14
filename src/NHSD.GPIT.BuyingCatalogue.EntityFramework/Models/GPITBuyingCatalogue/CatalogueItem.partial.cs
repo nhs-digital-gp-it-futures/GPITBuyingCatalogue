@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
@@ -10,10 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public MarketingContact FirstContact() => Solution?.MarketingContacts?.FirstOrDefault() ?? new MarketingContact();
 
-        public virtual string Framework() =>
-            Solution?.FrameworkSolutions?.FirstOrDefault() is not { } frameSolution
-                ? null
-                : frameSolution.Framework?.Name;
+        public virtual IList<string> Frameworks() =>
+            Solution?.FrameworkSolutions?.Any() == true
+                ? Solution?.FrameworkSolutions.Select(s => s.Framework?.ShortName).ToList()
+                : new List<string>();
 
         public virtual bool HasAdditionalServices() => Solution?.AdditionalServices?.Any() == true;
 

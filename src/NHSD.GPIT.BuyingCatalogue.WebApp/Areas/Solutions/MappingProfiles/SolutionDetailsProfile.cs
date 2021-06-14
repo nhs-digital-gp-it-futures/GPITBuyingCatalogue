@@ -35,52 +35,85 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
         public SolutionDetailsProfile()
         {
-            CreateMap<CatalogueItem, ClientApplicationTypesModel>()
+            CreateMap<CatalogueItem, CapabilitiesViewModel>()
                 .ForMember(
-                    dest => dest.ApplicationTypes,
-                    opt => opt.MapFrom(
-                        (_, dest, _) => new DescriptionListViewModel
-                        {
-                            Heading = "Type of application",
-                            Items = new Dictionary<string, ListViewModel>
-                            {
-                                {
-                                    "Browser-based application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyBrowserBased) }
-                                },
-                                {
-                                    "Desktop application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyNativeDesktop) }
-                                },
-                                {
-                                    "Mobile application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyNativeMobile) }
-                                },
-                            },
-                        }))
+                    dest => dest.RowViewModels,
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.Solution?.SolutionCapabilities != null);
+                        opt.MapFrom(src => src.Solution.SolutionCapabilities);
+                    })
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
+
+            CreateMap<CatalogueItem, ClientApplicationTypesModel>()
+                .ForMember(dest => dest.ApplicationTypes, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.BrowserBasedApplication,
                     opt => opt.MapFrom(
-                        (_, dest) => new DescriptionListViewModel
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyBrowserBased)) ?? false) ?
+                        new DescriptionListViewModel
                         {
                             Heading = "Browser-based application",
                             Items = GetBrowserBasedItems(dest.ClientApplication),
-                        }))
+                        }
+                        : null)))
                 .ForMember(
                     dest => dest.NativeDesktopApplication,
                     opt => opt.MapFrom(
-                        (_, dest) => new DescriptionListViewModel
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeDesktop)) ?? false) ?
+                        new DescriptionListViewModel
                         {
-                            Heading = "Desktop application", Items = GetNativeDesktopItems(dest.ClientApplication),
-                        }))
+                            Heading = "Desktop application",
+                            Items = GetNativeDesktopItems(dest.ClientApplication),
+                        }
+                        : null)))
                 .ForMember(
                     dest => dest.NativeMobileApplication,
                     opt => opt.MapFrom(
-                        (_, dest) => new DescriptionListViewModel
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false) ?
+                        new DescriptionListViewModel
                         {
-                            Heading = "Mobile application", Items = GetNativeMobileItems(dest.ClientApplication),
-                        }))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+                            Heading = "Mobile application",
+                            Items = GetNativeMobileItems(dest.ClientApplication),
+                        }
+                        : null)))
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                .AfterMap(
+                    (_, dest) =>
+                    {
+                        dest.PaginationFooter.FullWidth = true;
+
+                        dest.ApplicationTypes = new DescriptionListViewModel
+                        {
+                            Heading = "Application Type",
+                            Items = new Dictionary<string, ListViewModel>(),
+                        };
+
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyBrowserBased)) ?? false)
+                        {
+                            dest.ApplicationTypes.Items.Add(
+                                "Browser-based application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyBrowserBased) });
+                        }
+
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeDesktop)) ?? false)
+                        {
+                            dest.ApplicationTypes.Items.Add(
+                                "Desktop application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyNativeDesktop) });
+                        }
+
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false)
+                        {
+                            dest.ApplicationTypes.Items.Add(
+                                "Mobile application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyNativeMobile) });
+                        }
+                    });
 
             CreateMap<CatalogueItem, SolutionDisplayBaseModel>()
                 .BeforeMap(
@@ -122,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .ForMember(
                     dest => dest.Description,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.FullDescription))
-                .ForMember(dest => dest.Framework, opt => opt.MapFrom(src => src.Framework()))
+                .ForMember(dest => dest.Frameworks, opt => opt.MapFrom(src => src.Frameworks()))
                 .ForMember(dest => dest.IsFoundation, opt => opt.MapFrom(src => src.IsFoundation().ToYesNo()))
                 .ForMember(
                     dest => dest.Summary,
@@ -135,6 +168,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
             CreateMap<CatalogueItem, SolutionFeaturesModel>()
                 .ForMember(dest => dest.Features, opt => opt.MapFrom(src => src.Features()))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<CatalogueItem, HostingTypesModel>()
+                .BeforeMap(
+                (src, dest) =>
+                {
+                    dest.PublicCloud = src.Solution.GetHosting()?.PublicCloud;
+                    dest.PrivateCloud = src.Solution.GetHosting()?.PrivateCloud;
+                    dest.HybridHostingType = src.Solution.GetHosting()?.HybridHostingType;
+                    dest.OnPremise = src.Solution.GetHosting()?.OnPremise;
+                })
+                .ForMember(dest => dest.PublicCloud, opt => opt.Ignore())
+                .ForMember(dest => dest.PrivateCloud, opt => opt.Ignore())
+                .ForMember(dest => dest.HybridHostingType, opt => opt.Ignore())
+                .ForMember(dest => dest.OnPremise, opt => opt.Ignore())
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<SolutionCapability, RowViewModel>()
+                .ForMember(
+                    dest => dest.Heading,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
+                .ForMember(dest => dest.CheckEpicsUrl, opt => opt.MapFrom(src => "#"));
         }
 
         private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)

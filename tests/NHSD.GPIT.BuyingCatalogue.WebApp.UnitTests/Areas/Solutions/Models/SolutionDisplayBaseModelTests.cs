@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.Capabilities),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
                 Name = "Capabilities",
             },
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.HostingType),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
                 Name = "Hosting type",
             },
