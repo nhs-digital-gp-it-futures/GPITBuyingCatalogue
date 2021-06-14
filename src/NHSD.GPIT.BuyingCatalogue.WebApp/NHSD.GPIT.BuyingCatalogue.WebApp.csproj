@@ -44,14 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\css\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Components\NHSD.GPIT.BuyingCatalogue.Components.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.EntityFramework\NHSD.GPIT.BuyingCatalogue.EntityFramework.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Framework\NHSD.GPIT.BuyingCatalogue.Framework.csproj" />
@@ -59,4 +51,16 @@
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.Services\NHSD.GPIT.BuyingCatalogue.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\main.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\main.min.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css" />
+  </ItemGroup>
+
+  <Target Name="Build CSS" BeforeTargets="Build">
+    <Exec Command="gulp min" WorkingDirectory="$(ProjectDir)" Condition="'$(Configuration)|$(Platform)' != 'Release|AnyCPU'" />
+  </Target>
 </Project>
