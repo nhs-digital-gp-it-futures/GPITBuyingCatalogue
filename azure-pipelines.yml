@@ -143,13 +143,13 @@ jobs:
   - pwsh: |
       $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
       docker create --name dacpaccontainer $id
-      docker cp dacpaccontainer:/deploy-db/NHSD.GPITBuyingCatalogue.Database.Deployment.dacpac $(Build.ArtifactStagingDirectory)/NHSD.GPITBuyingCatalogue.Database.Deployment.dacpac
+      docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)
       docker rm dacpaccontainer
     displayName: 'Copy DACPACs'
 
   - task: PublishBuildArtifacts@1    
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/NHSD.GPITBuyingCatalogue.Database.Deployment.dacpac'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'dacpacs'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     displayName: 'Publish DACPAC'
