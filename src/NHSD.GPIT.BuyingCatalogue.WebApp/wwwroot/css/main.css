@@ -10927,6 +10927,11 @@ body {
     margin-bottom: 0;
     margin-top: 8px; }
 
+.nhsuk-footer .nhsuk-width-container {
+  max-width: 100%;
+  padding-right: 32px;
+  padding-left: 32px; }
+
 .bc-c-tag, .bc-c-tag-foundation, .bc-c-tag-beta, .bc-c-section-list__task-tag {
   background-color: #005eb8;
   color: #ffffff;
