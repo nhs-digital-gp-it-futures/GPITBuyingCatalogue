@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
@@ -7,9 +8,10 @@ using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
+using NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models;
 using NUnit.Framework;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
@@ -37,6 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<SolutionDetailsProfile>();
+                cfg.CreateMap<CatalogueItem, TestSolutionDisplayBaseModel>()
+                    .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                    .ForAllOtherMembers(opt => opt.Ignore());
             });
             mapper = mapperConfiguration.CreateMapper(serviceProvider.Object.GetService);
         }
@@ -53,6 +58,102 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         public void Mapper_Configuration_Valid()
         {
             mapperConfiguration.AssertConfigurationIsValid();
+        }
+        
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToCapabilitiesViewModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, CapabilitiesViewModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                FullWidth = true,
+                //TODO: Update Next to List price once List price page implemented
+                Next = new SectionModel
+                {
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "List price",
+                    Show = true,
+                },
+                Previous = new SectionModel
+                {
+                    Action = "Features",
+                    Controller = "SolutionDetails",
+                    Name = "Features",
+                    Show = true,
+                },
+            });
+            actual.Section.Should().Be("Capabilities");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToClientApplicationTypesModel_ResultAsExpected(
+           CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                FullWidth = true,
+                Next = new SectionModel
+                {
+                    Action = "HostingType",
+                    Controller = "SolutionDetails",
+                    Name = "Hosting type",
+                    Show = true,
+                },
+                Previous = new SectionModel
+                {
+                    Action = "ImplementationTimescales",
+                    Controller = "SolutionDetails",
+                    Name = "Implementation timescales",
+                    Show = true,
+                },
+            });
+            actual.Section.Should().Be("Client application type");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+        
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToHostingTypesModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, HostingTypesModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                Previous = new SectionModel
+                {
+                    Action = "ClientApplicationTypes",
+                    Controller = "SolutionDetails",
+                    Name = "Client application type",
+                    Show = true,
+                },
+
+                Next = new SectionModel
+                {
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Service Level Agreement",
+                    Show = true,
+                },
+            });
+            actual.Section.Should().Be("Hosting type");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
         [Test, CommonAutoData]
@@ -71,12 +172,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "ClientApplicationTypes",
                     Controller = "SolutionDetails",
                     Name = "Client application type",
+                    Show = true,
                 },
                 Previous = new SectionModel
                 {
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Interoperability",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Implementation timescales");
@@ -100,6 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Features",
                     Controller = "SolutionDetails",
                     Name = "Features",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Description");
@@ -107,6 +211,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
             actual.Summary.Should().Be(catalogueItem.Solution.Summary);
             actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
+        }
+        
+        [TestCase(false, "No")]
+        [TestCase(null, "")]
+        [TestCase(true, "Yes")]
+        public void Map_CatalogueItemToSolutionDescriptionModel_SetsIsFoundationAsExpected(
+            bool? isFoundation,
+            string expected)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>();
+            mockCatalogueItem.Setup(c => c.IsFoundation())
+                .Returns(isFoundation);
+
+            var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem.Object);
+
+            mockCatalogueItem.Verify(c => c.IsFoundation());
+            actual.IsFoundation.Should().Be(expected);
+        }
+        
+        [AutoData]
+        [Test]
+        public void Map_CatalogueItemToSolutionDescriptionModel_SetsFrameworkAsExpected(List<string> expected)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>();
+            mockCatalogueItem.Setup(c => c.Frameworks())
+                .Returns(expected);
+
+            var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem.Object);
+
+            mockCatalogueItem.Verify(c => c.Frameworks());
+            actual.Frameworks.Should().BeEquivalentTo(expected);
+        }
+        
+        [Test]
+        public void Map_CatalogueItemToSolutionDisplayBaseModel_ShowFunctionsCalled()
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>();
+            
+            mapper.Map<CatalogueItem, TestSolutionDisplayBaseModel>(mockCatalogueItem.Object);
+            
+            mockCatalogueItem.Verify(c => c.HasFeatures());
+            mockCatalogueItem.Verify(c => c.HasCapabilities());
+            mockCatalogueItem.Verify(c => c.HasListPrice());
+            mockCatalogueItem.Verify(c => c.HasAdditionalServices());
+            mockCatalogueItem.Verify(c => c.HasAssociatedServices());
+            mockCatalogueItem.Verify(c => c.HasInteroperability());
+            mockCatalogueItem.Verify(c => c.HasImplementationDetail());
+            mockCatalogueItem.Verify(c => c.HasClientApplication());
+            mockCatalogueItem.Verify(c => c.HasHosting());
+            mockCatalogueItem.Verify(c => c.HasServiceLevelAgreement());
+            mockCatalogueItem.Verify(c => c.HasDevelopmentPlans());
+            mockCatalogueItem.Verify(c => c.HasSupplierDetails());
         }
 
         [Test, CommonAutoData]
@@ -127,82 +283,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Description",
+                    Show = true,
                 },
                 //TODO: Update Next to Capabilities once Capabilities page implemented
                 Next = new SectionModel
                 {
-                    Action = "Description",
+                    Action = "Capabilities",
                     Controller = "SolutionDetails",
                     Name = "Capabilities",
+                    Show = true,
                 },
             });
             actual.Section.Should().Be("Features");
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-
-
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToClientApplicationTypesModel_ResultAsExpected(
-           CatalogueItem catalogueItem)
-        {
-            var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
-
-            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
-
-            actual.LastReviewed.Should().Be(LastReviewedDate);
-            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
-            {
-                Previous = new SectionModel
-                {
-                    Action = "ImplementationTimescales",
-                    Controller = "SolutionDetails",
-                    Name = "Implementation timescales",
-                },
-                //TODO: Update Next to HostingType once Capabilities page implemented
-                Next = new SectionModel
-                {
-                    Action = "Description",
-                    Controller = "SolutionDetails",
-                    Name = "Hosting type",
-                },
-            });
-            actual.Section.Should().Be("Client application type");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
-        }
-
-        [TestCase(false, "No")]
-        [TestCase(null, "")]
-        [TestCase(true, "Yes")]
-        public void Map_CatalogueItemToSolutionDescriptionModel_SetsIsFoundationAsExpected(
-            bool? isFoundation,
-            string expected)
-        {
-            var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.Setup(c => c.IsFoundation())
-                .Returns(isFoundation);
-
-            var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem.Object);
-
-            mockCatalogueItem.Verify(c => c.IsFoundation());
-            actual.IsFoundation.Should().Be(expected);
-        }
         
-        [AutoData]
-        [Test]
-        public void Map_CatalogueItemToSolutionDescriptionModel_SetsFrameworkAsExpected(string expected)
-        {
-            var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.Setup(c => c.Framework())
-                .Returns(expected);
-
-            var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem.Object);
-
-            mockCatalogueItem.Verify(c => c.Framework());
-            actual.Framework.Should().Be(expected);
-        }
-
         [AutoData]
         [Test]
         public void Map_CatalogueItemToSolutionFeaturesModel_SetsFeaturesAsExpected(string[] expected)

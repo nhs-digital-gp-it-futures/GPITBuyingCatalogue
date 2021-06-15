@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public DateTime? DeliveryDate { get; set; }
 
+        // TODO - This was called Recipient in old code - probably a better name
         public virtual ServiceRecipient OdsCodeNavigation { get; set; }
 
         public virtual OrderItem OrderItem { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectSolutionServiceRecipientsModel(string odsCode, string callOffId, string solutionName, IList<ServiceRecipientsModel> serviceRecipients, string selectionMode)
+        public SelectSolutionServiceRecipientsModel(string odsCode, string callOffId, string solutionName, IList<OrderItemRecipientModel> serviceRecipients, string selectionMode)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution";
             BackLinkText = "Go back";
@@ -49,6 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public string CallOffId { get; set; }
 
-        public IList<ServiceRecipientsModel> ServiceRecipients { get; set; }
+        public List<OrderItemRecipientModel> ServiceRecipients { get; set; }
     }
 }

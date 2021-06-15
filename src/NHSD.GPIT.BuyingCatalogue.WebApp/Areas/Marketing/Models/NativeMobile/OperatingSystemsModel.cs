@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.WebApp.MappingProfiles;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
@@ -21,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
-            OperatingSystems = ProfileDefaults.SupportedOperatingSystems;
+            OperatingSystems = new List<SupportedOperatingSystemModel>(ProfileDefaults.SupportedOperatingSystems)
+                .ToArray();
 
             CheckOperatingSystems();
 
@@ -39,11 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
         {
             foreach (var browser in OperatingSystems)
             {
-                if (ClientApplication?.MobileOperatingSystems?.OperatingSystems != null &&
-                    ClientApplication.MobileOperatingSystems.OperatingSystems.Any(x => x.Equals(browser.OperatingSystemName, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    browser.Checked = true;
-                }
+                browser.Checked =
+                    (ClientApplication?.MobileOperatingSystems?.OperatingSystems ?? new HashSet<string>()).Any(
+                        x => x.Equals(browser.OperatingSystemName, StringComparison.InvariantCultureIgnoreCase));
             }
         }
     }

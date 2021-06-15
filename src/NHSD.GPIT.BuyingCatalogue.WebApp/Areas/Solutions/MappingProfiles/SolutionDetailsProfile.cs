@@ -16,266 +16,111 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
 
+        private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
+        {
+            { _ => true },
+            { catalogueItem => catalogueItem.HasFeatures() },
+            { catalogueItem => catalogueItem.HasCapabilities() },
+            { catalogueItem => catalogueItem.HasListPrice() },
+            { catalogueItem => catalogueItem.HasAdditionalServices() },
+            { catalogueItem => catalogueItem.HasAssociatedServices() },
+            { catalogueItem => catalogueItem.HasInteroperability() },
+            { catalogueItem => catalogueItem.HasImplementationDetail() },
+            { catalogueItem => catalogueItem.HasClientApplication() },
+            { catalogueItem => catalogueItem.HasHosting() },
+            { catalogueItem => catalogueItem.HasServiceLevelAgreement() },
+            { catalogueItem => catalogueItem.HasDevelopmentPlans() },
+            { catalogueItem => catalogueItem.HasSupplierDetails() },
+        };
+
         public SolutionDetailsProfile()
         {
-            CreateMap<CatalogueItem, ClientApplicationTypesModel>()
+            CreateMap<CatalogueItem, CapabilitiesViewModel>()
                 .ForMember(
-                    dest => dest.ApplicationTypes,
+                    dest => dest.RowViewModels,
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.Solution?.SolutionCapabilities != null);
+                        opt.MapFrom(src => src.Solution.SolutionCapabilities);
+                    })
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
+
+            CreateMap<CatalogueItem, ClientApplicationTypesModel>()
+                .ForMember(dest => dest.ApplicationTypes, opt => opt.Ignore())
+                .ForMember(
+                    dest => dest.BrowserBasedApplication,
                     opt => opt.MapFrom(
-                        (_, dest, _) => new DescriptionListViewModel
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyBrowserBased)) ?? false) ?
+                        new DescriptionListViewModel
                         {
-                            Heading = "Type of application",
-                            Items = new Dictionary<string, ListViewModel>
-                            {
-                                {
-                                    "Browser-based application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyBrowserBased) }
-                                },
-                                {
-                                    "Desktop application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyNativeDesktop) }
-                                },
-                                {
-                                    "Mobile application",
-                                    new ListViewModel { Text = dest.HasApplicationType(KeyNativeMobile) }
-                                },
-                            },
-                        }))
-                .ForMember(dest => dest.BrowserBasedApplication, opt => opt.Ignore())
-                .ForMember(dest => dest.NativeDesktopApplication, opt => opt.Ignore())
-                .ForMember(dest => dest.NativeMobileApplication, opt => opt.Ignore())
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Client application type"))
+                            Heading = "Browser-based application",
+                            Items = GetBrowserBasedItems(dest.ClientApplication),
+                        }
+                        : null)))
+                .ForMember(
+                    dest => dest.NativeDesktopApplication,
+                    opt => opt.MapFrom(
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeDesktop)) ?? false) ?
+                        new DescriptionListViewModel
+                        {
+                            Heading = "Desktop application",
+                            Items = GetNativeDesktopItems(dest.ClientApplication),
+                        }
+                        : null)))
+                .ForMember(
+                    dest => dest.NativeMobileApplication,
+                    opt => opt.MapFrom(
+                        (_, dest) =>
+                        ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false) ?
+                        new DescriptionListViewModel
+                        {
+                            Heading = "Mobile application",
+                            Items = GetNativeMobileItems(dest.ClientApplication),
+                        }
+                        : null)))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
                 .AfterMap(
                     (_, dest) =>
                     {
-                        dest.BrowserBasedApplication = new DescriptionListViewModel
-                        {
-                            Heading = "Browser-based application",
-                        };
-                        if (dest.ClientApplication == null)
-                            return;
+                        dest.PaginationFooter.FullWidth = true;
 
-                        if (dest.ClientApplication.BrowsersSupported?.Any() == true)
+                        dest.ApplicationTypes = new DescriptionListViewModel
                         {
-                            dest.BrowserBasedApplication.Items.Add(
-                                "Supported browser types",
-                                new ListViewModel { List = dest.ClientApplication.BrowsersSupported.ToArray(), });
-                        }
-
-                        if (!(dest.ClientApplication.MobileResponsive is null))
-                        {
-                            dest.BrowserBasedApplication.Items.Add(
-                                "Mobile responsive",
-                                new ListViewModel { Text = dest.ClientApplication.MobileResponsive.ToYesNo(), });
-                        }
-
-                        if (!(dest.ClientApplication.Plugins == null))
-                        {
-                            dest.BrowserBasedApplication.Items.Add(
-                                "Plug-ins or extensions required",
-                                new ListViewModel { Text = dest.ClientApplication.Plugins.Required.ToYesNo(), });
-
-                            if (!string.IsNullOrWhiteSpace(dest.ClientApplication.Plugins.AdditionalInformation))
-                            {
-                                dest.BrowserBasedApplication.Items.Add(
-                                    "Additional information about plug-ins or extensions",
-                                    new ListViewModel { Text = dest.ClientApplication.Plugins.AdditionalInformation, });
-                            }
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MinimumConnectionSpeed))
-                        {
-                            dest.BrowserBasedApplication.Items.Add(
-                                "Minimum connection speed",
-                                new ListViewModel { Text = dest.ClientApplication.MinimumConnectionSpeed, });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MinimumDesktopResolution))
-                        {
-                            dest.BrowserBasedApplication.Items.Add(
-                                "Screen resolution and aspect ratio",
-                                new ListViewModel { Text = dest.ClientApplication.MinimumDesktopResolution, });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.HardwareRequirements))
-                        {
-                            dest.BrowserBasedApplication.Items.Add(
-                                "Hardware requirements",
-                                new ListViewModel { Text = dest.ClientApplication.HardwareRequirements });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.AdditionalInformation))
-                        {
-                            dest.BrowserBasedApplication.Items.Add(
-                                "Additional information",
-                                new ListViewModel { Text = dest.ClientApplication.AdditionalInformation });
-                        }
-
-                        dest.NativeDesktopApplication = new DescriptionListViewModel
-                        {
-                            Heading = "Desktop application",
+                            Heading = "Application Type",
+                            Items = new Dictionary<string, ListViewModel>(),
                         };
 
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopOperatingSystemsDescription))
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyBrowserBased)) ?? false)
                         {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Description of supported operating systems",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopOperatingSystemsDescription });
+                            dest.ApplicationTypes.Items.Add(
+                                "Browser-based application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyBrowserBased) });
                         }
 
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopMinimumConnectionSpeed))
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeDesktop)) ?? false)
                         {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Minimum connection speed",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopMinimumConnectionSpeed });
+                            dest.ApplicationTypes.Items.Add(
+                                "Desktop application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyNativeDesktop) });
                         }
 
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopMemoryAndStorage?.RecommendedResolution))
+                        if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false)
                         {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Screen resolution and aspect ratio",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement))
-                        {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Memory size",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription))
-                        {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Storage space",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu))
-                        {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Processing power",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopMemoryAndStorage.MinimumCpu });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopThirdParty?.ThirdPartyComponents))
-                        {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Third-party components",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopThirdParty.ThirdPartyComponents });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopThirdParty?.DeviceCapabilities))
-                        {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Device capabilities",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopThirdParty.DeviceCapabilities });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopHardwareRequirements))
-                        {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Hardware requirements",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopHardwareRequirements });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeDesktopAdditionalInformation))
-                        {
-                            dest.NativeDesktopApplication.Items.Add(
-                                "Additional information",
-                                new ListViewModel { Text = dest.ClientApplication.NativeDesktopAdditionalInformation });
-                        }
-
-                        dest.NativeMobileApplication = new DescriptionListViewModel
-                        {
-                            Heading = "Mobile application",
-                        };
-
-                        if (dest.ClientApplication.MobileOperatingSystems?.OperatingSystems?.Any() == true)
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Supported operating systems",
-                                new ListViewModel { List = dest.ClientApplication.MobileOperatingSystems.OperatingSystems.ToArray(), });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MobileOperatingSystems?.OperatingSystemsDescription))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Description of supported operating systems",
-                                new ListViewModel { Text = dest.ClientApplication.MobileOperatingSystems.OperatingSystemsDescription });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MobileConnectionDetails?.MinimumConnectionSpeed))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Minimum connection speed",
-                                new ListViewModel { Text = dest.ClientApplication.MobileConnectionDetails.MinimumConnectionSpeed });
-                        }
-
-                        if (dest.ClientApplication.MobileConnectionDetails?.ConnectionType?.Any() == true)
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Connection types supported",
-                                new ListViewModel { List = dest.ClientApplication.MobileConnectionDetails.ConnectionType.ToArray(), });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MobileConnectionDetails?.Description))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Connection requirements",
-                                new ListViewModel { Text = dest.ClientApplication.MobileConnectionDetails.Description });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MobileMemoryAndStorage?.MinimumMemoryRequirement))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Memory size",
-                                new ListViewModel { Text = dest.ClientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MobileMemoryAndStorage?.Description))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Storage space",
-                                new ListViewModel { Text = dest.ClientApplication.MobileMemoryAndStorage.Description });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MobileThirdParty?.ThirdPartyComponents))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Third-party components",
-                                new ListViewModel { Text = dest.ClientApplication.MobileThirdParty.ThirdPartyComponents });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.MobileThirdParty?.DeviceCapabilities))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Device capabilities",
-                                new ListViewModel { Text = dest.ClientApplication.MobileThirdParty.DeviceCapabilities });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeMobileHardwareRequirements))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Hardware requirements",
-                                new ListViewModel { Text = dest.ClientApplication.NativeMobileHardwareRequirements });
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(dest.ClientApplication.NativeMobileAdditionalInformation))
-                        {
-                            dest.NativeMobileApplication.Items.Add(
-                                "Additional information",
-                                new ListViewModel { Text = dest.ClientApplication.NativeMobileAdditionalInformation });
+                            dest.ApplicationTypes.Items.Add(
+                                "Mobile application",
+                                new ListViewModel { Text = dest.HasApplicationType(KeyNativeMobile) });
                         }
                     });
 
             CreateMap<CatalogueItem, SolutionDisplayBaseModel>()
                 .BeforeMap(
-                    (src, dest) => dest.SetClientApplication(
+                    (src, dest) => dest.ClientApplication =
                         src.Solution != null && !string.IsNullOrEmpty(src.Solution.ClientApplication)
                             ? JsonConvert.DeserializeObject<ClientApplication>(src.Solution.ClientApplication)
-                            : new ClientApplication()))
+                            : new ClientApplication())
                 .ForMember(dest => dest.ClientApplication, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.LastReviewed,
@@ -287,26 +132,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .AfterMap(
-                    (_, dest) =>
+                    (src, dest) =>
                     {
-                        (SectionModel previous, SectionModel next) = dest.PreviousAndNextModels();
-                        dest.PaginationFooter = new PaginationFooterModel { Next = next, Previous = previous, };
+                        for (int i = 0; i < ShowSectionFunctions.Count; i++)
+                        {
+                            if (ShowSectionFunctions[i](src))
+                            {
+                                dest.SetShowTrue(i);
+                            }
+                        }
+
+                        dest.SetPaginationFooter();
                     });
 
             CreateMap<CatalogueItem, ImplementationTimescalesModel>()
                 .ForMember(
                     dest => dest.Description,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.ImplementationDetail))
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Implementation timescales"))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CatalogueItem, SolutionDescriptionModel>()
                 .ForMember(
                     dest => dest.Description,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.FullDescription))
-                .ForMember(dest => dest.Framework, opt => opt.MapFrom(src => src.Framework()))
+                .ForMember(dest => dest.Frameworks, opt => opt.MapFrom(src => src.Frameworks()))
                 .ForMember(dest => dest.IsFoundation, opt => opt.MapFrom(src => src.IsFoundation().ToYesNo()))
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Description"))
                 .ForMember(
                     dest => dest.Summary,
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.Summary))
@@ -317,8 +167,269 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
             CreateMap<CatalogueItem, SolutionFeaturesModel>()
                 .ForMember(dest => dest.Features, opt => opt.MapFrom(src => src.Features()))
-                .ForMember(dest => dest.Section, opt => opt.MapFrom(src => "Features"))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<CatalogueItem, HostingTypesModel>()
+                .BeforeMap(
+                (src, dest) =>
+                {
+                    dest.PublicCloud = src.Solution.GetHosting()?.PublicCloud;
+                    dest.PrivateCloud = src.Solution.GetHosting()?.PrivateCloud;
+                    dest.HybridHostingType = src.Solution.GetHosting()?.HybridHostingType;
+                    dest.OnPremise = src.Solution.GetHosting()?.OnPremise;
+                })
+                .ForMember(dest => dest.PublicCloud, opt => opt.Ignore())
+                .ForMember(dest => dest.PrivateCloud, opt => opt.Ignore())
+                .ForMember(dest => dest.HybridHostingType, opt => opt.Ignore())
+                .ForMember(dest => dest.OnPremise, opt => opt.Ignore())
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<SolutionCapability, RowViewModel>()
+                .ForMember(
+                    dest => dest.Heading,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
+                .ForMember(dest => dest.CheckEpicsUrl, opt => opt.MapFrom(src => "#"));
+        }
+
+        private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)
+        {
+            var result = new Dictionary<string, ListViewModel>();
+
+            if (clientApplication.BrowsersSupported?.Any() == true)
+            {
+                result.Add(
+                    "Supported browser types",
+                    new ListViewModel { List = clientApplication.BrowsersSupported.ToArray(), });
+            }
+
+            if (clientApplication.MobileResponsive is not null)
+            {
+                result.Add(
+                    "Mobile responsive",
+                    new ListViewModel { Text = clientApplication.MobileResponsive.ToYesNo(), });
+            }
+
+            if (clientApplication.Plugins is not null)
+            {
+                result.Add(
+                    "Plug-ins or extensions required",
+                    new ListViewModel { Text = clientApplication.Plugins.Required.ToYesNo(), });
+
+                if (!string.IsNullOrWhiteSpace(clientApplication.Plugins.AdditionalInformation))
+                {
+                    result.Add(
+                        "Additional information about plug-ins or extensions",
+                        new ListViewModel { Text = clientApplication.Plugins.AdditionalInformation, });
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.MinimumConnectionSpeed))
+            {
+                result.Add(
+                    "Minimum connection speed",
+                    new ListViewModel { Text = clientApplication.MinimumConnectionSpeed, });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.MinimumDesktopResolution))
+            {
+                result.Add(
+                    "Screen resolution and aspect ratio",
+                    new ListViewModel { Text = clientApplication.MinimumDesktopResolution, });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.HardwareRequirements))
+            {
+                result.Add(
+                    "Hardware requirements",
+                    new ListViewModel { Text = clientApplication.HardwareRequirements });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.AdditionalInformation))
+            {
+                result.Add(
+                    "Additional information",
+                    new ListViewModel { Text = clientApplication.AdditionalInformation });
+            }
+
+            return result;
+        }
+
+        private static IDictionary<string, ListViewModel> GetNativeDesktopItems(ClientApplication clientApplication)
+        {
+            var result = new Dictionary<string, ListViewModel>();
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopOperatingSystemsDescription))
+            {
+                result.Add(
+                    "Description of supported operating systems",
+                    new ListViewModel { Text = clientApplication.NativeDesktopOperatingSystemsDescription });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopMinimumConnectionSpeed))
+            {
+                result.Add(
+                    "Minimum connection speed",
+                    new ListViewModel { Text = clientApplication.NativeDesktopMinimumConnectionSpeed });
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                clientApplication.NativeDesktopMemoryAndStorage?.RecommendedResolution))
+            {
+                result.Add(
+                    "Screen resolution and aspect ratio",
+                    new ListViewModel
+                    {
+                        Text = clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution,
+                    });
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                clientApplication.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement))
+            {
+                result.Add(
+                    "Memory size",
+                    new ListViewModel
+                    {
+                        Text = clientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement,
+                    });
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                clientApplication.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription))
+            {
+                result.Add(
+                    "Storage space",
+                    new ListViewModel
+                    {
+                        Text = clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription,
+                    });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopMemoryAndStorage?.MinimumCpu))
+            {
+                result.Add(
+                    "Processing power",
+                    new ListViewModel { Text = clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopThirdParty?.ThirdPartyComponents))
+            {
+                result.Add(
+                    "Third-party components",
+                    new ListViewModel { Text = clientApplication.NativeDesktopThirdParty.ThirdPartyComponents });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopThirdParty?.DeviceCapabilities))
+            {
+                result.Add(
+                    "Device capabilities",
+                    new ListViewModel { Text = clientApplication.NativeDesktopThirdParty.DeviceCapabilities });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopHardwareRequirements))
+            {
+                result.Add(
+                    "Hardware requirements",
+                    new ListViewModel { Text = clientApplication.NativeDesktopHardwareRequirements });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeDesktopAdditionalInformation))
+            {
+                result.Add(
+                    "Additional information",
+                    new ListViewModel { Text = clientApplication.NativeDesktopAdditionalInformation });
+            }
+
+            return result;
+        }
+
+        private static IDictionary<string, ListViewModel> GetNativeMobileItems(ClientApplication clientApplication)
+        {
+            var result = new Dictionary<string, ListViewModel>();
+
+            if (clientApplication.MobileOperatingSystems?.OperatingSystems?.Any() == true)
+            {
+                result.Add(
+                    "Supported operating systems",
+                    new ListViewModel { List = clientApplication.MobileOperatingSystems.OperatingSystems.ToArray(), });
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                clientApplication.MobileOperatingSystems?.OperatingSystemsDescription))
+            {
+                result.Add(
+                    "Description of supported operating systems",
+                    new ListViewModel { Text = clientApplication.MobileOperatingSystems.OperatingSystemsDescription });
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                clientApplication.MobileConnectionDetails?.MinimumConnectionSpeed))
+            {
+                result.Add(
+                    "Minimum connection speed",
+                    new ListViewModel { Text = clientApplication.MobileConnectionDetails.MinimumConnectionSpeed });
+            }
+
+            if (clientApplication.MobileConnectionDetails?.ConnectionType?.Any() == true)
+            {
+                result.Add(
+                    "Connection types supported",
+                    new ListViewModel { List = clientApplication.MobileConnectionDetails.ConnectionType.ToArray(), });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.MobileConnectionDetails?.Description))
+            {
+                result.Add(
+                    "Connection requirements",
+                    new ListViewModel { Text = clientApplication.MobileConnectionDetails.Description });
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                clientApplication.MobileMemoryAndStorage?.MinimumMemoryRequirement))
+            {
+                result.Add(
+                    "Memory size",
+                    new ListViewModel { Text = clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.MobileMemoryAndStorage?.Description))
+            {
+                result.Add(
+                    "Storage space",
+                    new ListViewModel { Text = clientApplication.MobileMemoryAndStorage.Description });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.MobileThirdParty?.ThirdPartyComponents))
+            {
+                result.Add(
+                    "Third-party components",
+                    new ListViewModel { Text = clientApplication.MobileThirdParty.ThirdPartyComponents });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.MobileThirdParty?.DeviceCapabilities))
+            {
+                result.Add(
+                    "Device capabilities",
+                    new ListViewModel { Text = clientApplication.MobileThirdParty.DeviceCapabilities });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeMobileHardwareRequirements))
+            {
+                result.Add(
+                    "Hardware requirements",
+                    new ListViewModel { Text = clientApplication.NativeMobileHardwareRequirements });
+            }
+
+            if (!string.IsNullOrWhiteSpace(clientApplication.NativeMobileAdditionalInformation))
+            {
+                result.Add(
+                    "Additional information",
+                    new ListViewModel { Text = clientApplication.NativeMobileAdditionalInformation });
+            }
+
+            return result;
         }
     }
 }

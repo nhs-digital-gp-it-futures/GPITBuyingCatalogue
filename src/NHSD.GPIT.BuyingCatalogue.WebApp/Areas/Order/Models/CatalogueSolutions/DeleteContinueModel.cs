@@ -2,10 +2,10 @@
 {
     public class DeleteContinueModel : OrderingBaseModel
     {
-        public DeleteContinueModel()
+        public DeleteContinueModel(string odsCode, string callOffId, string solutionName)
         {
-            Title = "Anywhere Consult deleted from C010001-01"; // TODO
-            ContinueLink = "/order/organisation/03F/order/C010001-01/catalogue-solutions"; // TODO - and possibly add to base class if more crop up
+            Title = $"{solutionName} deleted from {callOffId}";
+            ContinueLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
         }
 
         public string ContinueLink { get; set; }

@@ -4,6 +4,6 @@
     {
         public string Description { get; set; }
 
-        public override string Section { get; set; }
+        public override int Index => 7;
     }
 }

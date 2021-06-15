@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult Index()
         {
             logger.LogInformation($"Taking user to {nameof(HomeController)}.{nameof(Index)}");
+
             return View();
         }
 
@@ -24,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult PrivacyPolicy()
         {
             logger.LogInformation($"Taking user to {nameof(HomeController)}.{nameof(PrivacyPolicy)}");
+
             return View();
         }
 
@@ -39,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             }
 
             logger.LogWarning($"Taking user to {nameof(HomeController)}.{nameof(Error)} with error {statusCode.GetValueOrDefault()}");
+
             return View();
         }
     }

@@ -28,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
         }
 
-        // MJRTODO - Make this private and add appropriate properties
         public CatalogueItem CatalogueItem { get; private set; }
 
         public string Frameworks { get; private set; }
