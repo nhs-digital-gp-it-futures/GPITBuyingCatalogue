@@ -152,8 +152,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
             state.Price = cataloguePrice.Price;
             state.PriceId = cataloguePrice.CataloguePriceId;
-
-            // TODO - where does this come from?
             state.EstimationPeriod = TimeUnit.PerYear;
 
             SetStateModel(state);
@@ -353,6 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = GetStateModel();
 
             state.Quantity = quantity;
+
             // TODO - also get the time unit details
             state.TimeUnit = TimeUnit.PerMonth;
 
