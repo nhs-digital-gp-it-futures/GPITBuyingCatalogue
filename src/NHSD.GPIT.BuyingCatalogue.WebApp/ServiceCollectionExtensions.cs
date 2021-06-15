@@ -47,12 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddTransient<IMemberValueResolver<object, object, string, string>,
                 ConfigSettingResolver>();
+
             services
                 .AddTransient<IMemberValueResolver<object, object, string, bool?>,
                     StringToNullableBoolResolver>();
             services
                 .AddTransient<ITypeConverter<CatalogueItem, SolutionStatusModel>,
                     CatalogueItemToSolutionStatusModelConverter>();
+
             services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
             services
                 .AddTransient<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>,
@@ -159,6 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 MaxDeliveryDateWeekOffset = configuration.GetValue<int>("MaxDeliveryDateWeekOffset"),
             };
+
             services.AddSingleton(validationSettings);
         }
 
