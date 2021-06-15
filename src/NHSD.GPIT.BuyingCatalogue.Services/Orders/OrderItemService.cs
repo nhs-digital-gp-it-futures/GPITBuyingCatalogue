@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }));
 
             if (defaultDeliveryDate is not null)
-                dbContext.DefaultDeliveryDate.Remove(defaultDeliveryDate);
+                dbContext.DefaultDeliveryDates.Remove(defaultDeliveryDate);
 
             await dbContext.SaveChangesAsync();
 

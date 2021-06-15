@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             if (name.Equals(PerMonth.Name, StringComparison.InvariantCultureIgnoreCase))
                 return PerMonth;
             else if (name.Equals(PerYear.Name, StringComparison.InvariantCultureIgnoreCase))
-                return PerMonth;
+                return PerYear;
 
             throw new ArgumentException("Invalid TimeUnit", nameof(name));
         }
