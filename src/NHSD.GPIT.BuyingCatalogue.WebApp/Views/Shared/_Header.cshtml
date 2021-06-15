@@ -35,4 +35,28 @@
     <div class="nhsuk-header__transactional-service-name">
         <a class="nhsuk-header__transactional-service-name--link" href="/">Buying Catalogue</a>
     </div>
+    <div class="nhsuk-header__content" id="content-header">
+        <div data-test-id="login-logout-component" class="bc-c-login-logout ">
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <span data-test-id="logged-in" class="bc-u-display-inline-block">
+                    <span data-test-id="logged-in-text">
+                        Logged in as: @User.GetUserDisplayName() for @User.GetPrimaryOrganisationName()
+                    </span>
+                    <a data-test-id="logout-link" class="nhsuk-header__link bc-u-display-inline nhsuk-u-margin-left-4" href="~/identity/account/logout" aria-label="Log out">
+                        Log out
+                    </a>
+                </span>
+            }
+            else
+            {
+                <span data-test-id="logged-out" class="bc-u-display-inline-block">
+                    <a data-test-id="login-link" class="nhsuk-header__link bc-u-display-inline" href="~/identity/account/login" aria-label="Log in">
+                        Log in
+                    </a>
+                </span>
+            }
+        </div>
+    </div>
 </div>
