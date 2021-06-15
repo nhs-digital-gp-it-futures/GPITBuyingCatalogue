@@ -188,6 +188,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         opt.MapFrom(src => src.Solution.SolutionCapabilities);
                     })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+
+
+            CreateMap<CatalogueItem, AssociatedService>()
+               .BeforeMap(
+                   (src, dest) =>
+                   {
+                       dest.Description = src.Solution.FullDescription;
+                       dest.OrderGuidance = src.Solution.FullDescription;
+                   })
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
         }
 
         private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)

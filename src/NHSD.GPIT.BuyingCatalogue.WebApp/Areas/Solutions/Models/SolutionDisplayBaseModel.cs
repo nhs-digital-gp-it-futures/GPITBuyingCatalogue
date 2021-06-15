@@ -89,6 +89,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 Controller = ControllerName,
                 Name = "Supplier details",
             },
+             new()
+            {
+                Action = nameof(SolutionDetailsController.AssociatedServices),
+                Controller = ControllerName,
+                Name = "Associated Services",
+            },
         };
 
         public ClientApplication ClientApplication { get; set; }

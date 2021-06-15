@@ -37,8 +37,8 @@
             @*Description DONE*@
 
             @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary) ||
-            !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
-            !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
+              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
             {
                 <div class="nhsuk-width-container" data-test-id="view-solution-description">
 
@@ -65,7 +65,7 @@
                         }
 
                         @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
-               !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+                 !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
                         {
                             <div data-test-id="view-section-table-row-description" class="nhsuk-width-container bc-c-section-table-row ">
                                 <div data-test-id="view-section-table-row-vertical">
@@ -356,25 +356,6 @@
                             <div data-test-id="view-question-data-text-phone-number" class="bc-c-data-text ">@Model.Contact2PhoneNumber</div>
                             <div data-test-id="view-question-data-text-email-address" class="bc-c-data-text ">@Model.Contact2EmailAddress</div>
                         </div>
-                    </div>
-                </div>
-            }
-
-            @*Associated Services*@
-
-            @if (Model.AssociatedServices.Count > 0)
-            {
-                <div class="nhsuk-width-container" data-test-id="view-solution-contact-details">
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Associated Services</h3>
-                    </div>
-                    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4 nhsuk-u-padding-left-3">
-                        <ul class="nhsuk-u-margin-bottom-0">
-                            @foreach (var service in Model.AssociatedServices)
-                            {
-                                <li>Description: @service.Description</li>
-                            }
-                        </ul>
                     </div>
                 </div>
             }

@@ -3,6 +3,7 @@
     public class SolutionAssociatedServicesModel : SolutionDisplayBaseModel
     {
         public string Description { get; set; }
+        public string OrderGuidance { get; set; }
 
         public override int Index => 0;
 

@@ -152,9 +152,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var associatedService = await solutionsService.GetAssociatedServices(solution.Supplier.Id);
 
-            var model = new SolutionDetailModel(solution);
-            model.AssociatedServices = associatedService;
-            return View("SolutionDetail", model);
+            //var model = new SolutionDetailModel(solution);
+            //model.AssociatedServices = associatedService;
+            //return View("AssociatedServices", model);
+
+            var mappedModel = mapper.Map<CatalogueItem, SolutionAssociatedServicesModel>(solution);
+            return View("AssociatedServices", mappedModel);
         }
     }
 }
