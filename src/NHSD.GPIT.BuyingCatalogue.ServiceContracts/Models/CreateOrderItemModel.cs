@@ -26,9 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public ItemUnitModel ItemUnit { get; set; }
 
-        public int? PriceId { get; init; }
+        public int? PriceId { get; set; }
 
-        public decimal? Price { get; init; }
+        public decimal? Price { get; set; }
 
         public ProvisioningType ProvisioningType { get; set; }
 
