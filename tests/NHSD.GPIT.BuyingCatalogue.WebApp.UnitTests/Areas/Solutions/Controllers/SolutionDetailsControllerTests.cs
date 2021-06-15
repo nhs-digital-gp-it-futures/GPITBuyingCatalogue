@@ -552,8 +552,95 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
         
         [Test]
-        public static void Get_Interoperability_RouteAttribute_ExpectedTemplate()
+        public static void Get_ListPrice_RouteAttribute_ExpectedTemplate()
         {
+            typeof(SolutionDetailsController)
+                .GetMethod(nameof(SolutionDetailsController.ListPrice))
+                .GetCustomAttribute<RouteAttribute>()
+                .Template.Should()
+                .Be("solutions/futures/{id}/list-price");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void Get_ListPrice_InvalidId_ThrowsException(string id)
+        {
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.ListPrice(id))
+                .Message.Should().Be($"{nameof(SolutionDetailsController.ListPrice)}-{nameof(id)}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ListPrice_ValidId_GetsSolutionFromService(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            await controller.ListPrice(id);
+
+            mockService.Verify(s => s.GetSolution(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ListPrice_NullSolutionForId_ReturnsBadRequestResult(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.ListPrice(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ListPrice_ValidSolutionForId_MapsToModel(string id)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            await controller.ListPrice(id);
+
+            mockMapper.Verify(m => m.Map<CatalogueItem, ListPriceModel>(mockCatalogueItem));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ListPrice_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        {
+            var mockSolutionListPriceModel = new Mock<ListPriceModel>().Object;
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            mockMapper.Setup(m => m.Map<CatalogueItem, ListPriceModel>(mockCatalogueItem))
+                .Returns(mockSolutionListPriceModel);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            var actual = (await controller.ListPrice(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().Be(mockSolutionListPriceModel);
+        }
+
+        
+[Test]
+        public static void Get_Interoperability_RouteAttribute_ExpectedTemplate()
+{
             typeof(SolutionDetailsController)
                 .GetMethod(nameof(SolutionDetailsController.Interoperability))
                 .GetCustomAttribute<RouteAttribute>()
