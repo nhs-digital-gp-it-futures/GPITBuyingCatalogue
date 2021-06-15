@@ -31,6 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Supplier(string odsCode, string callOffId)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(Supplier)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var order = await orderService.GetOrder(callOffId);
 
             if (order.Supplier is null)
@@ -47,8 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> Supplier(string odsCode, string callOffId, SupplierModel model)
         {
-            if (model is null)
-                throw new ArgumentException(nameof(model));
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(Supplier)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -64,6 +72,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SupplierSearch(string odsCode, string callOffId)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(SupplierSearch)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var order = await orderService.GetOrder(callOffId);
 
             if (order.Supplier is not null)
@@ -80,6 +93,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("search")]
         public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(SupplierSearch)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             return RedirectToAction(
                 actionName: nameof(SupplierSearchSelect),
                 controllerName: typeof(SupplierController).ControllerName(),
@@ -89,6 +108,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, [FromQuery]string search)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(SupplierSearchSelect)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(search)} {search}");
+
             if (string.IsNullOrWhiteSpace(search))
                 return View("NoSupplierFound");
 
@@ -103,8 +127,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, SupplierSearchSelectModel model)
         {
-            if (model is null)
-                throw new ArgumentException(nameof(model));
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(SupplierSearchSelect)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
                 return View(model);

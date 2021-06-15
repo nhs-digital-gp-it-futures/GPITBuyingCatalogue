@@ -48,8 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
-            var order = await orderService.GetOrder(callOffId);
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
+            var order = await orderService.GetOrder(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
 
             return View(new CatalogueSolutionsModel(odsCode, order, orderItems));
@@ -60,6 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
 
@@ -84,6 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
 
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var state = GetStateModel();
 
             if (!ModelState.IsValid)
@@ -93,27 +98,68 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             state.CatalogueSolutionId = model.SelectedSolutionId;
-
             var solution = await solutionsService.GetSolution(state.CatalogueSolutionId);
             state.CatalogueItemName = solution.Name;
+            SetStateModel(state);
 
-            var cataloguePrice = solution.CataloguePrices.Single(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id);
+            // TODO -- apears in old version that is this solution is already present, it jumps straight to the editor for that solution
+            // TODO -- if there is only one price then jump straight to SelectSolutionServiceRecipients
+            return RedirectToAction(
+                actionName: nameof(SelectSolutionPrice),
+                controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                routeValues: new { odsCode, callOffId });
+        }
+
+        [HttpGet("select/solution/price")]
+        public async Task<IActionResult> SelectSolutionPrice(string odsCode, string callOffId)
+        {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            var state = GetStateModel();
+
+            var solution = await solutionsService.GetSolution(state.CatalogueSolutionId);
+
+            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+
+            return View(new SelectSolutionPriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
+        }
+
+        [HttpPost("select/solution/price")]
+        public async Task<IActionResult> SelectSolutionPrice(string odsCode, string callOffId, SelectSolutionPriceModel model)
+        {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            var state = GetStateModel();
+
+            var solution = await solutionsService.GetSolution(state.CatalogueSolutionId);
+
+            if (!ModelState.IsValid)
+            {
+                model.SetPrices(solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList());
+                return View(model);
+            }
+
+            var cataloguePrice = solution.CataloguePrices.Single(x => x.CataloguePriceId == model.SelectedPrice);
+
             state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
             state.CurrencyCode = cataloguePrice.CurrencyCode;
             state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
             state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
-            state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
-
-            // TODO - where does this come from?
+            if (cataloguePrice.TimeUnit != null)
+                state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
+            state.Price = cataloguePrice.Price;
+            state.PriceId = cataloguePrice.CataloguePriceId;
             state.EstimationPeriod = TimeUnit.PerYear;
 
             SetStateModel(state);
 
-            // TODO -- apears in old version that is this solution is already present, it jumps straight to the editor for that solution
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipients),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("select/solution/price/recipients")]
@@ -121,6 +167,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = GetStateModel();
 
@@ -141,6 +189,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
 
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var state = GetStateModel();
 
             if (!ModelState.IsValid)
@@ -154,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipientsDate),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("select/solution/price/recipients/date")]
@@ -162,6 +212,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = GetStateModel();
 
@@ -174,6 +226,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = GetStateModel();
 
@@ -195,10 +249,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             SetStateModel(state);
 
+            if (state.ProvisioningType.Equals(ProvisioningType.Declarative))
+            {
+                return RedirectToAction(
+                    actionName: nameof(SelectFlatDeclarativeQuantity),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId });
+            }
+            else if (state.ProvisioningType.Equals(ProvisioningType.OnDemand))
+            {
+                return RedirectToAction(
+                    actionName: nameof(SelectFlatOnDemandQuantity),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId });
+            }
+
             return RedirectToAction(
-                actionName: nameof(SelectFlatDeclarativeQuantity),
+                actionName: nameof(NewOrderItem),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("select/solution/price/flat/declarative")]
@@ -207,7 +276,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
-            // TODO - this is not always asked. Does it for Anywhere Consult but not EMIS Web GP
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var state = GetStateModel();
 
             return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
@@ -219,6 +289,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             (var quantity, var error) = model.GetQuantity();
 
@@ -243,7 +315,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(NewOrderItem),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
+        }
+
+        [HttpGet("select/solution/price/flat/ondemand")]
+        public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId)
+        {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatOnDemandQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
+            var state = GetStateModel();
+
+            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
+        }
+
+        [HttpPost("select/solution/price/flat/ondemand")]
+        public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId, SelectFlatOnDemandQuantityModel model)
+        {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
+            (var quantity, var error) = model.GetQuantity();
+
+            if (error != null)
+                ModelState.AddModelError("Quantity", error);
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var state = GetStateModel();
+
+            state.Quantity = quantity;
+
+            // TODO - also get the time unit details
+            state.TimeUnit = TimeUnit.PerMonth;
+
+            state.ServiceRecipients.All(c =>
+            {
+                c.Quantity = quantity;
+                return true;
+            });
+
+            SetStateModel(state);
+
+            return RedirectToAction(
+                actionName: nameof(NewOrderItem),
+                controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("neworderitem")]
@@ -252,9 +375,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(NewOrderItem)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var state = GetStateModel();
 
-            return View(new NewOrderItemModel(odsCode, callOffId, state.CatalogueItemName));
+            return View(new NewOrderItemModel(odsCode, callOffId, state));
         }
 
         [HttpPost("neworderitem")]
@@ -264,10 +389,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
 
-            if (!ModelState.IsValid)
-                return View(model);
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(NewOrderItem)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = GetStateModel();
+
+            foreach (var recipient in model.OrderItem.ServiceRecipients)
+            {
+                (var date, var error) = recipient.ToDateTime(state.CommencementDate);
+
+                if (error != null)
+                {
+                    ModelState.AddModelError("Day", error);
+                    break;
+                }
+
+                recipient.DeliveryDate = date;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.OrderItem.ItemUnit = state.ItemUnit;
+                model.OrderItem.TimeUnit = state.TimeUnit;
+                return View(model);
+            }
+
+            // TODO - price must be <= to the listed price. Zero is Ok apparently. Need to check if the orderItemService validates that. If so, piggy back on it (see handle errors below)
+            state.Price = model.OrderItem.Price;
+            state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
             // TODO - handle errors
             var result = await orderItemService.Create(callOffId, state);
@@ -275,45 +423,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> EditSolution(string odsCode, string callOffId, string id)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             var orderItem = await orderItemService.GetOrderItem(callOffId, id);
 
             var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
 
-            return View(new EditSolutionModel(odsCode, callOffId, solution.Name));
+            return View(new EditSolutionModel(odsCode, callOffId, id, solution.Name));
         }
 
         [HttpPost("{id}")]
         public IActionResult EditSolution(string odsCode, string callOffId, string id, EditSolutionModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId });
-        }
-
-        [HttpGet("select/solution/price")]
-        public IActionResult SelectSolutionPrice(string odsCode, string callOffId)
-        {
-            // TODO - this is not currently accessed by this skeleton framework
-            return View(new SelectSolutionPriceModel());
-        }
-
-        [HttpPost("select/solution/price")]
-        public IActionResult SelectSolutionPrice(string odsCode, string callOffId, SelectSolutionPriceModel model)
-        {
-            // TODO - this is not currently accessed by this skeleton framework
-            return Redirect($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients");
+                routeValues: new { odsCode, callOffId });
         }
 
         [HttpGet("delete/{id}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
+
             var order = await orderService.GetOrder(callOffId);
 
             return View(new DeleteSolutionModel(odsCode, callOffId, id, solutionName, order.Description));
@@ -322,24 +474,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("delete/{id}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName, DeleteSolutionModel model)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+            solutionName.ValidateNotNullOrWhiteSpace(nameof(solutionName));
+            model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
+
             await orderItemService.DeleteOrderItem(callOffId, id);
 
             return RedirectToAction(
                 actionName: nameof(DeleteContinue),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = callOffId, id = id, solutionName = solutionName });
+                routeValues: new { odsCode, callOffId, id, solutionName });
         }
 
         [HttpGet("delete/{id}/confirmation/{solutionName}/continue")]
         public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string solutionName)
         {
+            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
+            id.ValidateNotNullOrWhiteSpace(nameof(id));
+            solutionName.ValidateNotNullOrWhiteSpace(nameof(solutionName));
+
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
+
             return View(new DeleteContinueModel(odsCode, callOffId, solutionName));
         }
 
         private CreateOrderItemModel GetStateModel()
         {
             var state = sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
-
             return state ?? new CreateOrderItemModel();
         }
 

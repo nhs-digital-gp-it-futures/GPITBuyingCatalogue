@@ -2,8 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 {
-    public class ProvisioningType
-        : EnumerationBase
+    public class ProvisioningType : EnumerationBase
     {
         public static readonly ProvisioningType Patient = new(1, "Patient");
         public static readonly ProvisioningType Declarative = new(2, "Declarative");
