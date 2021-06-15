@@ -48,6 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var catalogueItem = await AddOrUpdateCatalogueItem(catalogueItemId, model, model.CatalogueItemType);
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);
             var pricingUnit = await AddOrUpdatePricingUnit(model);
+
+            // TODO - this doesn't appear to be set. Not sure how legacy is dealing with it, but it does set it
             var defaultDeliveryDate = order.DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
             var estimationPeriod = model.CatalogueItemType.InferEstimationPeriod(model.ProvisioningType, model.EstimationPeriod);
 
@@ -66,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 ProvisioningType = model.ProvisioningType,
             });
 
-            item.SetRecipients(model.ServiceRecipients.Where(x => x.Checked).Select(r => new OrderItemRecipient
+            item.SetRecipients(model.ServiceRecipients.Select(r => new OrderItemRecipient
             {
                 DeliveryDate = r.DeliveryDate,
                 Quantity = r.Quantity.GetValueOrDefault(),
@@ -163,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private async Task<IReadOnlyDictionary<string, EntityFramework.Models.Ordering.ServiceRecipient>> AddOrUpdateServiceRecipients(CreateOrderItemModel model)
         {
-            var serviceRecipients = model.ServiceRecipients.Where(x => x.Checked).Select(s => new EntityFramework.Models.Ordering.ServiceRecipient { OdsCode = s.OdsCode, Name = s.Name });
+            var serviceRecipients = model.ServiceRecipients.Select(s => new EntityFramework.Models.Ordering.ServiceRecipient { OdsCode = s.OdsCode, Name = s.Name });
 
             return await serviceRecipientService.AddOrUpdateServiceRecipients(serviceRecipients);
         }

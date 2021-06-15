@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult Index()
         {
             logger.LogInformation($"Taking user to {nameof(NominateOrganisationController)}.{nameof(Index)}");
+
             return View();
         }
     }

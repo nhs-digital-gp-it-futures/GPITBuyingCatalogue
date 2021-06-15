@@ -48,6 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
 
+            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(Organisation)} for {nameof(odsCode)} {odsCode}");
+
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
 
             var allOrders = await orderService.GetOrders(organisation.OrganisationId);
@@ -60,8 +62,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
 
-            var odsCodes = new List<string>(User.GetSecondaryOdsCodes());
-            odsCodes.Add(User.GetPrimaryOdsCode());
+            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(SelectOrganisation)} for {nameof(odsCode)} {odsCode}");
+
+            var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
+            {
+                User.GetPrimaryOdsCode(),
+            };
 
             var organisations = await organisationsService.GetOrganisationsByOdsCodes(odsCodes.ToArray());
 
@@ -73,6 +79,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(DashboardController)}.{nameof(SelectOrganisation)} for {nameof(odsCode)} {odsCode}");
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -88,6 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
 
+            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(NewOrder)} for {nameof(odsCode)} {odsCode}");
+
             return View(new NewOrderModel(odsCode));
         }
 
@@ -95,6 +105,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public IActionResult NewOrderDescription(string odsCode)
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
+
+            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
 
             return View(new NewOrderDescriptionModel(odsCode));
         }
@@ -104,6 +116,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             model.ValidateNotNull(nameof(model));
+
+            logger.LogInformation($"Handling post for {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
 
             if (!ModelState.IsValid)
                 return View(model);

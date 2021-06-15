@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public SelectSolutionServiceRecipientsDateModel(string odsCode, string callOffId, string solutionName, DateTime? commencementDate, DateTime? plannedDeliveryDate)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients";
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price";
             BackLinkText = "Go back";
             Title = $"Planned delivery date of {solutionName} for {callOffId}";
 

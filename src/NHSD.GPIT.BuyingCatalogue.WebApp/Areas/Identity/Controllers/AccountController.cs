@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -49,8 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            viewModel.ValidateNotNull(nameof(viewModel));
+
+            logger.LogInformation($"Handling post for {nameof(AccountController)}.{nameof(Login)}");
 
             if (!ModelState.IsValid)
                 return View(viewModel);
@@ -88,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpGet("Logout")]
         public async Task<IActionResult> Logout()
         {
+            logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(Logout)}");
+
             if (signInManager.IsSignedIn(User))
                 await signInManager.SignOutAsync().ConfigureAwait(false);
 
@@ -97,12 +101,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpGet("Registration")]
         public IActionResult Registration()
         {
+            logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(Registration)}");
+
             return View();
         }
 
         [HttpGet("ForgotPassword")]
         public IActionResult ForgotPassword()
         {
+            logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(ForgotPassword)}");
+
             return View();
         }
 
@@ -110,8 +118,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel viewModel)
         {
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            viewModel.ValidateNotNull(nameof(viewModel));
+
+            logger.LogInformation($"Handling post for {nameof(AccountController)}.{nameof(ForgotPassword)}");
 
             if (!ModelState.IsValid)
                 return View(viewModel);
@@ -130,12 +139,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpGet("ForgotPasswordLinkSent")]
         public IActionResult ForgotPasswordLinkSent()
         {
+            logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(ForgotPasswordLinkSent)}");
+
             return View();
         }
 
         [HttpGet("ResetPassword")]
         public async Task<IActionResult> ResetPassword(string email, string token)
         {
+            email.ValidateNotNullOrWhiteSpace(nameof(email));
+            token.ValidateNotNullOrWhiteSpace(nameof(token));
+
+            logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(ResetPassword)}");
+
             var isValid = await passwordService.IsValidPasswordResetTokenAsync(email, token);
 
             if (!isValid)
@@ -148,8 +164,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
         {
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            viewModel.ValidateNotNull(nameof(viewModel));
+
+            logger.LogInformation($"Handling post for {nameof(AccountController)}.{nameof(ResetPassword)}");
 
             if (!ModelState.IsValid)
                 return View(viewModel);
@@ -179,11 +196,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpGet("ResetPasswordConfirmation")]
         public IActionResult ResetPasswordConfirmation()
         {
+            logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(ResetPasswordConfirmation)}");
+
             return View();
         }
 
         public IActionResult ResetPasswordExpired()
         {
+            logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(ResetPasswordExpired)}");
+
             return View();
         }
     }
