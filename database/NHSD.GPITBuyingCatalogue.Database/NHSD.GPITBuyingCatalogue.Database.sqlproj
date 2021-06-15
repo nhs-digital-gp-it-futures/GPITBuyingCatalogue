@@ -56,6 +56,9 @@
     <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+  <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
     <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
@@ -79,6 +82,7 @@
     <Folder Include="PreDeployment" />
     <Folder Include="Functions" />
     <Folder Include="Indexes" />
+    <Folder Include="BuildUtils" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\SolutionCapabilityStatus.sql" />
@@ -157,6 +161,7 @@
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
     <None Include="PostDeployment\CreateTables.sql" />
     <Build Include="Tables\SQLSessions.sql" />
+    <PostDeploy Include="PostDeployment\PostDeploymentCombined.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -227,6 +232,9 @@
     <None Include="PostDeployment\InsertAssociatedServices.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Include="PostDeployment\PostDeployment.sql" />
+    <None Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File $(ProjectDir)BuildUtils\ScriptMerge.ps1</PreBuildEvent>
+  </PropertyGroup>
 </Project>
