@@ -60,7 +60,7 @@
     <Folder Include="wwwroot\css" />
   </ItemGroup>
 
-  <Target Name="Build CSS" BeforeTargets="Build">
-    <Exec Command="gulp min" WorkingDirectory="$(ProjectDir)" Condition="'$(Configuration)' == 'Debug'" />
+  <Target Name="Build CSS" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Exec Command="gulp min" WorkingDirectory="$(ProjectDir)" />
   </Target>
 </Project>
