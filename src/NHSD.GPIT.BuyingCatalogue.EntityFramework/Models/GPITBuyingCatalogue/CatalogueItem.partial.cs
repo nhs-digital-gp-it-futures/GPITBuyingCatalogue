@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public virtual bool HasImplementationDetail() => !string.IsNullOrWhiteSpace(Solution?.ImplementationDetail);
 
-        public virtual bool HasInteroperability() => !string.IsNullOrWhiteSpace(Solution?.IntegrationsUrl);
+        public virtual bool HasInteroperability() => !string.IsNullOrWhiteSpace(Solution?.Integrations);
 
         public virtual bool HasListPrice() => CataloguePrices?.Any() == true;
 

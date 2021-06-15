@@ -394,9 +394,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
         
         [Test, CommonAutoData]
-        public static void HasInteroperability_SolutionHasInteroperability_ReturnsTrue(CatalogueItem catalogueItem)
+        public static void HasInteroperability_SolutionHasIntegration_ReturnsTrue(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.IntegrationsUrl.Should().NotBeNullOrWhiteSpace();
+            catalogueItem.Solution.Integrations.Should().NotBeNullOrWhiteSpace();
             
             var actual = catalogueItem.HasInteroperability();
 
@@ -404,9 +404,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [TestCaseSource(nameof(InvalidStrings))]
-        public static void HasInteroperability_SolutionHasInvalidImplementationDetail_ReturnsFalse(string invalid)
+        public static void HasInteroperability_SolutionHasInvalidIntegration_ReturnsFalse(string invalid)
         {
-            var catalogueItem = new CatalogueItem { Solution = new Solution { IntegrationsUrl = invalid } };
+            var catalogueItem = new CatalogueItem { Solution = new Solution { Integrations = invalid } };
             
             var actual = catalogueItem.HasInteroperability();
 

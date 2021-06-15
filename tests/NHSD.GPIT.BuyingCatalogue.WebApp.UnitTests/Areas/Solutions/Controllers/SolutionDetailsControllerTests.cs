@@ -45,6 +45,92 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ParamName.Should()
                 .Be("solutionsService");
         }
+        
+        [Test]
+        public static void Get_Capabilities_RouteAttribute_ExpectedTemplate()
+        {
+            typeof(SolutionDetailsController)
+                .GetMethod(nameof(SolutionDetailsController.Capabilities))
+                .GetCustomAttribute<RouteAttribute>()
+                .Template.Should()
+                .Be("solutions/futures/{id}/capabilities");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void Get_Capabilities_InvalidId_ThrowsException(string id)
+        {
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
+
+            Assert.ThrowsAsync<ArgumentException>(() => controller.Capabilities(id))
+                .Message.Should().Be($"{nameof(SolutionDetailsController.Capabilities)}-{nameof(id)}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Capabilities_ValidId_GetsSolutionFromService(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            await controller.Capabilities(id);
+
+            mockService.Verify(s => s.GetSolution(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Capabilities_NullSolutionForId_ReturnsBadRequestResult(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.Capabilities(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Capabilities_ValidSolutionForId_MapsToModel(string id)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            await controller.Capabilities(id);
+
+            mockMapper.Verify(m => m.Map<CatalogueItem, CapabilitiesViewModel>(mockCatalogueItem));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        {
+            var mockCapabilitiesViewModel = new Mock<CapabilitiesViewModel>().Object;
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            mockMapper.Setup(m => m.Map<CatalogueItem, CapabilitiesViewModel>(mockCatalogueItem))
+                .Returns(mockCapabilitiesViewModel);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            var actual = (await controller.Capabilities(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().Be(mockCapabilitiesViewModel);
+        }
 
         [Test]
         public static void Get_ClientApplicationTypes_RouteAttribute_ExpectedTemplate()
@@ -294,92 +380,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
         
         [Test]
-        public static void Get_ImplementationTimescales_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(SolutionDetailsController)
-                .GetMethod(nameof(SolutionDetailsController.ImplementationTimescales))
-                .GetCustomAttribute<RouteAttribute>()
-                .Template.Should()
-                .Be("solutions/futures/{id}/implementation-timescales");
-        }
-        
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_ImplementationTimescales_InvalidId_ThrowsException(string id)
-        {
-            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.ImplementationTimescales(id))
-                .Message.Should().Be($"{nameof(SolutionDetailsController.ImplementationTimescales)}-{nameof(id)}");
-        }
-
-        [Test, AutoData]
-        public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(string id)
-        {
-            var mockService = new Mock<ISolutionsService>();
-            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
-                mockService.Object);
-
-            await controller.ImplementationTimescales(id);
-
-            mockService.Verify(s => s.GetSolution(id));
-        }
-
-        [Test, AutoData]
-        public static async Task Get_ImplementationTimescales_NullSolutionForId_ReturnsBadRequestResult(string id)
-        {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
-                .ReturnsAsync(default(CatalogueItem));
-            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
-                mockService.Object);
-
-            var actual = (await controller.ImplementationTimescales(id)).As<BadRequestObjectResult>();
-
-            actual.Should().NotBeNull();
-            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
-        }
-
-        [Test, AutoData]
-        public static async Task Get_ImplementationTimescales_ValidSolutionForId_MapsToModel(string id)
-        {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionDetailsController(mockMapper.Object,
-                mockService.Object);
-
-            await controller.ImplementationTimescales(id);
-
-            mockMapper.Verify(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem));
-        }
-
-        [Test, AutoData]
-        public static async Task Get_ImplementationTimescales_ValidSolutionForId_ReturnsExpectedViewResult(string id)
-        {
-            var mockSolutionImplementationTimescalesModel = new Mock<ImplementationTimescalesModel>().Object;
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
-                .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem))
-                .Returns(mockSolutionImplementationTimescalesModel);
-            var controller = new SolutionDetailsController(mockMapper.Object,
-                mockService.Object);
-
-            var actual = (await controller.ImplementationTimescales(id)).As<ViewResult>();
-
-            actual.Should().NotBeNull();
-            actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockSolutionImplementationTimescalesModel);
-        }
-
-        [Test]
         public static void Get_HostingType_RouteAttribute_ExpectedTemplate()
         {
             typeof(SolutionDetailsController)
@@ -464,7 +464,93 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockSolutionHostingTypeModel);
         }
+        
+        [Test]
+        public static void Get_ImplementationTimescales_RouteAttribute_ExpectedTemplate()
+        {
+            typeof(SolutionDetailsController)
+                .GetMethod(nameof(SolutionDetailsController.ImplementationTimescales))
+                .GetCustomAttribute<RouteAttribute>()
+                .Template.Should()
+                .Be("solutions/futures/{id}/implementation-timescales");
+        }
+        
+        [Test]
+        [TestCaseSource(nameof(InvalidStrings))]
+        public static void Get_ImplementationTimescales_InvalidId_ThrowsException(string id)
+        {
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
 
+            Assert.ThrowsAsync<ArgumentException>(() => controller.ImplementationTimescales(id))
+                .Message.Should().Be($"{nameof(SolutionDetailsController.ImplementationTimescales)}-{nameof(id)}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            await controller.ImplementationTimescales(id);
+
+            mockService.Verify(s => s.GetSolution(id));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ImplementationTimescales_NullSolutionForId_ReturnsBadRequestResult(string id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.ImplementationTimescales(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ImplementationTimescales_ValidSolutionForId_MapsToModel(string id)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            await controller.ImplementationTimescales(id);
+
+            mockMapper.Verify(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem));
+        }
+
+        [Test, AutoData]
+        public static async Task Get_ImplementationTimescales_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        {
+            var mockSolutionImplementationTimescalesModel = new Mock<ImplementationTimescalesModel>().Object;
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolution(id))
+                .ReturnsAsync(mockCatalogueItem);
+            mockMapper.Setup(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem))
+                .Returns(mockSolutionImplementationTimescalesModel);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            var actual = (await controller.ImplementationTimescales(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().Be(mockSolutionImplementationTimescalesModel);
+        }
+        
         [Test]
         public static void Get_ListPrice_RouteAttribute_ExpectedTemplate()
         {
@@ -551,41 +637,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionListPriceModel);
         }
 
-        [Test]
-        public static void Get_Capabilities_RouteAttribute_ExpectedTemplate()
-        {
+        
+[Test]
+        public static void Get_Interoperability_RouteAttribute_ExpectedTemplate()
+{
             typeof(SolutionDetailsController)
-                .GetMethod(nameof(SolutionDetailsController.Capabilities))
+                .GetMethod(nameof(SolutionDetailsController.Interoperability))
                 .GetCustomAttribute<RouteAttribute>()
                 .Template.Should()
-                .Be("solutions/futures/{id}/capabilities");
+                .Be("solutions/futures/{id}/interoperability");
         }
-
+        
         [Test]
         [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_Capabilities_InvalidId_ThrowsException(string id)
+        public static void Get_Interoperability_InvalidId_ThrowsException(string id)
         {
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.Capabilities(id))
-                .Message.Should().Be($"{nameof(SolutionDetailsController.Capabilities)}-{nameof(id)}");
+            Assert.ThrowsAsync<ArgumentException>(() => controller.Interoperability(id))
+                .Message.Should().Be($"{nameof(SolutionDetailsController.Interoperability)}-{nameof(id)}");
         }
 
         [Test, AutoData]
-        public static async Task Get_Capabilities_ValidId_GetsSolutionFromService(string id)
+        public static async Task Get_Interoperability_ValidId_GetsSolutionFromService(string id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
 
-            await controller.Capabilities(id);
+            await controller.Interoperability(id);
 
             mockService.Verify(s => s.GetSolution(id));
         }
 
         [Test, AutoData]
-        public static async Task Get_Capabilities_NullSolutionForId_ReturnsBadRequestResult(string id)
+        public static async Task Get_Interoperability_NullSolutionForId_ReturnsBadRequestResult(string id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
@@ -593,13 +680,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
 
-            var actual = (await controller.Capabilities(id)).As<BadRequestObjectResult>();
+            var actual = (await controller.Interoperability(id)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        public static async Task Get_Capabilities_ValidSolutionForId_MapsToModel(string id)
+        [Test, AutoData]
+        public static async Task Get_Interoperability_ValidSolutionForId_MapsToModel(string id)
         {
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
@@ -609,31 +697,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
 
-            await controller.Capabilities(id);
+            await controller.Interoperability(id);
 
-            mockMapper.Verify(m => m.Map<CatalogueItem, CapabilitiesViewModel>(mockCatalogueItem));
+            mockMapper.Verify(m => m.Map<CatalogueItem, InteroperabilityModel>(mockCatalogueItem));
         }
 
         [Test, AutoData]
-        public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        public static async Task Get_Interoperability_ValidSolutionForId_ReturnsExpectedViewResult(string id)
         {
-            var mockCapabilitiesViewModel = new Mock<CapabilitiesViewModel>().Object;
+            var mockSolutionInteroperabilityModel = new Mock<InteroperabilityModel>().Object;
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, CapabilitiesViewModel>(mockCatalogueItem))
-                .Returns(mockCapabilitiesViewModel);
+            mockMapper.Setup(m => m.Map<CatalogueItem, InteroperabilityModel>(mockCatalogueItem))
+                .Returns(mockSolutionInteroperabilityModel);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
 
-            var actual = (await controller.Capabilities(id)).As<ViewResult>();
+            var actual = (await controller.Interoperability(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockCapabilitiesViewModel);
+            actual.Model.Should().Be(mockSolutionInteroperabilityModel);
         }
     }
 }
