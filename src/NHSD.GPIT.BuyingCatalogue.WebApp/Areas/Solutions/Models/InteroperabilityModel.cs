@@ -17,8 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             var start = Integrations.Count == 1
                 ? "There is one type of integration"
-                : $"There are {Integrations.Count.ToEnglish()} types";
-            return $"{start} of integrations specified and assured by the NHS.";
+                : $"There are {Integrations.Count.ToEnglish()} types of integrations";
+
+            return $"{start} specified and assured by the NHS.";
         }
     }
 }
