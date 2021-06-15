@@ -20,6 +20,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
+        [Route("solutions/futures/{id}/capabilities")]
+        public async Task<IActionResult> Capabilities(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(Capabilities)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
+        }
+
         [Route("solutions/futures/{id}/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
         {
@@ -64,32 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, SolutionFeaturesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/list-price")]
-        public async Task<IActionResult> ListPrice(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(ListPrice)}-{nameof(id)}");
-
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
-
-            return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
-        }
-
-        [Route("solutions/futures/{id}/capabilities")]
-        public async Task<IActionResult> Capabilities(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(Capabilities)}-{nameof(id)}");
-
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
-
-            return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
-        }
-
         [Route("solutions/futures/{id}/hosting-type")]
         public async Task<IActionResult> HostingType(string id)
         {
@@ -130,6 +117,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(viewModel);
         }
 
+        [Route("solutions/futures/{id}/list-price")]
+        public async Task<IActionResult> ListPrice(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(ListPrice)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
+        }
+
         [Route("solutions/futures/foundation/{id}")]
         public async Task<IActionResult> FoundationSolutionDetail(string id)
         {
@@ -159,10 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var solution = await solutionsService.GetSolution(id);
 
-            var model = new SolutionDetailModel(solution)
-            {
-                BackLink = $"/marketing/supplier/solution/{id}",
-            };
+            var model = new SolutionDetailModel(solution) { BackLink = $"/marketing/supplier/solution/{id}", };
 
             return View("SolutionDetail", model);
         }
