@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using AutoMapper;
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 //TODO: Update Next to List price once List price page implemented
                 Next = new SectionModel
                 {
-                    Action = "Description",
+                    Action = "ListPrice",
                     Controller = "SolutionDetails",
                     Name = "List price",
                     Show = true,
@@ -125,6 +125,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
         
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
+           CatalogueItem catalogueItem)
+        {
+            var actual = mapper.Map<CatalogueItem, ListPriceModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
+            {
+                Previous = new SectionModel
+                {
+                    Action = "Capabilities",
+                    Controller = "SolutionDetails",
+                    Name = "Capabilities",
+                    Show = true,
+                },
+
+                Next = new SectionModel
+                {
+                    //TODO: Update action to 'AdditionalServices'
+                    Action = "Description",
+                    Controller = "SolutionDetails",
+                    Name = "Additional Services",
+                    Show = true,
+                },
+            });
+            actual.Section.Should().Be("List price");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+
         [Test, CommonAutoData]
         public void Map_CatalogueItemToHostingTypesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
