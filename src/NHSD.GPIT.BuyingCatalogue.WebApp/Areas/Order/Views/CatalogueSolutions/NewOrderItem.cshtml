@@ -26,7 +26,7 @@
                                     </label>
                                     <span class="bc-flex-container bc-align-items-center">
                                         <input class="nhsuk-input nhsuk-input--width-10" asp-for="@Model.OrderItem.Price" type="text">
-                                        <label for="price" class="bc-margin-left">@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit.Description</label>
+                                        <label for="price" class="bc-margin-left">@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description</label>
                                     </span>
                                 </div>
                             </div>
@@ -62,7 +62,19 @@
                             </th>
 
                             <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-padding-bottom-5 nhsuk-u-font-size-20" style="width:33%">
-                                <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Quantity</div>
+
+                                @if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.Declarative))
+                                {
+                                    <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Quantity</div>
+                                }
+                                else if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.OnDemand))
+                                {                                    
+                                    <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Quantity @Model.OrderItem.TimeUnit.Description</div>
+                                }
+                                else
+                                {
+                                    <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Practice list size</div>
+                                }
                             </th>
 
                             <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 nhsuk-u-padding-bottom-3 nhsuk-u-font-size-20" style="width:33%">
@@ -99,14 +111,40 @@
                                             <div>
                                                 <div data-test-id="view-section-input-id-practice" class="">
                                                     <details class="nhsuk-details">
+                                                        @if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.Declarative))
+                                                        {
+                                                            <summary class="nhsuk-details__summary">
+                                                                <span class="nhsuk-details__summary-text">
+                                                                    What quantity should I enter?
+                                                                </span>
+                                                            </summary>
+                                                            <div class="nhsuk-details__text">
+                                                                Enter the total amount you think you'll need for the entire duration of the order.
+                                                            </div>
+                                                        }
+                                                        else if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.OnDemand))
+                                                        {
+                                                            <summary class="nhsuk-details__summary">
+                                                                <span class="nhsuk-details__summary-text">
+                                                                    What quantity should I enter?
+                                                                </span>
+                                                            </summary>
+                                                            <div class="nhsuk-details__text">
+                                                                Estimate the quantity you think you'll need either per month or per year.
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
                                                         <summary class="nhsuk-details__summary">
                                                             <span class="nhsuk-details__summary-text">
-                                                                What quantity should I enter?
+                                                                What list size should I enter?
                                                             </span>
                                                         </summary>
                                                         <div class="nhsuk-details__text">
-                                                            Enter the total amount you think you'll need for the entire duration of the order.
+                                                            Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.<br><br>As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.
                                                         </div>
+
+                                                        }
                                                     </details>
                                                 </div>
                                             </div>
