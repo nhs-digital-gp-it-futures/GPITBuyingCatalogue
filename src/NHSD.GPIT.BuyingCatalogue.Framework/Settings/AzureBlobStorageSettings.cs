@@ -15,8 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 
         public string DocumentDirectory { get; set; }
 
-        public AzureBlobStorageHealthCheckSettings HealthCheck { get; set; }
-
         public AzureBlobStorageRetrySettings Retry { get; set; }
 
         // Not part of the interface definition as its current use

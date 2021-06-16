@@ -11,7 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public NewOrderItemModel(string odsCode, string callOffId, CreateOrderItemModel createOrderItemModel)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/declarative";
+            if (createOrderItemModel.ProvisioningType.Equals(EntityFramework.Models.Ordering.ProvisioningType.Declarative))
+                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/declarative";
+            else if (createOrderItemModel.ProvisioningType.Equals(EntityFramework.Models.Ordering.ProvisioningType.OnDemand))
+                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/ondemand";
+            else
+                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date";
+
             BackLinkText = "Go back";
             Title = $"{createOrderItemModel.CatalogueItemName} information for {callOffId}";
             OdsCode = odsCode;

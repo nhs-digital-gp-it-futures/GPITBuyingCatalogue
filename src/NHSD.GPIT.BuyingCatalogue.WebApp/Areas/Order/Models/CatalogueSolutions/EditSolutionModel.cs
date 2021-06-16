@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
     public class EditSolutionModel : OrderingBaseModel
     {
+        public EditSolutionModel()
+        {
+        }
+
         public EditSolutionModel(string odsCode, string callOffId, string id, CreateOrderItemModel createOrderItemModel)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
