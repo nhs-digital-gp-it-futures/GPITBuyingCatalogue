@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
@@ -24,7 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         internal Actions.Common.CommonActions CommonActions { get; }
 
-        internal Actions.Authorization.ActionCollection  AuthorizationPages{ get; }
+        internal Actions.Authorization.ActionCollection AuthorizationPages{ get; }
+
+        internal Actions.Admin.ActionCollection AdminPages { get; }
 
         internal TextGenerators TextGenerators { get; }
 
@@ -39,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             PublicBrowsePages = new PublicBrowsePages(driver).PageActions;
             MarketingPages = new MarketingPageActions(driver).PageActions;
             AuthorizationPages = new AuthorizationPages(driver).PageActions;
+            AdminPages = new AdminPages(driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(driver);
 
             TextGenerators = new TextGenerators(driver);
@@ -88,6 +92,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             var solution = context.Solutions.Single(s => s.Id == solutionId);
             solution.Features = string.Empty;
             context.SaveChanges();
+        }
+
+        internal void Login()
+        {
+            if (AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+            {
+                using var context = GetBCContext();
+                var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").Email;
+                AuthorizationPages.LoginActions.Login(user, DefaultPassword);
+            }
         }
     }
 }
