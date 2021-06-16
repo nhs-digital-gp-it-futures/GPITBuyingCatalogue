@@ -126,6 +126,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 Environment.SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
             }
+
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")))
+            {
+                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+            }
         }
 
         [ExcludeFromCodeCoverage]
