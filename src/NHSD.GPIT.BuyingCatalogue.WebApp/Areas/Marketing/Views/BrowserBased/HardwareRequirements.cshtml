@@ -10,11 +10,11 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="Browser-based application – hardware requirements"
-                        title-advice="Let buyers know about any hardware requirements for your Catalogue Solution." />
+                        advice="Let buyers know about any hardware requirements for your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-validation-textarea asp-for="Description"
+            <nhs-textarea asp-for="Description"
                                      label-text="Hardware requirements (optional)"
                                      label-hint="Provide information on any hardware that is required for your browser-based Catalogue Solution to function." />
             <nhs-submit-button />

@@ -1,0 +1,97 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.TextInputModel
+@{
+    ViewData["Title"] = "Text Input";
+}
+
+<nhs-page-title title="Text Input"
+                advice="Allow for the Input of a Small amount of Data"
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from TextInput.cshtml using the TextInputModel." />
+
+
+<nhs-input asp-for="TextInput100Character"
+           label-text="This is a 100 Character Input"
+           label-hint="The Character Length Comes from the Model"
+           character-count="true"/>
+
+<nhs-input asp-for="TextInputNoLength"
+           label-text="This is a Default Character Input"
+           label-hint="The Character Length Is the Default Length of 500"
+           character-count="true"/>
+
+<nhs-input asp-for="TextInputPassword"
+           label-text="This is a Password Input"
+           label-hint="The Password Attribute On the Model Sets this"/>
+
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above 100 Character Input"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-input</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span>
+        <span class="vs-light-theme-blue">="TextInput100Character"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span>
+        <span class="vs-light-theme-blue">="This is a 100 Character Input" </span><br />
+        <span class="vs-light-theme-purple first-layer">label-hint</span>
+        <span class="vs-light-theme-blue">="The Character Length Comes from the Model" </span><br />
+        <span class="vs-light-theme-purple first-layer">character-count</span>
+        <span class="vs-light-theme-blue">="true" </span><br />
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This is a reference to the field that the input will load and save its value too/from.</p>
+            <p>This Property on the model can also store other validation attributes.</p>
+            <ul>
+                <li>[StringLength(100)] Will force the inputs max-length to be set to 100. If missing it will default to 500.</li>
+                <li>[Password] Will Hide the Character Counter (Even if Set True) And will make the input as a password input.</li>
+                <li>[Url] Will check that the input text is a correctly formatted Url</li>
+                <li>[Email] Will check that the input text is a correctly formatted email address</li>
+            </ul>
+            <p>While there are other data attributes, These 4 will be the most used with a text input.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>label-text</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will set the title of the input.</p>
+            <p>If not set, no label will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>label-hint</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will add a hint under the title on the input.</p>
+            <p>If not set, no hint will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>character-count</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this to true will display the Character Count Under the Input.</p>
+            <p>Defaults to False</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated: 14 June 2021
+</nhs-endnote>
