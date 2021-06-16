@@ -61,7 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<EntityFramework.Models.GPITBuyingCatalogue.Supplier> GetSupplierFromBuyingCatalogue(string id)
         {
-            return await bcDbContext.Suppliers.Where(s => s.Id == id).SingleAsync();
+            return await bcDbContext.Suppliers
+                .Include(o => o.SupplierContacts)
+                .Where(s => s.Id == id)
+                .SingleAsync();
         }
 
         public async Task<EntityFramework.Models.Ordering.Supplier> GetSupplierFromCatalogueOrdering(string id)

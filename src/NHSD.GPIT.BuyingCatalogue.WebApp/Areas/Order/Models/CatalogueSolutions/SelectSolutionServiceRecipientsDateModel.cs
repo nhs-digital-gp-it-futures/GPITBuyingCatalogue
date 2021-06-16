@@ -8,9 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectSolutionServiceRecipientsDateModel(string odsCode, string callOffId, string solutionName, DateTime? commencementDate, DateTime? plannedDeliveryDate)
+        public SelectSolutionServiceRecipientsDateModel(string odsCode, string callOffId, string solutionName, DateTime? commencementDate, DateTime? plannedDeliveryDate, DateTime? defaultDeliveryDate)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients";
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price";
             BackLinkText = "Go back";
             Title = $"Planned delivery date of {solutionName} for {callOffId}";
 
@@ -21,6 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
                 Day = plannedDeliveryDate.Value.Day.ToString("00");
                 Month = plannedDeliveryDate.Value.Month.ToString("00");
                 Year = plannedDeliveryDate.Value.Year.ToString("0000");
+            }
+            else if (defaultDeliveryDate.HasValue)
+            {
+                Day = defaultDeliveryDate.Value.Day.ToString("00");
+                Month = defaultDeliveryDate.Value.Month.ToString("00");
+                Year = defaultDeliveryDate.Value.Year.ToString("0000");
             }
             else if (commencementDate.HasValue)
             {

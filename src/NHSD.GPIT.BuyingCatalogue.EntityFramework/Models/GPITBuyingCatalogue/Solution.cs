@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public string RoadMap { get; set; }
 
+        public string Integrations { get; set; }
+
         public string IntegrationsUrl { get; set; }
 
         public string AboutUrl { get; set; }

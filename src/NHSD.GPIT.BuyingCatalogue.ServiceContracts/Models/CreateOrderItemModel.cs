@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
+    // MJRTODO - Change name as this is used for Create and Edit
     public sealed class CreateOrderItemModel
     {
         public DateTime? CommencementDate { get; set; }
@@ -26,9 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public ItemUnitModel ItemUnit { get; set; }
 
-        public int? PriceId { get; init; }
+        public int? PriceId { get; set; }
 
-        public decimal? Price { get; init; }
+        public decimal? Price { get; set; }
 
         public ProvisioningType ProvisioningType { get; set; }
 
@@ -37,5 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public TimeUnit TimeUnit { get; set; }
 
         public CataloguePriceType Type { get; set; }
+
+        public bool IsNewOrder { get; set; }
     }
 }

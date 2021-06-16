@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
@@ -17,6 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [Route("Document/{documentName}")]
         public async Task<IActionResult> GetDocument(string documentName)
         {
+            documentName.ValidateNotNullOrWhiteSpace(nameof(documentName));
+
             var document = await documentService.DownloadDocumentAsync(documentName);
 
             if (document == null)

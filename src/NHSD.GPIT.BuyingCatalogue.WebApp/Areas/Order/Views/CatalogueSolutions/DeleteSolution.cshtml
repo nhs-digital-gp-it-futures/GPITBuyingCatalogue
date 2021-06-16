@@ -11,6 +11,10 @@
             <h2 data-test-id="catalogue-description-title" class="nhsuk-u-margin-bottom-3">Order description</h2>
             <p data-test-id="catalogue-description" class="nhsuk-u-font-size-19">@Model.OrderDescription</p>
             <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
                 <div class="nhsuk-grid-row">
                     <div class="nhsuk-grid-column-two-thirds">
                         <div class="bc-u-inline-block">
