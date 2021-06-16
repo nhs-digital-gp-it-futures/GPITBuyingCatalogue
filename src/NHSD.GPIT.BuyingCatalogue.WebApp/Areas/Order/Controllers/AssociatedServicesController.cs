@@ -29,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectAssociatedServiceModel());
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/associated-service")]
         public IActionResult SelectAssociatedService(string odsCode, string callOffId, SelectAssociatedServiceModel model)
         {
@@ -41,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new NewAssociatedServiceOrderItemModel());
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("neworderitem")]
         public IActionResult NewOrderItem(string odsCode, string callOffId, NewAssociatedServiceOrderItemModel model)
         {
@@ -53,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new EditAssociatedServiceModel());
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{id}")]
         public IActionResult EditAssociatedService(string odsCode, string callOffId, string id, EditAssociatedServiceModel model)
         {
@@ -65,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteAssociatedServiceModel());
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("delete/{id}/confirmation/{serviceName}")]
         public IActionResult DeleteAssociatedService(string odsCode, string callOffId, string id, string serviceName, DeleteAssociatedServiceModel model)
         {

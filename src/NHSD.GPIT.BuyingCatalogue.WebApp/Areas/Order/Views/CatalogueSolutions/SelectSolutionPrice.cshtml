@@ -18,13 +18,13 @@
                 <div id="selectSolutionPrice" data-test-id="question-selectSolutionPrice">
                     <div data-test-id="radiobutton-options">
                         <div class="nhsuk-form-group">
-                            <nhs-fieldset-form asp-for="@Model"
+                            <nhs-fieldset-form-label asp-for="@Model"
                                                label-text="Select list price">
-                                <nhs-radio-buttons asp-for="SelectedPrice"
+                                <nhs-radio-buttons asp-for="@Model.SelectedPrice"
                                                    values="@Model.Prices"
                                                    value-name="CataloguePriceId"
                                                    display-name="Description" />
-                            </nhs-fieldset-form>
+                            </nhs-fieldset-form-label>
                         </div>
                     </div>
                 </div>

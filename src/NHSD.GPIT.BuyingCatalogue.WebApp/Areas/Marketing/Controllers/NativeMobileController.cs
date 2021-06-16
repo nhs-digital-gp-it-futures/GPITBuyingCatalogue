@@ -44,6 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("operating-systems")]
         public async Task<IActionResult> OperatingSystems(OperatingSystemsModel model)
         {
@@ -82,6 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(MobileFirstApproachModel model)
         {
@@ -119,6 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("connectivity")]
         public async Task<IActionResult> Connectivity(ConnectivityModel model)
         {
@@ -156,6 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(MemoryAndStorageModel model)
         {
@@ -194,6 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("third-party")]
         public async Task<IActionResult> ThirdParty(ThirdPartyModel model)
         {
@@ -231,6 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
@@ -268,6 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
