@@ -86,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteOrderModel(odsCode, order));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("delete-order")]
         public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId, DeleteOrderModel model)
         {
@@ -129,6 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new OrderDescriptionModel(odsCode, order));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("description")]
         public async Task<IActionResult> OrderDescription(string odsCode, string callOffId, OrderDescriptionModel model)
         {
@@ -163,6 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new OrderingPartyModel(odsCode, order, organisation));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("ordering-party")]
         public async Task<IActionResult> OrderingParty(string odsCode, string callOffId, OrderingPartyModel model)
         {
@@ -209,6 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new CommencementDateModel(odsCode, callOffId, order.CommencementDate));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("commencement-date")]
         public async Task<IActionResult> CommencementDate(string odsCode, string callOffId, CommencementDateModel model)
         {
@@ -247,6 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new FundingSourceModel(odsCode, callOffId, order.FundingSourceOnlyGms));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("funding-source")]
         public async Task<IActionResult> FundingSource(string odsCode, string callOffId, FundingSourceModel model)
         {

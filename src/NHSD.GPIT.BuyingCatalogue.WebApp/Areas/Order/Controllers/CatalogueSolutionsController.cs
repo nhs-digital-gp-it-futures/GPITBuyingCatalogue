@@ -86,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueSolutionId));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution")]
         public async Task<IActionResult> SelectSolution(string odsCode, string callOffId, SelectSolutionModel model)
         {
@@ -152,6 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectSolutionPriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price")]
         public async Task<IActionResult> SelectSolutionPrice(string odsCode, string callOffId, SelectSolutionPriceModel model)
         {
@@ -199,6 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode, state.IsNewOrder, state.CatalogueSolutionId));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/recipients")]
         public IActionResult SelectSolutionServiceRecipients(string odsCode, string callOffId, SelectSolutionServiceRecipientsModel model)
         {
@@ -246,6 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate, defaultDeliveryDate));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/recipients/date")]
         public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, string callOffId, SelectSolutionServiceRecipientsDateModel model)
         {
@@ -311,6 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, string callOffId, SelectFlatDeclarativeQuantityModel model)
         {
@@ -359,6 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.TimeUnit));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId, SelectFlatOnDemandQuantityModel model)
         {
@@ -408,6 +414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new NewOrderItemModel(odsCode, callOffId, state));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("neworderitem")]
         public async Task<IActionResult> NewOrderItem(string odsCode, string callOffId, NewOrderItemModel model)
         {
@@ -469,6 +476,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new EditSolutionModel(odsCode, callOffId, id, state));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{id}")]
         public async Task<IActionResult> EditSolution(string odsCode, string callOffId, string id, EditSolutionModel model)
         {
@@ -530,6 +538,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteSolutionModel(odsCode, callOffId, id, solutionName, order.Description));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("delete/{id}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName, DeleteSolutionModel model)
         {

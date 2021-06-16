@@ -72,6 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new EditOrganisationModel(organisation));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{id}/edit")]
         public async Task<IActionResult> EditOrganisation(Guid id, EditOrganisationModel model)
         {
@@ -113,6 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new FindOrganisationModel(ods));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("find")]
         public IActionResult Find(FindOrganisationModel model)
         {
@@ -143,6 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new SelectOrganisationModel(organisation));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("find/select")]
         public IActionResult Select(SelectOrganisationModel model)
         {
@@ -171,6 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new CreateOrganisationModel(organisation));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("find/select/create")]
         public async Task<IActionResult> Create(CreateOrganisationModel model)
         {
@@ -214,6 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new AddUserModel(organisation));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{organisationId}/adduser")]
         public async Task<IActionResult> AddUser(Guid organisationId, AddUserModel model)
         {
@@ -274,6 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new UserEnablingModel(organisation, user));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{organisationId}/{userId}/disable")]
         public async Task<IActionResult> UserDisabled(UserDetailsModel model)
         {
@@ -302,6 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new UserEnablingModel(organisation, user));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{organisationId}/{userId}/enable")]
         public async Task<IActionResult> UserEnabled(UserDetailsModel model)
         {
@@ -328,6 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new AddAnOrganisationModel(organisation, availableOrganisations));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("proxy/{organisationId}")]
         public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model)
         {
@@ -359,6 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new RemoveAnOrganisationModel(organisationId, relatedOrganisation));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId, RemoveAnOrganisationModel model)
         {
