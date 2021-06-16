@@ -31,6 +31,7 @@ jobs:
 - job: dockerBuildAndPush
   displayName: Run all tests and build & push docker containers to the ACR
   variables:
+    dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ] 
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
       latestTag: latest
@@ -111,6 +112,45 @@ jobs:
       tags: |
         $(semVer)
         $(latestTag)
+
+- job: buildDatabaseDacpacs
+  displayName: Build all Dacpacs and push
+  variables:    
+    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]   
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latest
+    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}: 
+      latestTag: latestbuild
+
+  dependsOn: dockerBuildAndPush
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: Docker@2
+    displayName: 'Docker: Build Dacpacs'
+    condition: succeeded()
+    inputs:
+      containerRegistry: 'gpitfuturesdevacr'
+      repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+      command: 'build'
+      Dockerfile: 'database/**/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile.Pipeline'
+      buildContext: './'
+      tags: |
+        $(semVer)
+        $(latestTag)
+
+  - pwsh: |
+      $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
+      docker create --name dacpaccontainer $id      
+      mkdir $(Build.ArtifactStagingDirectory)/dacpacs
+      docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
+      docker rm dacpaccontainer
+    displayName: 'Copy DACPACs'
+
+  - publish: $(build.artifactStagingDirectory)/dacpacs
+    artifact: dacpacs
+  
 - job: createBuildArtifact
   displayName: Create Build Artifact
   dependsOn: dockerBuildAndPush
@@ -126,5 +166,5 @@ jobs:
       CleanTargetFolder: false
       OverWrite: true
 
-  - publish: $(build.artifactStagingDirectory)
+  - publish: $(build.artifactStagingDirectory)/terraform
     artifact: build-artifact 
