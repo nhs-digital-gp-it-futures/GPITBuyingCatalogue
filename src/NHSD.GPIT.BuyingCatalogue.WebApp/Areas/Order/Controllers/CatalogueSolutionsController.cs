@@ -71,6 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = new CreateOrderItemModel
             {
+                IsNewOrder = true,
                 CommencementDate = order.CommencementDate,
                 SupplierId = order.SupplierId,
                 CatalogueItemType = CatalogueItemType.Solution,
@@ -105,8 +106,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.CatalogueItemName = solution.Name;
             SetStateModel(state);
 
+            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+
+            if (prices.Count == 1)
+            {
+                SetPrice(prices.Single());
+
+                return RedirectToAction(
+                    actionName: nameof(SelectSolutionServiceRecipients),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId });
+            }
+
             // TODO -- apears in old version that is this solution is already present, it jumps straight to the editor for that solution
-            // TODO -- if there is only one price then jump straight to SelectSolutionServiceRecipients
             return RedirectToAction(
                 actionName: nameof(SelectSolutionPrice),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -147,17 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var cataloguePrice = solution.CataloguePrices.Single(x => x.CataloguePriceId == model.SelectedPrice);
 
-            state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
-            state.CurrencyCode = cataloguePrice.CurrencyCode;
-            state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
-            state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
-            if (cataloguePrice.TimeUnit != null)
-                state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
-            state.Price = cataloguePrice.Price;
-            state.PriceId = cataloguePrice.CataloguePriceId;
-            state.EstimationPeriod = TimeUnit.PerYear;
-
-            SetStateModel(state);
+            SetPrice(cataloguePrice);
 
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipients),
@@ -177,12 +179,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (state.ServiceRecipients == null)
             {
-                var recpients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recpients.Select(x => new OrderItemRecipientModel(x)).ToList();
+                var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+                state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
                 SetStateModel(state);
             }
 
-            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode));
+            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode, state.IsNewOrder, state.CatalogueSolutionId));
         }
 
         [HttpPost("select/solution/price/recipients")]
@@ -203,7 +205,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             SetStateModel(state);
 
-            // TODO - if we came from the EditSolution page then we should go back to it rather than the date page
+            if (!state.IsNewOrder)
+            {
+                return RedirectToAction(
+                    actionName: nameof(EditSolution),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId, id = state.CatalogueSolutionId });
+            }
+
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipientsDate),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -335,7 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
-            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
+            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.TimeUnit));
         }
 
         [HttpPost("select/solution/price/flat/ondemand")]
@@ -358,9 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = GetStateModel();
 
             state.Quantity = quantity;
-
-            // TODO - also get the time unit details
-            state.TimeUnit = TimeUnit.PerMonth;
+            state.TimeUnit = TimeUnit.Parse(model.TimeUnit);
 
             state.ServiceRecipients.All(c =>
             {
@@ -427,6 +434,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             // TODO - handle errors
             var result = await orderItemService.Create(callOffId, state);
 
+            sessionService.ClearSession();
+
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -441,11 +450,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            var orderItem = await orderItemService.GetOrderItem(callOffId, id);
+            await InitialiseStateForEdit(odsCode, callOffId, id);
 
-            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
+            var state = GetStateModel();
 
-            return View(new EditSolutionModel(odsCode, callOffId, id, solution.Name));
+            return View(new EditSolutionModel(odsCode, callOffId, id, state));
         }
 
         [HttpPost("{id}")]
@@ -457,6 +466,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
+            // MJRTODO - Save. Should be similar to NewOrderItem
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -519,6 +529,69 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private void SetStateModel(CreateOrderItemModel state)
         {
             sessionService.SetObject("CatalogueItemState", state);
+        }
+
+        private void SetPrice(EntityFramework.Models.GPITBuyingCatalogue.CataloguePrice cataloguePrice)
+        {
+            var state = GetStateModel();
+
+            state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
+            state.CurrencyCode = cataloguePrice.CurrencyCode;
+            state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
+            state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
+            if (cataloguePrice.TimeUnit != null)
+                state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
+            state.Price = cataloguePrice.Price;
+            state.PriceId = cataloguePrice.CataloguePriceId;
+            state.EstimationPeriod = TimeUnit.PerYear;
+
+            SetStateModel(state);
+        }
+
+        private async Task InitialiseStateForEdit(string odsCode, string callOffId, string catalogueSolutionId)
+        {
+            // MJRTODO - If we already have state related to this edit then don't re-populate it
+            // For example if I add another service recipient it is in state so should not be trashed here
+            var order = await orderService.GetOrder(callOffId);
+
+            // MJRTODO - Does orderItem have enough info to negate need to call GetOrder above
+            var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueSolutionId);
+
+            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
+
+            var state = new CreateOrderItemModel
+            {
+                IsNewOrder = false,
+                CommencementDate = order.CommencementDate,
+                SupplierId = order.SupplierId,
+                CatalogueItemType = CatalogueItemType.Solution,
+                CatalogueSolutionId = orderItem.CatalogueItemId.ToString(),
+                CatalogueItemName = solution.Name,
+                Price = orderItem.Price,
+                ItemUnit = new ItemUnitModel(), // TODO
+                TimeUnit = orderItem.TimeUnit,
+                ProvisioningType = orderItem.ProvisioningType,
+            };
+
+            var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+            state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
+
+            foreach (var serviceRecipient in state.ServiceRecipients)
+            {
+                var orderRecipient = orderItem.OrderItemRecipients.FirstOrDefault(x => x.OdsCode.EqualsIgnoreCase(serviceRecipient.OdsCode));
+
+                if (orderRecipient != null)
+                {
+                    serviceRecipient.Checked = true;
+                    serviceRecipient.Quantity = orderRecipient.Quantity;
+                    serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
+                }
+
+                if (orderItem.OrderItemRecipients.Any(x => x.OdsCode == serviceRecipient.OdsCode))
+                    serviceRecipient.Checked = true;
+            }
+
+            SetStateModel(state);
         }
     }
 }

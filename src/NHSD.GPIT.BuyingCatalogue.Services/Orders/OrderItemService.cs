@@ -49,7 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);
             var pricingUnit = await AddOrUpdatePricingUnit(model);
 
-            // TODO - this doesn't appear to be set. Not sure how legacy is dealing with it, but it does set it
             var defaultDeliveryDate = order.DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
             var estimationPeriod = model.CatalogueItemType.InferEstimationPeriod(model.ProvisioningType, model.EstimationPeriod);
 

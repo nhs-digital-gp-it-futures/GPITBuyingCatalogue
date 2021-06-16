@@ -46,7 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     routeValues: new { odsCode, callOffId });
             }
 
-            return View(new SupplierModel(odsCode, order));
+            var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
+
+            return View(new SupplierModel(odsCode, order, supplier.SupplierContacts));
         }
 
         [HttpPost]

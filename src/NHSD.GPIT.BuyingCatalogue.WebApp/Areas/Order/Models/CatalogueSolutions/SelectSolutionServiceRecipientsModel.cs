@@ -10,9 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectSolutionServiceRecipientsModel(string odsCode, string callOffId, string solutionName, IList<OrderItemRecipientModel> serviceRecipients, string selectionMode)
+        public SelectSolutionServiceRecipientsModel(string odsCode, string callOffId, string solutionName, IList<OrderItemRecipientModel> serviceRecipients, string selectionMode, bool isNewOrder, string catalogueSolutionId)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution";
+            if (isNewOrder)
+                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution";
+            else
+                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/{catalogueSolutionId}";
+
             BackLinkText = "Go back";
             Title = $"Service Recipients for {solutionName} for {callOffId}";
             OdsCode = odsCode;
