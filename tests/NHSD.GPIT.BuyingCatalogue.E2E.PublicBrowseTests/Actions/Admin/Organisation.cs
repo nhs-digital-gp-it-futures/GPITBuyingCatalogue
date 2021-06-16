@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
-    internal class Organisation : ActionBase
+    internal sealed class Organisation : ActionBase
     {
         public Organisation(IWebDriver driver) : base(driver)
         {

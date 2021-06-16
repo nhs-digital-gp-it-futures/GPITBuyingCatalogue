@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
-    internal class Dashboard : ActionBase
+    internal sealed class Dashboard : ActionBase
     {
         public Dashboard(IWebDriver driver) : base(driver)
         {
