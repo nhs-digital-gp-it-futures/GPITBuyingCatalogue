@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Address
 {
@@ -12,6 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Addres
     {
         public HtmlString Invoke(EntityFramework.Models.Ordering.Address address)
         {
+            if (address is null)
+                throw new ArgumentNullException(nameof(address));
+
             return new HtmlString(ProcessAdressBreakRowSeperatedString(address));
         }
 
@@ -31,10 +34,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Addres
 
             var builder = new TagBuilder("p");
 
+            var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
+
             foreach (string value in values)
             {
                 builder.InnerHtml.Append(value);
-                builder.InnerHtml.AppendHtmlLine("<br/>");
+                builder.InnerHtml.AppendHtml(breakRow);
             }
 
             using var writer = new System.IO.StringWriter();
