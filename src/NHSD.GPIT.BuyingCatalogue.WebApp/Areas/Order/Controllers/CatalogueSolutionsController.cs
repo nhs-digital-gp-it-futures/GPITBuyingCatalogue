@@ -630,6 +630,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 TimeUnit = orderItem.TimeUnit,
                 ProvisioningType = orderItem.ProvisioningType,
                 CurrencyCode = orderItem.CurrencyCode,
+                EstimationPeriod = orderItem.EstimationPeriod,
+                PriceId = orderItem.PriceId,
             };
 
             var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
