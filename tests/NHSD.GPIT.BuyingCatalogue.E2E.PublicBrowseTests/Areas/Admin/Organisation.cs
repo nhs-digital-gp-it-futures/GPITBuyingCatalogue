@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using Xunit;
 
@@ -58,6 +59,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         {
             AdminPages.Organisation.AddRelatedOrganisationButtonDisplayed().Should().BeTrue();
             AdminPages.Organisation.RelatedOrganisationTableDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        public void Organisation_AddUser()
+        {
+            AdminPages.Organisation.ClickAddUserButton();
+
+            var user = GenerateUser.Generate();
+
+            AdminPages.AddUser.EnterFirstName(user.FirstName);
+            AdminPages.AddUser.EnterLastName(user.LastName);
+            AdminPages.AddUser.EnterTelephoneNumber(user.TelephoneNumber);
+            AdminPages.AddUser.EnterEmailAddress(user.EmailAddress);
+
+            // Same info for the Save functionality on the add user page
+            AdminPages.AddUser.ClickAddUserButton();
+
+            var confirmationMessage = AdminPages.AddUser.GetConfirmationMessage();
+
+            confirmationMessage.Should().BeEquivalentTo($"{user.FirstName} {user.LastName} account added");
         }
 
         private static JsonSerializerOptions JsonOptions()

@@ -42,6 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return ElementDisplayed(Objects.Admin.OrganisationObjects.RelatedOrgsTable);
         }
 
+        internal void ClickAddUserButton()
+        {
+            Driver.FindElement(Objects.Admin.OrganisationObjects.AddUserButton).Click();
+        }
+
         private bool ElementDisplayed(By by)
         {
             try
