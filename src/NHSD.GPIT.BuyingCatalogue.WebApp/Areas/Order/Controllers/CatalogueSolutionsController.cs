@@ -95,6 +95,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
+
+            if (existingOrder != null)
+            {
+                return RedirectToAction(
+                    actionName: nameof(EditSolution),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId, id = model.SelectedSolutionId });
+            }
+
             var state = GetStateModel();
 
             if (!ModelState.IsValid)
@@ -499,7 +509,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             sessionService.ClearSession();
 
-            // MJRTODO - Save. Should be similar to NewOrderItem
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -612,6 +621,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 ItemUnit = new ItemUnitModel { Name = orderItem.PricingUnitNameNavigation.Name, Description = orderItem.PricingUnitNameNavigation.Description },
                 TimeUnit = orderItem.TimeUnit,
                 ProvisioningType = orderItem.ProvisioningType,
+                CurrencyCode = orderItem.CurrencyCode,
             };
 
             var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
@@ -623,7 +633,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
                 if (orderRecipient != null)
                 {
-                    serviceRecipient.Checked = true;
+                    serviceRecipient.Selected = true;
                     serviceRecipient.Quantity = orderRecipient.Quantity;
                     serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
                 }
