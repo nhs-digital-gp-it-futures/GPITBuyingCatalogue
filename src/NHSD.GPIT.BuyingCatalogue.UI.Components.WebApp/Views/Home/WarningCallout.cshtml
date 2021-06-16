@@ -1,0 +1,66 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
+@{
+    ViewData["Title"] = "Warning Callout";
+}
+
+<nhs-page-title title="Warning Callout"
+                caption="Tag Helper"
+                advice="Use a warning callout to help users identify and understand warning content on the page, even if they do not read the whole page."
+                additional-advice="This page is rendered from WarningCallout.cshtml using the BlankModel." />
+
+<nhs-warning-callout label-text="This is a Warning Callout">
+    And it Contains a Warning.
+</nhs-warning-callout>
+
+
+<p>Warning Callouts are a type of "wrapper tag". This means that this tag can wrap around any arbitrary mixture of raw Html and View Components to generate the content it encapsulates.</p>
+
+<nhs-warning-callout label-text="This Warning Callout Wraps Around Html and Action Link">
+    <p>You should read about warning callouts</p>
+    <vc:nhs-action-link url="warning-callout" text="Go Here to Read about Warning Callouts" />
+</nhs-warning-callout>
+
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text=" Code Example of the Warning Callout"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-warning-callout label-text</span>
+        <span class="vs-light-theme-blue"> ="This Warning Callout Wraps Around Html and Action Link"</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">p</span>
+        <span class="vs-light-theme-blue">&gt;You should read about warning callouts&lt;</span>
+        <span class="vs-light-theme-purple">/p</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-action-link url</span>
+        <span class="vs-light-theme-blue"> ="warning-callout"</span><br />
+        <span class="vs-light-theme-purple second-layer">text</span>
+        <span class="vs-light-theme-blue"> ="Go Here to Read about Warning Callouts" /&gt;</span><br />
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">/nhs-warning-callout</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes For Warning Callout">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">label-text</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>Setting this Attribute will add a Title to the top of the Warning Callout</p>
+            <p>If not set, it will default to no title.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated: 14 June 2021
+</nhs-endnote>
+
+
+

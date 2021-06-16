@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@Model.Title" title-advice="Explain how you’re paying for this order" />
+            <nhs-page-title title="@Model.Title" advice="Explain how you’re paying for this order" />
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
@@ -17,10 +17,10 @@
                 <div id="selectFundingSource" data-test-id="question-selectFundingSource">
                     <div data-test-id="radiobutton-options">
                         <div class="nhsuk-form-group">                            
-                            <nhs-fieldset-form asp-for="@Model"
+                            <nhs-fieldset-form-label asp-for="@Model"
                                                label-text="Are you paying for this order in full using your GP IT Futures centrally held funding allocation?">
                                 <nhs-yesno-radio-buttons asp-for="@Model.FundingSourceOnlyGms" />
-                            </nhs-fieldset-form>                           
+                            </nhs-fieldset-form-label>                           
                         </div>
                     </div>
                 </div>

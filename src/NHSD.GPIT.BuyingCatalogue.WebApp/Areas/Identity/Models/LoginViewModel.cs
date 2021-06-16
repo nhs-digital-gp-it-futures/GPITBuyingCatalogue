@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.Components.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 {

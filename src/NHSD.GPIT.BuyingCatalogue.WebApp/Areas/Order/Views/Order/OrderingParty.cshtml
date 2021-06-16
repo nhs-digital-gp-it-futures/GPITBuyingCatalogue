@@ -15,7 +15,7 @@
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <nhs-validation-summary />
-                <nhs-page-title title="@Model.Title" title-advice="Check the organisation information and edit details for the primary contact for this order." />
+                <nhs-page-title title="@Model.Title" advice="Check the organisation information and edit details for the primary contact for this order." />
 
                 <h2 data-test-id="organisation-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Organisation name</h2>
                 <div data-test-id="organisation-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OrganisationName</div>
@@ -51,13 +51,13 @@
                 <h2 data-test-id="primary-contact-details-heading" class="nhsuk-u-font-size-32 nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-3">Primary contact’s details</h2>
                 
                 <div data-test-id="multi-question-questions">
-                    <nhs-validation-input asp-for="@Model.Contact.FirstName"
+                    <nhs-input asp-for="@Model.Contact.FirstName"
                                           label-text="First name" />
-                    <nhs-validation-input asp-for="@Model.Contact.LastName"
+                    <nhs-input asp-for="@Model.Contact.LastName"
                                           label-text="Last name" />
-                    <nhs-validation-input asp-for="@Model.Contact.EmailAddress"
+                    <nhs-input asp-for="@Model.Contact.EmailAddress"
                                           label-text="Email address" />
-                    <nhs-validation-input asp-for="@Model.Contact.TelephoneNumber"
+                    <nhs-input asp-for="@Model.Contact.TelephoneNumber"
                                           label-text="Phone number" />
                 </div>
 

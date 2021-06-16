@@ -12,11 +12,11 @@
         <nhs-validation-summary />
         <nhs-page-title
             title="Catalogue Solution integrations"
-            title-advice="Describe any systems your Catalogue Solution integrates with to exchange data." />
+            advice="Describe any systems your Catalogue Solution integrates with to exchange data." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-validation-input asp-for="Link"
+            <nhs-input asp-for="Link"
                                   label-text="Link to supplier asserted integrations (optional)"
                                   label-hint="Provide a URL to a page that gives information about your own integrations. They may only allow your Catalogue Solution to partially integrate with other systems." />
             <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">

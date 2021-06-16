@@ -1,0 +1,109 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.DateInputModel
+@{
+    ViewData["Title"] = "Date Input";
+}
+
+<nhs-page-title title="Date Input"
+                advice="Use date input to help users enter a memorable date, like their date of birth."
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from DateInput.cshtml using the DateInputModel" />
+
+<nhs-fieldset-form-label asp-for="@Model"
+                         label-text="This is a date input" >
+    <nhs-date-input asp-for="@Model"
+                    day="Day"
+                    month="Month"
+                    year="Year" />
+</nhs-fieldset-form-label>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Date Input"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span>
+        <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span>
+        <span class="vs-light-theme-blue">="This is a date input"&nbsp;</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-date-input</span><br />
+        <span class="vs-light-theme-purple second-layer">asp-for</span>
+        <span class="vs-light-theme-blue">"@@Model"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">day</span>
+        <span class="vs-light-theme-blue">="Day"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">month</span>
+        <span class="vs-light-theme-blue">="Month"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">year</span>
+        <span class="vs-light-theme-blue">="Year"&nbsp;</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br/>
+
+
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+        <span class="vs-light-theme-blue">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<p>Date inputs require a reference to all the string fields that will store the date values for Day, Month and Year.</p>
+<p>It also requires a reference to the full model itself. This is because it is required by the Tag Helper to set a correct Id.</p>
+
+<nhs-inset-text>
+    <p>The Error handling requires that the Day field is set to be in error. this will then propogate to all other fields.</p>
+    <p>So Errors will need to be set in the controller (regardless of field) against the Day Property.</p>
+    <p>This is due to the Error display requirements set down by the NHS.</p>
+</nhs-inset-text>
+
+<p>Label Text is handed by the &lt;nhs-fieldset-label&gt; Tag Helper. You can read more about the fieldsets requirements here:</p>
+
+<vc:nhs-action-link url="fieldsets" text="Read more about Fieldsets"/>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This needs to be set a full reference to the model. so should always be @@Model.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>Day</nhs-table-cell>
+        <nhs-table-cell>
+            <p>A Reference to a string property that will store the day value</p>
+            <p>Applying the error state to this property will apply the error correct to all the other propertys that make up a date</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>Month</nhs-table-cell>
+        <nhs-table-cell>
+            <p>A Reference to a string property that will store the Month value</p>
+            <p>Setting an error on this property will NOT propogate the error correctly to the rest of the input</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>Year</nhs-table-cell>
+        <nhs-table-cell>
+            <p>A Reference to a string property that will store the Year value</p>
+            <p>Setting an error on this property will NOT propogate the error correctly to the rest of the input</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated: 11 June 2021
+</nhs-endnote>
+
+

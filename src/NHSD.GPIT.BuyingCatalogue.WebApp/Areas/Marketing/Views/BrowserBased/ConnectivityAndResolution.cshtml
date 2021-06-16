@@ -11,16 +11,16 @@
         <nhs-validation-summary />
         <nhs-page-title
             title="Browser-based application – connectivity and resolution"
-            title-advice="Let buyers know the connection speed and screen resolution needed to use your Catalogue Solution." />
+            advice="Let buyers know the connection speed and screen resolution needed to use your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-validation-select asp-for="SelectedConnectionSpeed"
+            <nhs-select asp-for="SelectedConnectionSpeed"
                                    asp-items="@(new SelectList(Model.ConnectionSpeeds,"Value","Text"))"
                                    label-text="Connection speed"
                                    label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
 
-            <nhs-validation-select asp-for="SelectedScreenResolution"
+            <nhs-select asp-for="SelectedScreenResolution"
                                    asp-items="@(new SelectList(Model.ScreenResolutions,"Value","Text"))"
                                    label-text="Screen resolution and aspect ratio (optional)"
                                    label-hint="Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function on desktop." />

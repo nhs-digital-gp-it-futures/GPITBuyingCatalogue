@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.TagHelpers
 
             if (ViewContext.ViewData.ModelState.IsValid)
             {
-                output.Content.Clear();
+                output.SuppressOutput();
                 return;
             }
 

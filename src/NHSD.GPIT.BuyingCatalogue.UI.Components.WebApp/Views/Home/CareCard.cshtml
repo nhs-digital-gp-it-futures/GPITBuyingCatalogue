@@ -1,0 +1,159 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.CareCardModel
+@{
+    ViewData["Title"] = "Card Cards";
+}
+
+<nhs-page-title title="Care Cards"
+                advice="Use care cards to help users identify and understand the sort of care they need, who to contact and how quickly."
+                caption="View Components"
+                additional-advice="This page is rendered from CareCare.cshtml using the CareCardModel.
+                This model has been initialised in the controller." />
+
+<p>There are Three Types of CareCard: non-urgent, urgent and immediate</p>
+
+
+<vc:nhs-care-card title="This is the Non-Urgent Test Care Card Title"
+                  list-options="@Model.Options"
+                  footer="This is the Non-Urgent Footer"
+                  display-type="NonUrgent" />
+
+
+<vc:nhs-care-card title="This is the Urgent Test Care Card Title"
+                  list-options="@Model.Options"
+                  footer="This is the Urgent Footer"
+                  display-type="Urgent" />
+
+<vc:nhs-care-card title="This is the Immediate Care Card Title"
+                  list-options="@Model.Options"
+                  footer="This is the Immediate Footer"
+                  display-type="Immediate" />
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for a non-urgent CareCard"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-care-card <br />title</span>
+        <span class="vs-light-theme-blue">="This is the Non-Urgent Test Care Card"&nbsp;</span><br />
+        <span class="vs-light-theme-purple">list-options</span>
+        <span class="vs-light-theme-blue">="@@Model.Options"&nbsp;</span><br />
+        <span class="vs-light-theme-purple">footer</span>
+        <span class="vs-light-theme-blue">="This is the Non-Urgent Footer"&nbsp;</span><br />
+        <span class="vs-light-theme-purple">display-type</span>
+        <span class="vs-light-theme-blue">="NonUrgent"&nbsp;</span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">
+            title
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>Setting this attribute will set the text displayed in the Title.</p>
+            <p>If you do not wish to display a title, set the title attribute to an empty string.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>list-options</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This takes in a List&lt;string&gt; where each string will become one row in the list.</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>footer</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will set the text displayed in the footer of the Care Card.</p>
+            <p>If you do not wish for a footer, set the footer attribute to an empty string</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>
+            display-type
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will change the css class applied to the Care Card.</p>
+            <p>There are only 3 Options.</p>
+            <ul>
+                <li>NonUrgent</li>
+                <li>Urgent</li>
+                <li>Immediate</li>
+            </ul>
+            <p>This is powered by an Enum inside the View Component. So setting this to a different value will cause a Compile Error.</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<p style="margin-bottom:30px;"></p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             size="Medium"
+                             label-text="Example of the Model">
+
+    <span>var model = new CareCardModel()</span><br />
+    <span>{</span><br />
+    <span>&nbsp;  Options = new List&lt;string&gt;</span><br/>
+    <span>&nbsp;{</span><br/>
+    <span>&nbsp;&nbsp;"This is the first option",</span><br/>
+    <span>&nbsp;&nbsp;"This is the second option",</span><br/>
+    <span>&nbsp;&nbsp;"This is the third option",</span><br/>
+    <span>&nbsp;},</span><br/>
+    <span> };</span><br/>
+
+</nhs-fieldset-form-container>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Example of non-urgent Care Card with No Title or Footer">
+    <vc:nhs-care-card title=""
+                      list-options="@Model.Options"
+                      footer=""
+                      display-type="NonUrgent" />
+
+</nhs-fieldset-form-container>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the Above Care Card"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-care-card <br />title</span>
+        <span class="vs-light-theme-blue">=""&nbsp;</span><br />
+        <span class="vs-light-theme-purple">list-options</span>
+        <span class="vs-light-theme-blue">="@@Model.Options"&nbsp;</span><br />
+        <span class="vs-light-theme-purple">footer</span>
+        <span class="vs-light-theme-blue">=""&nbsp;</span><br />
+        <span class="vs-light-theme-purple">display-type</span>
+        <span class="vs-light-theme-blue">="NonUrgent"&nbsp;</span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-warning-callout label-text="Changes for .Net 6">
+    <p>
+        Due to the fact that View Components do not allow optional attributes, all the attributes on this view Component are Required.
+    </p>
+    <p>This has been fixed for .Net 6.</p>
+    <p>
+        So in .Net 6, the title and footer attributes will become optional instead of required.
+    </p>
+</nhs-warning-callout>
+
+
+<nhs-endnote>
+    Page last Updated 10 June 2021
+</nhs-endnote>
+
+

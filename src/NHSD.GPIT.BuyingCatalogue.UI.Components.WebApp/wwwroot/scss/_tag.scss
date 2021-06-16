@@ -1,0 +1,28 @@
+.bc-c-tag {
+    background-color: $color_nhsuk-blue;
+    color: $color_nhsuk-white;
+    font-weight: 600;
+    padding: nhsuk-spacing(1) nhsuk-spacing(3);
+}
+
+.bc-c-tag-outline {
+    background-color: transparent;
+    border: 2px solid $color_nhsuk-blue;
+    color: $color_nhsuk-blue;
+    display: inline-block;
+    padding: nhsuk-spacing(1) nhsuk-spacing(3);
+}
+
+.bc-c-tag-foundation {
+    @extend .bc-c-tag;
+    background: none;
+    border: solid 2px $color_nhsuk-blue;
+    color: $color_nhsuk-blue;
+    display: inline-block;
+}
+
+.bc-c-tag-beta {
+    @extend .bc-c-tag;
+    float: left;
+    margin: nhsuk-spacing(2) nhsuk-spacing(3) 0;
+}
