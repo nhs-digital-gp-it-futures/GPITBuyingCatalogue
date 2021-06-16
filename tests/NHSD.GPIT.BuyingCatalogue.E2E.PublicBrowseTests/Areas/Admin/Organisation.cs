@@ -73,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             AdminPages.AddUser.EnterTelephoneNumber(user.TelephoneNumber);
             AdminPages.AddUser.EnterEmailAddress(user.EmailAddress);
 
-            // Same info for the Save functionality on the add user page
             AdminPages.AddUser.ClickAddUserButton();
 
             var confirmationMessage = AdminPages.AddUser.GetConfirmationMessage();
