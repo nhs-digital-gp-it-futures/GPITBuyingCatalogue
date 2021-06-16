@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
         public void SetObject(string key, object value)
         {
-            session.SetString(key, JsonConvert.SerializeObject(value));            
+            session.SetString(key, JsonConvert.SerializeObject(value));
         }
 
         public void ClearSession()
