@@ -131,7 +131,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     routeValues: new { odsCode, callOffId });
             }
 
-            // TODO -- apears in old version that is this solution is already present, it jumps straight to the editor for that solution
             return RedirectToAction(
                 actionName: nameof(SelectSolutionPrice),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
