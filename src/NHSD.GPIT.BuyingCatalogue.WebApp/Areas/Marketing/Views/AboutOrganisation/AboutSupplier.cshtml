@@ -10,16 +10,16 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="About supplier"
-                        title-advice="Help buyers learn more about your organisation." />
+                        advice="Help buyers learn more about your organisation." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.SupplierId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-validation-textarea asp-for="Description"
+            <nhs-textarea asp-for="Description"
                                      label-text="Description (optional)"
                                      label-hint="Provide information about your organisation, for example its ethos, experience and plans for the future."
                                      number-of-rows="10" />
-            <nhs-validation-input asp-for="Link"
+            <nhs-input asp-for="Link"
                                   label-text="Link to more information (optional)"
                                   label-hint="Provide a URL to a page that gives buyers further information about your organisation." />
             <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">

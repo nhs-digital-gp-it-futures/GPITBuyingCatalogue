@@ -1,0 +1,279 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
+@{
+    ViewData["Title"] = "Tags";
+}
+
+<nhs-page-title title="Tags"
+                caption="Tag Helper"
+                advice="when it's possible for something to have more than 1 status and it's useful for the user to know about that status."
+                additional-advice="This page is rendered from Tags.cshtml using the BlankModel." />
+
+<p>Tags are simple colour blocks that can be used to show a status.</p>
+<p>As defined by the NHS there are two wayts to use them</p>
+<ul>
+    <li>For Two (Binary) Statuses</li>
+    <li>Multiple Statuses</li>
+</ul>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Binary Statuses"
+                             size="ExtraLarge">
+
+    <nhs-table>
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Status">
+                Active
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Tag">
+                <nhs-tag text="Active" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>
+                Inactive
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Inactive" colour="Grey" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+    <p style="margin-top:30px;">For the Above Tags, They use the DarkBlue and Grey Colours in a Table</p>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text=" Code Example of the Above Table"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Active" </span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Inactive" </span>
+            <span class="vs-light-theme-purple">colour</span>
+            <span class="vs-light-theme-blue"> ="Grey" </span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+        </div>
+    </nhs-fieldset-form-container>
+
+    <nhs-table label-text="Attributes For Tag">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">text</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>This Attribute defines the text shown inside of the tag</p>
+                <p>While not techincally required, tags without text look awful, as shown below:</p>
+                <nhs-tag />
+                <nhs-tag colour="Orange" />
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>colour</nhs-table-cell>
+            <nhs-table-cell>
+                <p>Sets the Colour of this tag. The List of available colours is defined in the next section.</p>
+                <p>This value is driven by a TagColour Enum, meaning if you input a non-existant value, it will casue an error at compile time to compile correctly.</p>
+                <p>Defaults to Dark Blue</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+</nhs-fieldset-form-container>
+
+
+
+
+
+
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Multiple Statuses"
+                             size="ExtraLarge">
+    <p>The Nhs Defines a List of Preset Colours for Tags, as Listed Here</p>
+    <p>When no Colour is supplied, then it defaults to Dark Blue.</p>
+    <ul>
+        <li><nhs-tag text="No Colour Attribute" /></li>
+        <li><nhs-tag text="Dark Blue" colour="DarkBlue" /></li>
+        <li><nhs-tag text="White" colour="White" /></li>
+        <li><nhs-tag text="Grey" colour="Grey" /></li>
+        <li><nhs-tag text="Green" colour="Green" /></li>
+        <li><nhs-tag text="Aqua Green" colour="AquaGreen" /></li>
+        <li><nhs-tag text="Blue" colour="Blue" /></li>
+        <li><nhs-tag text="Purple" colour="Purple" /></li>
+        <li><nhs-tag text="Pink" colour="Pink" /></li>
+        <li><nhs-tag text="Red" colour="Red" /></li>
+        <li><nhs-tag text="Orange" colour="Orange" /></li>
+        <li><nhs-tag text="Yellow" colour="Yellow" /></li>
+    </ul>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text=" Code Example of the Above List"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="No Colour Attribute"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Dark Blue"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="DarkBlue"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="White"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="White"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Grey"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Grey"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Green"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Green"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Aqua Green"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="AquaGreen"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Blue"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Blue"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Purple"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Purple"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Pink"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Pink"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Red"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Red"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Orange"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Orange"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">li</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-tag text</span>
+            <span class="vs-light-theme-blue"> ="Yellow"</span>
+            <span class="vs-light-theme-purple">Colour</span>
+            <span class="vs-light-theme-blue"> ="Yellow"</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">/li</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+        </div>
+    </nhs-fieldset-form-container>
+
+
+</nhs-fieldset-form-container>
+
+<nhs-endnote>
+    Page last Updated: 14 June 2021
+</nhs-endnote>

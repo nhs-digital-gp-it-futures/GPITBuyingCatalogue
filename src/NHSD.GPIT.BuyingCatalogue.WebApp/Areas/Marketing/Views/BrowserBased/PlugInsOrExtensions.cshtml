@@ -10,16 +10,16 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="Browser-based application – plug-ins or extensions required"
-                        title-advice="Let buyers know if any plug-ins or extensions are needed to use your Catalogue Solution." />
+                        advice="Let buyers know if any plug-ins or extensions are needed to use your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-fieldset-form asp-for="@Model"
+            <nhs-fieldset-form-label asp-for="@Model"
                                label-text="Plug-ins or extensions required"
                                label-hint="Does a device using your Catalogue Solution require plug-ins or extensions that customise its browsers or software to function?">
             <nhs-yesno-radio-buttons asp-for="@Model.PlugInsRequired" />
-            </nhs-fieldset-form>
-            <nhs-validation-textarea asp-for="AdditionalInformation"
+            </nhs-fieldset-form-label>
+            <nhs-textarea asp-for="AdditionalInformation"
                                      label-text="Additional information (optional)"
                                      label-hint="If your Catalogue Solution uses plug-ins or extensions, provide more information about them for buyers."
                                      number-of-rows="5" />
