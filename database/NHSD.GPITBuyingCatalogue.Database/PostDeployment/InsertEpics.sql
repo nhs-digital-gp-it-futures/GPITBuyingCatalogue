@@ -4,7 +4,8 @@
     [Name] nvarchar(150) NOT NULL,
     CapabilityId uniqueidentifier NOT NULL,
     CompliancyLevelId int NULL,
-    Active bit NOT NULL
+    Active bit NOT NULL,
+    SupplierDefined bit DEFAULT 0 NOT NULL
 );
 
 DECLARE @capabilityId AS uniqueidentifier = (SELECT Id FROM Capability WHERE CapabilityRef = 'C1');
@@ -663,6 +664,23 @@ VALUES
 ('E00074', 'disable and enable video during a group Video Consultation', @capabilityId, 3, 1),
 ('E00087', 'retain attachments (file and images) received during Video Consultation in the Patient Record', @capabilityId, 3, 1),
 ('E00088', 'SNOMED code Video Consultation', @capabilityId, 3, 1);
+
+IF '$(INSERT_TEST_DATA)' = 'True'
+BEGIN
+    SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C43');
+
+    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
+    VALUES
+    ('S020X01E01', 'Supplier-defined epic 1', @capabilityId, 3, 1, 1),
+    ('S020X01E02', 'Supplier-defined epic 2', @capabilityId, 3, 1, 1);
+
+    SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C44');
+
+    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+    VALUES
+    ('S020X01E03', 'Supplier-defined epic 3', @capabilityId, 3, 1, 1),
+    ('S020X01E04', 'Supplier-defined epic 4', @capabilityId, 3, 1, 1);
+END;
 
 MERGE INTO dbo.Epic AS TARGET
 USING #Epics AS SOURCE

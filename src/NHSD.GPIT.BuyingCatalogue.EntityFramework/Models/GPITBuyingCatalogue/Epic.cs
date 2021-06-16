@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class Epic
+    public sealed class Epic
     {
         public Epic()
         {
@@ -24,10 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public bool Active { get; set; }
 
-        public virtual Capability Capability { get; set; }
+        public bool SupplierDefined { get; set; }
 
-        public virtual CompliancyLevel CompliancyLevel { get; set; }
+        public Capability Capability { get; set; }
 
-        public virtual ICollection<SolutionEpic> SolutionEpics { get; set; }
+        public CompliancyLevel CompliancyLevel { get; set; }
+
+        public ICollection<SolutionEpic> SolutionEpics { get; set; }
     }
 }
