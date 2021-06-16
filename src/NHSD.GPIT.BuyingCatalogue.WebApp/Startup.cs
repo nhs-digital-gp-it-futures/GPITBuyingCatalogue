@@ -4,13 +4,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
@@ -40,11 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
             });
 
-            var healthChecksBuilder = services.AddHealthChecks();
-
             services.ConfigureCookiePolicy();
 
-            services.ConfigureDbContexts(healthChecksBuilder);
+            services.ConfigureDbContexts();
 
             services.ConfigureSession();
 
@@ -60,11 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureRegistration(Configuration);
 
-            services.ConfigureAzureBlobStorage(Configuration, healthChecksBuilder);
+            services.ConfigureAzureBlobStorage(Configuration);
 
             services.ConfigureOds(Configuration);
 
-            services.ConfigureEmail(Configuration, healthChecksBuilder);
+            services.ConfigureEmail(Configuration);
 
             services.ConfigureDisabledErrorMessage(Configuration);
 
@@ -155,18 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-
                 endpoints.MapDefaultControllerRoute();
-
-                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
-                {
-                    Predicate = healthCheckRegistration => healthCheckRegistration.Tags.Contains(HealthCheckTags.Live),
-                });
-
-                endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
-                {
-                    Predicate = healthCheckRegistration => healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready),
-                });
             });
         }
     }
