@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
@@ -8,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectFlatOnDemandQuantityModel(string odsCode, string callOffId, string solutionName, int? quantity)
+        public SelectFlatOnDemandQuantityModel(string odsCode, string callOffId, string solutionName, int? quantity, EntityFramework.Models.Ordering.TimeUnit timeUnit)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date";
             BackLinkText = "Go back";
@@ -17,6 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
             CallOffId = callOffId;
             SolutionName = solutionName;
             Quantity = quantity.ToString();
+            TimeUnit = timeUnit != null ? timeUnit.Name : string.Empty;
+
+            TimeUnits = new List<EntityFramework.Models.Ordering.TimeUnit>
+            {
+                EntityFramework.Models.Ordering.TimeUnit.PerMonth,
+                EntityFramework.Models.Ordering.TimeUnit.PerYear,
+            };
         }
 
         public string CallOffId { get; set; }
@@ -25,6 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         [Required(ErrorMessage = "Enter a quantity")]
         public string Quantity { get; set; }
+
+        public string TimeUnit { get; set; }
+
+        public List<EntityFramework.Models.Ordering.TimeUnit> TimeUnits { get; set; }
 
         public (int? Quantity, string Error) GetQuantity()
         {

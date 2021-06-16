@@ -1,0 +1,239 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.CheckBoxModel
+@{
+    ViewData["Title"] = "Checkboxes";
+}
+
+<nhs-page-title title="Checkboxes"
+                advice="Use buttons to help users carry out an action on a page like starting an application or saving their progress."
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from Checkboxes.cshtml using the CheckBoxModel.
+                This model is initialised in the controller." />
+
+
+
+<p>Checkboxes can be initialised in two ways: Via a set of Boolean properties on the model or from properites inside a List of objects inside the model</p>
+
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="From Multiple Boolean Properties in the Model" ,
+                             size="ExtraLarge">
+
+
+    <nhs-fieldset-form-label asp-for="@Model"
+                             label-text="This is a checkbox list from multiple bool properties each with a label"
+                             size="Medium">
+        <nhs-checkbox-container>
+            <nhs-checkbox asp-for="SingleCheckBoxProperty" label-text="SingleCheckBoxProperty" />
+            <nhs-checkbox asp-for="AnotherCheckBoxProperty" label-text="AnotherCheckBoxProperty" />
+        </nhs-checkbox-container>
+    </nhs-fieldset-form-label>
+
+    <p style="margin-bottom:30px;"></p>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example for the above Checkbox Property List"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span>
+            <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span>
+            <span class="vs-light-theme-blue">="This is a checkbox list from multiple bool properties each with a label"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">size</span>
+            <span class="vs-light-theme-blue">="Medium"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-checkbox</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span>
+            <span class="vs-light-theme-blue">="SingleCheckBoxProperty"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">label-text</span>
+            <span class="vs-light-theme-blue">="SingleCheckBoxProperty"&nbsp;</span>
+            <span class="vs-light-theme-blue bracket">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-checkbox</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span>
+            <span class="vs-light-theme-blue">="AnotherCheckBoxProperty"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">label-text</span>
+            <span class="vs-light-theme-blue">="AnotherCheckBoxProperty"&nbsp;</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+
+    <p>The Structure of a Checkbox list Must Follow this tag order:</p>
+    <p>
+        <ul>
+            <li>&lt;nhs-fieldset-label&gt;</li>
+            <li>&lt;nhs-checkbox-container&gt;</li>
+            <li>&lt;nhs-checkbox&gt;</li>
+        </ul>
+    </p>
+    <p>This order is enforced by razor, and will throw a compiler error if you try to use it in a different way.</p>
+
+    <p>The fieldset label has its own requirements, which can be found on the fieldset page.</p>
+    <vc:nhs-action-link url="fieldsets" text="Click Here to Read About FieldSets" />
+
+    <nhs-table label-text="Attributes For Checkbox From Property">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>This is a reference to the property on the model which will store if this box has been checked or not.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>label-text</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>hidden-input</nhs-table-cell>
+            <nhs-table-cell>
+                <p>Do not use this for Properties From a Model. Is only Required for when you're using values from a list of objects.</p>
+                <p>Setting this property however shouldn't cause any errors.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Avoid" colour="Grey" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+</nhs-fieldset-form-container>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="From a List of Objects Inside the Model with a Boolean Property and a Name Property"
+                             size="ExtraLarge">
+
+    <nhs-fieldset-form-label asp-for="@Model"
+                             label-text="This is a Checkbox list from a list of objects that contain a display value and a bool checked property"
+                             size="Medium">
+        <nhs-checkbox-container>
+            @foreach (var item in Model.ListOfObjects)
+            {
+                <nhs-checkbox asp-for="@item.Checked"
+                              label-text="@item.Name"
+                              hidden-input="@item.Name" />
+            }
+        </nhs-checkbox-container>
+    </nhs-fieldset-form-label>
+
+    <p style="margin-bottom:30px;"></p>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example for the above Checkbox From Object List"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span>
+            <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span>
+            <span class="vs-light-theme-blue">="This is a Checkbox list from a list of objects that contain a display value and a bool checked property"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">size</span>
+            <span class="vs-light-theme-blue">="Medium"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer ">@@foreach (var item in Model.ListOfObjects)</span><br />
+            <span class="vs-light-theme-blue first-layer">{</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-checkbox</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span>
+            <span class="vs-light-theme-blue">="@@item.Checked"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">label-text</span>
+            <span class="vs-light-theme-blue">="@@item.Name"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">hidden-input</span>
+            <span class="vs-light-theme-blue">="@@item.Name"&nbsp;</span>
+            <span class="vs-light-theme-blue bracket">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">}</span><br />
+
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue">&lt;</span>
+            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+    <p>The Structure of a Checkbox list Must Follow this tag order:</p>
+    <p>
+        <ul>
+            <li>&lt;nhs-fieldset-label&gt;</li>
+            <li>&lt;nhs-checkbox-container&gt;</li>
+            <li>&lt;nhs-checkbox&gt;</li>
+        </ul>
+    </p>
+    <p>This order is enforced by razor, and will throw a compiler error if you try to use it in a different way.</p>
+
+    <p>The fieldset label has its own requirements, which can be found on the fieldset page.</p>
+    <vc:nhs-action-link url="fieldsets" text="Click Here to Read About FieldSets" />
+
+    <nhs-table label-text="Attributes For Checkbox From List of Objects">
+        <nhs-table-row-container>
+            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+            <nhs-table-cell column-name="Functionality">
+                <p>This is a reference to the property on the model which will store if this box has been checked or not.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>label-text</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>hidden-input</nhs-table-cell>
+            <nhs-table-cell>
+                <p>Setting this Property will allow the postback to Correctly tie this field to the correct object in the list.</p>
+                <p>This value should be unique to the object in the list, so a Name or an Id is advisable.</p>
+            </nhs-table-cell>
+            <nhs-table-cell column-name="Required">
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+</nhs-fieldset-form-container>
+
+<nhs-endnote>
+    Page last Updated: 11 june 2021
+</nhs-endnote>

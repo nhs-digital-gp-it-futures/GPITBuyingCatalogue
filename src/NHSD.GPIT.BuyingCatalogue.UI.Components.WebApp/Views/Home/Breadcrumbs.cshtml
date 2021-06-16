@@ -1,0 +1,69 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BreadcrumbsModel
+@{
+    ViewData["Title"] = "Breadcrumbs";
+}
+
+@section Breadcrumbs {
+    <vc:nhs-breadcrumbs items="@Model.Breadcrumbs" />
+}
+
+<nhs-page-title title="Breadcrumbs"
+                caption="View Components"
+                advice="Use breadcrumbs to help users understand where they are in the website."
+                additional-advice="This page is rendered from Breadcrumbs.cshtml using the BreadcrumbsModel.
+                This model has been initialised in the controller." />
+
+<p>The breadcrumbs have been rendered at the top of this page.</p>
+<p>They have been rendered from the _Layout.cshtml using the Breadcrumbs section</p>
+<p>to put focus on this (but without the correct width, since this page is in a container) it looks like this.</p>
+
+<vc:nhs-breadcrumbs items="@Model.Breadcrumbs" />
+
+<p style="margin-bottom:30px;"></p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             size="Medium"
+                             label-text="Example Code of using the Breadcrumbs">
+
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-breadcrumbs items</span>
+        <span class="vs-light-theme-blue">="@@Model.Breadcrumbs"</span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">items</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This attribute requires a Dictionary&lt;string,string&gt; object</p>
+            <p>The key of this Dictionary will be the display text, while the Value will be the Url</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+<p style="margin-bottom:30px;"></p>
+<nhs-fieldset-form-container asp-for="@Model"
+                             size="Medium"
+                             label-text="Example of the Model">
+
+    <span>var model = new BreadcrumbsModel()</span><br />
+    <span>{</span><br />
+    <span>&nbsp;  Breadcrumbs = new Dictionary&lt;string, string&gt;</span><br/>
+    <span>&nbsp;{</span><br/>
+    <span>&nbsp;&nbsp;{"Action Links", "action-links" },</span><br/>
+    <span>&nbsp;&nbsp;{"Address", "address" },</span><br/>
+    <span>&nbsp;},</span><br/>
+    <span> };</span><br/>
+
+</nhs-fieldset-form-container>
+
+<nhs-endnote>
+    Page last Updated: 10 June 2021
+</nhs-endnote>
+
+

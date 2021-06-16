@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
+    // MJRTODO - Change name as this is used for Create and Edit
     public sealed class CreateOrderItemModel
     {
         public DateTime? CommencementDate { get; set; }
@@ -37,5 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public TimeUnit TimeUnit { get; set; }
 
         public CataloguePriceType Type { get; set; }
+
+        public bool IsNewOrder { get; set; }
     }
 }

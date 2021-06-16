@@ -42,8 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
-        public DbSet<DefaultDeliveryDate> DefaultDeliveryDate { get; set; }
-
         public virtual DbSet<Supplier> Suppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -108,20 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.FirstName).HasMaxLength(100);
                 entity.Property(e => e.LastName).HasMaxLength(100);
                 entity.Property(e => e.Phone).HasMaxLength(35);
-            });
-
-            modelBuilder.Entity<DefaultDeliveryDate>(entity =>
-            {
-                entity.HasKey(e => new { e.OrderId, e.CatalogueItemId });
-                entity.ToTable("DefaultDeliveryDate");
-                entity.Property(e => e.CatalogueItemId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-                entity.Property(e => e.DeliveryDate).HasColumnType("date");
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.DefaultDeliveryDates)
-                    .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK_DefaultDeliveryDate_Order");
             });
 
             modelBuilder.Entity<Order>(entity =>

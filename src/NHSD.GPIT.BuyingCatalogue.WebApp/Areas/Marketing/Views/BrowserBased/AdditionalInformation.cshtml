@@ -11,11 +11,11 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="Browser-based application – additional information"
-                        title-advice="Let buyers know any additional information about your Catalogue Solution." />
+                        advice="Let buyers know any additional information about your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-validation-textarea asp-for="AdditionalInformation"
+            <nhs-textarea asp-for="AdditionalInformation"
                                      label-text="Additional information (optional)"
                                      label-hint="Provide additional information about your browser-based Catalogue Solution" />
             <nhs-submit-button />

@@ -9,7 +9,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
 
-            <nhs-page-title title="@Model.Title" title-advice="Check the supplier information and edit details for the primary contact for this order." />
+            <nhs-page-title title="@Model.Title" advice="Check the supplier information and edit details for the primary contact for this order." />
 
             <div data-test-id="supplier-page-insetAdvice">
                 <div class="nhsuk-inset-text">
@@ -49,13 +49,13 @@
                 <h2 data-test-id="primary-contact-heading" class="nhsuk-u-font-size-32 nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-3">Primary contact’s details</h2>
 
                 <div class="nhsuk-u-margin-bottom-5">
-                    <nhs-validation-input asp-for="PrimaryContact.FirstName"
+                    <nhs-input asp-for="PrimaryContact.FirstName"
                                           label-text="First name" />
-                    <nhs-validation-input asp-for="PrimaryContact.LastName"
+                    <nhs-input asp-for="PrimaryContact.LastName"
                                           label-text="Last name" />
-                    <nhs-validation-input asp-for="PrimaryContact.Email"
+                    <nhs-input asp-for="PrimaryContact.Email"
                                           label-text="Email address" />
-                    <nhs-validation-input asp-for="PrimaryContact.Phone"
+                    <nhs-input asp-for="PrimaryContact.Phone"
                                           label-text="Telephone number" />
 
                 </div>

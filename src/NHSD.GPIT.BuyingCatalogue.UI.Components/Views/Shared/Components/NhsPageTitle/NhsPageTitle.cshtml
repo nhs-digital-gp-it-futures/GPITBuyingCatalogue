@@ -1,0 +1,27 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.PageTitle.NhsPageTitleModel;
+@{
+}
+@if (!string.IsNullOrWhiteSpace(Model.Title) && string.IsNullOrWhiteSpace(Model.Caption))
+{
+    <h1>@Model.Title</h1>
+}
+@if (!string.IsNullOrWhiteSpace(Model.Title) && !string.IsNullOrWhiteSpace(Model.Caption))
+{
+    <h1>
+        @Model.Title
+        <span class="nhsuk-caption-xl nhsuk-caption--bottom">
+            <span class="nhsuk-u-visually-hidden"> - </span>
+            @Model.Caption
+        </span>
+    </h1>
+}
+@if (!string.IsNullOrWhiteSpace(Model.Advice))
+{
+    <p class="nhsuk-lede-text">@Model.Advice</p>
+}
+@if (!string.IsNullOrWhiteSpace(Model.AdditionalAdvice))
+{
+    <nhs-inset-text>
+        @Model.AdditionalAdvice
+    </nhs-inset-text>
+}

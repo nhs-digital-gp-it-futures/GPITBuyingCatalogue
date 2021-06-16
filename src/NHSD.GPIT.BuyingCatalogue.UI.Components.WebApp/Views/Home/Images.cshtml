@@ -1,0 +1,74 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
+@{
+    ViewData["Title"] = "Images";
+}
+
+<nhs-page-title title="Images"
+                caption="View Component"
+                advice="Use images only if there is a real user need. Avoid unnecessary decoration."
+                additional-advice="This page is rendered from Images.cshtml using the BlankModel." />
+
+<vc:nhs-image url="/img/ExampleImage.jpg" alt="Example Image" caption="This Image shows the code rendering this page" />
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Image"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue bracket">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-image <br />url</span>
+        <span class="vs-light-theme-blue">="/img/ExampleImage.jpg"&nbsp;</span><br />
+        <span class="vs-light-theme-purple">alt</span>
+        <span class="vs-light-theme-blue">="Example Image"&nbsp;</span><br />
+        <span class="vs-light-theme-purple">caption</span>
+        <span class="vs-light-theme-blue">="This Image shows the code rendering this page"&nbsp;</span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">
+            url
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>Setting this attribute will set the src of the image</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>alt</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will give fallback text that is displayed incase the image referenced in the URL fails to load</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>caption</nhs-table-cell>
+        <nhs-table-cell>
+            <p>Setting this attribute will show text at the bottom of the Image.</p>
+            <p>If you wish to have no text below the image, you may set this to a blank string.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-warning-callout label-text="Changes for .Net 6">
+    <p>
+        Due to the fact that View Components do not allow optional attributes, all the attributes on this view Component are Required.
+    </p>
+    <p>This has been fixed for .Net 6.</p>
+    <p>
+        So in .Net 6, the caption attribute will become optional instead of required.
+    </p>
+</nhs-warning-callout>
+
+<nhs-endnote>
+    Page last Updated 11 June 2021
+</nhs-endnote>
+

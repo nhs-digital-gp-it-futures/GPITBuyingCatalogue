@@ -9,5 +9,7 @@
         T GetObject<T>(string key);
 
         void SetObject(string key, object value);
+
+        void ClearSession();
     }
 }
