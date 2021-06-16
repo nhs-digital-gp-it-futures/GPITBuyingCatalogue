@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -140,14 +139,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddTransient<IEmailService, MailKitEmailService>();
         }
 
-        public static void ConfigureCookiePolicy(this IServiceCollection services)
+        public static void ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-                options.ConsentCookie.Name = "buyingcatalogue-cookie-consent";
-            });
+            var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
+            cookieExpiration.ConsentExpiration = configuration.GetValue<TimeSpan>(Cookies.BuyingCatalogueConsentExpiration);
+
+            services.AddSingleton(cookieExpiration);
         }
 
         public static void ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
