@@ -86,7 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
                 .Include(x => x.Solution)
                 .ThenInclude(x => x.FrameworkSolutions)
                 .ThenInclude(x => x.Framework)
@@ -107,6 +106,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.TimeUnit)
                 .Include(x => x.CataloguePrices)
                 .ThenInclude(x => x.PricingUnit)
+
+                .Include(x => x.Supplier)
+                .ThenInclude(s => s.CatalogueItems)
+                .ThenInclude(c => c.AssociatedService)
+                .Include(x => x.Supplier)
+                .ThenInclude(s => s.CatalogueItems)
+                .ThenInclude(c => c.CataloguePrices)
+                .ThenInclude(cp => cp.PricingUnit)
+
                 .Where(x => x.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
@@ -121,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(
                     x => x.CatalogueItemType.Name == "Solution"
                         && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
+                        && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == "DFOCVC001"))
                 .ToListAsync();
         }
 
@@ -249,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             {
                 foreach (var contact in marketingContacts)
                 {
-                    if (model.ContactFor(contact.Id) is not {} newContact)
+                    if (model.ContactFor(contact.Id) is not { } newContact)
                         continue;
 
                     if (newContact.IsEmpty())
@@ -276,33 +284,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         && x.CatalogueItemType.Name == "Solution"
                         && x.PublishedStatus.Name == "Published")
                 .OrderBy(x => x.Name)
-                .ToListAsync();
-        }
-
-        public async Task<List<AssociatedServiceModel>> GetAssociatedServices(string catalogueItemId)
-        {
-            // var items = from ci in dbContext.CatalogueItems
-            //     join cis in dbContext.CatalogueItems on ci.SupplierId equals cis.SupplierId
-            //     where ci.CatalogueItemId = catalogueItemId
-            //     select cis.Name;
-
-            return await dbContext.CatalogueItems
-
-                // .Include(x => x.Supplier)
-                // .ThenInclude(x => x.CatalogueItems)
-                .Include(x => x.AssociatedService)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.PricingUnit)
-                .Where(
-                    x => x.SupplierId == dbContext.CatalogueItems.First(y => y.CatalogueItemId == catalogueItemId)
-                        .SupplierId)
-                .Select(
-                    x => new AssociatedServiceModel
-                    {
-                        Description = x.AssociatedService.Description,
-                        OrderGuidance = x.AssociatedService.OrderGuidance,
-                        Prices = x.CataloguePrices.Select(y => $"{y.Price} {y.PricingUnit.Description}"),
-                    })
                 .ToListAsync();
         }
     }

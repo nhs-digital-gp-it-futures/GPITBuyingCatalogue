@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                         Previous = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.Description),
+                            Action = nameof(SolutionDetailsController.AssociatedServices),
                             Controller = typeof(SolutionDetailsController).ControllerName(),
                             Name = "Associated Services",
                             Show = true,

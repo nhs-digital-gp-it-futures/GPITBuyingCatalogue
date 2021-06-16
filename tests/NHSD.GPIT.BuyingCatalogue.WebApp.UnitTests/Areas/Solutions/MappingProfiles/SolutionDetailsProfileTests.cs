@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -64,6 +66,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         }
 
         [Test, CommonAutoData]
+        public void Map_CatalogueItemToAssociatedServiceModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.CataloguePrices.Add(null);
+            
+            var actual = mapper.Map<CatalogueItem, AssociatedServiceModel>(catalogueItem);
+
+            actual.Description.Should().Be(catalogueItem.AssociatedService.Description);
+            actual.Name.Should().Be(catalogueItem.Name);
+            actual.OrderGuidance.Should().Be(catalogueItem.AssociatedService.OrderGuidance);
+            actual.Prices.Should()
+                .BeEquivalentTo(
+                    catalogueItem.CataloguePrices.Where(c => c != null)
+                        .Select(src => $"£{src.Price.GetValueOrDefault():F} {src.PricingUnit.Description}"));
+        }
+
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToAssociatedServiceModel_AssociatedServiceNull_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.AssociatedService = null;
+            
+            var actual = mapper.Map<CatalogueItem, AssociatedServiceModel>(catalogueItem);
+
+            actual.Description.Should().BeNull();
+            actual.OrderGuidance.Should().BeNull();
+        }
+        
+        [Test, CommonAutoData]
+        public void Map_CatalogueItemToAssociatedServicesModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            
+            var actual = mapper.Map<CatalogueItem, AssociatedServicesModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.Services.Should().BeInAscendingOrder(s => s.Name);
+            actual.PaginationFooter.Should()
+                .BeEquivalentTo(
+                    new PaginationFooterModel
+                    {
+                        FullWidth = true,
+                        Next = new SectionModel
+                        {
+                            Action = nameof(SolutionDetailsController.Interoperability),
+                            Controller = typeof(SolutionDetailsController).ControllerName(),
+                            Name = nameof(SolutionDetailsController.Interoperability),
+                            Show = true,
+                        },
+                        Previous = new SectionModel
+                        {
+                            Action = nameof(SolutionDetailsController.Description),
+                            Controller = typeof(SolutionDetailsController).ControllerName(),
+                            Name = "Additional Services",
+                            Show = true,
+                        },
+                    });
+            actual.Section.Should().Be("Associated Services");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+
+        [Test, CommonAutoData]
         public void Map_CatalogueItemToCapabilitiesViewModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -75,23 +141,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
             {
                 FullWidth = true,
-                //TODO: Update Next to List price once List price page implemented
                 Next = new SectionModel
                 {
-                    Action = "ListPrice",
-                    Controller = "SolutionDetails",
+                    Action = nameof(SolutionDetailsController.ListPrice),
+                    Controller = typeof(SolutionDetailsController).ControllerName(),
                     Name = "List price",
                     Show = true,
                 },
                 Previous = new SectionModel
                 {
-                    Action = "Features",
-                    Controller = "SolutionDetails",
-                    Name = "Features",
+                    Action = nameof(SolutionDetailsController.Features),
+                    Controller = typeof(SolutionDetailsController).ControllerName(),
+                    Name = nameof(SolutionDetailsController.Features),
                     Show = true,
                 },
             });
-            actual.Section.Should().Be("Capabilities");
+            actual.Section.Should().Be(nameof(SolutionDetailsController.Capabilities));
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }

@@ -1,29 +1,13 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDetailModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.AssociatedServicesModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Associated Services";
+    ViewData["Title"] = "Solution Associated Services";
 }
 
 <div>
-    @if (Model.AssociatedServices.Count > 0)
-    {
-        <div class="nhsuk-width-container" data-test-id="view-solution-contact-details">
-            <div data-test-id="" class="bc-c-section-heading ">
-                <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Associated Services</h3>
-            </div>
-            <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4 nhsuk-u-padding-left-3">
-                <ul class="nhsuk-u-margin-bottom-0">
-                    @foreach (var service in Model.AssociatedServices)
-                    {
-                        <li>Description: @service.Description</li>
-                    }
-                </ul>
-            </div>
-        </div>
-    }
-
-
-    <p><b>These are the Associated Services offered with this Catalogue Solution:</b></p>
+    <p>
+        <b>These are the Associated Services offered with this Catalogue Solution:</b>
+    </p>
     <details class="nhsuk-details" nhsuk-polyfilled="true" id="nhsuk-details0">
         <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
             <span class="nhsuk-details__summary-text">
@@ -39,47 +23,71 @@
     <table role="table" class="nhsuk-table-responsive">
         <caption class="nhsuk-table__caption">Associated Services available</caption>
         <thead role="rowgroup" class="nhsuk-table__head">
-            <tr role="row">
-                <th role="columnheader" class="" scope="col">Associated Service</th>
-                <th role="columnheader" class="" scope="col">Price</th>
-            </tr>
+        <tr role="row">
+            <th role="columnheader" class="" scope="col">Associated Service</th>
+            <th role="columnheader" class="" scope="col">Price</th>
+        </tr>
         </thead>
         <tbody class="nhsuk-table__body">
+        @for (int i = 0; i < Model.Services.Count; i++)
+        {
             <tr role="row" class="nhsuk-table__row">
                 <td role="cell" class="nhsuk-table__cell">
-                    <span class="nhsuk-table-responsive__heading">Associated service </span><a href="#assoc1">Practice reorganisation</a>
+                    @{ var id = $"#assoc{i + 1}"; }
+                    <a href="@id">@Model.Services[i].Name</a>
                 </td>
                 <td role="cell" class="nhsuk-table__cell">
-                    <span class="nhsuk-table-responsive__heading">Price </span>
-                    <span style="white-space: nowrap;">£1,500 per practice merge / split</span>
+                    @for (int j = 0; j < Model.Services[i].Prices.Count; j++)
+                    {
+                        <span style="white-space: nowrap;">
+                            @Model.Services[i].Prices[j]
+                        </span>
+                        @if (j < @Model.Services[i].Prices.Count - 1)
+                        {
+                            <br/>
+                        }
+                    }
                 </td>
             </tr>
+        }
         </tbody>
     </table>
 
-
-    <hr style="border-width: 4px;">
-
     <dl class="nhsuk-summary-list">
-
-        <div class="nhsuk-summary-list__row">
-        <dt class="nhsuk-summary-list__key">Description</dt>
-        <dd class="nhsuk-summary-list__value">
-            Our practice reorganisation service provides support during practice splits and mergers. When two or more practices decide to split or merge clinical information, our service can target either select patients or the full patient list. It makes organising a change in practice simple. This service is applicable to both implementation and live operations.
-        </dd>
-</div>
-
+        @for (int i = 0; i < Model.Services.Count; i++)
+        {
+            var id = $"assoc{i + 1}";
+            <hr style="border-width: 4px;">
+            <a id="@id"></a>
+            <h3>@Model.Services[i].Name</h3>
+            <dl class="nhsuk-summary-list">
+                <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Description</dt>
+                    <dd class="nhsuk-summary-list__value">
+                        @Model.Services[i].Description
+                    </dd>
+                </div>
+                <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Order guidance</dt>
+                    <dd class="nhsuk-summary-list__value">
+                        @Model.Services[i].OrderGuidance
+                    </dd>
+                </div>
+                <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Price</dt>
+                    <dd class="nhsuk-summary-list__value">
+                        @for (var index = 0; index < Model.Services[i].Prices.Count; index++)
+                        {
+                            <span style="white-space: nowrap;">@Model.Services[i].Prices[index]</span>
+                            @if (index < Model.Services[i].Prices.Count - 1)
+                            {
+                                <br/>
+                            }
+                        }
+                    </dd>
+                </div>
+            </dl>
+            <partial name="_BackToTop"/>
+        }
     </dl>
-
-    <div data-test-id="back-to-top-link" class="bc-c-back-to-top ">
-        <a class="nhsuk-back-to-top__link" href="#maincontent">
-            <svg class="nhsuk-icon nhsuk-icon__arrow-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M19.6 11.66l-2.73-3A.51.51 0 0 0 16 9v2H5a1 1 0 0 0 0 2h11v2a.5.5 0 0 0 .32.46.39.39 0 0 0 .18 0 .52.52 0 0 0 .37-.16l2.73-3a.5.5 0 0 0 0-.64z"></path>
-            </svg>
-            Back to top
-        </a>
-    </div>
-
-    <hr style="border-width: 4px;">
-
 </div>

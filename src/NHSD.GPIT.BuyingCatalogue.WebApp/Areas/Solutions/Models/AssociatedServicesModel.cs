@@ -1,13 +1,12 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class AssociatedServicesModel : SolutionDisplayBaseModel
     {
-        public string Description { get; set; }
+        public override int Index => 5;
 
-        public string OrderGuidance { get; set; }
-
-        public override int Index => 9;
+        public IList<AssociatedServiceModel> Services { get; set; }
     }
 }

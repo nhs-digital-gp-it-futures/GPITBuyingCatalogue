@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             {
                 Action = nameof(SolutionDetailsController.Interoperability),
                 Controller = ControllerName,
-                Name = "Interoperability",
+                Name = nameof(SolutionDetailsController.Interoperability),
             },
             new()
             {

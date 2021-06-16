@@ -110,8 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             get { return CatalogueItem.Solution.MarketingContacts.Any(); }
         }
 
-        public List<AssociatedService> AssociatedServices { get; set; }
-
         public bool DisplaySupplier
         {
             get
