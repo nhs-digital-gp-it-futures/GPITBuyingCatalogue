@@ -1,85 +1,92 @@
-﻿<!DOCTYPE html>
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Settings 
+@using NHSD.GPIT.BuyingCatalogue.Framework.Constants
+@inject CookieExpirationSettings CookieExpirationSettings
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <partial name="_Head"/>
+    <partial name="_Head" />
 </head>
 <body>
-<a class="nhsuk-skip-link" href="#maincontent">Skip to main content</a>
-<partial name="Partials/_CookieConsentPartial"/>
-<div data-test-id="beta-banner">
-    <section class="bc-flex-container bc-align-items-center nhsuk-width-container nhsuk-u-padding-bottom-3 nhsuk-u-padding-top-3" aria-labelledby="beta-tag" role="banner">
-        <h2 class="bc-c-tag-beta bc-body-r" data-test-id="beta-tag" id="beta-tag">BETA</h2>
-        <div data-test-id="beta-banner-text">
-            This is a new service - your <a data-test-id="feedback-link" target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=Hwf2UP67GkCIA2c3SOYp4nDHKEWnXcFHiqdJhf0fCJtUNDNFRUFZVFU5RkRQTEpWU0RQVlVXMUpRQi4u">feedback</a> will help us improve it.
-        </div>
-    </section>
-</div>
+    <a class="nhsuk-skip-link" href="#maincontent">Skip to main content</a>
+    @if ((bool?)Context.Items[Cookies.ShowConsentCookie] == true)
+    {
+        <partial name="Partials/_CookieConsentPartial"/>
+    }
+    <div data-test-id="beta-banner">
+        <section class="bc-flex-container bc-align-items-center nhsuk-width-container nhsuk-u-padding-bottom-3 nhsuk-u-padding-top-3" aria-labelledby="beta-tag" role="banner">
+            <h2 class="bc-c-tag-beta bc-body-r" data-test-id="beta-tag" id="beta-tag">BETA</h2>
+            <div data-test-id="beta-banner-text">
+                This is a new service - your <a data-test-id="feedback-link" target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=Hwf2UP67GkCIA2c3SOYp4nDHKEWnXcFHiqdJhf0fCJtUNDNFRUFZVFU5RkRQTEpWU0RQVlVXMUpRQi4u">feedback</a> will help us improve it.
+            </div>
+        </section>
+    </div>
 
 <header data-test-id="header-banner" class="bc-c-header nhsuk-header nhsuk-header--organisation nhsuk-header--white nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-2" role="banner">
     <partial name="_Header"/>
 </header>
 
-<section class="bc-c-global-alert" data-test-id="covid19-global-alert" aria-labelledby="covid-alert-heading" role="banner">
+    <section class="bc-c-global-alert" data-test-id="covid19-global-alert" aria-labelledby="covid-alert-heading" role="banner">
+        <div class="nhsuk-width-container">
+            <h2 id="covid-alert-heading">Coronavirus (COVID-19)</h2>
+            <p>View Catalogue Solutions that help with coronavirus by <a data-test-id="vaccinations" href="~/solutions/vaccinations">organising vaccinations</a>.</p>
+        </div>
+    </section>
+
+    @await RenderSectionAsync("Banner", false)
+
     <div class="nhsuk-width-container">
-        <h2 id="covid-alert-heading">Coronavirus (COVID-19)</h2>
-        <p>View Catalogue Solutions that help with coronavirus by <a data-test-id="vaccinations" href="~/solutions/vaccinations">organising vaccinations</a>.</p>
+        <main role="main" class="nhsuk-main-wrapper nhsuk-u-padding-top-0" id="maincontent">
+            <div class="nhsuk-u-padding-top-5" />
+            @RenderBody()
+        </main>
     </div>
-</section>
 
-@await RenderSectionAsync("Banner", false)
-
-<div class="nhsuk-width-container">
-    <main role="main" class="nhsuk-main-wrapper nhsuk-u-padding-top-0" id="maincontent">
-        <div class="nhsuk-u-padding-top-5"/>
-        @RenderBody()
-    </main>
-</div>
-
-<div data-test-id="footer" class="bc-bg--grey-4">
-    <div data-test-id="footer-component">
-        <footer role="contentinfo">
-            <div class="nhsuk-footer" id="nhsuk-footer">
-                <div class="nhsuk-width-container">
-                    <h2 class="nhsuk-u-visually-hidden">Support links</h2>
-                    <ul class="nhsuk-footer__list">
-                        <li class="nhsuk-footer__list-item">
-                            <a class="nhsuk-footer__list-item-link" href="~/guide">Buyer&#39;s Guide</a>
-                        </li>
-                        <li class="nhsuk-footer__list-item">
-                            <a class="nhsuk-footer__list-item-link" href="~/guide#contact-us">NHS Digital Helpdesk</a>
-                        </li>
-                        <li class="nhsuk-footer__list-item">
-                            <a class="nhsuk-footer__list-item-link" href="https://digital.nhs.uk/">NHS Digital</a>
-                        </li>
-                        <li class="nhsuk-footer__list-item">
-                            <a class="nhsuk-footer__list-item-link" href="https://digital.nhs.uk/services/future-gp-it-systems-and-services">About GP IT Futures</a>
-                        </li>
-                        <li class="nhsuk-footer__list-item">
-                            <a class="nhsuk-footer__list-item-link" href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/overview">Capabilities and Standards Model</a>
-                        </li>
-                    </ul>
-                    <p class="nhsuk-footer__copyright">&copy; Crown copyright</p>
+    <div data-test-id="footer" class="bc-bg--grey-4">
+        <div data-test-id="footer-component">
+            <footer role="contentinfo">
+                <div class="nhsuk-footer" id="nhsuk-footer">
+                    <div class="nhsuk-width-container">
+                        <h2 class="nhsuk-u-visually-hidden">Support links</h2>
+                        <ul class="nhsuk-footer__list">
+                            <li class="nhsuk-footer__list-item">
+                                <a class="nhsuk-footer__list-item-link" href="~/guide">Buyer&#39;s Guide</a>
+                            </li>
+                            <li class="nhsuk-footer__list-item">
+                                <a class="nhsuk-footer__list-item-link" href="~/guide#contact-us">NHS Digital Helpdesk</a>
+                            </li>
+                            <li class="nhsuk-footer__list-item">
+                                <a class="nhsuk-footer__list-item-link" href="https://digital.nhs.uk/">NHS Digital</a>
+                            </li>
+                            <li class="nhsuk-footer__list-item">
+                                <a class="nhsuk-footer__list-item-link" href="https://digital.nhs.uk/services/future-gp-it-systems-and-services">About GP IT Futures</a>
+                            </li>
+                            <li class="nhsuk-footer__list-item">
+                                <a class="nhsuk-footer__list-item-link" href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/overview">Capabilities and Standards Model</a>
+                            </li>
+                        </ul>
+                        <p class="nhsuk-footer__copyright">&copy; Crown copyright</p>
+                    </div>
                 </div>
-            </div>
-        </footer>
+            </footer>
+        </div>
+        <ul data-test-id="legal-panel" class="bc-lh-r bc-body-r bc-list-none nhsuk-u-padding-0 nhsuk-u-padding-bottom-3 nhsuk-width-container">
+            <li class='bc-u-display-inline nhsuk-u-margin-0 nhsuk-u-margin-right-2'>Legal</li>
+            <li class='bc-u-display-inline nhsuk-u-margin-0 nhsuk-u-margin-right-2'>
+                <a href='~/privacy-policy'>Privacy policy and Cookies</a>
+            </li>
+            <li class='bc-u-display-inline nhsuk-u-margin-0 nhsuk-u-margin-right-2'>
+                <a href='~/document/terms-of-use.pdf'>Terms and Conditions</a>
+            </li>
+        </ul>
     </div>
-    <ul data-test-id="legal-panel" class="bc-lh-r bc-body-r bc-list-none nhsuk-u-padding-0 nhsuk-u-padding-bottom-3 nhsuk-width-container">
-        <li class='bc-u-display-inline nhsuk-u-margin-0 nhsuk-u-margin-right-2'>Legal</li>
-        <li class='bc-u-display-inline nhsuk-u-margin-0 nhsuk-u-margin-right-2'>
-            <a href='~/privacy-policy'>Privacy policy and Cookies</a>
-        </li>
-        <li class='bc-u-display-inline nhsuk-u-margin-0 nhsuk-u-margin-right-2'>
-            <a href='~/document/terms-of-use.pdf'>Terms and Conditions</a>
-        </li>
-    </ul>
-</div>
 
-<script>
+    <script>
         document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
     </script>
-<script src="~/govuk-frontend/assets/js/govuk-frontend-3.11.0.min.js"></script>
-<script src="~/nhsuk-frontend/assets/js/nhsuk.min.js"></script>
-<script>
+    <script src="~/govuk-frontend/assets/js/govuk-frontend-3.11.0.min.js"></script>
+    <script src="~/nhsuk-frontend/assets/js/nhsuk.min.js"></script>
+    <script>
         window.GOVUKFrontend.initAll()
     </script>
 </body>
