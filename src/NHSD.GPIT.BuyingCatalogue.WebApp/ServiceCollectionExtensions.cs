@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -87,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(odsSettings);
         }
 
-        public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
+        public static void ConfigureDbContexts(this IServiceCollection services)
         {
             var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
 
@@ -101,8 +100,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
             services.AddDbContext<OrderingDbContext>(options => options.UseSqlServer(catalogueOrderingConnectionString));
-
-            healthCheckBuilder.AddDatabaseHealthCheck(buyingCatalogueConnectionString);
         }
 
         public static void ConfigureSession(this IServiceCollection services)
@@ -133,8 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureEmail(
             this IServiceCollection services,
-            IConfiguration configuration,
-            IHealthChecksBuilder healthCheckBuilder)
+            IConfiguration configuration)
         {
             var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");
             var smtpSettings = configuration.GetSection("SmtpServer").Get<SmtpSettings>();
@@ -142,7 +138,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(smtpSettings);
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();
-            healthCheckBuilder.AddSmtpHealthCheck(smtpSettings);
         }
 
         public static void ConfigureCookiePolicy(this IServiceCollection services)
@@ -205,14 +200,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(registrationSettings);
         }
 
-        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration, IHealthChecksBuilder healthCheckBuilder)
+        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration)
         {
             var settings = configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
             services.AddSingleton(settings);
 
             services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
-
-            healthCheckBuilder.AddAzureStorageHealthChecks(settings);
         }
     }
 }

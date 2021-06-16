@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
                 {
                     ServiceRecipients.All(c =>
                     {
-                        c.Checked = true;
+                        c.Selected = true;
                         return true;
                     });
                     SelectionPrompt = "Deselect all";
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
                 {
                     ServiceRecipients.All(c =>
                     {
-                        c.Checked = false;
+                        c.Selected = false;
                         return true;
                     });
                     SelectionPrompt = "Deselect all";

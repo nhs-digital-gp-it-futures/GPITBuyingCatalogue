@@ -41,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, PublicCloudModel>(solution));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("hosting-type-public-cloud")]
         public async Task<IActionResult> PublicCloud(PublicCloudModel model)
         {
@@ -77,6 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, PrivateCloudModel>(solution));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("hosting-type-private-cloud")]
         public async Task<IActionResult> PrivateCloud(PrivateCloudModel model)
         {
@@ -113,6 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, HybridModel>(solution));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("hosting-type-hybrid")]
         public async Task<IActionResult> Hybrid(HybridModel model)
         {
@@ -149,6 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, OnPremiseModel>(solution));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("hosting-type-on-premise")]
         public async Task<IActionResult> OnPremise(OnPremiseModel model)
         {

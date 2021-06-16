@@ -49,14 +49,14 @@
                         <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
                             <div data-test-id="radiobutton-options">
                                 <div class="nhsuk-form-group">                                    
-                                    <nhs-fieldset-form asp-for="@Model"
+                                    <nhs-fieldset-form-label asp-for="@Model"
                                                        label-text="Which organisation are you looking for?"
                                                        label-hint="Select one option.">
                                         <nhs-radio-buttons asp-for="@Model.TimeUnit"
                                                            values="@Model.TimeUnits"
                                                            value-name="Name"
                                                            display-name="DisplayText" />
-                                    </nhs-fieldset-form>
+                                    </nhs-fieldset-form-label>
                                 </div>
                             </div>
                         </div>

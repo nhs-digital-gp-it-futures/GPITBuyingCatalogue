@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 using NUnit.Framework;
 
-// MJRTODO - Getting a namespace vs type clash when using Solution
+// TODO - Getting a namespace vs type clash when using Solution
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.SolutionX
 {
     [TestFixture]

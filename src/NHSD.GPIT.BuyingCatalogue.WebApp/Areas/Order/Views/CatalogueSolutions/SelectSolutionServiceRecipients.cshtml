@@ -39,12 +39,14 @@
                                             <div class="nhsuk-form-group">
                                                 <div class="nhsuk-checkboxes">
                                                     <div class="nhsuk-checkboxes__item">
-                                                        <input class="nhsuk-checkboxes__input" asp-for="@Model.ServiceRecipients[i].Checked" type="checkbox">
-                                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.ServiceRecipients[i].Checked">
+                                                        <input class="nhsuk-checkboxes__input" asp-for="@Model.ServiceRecipients[i].Selected" type="checkbox">
+                                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.ServiceRecipients[i].Selected">
                                                             @Model.ServiceRecipients[i].Name
                                                         </label>
                                                         <input type="hidden" asp-for="@Model.ServiceRecipients[i].Name" />
                                                         <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode" />
+                                                        <input type="hidden" asp-for="@Model.ServiceRecipients[i].Quantity" />
+                                                        <input type="hidden" asp-for="@Model.ServiceRecipients[i].DeliveryDate" />
                                                     </div>
                                                 </div>
                                             </div>
