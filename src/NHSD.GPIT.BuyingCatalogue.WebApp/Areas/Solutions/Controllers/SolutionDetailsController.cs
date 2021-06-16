@@ -20,6 +20,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
+        [Route("solutions/futures/{id}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(AssociatedServices)}-{nameof(id)}");
+
+            // var solution = await solutionsService.GetSolution(id);
+            // if (solution == null)
+            //     return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            var associatedServices = await solutionsService.GetAssociatedServices(id);
+            Console.WriteLine(associatedServices.Count);
+            // var model = new SolutionDetailModel(solution);
+            // model.AssociatedServices = associatedServices;
+            //
+            // return View("AssociatedServices", model);
+
+            //var mappedModel = mapper.Map<CatalogueItem, SolutionAssociatedServicesModel>(model);
+            //return View("AssociatedServices", mappedModel);
+
+            return Ok();
+        }
+
         [Route("solutions/futures/{id}/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
         {
@@ -151,26 +174,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             };
 
             return View("SolutionDetail", model);
-        }
-
-        [Route("solutions/futures/{id}/associated-services")]
-        public async Task<IActionResult> AssociatedServices(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(AssociatedServices)}-{nameof(id)}");
-
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
-
-            var associatedService = await solutionsService.GetAssociatedServices(solution.Supplier.Id);
-            var model = new SolutionDetailModel(solution);
-            model.AssociatedServices = associatedService;
-
-            return View("AssociatedServices", model);
-
-            //var mappedModel = mapper.Map<CatalogueItem, SolutionAssociatedServicesModel>(model);
-            //return View("AssociatedServices", mappedModel);
         }
     }
 }

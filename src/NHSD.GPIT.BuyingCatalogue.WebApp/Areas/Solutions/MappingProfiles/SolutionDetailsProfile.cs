@@ -224,15 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     dest => dest.Description,
                     opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
                 .ForMember(dest => dest.CheckEpicsUrl, opt => opt.MapFrom(src => "#"));
-            CreateMap<CatalogueItem, CapabilitiesViewModel>()
-                .ForMember(
-                    dest => dest.RowViewModels,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.Solution?.SolutionCapabilities != null);
-                        opt.MapFrom(src => src.Solution.SolutionCapabilities);
-                    })
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             //CreateMap<CatalogueItem, AssociatedServicesModel>()
             //   .BeforeMap(
