@@ -1,0 +1,91 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.InteroperabilityModel;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = $"Solution {Model.Section}";
+}
+
+<div class="nhsuk-width-container">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+                    <p>
+                        <b>
+                            View information about the systems this Catalogue Solution integrates with to exchange data:
+                        </b>
+                    </p>
+                    <h2>
+                        NHS assured integrations
+                    </h2>
+                    <p>
+                        @Model.TextDescriptionsProvided() Use the links to find out more about these integrations.
+                    </p>
+                    @foreach (var integration in Model.Integrations)
+                    {
+                        <p>
+                            <b>@integration.Name:</b>
+                            <a href="@integration.Link">@integration.Link</a>
+                        </p>
+                    }
+
+
+                    @for (var index = 0; index < Model.Integrations.Count; index++)
+                    {
+                        var integration = Model.Integrations[index];
+                        <h3>
+                            @integration.Title()
+                        </h3>
+
+                        @for (var modelIndex = 0; modelIndex < integration.Tables.Length; modelIndex++)
+                        {
+                            var tableViewModel = integration.Tables[modelIndex];
+                            <table role="table" class="nhsuk-table-responsive">
+                                <caption class="nhsuk-table__caption">@integration.Name @tableViewModel.Name</caption>
+                                <thead role="rowgroup" class="nhsuk-table__head">
+                                <tr role="row">
+                                    @foreach (var heading in tableViewModel.Headings)
+                                    {
+                                        <th role="columnheader" class="" scope="col">
+                                            @heading
+                                        </th>
+                                    }
+                                </tr>
+                                </thead>
+                                <tbody class="nhsuk-table__body">
+
+                                @foreach (var rowModel in tableViewModel.Rows)
+                                {
+                                    <tr role="row" class="nhsuk-table__row">
+                                        @foreach (var cell in rowModel)
+                                        {
+                                            <td role="cell" class="nhsuk-table__cell">
+                                                @cell
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+
+                            <partial name="_BackToTop"/>
+                            
+                            @if (modelIndex != integration.Tables.Length - 1)
+                            {
+                                <br/>
+                                <br/>
+                            }
+                        }
+                        <hr style="border-width: 4px;">
+                    }
+                    <h2>Supplier asserted integrations</h2>
+                    <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
+                    <p>
+                        <a href="https://www.caltechhealth.com/products/partner-products/" target="_blank">
+                            View the Supplier Asserted Integrations for this Catalogue Solution
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </article>
+    </main>
+</div>
