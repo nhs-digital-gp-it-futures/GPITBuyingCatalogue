@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("implementation")]
-        public async Task<IActionResult> ImplementationTimescales(string id)
+        public async Task<IActionResult> Implementation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentException($"implementation-{nameof(id)}");
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpPost("implementation")]
-        public async Task<IActionResult> ImplementationTimescales(ImplementationTimescalesModel model)
+        public async Task<IActionResult> Implementation(ImplementationTimescalesModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
