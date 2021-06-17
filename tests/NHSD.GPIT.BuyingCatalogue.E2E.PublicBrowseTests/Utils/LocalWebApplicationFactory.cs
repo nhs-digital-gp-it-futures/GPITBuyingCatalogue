@@ -131,6 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
             }
+
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("")))
+            {
+                Environment.SetEnvironmentVariable("SMTPSERVER__PORT", "9999");
+            }
         }
 
         [ExcludeFromCodeCoverage]
