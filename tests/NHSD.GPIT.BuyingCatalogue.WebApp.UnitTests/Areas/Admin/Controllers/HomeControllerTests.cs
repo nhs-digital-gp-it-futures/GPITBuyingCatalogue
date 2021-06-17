@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -17,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(HomeController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Admin");
+            typeof(HomeController).Should().BeDecoratedWith<RouteAttribute>(x => x.Template == "admin");
         }
 
         [Test]
@@ -31,10 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
-            var result = controller.Index();
+            var result = controller.Index().As<ViewResult>();
 
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.IsNull(((ViewResult)result).ViewName);
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
         }
     }
 }
