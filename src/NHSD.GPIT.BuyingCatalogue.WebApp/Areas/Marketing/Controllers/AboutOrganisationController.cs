@@ -43,7 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, AboutSupplierModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("about-supplier")]
         public async Task<IActionResult> AboutSupplier(AboutSupplierModel model)
         {
@@ -75,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, ContactDetailsModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("contact-details")]
         public async Task<IActionResult> ContactDetails(ContactDetailsModel model)
         {

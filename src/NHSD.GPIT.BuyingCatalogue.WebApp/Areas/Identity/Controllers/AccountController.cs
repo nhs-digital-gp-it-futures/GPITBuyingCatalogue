@@ -46,7 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
@@ -114,7 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return View();
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel viewModel)
         {
@@ -160,7 +158,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return View(new ResetPasswordViewModel { Email = email, Token = token });
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
         {

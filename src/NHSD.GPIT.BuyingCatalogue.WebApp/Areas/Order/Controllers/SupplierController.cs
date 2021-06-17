@@ -51,7 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierModel(odsCode, order, supplier.SupplierContacts));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Supplier(string odsCode, string callOffId, SupplierModel model)
         {
@@ -93,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierSearchModel(odsCode, order));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("search")]
         public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
         {
@@ -128,7 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, SupplierSearchSelectModel model)
         {
