@@ -309,6 +309,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(150);
+                entity.Property(e => e.Active).IsRequired();
+                entity.Property(e => e.SupplierDefined).IsRequired().HasDefaultValue(false);
                 entity.HasOne(d => d.Capability)
                     .WithMany(p => p.Epics)
                     .HasForeignKey(d => d.CapabilityId)
