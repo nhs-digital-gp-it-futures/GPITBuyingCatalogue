@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, HostingTypesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/implementation-timescales")]
+        [Route("solutions/futures/{id}/implementation")]
         public async Task<IActionResult> ImplementationTimescales(string id)
         {
             if (string.IsNullOrWhiteSpace(id))

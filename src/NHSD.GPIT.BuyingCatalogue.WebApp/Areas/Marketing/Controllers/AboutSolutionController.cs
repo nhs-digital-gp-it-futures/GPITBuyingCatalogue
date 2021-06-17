@@ -60,11 +60,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
                 new { id = model.SolutionId });
         }
 
-        [HttpGet("implementation-timescales")]
+        [HttpGet("implementation")]
         public async Task<IActionResult> ImplementationTimescales(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"implementation-timescales-{nameof(id)}");
+                throw new ArgumentException($"implementation-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
         }
 
-        [HttpPost("implementation-timescales")]
+        [HttpPost("implementation")]
         public async Task<IActionResult> ImplementationTimescales(ImplementationTimescalesModel model)
         {
             if (model is null)

@@ -472,7 +472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .GetMethod(nameof(SolutionDetailsController.ImplementationTimescales))
                 .GetCustomAttribute<RouteAttribute>()
                 .Template.Should()
-                .Be("solutions/futures/{id}/implementation-timescales");
+                .Be("solutions/futures/{id}/implementation");
         }
         
         [Test]

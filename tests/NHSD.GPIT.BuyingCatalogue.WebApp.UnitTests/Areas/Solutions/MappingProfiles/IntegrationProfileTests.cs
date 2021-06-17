@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         {
                             Action = nameof(SolutionDetailsController.ImplementationTimescales),
                             Controller = typeof(SolutionDetailsController).ControllerName(),
-                            Name = "Implementation timescales",
+                            Name = "Implementation",
                             Show = true,
                         },
                         Previous = new SectionModel
