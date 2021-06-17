@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt =>
                     {
                         opt.PreCondition(src => src.CataloguePrices != null);
-                        opt.MapFrom(src => src.CataloguePrices.Where(x => x != null));
+                        opt.MapFrom(src => src.CataloguePrices.Where(x => x != null && x.Price != null));
                     });
 
             CreateMap<CatalogueItem, AssociatedServicesModel>()
@@ -245,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
             CreateMap<CataloguePrice, string>()
                 .ConstructUsing(
                     src => src.Price == null
-                        ? "0"
+                        ? null
                         : $"£{src.Price.Value:F} {(src.PricingUnit != null ? src.PricingUnit.Description : null)}"
                             .Trim());
 

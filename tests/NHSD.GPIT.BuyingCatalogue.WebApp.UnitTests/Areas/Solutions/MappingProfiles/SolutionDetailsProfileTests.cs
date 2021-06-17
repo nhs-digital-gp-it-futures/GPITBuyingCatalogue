@@ -436,7 +436,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             
             var actual = mapper.Map<CataloguePrice, string>(cataloguePrice);
 
-            actual.Should().Be("0");
+            actual.Should().BeNull();
         }
     }
 }
