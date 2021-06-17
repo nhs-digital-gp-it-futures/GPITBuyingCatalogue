@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +37,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(OrdersActionFilter));
+            });
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
             services.ConfigureDbContexts();
