@@ -20,6 +20,9 @@ DECLARE @sharedCarePlansCapabilityId AS uniqueidentifier = 'd1532ca0-ef0c-457c-9
 DECLARE @unifiedCareRecordCapabilityId AS uniqueidentifier = '59696227-602a-421d-a883-29e88997ac17';
 DECLARE @workflowCapabilityId AS uniqueidentifier = '9d325dec-6e5b-44e4-876b-eacf6cd41b3e';
 
+DECLARE @onlineConsultationCapabilityId AS uniqueidentifier = 'EE71409B-F570-4581-B082-2B13DAC6CE6D';
+DECLARE @videoConsultationCapabilityId AS uniqueidentifier = '4E07C901-1DA1-43EB-BE45-C89B7DBD9D66';
+
 DECLARE @gpitframeworkId AS nvarchar(10) = 'NHSDGP001';
 DECLARE @dfocvcframeworkId AS nvarchar(10) = 'DFOCVC001';
 DECLARE @emptyGuid AS uniqueidentifier = '00000000-0000-0000-0000-000000000000';
@@ -485,7 +488,11 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
         (@solutionId, @medicineOptimizationCapabilityId, 'C30E11', 2, @now, @emptyGuid),
         (@solutionId, @medicineOptimizationCapabilityId, 'C30E12', 2, @now, @emptyGuid),
         (@solutionId, @medicineOptimizationCapabilityId, 'C30E13', 2, @now, @emptyGuid),
-        (@solutionId, @medicineOptimizationCapabilityId, 'C30E14', 2, @now, @emptyGuid);
+        (@solutionId, @medicineOptimizationCapabilityId, 'C30E14', 2, @now, @emptyGuid),
+        (@solutionId, @onlineConsultationCapabilityId, 'S020X01E01', 1, @now, @emptyGuid),
+        (@solutionId, @onlineConsultationCapabilityId, 'S020X01E02', 1, @now, @emptyGuid),
+        (@solutionId, @videoConsultationCapabilityId, 'S020X01E03', 1, @now, @emptyGuid),
+        (@solutionId, @videoConsultationCapabilityId, 'S020X01E04', 1, @now, @emptyGuid);
     END;
 
     /*************************************************************************************************************************************************************/

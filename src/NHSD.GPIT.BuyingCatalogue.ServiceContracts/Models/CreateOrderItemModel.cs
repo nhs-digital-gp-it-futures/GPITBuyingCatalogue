@@ -37,5 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public TimeUnit TimeUnit { get; set; }
 
         public CataloguePriceType Type { get; set; }
+
+        public bool IsNewOrder { get; set; }
     }
 }

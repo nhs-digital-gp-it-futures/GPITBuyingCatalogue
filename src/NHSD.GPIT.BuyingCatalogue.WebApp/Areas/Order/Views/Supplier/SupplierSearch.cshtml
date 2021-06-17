@@ -9,13 +9,12 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
 
-            <nhs-page-title title="@Model.Title" title-advice="Search for the supplier you want to purchase from." />
+            <nhs-page-title title="@Model.Title" advice="Search for the supplier you want to purchase from." />
 
             <form method="post">
 
-                <nhs-validation-input asp-for="SearchString"
-                                      label-text="Enter Supplier name" 
-                                      disable-character-counter="true"/>
+                <nhs-input asp-for="SearchString"
+                                      label-text="Enter Supplier name"/>
 
                 <nhs-submit-button text="Search" />
             </form>

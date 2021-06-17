@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly ISessionService sessionService;
         private readonly IOdsService odsService;
         private readonly IOrderItemService orderItemService;
+        private readonly IDefaultDeliveryDateService defaultDeliveryDateService;
 
         public CatalogueSolutionsController(
             ILogWrapper<OrderController> logger,
@@ -33,7 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             ISolutionsService solutionsService,
             ISessionService sessionService,
             IOdsService odsService,
-            IOrderItemService orderItemService)
+            IOrderItemService orderItemService,
+            IDefaultDeliveryDateService defaultDeliveryDateService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
@@ -41,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
+            this.defaultDeliveryDateService = defaultDeliveryDateService ?? throw new ArgumentNullException(nameof(defaultDeliveryDateService));
         }
 
         public async Task<IActionResult> Index(string odsCode, string callOffId)
@@ -49,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
 
             logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
+            sessionService.ClearSession();
 
             var order = await orderService.GetOrder(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
@@ -68,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = new CreateOrderItemModel
             {
+                IsNewOrder = true,
                 CommencementDate = order.CommencementDate,
                 SupplierId = order.SupplierId,
                 CatalogueItemType = CatalogueItemType.Solution,
@@ -80,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueSolutionId));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution")]
         public async Task<IActionResult> SelectSolution(string odsCode, string callOffId, SelectSolutionModel model)
         {
@@ -88,6 +95,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             model.ValidateNotNull(nameof(model));
 
             logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
+
+            if (existingOrder != null)
+            {
+                return RedirectToAction(
+                    actionName: nameof(EditSolution),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId, id = model.SelectedSolutionId });
+            }
 
             var state = GetStateModel();
 
@@ -102,8 +119,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.CatalogueItemName = solution.Name;
             SetStateModel(state);
 
-            // TODO -- apears in old version that is this solution is already present, it jumps straight to the editor for that solution
-            // TODO -- if there is only one price then jump straight to SelectSolutionServiceRecipients
+            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+
+            if (prices.Count == 1)
+            {
+                SetPrice(prices.Single());
+
+                return RedirectToAction(
+                    actionName: nameof(SelectSolutionServiceRecipients),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId });
+            }
+
             return RedirectToAction(
                 actionName: nameof(SelectSolutionPrice),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -125,6 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectSolutionPriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price")]
         public async Task<IActionResult> SelectSolutionPrice(string odsCode, string callOffId, SelectSolutionPriceModel model)
         {
@@ -144,17 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var cataloguePrice = solution.CataloguePrices.Single(x => x.CataloguePriceId == model.SelectedPrice);
 
-            state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
-            state.CurrencyCode = cataloguePrice.CurrencyCode;
-            state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
-            state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
-            if (cataloguePrice.TimeUnit != null)
-                state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
-            state.Price = cataloguePrice.Price;
-            state.PriceId = cataloguePrice.CataloguePriceId;
-            state.EstimationPeriod = TimeUnit.PerYear;
-
-            SetStateModel(state);
+            SetPrice(cataloguePrice);
 
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipients),
@@ -174,14 +192,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (state.ServiceRecipients == null)
             {
-                var recpients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recpients.Select(x => new OrderItemRecipientModel(x)).ToList();
+                var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+                state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
                 SetStateModel(state);
             }
 
-            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode));
+            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode, state.IsNewOrder, state.CatalogueSolutionId));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/recipients")]
         public IActionResult SelectSolutionServiceRecipients(string odsCode, string callOffId, SelectSolutionServiceRecipientsModel model)
         {
@@ -200,7 +219,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             SetStateModel(state);
 
-            // TODO - if we came from the EditSolution page then we should go back to it rather than the date page
+            if (!state.IsNewOrder)
+            {
+                return RedirectToAction(
+                    actionName: nameof(EditSolution),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId, id = state.CatalogueSolutionId });
+            }
+
             return RedirectToAction(
                 actionName: nameof(SelectSolutionServiceRecipientsDate),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -208,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("select/solution/price/recipients/date")]
-        public IActionResult SelectSolutionServiceRecipientsDate(string odsCode, string callOffId)
+        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, string callOffId)
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
@@ -217,11 +243,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
-            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate));
+            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueSolutionId);
+
+            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate, defaultDeliveryDate));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/recipients/date")]
-        public IActionResult SelectSolutionServiceRecipientsDate(string odsCode, string callOffId, SelectSolutionServiceRecipientsDateModel model)
+        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, string callOffId, SelectSolutionServiceRecipientsDateModel model)
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
@@ -246,6 +275,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 c.DeliveryDate = date;
                 return true;
             });
+
+            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueSolutionId, date.Value);
 
             SetStateModel(state);
 
@@ -283,6 +314,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, string callOffId, SelectFlatDeclarativeQuantityModel model)
         {
@@ -328,9 +360,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
-            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
+            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.TimeUnit));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("select/solution/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId, SelectFlatOnDemandQuantityModel model)
         {
@@ -351,9 +384,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = GetStateModel();
 
             state.Quantity = quantity;
-
-            // TODO - also get the time unit details
-            state.TimeUnit = TimeUnit.PerMonth;
+            state.TimeUnit = TimeUnit.Parse(model.TimeUnit);
 
             state.ServiceRecipients.All(c =>
             {
@@ -382,6 +413,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new NewOrderItemModel(odsCode, callOffId, state));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("neworderitem")]
         public async Task<IActionResult> NewOrderItem(string odsCode, string callOffId, NewOrderItemModel model)
         {
@@ -420,6 +452,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             // TODO - handle errors
             var result = await orderItemService.Create(callOffId, state);
 
+            sessionService.ClearSession();
+
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -434,21 +468,53 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            var orderItem = await orderItemService.GetOrderItem(callOffId, id);
+            await InitialiseStateForEdit(odsCode, callOffId, id);
 
-            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
+            var state = GetStateModel();
 
-            return View(new EditSolutionModel(odsCode, callOffId, id, solution.Name));
+            return View(new EditSolutionModel(odsCode, callOffId, id, state));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{id}")]
-        public IActionResult EditSolution(string odsCode, string callOffId, string id, EditSolutionModel model)
+        public async Task<IActionResult> EditSolution(string odsCode, string callOffId, string id, EditSolutionModel model)
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             model.ValidateNotNull(nameof(model));
 
             logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
+
+            var state = GetStateModel();
+
+            foreach (var recipient in model.OrderItem.ServiceRecipients)
+            {
+                (var date, var error) = recipient.ToDateTime(state.CommencementDate);
+
+                if (error != null)
+                {
+                    ModelState.AddModelError("Day", error);
+                    break;
+                }
+
+                recipient.DeliveryDate = date;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.OrderItem.ItemUnit = state.ItemUnit;
+                model.OrderItem.TimeUnit = state.TimeUnit;
+                return View(model);
+            }
+
+            // TODO - price must be <= to the listed price. Zero is Ok apparently. Need to check if the orderItemService validates that. If so, piggy back on it (see handle errors below)
+            state.Price = model.OrderItem.Price;
+            state.ServiceRecipients = model.OrderItem.ServiceRecipients;
+
+            // TODO - handle errors
+            var result = await orderItemService.Create(callOffId, state);
+
+            sessionService.ClearSession();
 
             return RedirectToAction(
                 actionName: nameof(Index),
@@ -471,6 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteSolutionModel(odsCode, callOffId, id, solutionName, order.Description));
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("delete/{id}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, string callOffId, string id, string solutionName, DeleteSolutionModel model)
         {
@@ -505,13 +572,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         private CreateOrderItemModel GetStateModel()
         {
-            var state = sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
-            return state ?? new CreateOrderItemModel();
+            return sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
         }
 
         private void SetStateModel(CreateOrderItemModel state)
         {
             sessionService.SetObject("CatalogueItemState", state);
+        }
+
+        private void SetPrice(EntityFramework.Models.GPITBuyingCatalogue.CataloguePrice cataloguePrice)
+        {
+            var state = GetStateModel();
+
+            state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
+            state.CurrencyCode = cataloguePrice.CurrencyCode;
+            state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
+            state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
+            if (cataloguePrice.TimeUnit != null)
+                state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
+            state.Price = cataloguePrice.Price;
+            state.PriceId = cataloguePrice.CataloguePriceId;
+            state.EstimationPeriod = TimeUnit.PerYear;
+
+            SetStateModel(state);
+        }
+
+        private async Task InitialiseStateForEdit(string odsCode, string callOffId, string catalogueSolutionId)
+        {
+            var state = GetStateModel();
+
+            var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueSolutionId);
+
+            if (state != null && !state.IsNewOrder)
+            {
+                foreach (var recipient in state.ServiceRecipients.Where(x => !x.DeliveryDate.HasValue))
+                    recipient.DeliveryDate = orderItem.DefaultDeliveryDate;
+
+                SetStateModel(state);
+
+                return;
+            }
+
+            var order = await orderService.GetOrder(callOffId);
+
+            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
+
+            state = new CreateOrderItemModel
+            {
+                IsNewOrder = false,
+                CommencementDate = order.CommencementDate,
+                SupplierId = order.SupplierId,
+                CatalogueItemType = CatalogueItemType.Solution,
+                CatalogueSolutionId = orderItem.CatalogueItemId.ToString(),
+                CatalogueItemName = solution.Name,
+                Price = orderItem.Price,
+                ItemUnit = new ItemUnitModel { Name = orderItem.PricingUnitNameNavigation.Name, Description = orderItem.PricingUnitNameNavigation.Description },
+                TimeUnit = orderItem.TimeUnit,
+                ProvisioningType = orderItem.ProvisioningType,
+                CurrencyCode = orderItem.CurrencyCode,
+            };
+
+            var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+            state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
+
+            foreach (var serviceRecipient in state.ServiceRecipients)
+            {
+                var orderRecipient = orderItem.OrderItemRecipients.FirstOrDefault(x => x.OdsCode.EqualsIgnoreCase(serviceRecipient.OdsCode));
+
+                if (orderRecipient != null)
+                {
+                    serviceRecipient.Selected = true;
+                    serviceRecipient.Quantity = orderRecipient.Quantity;
+                    serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
+                }
+            }
+
+            SetStateModel(state);
         }
     }
 }

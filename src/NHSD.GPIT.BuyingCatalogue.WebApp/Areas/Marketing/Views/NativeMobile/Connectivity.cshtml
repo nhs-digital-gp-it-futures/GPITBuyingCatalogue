@@ -11,27 +11,27 @@
 
         <nhs-validation-summary />
         <nhs-page-title title="Native mobile or tablet application – connectivity"
-                        title-advice="Let buyers know about your Catalogue Solution’s connection requirements." />
+                        advice="Let buyers know about your Catalogue Solution’s connection requirements." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
-            <nhs-validation-select asp-for="SelectedConnectionSpeed"
+            <nhs-select asp-for="SelectedConnectionSpeed"
                                    asp-items="@(new SelectList(Model.ConnectionSpeeds,"Value","Text"))"
                                    label-text="Connection speed (optional)"
                                    label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
-            <nhs-fieldset-form asp-for="@Model"
+            <nhs-fieldset-form-label asp-for="@Model"
                                label-text="Connection types supported (optional)"
                                label-hint="Select all of the connection types that will work with your Catalogue Solution.">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.ConnectionTypes.Length; i++)
                     {
-                        <nhs-validation-checkbox asp-for="@Model.ConnectionTypes[i].Checked"
+                        <nhs-checkbox asp-for="@Model.ConnectionTypes[i].Checked"
                                                  label-text="@Model.ConnectionTypes[i].ConnectionType"
                                                  hidden-input="@Model.ConnectionTypes[i].ConnectionType" />
                     }
                 </nhs-checkbox-container>
-            </nhs-fieldset-form>
-            <nhs-validation-textarea asp-for="Description"
+            </nhs-fieldset-form-label>
+            <nhs-textarea asp-for="Description"
                                      label-text="Connection requirements (optional)"
                                      label-hint="Provide information on any connection requirements for your Catalogue Solution." />
             <nhs-submit-button />

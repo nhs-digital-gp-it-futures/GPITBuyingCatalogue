@@ -1,0 +1,127 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.BlankModel
+@{
+    ViewData["Title"] = "Summary Lists";
+}
+
+<nhs-page-title title="Summary Lists"
+                caption="Tag Helper"
+                advice="Used for grouping different pieces of information into a single list for summarisation"
+                additional-advice="This page is rendered from SummaryList.cshtml using the BlankModel." />
+
+<nhs-summary-list>
+    <nhs-summary-list-row label-text="This is a Summary Row Label">
+        <p>and here is a bit of custom text inside the summary list</p>
+        <p>with a paragraph per row</p>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="And another row">
+        <nhs-inset-text>
+            that contains another component
+        </nhs-inset-text>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="and a row with input">
+        <nhs-input asp-for="ARandomField" label-text="a test" />
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="And this contains a bunch of Tags">
+        <nhs-tag text="Active" />
+        <nhs-tag text="Inactive" colour="Grey" />
+        <nhs-tag text="Red" colour="Red" />
+        <nhs-tag text="Aqua Green" colour="AquaGreen" />
+        <nhs-tag text="Orange" colour="Orange" />
+        <nhs-tag text="and a really long random tag in purple" colour="Purple" />
+    </nhs-summary-list-row>
+</nhs-summary-list>
+
+<p>Summary List is a "Wrapper Tag" that can contain any amount of raw Html and Components split by vertical rows.</p>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text=" Partial Code Example for the above Summary List"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list-row</span>
+        <span class="vs-light-theme-blue">label-text</span>
+        <span class="vs-light-theme-purple"> ="This is a Summary Row Label"</span>
+        <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+        <span class="vs-light-theme-blue second-layer">&lt;p&gt;and here is a bit of custom text inside the sumary list &lt;/p&gt;</span><br />
+        <span class="vs-light-theme-blue second-layer">&lt;p&gt;with a paragraph per row &lt;/p&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list-row</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list-row</span>
+        <span class="vs-light-theme-blue">label-text</span>
+        <span class="vs-light-theme-purple"> ="And another row"</span>
+        <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+        <span class="vs-light-theme-blue second-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-inset-text</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+
+        <span class="vs-light-theme-blue third-layer">that contains another component</span><br />
+
+        <span class="vs-light-theme-blue second-layer">&lt;/</span>
+        <span class="vs-light-theme-purple">nhs-inset-text</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list-row</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list-row</span>
+        <span class="vs-light-theme-blue">label-text</span>
+        <span class="vs-light-theme-purple"> ="and a row with input"</span>
+        <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+        <span class="vs-light-theme-blue second-layer bracket">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-input</span><br />
+        <span class="vs-light-theme-purple third-layer">asp-for</span>
+        <span class="vs-light-theme-blue">="ARandomField"&nbsp;</span><br />
+        <span class="vs-light-theme-purple third-layer">label-text</span>
+        <span class="vs-light-theme-blue">="a test" </span>
+        <span class="vs-light-theme-blue bracket">/&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list-row</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-summary-list</span>
+        <span class="vs-light-theme-blue">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<p>The Structure of a Summary list Must Follow this tag order:</p>
+<p>
+    <ul>
+        <li>&lt;nhs-summary-list&gt;</li>
+        <li>&lt;nhs-summary-list-row&gt;</li>
+    </ul>
+</p>
+<p>This order is enforced by razor, and will throw a compiler error if you try to use it in a different way.</p>
+
+<nhs-table label-text="Attributes For Summary List Row">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">label-text</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>Setting this attribute will set the title of the row.</p>
+            <p>If not set, no label will be displayed.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="No" colour="Green" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated 14 June 2021
+</nhs-endnote>

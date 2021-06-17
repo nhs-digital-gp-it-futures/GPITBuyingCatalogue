@@ -10,7 +10,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="Contact details"
-                        title-advice="Help buyers get in touch about your Catalogue Solution." />
+                        advice="Help buyers get in touch about your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
@@ -25,15 +25,15 @@
                 </span>
                 <div data-test-id="multi-question-questions">
                     <input type="hidden" asp-for="Contact1.Id" />
-                    <nhs-validation-input asp-for="Contact1.FirstName"
+                    <nhs-input asp-for="Contact1.FirstName"
                                           label-text="First name" />
-                    <nhs-validation-input asp-for="Contact1.LastName"
+                    <nhs-input asp-for="Contact1.LastName"
                                           label-text="Last name" />
-                    <nhs-validation-input asp-for="Contact1.Department"
+                    <nhs-input asp-for="Contact1.Department"
                                           label-text="Department name" />
-                    <nhs-validation-input asp-for="Contact1.PhoneNumber"
+                    <nhs-input asp-for="Contact1.PhoneNumber"
                                           label-text="Phone number" />
-                    <nhs-validation-input asp-for="Contact1.Email"
+                    <nhs-input asp-for="Contact1.Email"
                                           label-text="Email address" />
                 </div>
             </div>
@@ -48,15 +48,15 @@
                 </span>
                 <div data-test-id="multi-question-questions">
                     <input type="hidden" asp-for="Contact2.Id" />
-                    <nhs-validation-input asp-for="Contact2.FirstName"
+                    <nhs-input asp-for="Contact2.FirstName"
                                           label-text="First name" />
-                    <nhs-validation-input asp-for="Contact2.LastName"
+                    <nhs-input asp-for="Contact2.LastName"
                                           label-text="Last name" />
-                    <nhs-validation-input asp-for="Contact2.Department"
+                    <nhs-input asp-for="Contact2.Department"
                                           label-text="Department name" />
-                    <nhs-validation-input asp-for="Contact2.PhoneNumber"
+                    <nhs-input asp-for="Contact2.PhoneNumber"
                                           label-text="Phone number" />
-                    <nhs-validation-input asp-for="Contact2.Email"
+                    <nhs-input asp-for="Contact2.Email"
                                           label-text="Email address" />
                 </div>
             </div>

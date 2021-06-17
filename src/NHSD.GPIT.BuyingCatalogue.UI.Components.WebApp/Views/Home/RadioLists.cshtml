@@ -1,0 +1,121 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel
+@{
+    ViewData["Title"] = "Radio Lists";
+}
+
+<nhs-page-title title="Radio Lists"
+                advice="Allow The Selection of a single item from a list of objects"
+                caption="Tag Helpers"
+                additional-advice="This page is rendered from RadioLists.cshtml using the RadioListModel." />
+
+<p>This radio List component is for if you wish to have a user select an option from a list of available objects.</p>
+<p>If you wish to have a user select Yes or No For a single option, see Yes No Radios</p>
+
+<vc:nhs-action-link url="yes-no-radios" text="Click Here To see about Yes No Radios" />
+
+<nhs-fieldset-form-label asp-for="@Model"
+                         label-text="This is a Radio List from a List"
+                         label-hint="And a Hint">
+    <nhs-radio-buttons asp-for="@Model.SelectedItem"
+                       values="@Model.Options"
+                       value-name="Value"
+                       display-name="Name" />
+</nhs-fieldset-form-label>
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Code Example for the above Radio List"
+                             size="Medium">
+    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span>
+        <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span>
+        <span class="vs-light-theme-blue">="This is a Radio List from a List"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">label-hint</span>
+        <span class="vs-light-theme-blue">="And a Hint"&nbsp;</span>
+        <span class="vs-light-theme-blue">&gt;</span><br />
+
+        <span class="vs-light-theme-blue first-layer">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-radio-buttons</span><br />
+        <span class="vs-light-theme-purple second-layer">asp-for</span>
+        <span class="vs-light-theme-blue">"@@Model.SelectedItem"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">values</span>
+        <span class="vs-light-theme-blue">="@@Model.Options"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">value-name</span>
+        <span class="vs-light-theme-blue">="Value"&nbsp;</span><br />
+        <span class="vs-light-theme-purple second-layer">display-name</span>
+        <span class="vs-light-theme-blue">="Name"&nbsp;</span>
+        <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+        <span class="vs-light-theme-blue">&lt;</span>
+        <span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+        <span class="vs-light-theme-blue">/&gt;</span>
+    </div>
+</nhs-fieldset-form-container>
+
+<p>This object requires a fieldset-form-label to work correctly, to see about how to set a fieldset-form-label, please check fieldsets.</p>
+<vc:nhs-action-link url="fieldsets" text="Click here to see about fieldsets" />
+
+
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="value-name and display-name">
+    <p>For this component to work, the list of objects that form the list options must have two properties: a Value and a Name</p>
+    <p>This can come from the same property if the names are unique, but if it is a complex object, a unique ID and a seperate Display name are recommended.</p>
+    <p>This is required so that the form post can choose the correct value.</p>
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Example Object"
+                                 size="Medium">
+
+        <span>public sealed Class RadioListOption</span><br />
+        <span>{</span><br />
+        <span>&nbsp; public string Value { get; set; }</span><br />
+        <span>&nbsp; public string Name { get; set; }</span><br />
+        <span>}</span><br />
+    </nhs-fieldset-form-container>
+</nhs-fieldset-form-container>
+
+<nhs-table label-text="Attributes">
+    <nhs-table-row-container>
+        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
+        <nhs-table-cell column-name="Functionality">
+            <p>This is a reference to the field that the input will load and save the selected value for this list too/from.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>values</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This is the field that contains the list of values. It must be a List&lt;object&gt;, where the object contains a value and name property.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>value-name</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This is the name of the property field from the list of values that contains a unique Id, which will be saved when selecting the options</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+    <nhs-table-row-container>
+        <nhs-table-cell>display-name</nhs-table-cell>
+        <nhs-table-cell>
+            <p>This is the name of the property field from the list of values that contains the display value for each of the radio selection options.</p>
+        </nhs-table-cell>
+        <nhs-table-cell column-name="Required">
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+<nhs-endnote>
+    Page last Updated 14 June 2021
+</nhs-endnote>

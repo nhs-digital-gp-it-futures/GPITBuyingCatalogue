@@ -1,22 +1,31 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
     public class EditSolutionModel : OrderingBaseModel
     {
-        public EditSolutionModel(string odsCode, string callOffId, string id, string solutionName)
+        public EditSolutionModel()
+        {
+        }
+
+        public EditSolutionModel(string odsCode, string callOffId, string id, CreateOrderItemModel createOrderItemModel)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
             BackLinkText = "Go back";
-            Title = $"{solutionName} information for {callOffId}";
+            Title = $"{createOrderItemModel.CatalogueItemName} information for {callOffId}";
             OdsCode = odsCode;
             CallOffId = callOffId;
-            CatalogueItemId = id;
-            SolutionName = solutionName;
+            OrderItem = createOrderItemModel;
+            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(x => x.Selected).ToList();
+            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode];
         }
 
         public string CallOffId { get; set; }
 
-        public string CatalogueItemId { get; set; }
+        public CreateOrderItemModel OrderItem { get; set; }
 
-        public string SolutionName { get; set; }
+        public string CurrencySymbol { get; set; }
     }
 }

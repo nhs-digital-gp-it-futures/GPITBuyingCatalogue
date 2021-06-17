@@ -161,7 +161,6 @@
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
     <None Include="PostDeployment\CreateTables.sql" />
     <Build Include="Tables\SQLSessions.sql" />
-    <PostDeploy Include="PostDeployment\PostDeploymentCombined.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -232,9 +231,10 @@
     <None Include="PostDeployment\InsertAssociatedServices.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PostDeployment\PostDeployment.sql" />
+    <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File $(ProjectDir)BuildUtils\ScriptMerge.ps1</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

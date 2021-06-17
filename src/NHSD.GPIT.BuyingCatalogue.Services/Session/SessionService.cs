@@ -34,5 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
         {
             session.SetString(key, JsonConvert.SerializeObject(value));
         }
+
+        public void ClearSession()
+        {
+            session.Clear();
+        }
     }
 }

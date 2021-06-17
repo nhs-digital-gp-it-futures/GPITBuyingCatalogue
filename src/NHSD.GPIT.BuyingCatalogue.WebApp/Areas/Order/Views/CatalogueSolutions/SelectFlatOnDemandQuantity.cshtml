@@ -43,32 +43,20 @@
                                     Enter the estimated quantity you think you'll need either per month or per year.
                                 </div>
                             </details>
-
                         </div>
                     </div>
                     <div class="nhsuk-u-margin-bottom-5">
                         <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
                             <div data-test-id="radiobutton-options">
-                                <div class="nhsuk-form-group">
-                                    <fieldset class="nhsuk-fieldset">
-                                        <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                            Over what period did you estimate the quantity?
-                                        </legend>
-                                        <div class="nhsuk-radios">
-                                            <div class="nhsuk-radios__item">
-                                                <input class="nhsuk-radios__input" id="selectEstimationPeriod-1" name="selectEstimationPeriod" type="radio" value="month">
-                                                <label class="nhsuk-label nhsuk-radios__label" for="selectEstimationPeriod-1">
-                                                    Per month
-                                                </label>
-                                            </div>
-                                            <div class="nhsuk-radios__item">
-                                                <input class="nhsuk-radios__input" id="selectEstimationPeriod-2" name="selectEstimationPeriod" type="radio" value="year">
-                                                <label class="nhsuk-label nhsuk-radios__label" for="selectEstimationPeriod-2">
-                                                    Per year
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </fieldset>
+                                <div class="nhsuk-form-group">                                    
+                                    <nhs-fieldset-form-label asp-for="@Model"
+                                                       label-text="Which organisation are you looking for?"
+                                                       label-hint="Select one option.">
+                                        <nhs-radio-buttons asp-for="@Model.TimeUnit"
+                                                           values="@Model.TimeUnits"
+                                                           value-name="Name"
+                                                           display-name="DisplayText" />
+                                    </nhs-fieldset-form-label>
                                 </div>
                             </div>
                         </div>
