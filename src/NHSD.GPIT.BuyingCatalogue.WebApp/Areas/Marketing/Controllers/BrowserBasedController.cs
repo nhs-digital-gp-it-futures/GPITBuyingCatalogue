@@ -41,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, SupportedBrowsersModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("supported-browsers")]
         public async Task<IActionResult> SupportedBrowsers(SupportedBrowsersModel model)
         {
@@ -75,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, MobileFirstApproachModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(MobileFirstApproachModel model)
         {
@@ -109,7 +107,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, PlugInsOrExtensionsModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(PlugInsOrExtensionsModel model)
         {
@@ -143,7 +140,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(ConnectivityAndResolutionModel model)
         {
@@ -177,7 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, HardwareRequirementsModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
@@ -211,7 +206,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, AdditionalInformationModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
