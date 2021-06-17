@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectAdditionalServiceModel());
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("select/additional-service")]
         public IActionResult SelectAdditionalService(string odsCode, string callOffId, SelectAdditionalServiceModel model)
         {
@@ -42,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectAdditionalServiceRecipientsModel());
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("select/additional-service/price/recipients")]
         public IActionResult SelectAdditionalServicePriceRecipients(string odsCode, string callOffId, SelectAdditionalServiceRecipientsModel model)
         {
@@ -56,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectAdditionalServiceRecipientsDateModel());
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("select/additional-service/price/recipients/date")]
         public IActionResult SelectAdditionalServicePriceRecipientsDate(string odsCode, string callOffId, SelectAdditionalServiceRecipientsDateModel model)
         {
@@ -69,7 +66,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new NewAdditionalServiceOrderItemModel());
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("neworderitem")]
         public IActionResult NewOrderItem(string odsCode, string callOffId, NewAdditionalServiceOrderItemModel model)
         {
@@ -82,7 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new EditAdditionalServiceModel());
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("{id}")]
         public IActionResult EditAdditionalService(string odsCode, string callOffId, string id, EditAdditionalServiceModel model)
         {
@@ -95,7 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteAdditionalServiceModel());
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("delete/{id}/confirmation/{serviceName}")]
         public IActionResult DeleteAdditionalService(string odsCode, string callOffId, string id, string serviceName, DeleteAdditionalServiceModel model)
         {
