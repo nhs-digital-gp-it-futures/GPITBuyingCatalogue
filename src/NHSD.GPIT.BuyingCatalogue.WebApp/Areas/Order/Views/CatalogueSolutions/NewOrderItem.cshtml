@@ -1,6 +1,32 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.NewOrderItemModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.NewOrderItemModel;
 @{
     ViewData["Title"] = Model.Title;
+
+    ViewBag.SecondColumnName = Model.OrderItem.ProvisioningType switch
+    {
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.Declarative => "Quantity",
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.OnDemand => "Quantity" + Model.OrderItem.TimeUnit.Description,
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.Patient => "Practice list size",
+        _ => "Practice list size",
+    };
+
+    ViewBag.SecondColumnDetailsTitle = Model.OrderItem.ProvisioningType switch
+    {
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.Declarative => "What quantity should I enter?",
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.OnDemand => "What quantity should I enter?",
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.Patient => "What list size should I enter?",
+        _ => "What list size should I enter?",
+    };
+
+    ViewBag.SecondColumnDetailsContent = Model.OrderItem.ProvisioningType switch
+    {
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.Declarative => "Enter the total amount you think you'll need for the entire duration of the order.",
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.OnDemand => "Estimate the quantity you think you'll need either per month or per year.",
+        var _ when Model.OrderItem.ProvisioningType == ProvisioningType.Patient => "Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.<br><br>As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.",
+        _ => "Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.<br><br>As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.",
+    };
+
 }
 
 <div class="nhsuk-width-container" data-test-id="order-item-page">
@@ -15,227 +41,65 @@
             <input type="hidden" asp-for="@Model.BackLinkText" />
             <input type="hidden" asp-for="@Model.OdsCode" />
             <input type="hidden" asp-for="@Model.Title" />
+
             <div class="nhsuk-grid-column-two-thirds">
                 <div class="nhsuk-u-margin-bottom-5">
-                    <div class="">
-                        <div data-test-id="question-price">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group">
-                                    <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="price">
-                                        What price have you agreed? (@Model.CurrencySymbol)
-                                    </label>
-                                    <span class="bc-flex-container bc-align-items-center">
-                                        <input class="nhsuk-input nhsuk-input--width-10" asp-for="@Model.OrderItem.Price" type="text">
-                                        <label for="price" class="bc-margin-left">@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description</label>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div data-test-id="view-section-price-id" class="">
-                            <details class="nhsuk-details">
-                                <summary class="nhsuk-details__summary">
-                                    <span class="nhsuk-details__summary-text">
-                                        What price should I enter?
-                                    </span>
-                                </summary>
-                                <div class="nhsuk-details__text">
-                                    You can change the list price if you’ve agreed a different rate with the supplier.
-                                </div>
-                            </details>
-                        </div>
+                    <div>
+                        <nhs-bookended-input asp-for="@Model.OrderItem.Price"
+                                             label-text="What price have you agreed?"
+                                             Prefix="@Model.CurrencySymbol"
+                                             Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description" />
+
+                        <nhs-details label-text="What price should I enter?">
+                            You can change the list price if you’ve agreed a different rate with the supplier.
+                        </nhs-details>
                     </div>
                 </div>
             </div>
-
             <div class="nhsuk-grid-column-full">
-                <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-3 bc-c-order-table__hr" />
-                <div data-test-id="solution-table" class="nhsuk-u-margin-left-5 nhsuk-u-margin-top-0">
-
-                    <div id="solution-table" data-test-id="solution-table" class="">
-
-                        <table data-test-id="table" class="" style="page-break-inside:auto">
-
-                            <thead data-test-id="table-headings" style="display:table-header-group;">
-
-                            <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0  nhsuk-u-padding-bottom-5 nhsuk-u-font-size-20" style="width:33%">
-                                <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Recipient name (ODS code)</div>
-                            </th>
-
-                            <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-padding-bottom-5 nhsuk-u-font-size-20" style="width:33%">
-
-                                @if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.Declarative))
-                                {
-                                    <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Quantity</div>
-                                }
-                                else if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.OnDemand))
-                                {                                    
-                                    <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Quantity @Model.OrderItem.TimeUnit.Description</div>
-                                }
-                                else
-                                {
-                                    <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Practice list size</div>
-                                }
-                            </th>
-
-                            <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 nhsuk-u-padding-bottom-3 nhsuk-u-font-size-20" style="width:33%">
-                                <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Planned delivery date</div>
-
-                                <span data-test-id="column-heading-2-hint" class="nhsuk-hint">For example 14 01 2020</span>
-                            </th>
-                            </thead>
-
-                            <tbody>
-
-                                @for (int i = 0; i < Model.OrderItem.ServiceRecipients.Count(); i++)
-                                {
-                                    <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[i].Name" />
-                                    <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[i].OdsCode" />
-                                    <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
-                                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                            <div class="bc-c-data-text nhsuk-u-padding-top-5">@Model.OrderItem.ServiceRecipients[i].Name (@Model.OrderItem.ServiceRecipients[i].OdsCode)</div>
-                                        </td>
-                                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                            <div data-test-id="">
-                                                <div data-test-id="question-quantity">
-                                                    <div data-test-id="text-field-input">
-                                                        <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                                            <input class="nhsuk-input nhsuk-u-margin-top-5 nhsuk-input--width-10" asp-for="@Model.OrderItem.ServiceRecipients[i].Quantity" type="text">
-                                                        </div>
-                                                    </div>
-                                                    <div data-test-id="text-field-footer">
-                                                        <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div data-test-id="view-section-input-id-practice" class="">
-                                                    <details class="nhsuk-details">
-                                                        @if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.Declarative))
-                                                        {
-                                                            <summary class="nhsuk-details__summary">
-                                                                <span class="nhsuk-details__summary-text">
-                                                                    What quantity should I enter?
-                                                                </span>
-                                                            </summary>
-                                                            <div class="nhsuk-details__text">
-                                                                Enter the total amount you think you'll need for the entire duration of the order.
-                                                            </div>
-                                                        }
-                                                        else if (Model.OrderItem.ProvisioningType.Equals(NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.OnDemand))
-                                                        {
-                                                            <summary class="nhsuk-details__summary">
-                                                                <span class="nhsuk-details__summary-text">
-                                                                    What quantity should I enter?
-                                                                </span>
-                                                            </summary>
-                                                            <div class="nhsuk-details__text">
-                                                                Estimate the quantity you think you'll need either per month or per year.
-                                                            </div>
-                                                        }
-                                                        else
-                                                        {
-                                                        <summary class="nhsuk-details__summary">
-                                                            <span class="nhsuk-details__summary-text">
-                                                                What list size should I enter?
-                                                            </span>
-                                                        </summary>
-                                                        <div class="nhsuk-details__text">
-                                                            Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.<br><br>As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.
-                                                        </div>
-
-                                                        }
-                                                    </details>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                            <div data-test-id="">
-                                                <div data-test-id="question-deliveryDate">
-                                                    <div data-test-id="date-field-input">
-                                                        <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                                            <fieldset class="nhsuk-fieldset" role="group">
-                                                                <div class="nhsuk-date-input" id="deliveryDate">
-                                                                    <div class="nhsuk-date-input__item">
-                                                                        <div class="nhsuk-form-group">
-                                                                            <label class="nhsuk-label nhsuk-date-input__label" asp-for="@Model.OrderItem.ServiceRecipients[i].Day">
-                                                                                Day
-                                                                            </label>
-                                                                            <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" asp-for="@Model.OrderItem.ServiceRecipients[i].Day" type="text" pattern="[0-9]*" inputmode="numeric">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="nhsuk-date-input__item">
-                                                                        <div class="nhsuk-form-group">
-                                                                            <label class="nhsuk-label nhsuk-date-input__label" asp-for="@Model.OrderItem.ServiceRecipients[i].Month">
-                                                                                Month
-                                                                            </label>
-                                                                            <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" asp-for="@Model.OrderItem.ServiceRecipients[i].Month" type="text" pattern="[0-9]*" inputmode="numeric">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="nhsuk-date-input__item">
-                                                                        <div class="nhsuk-form-group">
-                                                                            <label class="nhsuk-label nhsuk-date-input__label" asp-for="@Model.OrderItem.ServiceRecipients[i].Year">
-                                                                                Year
-                                                                            </label>
-                                                                            <input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4" asp-for="@Model.OrderItem.ServiceRecipients[i].Year" type="text" pattern="[0-9]*" inputmode="numeric">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                        </div>
-                                                    </div>
-                                                    <div data-test-id="date-field-footer">
-                                                        <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div data-test-id="view-section-input-id-date" class="">
-                                                    <details class="nhsuk-details">
-                                                        <summary class="nhsuk-details__summary">
-                                                            <span class="nhsuk-details__summary-text">
-                                                                What date should I enter?
-                                                            </span>
-                                                        </summary>
-                                                        <div class="nhsuk-details__text">
-                                                            Enter the planned delivery date you've agreed with the supplier. This is the day that each of the listed Service Recipients will start using this Catalogue Solution.<br><br>We've included the commencement date for this Call-off Agreement, but you can change it if you’ve agreed a different delivery date.
-                                                        </div>
-                                                    </details>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>                                    
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="nhsuk-grid-column-full">
-                <div class="bc-u-inline-block">
-                    <div data-test-id="delete-button">
-                        <span class="nhsuk-button nhsuk-u-margin-top-9 nhsuk-button--secondary nhsuk-u-margin-right-5 nhsuk-button--disabled" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/delete/neworderitem/confirmation/@Model.OrderItem.CatalogueItemName" draggable="false" aria-disabled="true">
-                            Delete Catalogue Solution
-                        </span>
-                    </div>
-                </div>
-                <div class="bc-u-float-right">
-                    <div class="bc-u-inline-block">
-                        <div data-test-id="edit-button">
-                            <span class="nhsuk-button nhsuk-u-margin-top-9 nhsuk-button--secondary nhsuk-u-margin-right-5 nhsuk-button--disabled" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/select/solution/price/recipients" draggable="false" aria-disabled="true">
-                                Edit Service Recipients
-                            </span>
-                        </div>
-                    </div>
-                    <div class="bc-u-inline-block">
-                        <div data-test-id="save-button">
-                            <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                                Save
-                            </button>
-                        </div>
+                <nhs-table>
+                    <nhs-table-column>Recipient name (ODS Code)</nhs-table-column>
+                    <nhs-table-column>@ViewBag.SecondColumnName</nhs-table-column>
+                    <nhs-table-column>
+                        Planned delivery date
+                        <span data-test-id="column-heading-2-hint" class="nhsuk-hint">For example 14 01 2020</span>
+                    </nhs-table-column>
+                    @for (int i = 0; i < Model.OrderItem.ServiceRecipients.Count; i++)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[i].Name" />
+                                <input type="hidden" asp-for="@Model.OrderItem.ServiceRecipients[i].OdsCode" />
+                                @Model.OrderItem.ServiceRecipients[i].Name (@Model.OrderItem.ServiceRecipients[i].OdsCode)
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-input asp-for="@Model.OrderItem.ServiceRecipients[i].Quantity" />
+                                <nhs-details label-text="@ViewBag.SecondColumnDetailsTitle">
+                                    @ViewBag.SecondColumnDetailsContent
+                                </nhs-details>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-fieldset-form-label asp-for="@Model">
+                                    <nhs-date-input asp-for="@Model"
+                                                    day="@Model.OrderItem.ServiceRecipients[i].Day"
+                                                    month="@Model.OrderItem.ServiceRecipients[i].Month"
+                                                    year="@Model.OrderItem.ServiceRecipients[i].Year" />
+                                </nhs-fieldset-form-label>
+                                <nhs-details label-text="What date should i enter?">
+                                    <p>Enter the planned delivery date you've agreed with the supplier. This is the day that each of the listed Service Recipients will start using this Catalogue Solution.</p>
+                                    <p>We've included the commencement date for this Call-off Agreement, but you can change it if you’ve agreed a different delivery date.</p>
+                                </nhs-details>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+                <div style="margin-top:30px">
+                    <vc:nhs-delete-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/delete/neworderitem/confirmation/@Model.OrderItem.CatalogueItemName"
+                                          text="Delete Catalogue Solution" />
+                    <div class="bc-u-float-right">
+                        <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/select/solution/price/recipients"
+                                                 text="Edit Service Recipients" />
+                        <nhs-submit-button text="Save" />
                     </div>
                 </div>
             </div>
