@@ -38,6 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
             });
 
+            services.AddApplicationInsightsTelemetry();
+
             services.ConfigureDbContexts();
 
             services.ConfigureSession();
