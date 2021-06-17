@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
                 Dashboard = new(driver),
                 Organisation = new(driver),
                 AddUser = new(driver),
+                AddRelatedOrganisation = new(driver),
+                UserDetails = new(driver),
             };
         }
 

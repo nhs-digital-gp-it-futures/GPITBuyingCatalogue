@@ -16,10 +16,10 @@ using Serilog.Events;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
-    public class LocalWebApplicationFactory : WebApplicationFactory<Startup>
+    public sealed class LocalWebApplicationFactory : WebApplicationFactory<Startup>
     {
         private const string LocalhostBaseAddress = "https://127.0.0.1";
-        
+
         private readonly IWebHost host;
         internal readonly string BcDbName;
 
@@ -27,9 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         // Need to find a better way of doing this
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";                
+        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string OPERATING_MODE = "private";
-        
+
         private const string Browser = "chrome";
 
         public LocalWebApplicationFactory()
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        public string RootUri { get; private set; }
+        public string RootUri { get; }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -69,10 +69,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                var dbTypes = new Type[] { typeof(GPITBuyingCatalogueDbContext), typeof(GPITBuyingCatalogueDbContext) };
+                var dbTypes = new [] { typeof(GPITBuyingCatalogueDbContext) };
 
-                foreach(var type in dbTypes)
-                { 
+                foreach (var type in dbTypes)
+                {
                     var descriptor = services.SingleOrDefault(
                         d => d.ServiceType == type);
                     if (descriptor is not null)
@@ -90,11 +90,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                
-                var bcDb = scopedServices.GetRequiredService<GPITBuyingCatalogueDbContext>();                
+
+                var bcDb = scopedServices.GetRequiredService<GPITBuyingCatalogueDbContext>();
 
                 bcDb.Database.EnsureCreated();
-                
+
                 try
                 {
                     BuyingCatalogueSeedData.Initialize(bcDb);
@@ -110,26 +110,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             return builder;
         }
 
-        private void SetEnvVariables()
+        private static void SetEnvVariables()
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(BC_DB_CONNECTION))))
-            {
-                Environment.SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
-            }
+            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(CO_DB_CONNECTION))))
-            {
-                Environment.SetEnvironmentVariable(nameof(CO_DB_CONNECTION), CO_DB_CONNECTION);
-            }
+            SetEnvironmentVariable(nameof(CO_DB_CONNECTION), CO_DB_CONNECTION);
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(OPERATING_MODE))))
-            {
-                Environment.SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
-            }
+            SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")))
+            SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+
+            SetEnvironmentVariable("SMTPSERVER__PORT", "9999");
+        }
+
+        private static void SetEnvironmentVariable(string name, string value)
+        {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
             {
-                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+                Environment.SetEnvironmentVariable(name, value);
             }
         }
 

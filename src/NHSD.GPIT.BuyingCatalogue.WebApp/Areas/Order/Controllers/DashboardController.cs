@@ -74,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectOrganisationModel(odsCode, organisations));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("organisation/{odsCode}/select")]
         public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
         {
@@ -112,7 +111,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new NewOrderDescriptionModel(odsCode));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("organisation/{odsCode}/order/neworder/description")]
         public async Task<IActionResult> NewOrderDescription(string odsCode, NewOrderDescriptionModel model)
         {
