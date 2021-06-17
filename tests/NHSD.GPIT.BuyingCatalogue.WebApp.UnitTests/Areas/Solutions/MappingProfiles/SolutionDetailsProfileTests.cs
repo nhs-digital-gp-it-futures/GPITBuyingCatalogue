@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                         Previous = new SectionModel
                         {
-                            Action = "ImplementationTimescales",
+                            Action = "Implementation",
                             Controller = "SolutionDetails",
                             Name = "Implementation",
                             Show = true,
