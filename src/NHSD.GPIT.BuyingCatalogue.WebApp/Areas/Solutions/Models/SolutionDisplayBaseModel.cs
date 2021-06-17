@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.ImplementationTimescales),
+                Action = nameof(SolutionDetailsController.Implementation),
                 Controller = ControllerName,
                 Name = "Implementation",
             },

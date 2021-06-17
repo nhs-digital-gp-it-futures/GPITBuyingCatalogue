@@ -91,10 +91,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [Route("solutions/futures/{id}/implementation")]
-        public async Task<IActionResult> ImplementationTimescales(string id)
+        public async Task<IActionResult> Implementation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(ImplementationTimescales)}-{nameof(id)}");
+                throw new ArgumentException($"{nameof(Implementation)}-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
