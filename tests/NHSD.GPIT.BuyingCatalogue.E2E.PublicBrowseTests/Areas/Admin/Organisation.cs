@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public Organisation(LocalWebApplicationFactory factory) : base(factory, "admin/organisations/b7ee5261-43e7-4589-907b-5eef5e98c085")
         {
             Login();
-            smtp = SimpleSmtpServer.Start(1081);
+            smtp = SimpleSmtpServer.Start(9999);
         }
 
         [Fact]
@@ -85,12 +86,96 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             smtp.ReceivedEmailCount.Should().Be(1);
         }
 
+        [Fact]
+        public async Task Organisation_ViewUserDetails()
+        {
+            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
+            var user = await AddUser(currentOrgId);
+
+            AdminPages.Organisation.ViewUserDetails(user.Id);
+
+            using var context = GetBCContext();
+            var organisationName = (await context.Organisations.SingleAsync(s => s.OrganisationId == currentOrgId)).Name;
+
+            AdminPages.UserDetails.GetOrganisationName().Should().BeEquivalentTo(organisationName);
+            AdminPages.UserDetails.GetUserName().Should().BeEquivalentTo($"{user.FirstName} {user.LastName}");
+            AdminPages.UserDetails.GetContactDetails().Should().BeEquivalentTo(user.PhoneNumber);
+            AdminPages.UserDetails.GetEmailAddress().Should().BeEquivalentTo(user.Email);
+        }
+
+        [Fact]
+        public async Task Organisation_AddRelatedOrganisation()
+        {
+            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
+            AdminPages.Organisation.ClickAddRelatedOrgButton();
+
+            var relatedOrgId = AdminPages.AddRelatedOrganisation.SelectOrganisation(currentOrgId.ToString());
+
+            AdminPages.AddRelatedOrganisation.ClickAddRelatedOrgButton();
+
+            var organisation = AdminPages.Organisation.GetRelatedOrganisation(relatedOrgId);
+
+            using var context = GetBCContext();
+            var relatedOrgIds = (await context.RelatedOrganisations.ToListAsync()).Where(s => s.OrganisationId == currentOrgId);
+            relatedOrgIds.Select(s => s.RelatedOrganisationId).Should().Contain(relatedOrgId);
+
+            var relatedOrganisation = await context.Organisations.SingleAsync(s => s.OrganisationId == relatedOrgId);
+
+            organisation.OrganisationName.Should().BeEquivalentTo(relatedOrganisation.Name);
+            organisation.OdsCode.Should().BeEquivalentTo(relatedOrganisation.OdsCode);
+        }
+
+        [Fact]
+        public async Task Organisation_RemoveRelatedOrganisation()
+        {
+            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
+            var relatedOrgId = await AddRelatedOrganisation(currentOrgId);
+
+            AdminPages.Organisation.RemoveRelatedOrganisation(relatedOrgId);
+
+            using var context = GetBCContext();
+            var relationships = await context.RelatedOrganisations.ToListAsync();
+            var selectedRelationships = relationships.Where(o => o.OrganisationId == currentOrgId);
+
+            selectedRelationships.Select(s => s.RelatedOrganisationId).Should().NotContain(relatedOrgId);
+        }
+
         private static JsonSerializerOptions JsonOptions()
         {
             return  new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
+        }
+
+        private async Task<Guid> AddRelatedOrganisation(Guid currentOrgId)
+        {
+            using var context = GetBCContext();
+            var organisations = (await context.Organisations.ToListAsync()).Where(o => o.OrganisationId != currentOrgId).ToList();
+
+            var relatedOrganisation = new RelatedOrganisation
+            {
+                OrganisationId = currentOrgId,
+                RelatedOrganisationId = organisations[new Random().Next(organisations.Count())].OrganisationId,
+            };
+
+            context.RelatedOrganisations.Add(relatedOrganisation);
+            await context.SaveChangesAsync();
+
+            driver.Navigate().Refresh();
+
+            return relatedOrganisation.RelatedOrganisationId;
+        }
+
+        private async Task<AspNetUser> AddUser(Guid currentOrgId)
+        {
+            var user = GenerateUser.GenerateAspNetUser(currentOrgId, DefaultPassword);
+            using var context = GetBCContext();
+            context.Add(user);
+            await context.SaveChangesAsync();
+            driver.Navigate().Refresh();
+
+            return user;
         }
 
         public void Dispose()
