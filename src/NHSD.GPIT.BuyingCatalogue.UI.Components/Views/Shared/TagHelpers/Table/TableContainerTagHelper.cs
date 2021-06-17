@@ -7,7 +7,9 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(TableRowContainerTagHelper.TagHelperName)]
+    [RestrictChildren(
+        TableRowContainerTagHelper.TagHelperName,
+        TableColumnTagHelper.TagHelperName)]
     public sealed class TableContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-table";
@@ -30,11 +32,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         [HtmlAttributeName(DisableHeaderName)]
         public bool DisableHeader { get; set; }
 
-        private List<string> ColumnNames { get; set; }
+        private List<TagHelperContent> ColumnNames { get; set; }
 
         public override void Init(TagHelperContext context)
         {
-            ColumnNames = new List<string>();
+            ColumnNames = new List<TagHelperContent>();
 
             context.Items.Add("ColumnNames", ColumnNames);
         }
@@ -61,13 +63,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
                 .AppendHtml(body);
         }
 
-        private static TagBuilder GetHeaderColumnBuilder(string columnName)
+        private static TagBuilder GetHeaderColumnBuilder(TagHelperContent columnName)
         {
             var builder = new TagBuilder("th");
             builder.MergeAttribute(TagHelperConstants.Role, HeaderRowColumnRole);
             builder.MergeAttribute(TagHelperConstants.Scope, HeaderRowColumnScope);
 
-            builder.InnerHtml.Append(columnName);
+            builder.InnerHtml.AppendHtml(columnName);
 
             return builder;
         }
@@ -97,9 +99,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             if (DisableHeader)
                 return null;
 
-            var columnNames = context.Items["ColumnNames"] as List<string>;
+            if (!context.Items.TryGetValue("ColumnNames", out object columnNames))
+                return null;
 
-            if (columnNames is null || columnNames.Count == 0)
+            var columnNamesConverted = (List<TagHelperContent>)columnNames;
+
+            if (columnNamesConverted.Count == 0)
                 return null;
 
             var headerBuilder = new TagBuilder("thead");
@@ -110,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             var headerRowBuilder = new TagBuilder("tr");
             headerRowBuilder.MergeAttribute(TagHelperConstants.Role, HeaderRowRole);
 
-            foreach (string columnName in columnNames)
+            foreach (var columnName in columnNamesConverted)
             {
                 var column = GetHeaderColumnBuilder(columnName);
                 headerRowBuilder.InnerHtml.AppendHtml(column);

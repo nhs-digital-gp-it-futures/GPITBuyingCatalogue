@@ -11,14 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
     {
         public const string TagHelperName = "nhs-table-cell";
 
-        private const string ColumnNameName = "column-name";
-
         private const string CellRole = "cell";
         private const string CellClass = "nhsuk-table__cell";
         private const string HeadingClass = "nhsuk-table-responsive__heading";
-
-        [HtmlAttributeName(ColumnNameName)]
-        public string ColumnName { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -27,34 +22,29 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, CellRole));
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClass));
 
-            var heading = GetHeadingBuilder();
+            var heading = GetHeadingBuilder(context);
 
             var children = await output.GetChildContentAsync();
 
             output.Content
                 .AppendHtml(heading)
                 .AppendHtml(children);
-
-            AddHeadingToContext(context);
         }
 
-        private void AddHeadingToContext(TagHelperContext context)
+        private static TagBuilder GetHeadingBuilder(TagHelperContext context)
         {
-            var headingList = context.Items["ColumnNames"] as List<string>;
+            if (!context.Items.TryGetValue("CellColumnNames", out object columnNames))
+                return null;
 
-            if (headingList is null)
-                return;
+            var columnNamesConverted = (Queue<TagHelperContent>)columnNames;
 
-            if (!headingList.Contains(ColumnName))
-                headingList.Add(ColumnName);
-        }
+            if (columnNamesConverted.Count == 0)
+                return null;
 
-        private TagBuilder GetHeadingBuilder()
-        {
             var builder = new TagBuilder(TagHelperConstants.Span);
             builder.AddCssClass(HeadingClass);
 
-            builder.InnerHtml.Append(ColumnName);
+            builder.InnerHtml.AppendHtml(columnNamesConverted.Dequeue());
 
             return builder;
         }

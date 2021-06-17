@@ -53,6 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
 
         public static TagBuilder GetFieldSetLegendHeadingBuilder(FieldSetSize selectedSize, string labelText)
         {
+            if (labelText is null)
+                return null;
+
             var fieldsetLegend = GetFieldsetLegendBuilder(selectedSize);
             var fieldsetlegendheader = GetFieldsetLegendHeadingTagBuilder(labelText, selectedSize);
 
