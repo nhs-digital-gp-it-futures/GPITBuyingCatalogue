@@ -410,5 +410,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mockCatalogueItem.Verify(c => c.Features());
             actual.Features.Should().BeEquivalentTo(expected);
         }
+
+        [Test, CommonAutoData]
+        public void Map_CataloguePriceToString_ValidSource_ResultAsExpected(CataloguePrice cataloguePrice)
+        {
+            var actual = mapper.Map<CataloguePrice, string>(cataloguePrice);
+
+            actual.Should().Be($"£{cataloguePrice.Price.Value:F} {cataloguePrice.PricingUnit.Description}");
+        }
+        
+        [Test, CommonAutoData]
+        public void Map_CataloguePriceToString_PricingUnitIsNull_ReturnsPriceOnly(CataloguePrice cataloguePrice)
+        {
+            cataloguePrice.PricingUnit = null;
+            
+            var actual = mapper.Map<CataloguePrice, string>(cataloguePrice);
+
+            actual.Should().Be($"£{cataloguePrice.Price.Value:F}");
+        }
+        
+        [Test, CommonAutoData]
+        public void Map_CataloguePriceToString_PriceIsNull_ReturnsZero(CataloguePrice cataloguePrice)
+        {
+            cataloguePrice.Price = null;
+            
+            var actual = mapper.Map<CataloguePrice, string>(cataloguePrice);
+
+            actual.Should().Be("0");
+        }
     }
 }
