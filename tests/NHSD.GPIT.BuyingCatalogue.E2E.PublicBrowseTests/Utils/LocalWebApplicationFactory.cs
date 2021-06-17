@@ -112,29 +112,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private void SetEnvVariables()
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(BC_DB_CONNECTION))))
-            {
-                Environment.SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
-            }
+            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(CO_DB_CONNECTION))))
-            {
-                Environment.SetEnvironmentVariable(nameof(CO_DB_CONNECTION), CO_DB_CONNECTION);
-            }
+            SetEnvironmentVariable(nameof(CO_DB_CONNECTION), CO_DB_CONNECTION);
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(nameof(OPERATING_MODE))))
-            {
-                Environment.SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
-            }
+            SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")))
-            {
-                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
-            }
+            SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("")))
+            SetEnvironmentVariable("SMTPSERVER__PORT", "9999");
+        }
+
+        private void SetEnvironmentVariable(string name, string value)
+        {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
             {
-                Environment.SetEnvironmentVariable("SMTPSERVER__PORT", "9999");
+                Environment.SetEnvironmentVariable(name, value);
             }
         }
 
