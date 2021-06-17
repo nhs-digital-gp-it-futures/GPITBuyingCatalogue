@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -87,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(odsSettings);
         }
 
-        public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
+        public static void ConfigureDbContexts(this IServiceCollection services)
         {
             var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
 
@@ -101,8 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
             services.AddDbContext<OrderingDbContext>(options => options.UseSqlServer(catalogueOrderingConnectionString));
-
-            healthCheckBuilder.AddDatabaseHealthCheck(buyingCatalogueConnectionString);
         }
 
         public static void ConfigureSession(this IServiceCollection services)
@@ -133,8 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureEmail(
             this IServiceCollection services,
-            IConfiguration configuration,
-            IHealthChecksBuilder healthCheckBuilder)
+            IConfiguration configuration)
         {
             var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");
             var smtpSettings = configuration.GetSection("SmtpServer").Get<SmtpSettings>();
@@ -142,17 +137,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(smtpSettings);
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();
-            healthCheckBuilder.AddSmtpHealthCheck(smtpSettings);
         }
 
-        public static void ConfigureCookiePolicy(this IServiceCollection services)
+        public static void ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-                options.ConsentCookie.Name = "buyingcatalogue-cookie-consent";
-            });
+            var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
+            cookieExpiration.ConsentExpiration = configuration.GetValue<TimeSpan>(Cookies.BuyingCatalogueConsentExpiration);
+
+            services.AddSingleton(cookieExpiration);
         }
 
         public static void ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
@@ -205,14 +197,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(registrationSettings);
         }
 
-        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration, IHealthChecksBuilder healthCheckBuilder)
+        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration)
         {
             var settings = configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
             services.AddSingleton(settings);
 
             services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
-
-            healthCheckBuilder.AddAzureStorageHealthChecks(settings);
         }
     }
 }

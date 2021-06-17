@@ -2,7 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.PublicBrowse.Areas.Homepage
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
     public sealed class TilesTests : TestBase, IClassFixture<LocalWebApplicationFactory>
     {

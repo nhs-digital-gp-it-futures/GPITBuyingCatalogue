@@ -7,6 +7,10 @@
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}";
             Title = $"Order summary for {order.CallOffId}";
+            OdsCode = odsCode;
+            Order = order;
         }
+
+        public EntityFramework.Models.Ordering.Order Order { get; set; }
     }
 }
