@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData
                 .Generate();
         }
 
-        internal static AspNetUser GenerateAspNetUser(Guid organisationId, string password)
+        internal static AspNetUser GenerateAspNetUser(Guid organisationId, string password, bool isEnabled)
         {
             var user = new Faker<AspNetUser>("en_GB")
                 .RuleFor(u => u.Id, f => f.Random.Guid().ToString())
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData
                 .RuleFor(u => u.UserName, (f, u) => u.Email)
                 .RuleFor(u => u.NormalizedEmail, (f, u) => u.Email.ToUpper())
                 .RuleFor(u => u.NormalizedUserName, (f, u) => u.NormalizedEmail)
-                .RuleFor(u => u.Disabled, f => false)
+                .RuleFor(u => u.Disabled, f => !isEnabled)
                 .RuleFor(u => u.EmailConfirmed, f => true)
                 .RuleFor(u => u.CatalogueAgreementSigned, f => true)
                 .RuleFor(u => u.OrganisationFunction, f => "Buyer")
