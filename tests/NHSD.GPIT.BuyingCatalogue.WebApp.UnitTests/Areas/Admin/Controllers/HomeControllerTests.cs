@@ -27,11 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Test]
-        public static async Task Get_Index_ReturnsDefaultView()
+        public static void Get_Index_ReturnsDefaultView()
         {
             var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
 
-            var result = await controller.Index();
+            var result = controller.Index();
 
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
