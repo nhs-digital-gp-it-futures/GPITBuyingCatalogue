@@ -104,6 +104,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         }
 
         [Fact]
+        public async Task Organisation_DisableUser()
+        {
+            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
+            var user = await AddUser(currentOrgId);
+
+            AdminPages.Organisation.ViewUserDetails(user.Id);
+
+            AdminPages.UserDetails.DisableEnableUser();
+
+            using var context = GetBCContext();
+            var dbUser = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+            dbUser.Disabled.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Organisation_EnableUser()
+        {
+            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
+            var user = await AddUser(currentOrgId, false);
+
+            AdminPages.Organisation.ViewUserDetails(user.Id);
+
+            AdminPages.UserDetails.DisableEnableUser();
+
+            using var context = GetBCContext();
+            var dbUser = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
+            dbUser.Disabled.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task Organisation_AddRelatedOrganisation()
         {
             var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
@@ -167,9 +197,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             return relatedOrganisation.RelatedOrganisationId;
         }
 
-        private async Task<AspNetUser> AddUser(Guid currentOrgId)
+        private async Task<AspNetUser> AddUser(Guid currentOrgId, bool IsEnabled = true)
         {
-            var user = GenerateUser.GenerateAspNetUser(currentOrgId, DefaultPassword);
+            var user = GenerateUser.GenerateAspNetUser(currentOrgId, DefaultPassword, IsEnabled);
             using var context = GetBCContext();
             context.Add(user);
             await context.SaveChangesAsync();
