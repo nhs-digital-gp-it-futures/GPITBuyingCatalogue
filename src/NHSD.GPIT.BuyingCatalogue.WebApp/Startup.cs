@@ -38,8 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
             });
 
-            services.ConfigureCookiePolicy();
-
             services.ConfigureDbContexts();
 
             services.ConfigureSession();
@@ -47,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureIdentity();
 
             services.ConfigureValidationSettings(Configuration);
+
+            services.ConfigureConsentCookieSettings(Configuration);
 
             services.ConfigureCookies(Configuration);
 
@@ -121,6 +121,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             // Disable the marketing pages when deployed publicly
             if (string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
                 app.UseMiddleware<DisableMarketingMiddleware>();
+
+            app.UseMiddleware<Framework.Middleware.CookieConsent.CookieConsentMiddleware>();
 
             app.UseStaticFiles(new StaticFileOptions()
             {
