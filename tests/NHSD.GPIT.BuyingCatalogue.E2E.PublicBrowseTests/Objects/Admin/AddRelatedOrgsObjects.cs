@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 {
-    internal class AddRelatedOrgsObjects
+    internal static class AddRelatedOrgsObjects
     {
         internal static By SubmitButton => By.Id("Submit");
 
