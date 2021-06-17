@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -20,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 #if DEBUG
                 .WriteTo.Debug()
 #endif
+                .WriteTo.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces)
                 .WriteTo.Console()
                 .CreateLogger();
 

@@ -44,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
+            services.AddApplicationInsightsTelemetry();
+
             services.ConfigureDbContexts();
 
             services.ConfigureSession();
