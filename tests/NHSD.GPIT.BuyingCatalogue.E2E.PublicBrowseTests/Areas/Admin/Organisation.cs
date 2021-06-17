@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -83,6 +84,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             confirmationMessage.Should().BeEquivalentTo($"{user.FirstName} {user.LastName} account added");
             smtp.ReceivedEmailCount.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task Organisation_AddRelatedOrganisation()
+        {
+            AdminPages.Organisation.ClickAddRelatedOrgButton();
+
+            var relatedOrgId = AdminPages.AddRelatedOrganisation.SelectOrganisation("b7ee5261-43e7-4589-907b-5eef5e98c085");
+
+            AdminPages.AddRelatedOrganisation.ClickAddRelatedOrgButton();
+
+            var organisation = AdminPages.Organisation.GetRelatedOrganisation(relatedOrgId);
+
+            using var context = GetBCContext();
+            var relatedOrgIds = (await context.RelatedOrganisations.ToListAsync()).Where(s => s.OrganisationId == Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085"));
+            relatedOrgIds.Select(s => s.RelatedOrganisationId).Should().Contain(relatedOrgId);
+
+            var relatedOrganisation = await context.Organisations.SingleAsync(s => s.OrganisationId == relatedOrgId);
+
+            organisation.OrganisationName.Should().BeEquivalentTo(relatedOrganisation.Name);
+            organisation.OdsCode.Should().BeEquivalentTo(relatedOrganisation.OdsCode);
         }
 
         private static JsonSerializerOptions JsonOptions()

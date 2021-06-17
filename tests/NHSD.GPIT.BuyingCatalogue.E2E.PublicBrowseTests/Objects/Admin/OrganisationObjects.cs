@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
@@ -16,5 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
         public static By AddRelatedOrgButton => CustomBy.DataTestId("add-organisation-button", "a");
 
         public static By RelatedOrgsTable => CustomBy.DataTestId("related-org-table", "table");
+
+        internal static By RelatedOrgTableOrgName(Guid orgId) => CustomBy.DataTestId($"related-org-name-{orgId}");
+
+        internal static By RelatedOrgTableOdsCode(Guid orgId) => CustomBy.DataTestId($"related-org-odsCode-{orgId}");
     }
 }

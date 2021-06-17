@@ -7,5 +7,7 @@
         internal Dashboard Dashboard { get; set; }
 
         internal AddUser AddUser { get; set; }
+
+        internal AddRelatedOrganisation AddRelatedOrganisation {get;set;}
     }
 }

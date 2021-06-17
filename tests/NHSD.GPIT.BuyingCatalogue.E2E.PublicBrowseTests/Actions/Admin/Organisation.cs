@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestModels;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
@@ -46,6 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             Driver.FindElement(Objects.Admin.OrganisationObjects.AddUserButton).Click();
         }
 
+        internal void ClickAddRelatedOrgButton()
+        {
+            Driver.FindElement(Objects.Admin.OrganisationObjects.AddRelatedOrgButton).Click();
+        }
+
         private bool ElementDisplayed(By by)
         {
             try
@@ -57,6 +64,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             {
                 return false;
             }
+        }
+
+        internal RelatedOrg GetRelatedOrganisation(Guid orgId)
+        {
+            var relatedOrg = new RelatedOrg()
+            {
+                OrganisationId = orgId,
+                OrganisationName = Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrgTableOrgName(orgId)).Text,
+                OdsCode = Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrgTableOdsCode(orgId)).Text
+            };
+
+            return relatedOrg;
         }
     }
 }
