@@ -676,7 +676,7 @@ BEGIN
 
     SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C44');
 
-    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
     VALUES
     ('S020X01E03', 'Supplier-defined epic 3', @capabilityId, 3, 1, 1),
     ('S020X01E04', 'Supplier-defined epic 4', @capabilityId, 3, 1, 1);
