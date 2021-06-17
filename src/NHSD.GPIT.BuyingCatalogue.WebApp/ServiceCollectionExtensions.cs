@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -75,7 +76,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.AccessDeniedPath = "/404"; // MJRTODO - don't like this
             });
 
-            services.AddAntiforgery(options => options.Cookie.Name = "antiforgery");
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.Name = "antiforgery";
+            });
         }
 
         public static void ConfigureOds(this IServiceCollection services, IConfiguration configuration)
