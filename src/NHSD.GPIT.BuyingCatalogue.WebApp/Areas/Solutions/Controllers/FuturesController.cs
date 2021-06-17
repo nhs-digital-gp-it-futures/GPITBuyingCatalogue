@@ -58,7 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Route("Solutions/Futures/CapabilitiesSelector")]
         public IActionResult CapabilitiesSelector(CapabilitiesModel model)
         {

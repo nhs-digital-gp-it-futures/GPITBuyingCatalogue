@@ -44,7 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, ClientApplicationTypesModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(ClientApplicationTypesModel model)
         {

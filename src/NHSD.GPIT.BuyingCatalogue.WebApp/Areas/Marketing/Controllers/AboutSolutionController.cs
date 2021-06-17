@@ -42,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, FeaturesModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("features")]
         public async Task<IActionResult> Features(FeaturesModel model)
         {
@@ -74,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("implementation-timescales")]
         public async Task<IActionResult> ImplementationTimescales(ImplementationTimescalesModel model)
         {
@@ -105,7 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, IntegrationsModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("integrations")]
         public async Task<IActionResult> Integrations(IntegrationsModel model)
         {
@@ -136,7 +133,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, RoadmapModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("roadmap")]
         public async Task<IActionResult> Roadmap(RoadmapModel model)
         {
@@ -167,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             return View(mapper.Map<CatalogueItem, SolutionDescriptionModel>(solution));
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost("solution-description")]
         public async Task<IActionResult> SolutionDescription(SolutionDescriptionModel model)
         {

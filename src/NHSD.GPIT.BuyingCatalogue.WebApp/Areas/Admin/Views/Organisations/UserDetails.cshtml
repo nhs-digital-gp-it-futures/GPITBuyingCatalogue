@@ -17,14 +17,16 @@
     <div data-test-id="user-email" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-7">@Model.User.Email</div>
 
     <div class="nhsuk-grid-row">
-        <form method="post" action="/admin/organisations/@Model.Organisation.OrganisationId/@Model.User.Id/@Model.Toggle">
+        <form method="post"
+              asp-controller="Organisations"
+              asp-route-organisationId="@Model.Organisation.OrganisationId"
+              asp-route-userId="@Model.User.Id"
+              asp-action="@Model.Toggle">
             <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
             <input type="hidden" asp-for="@Model.User.Id" />
             <input type="hidden" asp-for="@Model.User.Disabled" />
             <div data-test-id="change-account-status-button" class="nhsuk-grid-column-one-quarter">
-                <button class="nhsuk-button nhsuk-u-margin-bottom-9" type="submit">
-                    @Model.ToggleText
-                </button>
+                <nhs-submit-button text="@Model.ToggleText"/>
             </div>
         </form>
     </div>
