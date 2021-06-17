@@ -1,13 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http.Features
-@{
-    var consentFeatureFlag = Context.Features.Get<ITrackingConsentFeature>();
-    var showBannerFlag = !consentFeatureFlag?.CanTrack ?? false;
-    var cookieString = consentFeatureFlag?.CreateConsentCookie();
-}
-
-@if (showBannerFlag)
-{
-<section data-test-id="cookie-banner" class="bc-c-cookies nhsuk-header--white nhsuk-u-padding-top-3" aria-labelledby="cookies" role="banner">
+﻿<section data-test-id="cookie-banner" class="bc-c-cookies nhsuk-header--white nhsuk-u-padding-top-3" aria-labelledby="cookies" role="banner">
     <div class="nhsuk-width-container">
         <h2 class="nhsuk-heading-m">Cookies on the Buying Catalogue</h2>
         <p class="nhsuk-body-m">We've put small files called cookies on your device to make the Buying Catalogue website work.</p>
@@ -19,4 +10,4 @@
         </div>
     </div>
 </section>
-}
+
