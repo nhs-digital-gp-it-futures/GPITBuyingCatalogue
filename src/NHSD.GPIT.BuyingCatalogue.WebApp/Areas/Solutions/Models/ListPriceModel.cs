@@ -9,6 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public IList<PriceViewModel> FlatListPrices { get; set; }
 
-        public bool HasFlatListPrices() => FlatListPrices != null && FlatListPrices.Any();
+        public bool HasFlatListPrices() => FlatListPrices?.Any() == true;
     }
 }

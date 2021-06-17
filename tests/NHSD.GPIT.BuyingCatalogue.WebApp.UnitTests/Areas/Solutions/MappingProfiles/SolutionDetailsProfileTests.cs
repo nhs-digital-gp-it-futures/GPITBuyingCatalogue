@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
@@ -133,8 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
            CatalogueItem catalogueItem)
         {
-            var expected = catalogueItem.CataloguePrices
-                .Count(c => c.CataloguePriceType.Name.Equals("Flat"));
+            var expected = catalogueItem.CataloguePrices.Count(c => c.CataloguePriceType.Name.Equals("Flat"));
             expected.Should().BeGreaterThan(0);
             
             var actual = mapper.Map<CatalogueItem, ListPriceModel>(catalogueItem);
