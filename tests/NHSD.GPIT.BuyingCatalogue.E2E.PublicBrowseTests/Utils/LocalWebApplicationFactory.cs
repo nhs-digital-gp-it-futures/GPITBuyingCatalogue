@@ -16,7 +16,7 @@ using Serilog.Events;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
-    public class LocalWebApplicationFactory : WebApplicationFactory<Startup>
+    public sealed class LocalWebApplicationFactory : WebApplicationFactory<Startup>
     {
         private const string LocalhostBaseAddress = "https://127.0.0.1";
 
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        public string RootUri { get; private set; }
+        public string RootUri { get; }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                var dbTypes = new Type[] { typeof(GPITBuyingCatalogueDbContext), typeof(GPITBuyingCatalogueDbContext) };
+                var dbTypes = new [] { typeof(GPITBuyingCatalogueDbContext) };
 
                 foreach (var type in dbTypes)
                 {
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             return builder;
         }
 
-        private void SetEnvVariables()
+        private static void SetEnvVariables()
         {
             SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
 
