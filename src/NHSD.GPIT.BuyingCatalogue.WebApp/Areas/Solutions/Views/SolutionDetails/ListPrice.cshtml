@@ -12,7 +12,7 @@
 
                     <p><b>This Catalogue Solution is available at the following price:</b></p>
 
-                    @if (Model.FlatListPrices.Count() > 0)
+                    @if (Model.HasFlatListPrices())
                     {
                         <table>
                             <caption>Flat list price</caption>
@@ -33,31 +33,6 @@
                             </tbody>
                         </table>
                     }
-
-                    @if (Model.TierListPrices.Count() > 0)
-                    {
-                        <table>
-                            <caption>Tiered list price</caption>
-                            <thead role="rowgroup">
-                                <tr role="row">
-                                    <th>Price</th>
-                                    <th>Unit</th>
-                                    <th>Volume</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.TierListPrices)
-                                {
-                                    <tr role="row">
-                                        <td>@item.CurrencyCode@item.Price</td>
-                                        <td>@item.Unit</td>
-                                        <td>Volume</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-
                 </div>
             </div>
         </article>

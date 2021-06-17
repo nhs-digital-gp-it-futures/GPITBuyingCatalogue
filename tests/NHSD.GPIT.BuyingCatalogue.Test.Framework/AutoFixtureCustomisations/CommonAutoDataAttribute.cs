@@ -11,7 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             base(() => new Fixture().Customize(
                 new CompositeCustomization(new AutoMoqCustomization(),
                     new IgnoreCircularReferenceCustomisation(),
-                    new SolutionCustomization())))
+                    new SolutionCustomization(),
+                    new SupplierCustomization(),
+                    new CataloguePriceCustomization()
+                    )))
         {
         }
     }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -10,8 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public override int Index => 3;
 
-        public IEnumerable<PriceViewModel> FlatListPrices { get; set; }
+        public IList<PriceViewModel> FlatListPrices { get; set; }
 
-        public IEnumerable<PriceViewModel> TierListPrices { get; set; }
+        public bool HasFlatListPrices() => FlatListPrices != null && FlatListPrices.Any();
     }
 }
