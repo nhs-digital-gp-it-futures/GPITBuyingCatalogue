@@ -2,6 +2,7 @@
 {
     internal sealed class ActionCollection
     {
+        internal UserDetails UserDetails { get; set; }
         internal Organisation Organisation { get; set; }
 
         internal Dashboard Dashboard { get; set; }

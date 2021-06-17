@@ -77,5 +77,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 
             return relatedOrg;
         }
+
+        internal void RemoveRelatedOrganisation(Guid relatedOrgId)
+        {
+            Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrganisationRemove(relatedOrgId)).Click();
+
+            Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrganisationRemoveConfirm).Click();
+        }
+
+        internal void ViewUserDetails(string id)
+        {
+            Driver.FindElement(Objects.Admin.OrganisationObjects.UserName(id)).Click();
+        }
     }
 }
