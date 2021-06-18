@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -7,6 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public override int Index => 5;
 
-        public IList<AssociatedServiceModel> Services { get; set; }
+        public IList<AssociatedServiceModel> Services { get; set; } = new List<AssociatedServiceModel>();
+
+        public bool HasServices() => Services != null && Services.Any();
     }
 }
