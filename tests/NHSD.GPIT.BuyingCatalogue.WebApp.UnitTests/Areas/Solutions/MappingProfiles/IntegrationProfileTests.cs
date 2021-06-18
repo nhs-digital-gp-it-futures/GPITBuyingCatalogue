@@ -78,9 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         FullWidth = true,
                         Next = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.ImplementationTimescales),
+                            Action = nameof(SolutionDetailsController.Implementation),
                             Controller = typeof(SolutionDetailsController).ControllerName(),
-                            Name = "Implementation timescales",
+                            Name = "Implementation",
                             Show = true,
                         },
                         Previous = new SectionModel

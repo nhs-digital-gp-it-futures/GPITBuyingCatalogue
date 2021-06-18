@@ -555,10 +555,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static void Get_ImplementationTimescales_RouteAttribute_ExpectedTemplate()
         {
             typeof(SolutionDetailsController)
-                .GetMethod(nameof(SolutionDetailsController.ImplementationTimescales))
+                .GetMethod(nameof(SolutionDetailsController.Implementation))
                 .GetCustomAttribute<RouteAttribute>()
                 .Template.Should()
-                .Be("solutions/futures/{id}/implementation-timescales");
+                .Be("solutions/futures/{id}/implementation");
         }
         
         [Test]
@@ -568,8 +568,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.ImplementationTimescales(id))
-                .Message.Should().Be($"{nameof(SolutionDetailsController.ImplementationTimescales)}-{nameof(id)}");
+            Assert.ThrowsAsync<ArgumentException>(() => controller.Implementation(id))
+                .Message.Should().Be($"{nameof(SolutionDetailsController.Implementation)}-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -579,7 +579,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
 
-            await controller.ImplementationTimescales(id);
+            await controller.Implementation(id);
 
             mockService.Verify(s => s.GetSolution(id));
         }
@@ -593,7 +593,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
 
-            var actual = (await controller.ImplementationTimescales(id)).As<BadRequestObjectResult>();
+            var actual = (await controller.Implementation(id)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
@@ -610,7 +610,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
 
-            await controller.ImplementationTimescales(id);
+            await controller.Implementation(id);
 
             mockMapper.Verify(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem));
         }
@@ -630,7 +630,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
 
-            var actual = (await controller.ImplementationTimescales(id)).As<ViewResult>();
+            var actual = (await controller.Implementation(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();

@@ -243,11 +243,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             typeof(AboutSolutionController)
                 .GetMethods()
-                .First(x => x.Name == nameof(AboutSolutionController.ImplementationTimescales)
+                .First(x => x.Name == nameof(AboutSolutionController.Implementation)
                             && x.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
-                .Should().Be(nameof(AboutSolutionController.ImplementationTimescales).ToLowerCaseHyphenated());
+                .Should().Be(nameof(AboutSolutionController.Implementation).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -257,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
-            Assert.ThrowsAsync<ArgumentException>(() => controller.ImplementationTimescales(id));
+            Assert.ThrowsAsync<ArgumentException>(() => controller.Implementation(id));
         }
 
         [Test, AutoData]
@@ -267,7 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.ImplementationTimescales(id);
+            await controller.Implementation(id);
 
             mockService.Verify(x => x.GetSolution(id));
         }
@@ -282,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.ImplementationTimescales(id)).As<BadRequestObjectResult>();
+            var actual = (await controller.Implementation(id)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
@@ -299,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
                 mockMapper.Object, mockService.Object);
 
-            await controller.ImplementationTimescales(id);
+            await controller.Implementation(id);
 
             mockMapper.Verify(x => x.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem));
         }
@@ -318,7 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
                 mockMapper.Object, mockService.Object);
 
-            var actual = (await controller.ImplementationTimescales(id)).As<ViewResult>();
+            var actual = (await controller.Implementation(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
@@ -330,11 +330,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             typeof(AboutSolutionController)
                 .GetMethods()
-                .First(x => x.Name == nameof(AboutSolutionController.ImplementationTimescales)
+                .First(x => x.Name == nameof(AboutSolutionController.Implementation)
                             && x.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
-                .Should().Be(nameof(AboutSolutionController.ImplementationTimescales).ToLowerCaseHyphenated());
+                .Should().Be(nameof(AboutSolutionController.Implementation).ToLowerCaseHyphenated());
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
             Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.ImplementationTimescales((ImplementationTimescalesModel)null));
+                controller.Implementation((ImplementationTimescalesModel)null));
         }
 
         [Test]
@@ -355,7 +355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            await controller.ImplementationTimescales(new Mock<ImplementationTimescalesModel>().Object);
+            await controller.Implementation(new Mock<ImplementationTimescalesModel>().Object);
 
             mockService.Verify(
                 x => x.SaveImplementationDetail(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -369,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.ImplementationTimescales(mockImplementationTimescalesModel))
+            var actual = (await controller.Implementation(mockImplementationTimescalesModel))
                 .As<ViewResult>();
 
             actual.Should().NotBeNull();
@@ -385,7 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.ImplementationTimescales(model);
+            await controller.Implementation(model);
 
             mockService.Verify(x => x.SaveImplementationDetail(model.SolutionId, model.Description));
         }
@@ -397,7 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
 
-            var actual = (await controller.ImplementationTimescales(model)).As<RedirectToActionResult>();
+            var actual = (await controller.Implementation(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(SolutionController.Index));
