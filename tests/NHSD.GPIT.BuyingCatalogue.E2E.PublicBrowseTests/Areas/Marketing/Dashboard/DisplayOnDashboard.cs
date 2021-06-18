@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [InlineData("Roadmap")]
         [InlineData("About supplier")]
         [InlineData("Integrations")]
-        [InlineData("Implementation timescales")]
+        [InlineData("Implementation")]
         public void MarketingPages_DisplayOnDashboard(string section)
         {
             MarketingPages.DashboardActions.SectionDisplayed(section).Should().BeTrue();

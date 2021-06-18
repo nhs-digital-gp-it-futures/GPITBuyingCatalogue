@@ -194,16 +194,16 @@
                 </div>
             </div>
 
-            @*Implementation Timescales*@
+            @*Implementation*@
 
             @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.ImplementationDetail))
             {
-                <div class="nhsuk-width-container" data-test-id="view-implementation-timescales">
+                <div class="nhsuk-width-container" data-test-id="view-implementation">
                     <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Implementation timescales</h3>
+                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Implementation</h3>
                     </div>
                     <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                        <div data-test-id="view-implementation-timescales-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">These are the typical processes and timescales to implement this Catalogue Solution:</div>
+                        <div data-test-id="view-implementation-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">These are the typical processes and timescales to implement this Catalogue Solution:</div>
                         <div class="nhsuk-grid-column-two-thirds">
                             <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Solution.ImplementationDetail</div>
                         </div>
