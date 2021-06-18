@@ -51,9 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (output is null)
                 throw new ArgumentNullException(nameof(output));
 
-            var day = BuildInputItem(Day, "Day", DateInputWidth2Class);
-            var month = BuildInputItem(Month, "Month", DateInputWidth2Class);
-            var year = BuildInputItem(Year, "Year", DateInputWidth4Class);
+            var day = BuildInputItem(Day, "Day", DateInputWidth2Class, false);
+            var month = BuildInputItem(Month, "Month", DateInputWidth2Class, false);
+            var year = BuildInputItem(Year, "Year", DateInputWidth4Class, true);
 
             output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
@@ -76,18 +76,21 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, Day);
         }
 
-        private static TagBuilder BuildDateInputContainerItem()
+        private static TagBuilder BuildDateInputContainerItem(bool removeRightMargin)
         {
             var inputitem = new TagBuilder(TagHelperConstants.Div);
 
             inputitem.AddCssClass(DateInputItemClass);
 
+            if (removeRightMargin)
+                inputitem.MergeAttribute("style", "margin-right:0");
+
             return inputitem;
         }
 
-        private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText, string selectedWidthClass)
+        private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText, string selectedWidthClass, bool RemoveRightMargin)
         {
-            var item = BuildDateInputContainerItem();
+            var item = BuildDateInputContainerItem(RemoveRightMargin);
             var label = BuildDateLabel(modelExpression, labelText);
             var input = BuildDateInput(modelExpression, selectedWidthClass);
 

@@ -410,6 +410,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
+            if (state.ProvisioningType == ProvisioningType.Declarative)
+            {
+                ViewBag.SecondColumnName = "Quantity";
+                ViewBag.SecondColumnSuffix = string.Empty;
+                ViewBag.SecondColumnDetailsTitle = "What quantity should I enter?";
+                ViewBag.SecondColumnDetailsContent = "Enter the total amount you think you'll need for the entire duration of the order.";
+            }
+            else if (state.ProvisioningType == ProvisioningType.OnDemand)
+            {
+                ViewBag.SecondColumnName = "Quantity" + state.TimeUnit.Description;
+                ViewBag.SecondColumnSuffix = state.TimeUnit.Description;
+                ViewBag.SecondColumnDetailsTitle = "What quantity should I enter?";
+                ViewBag.SecondColumnDetailsContent = "Estimate the quantity you think you'll need either per month or per year.";
+            }
+            else
+            {
+                ViewBag.SecondColumnName = "Practice list size";
+                ViewBag.SecondColumnSuffix = string.Empty;
+                ViewBag.SecondColumnDetailsTitle = "What list size should I enter?";
+                ViewBag.SecondColumnDetailsContent = "Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.";
+            }
+
             return View(new NewOrderItemModel(odsCode, callOffId, state));
         }
 
@@ -425,17 +447,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = GetStateModel();
 
-            foreach (var recipient in model.OrderItem.ServiceRecipients)
+            for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
-                (var date, var error) = recipient.ToDateTime(state.CommencementDate);
+                (var date, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
 
                 if (error != null)
                 {
-                    ModelState.AddModelError("Day", error);
-                    break;
+                    ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Day", error);
                 }
 
-                recipient.DeliveryDate = date;
+                if (!model.OrderItem.ServiceRecipients[i].Quantity.HasValue
+                    || model.OrderItem.ServiceRecipients[i].Quantity.Value == 0)
+                        ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");
             }
 
             if (!ModelState.IsValid)
