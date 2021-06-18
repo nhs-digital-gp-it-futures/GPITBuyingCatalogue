@@ -269,5 +269,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }
+
+        public async Task<List<CatalogueItem>> GetAllSolutions()
+        {
+            return await dbContext.CatalogueItems
+                .Include(x => x.Supplier)
+                .Include(x => x.PublishedStatus)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+        }
     }
 }

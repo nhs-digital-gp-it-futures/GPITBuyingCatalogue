@@ -5,7 +5,7 @@
 
 <div class="nhsuk-width-container" data-test-id="organisations">
 
-    <div class="nhsuk-grid-column-full">
+    <div class="nhsuk-width-container">
         <h1>Manage Catalogue Solutions</h1>
         <p class="nhsuk-lede-text">
             Add a new solution or edit one that's already been published.
@@ -47,13 +47,13 @@
                             <span class="nhsuk-table-responsive__heading">Solution </span>@item.Name
                         </td>
                         <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Supplier </span>@item.SupplierId
+                            <span class="nhsuk-table-responsive__heading">Supplier </span>@item.Supplier.Name
                         </td>
                         <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Last updated </span>TODO @item.Created
+                            <span class="nhsuk-table-responsive__heading">Last updated </span>@item.Supplier.LastUpdated.ToShortDateString()
                         </td>
                         <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Status </span><strong class="nhsuk-tag nhsuk-tag--white">@item.PublishedStatusId</strong>
+                            <span class="nhsuk-table-responsive__heading">Status </span><strong class="nhsuk-tag @Model.GetStatusClass(item.PublishedStatusId)">@item.PublishedStatus.Name</strong>
                         </td>
                         <td role="cell" class="nhsuk-table__cell">
                             <span class="nhsuk-table-responsive__heading">Action </span><a href="#" style="white-space: nowrap;">Edit</a>
@@ -63,7 +63,7 @@
             </tbody>
         </table>
 
-        <partial name="_PagingNavigation" />
+        @*<partial name="_PagingNavigation" />*@
 
     </div>
 </div>
