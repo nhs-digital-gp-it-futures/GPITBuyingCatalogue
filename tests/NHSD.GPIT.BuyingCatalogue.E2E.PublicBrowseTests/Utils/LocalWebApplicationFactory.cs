@@ -29,6 +29,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
         private const string OPERATING_MODE = "private";
+        private const string BC_BLOB_CONNECTION = "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;";
+        private const string BC_BLOB_CONTAINER = "buyingcatalogue-documents";
+        private const string BC_SMTP_HOST = "localhost";
+        private const string BC_SMTP_PORT = "9999";
 
         private const string Browser = "chrome";
 
@@ -121,6 +125,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
 
             SetEnvironmentVariable("SMTPSERVER__PORT", "9999");
+
+            SetEnvironmentVariable(nameof(BC_BLOB_CONNECTION), BC_BLOB_CONNECTION);
+
+            SetEnvironmentVariable(nameof(BC_BLOB_CONTAINER), BC_BLOB_CONTAINER);
+
+            SetEnvironmentVariable(nameof(BC_SMTP_HOST), BC_SMTP_HOST);
+
+            SetEnvironmentVariable(nameof(BC_SMTP_PORT), BC_SMTP_PORT);
         }
 
         private static void SetEnvironmentVariable(string name, string value)
