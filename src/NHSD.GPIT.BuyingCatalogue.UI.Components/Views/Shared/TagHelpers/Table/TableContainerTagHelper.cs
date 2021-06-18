@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         public const string TagHelperName = "nhs-table";
 
         private const string DisableHeaderName = "disable-header";
+        private const string CatchErrorsName = "catches-errors";
 
         private const string TableResponsiveClass = "nhsuk-table-responsive";
         private const string TableCaptionClass = "nhsuk-table__caption";
@@ -26,16 +27,27 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         private const string HeaderRowColumnRole = "columnheader";
         private const string HeaderRowColumnScope = "col";
 
+        private ParentChildContext parentChildContext;
+
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
         [HtmlAttributeName(DisableHeaderName)]
         public bool DisableHeader { get; set; }
 
+        [HtmlAttributeName(CatchErrorsName)]
+        public bool CatchesErrors { get; set; } = true;
+
         private List<TagHelperContent> ColumnNames { get; set; }
 
         public override void Init(TagHelperContext context)
         {
+            if (CatchesErrors)
+            {
+                parentChildContext = new ParentChildContext();
+                context.Items.Add(typeof(ParentChildContext), parentChildContext);
+            }
+
             ColumnNames = new List<TagHelperContent>();
 
             context.Items.Add("ColumnNames", ColumnNames);
@@ -43,24 +55,46 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            output.Reinitialize("table", TagMode.StartTagAndEndTag);
+            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TableResponsiveClass));
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, TableRole));
+            output.Attributes.SetAttribute(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsFormGroup));
 
             var caption = GetCaptionBuilder();
             var body = GetBodyBuilder();
+            var table = GetTableBuilder();
 
             var children = await output.GetChildContentAsync();
 
+            var errorMessage = BuildErrorMessage();
             var header = GetHeaderBuilder(context);
+
+            if (IsChildInError())
+            {
+                output.Attributes.SetAttribute(new TagHelperAttribute(
+                    TagHelperConstants.Class, $"{TagHelperConstants.NhsFormGroup} {TagHelperConstants.NhsFormGroupError}"));
+            }
 
             body.InnerHtml.AppendHtml(children);
 
-            output.Content
+            table.InnerHtml
                 .AppendHtml(caption)
                 .AppendHtml(header)
                 .AppendHtml(body);
+
+            output.Content
+                .AppendHtml(errorMessage)
+                .AppendHtml(table);
+        }
+
+        private static TagBuilder GetTableBuilder()
+        {
+            var builder = new TagBuilder("table");
+
+            builder.AddCssClass(TableResponsiveClass);
+
+            builder.MergeAttribute(TagHelperConstants.Role, TableRole);
+
+            return builder;
         }
 
         private static TagBuilder GetHeaderColumnBuilder(TagHelperContent columnName)
@@ -124,6 +158,34 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             headerBuilder.InnerHtml.AppendHtml(headerRowBuilder);
 
             return headerBuilder;
+        }
+
+        private TagBuilder BuildErrorMessage()
+        {
+            if (!IsChildInError())
+                return null;
+
+            var outerBuilder = new TagBuilder(TagHelperConstants.Span);
+
+            outerBuilder.AddCssClass(TagHelperConstants.NhsErrorMessage);
+
+            var innerBuilder = new TagBuilder(TagHelperConstants.Span);
+
+            innerBuilder.AddCssClass("nhsuk-u-visually-hidden");
+            innerBuilder.InnerHtml.Append("Error: ");
+
+            outerBuilder.InnerHtml.AppendHtml(innerBuilder);
+            outerBuilder.InnerHtml.Append(parentChildContext.ErrorMessage);
+
+            return outerBuilder;
+        }
+
+        private bool IsChildInError()
+        {
+            if (parentChildContext is null)
+                return false;
+
+            return parentChildContext.ChildInError;
         }
     }
 }
