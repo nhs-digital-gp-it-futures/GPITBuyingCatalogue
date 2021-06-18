@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class ImplementationTimescales : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public ImplementationTimescales(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/implementation-timescales")
+        public ImplementationTimescales(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/implementation")
         {
             using var context = GetBCContext();
             var solution = context.Solutions.Single(s => s.Id == "99999-99");
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
             CommonActions.ClickSave();
 
-            MarketingPages.DashboardActions.SectionMarkedComplete("Implementation timescales").Should().BeTrue();
+            MarketingPages.DashboardActions.SectionMarkedComplete("Implementation").Should().BeTrue();
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             CommonActions.ClickGoBackLink();
 
-            MarketingPages.DashboardActions.SectionMarkedComplete("Implementation timescales").Should().BeFalse();
+            MarketingPages.DashboardActions.SectionMarkedComplete("Implementation").Should().BeFalse();
         }
 
         public void Dispose()

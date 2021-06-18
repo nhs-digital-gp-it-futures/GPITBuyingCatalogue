@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using AutoMapper;
@@ -116,9 +116,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                         Previous = new SectionModel
                         {
-                            Action = "ImplementationTimescales",
+                            Action = "Implementation",
                             Controller = "SolutionDetails",
-                            Name = "Implementation timescales",
+                            Name = "Implementation",
                             Show = true,
                         },
                     });
@@ -219,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                             Show = true,
                         },
                     });
-            actual.Section.Should().Be("Implementation timescales");
+            actual.Section.Should().Be("Implementation");
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }

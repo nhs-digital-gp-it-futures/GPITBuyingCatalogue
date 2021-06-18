@@ -89,12 +89,10 @@
                         </li>
                     </div>
 
-                    <div id="implementation-timescales" data-test-id="dashboard-section-implementation-timescales">
+                    <div id="implementation" data-test-id="dashboard-section-implementation">
                         <li class="bc-c-section-list__item bc-t-border-bottom--grey-3 nhsuk-u-margin-bottom-0">
                             <div data-test-id="dashboard-section-title" class="bc-u-block-float-left nhsuk-grid-column-one-half">
-                                <a href="@Model.SolutionId/section/implementation-timescales">
-                                    Implementation timescales
-                                </a>
+                                <a asp-action="Implementation" asp-controller="AboutSolution" asp-route-id="@Model.SolutionId">Implementation</a>
                             </div>
                             <span data-test-id="dashboard-section-requirement" class="bc-u-block-float-left bc-c-section-list__task-requirement">
                                 <p class="nhsuk-u-margin-bottom-0">Optional</p>

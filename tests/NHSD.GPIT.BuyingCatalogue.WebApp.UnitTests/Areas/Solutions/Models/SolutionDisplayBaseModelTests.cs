@@ -92,9 +92,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.ImplementationTimescales),
+                Action = nameof(SolutionDetailsController.Implementation),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
-                Name = "Implementation timescales",
+                Name = "Implementation",
             },
             new()
             {

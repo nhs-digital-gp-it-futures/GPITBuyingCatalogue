@@ -231,7 +231,7 @@
     <None Include="PostDeployment\InsertAssociatedServices.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PostDeployment\PostDeployment.sql" />
+    <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>

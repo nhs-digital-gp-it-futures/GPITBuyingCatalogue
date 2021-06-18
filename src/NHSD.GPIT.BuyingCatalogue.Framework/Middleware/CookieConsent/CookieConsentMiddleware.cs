@@ -21,7 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Middleware.CookieConsent
         {
             var showConsent = ShowCookieConsent(context.Request, cookieExpirationSettings.BuyingCatalogueCookiePolicyDate);
 
-            context.Items.Add(Cookies.ShowConsentCookie, showConsent);
+            if (context.Items.TryGetValue(Cookies.ShowConsentCookie, out _))
+            {
+                context.Items[Cookies.ShowConsentCookie] = showConsent;
+            }
+            else
+            {
+                context.Items.Add(Cookies.ShowConsentCookie, showConsent);
+            }
 
             await next.Invoke(context);
         }
