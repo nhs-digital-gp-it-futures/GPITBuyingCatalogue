@@ -5,7 +5,7 @@ resource "azurerm_app_service_certificate" "webapp" {
   key_vault_secret_id = data.azurerm_key_vault_secret.ssl_cert.id
 }
 
-resource "azurerm_app_service_custom_hostname_binding" "webapp" {
+/*resource "azurerm_app_service_custom_hostname_binding" "webapp" {
   hostname            = local.gw_webappURL
   app_service_name    = module.webapp.webapp_name
   resource_group_name = azurerm_resource_group.webapp.name
@@ -25,3 +25,4 @@ resource "azurerm_app_service_certificate_binding" "webapp" {
     azurerm_app_service_custom_hostname_binding.webapp
    ]
 }
+*/

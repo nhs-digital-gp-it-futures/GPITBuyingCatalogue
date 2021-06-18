@@ -30,6 +30,7 @@ resource "azurerm_app_service" "webapp" {
     DOCKER_REGISTRY_SERVER_PASSWORD     = var.acr_pwd
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
+        
     OPERATING_MODE                      = "Private"
   }
   # Configure Docker Image to load on start
@@ -54,6 +55,13 @@ resource "azurerm_app_service" "webapp" {
       name       = "Mastek_VPN"
       ip_address = "${data.azurerm_key_vault_secret.mastekvpn1.value}/32,${data.azurerm_key_vault_secret.mastekvpn2.value}/32"
       priority   = 220
+      headers    = []
+    }
+
+    ip_restriction {
+      name       = "Devops"
+      ip_address = "51.104.26.0/24"
+      priority   = 230
       headers    = []
     }
     scm_use_main_ip_restriction = true
