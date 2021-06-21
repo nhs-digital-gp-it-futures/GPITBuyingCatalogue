@@ -197,13 +197,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .AddPasswordValidator<PasswordValidator>();
         }
 
-        public static void ConfigureIssuer(this IServiceCollection services, IConfiguration configuration)
-        {
-            var issuerUrl = configuration.GetValue<string>("issuerUrl");
-            var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
-            services.AddSingleton(issuerSettings);
-        }
-
         public static void ConfigurePasswordReset(this IServiceCollection services, IConfiguration configuration)
         {
             var passwordResetSettings = configuration.GetSection("passwordReset").Get<PasswordResetSettings>();

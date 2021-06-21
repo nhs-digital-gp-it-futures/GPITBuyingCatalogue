@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
@@ -11,13 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     {
         private readonly IHttpContextAccessor accessor;
         private readonly LinkGenerator generator;
-        private readonly IssuerSettings issuerSettings;
 
-        public PasswordResetCallback(IHttpContextAccessor accessor, LinkGenerator generator, IssuerSettings issuerSettings)
+        public PasswordResetCallback(IHttpContextAccessor accessor, LinkGenerator generator)
         {
             this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
             this.generator = generator ?? throw new ArgumentNullException(nameof(generator));
-            this.issuerSettings = issuerSettings ?? throw new ArgumentNullException(nameof(issuerSettings));
         }
 
         public Uri GetPasswordResetCallback(PasswordResetToken token)
@@ -25,17 +22,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
             token.ValidateNotNull(nameof(token));
 
             var context = accessor.HttpContext;
-            var hostString = new HostString(issuerSettings.IssuerUrl.Authority);
+            var hostString = new HostString(GetAuthority());
 
             var action = generator.GetUriByAction(
                 context,
                 "ResetPassword",
                 "Account",
                 new { Token = token.Token, Email = token.User.Email, Area = "Identity" },
-                issuerSettings.IssuerUrl.Scheme,
+                accessor.HttpContext.Request.Scheme,
                 hostString);
 
             return new Uri(action);
+        }
+
+        private string GetAuthority()
+        {
+            if (accessor.HttpContext.Request.Host.Port.HasValue)
+                return $"{accessor.HttpContext.Request.Host.Host}:{accessor.HttpContext.Request.Host.Port}";
+
+            return accessor.HttpContext.Request.Host.Host;
         }
     }
 }
