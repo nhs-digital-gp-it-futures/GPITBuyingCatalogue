@@ -39,6 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
                 .FindElements(By.TagName("li"))
                 .Select(s => s.Text);
         }
+
+        internal IEnumerable<string> GetCapabilitiesContent()
+        {
+            return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CapabilitiesContent).Select(s => s.Text);
+        }
     }
 }
 
