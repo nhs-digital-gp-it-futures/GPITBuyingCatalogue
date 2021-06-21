@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
     public abstract class TestBase
     {
         private readonly Uri uri;
-        //private readonly HttpClient client;
 
         protected readonly LocalWebApplicationFactory factory;
         protected readonly IWebDriver driver;
@@ -34,14 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         internal static string DefaultPassword = "Th1sIsP4ssword!";
 
-        internal readonly SimpleSmtpServer smtp;
-
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
-            //client = factory.CreateClient();
             this.factory = factory;
-
-            smtp = SimpleSmtpServer.Start(factory.SmtpPort);
 
             driver = this.factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(driver).PageActions;

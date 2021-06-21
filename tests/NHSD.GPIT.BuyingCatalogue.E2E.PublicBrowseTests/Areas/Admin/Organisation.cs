@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using netDumbster.smtp;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
@@ -11,11 +12,14 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class Organisation : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Organisation : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
+        private readonly SimpleSmtpServer smtp;
+
         public Organisation(LocalWebApplicationFactory factory) : base(factory, "admin/organisations/b7ee5261-43e7-4589-907b-5eef5e98c085")
         {
             Login();
+            smtp = SimpleSmtpServer.Start(9999);
         }
 
         [Fact]
@@ -202,6 +206,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             driver.Navigate().Refresh();
 
             return user;
+        }
+
+        public void Dispose()
+        {
+            smtp.Dispose();
         }
     }
 }
