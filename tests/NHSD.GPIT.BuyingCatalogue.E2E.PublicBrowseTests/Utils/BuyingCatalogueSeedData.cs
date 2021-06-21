@@ -434,6 +434,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = "99999-003", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
             };
             context.AddRange(frameworkSolutions);
+
+            List<CataloguePrice> prices = new()
+            {
+                new CataloguePrice
+                {
+                    CatalogueItemId = "99999-001",
+                    CataloguePriceTypeId = 1,
+                    PricingUnit = new()
+                    {
+                        PricingUnitId = Guid.NewGuid(),
+                        TierName = "patient",
+                        Name = "patient",
+                        Description = "per patient"
+                    },
+                    CurrencyCode = "GBP",
+                    Price = 100.01M,
+                    ProvisioningTypeId = 1,
+                    TimeUnitId = 1,
+                    LastUpdated = DateTime.UtcNow
+                }
+            };
+            context.AddRange(prices);
         }
 
         private static void AddDefaultData(GPITBuyingCatalogueDbContext context)

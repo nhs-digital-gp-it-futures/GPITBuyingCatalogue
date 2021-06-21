@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string BC_SMTP_HOST = "localhost";
         private const string BC_SMTP_PORT = "9999";
 
+        public int SmtpPort => int.Parse(BC_SMTP_PORT);
+
         private const string Browser = "chrome";
 
         public LocalWebApplicationFactory()
@@ -66,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         }
 
         public string RootUri { get; }
+        
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -124,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
 
-            SetEnvironmentVariable("SMTPSERVER__PORT", "9999");
+            SetEnvironmentVariable("SMTPSERVER__PORT", BC_SMTP_PORT);
 
             SetEnvironmentVariable(nameof(BC_BLOB_CONNECTION), BC_BLOB_CONNECTION);
 
