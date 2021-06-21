@@ -16,11 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
         }
 
-        [Theory]
-        [InlineData("implementation")]
-        public void ImplementationDetails_ImplementationNameDisplayed(string pageTitle)
+        [Fact]
+        public void ImplementationDetails_ImplementationNameDisplayed()
         {
-            PublicBrowsePages.SolutionAction.ImplementationNameDisplayed(pageTitle).Should().BeTrue();
+            PublicBrowsePages.SolutionAction.ImplementationNameDisplayed().Should().NotBeNullOrEmpty();
         }
 
         [Fact]
@@ -35,6 +34,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .Any(s => s.Contains(info, StringComparison.CurrentCultureIgnoreCase))
                 .Should().BeTrue();
         }
-
-    }
+   }
 }

@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
-    internal sealed class SolutionAction : ActionBase
+    internal class SolutionAction : ActionBase
     {
         public SolutionAction(IWebDriver driver) : base(driver)
         {
@@ -40,11 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
                 .Select(s => s.Text);
         }
 
-        internal bool ImplementationNameDisplayed(string pageTitle)
+        internal IEnumerable<string> ImplementationNameDisplayed()
         {
-
-            var title = Driver.FindElement(Objects.PublicBrowse.SolutionObjects.ImplementationName).Text;
-            return title.Contains(pageTitle, System.StringComparison.OrdinalIgnoreCase);
+            return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.ImplementationName).Select(s => s.Text);
         }
 
         internal IEnumerable<string> GetCapabilitiesContent()
