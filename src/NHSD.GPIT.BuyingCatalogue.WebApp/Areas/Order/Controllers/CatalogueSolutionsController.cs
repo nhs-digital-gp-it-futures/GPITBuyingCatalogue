@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -384,7 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = GetStateModel();
 
             state.Quantity = quantity;
-            state.TimeUnit = TimeUnit.Parse(model.TimeUnit);
+            state.TimeUnit = EnumerationBase.FromName<TimeUnit>(model.TimeUnit);
 
             state.ServiceRecipients.All(c =>
             {
@@ -535,12 +536,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = GetStateModel();
 
-            state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
+            state.ProvisioningType = EnumerationBase.FromName<ProvisioningType>(cataloguePrice.ProvisioningType.Name);
             state.CurrencyCode = cataloguePrice.CurrencyCode;
-            state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
+            state.Type = EnumerationBase.FromName<CataloguePriceType>(cataloguePrice.CataloguePriceType.Name);
             state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
             if (cataloguePrice.TimeUnit != null)
-                state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
+                state.TimeUnit = EnumerationBase.FromName<TimeUnit>(cataloguePrice.TimeUnit.Name);
             state.Price = cataloguePrice.Price;
             state.PriceId = cataloguePrice.CataloguePriceId;
             state.EstimationPeriod = TimeUnit.PerYear;

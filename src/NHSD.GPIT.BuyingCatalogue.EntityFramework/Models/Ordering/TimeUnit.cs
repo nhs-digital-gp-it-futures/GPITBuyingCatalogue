@@ -20,15 +20,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         public int AmountInYear { get; private set; }
 
         public string DisplayText { get; private set; }
-
-        public static TimeUnit Parse(string name)
-        {
-            if (name.Equals(PerMonth.Name, StringComparison.InvariantCultureIgnoreCase))
-                return PerMonth;
-            else if (name.Equals(PerYear.Name, StringComparison.InvariantCultureIgnoreCase))
-                return PerYear;
-
-            throw new ArgumentException("Invalid TimeUnit", nameof(name));
-        }
     }
 }
