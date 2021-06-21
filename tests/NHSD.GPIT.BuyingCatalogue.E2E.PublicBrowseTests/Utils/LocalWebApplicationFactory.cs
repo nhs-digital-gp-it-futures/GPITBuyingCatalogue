@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -32,7 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string BC_BLOB_CONNECTION = "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;";
         private const string BC_BLOB_CONTAINER = "buyingcatalogue-documents";
         private const string BC_SMTP_HOST = "localhost";
-        private const string BC_SMTP_PORT = "9999";
+        internal static string BC_SMTP_PORT;
+
+        public int SmtpPort => int.Parse(BC_SMTP_PORT);
 
         private const string Browser = "chrome";
 
@@ -41,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             ClientOptions.BaseAddress = new Uri(LocalhostBaseAddress);
 
             BcDbName = Guid.NewGuid().ToString();
+
+            BC_SMTP_PORT = GetRandomUnusedPort().ToString();
 
             SetEnvVariables();
 
@@ -56,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             RootUri = host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
 
+
+
             var browserFactory = new BrowserFactory(Browser);
             Driver = browserFactory.Driver;
 
@@ -66,6 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         }
 
         public string RootUri { get; }
+        
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -124,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
 
-            SetEnvironmentVariable("SMTPSERVER__PORT", "9999");
+            SetEnvironmentVariable("SMTPSERVER__PORT", BC_SMTP_PORT);
 
             SetEnvironmentVariable(nameof(BC_BLOB_CONNECTION), BC_BLOB_CONNECTION);
 
@@ -140,6 +149,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
             {
                 Environment.SetEnvironmentVariable(name, value);
+            }
+        }
+
+        private static int GetRandomUnusedPort()
+        {
+            try
+            {
+                var listener = new TcpListener(IPAddress.Any, 0);
+                listener.Start();
+                var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+                listener.Stop();
+                return port;
+            }
+            catch
+            {
+                throw;
             }
         }
 

@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             //client = factory.CreateClient();
             this.factory = factory;
 
-            smtp = SimpleSmtpServer.Start();
+            smtp = SimpleSmtpServer.Start(factory.SmtpPort);
 
             driver = this.factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(driver).PageActions;
