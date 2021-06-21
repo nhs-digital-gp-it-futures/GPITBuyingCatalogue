@@ -14,14 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         public SmtpAuthenticationSettings Authentication { get; init; } = new();
 
         /// <summary>
-        /// Gets the host name of the SMTP server.
+        /// Gets or sets the host name of the SMTP server.
         /// </summary>
-        public string Host { get; init; }
+        public string Host { get; set; }
 
         /// <summary>
-        /// Gets the port to use to connect to the SMTP server.
+        /// Gets or sets the port to use to connect to the SMTP server.
         /// </summary>
-        public int Port { get; init; }
+        public int Port { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to allow connections

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -342,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = orderSessionService.GetOrderStateFromSession();
 
             state.Quantity = quantity;
-            state.TimeUnit = TimeUnit.Parse(model.TimeUnit);
+            state.TimeUnit = EnumerationBase.FromName<TimeUnit>(model.TimeUnit);
 
             state.ServiceRecipients.All(c =>
             {

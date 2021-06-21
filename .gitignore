@@ -354,3 +354,6 @@ MigrationBackup/
 
 # Terraform State files
 */\.terraform/
+
+# Minified css file
+**/css/*.min.css

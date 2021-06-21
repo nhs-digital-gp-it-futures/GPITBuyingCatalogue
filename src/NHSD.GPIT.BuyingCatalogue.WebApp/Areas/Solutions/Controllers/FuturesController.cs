@@ -69,15 +69,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [Route("Solutions/Futures/Compare")]
-        public async Task<IActionResult> Compare()
-        {
-            return await documentService.DownloadDocumentAsync("compare-futures-solutions.xlsx");
-        }
-
-        [Route("Solutions/Futures/Compare/Document")]
-        public IActionResult Document()
+        public IActionResult Compare()
         {
             return View();
+        }
+
+        [Route("Solutions/Compare/Document")]
+        public async Task<IActionResult> Document()
+        {
+            return await documentService.DownloadDocumentAsync("compare-solutions.xlsx");
         }
 
         [Route("Solutions/Futures/SearchResults")]

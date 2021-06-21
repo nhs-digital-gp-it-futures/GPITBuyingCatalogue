@@ -106,6 +106,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
         }
 
+        [Route("solutions/futures/{id}/supplier-details")]
+        public async Task<IActionResult> SupplierDetails(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(SupplierDetails)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, SolutionSupplierDetailsModel>(solution));
+        }
+
         [Route("solutions/futures/foundation/{id}")]
         public async Task<IActionResult> FoundationSolutionDetail(string id)
         {

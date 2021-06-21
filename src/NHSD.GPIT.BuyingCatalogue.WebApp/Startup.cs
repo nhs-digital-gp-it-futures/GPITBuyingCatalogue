@@ -59,8 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureCookies(Configuration);
 
-            services.ConfigureIssuer(Configuration);
-
             services.ConfigurePasswordReset(Configuration);
 
             services.ConfigureRegistration(Configuration);
@@ -105,10 +103,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                             if (error != null)
                             {
                                 var errorMessage = error.Error.FullErrorMessage();
-                                logger.LogError(error.Error, errorMessage);
+
+                                // TODO - AppInsights isn't picking up LogError for some reason
+                                logger.LogInformation(error.Error, errorMessage);
                             }
 
-                            context.Response.Redirect("Home/Error");
+                            context.Response.Redirect("/Home/Error");
                             return Task.CompletedTask;
                         });
                 });
