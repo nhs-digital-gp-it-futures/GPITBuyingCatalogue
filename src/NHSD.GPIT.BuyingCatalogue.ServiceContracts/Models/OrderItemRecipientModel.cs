@@ -16,8 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
             OdsCode = recipient.OrgId;
         }
 
-        // MJRTODO - Checked is probably a bad name now its going all the way to the service
-        public bool Checked { get; set; }
+        public bool Selected { get; set; }
 
         public string Day { get; set; }
 

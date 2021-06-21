@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string Toggle
         {
-            get { return User.Disabled ? "enable" : "disable"; }
+            get { return User.Disabled ? "UserEnabled" : "UserDisabled"; }
         }
 
         public string ToggleText

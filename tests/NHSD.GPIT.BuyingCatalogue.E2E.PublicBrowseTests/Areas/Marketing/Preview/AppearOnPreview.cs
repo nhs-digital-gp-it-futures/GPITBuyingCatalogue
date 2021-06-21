@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Preview
         [InlineData("Contact details")]
         [InlineData("About supplier")]
         [InlineData("Integrations")]
-        [InlineData("Implementation timescales")]
+        [InlineData("Implementation")]
         public void AppearOnPreview_MainSections(string section)
         {
             MarketingPages.PreviewActions.MainSectionDisplayed(section).Should().BeTrue();

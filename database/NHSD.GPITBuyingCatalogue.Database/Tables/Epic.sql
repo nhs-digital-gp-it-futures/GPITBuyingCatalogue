@@ -6,6 +6,7 @@
      SourceUrl nvarchar(max) NULL,
      CompliancyLevelId int NULL,
      Active bit NOT NULL,
+     SupplierDefined bit CONSTRAINT DF_Epic_SupplierDefined DEFAULT 0 NOT NULL,
      CONSTRAINT PK_Epic PRIMARY KEY NONCLUSTERED (Id),
      CONSTRAINT FK_Epic_Capability FOREIGN KEY (CapabilityId) REFERENCES dbo.Capability(Id),
      CONSTRAINT FK_Epic_CompliancyLevel FOREIGN KEY (CompliancyLevelId) REFERENCES dbo.CompliancyLevel(Id)

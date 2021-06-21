@@ -116,12 +116,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(SupplierSearchSelect)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(search)} {search}");
 
             if (string.IsNullOrWhiteSpace(search))
-                return View("NoSupplierFound");
+                return View("NoSupplierFound", new NoSupplierFoundModel(odsCode, callOffId));
 
             var suppliers = await supplierService.GetListFromBuyingCatalogue(search, null, null);
 
             if (suppliers.Count == 0)
-                return View("NoSupplierFound");
+                return View("NoSupplierFound", new NoSupplierFoundModel(odsCode, callOffId));
 
             return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers));
         }

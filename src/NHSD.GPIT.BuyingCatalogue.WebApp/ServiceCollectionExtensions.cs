@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.DependencyInjection;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -30,6 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     {
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
         private const string CatalogueOrderingDbConnectionEnvironmentVariable = "CO_DB_CONNECTION";
+        private const string BuyingCatalogueBlobConnectionEnvironmentVariable = "BC_BLOB_CONNECTION";
+        private const string BuyingCatalogueBlobContainerEnvironmentVariable = "BC_BLOB_CONTAINER";
+        private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
+        private const string BuyingCatalogueSmtpPortEnvironmentVariable = "BC_SMTP_PORT";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -87,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(odsSettings);
         }
 
-        public static void ConfigureDbContexts(this IServiceCollection services, IHealthChecksBuilder healthCheckBuilder)
+        public static void ConfigureDbContexts(this IServiceCollection services)
         {
             var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
 
@@ -101,8 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
             services.AddDbContext<OrderingDbContext>(options => options.UseSqlServer(catalogueOrderingConnectionString));
-
-            healthCheckBuilder.AddDatabaseHealthCheck(buyingCatalogueConnectionString);
         }
 
         public static void ConfigureSession(this IServiceCollection services)
@@ -133,26 +133,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureEmail(
             this IServiceCollection services,
-            IConfiguration configuration,
-            IHealthChecksBuilder healthCheckBuilder)
+            IConfiguration configuration)
         {
+            var host = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpHostEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(host))
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpHostEnvironmentVariable}' must be set for the smtp host");
+
+            var port = Environment.GetEnvironmentVariable(BuyingCatalogueSmtpPortEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(port))
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be set for the smtp port");
+
+            int portNumber;
+
+            if (!int.TryParse(port, out portNumber))
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be a valid smtp port number");
+
             var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");
             var smtpSettings = configuration.GetSection("SmtpServer").Get<SmtpSettings>();
             smtpSettings.AllowInvalidCertificate ??= allowInvalidCertificate;
+            smtpSettings.Host = host;
+            smtpSettings.Port = portNumber;
             services.AddSingleton(smtpSettings);
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();
-            healthCheckBuilder.AddSmtpHealthCheck(smtpSettings);
         }
 
-        public static void ConfigureCookiePolicy(this IServiceCollection services)
+        public static void ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-                options.ConsentCookie.Name = "buyingcatalogue-cookie-consent";
-            });
+            var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
+            cookieExpiration.ConsentExpiration = configuration.GetValue<TimeSpan>(Cookies.BuyingCatalogueConsentExpiration);
+
+            services.AddSingleton(cookieExpiration);
         }
 
         public static void ConfigureValidationSettings(this IServiceCollection services, IConfiguration configuration)
@@ -184,13 +197,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .AddPasswordValidator<PasswordValidator>();
         }
 
-        public static void ConfigureIssuer(this IServiceCollection services, IConfiguration configuration)
-        {
-            var issuerUrl = configuration.GetValue<string>("issuerUrl");
-            var issuerSettings = new IssuerSettings { IssuerUrl = new Uri(issuerUrl) };
-            services.AddSingleton(issuerSettings);
-        }
-
         public static void ConfigurePasswordReset(this IServiceCollection services, IConfiguration configuration)
         {
             var passwordResetSettings = configuration.GetSection("passwordReset").Get<PasswordResetSettings>();
@@ -205,14 +211,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(registrationSettings);
         }
 
-        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration, IHealthChecksBuilder healthCheckBuilder)
+        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration)
         {
+            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueBlobConnectionEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueBlobConnectionEnvironmentVariable}' must be set for the blob connection string");
+
+            var buyingCatalogueContainerString = Environment.GetEnvironmentVariable(BuyingCatalogueBlobContainerEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(buyingCatalogueContainerString))
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueBlobContainerEnvironmentVariable}' must be set for the blob container");
+
             var settings = configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
+            settings.ConnectionString = buyingCatalogueConnectionString;
+            settings.ContainerName = buyingCatalogueContainerString;
             services.AddSingleton(settings);
 
             services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
-
-            healthCheckBuilder.AddAzureStorageHealthChecks(settings);
         }
     }
 }

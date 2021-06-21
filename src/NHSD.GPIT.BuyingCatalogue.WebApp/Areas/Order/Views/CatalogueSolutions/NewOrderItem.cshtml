@@ -22,7 +22,7 @@
                             <div data-test-id="text-field-input">
                                 <div class="nhsuk-form-group">
                                     <label class="nhsuk-label nhsuk-u-font-size-19 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" for="price">
-                                        What price have you agreed? (£)
+                                        What price have you agreed? (@Model.CurrencySymbol)
                                     </label>
                                     <span class="bc-flex-container bc-align-items-center">
                                         <input class="nhsuk-input nhsuk-input--width-10" asp-for="@Model.OrderItem.Price" type="text">

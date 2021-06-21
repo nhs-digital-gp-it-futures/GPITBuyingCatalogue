@@ -69,7 +69,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.GetOrder(callOffId);
 
-            // TODO - obey the print switch
+            if (print.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // TODO - The whole summary page needs dynamic content adding, probably best waiting until Additional/Associated services are added
+                return View("PrintSummary");
+            }
+
+            // TODO - The whole summary page needs dynamic content adding, probably best waiting until Additional/Associated services are added
             return View(new SummaryModel(odsCode, order));
         }
 

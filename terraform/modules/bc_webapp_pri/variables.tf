@@ -41,9 +41,7 @@ variable "always_on" {
 variable "db_name_main" {
   type = string
 }
-variable "db_name_gpitbc" {
-  type = string
-}
+
 variable "auth_pwd" {
   type      = string
   sensitive = true

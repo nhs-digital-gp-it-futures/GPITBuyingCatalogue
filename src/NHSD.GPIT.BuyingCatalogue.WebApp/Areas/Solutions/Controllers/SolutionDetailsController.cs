@@ -90,11 +90,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, HostingTypesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/implementation-timescales")]
-        public async Task<IActionResult> ImplementationTimescales(string id)
+        [Route("solutions/futures/{id}/implementation")]
+        public async Task<IActionResult> Implementation(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(ImplementationTimescales)}-{nameof(id)}");
+                throw new ArgumentException($"{nameof(Implementation)}-{nameof(id)}");
 
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
@@ -128,6 +128,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
+        }
+
+        [Route("solutions/futures/{id}/supplier-details")]
+        public async Task<IActionResult> SupplierDetails(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(SupplierDetails)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, SolutionSupplierDetailsModel>(solution));
         }
 
         [Route("solutions/futures/foundation/{id}")]

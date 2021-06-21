@@ -4,13 +4,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
@@ -40,11 +39,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
             });
 
-            var healthChecksBuilder = services.AddHealthChecks();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
 
-            services.ConfigureCookiePolicy();
+            services.AddApplicationInsightsTelemetry();
 
-            services.ConfigureDbContexts(healthChecksBuilder);
+            services.ConfigureDbContexts();
 
             services.ConfigureSession();
 
@@ -52,19 +54,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureValidationSettings(Configuration);
 
-            services.ConfigureCookies(Configuration);
+            services.ConfigureConsentCookieSettings(Configuration);
 
-            services.ConfigureIssuer(Configuration);
+            services.ConfigureCookies(Configuration);
 
             services.ConfigurePasswordReset(Configuration);
 
             services.ConfigureRegistration(Configuration);
 
-            services.ConfigureAzureBlobStorage(Configuration, healthChecksBuilder);
+            services.ConfigureAzureBlobStorage(Configuration);
 
             services.ConfigureOds(Configuration);
 
-            services.ConfigureEmail(Configuration, healthChecksBuilder);
+            services.ConfigureEmail(Configuration);
 
             services.ConfigureDisabledErrorMessage(Configuration);
 
@@ -100,10 +102,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                             if (error != null)
                             {
                                 var errorMessage = error.Error.FullErrorMessage();
-                                logger.LogError(error.Error, errorMessage);
+
+                                // TODO - AppInsights isn't picking up LogError for some reason
+                                logger.LogInformation(error.Error, errorMessage);
                             }
 
-                            context.Response.Redirect("Home/Error");
+                            context.Response.Redirect("/Home/Error");
                             return Task.CompletedTask;
                         });
                 });
@@ -125,6 +129,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             // Disable the marketing pages when deployed publicly
             if (string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
                 app.UseMiddleware<DisableMarketingMiddleware>();
+
+            app.UseMiddleware<Framework.Middleware.CookieConsent.CookieConsentMiddleware>();
 
             app.UseStaticFiles(new StaticFileOptions()
             {
@@ -155,18 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-
                 endpoints.MapDefaultControllerRoute();
-
-                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
-                {
-                    Predicate = healthCheckRegistration => healthCheckRegistration.Tags.Contains(HealthCheckTags.Live),
-                });
-
-                endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
-                {
-                    Predicate = healthCheckRegistration => healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready),
-                });
             });
         }
     }

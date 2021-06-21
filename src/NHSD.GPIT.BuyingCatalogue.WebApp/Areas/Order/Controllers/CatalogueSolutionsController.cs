@@ -53,6 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
+            sessionService.ClearSession();
+
             var order = await orderService.GetOrder(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
 
@@ -93,6 +95,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
+
+            if (existingOrder != null)
+            {
+                return RedirectToAction(
+                    actionName: nameof(EditSolution),
+                    controllerName: typeof(CatalogueSolutionsController).ControllerName(),
+                    routeValues: new { odsCode, callOffId, id = model.SelectedSolutionId });
+            }
+
             var state = GetStateModel();
 
             if (!ModelState.IsValid)
@@ -118,7 +130,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     routeValues: new { odsCode, callOffId });
             }
 
-            // TODO -- apears in old version that is this solution is already present, it jumps straight to the editor for that solution
             return RedirectToAction(
                 actionName: nameof(SelectSolutionPrice),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -458,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("{id}")]
-        public IActionResult EditSolution(string odsCode, string callOffId, string id, EditSolutionModel model)
+        public async Task<IActionResult> EditSolution(string odsCode, string callOffId, string id, EditSolutionModel model)
         {
             odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
             callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
@@ -466,7 +477,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            // MJRTODO - Save. Should be similar to NewOrderItem
+            var state = GetStateModel();
+
+            foreach (var recipient in model.OrderItem.ServiceRecipients)
+            {
+                (var date, var error) = recipient.ToDateTime(state.CommencementDate);
+
+                if (error != null)
+                {
+                    ModelState.AddModelError("Day", error);
+                    break;
+                }
+
+                recipient.DeliveryDate = date;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.OrderItem.ItemUnit = state.ItemUnit;
+                model.OrderItem.TimeUnit = state.TimeUnit;
+                return View(model);
+            }
+
+            // TODO - price must be <= to the listed price. Zero is Ok apparently. Need to check if the orderItemService validates that. If so, piggy back on it (see handle errors below)
+            state.Price = model.OrderItem.Price;
+            state.ServiceRecipients = model.OrderItem.ServiceRecipients;
+
+            // TODO - handle errors
+            var result = await orderItemService.Create(callOffId, state);
+
+            sessionService.ClearSession();
+
             return RedirectToAction(
                 actionName: nameof(Index),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
@@ -522,8 +563,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         private CreateOrderItemModel GetStateModel()
         {
-            var state = sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
-            return state ?? new CreateOrderItemModel();
+            return sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
         }
 
         private void SetStateModel(CreateOrderItemModel state)
@@ -550,16 +590,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         private async Task InitialiseStateForEdit(string odsCode, string callOffId, string catalogueSolutionId)
         {
-            // MJRTODO - If we already have state related to this edit then don't re-populate it
-            // For example if I add another service recipient it is in state so should not be trashed here
-            var order = await orderService.GetOrder(callOffId);
+            var state = GetStateModel();
 
-            // MJRTODO - Does orderItem have enough info to negate need to call GetOrder above
             var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueSolutionId);
+
+            if (state != null && !state.IsNewOrder)
+            {
+                foreach (var recipient in state.ServiceRecipients.Where(x => !x.DeliveryDate.HasValue))
+                    recipient.DeliveryDate = orderItem.DefaultDeliveryDate;
+
+                SetStateModel(state);
+
+                return;
+            }
+
+            var order = await orderService.GetOrder(callOffId);
 
             var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
 
-            var state = new CreateOrderItemModel
+            state = new CreateOrderItemModel
             {
                 IsNewOrder = false,
                 CommencementDate = order.CommencementDate,
@@ -568,9 +617,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 CatalogueSolutionId = orderItem.CatalogueItemId.ToString(),
                 CatalogueItemName = solution.Name,
                 Price = orderItem.Price,
-                ItemUnit = new ItemUnitModel(), // TODO
+                ItemUnit = new ItemUnitModel { Name = orderItem.PricingUnitNameNavigation.Name, Description = orderItem.PricingUnitNameNavigation.Description },
                 TimeUnit = orderItem.TimeUnit,
                 ProvisioningType = orderItem.ProvisioningType,
+                CurrencyCode = orderItem.CurrencyCode,
             };
 
             var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
@@ -582,13 +632,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
                 if (orderRecipient != null)
                 {
-                    serviceRecipient.Checked = true;
+                    serviceRecipient.Selected = true;
                     serviceRecipient.Quantity = orderRecipient.Quantity;
                     serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
                 }
-
-                if (orderItem.OrderItemRecipients.Any(x => x.OdsCode == serviceRecipient.OdsCode))
-                    serviceRecipient.Checked = true;
             }
 
             SetStateModel(state);
