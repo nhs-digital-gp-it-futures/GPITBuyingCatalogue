@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<List<Organisation>> GetAllOrganisations()
+        public async Task<IList<Organisation>> GetAllOrganisations()
         {
             return (await organisationRepository.GetAllAsync(x => true)).OrderBy(x => x.Name).ToList();
         }

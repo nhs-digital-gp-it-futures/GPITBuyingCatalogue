@@ -1,0 +1,51 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionSupplierDetailsModel;
+@{
+    Layout = "_Layout";
+}
+
+<div class="nhsuk-width-container ">
+    <main id="maincontent" role="main" class="nhsuk-grid-row">
+        <article class="nhsuk-grid-column-two-thirds">
+            <h2>About @Model.Name</h2>
+            @if (!string.IsNullOrWhiteSpace(Model.Summary))
+            {
+                <p style="white-space: pre-line">@Model.Summary</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Url))
+            {
+                <p>
+                    <a href="@Model.Url">@Model.Url</a>
+                </p>
+            }
+            @if (Model.HasContacts())
+            {
+                <h2>Contact details</h2>
+                @foreach (var contact in Model.Contacts)
+                {
+                    <dl class="nhsuk-summary-list">
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Contact name
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @contact.FullName
+                            </dd>
+                        </div>
+                        <div class="nhsuk-summary-list__row">
+                            <dt class="nhsuk-summary-list__key">
+                                Contact details
+                            </dt>
+                            <dd class="nhsuk-summary-list__value">
+                                @if (!string.IsNullOrWhiteSpace(contact.PhoneNumber))
+                                {
+                                    <p>@contact.PhoneNumber</p>
+                                }
+                                <p>@contact.Email</p>
+                            </dd>
+                        </div>
+                    </dl>
+                }
+            }
+        </article>
+    </main>
+</div>
