@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             parentChildContext = new ParentChildContext();
 
             if (context.Items.TryGetValue(typeof(ParentChildContext), out _))
-            {                
+            {
                 context.Items[typeof(ParentChildContext)] = parentChildContext;
             }
             else

@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
         private const string GovUkInputPrefixClass = "govuk-input__prefix";
         private const string GovUkInputSuffixClass = "govuk-input__suffix";
         private const string GovUkInputWrapperClass = "govuk-input__wrapper";
-        private const string GovUkFormGroup = "govuk-form-group";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -90,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
         private static TagBuilder GetGovFormGroupBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.Div);
-            builder.AddCssClass(GovUkFormGroup);
+            builder.AddCssClass(TagHelperConstants.NhsFormGroup);
             return builder;
         }
 

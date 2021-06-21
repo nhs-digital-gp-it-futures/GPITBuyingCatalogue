@@ -88,9 +88,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return inputitem;
         }
 
-        private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText, string selectedWidthClass, bool RemoveRightMargin)
+        private TagBuilder BuildInputItem(ModelExpression modelExpression, string labelText, string selectedWidthClass, bool removeRightMargin)
         {
-            var item = BuildDateInputContainerItem(RemoveRightMargin);
+            var item = BuildDateInputContainerItem(removeRightMargin);
             var label = BuildDateLabel(modelExpression, labelText);
             var input = BuildDateInput(modelExpression, selectedWidthClass);
 

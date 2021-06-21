@@ -46,8 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}")]
         public async Task<IActionResult> Organisation(string odsCode)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-
             logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(Organisation)} for {nameof(odsCode)} {odsCode}");
 
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
@@ -60,8 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}/select")]
         public async Task<IActionResult> SelectOrganisation(string odsCode)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-
             logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(SelectOrganisation)} for {nameof(odsCode)} {odsCode}");
 
             var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
@@ -77,9 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("organisation/{odsCode}/select")]
         public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(DashboardController)}.{nameof(SelectOrganisation)} for {nameof(odsCode)} {odsCode}");
 
             if (!ModelState.IsValid)
@@ -94,8 +87,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}/order/neworder")]
         public IActionResult NewOrder(string odsCode)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-
             logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(NewOrder)} for {nameof(odsCode)} {odsCode}");
 
             return View(new NewOrderModel(odsCode));
@@ -104,8 +95,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}/order/neworder/description")]
         public IActionResult NewOrderDescription(string odsCode)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-
             logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
 
             return View(new NewOrderDescriptionModel(odsCode));
@@ -114,9 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("organisation/{odsCode}/order/neworder/description")]
         public async Task<IActionResult> NewOrderDescription(string odsCode, NewOrderDescriptionModel model)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
 
             if (!ModelState.IsValid)

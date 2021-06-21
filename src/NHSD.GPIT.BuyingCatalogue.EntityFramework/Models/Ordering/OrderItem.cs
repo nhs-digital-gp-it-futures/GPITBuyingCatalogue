@@ -33,13 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
 
         public virtual Order Order { get; set; }
 
-        // TODO - Called PricingUnit in old code
-        public virtual PricingUnit PricingUnitNameNavigation { get; set; }
+        public virtual PricingUnit PricingUnit { get; set; }
 
         public virtual ProvisioningType ProvisioningType { get; set; }
 
-        // TODO - Called PriceTimeUnit in old code
-        public virtual TimeUnit TimeUnit { get; set; }
+        public virtual TimeUnit PriceTimeUnit { get; set; }
 
         public IReadOnlyList<OrderItemRecipient> OrderItemRecipients => recipients;
     }

@@ -30,7 +30,7 @@
                                href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            <div class="bc-c-data-text ">@item.PricingUnitNameNavigation.Description @item.TimeUnit.Description</div>
+                            <div class="bc-c-data-text ">@item.PricingUnit.Description @item?.PriceTimeUnit?.Description</div>
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <nhs-details label-text="Service recipients (ODS code)">

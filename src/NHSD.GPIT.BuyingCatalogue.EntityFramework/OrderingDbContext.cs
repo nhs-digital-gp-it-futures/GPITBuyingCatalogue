@@ -192,13 +192,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("FK_OrderItem_Order");
 
-                entity.HasOne(d => d.PricingUnitNameNavigation)
+                entity.HasOne(d => d.PricingUnit)
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.PricingUnitName)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderItem_PricingUnit");
 
-                entity.Property(e => e.TimeUnit)
+                entity.Property(e => e.PriceTimeUnit)
                     .HasColumnName("TimeUnitId")
                     .HasConversion(e => e.Id, e => Models.EnumerationBase.FromId<TimeUnit>(e));
 
