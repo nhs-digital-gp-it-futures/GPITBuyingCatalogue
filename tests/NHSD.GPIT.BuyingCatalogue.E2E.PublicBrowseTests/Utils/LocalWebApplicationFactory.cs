@@ -154,7 +154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             if (disposing)
             {
                 host?.Dispose();
-                
             }
         }
     }
