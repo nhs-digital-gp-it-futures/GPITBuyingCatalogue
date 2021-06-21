@@ -40,6 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
                 .Select(s => s.Text);
         }
 
+        internal bool ImplementationNameDisplayed(string pageTitle)
+        {
+
+            var title = Driver.FindElement(Objects.PublicBrowse.SolutionObjects.ImplementationName).Text;
+            return title.Contains(pageTitle, System.StringComparison.OrdinalIgnoreCase);
+        }
+
         internal IEnumerable<string> GetCapabilitiesContent()
         {
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CapabilitiesContent).Select(s => s.Text);
