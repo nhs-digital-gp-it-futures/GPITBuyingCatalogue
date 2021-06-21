@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
     public abstract class TestBase
     {
         private readonly Uri uri;
-        //private readonly HttpClient client;
 
         protected readonly LocalWebApplicationFactory factory;
         protected readonly IWebDriver driver;
@@ -35,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
-            //client = factory.CreateClient();
             this.factory = factory;
 
             driver = this.factory.Driver;
