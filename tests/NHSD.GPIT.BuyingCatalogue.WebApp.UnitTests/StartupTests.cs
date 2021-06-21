@@ -69,23 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
 
             webHost.Services.GetRequiredService(requiredInterface).Should().BeOfType(expectedType);
         }
-
-        [Test]
-        public static void GetService_IssuerSettings_ResultAsExpected()
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
-            IConfiguration config = builder.Build();
-
-            var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<StartupTest>().Build();
-
-            var issuerSettings = webHost.Services.GetService<IssuerSettings>();
-
-            issuerSettings.Should().NotBeNull();
-            issuerSettings.IssuerUrl.Should().Be(config["issuerUrl"]);
-        }
     }
 
     public class StartupTest : Startup

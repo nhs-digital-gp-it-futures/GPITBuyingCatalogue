@@ -23,8 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             Assert.Throws<ArgumentNullException>(() => new PasswordResetCallback(
                 null,
-                Mock.Of<LinkGenerator>(),
-                new Framework.Settings.IssuerSettings()));
+                Mock.Of<LinkGenerator>()));
         }
 
         [Test]
@@ -33,8 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             Assert.Throws<ArgumentNullException>(() => new PasswordResetCallback(
                 Mock.Of<IHttpContextAccessor>(),
-                null,
-                new Framework.Settings.IssuerSettings()));
+                null));
         }
 
         [Test]
@@ -42,8 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             var callback = new PasswordResetCallback(
                 Mock.Of<IHttpContextAccessor>(),
-                Mock.Of<LinkGenerator>(),
-                new Framework.Settings.IssuerSettings());
+                Mock.Of<LinkGenerator>());
 
             Assert.Throws<ArgumentNullException>(() => callback.GetPasswordResetCallback(null));
         }
@@ -93,8 +90,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             internal PasswordResetCallbackContext(string url)
             {
+                var mockRequest = new Mock<HttpRequest>();
+                mockRequest.Setup(x => x.Scheme).Returns("https");
+                mockRequest.Setup(x => x.Host).Returns(new HostString(url));
+
                 var mockContext = new Mock<HttpContext>();
-                mockContext.Setup(c => c.Request).Returns(Mock.Of<HttpRequest>());
+                mockContext.Setup(c => c.Request).Returns(mockRequest.Object);
                 mockContext.Setup(c => c.Features).Returns(new FeatureCollection());
 
                 mockAccessor.Setup(a => a.HttpContext).Returns(mockContext.Object);
@@ -123,8 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             internal PasswordResetCallback Callback => new(
                 mockAccessor.Object,
-                mockGenerator.Object,
-                new Framework.Settings.IssuerSettings { IssuerUrl = new Uri("http://www.google.com") });
+                mockGenerator.Object);
 
             internal RouteValueDictionary RouteValues { get; private set; }
 
