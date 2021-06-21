@@ -6,12 +6,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
     public class ListOrganisationsModel : NavBaseModel
     {
-        public ListOrganisationsModel(List<Organisation> organisations)
+        public ListOrganisationsModel(IList<Organisation> organisations)
         {
             Organisations = organisations;
             BackLink = "/";
         }
 
-        public List<Organisation> Organisations { get; private set; }
+        public IList<Organisation> Organisations { get; private set; }
     }
 }
