@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using netDumbster.smtp;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
@@ -33,10 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         internal static string DefaultPassword = "Th1sIsP4ssword!";
 
+        internal readonly SimpleSmtpServer smtp;
+
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
             //client = factory.CreateClient();
             this.factory = factory;
+
+            smtp = SimpleSmtpServer.Start();
 
             driver = this.factory.Driver;
             PublicBrowsePages = new PublicBrowsePages(driver).PageActions;
