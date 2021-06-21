@@ -108,12 +108,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
         {
             var state = GetOrderStateFromSession();
 
-            state.ProvisioningType = ProvisioningType.Parse(cataloguePrice.ProvisioningType.Name);
+            state.ProvisioningType = ProvisioningType.FromName<ProvisioningType>(cataloguePrice.ProvisioningType.Name);
             state.CurrencyCode = cataloguePrice.CurrencyCode;
-            state.Type = CataloguePriceType.Parse(cataloguePrice.CataloguePriceType.Name);
+            state.Type = CataloguePriceType.FromName<CataloguePriceType>(cataloguePrice.CataloguePriceType.Name);
             state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
             if (cataloguePrice.TimeUnit != null)
-                state.TimeUnit = TimeUnit.Parse(cataloguePrice.TimeUnit.Name);
+                state.TimeUnit = TimeUnit.FromName<TimeUnit>(cataloguePrice.TimeUnit.Name);
             state.Price = cataloguePrice.Price;
             state.PriceId = cataloguePrice.CataloguePriceId;
             state.EstimationPeriod = TimeUnit.PerYear;
