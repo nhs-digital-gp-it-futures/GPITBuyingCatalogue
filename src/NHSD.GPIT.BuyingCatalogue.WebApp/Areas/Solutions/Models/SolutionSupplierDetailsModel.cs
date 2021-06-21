@@ -16,5 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string Url { get; set; }
 
         public List<SupplierContactViewModel> Contacts { get; set; }
+
+        public bool HasContacts() => Contacts?.Any(c => c != null) == true;
     }
 }
