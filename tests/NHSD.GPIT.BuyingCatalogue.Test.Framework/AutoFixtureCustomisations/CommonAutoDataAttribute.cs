@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.NUnit3;
 

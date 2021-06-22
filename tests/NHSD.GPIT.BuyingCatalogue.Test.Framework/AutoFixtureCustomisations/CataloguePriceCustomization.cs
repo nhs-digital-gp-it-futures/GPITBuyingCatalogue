@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using AutoFixture;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 

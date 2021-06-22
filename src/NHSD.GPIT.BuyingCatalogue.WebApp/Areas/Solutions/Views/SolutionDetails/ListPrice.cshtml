@@ -13,7 +13,7 @@
 
                     @if (Model.HasFlatListPrices())
                     {
-                        <table>
+                        <table data-test-id="flat-list-price-table">
                             <caption>Flat list price</caption>
                             <thead role="rowgroup">
                                 <tr role="row">
@@ -25,8 +25,8 @@
                                 @foreach (var item in Model.FlatListPrices)
                                 {
                                     <tr role="row">
-                                        <td>@item.CurrencyCode@item.Price</td>
-                                        <td>@item.Unit</td>
+                                        <td data-test-id="price">@item.CurrencyCode@item.Price</td>
+                                        <td data-test-id="pricing-unit">@item.Unit</td>
                                     </tr>
                                 }
                             </tbody>

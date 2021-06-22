@@ -9,16 +9,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         public virtual string[] Features() =>
             HasFeatures() ? JsonConvert.DeserializeObject<string[]>(Solution.Features) : null;
 
-        public MarketingContact FirstContact() => Solution?.MarketingContacts?.FirstOrDefault() ?? new MarketingContact();
+        public MarketingContact FirstContact() =>
+            Solution?.MarketingContacts?.FirstOrDefault() ?? new MarketingContact();
 
         public virtual IList<string> Frameworks() =>
             Solution?.FrameworkSolutions?.Any() == true
                 ? Solution?.FrameworkSolutions.Select(s => s.Framework?.ShortName).ToList()
                 : new List<string>();
 
-        public virtual bool HasAdditionalServices() => Solution?.AdditionalServices?.Any() == true;
+        public virtual bool HasAdditionalServices() =>
+            Supplier?.CatalogueItems?.Select(c => c.AdditionalService).Any() == true;
 
-        public virtual bool HasAssociatedServices() => AssociatedService != null;
+        public virtual bool HasAssociatedServices() => AssociatedService != null
+            || Supplier?.CatalogueItems?.Select(y => y.AssociatedService).FirstOrDefault() is not null;
 
         public virtual bool HasCapabilities() => Solution?.SolutionCapabilities?.Any() == true;
 
