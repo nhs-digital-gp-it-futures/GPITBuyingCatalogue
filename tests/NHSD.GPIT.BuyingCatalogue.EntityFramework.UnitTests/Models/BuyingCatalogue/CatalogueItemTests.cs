@@ -184,19 +184,70 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Test]
-        public static void HasAssociatedServices_AssociatedServiceNull_ReturnsFalse()
+        public static void HasAssociatedServices_AssociatedServiceNull_HasSupplierAssociatedService_ReturnsTrue()
         {
-            var catalogueItem = new CatalogueItem { AssociatedService = null, };
+            var catalogueItem = new CatalogueItem
+            {
+                AssociatedService = null,
+                Supplier = new Supplier
+                {
+                    CatalogueItems = new List<CatalogueItem>
+                    {
+                        new() { AssociatedService = new AssociatedService() }
+                    },
+                },
+            };
+            
+            var actual = catalogueItem.HasAssociatedServices();
+
+            actual.Should().BeTrue();
+        }
+        
+        [Test]
+        public static void HasAssociatedServices_AssociatedServiceNull_NoSupplierAssociatedService_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem
+            {
+                AssociatedService = null,
+                Supplier = new Supplier
+                {
+                    CatalogueItems = new List<CatalogueItem>
+                    {
+                        new() { AssociatedService = null }
+                    },
+                },
+            };
             
             var actual = catalogueItem.HasAssociatedServices();
 
             actual.Should().BeFalse();
         }
-        
+
         [Test]
-        public static void HasAssociatedServices_SolutionNull_ReturnsFalse()
+        public static void HasAssociatedServices_AssociatedServiceNull_SupplierHasNullCatalogueItems_ReturnsFalse()
         {
-            var catalogueItem = new CatalogueItem { Solution = null };
+            var catalogueItem = new CatalogueItem
+            {
+                AssociatedService = null,
+                Supplier = new Supplier
+                {
+                    CatalogueItems = null,
+                },
+            };
+            
+            var actual = catalogueItem.HasAssociatedServices();
+
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public static void HasAssociatedServices_AssociatedServiceNull_SupplierNull_ReturnsFalse()
+        {
+            var catalogueItem = new CatalogueItem
+            {
+                AssociatedService = null,
+                Supplier = null,
+            };
             
             var actual = catalogueItem.HasAssociatedServices();
 
