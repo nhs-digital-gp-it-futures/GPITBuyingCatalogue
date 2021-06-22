@@ -17,16 +17,11 @@
                              label-text="Code Example for the above Select List"
                              size="Medium">
     <div class="app-tabs__container js-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue bracket">&lt;</span>
-        <span class="vs-light-theme-purple">nhs-select</span><br />
-        <span class="vs-light-theme-purple first-layer">asp-for</span>
-        <span class="vs-light-theme-blue">="@@Model.SelectListItem"&nbsp;</span><br />
-        <span class="vs-light-theme-purple first-layer">asp-items</span>
-        <span class="vs-light-theme-blue">="(new SelectList(@@Model.SelectListItems, "Value", "Text"))" </span><br />
-        <span class="vs-light-theme-purple first-layer">label-text</span>
-        <span class="vs-light-theme-blue">="A Select List From a List of SelectListItems" </span><br />
-        <span class="vs-light-theme-purple first-layer">label-hint</span>
-        <span class="vs-light-theme-blue">="And a Hint" </span><br />
+        <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">nhs-select</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model.SelectListItem"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">asp-items</span><span class="vs-light-theme-blue">="@@(new SelectList(@@Model.SelectListItems, "Value", "Text"))" </span><br />
+        <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="A Select List From a List of SelectListItems" </span><br />
+        <span class="vs-light-theme-purple first-layer">label-hint</span><span class="vs-light-theme-blue">="And a Hint" </span><br />
         <span class="vs-light-theme-blue bracket">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
