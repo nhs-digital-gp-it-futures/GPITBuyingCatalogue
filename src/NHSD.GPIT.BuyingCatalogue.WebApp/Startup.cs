@@ -36,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddControllersWithViews(options =>
             {
+                options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
             });
 

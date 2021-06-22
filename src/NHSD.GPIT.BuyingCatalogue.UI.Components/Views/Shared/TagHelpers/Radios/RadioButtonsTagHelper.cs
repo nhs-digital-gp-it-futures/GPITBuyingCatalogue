@@ -49,6 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsRadios));
 
             radioItems.ForEach(ri => output.Content.AppendHtml(ri));
+
+            TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
         }
 
         private List<TagBuilder> BuildRadiosFromValueList()

@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
                 "ResetPassword",
                 "Account",
                 new { Token = token.Token, Email = token.User.Email, Area = "Identity" },
-                accessor.HttpContext.Request.Scheme,
+                "https",
                 hostString);
 
             return new Uri(action);

@@ -34,9 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"client-application-types-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -47,9 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(ClientApplicationTypesModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -78,9 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("browser-based")]
         public async Task<IActionResult> BrowserBased(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException(nameof(id));
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -92,9 +83,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("native-mobile")]
         public async Task<IActionResult> NativeMobile(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"native-mobile-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -106,9 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("native-desktop")]
         public async Task<IActionResult> NativeDesktop(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"native-desktop-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)

@@ -138,16 +138,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Test]
-        public static void Post_Login_NullModel_ThrowsException()
-        {
-            var controller = CreateValidController();
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-              controller.Login((LoginViewModel)null)
-             );
-        }
-
-        [Test]
         public static async Task Post_Login_InvalidModelState_ReturnsDefaultView()
         {
             var controller = CreateValidController();
@@ -194,16 +184,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Test]
-        public static void Post_ForgotPassword_NullModel_ThrowsException()
-        {
-            var controller = CreateValidController();
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-              controller.ForgotPassword((ForgotPasswordViewModel)null)
-             );
-        }
-
-        [Test]
         public static async Task Post_ForgotPassword_InvalidModelState_ReturnsDefaultView()
         {
             var controller = CreateValidController();
@@ -225,16 +205,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.IsNull(((ViewResult)result).ViewName);
-        }
-
-        [Test]
-        public static void Post_ResetPassword_NullModel_ThrowsException()
-        {
-            var controller = CreateValidController();
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-              controller.ResetPassword((ResetPasswordViewModel)null)
-             );
         }
 
         [Test]

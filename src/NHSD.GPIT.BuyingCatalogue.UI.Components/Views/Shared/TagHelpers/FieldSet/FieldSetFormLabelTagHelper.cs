@@ -38,7 +38,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             parentChildContext = new ParentChildContext();
 
-            context.Items.Add(typeof(ParentChildContext), parentChildContext);
+            if (context.Items.TryGetValue(typeof(ParentChildContext), out _))
+            {
+                context.Items[typeof(ParentChildContext)] = parentChildContext;
+            }
+            else
+            {
+                context.Items.Add(typeof(ParentChildContext), parentChildContext);
+            }
         }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -56,6 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var content = await output.GetChildContentAsync();
 
             var errorMessage = BuildErrorMessage();
+
+            if (IsChildInError())
+                formGroup.AddCssClass(TagHelperConstants.NhsFormGroupError);
 
             fieldset.InnerHtml
                 .AppendHtml(fieldsetheading)
@@ -92,6 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private bool IsChildInError()
         {
+            if (parentChildContext is null)
+                return false;
+
             // we should only error the whole fieldset if there is only one child and it's in error
             return parentChildContext.ChildInError;
         }

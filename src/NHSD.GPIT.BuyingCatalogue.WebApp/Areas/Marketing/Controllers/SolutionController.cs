@@ -32,9 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"index-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -48,9 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("preview")]
         public IActionResult Preview(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"preview-{nameof(id)}");
-
             return RedirectToAction(
                 nameof(SolutionDetailsController.PreviewSolutionDetail),
                 typeof(SolutionDetailsController).ControllerName(),

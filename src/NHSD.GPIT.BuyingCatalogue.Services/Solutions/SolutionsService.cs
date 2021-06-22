@@ -78,6 +78,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solutions;
         }
 
+        public async Task<CatalogueItem> GetSolutionListPrices(string solutionId)
+        {
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
+
+            return await dbContext.CatalogueItems
+                .Include(x => x.CataloguePrices)
+                .ThenInclude(x => x.ProvisioningType)
+                .Include(x => x.CataloguePrices)
+                .ThenInclude(x => x.CataloguePriceType)
+                .Include(x => x.CataloguePrices)
+                .ThenInclude(x => x.TimeUnit)
+                .Where(x => x.CatalogueItemId == solutionId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<CatalogueItem> GetSolution(string solutionId)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));

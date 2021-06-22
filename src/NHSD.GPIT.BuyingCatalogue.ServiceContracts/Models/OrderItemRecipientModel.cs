@@ -28,6 +28,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         {
             get
             {
+                if (!deliveryDate.HasValue)
+                {
+                    if (int.TryParse(Year, out int yearInt)
+                        && int.TryParse(Month, out int monthInt)
+                        && int.TryParse(Day, out int dayInt))
+                    {
+                        if (yearInt != 0 && monthInt != 0 && dayInt != 0)
+                            deliveryDate = new DateTime(yearInt, monthInt, dayInt);
+                    }
+                }
+
                 return deliveryDate;
             }
 
