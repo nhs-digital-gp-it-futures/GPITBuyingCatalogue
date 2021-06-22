@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 
                         break;
                     case Guid:
-                        if ((Guid)argument.Value == Guid.Empty)
+                        if (argument.Value is not null && (Guid)argument.Value == Guid.Empty)
                         {
                             isValid = false;
                             logger.LogWarning($"{argument.Key} was empty guid");
