@@ -26,16 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
                 colour = "red";
 
             return $"nhsuk-tag--{colour}";
-
-            // this doesn't work... WHY ?
-            // switch (statusId)
-            // {
-            //    case PublicationStatus.Draft.Id: colour = "white"; break;
-            //    case PublicationStatus.Unpublished.Id: colour = "yellow"; break;
-            //    case PublicationStatus.Published.Id: colour = "green"; break;
-            //    case PublicationStatus.Withdrawn.Id: colour = "red"; break;
-            //    default: colour = "white"; break;
-            // }
         }
     }
 }
