@@ -55,3 +55,7 @@ variable "webapp_cname_url" {
 variable "core_environment" {
   type      = string
 }
+variable "sa_connection_string" {
+  type = string
+  #sensitive = true
+}

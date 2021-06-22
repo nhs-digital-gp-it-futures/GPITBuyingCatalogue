@@ -8,7 +8,8 @@ resource "azurerm_sql_database" "sql_main" {
   requested_service_objective_name = var.sql_size
 
   tags = {
-    environment                    = var.environment
+    environment                    = var.environment,
+    architecture                   = "new"
   }
 
   lifecycle {
@@ -28,7 +29,8 @@ resource "azurerm_sql_database" "sql_user" {
   requested_service_objective_name = var.sql_size
 
   tags = {
-    environment                    = var.environment
+    environment                    = var.environment,
+    architecture                   = "new"
   }
 
   lifecycle {
@@ -48,7 +50,8 @@ resource "azurerm_sql_database" "sql_ordering" {
   requested_service_objective_name = var.sql_size
 
   tags = {
-    environment                    = var.environment
+    environment                    = var.environment,
+    architecture                   = "new"
   }
 
   lifecycle {

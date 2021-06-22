@@ -24,4 +24,5 @@ module "webapp" {
   cert_name        = data.azurerm_key_vault_secret.certname.value
   webapp_cname_url = local.gw_webappURL
   core_environment = local.coreEnv
+  sa_connection_string = module.storage_account.primary_connection_string
 }
