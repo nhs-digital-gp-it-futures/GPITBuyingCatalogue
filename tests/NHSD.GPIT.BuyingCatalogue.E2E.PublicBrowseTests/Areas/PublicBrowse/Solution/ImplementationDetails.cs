@@ -34,5 +34,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .Any(s => s.Contains(info, StringComparison.CurrentCultureIgnoreCase))
                 .Should().BeTrue();
         }
-   }
+    }
 }
