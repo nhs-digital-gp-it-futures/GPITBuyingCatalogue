@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                         if (string.IsNullOrWhiteSpace((string)argument.Value))
                         {
                             isValid = false;
-                            logger.LogWarning($"{argument.Key} was null");
+                            logger.LogWarning($"{argument.Key} was null or whitespace");
                         }
 
                         break;
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                         if ((Guid)argument.Value == Guid.Empty)
                         {
                             isValid = false;
-                            logger.LogWarning($"{argument.Key} was null");
+                            logger.LogWarning($"{argument.Key} was empty guid");
                         }
 
                         break;

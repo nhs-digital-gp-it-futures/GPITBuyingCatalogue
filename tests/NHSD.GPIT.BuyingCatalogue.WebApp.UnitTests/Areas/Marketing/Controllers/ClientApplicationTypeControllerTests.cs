@@ -20,9 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class ClientApplicationTypeControllerTests
-    {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
+    {        
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -65,17 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(ClientApplicationTypeController.BrowserBased).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_BrowserBased_InvalidId_ThrowsException(string id)
-        {
-            var controller = new ClientApplicationTypeController(
-                Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.BrowserBased(id));
         }
 
         [Test, AutoData]
@@ -155,17 +142,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(ClientApplicationTypeController.NativeDesktop).ToLowerCaseHyphenated());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_NativeDesktop_InvalidId_ThrowsException(string id)
-        {
-            var controller = new ClientApplicationTypeController(
-                Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeDesktop(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_NativeDesktop_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -241,17 +217,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(ClientApplicationTypeController.NativeMobile).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_NativeMobile_InvalidId_ThrowsException(string id)
-        {
-            var controller = new ClientApplicationTypeController(
-                Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.NativeMobile(id));
         }
 
         [Test, AutoData]
@@ -331,17 +296,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(ClientApplicationTypeController.ClientApplicationTypes).ToLowerCaseHyphenated());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_ClientApplicationTypes_InvalidId_ThrowsException(string id)
-        {
-            var controller = new ClientApplicationTypeController(
-                Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.ClientApplicationTypes(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_ClientApplicationTypes_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -416,17 +370,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be(nameof(ClientApplicationTypeController.ClientApplicationTypes).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_ClientApplicationTypes_NullModel_ThrowsException()
-        {
-            var controller = new ClientApplicationTypeController(
-                Mock.Of<ILogWrapper<ClientApplicationTypeController>>(), Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.ClientApplicationTypes((ClientApplicationTypesModel)null));
         }
 
         [Test]
