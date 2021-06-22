@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "webapp" {
 }
 
 resource "azurerm_resource_group" "storageaccount" {
-  name          = "${var.project}-${var.environment}-rg-sa"
+  name          = "${var.project}-${var.environment}-rg-storage"
   location      = var.region
   tags = {
     environment  = var.environment,
