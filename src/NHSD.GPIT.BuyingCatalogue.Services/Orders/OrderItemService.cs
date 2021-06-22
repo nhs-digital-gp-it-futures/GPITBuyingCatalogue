@@ -42,8 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (!aggregateValidationResult.Success)
                 return aggregateValidationResult;
 
-            // TODO - handle case of non-success
-            (var success, var catalogueItemId) = CatalogueItemId.Parse(model.CatalogueSolutionId);
+            //// TODO - handle case of non-success
+            (var success, var catalogueItemId) = CatalogueItemId.Parse(model.CatalogueItemId);
 
             var catalogueItem = await AddOrUpdateCatalogueItem(catalogueItemId, model, model.CatalogueItemType);
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);

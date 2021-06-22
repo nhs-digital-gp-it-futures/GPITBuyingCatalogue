@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public string CatalogueSolutionId { get; set; }
 
+        public string CatalogueItemId { get; set; }
+
         public string CurrencyCode { get; set; }
 
         public TimeUnit EstimationPeriod { get; set; }
@@ -39,5 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public CataloguePriceType Type { get; set; }
 
         public bool IsNewOrder { get; set; }
+
+        public IEnumerable<string> SolutionIds { get; set; }
     }
 }

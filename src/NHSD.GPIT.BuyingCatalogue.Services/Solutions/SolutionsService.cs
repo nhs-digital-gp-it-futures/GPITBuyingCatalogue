@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -15,23 +14,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public class SolutionsService : ISolutionsService
     {
-        private readonly ILogWrapper<SolutionsService> logger;
+        private const string GpitFuturesFrameworkId = "NHSDGP001";
+        private const string DfocvcFrameworkId = "DFOCVC001";
+
         private readonly GPITBuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository;
 
         public SolutionsService(
-            ILogWrapper<SolutionsService> logger,
             GPITBuyingCatalogueDbContext dbContext,
             IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository,
             IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.marketingContactRepository = marketingContactRepository
-                ?? throw new ArgumentNullException(nameof(marketingContactRepository));
+            this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
@@ -47,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.CatalogueItemType.Name == "Solution"
                         && x.PublishedStatus.Name == "Published"
                         && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
                 .ToListAsync();
         }
 
@@ -61,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(
                     x => x.CatalogueItemType.Name == "Solution"
                         && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
                 .ToListAsync();
 
             // TODO - Refactor this. Should be possible to include in the above expression
@@ -123,7 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.TimeUnit)
                 .Include(x => x.CataloguePrices)
                 .ThenInclude(x => x.PricingUnit)
-
                 .Include(x => x.Supplier)
                 .ThenInclude(s => s.CatalogueItems)
                 .ThenInclude(c => c.AssociatedService)
@@ -131,7 +128,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(s => s.CatalogueItems)
                 .ThenInclude(c => c.CataloguePrices)
                 .ThenInclude(cp => cp.PricingUnit)
-
                 .Where(x => x.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
@@ -146,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(
                     x => x.CatalogueItemType.Name == "Solution"
                         && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == "DFOCVC001"))
+                        && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == DfocvcFrameworkId))
                 .ToListAsync();
         }
 
@@ -298,7 +294,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(x => x.Supplier)
                 .Where(
                     x => x.SupplierId == supplierId
+                        // TODO - Use an enum value
                         && x.CatalogueItemType.Name == "Solution"
+                        // TODO - Use an enum value
                         && x.PublishedStatus.Name == "Published")
                 .OrderBy(x => x.Name)
                 .ToListAsync();
