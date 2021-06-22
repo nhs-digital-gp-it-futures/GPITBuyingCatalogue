@@ -129,6 +129,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(c => c.AssociatedService)
                 .Include(x => x.Supplier)
                 .ThenInclude(s => s.CatalogueItems)
+                .ThenInclude(c => c.AdditionalService)
+                .Include(x => x.Supplier)
+                .ThenInclude(s => s.CatalogueItems)
                 .ThenInclude(c => c.CataloguePrices)
                 .ThenInclude(cp => cp.PricingUnit)
 

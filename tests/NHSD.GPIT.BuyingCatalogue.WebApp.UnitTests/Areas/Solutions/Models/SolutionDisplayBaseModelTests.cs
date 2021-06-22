@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.AdditionalServices),
                 Controller = typeof(SolutionDetailsController).ControllerName(),
                 Name = "Additional Services",
             },
