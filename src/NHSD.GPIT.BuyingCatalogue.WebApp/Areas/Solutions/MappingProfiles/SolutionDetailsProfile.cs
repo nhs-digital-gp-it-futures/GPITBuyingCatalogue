@@ -38,6 +38,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
         public SolutionDetailsProfile()
         {
+            CreateMap<CatalogueItem, AssociatedServiceModel>()
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.AssociatedService == null ? null : src.AssociatedService.Description))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(
+                    dest => dest.OrderGuidance,
+                    opt => opt.MapFrom(
+                        src => src.AssociatedService == null ? null : src.AssociatedService.OrderGuidance))
+                .ForMember(
+                    dest => dest.Prices,
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.CataloguePrices != null);
+                        opt.MapFrom(src => src.CataloguePrices.Where(x => x != null && x.Price != null));
+                    });
+
+            CreateMap<CatalogueItem, AssociatedServicesModel>()
+                .ForMember(
+                    dest => dest.Services,
+                    opt => opt.MapFrom(
+                        src => src.Supplier == null ? new List<CatalogueItem>() :
+                            src.Supplier.CatalogueItems == null ? new List<CatalogueItem>() :
+                            src.Supplier.CatalogueItems.OrderBy(c => c.Name).ToList()))
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
+                .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
+
             CreateMap<CatalogueItem, CapabilitiesViewModel>()
                 .ForMember(
                     dest => dest.RowViewModels,
@@ -48,6 +75,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
                 .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
+
+            CreateMap<CatalogueItem, SolutionSupplierDetailsModel>()
+                .ForMember(
+                    dest => dest.LastReviewed,
+                    opt => opt.MapFrom<IMemberValueResolver<object, object, string, string>, string>(
+                        x => "SolutionsLastReviewedDate"))
+                .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Summary))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
+                .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.SupplierUrl))
+                .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Contacts, opt => opt.MapFrom(src => src.Supplier == null ? new List<SupplierContact>() : src.Supplier.SupplierContacts))
+                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<SupplierContact, SupplierContactViewModel>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
                 .ForMember(dest => dest.ApplicationTypes, opt => opt.Ignore())
@@ -188,16 +232,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .ForMember(dest => dest.OnPremise, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
-            CreateMap<CataloguePrice, PriceViewModel>()
-                .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode == null ? null : CurrencyCodeSigns.Code[src.CurrencyCode]))
-                .ForMember(dest => dest.Price, opt =>
-                {
-                    opt.PreCondition(src => src.Price != null);
-                    opt.MapFrom(src => Math.Round(src.Price.Value, 2));
-                })
-                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src =>
-                $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
-
             CreateMap<CatalogueItem, ListPriceModel>()
                 .ForMember(
                     dest => dest.FlatListPrices,
@@ -214,6 +248,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(TieredPriceType)));
                     })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
+
+            CreateMap<CataloguePrice, PriceViewModel>()
+                .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode == null ? null : CurrencyCodeSigns.Code[src.CurrencyCode]))
+                .ForMember(dest => dest.Price, opt =>
+                {
+                    opt.PreCondition(src => src.Price != null);
+                    opt.MapFrom(src => Math.Round(src.Price.Value, 2));
+                })
+                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src =>
+                $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
+
+            CreateMap<CataloguePrice, string>()
+                .ConstructUsing(
+                    src => src.Price == null
+                        ? null
+                        : $"£{src.Price.Value:F} {(src.PricingUnit != null ? src.PricingUnit.Description : null)}"
+                            .Trim());
 
             CreateMap<SolutionCapability, RowViewModel>()
                 .ForMember(

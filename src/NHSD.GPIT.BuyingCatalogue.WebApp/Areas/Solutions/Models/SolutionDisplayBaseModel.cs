@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.AssociatedServices),
                 Controller = ControllerName,
                 Name = "Associated Services",
             },
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             {
                 Action = nameof(SolutionDetailsController.Interoperability),
                 Controller = ControllerName,
-                Name = "Interoperability",
+                Name = nameof(SolutionDetailsController.Interoperability),
             },
             new()
             {
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionDetailsController.SupplierDetails),
                 Controller = ControllerName,
                 Name = "Supplier details",
             },

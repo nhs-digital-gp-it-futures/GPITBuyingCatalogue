@@ -31,9 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("features")]
         public async Task<IActionResult> Features(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"Features-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -45,9 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("features")]
         public async Task<IActionResult> Features(FeaturesModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -63,9 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("implementation")]
         public async Task<IActionResult> Implementation(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"implementation-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -76,9 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("implementation")]
         public async Task<IActionResult> Implementation(ImplementationTimescalesModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -93,9 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("integrations")]
         public async Task<IActionResult> Integrations(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"integrations-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -106,9 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("integrations")]
         public async Task<IActionResult> Integrations(IntegrationsModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -123,9 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("roadmap")]
         public async Task<IActionResult> Roadmap(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"roadmap-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -136,9 +115,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("roadmap")]
         public async Task<IActionResult> Roadmap(RoadmapModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -153,9 +129,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("solution-description")]
         public async Task<IActionResult> SolutionDescription(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"solution-description-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -166,9 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("solution-description")]
         public async Task<IActionResult> SolutionDescription(SolutionDescriptionModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
             {
                 return View(model);

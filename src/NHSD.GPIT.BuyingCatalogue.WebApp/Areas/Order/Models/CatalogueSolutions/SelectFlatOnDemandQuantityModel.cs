@@ -19,12 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
             SolutionName = solutionName;
             Quantity = quantity.ToString();
             TimeUnit = timeUnit != null ? timeUnit.Name : string.Empty;
-
-            TimeUnits = new List<EntityFramework.Models.Ordering.TimeUnit>
-            {
-                EntityFramework.Models.Ordering.TimeUnit.PerMonth,
-                EntityFramework.Models.Ordering.TimeUnit.PerYear,
-            };
         }
 
         public string CallOffId { get; set; }
@@ -36,13 +30,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public string TimeUnit { get; set; }
 
-        public List<EntityFramework.Models.Ordering.TimeUnit> TimeUnits { get; set; }
+        public List<EntityFramework.Models.Ordering.TimeUnit> TimeUnits
+        {
+            get
+            {
+                return new List<EntityFramework.Models.Ordering.TimeUnit>
+                {
+                    EntityFramework.Models.Ordering.TimeUnit.PerMonth,
+                    EntityFramework.Models.Ordering.TimeUnit.PerYear,
+                };
+            }
+        }
 
         public (int? Quantity, string Error) GetQuantity()
         {
-            int quantity;
-
-            if (!int.TryParse(Quantity, out quantity))
+            if (!int.TryParse(Quantity, out int quantity))
                 return (null, "Quantity must be a number");
 
             if (quantity < 1)

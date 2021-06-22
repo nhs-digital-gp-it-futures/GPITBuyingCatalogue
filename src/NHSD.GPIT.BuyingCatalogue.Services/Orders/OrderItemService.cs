@@ -62,8 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 OrderId = order.Id,
                 PriceId = model.PriceId,
                 Price = model.Price,
-                PricingUnitNameNavigation = pricingUnit,
-                TimeUnit = model.TimeUnit,
+                PricingUnit = pricingUnit,
+                PriceTimeUnit = model.TimeUnit,
                 ProvisioningType = model.ProvisioningType,
             });
 
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Where(o => o.Id == callOffIdStruct.Id)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
-                .Include(orderItems).ThenInclude(i => i.PricingUnitNameNavigation)
+                .Include(orderItems).ThenInclude(i => i.PricingUnit)
                 .SelectMany(orderItems)
                 .AsNoTracking()
                 .ToListAsync();
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Where(o => o.Id == callOffIdStruct.Id)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
-                .Include(orderItems).ThenInclude(i => i.PricingUnitNameNavigation)
+                .Include(orderItems).ThenInclude(i => i.PricingUnit)
                 .SelectMany(orderItems)
                 .SingleOrDefaultAsync();
         }

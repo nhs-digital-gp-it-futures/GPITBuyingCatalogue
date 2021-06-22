@@ -6,77 +6,45 @@
 <div class="nhsuk-width-container" data-test-id="catalogue-solutions-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
-        <div>
-            <nhs-page-title title="@Model.Title" advice="Add the Catalogue Solutions you want to be part of this order." />
-            <div data-test-id="catalogue-solutions-page-insetAdvice">
-                <div class="nhsuk-inset-text">
-                    <span class="nhsuk-u-visually-hidden">Information: </span>
-                    If you do not want to add any, or have finished adding Catalogue Solutions, continue to the next step.
-                </div>
-            </div>
-            <h2 data-test-id="order-description-heading" class="nhsuk-u-margin-bottom-3">Order description</h2>
-            <p data-test-id="order-description" class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">@Model.OrderDescription</p>
-            <div data-test-id="add-orderItem-button">
-                <a class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-top-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/select/solution" draggable="false">
-                    Add Catalogue Solution
-                </a>
-            </div>
-            <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-3 bc-c-order-table__hr" />
-            <div data-test-id="show-added-orderItems">
-                <div data-test-id="added-orderItems">
-                    <table data-test-id="table" class="" style="page-break-inside:auto">
-                        <thead data-test-id="table-headings" style="display:table-header-group;">
-                        <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 " style="width:">
-                            <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Catalogue Solution</div>
-                        </th>
-                        <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 " style="width:">
-                            <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Unit of order</div>
-                        </th>
-                        <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 " style="width:">
-                            <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Service Recipients (ODS code)</div>
-                        </th>
-                        </thead>
-                        <tbody>
-                            @for (int i = 0; i < Model.OrderItems.Count; i++)
-                            {
-                                <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
-                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                        <a data-test-id="@Model.OrderItems[i].CatalogueItemId-catalogueItemName" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/@Model.OrderItems[i].CatalogueItemId">@Model.OrderItems[i].CatalogueItem.Name</a>
-                                    </td>
-                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                        <div data-test-id="@Model.OrderItems[i].CatalogueItemId-unitOfOrder" class="bc-c-data-text ">@Model.OrderItems[i].PricingUnitNameNavigation.Description @Model.OrderItems[i].TimeUnit.Description</div>
-                                    </td>
-                                    <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                        <div>
-                                            <div data-test-id="@Model.OrderItems[i].CatalogueItemId-serviceRecipients" class="">
-                                                <details class="nhsuk-details">
-                                                    <summary class="nhsuk-details__summary">
-                                                        <span class="nhsuk-details__summary-text">
-                                                            Service recipients (ODS code)
-                                                        </span>
-                                                    </summary>
-                                                    <div class="nhsuk-details__text">
-                                                        @foreach (var recipient in Model.OrderItems[i].OrderItemRecipients)
-                                                        {
-                                                            @string.Format("{0}({1})", recipient.OdsCodeNavigation.Name, recipient.OdsCodeNavigation.OdsCode)
-                                                            <br><br>
-                                                        }                                                        
-                                                    </div>
-                                                </details>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div data-test-id="continue-button">
-                <a class="nhsuk-button nhsuk-u-margin-top-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId" draggable="false">
-                    Continue
-                </a>
-            </div>
-        </div>
+        <nhs-page-title title="@Model.Title"
+                        advice="Add the Catalogue Solutions you want to be part of this order."
+                        additional-advice="If you do not want to add any, or have finished adding Catalogue Solutions, continue to the next step." />
+
+        <nhs-fieldset-form-container asp-for="@Model"
+                                     label-text="Order description"
+                                     label-hint="@Model.OrderDescription"
+                                     size="Large">
+
+            <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/select/solution"
+                                     text="Add Catalogue Solution" />
+
+            <nhs-table>
+                <nhs-table-column>Catalogue Solution</nhs-table-column>
+                <nhs-table-column>Unit of order</nhs-table-column>
+                <nhs-table-column>Service Recipients (ODS code)</nhs-table-column>
+                @foreach (var item in Model.OrderItems)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <a data-test-id="@item.CatalogueItemId-catalogueItemName"
+                               href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <div class="bc-c-data-text ">@item.PricingUnit.Description @item?.PriceTimeUnit?.Description</div>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-details label-text="Service recipients (ODS code)">
+                                @foreach (var recipient in item.OrderItemRecipients)
+                                {
+                                    @string.Format("{0}({1})", recipient.OdsCodeNavigation.Name, recipient.OdsCodeNavigation.OdsCode)
+                                    <br><br>
+                                }
+                            </nhs-details>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </nhs-fieldset-form-container>
+        <nhs-submit-button text="Continue" />
     </div>
 </div>

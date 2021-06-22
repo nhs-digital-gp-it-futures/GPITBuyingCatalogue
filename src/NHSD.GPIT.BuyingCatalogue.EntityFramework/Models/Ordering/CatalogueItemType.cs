@@ -13,18 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         {
         }
 
-        public static CatalogueItemType Parse(string name)
-        {
-            if (name.Equals(nameof(Solution), System.StringComparison.InvariantCultureIgnoreCase))
-                return Solution;
-            else if (name.Equals(nameof(AdditionalService), System.StringComparison.InvariantCultureIgnoreCase))
-                return AdditionalService;
-            else if (name.Equals(nameof(AssociatedService), System.StringComparison.InvariantCultureIgnoreCase))
-                return AssociatedService;
-
-            throw new ArgumentException("Invalid CatalogueItemType", nameof(name));
-        }
-
         public TimeUnit InferEstimationPeriod(ProvisioningType provisioningType, TimeUnit estimationPeriod)
         {
             return Id == AssociatedService.Id

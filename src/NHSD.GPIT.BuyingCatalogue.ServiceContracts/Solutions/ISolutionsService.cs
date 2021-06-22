@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities);
 
+        Task<CatalogueItem> GetSolutionListPrices(string solutionId);
+
         Task<CatalogueItem> GetSolution(string solutionId);
 
         Task<List<CatalogueItem>> GetDFOCVCSolutions();

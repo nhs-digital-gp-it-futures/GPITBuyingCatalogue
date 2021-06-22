@@ -1,7 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
 @{
     Layout = "_Layout";
-    ViewData["Title"] = $"Solution {Model.Section}";
 }
 
 <div class="nhsuk-width-container ">
@@ -14,7 +13,7 @@
 
                     @if (Model.FlatListPrices.Count() > 0)
                     {
-                        <table>
+                        <table data-test-id="flat-list-price-table">
                             <caption>Flat list price</caption>
                             <thead role="rowgroup">
                                 <tr role="row">
@@ -26,8 +25,8 @@
                                 @foreach (var item in Model.FlatListPrices)
                                 {
                                     <tr role="row">
-                                        <td>@item.CurrencyCode@item.Price</td>
-                                        <td>@item.Unit</td>
+                                        <td data-test-id="price">@item.CurrencyCode@item.Price</td>
+                                        <td data-test-id="pricing-unit">@item.Unit</td>
                                     </tr>
                                 }
                             </tbody>
@@ -36,7 +35,7 @@
 
                     @if (Model.TierListPrices.Count() > 0)
                     {
-                        <table>
+                        <table data-test-id="tiered-list-price-table">
                             <caption>Tiered list price</caption>
                             <thead role="rowgroup">
                                 <tr role="row">
@@ -49,8 +48,8 @@
                                 @foreach (var item in Model.TierListPrices)
                                 {
                                     <tr role="row">
-                                        <td>@item.CurrencyCode@item.Price</td>
-                                        <td>@item.Unit</td>
+                                        <td data-test-id="price">@item.CurrencyCode@item.Price</td>
+                                        <td data-test-id="pricing-unit">@item.Unit</td>
                                         <td>Volume</td>
                                     </tr>
                                 }

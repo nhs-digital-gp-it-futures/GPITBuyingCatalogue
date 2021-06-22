@@ -36,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.AddControllersWithViews(options =>
             {
+                options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
             });
 
@@ -57,8 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureConsentCookieSettings(Configuration);
 
             services.ConfigureCookies(Configuration);
-
-            services.ConfigureIssuer(Configuration);
 
             services.ConfigurePasswordReset(Configuration);
 
@@ -104,10 +103,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                             if (error != null)
                             {
                                 var errorMessage = error.Error.FullErrorMessage();
-                                logger.LogError(error.Error, errorMessage);
+
+                                // TODO - AppInsights isn't picking up LogError for some reason
+                                logger.LogInformation(error.Error, errorMessage);
                             }
 
-                            context.Response.Redirect("Home/Error");
+                            context.Response.Redirect("/Home/Error");
                             return Task.CompletedTask;
                         });
                 });

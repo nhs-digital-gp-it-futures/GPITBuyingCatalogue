@@ -1,4 +1,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
+@{
+    ViewBag.Title = $"Solution {Model.Section}";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,6 +62,11 @@
             </li>
             <li class="nhsuk-breadcrumb__item">
                 <a class="nhsuk-breadcrumb__link" href="#">Catalogue Solutions</a>
+            </li>
+            <li class="nhsuk-breadcrumb__item">
+                <a asp-action="Description" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" class="nhsuk-breadcrumb__link">
+                    @Model.SolutionName
+                </a>
             </li>
         </ol>
     </div>

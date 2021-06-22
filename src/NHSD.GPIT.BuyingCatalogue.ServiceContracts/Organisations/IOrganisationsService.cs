@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 {
     public interface IOrganisationsService
     {
-        Task<List<Organisation>> GetAllOrganisations();
+        Task<IList<Organisation>> GetAllOrganisations();
 
         Task<Organisation> GetOrganisation(Guid id);
 

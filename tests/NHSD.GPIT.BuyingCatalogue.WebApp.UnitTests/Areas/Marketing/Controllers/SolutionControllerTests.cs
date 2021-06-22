@@ -19,9 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionControllerTests
-    {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
+    {        
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -51,16 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(), null))
                 .ParamName.Should().Be("solutionsService");
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_Index_InvalidId_ThrowsException(string id)
-        {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.Index(id));
         }
 
         [Test, AutoData]
@@ -126,16 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockSolutionStatusModel);
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_Preview_InvalidId_ThrowsException(string id)
-        {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.Throws<ArgumentException>(() => controller.Preview(id));
         }
 
         [Test]
