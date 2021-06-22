@@ -92,12 +92,16 @@
     <vc:nhs-action-link url="fieldsets" text="Click Here to Read About FieldSets" />
 
     <nhs-table label-text="Attributes For Checkbox From Property">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>asp-for</nhs-table-cell>
+            <nhs-table-cell>
                 <p>This is a reference to the property on the model which will store if this box has been checked or not.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -106,7 +110,7 @@
             <nhs-table-cell>
                 <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -116,7 +120,7 @@
                 <p>Do not use this for Properties From a Model. Is only Required for when you're using values from a list of objects.</p>
                 <p>Setting this property however shouldn't cause any errors.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Avoid" colour="Grey" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -203,12 +207,16 @@
     <vc:nhs-action-link url="fieldsets" text="Click Here to Read About FieldSets" />
 
     <nhs-table label-text="Attributes For Checkbox From List of Objects">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>asp-for</nhs-table-cell>
+            <nhs-table-cell>
                 <p>This is a reference to the property on the model which will store if this box has been checked or not.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -217,7 +225,7 @@
             <nhs-table-cell>
                 <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -227,7 +235,7 @@
                 <p>Setting this Property will allow the postback to Correctly tie this field to the correct object in the list.</p>
                 <p>This value should be unique to the object in the list, so a Name or an Id is advisable.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>

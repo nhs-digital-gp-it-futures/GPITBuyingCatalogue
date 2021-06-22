@@ -61,12 +61,16 @@
 <vc:nhs-action-link url="fieldsets" text="Read more about Fieldsets"/>
 
 <nhs-table label-text="Attributes">
+    <nhs-table-column>Attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+
     <nhs-table-row-container>
-        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
-        <nhs-table-cell column-name="Functionality">
+        <nhs-table-cell>asp-for</nhs-table-cell>
+        <nhs-table-cell>
             <p>This needs to be set a full reference to the model. so should always be @@Model.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -76,7 +80,7 @@
             <p>A Reference to a string property that will store the day value</p>
             <p>Applying the error state to this property will apply the error correct to all the other propertys that make up a date</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -86,7 +90,7 @@
             <p>A Reference to a string property that will store the Month value</p>
             <p>Setting an error on this property will NOT propogate the error correctly to the rest of the input</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -96,7 +100,7 @@
             <p>A Reference to a string property that will store the Year value</p>
             <p>Setting an error on this property will NOT propogate the error correctly to the rest of the input</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>

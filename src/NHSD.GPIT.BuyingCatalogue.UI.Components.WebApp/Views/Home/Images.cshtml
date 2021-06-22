@@ -26,14 +26,18 @@
 </nhs-fieldset-form-container>
 
 <nhs-table label-text="Attributes">
+    <nhs-table-column>Attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+
     <nhs-table-row-container>
-        <nhs-table-cell column-name="Attribute">
+        <nhs-table-cell>
             url
         </nhs-table-cell>
-        <nhs-table-cell column-name="Functionality">
+        <nhs-table-cell>
             <p>Setting this attribute will set the src of the image</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -42,7 +46,7 @@
         <nhs-table-cell>
             <p>Setting this attribute will give fallback text that is displayed incase the image referenced in the URL fails to load</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -52,7 +56,7 @@
             <p>Setting this attribute will show text at the bottom of the Image.</p>
             <p>If you wish to have no text below the image, you may set this to a blank string.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>

@@ -78,12 +78,16 @@
 </nhs-fieldset-form-container>
 
 <nhs-table label-text="Attributes">
+    <nhs-table-column>Attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+
     <nhs-table-row-container>
-        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
-        <nhs-table-cell column-name="Functionality">
+        <nhs-table-cell>asp-for</nhs-table-cell>
+        <nhs-table-cell>
             <p>This is a reference to the field that the input will load and save the selected value for this list too/from.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -92,7 +96,7 @@
         <nhs-table-cell>
             <p>This is the field that contains the list of values. It must be a List&lt;object&gt;, where the object contains a value and name property.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -101,7 +105,7 @@
         <nhs-table-cell>
             <p>This is the name of the property field from the list of values that contains a unique Id, which will be saved when selecting the options</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -110,7 +114,7 @@
         <nhs-table-cell>
             <p>This is the name of the property field from the list of values that contains the display value for each of the radio selection options.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
