@@ -69,16 +69,22 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return string.Join("-", pattern.Matches(name)).ToLower();
         }
 
-        public static void TellParentTagIfThisTagIsInError(ViewContext viewContext, TagHelperContext context, ModelExpression model)
+        public static void TellParentTagIfThisTagIsInError(ViewContext viewContext, TagHelperContext context, ModelExpression model, string validationName = null)
         {
-            if (CheckIfModelStateHasErrors(viewContext, model))
+            if (CheckIfModelStateHasErrors(viewContext, model, validationName))
             {
-                var parentChildContext = context.Items[typeof(ParentChildContext)] as ParentChildContext;
+                if (!context.Items.TryGetValue(typeof(ParentChildContext), out object pChildContext))
+                    return;
+
+                ParentChildContext parentChildContext = (ParentChildContext)pChildContext;
 
                 if (parentChildContext is not null)
                 {
-                    parentChildContext.ChildInError = true;
-                    parentChildContext.ErrorMessage = GetErrorMessageFromModelState(viewContext, model);
+                    if (!parentChildContext.ChildInError)
+                    {
+                        parentChildContext.ChildInError = true;
+                        parentChildContext.ErrorMessage = GetErrorMessageFromModelState(viewContext, model);
+                    }
                 }
             }
         }

@@ -20,12 +20,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
+        [Route("solutions/futures/{id}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException($"{nameof(AssociatedServices)}-{nameof(id)}");
+
+            var solution = await solutionsService.GetSolution(id);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, AssociatedServicesModel>(solution));
+        }
+
         [Route("solutions/futures/{id}/capabilities")]
         public async Task<IActionResult> Capabilities(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(Capabilities)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -36,9 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(ClientApplicationTypes)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -52,9 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}")]
         public async Task<IActionResult> Description(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(Description)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -67,9 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}/features")]
         public async Task<IActionResult> Features(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(Features)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -80,9 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}/hosting-type")]
         public async Task<IActionResult> HostingType(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(HostingType)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -93,9 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}/implementation")]
         public async Task<IActionResult> Implementation(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(Implementation)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -106,9 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}/interoperability")]
         public async Task<IActionResult> Interoperability(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(Interoperability)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -120,9 +112,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}/list-price")]
         public async Task<IActionResult> ListPrice(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(ListPrice)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");

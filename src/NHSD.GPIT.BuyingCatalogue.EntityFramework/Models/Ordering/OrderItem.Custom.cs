@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
         {
             return OrderItemRecipients.Sum(r => r.CalculateTotalCostPerYear(
                 Price.GetValueOrDefault(),
-                TimeUnit ?? EstimationPeriod));
+                PriceTimeUnit ?? EstimationPeriod));
         }
 
         public bool Equals(OrderItem other)

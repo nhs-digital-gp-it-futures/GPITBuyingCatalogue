@@ -49,9 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Order(string odsCode, string callOffId)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(Order)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -62,9 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("summary")]
         public async Task<IActionResult> Summary(string odsCode, string callOffId, string print = "false")
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(Summary)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(print)} {print}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -82,9 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("delete-order")]
         public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(DeleteOrder)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -95,10 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("delete-order")]
         public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId, DeleteOrderModel model)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(DeleteOrder)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             await orderService.DeleteOrder(callOffId);
@@ -112,9 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("delete-order/confirmation")]
         public async Task<IActionResult> DeleteOrderConfirmation(string odsCode, string callOffId)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(DeleteOrderConfirmation)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -125,9 +109,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("description")]
         public async Task<IActionResult> OrderDescription(string odsCode, string callOffId)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(OrderDescription)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -138,10 +119,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("description")]
         public async Task<IActionResult> OrderDescription(string odsCode, string callOffId, OrderDescriptionModel model)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(OrderDescription)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
@@ -158,9 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("ordering-party")]
         public async Task<IActionResult> OrderingParty(string odsCode, string callOffId)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(OrderingParty)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -172,10 +146,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("ordering-party")]
         public async Task<IActionResult> OrderingParty(string odsCode, string callOffId, OrderingPartyModel model)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(OrderingParty)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
@@ -205,9 +175,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("commencement-date")]
         public async Task<IActionResult> CommencementDate(string odsCode, string callOffId)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(CommencementDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -218,10 +185,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("commencement-date")]
         public async Task<IActionResult> CommencementDate(string odsCode, string callOffId, CommencementDateModel model)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(CommencementDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             (var date, var error) = model.ToDateTime();
@@ -243,9 +206,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("funding-source")]
         public async Task<IActionResult> FundingSource(string odsCode, string callOffId)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(FundingSource)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -256,10 +216,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("funding-source")]
         public async Task<IActionResult> FundingSource(string odsCode, string callOffId, FundingSourceModel model)
         {
-            odsCode.ValidateNotNullOrWhiteSpace(nameof(odsCode));
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(FundingSource)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)

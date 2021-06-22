@@ -31,9 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("supported-browsers")]
         public async Task<IActionResult> SupportedBrowsers(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"supported-browsers-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -44,9 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("supported-browsers")]
         public async Task<IActionResult> SupportedBrowsers(SupportedBrowsersModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -64,9 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"mobile-first-approach-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -77,9 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("mobile-first-approach")]
         public async Task<IActionResult> MobileFirstApproach(MobileFirstApproachModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -97,9 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"plug-ins-or-extensions-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -110,9 +95,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("plug-ins-or-extensions")]
         public async Task<IActionResult> PlugInsOrExtensions(PlugInsOrExtensionsModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -130,9 +112,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"connectivity-and-resolution-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -143,9 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("connectivity-and-resolution")]
         public async Task<IActionResult> ConnectivityAndResolution(ConnectivityAndResolutionModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -163,9 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"hardware-requirements-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -176,9 +149,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -196,9 +166,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("additional-information")]
         public async Task<IActionResult> AdditionalInformation(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"additional-information-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -209,9 +176,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 

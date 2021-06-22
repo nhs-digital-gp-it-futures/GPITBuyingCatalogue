@@ -31,9 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("hosting-type-public-cloud")]
         public async Task<IActionResult> PublicCloud(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"hosting-type-public-cloud-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -44,9 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("hosting-type-public-cloud")]
         public async Task<IActionResult> PublicCloud(PublicCloudModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -67,9 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("hosting-type-private-cloud")]
         public async Task<IActionResult> PrivateCloud(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"hosting-type-private-cloud-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -80,9 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("hosting-type-private-cloud")]
         public async Task<IActionResult> PrivateCloud(PrivateCloudModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -103,9 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("hosting-type-hybrid")]
         public async Task<IActionResult> Hybrid(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"hosting-type-hybrid-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -116,9 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("hosting-type-hybrid")]
         public async Task<IActionResult> Hybrid(HybridModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -139,9 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("hosting-type-on-premise")]
         public async Task<IActionResult> OnPremise(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"hosting-type-onpremise-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -152,9 +131,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("hosting-type-on-premise")]
         public async Task<IActionResult> OnPremise(OnPremiseModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 

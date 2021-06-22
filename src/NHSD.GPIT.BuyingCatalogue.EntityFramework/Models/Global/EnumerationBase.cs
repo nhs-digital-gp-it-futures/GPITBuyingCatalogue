@@ -13,6 +13,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models
 
         public int Id { get; private set; }
 
+        public static bool operator ==(EnumerationBase o1, EnumerationBase o2)
+        {
+            if (o1 is null)
+                return o2 is null;
+
+            return o1.Equals(o2);
+        }
+
+        public static bool operator !=(EnumerationBase b1, EnumerationBase b2)
+        {
+            return !(b1 == b2);
+        }
+
         public static IEnumerable<T> GetAll<T>()
              where T : EnumerationBase
         {

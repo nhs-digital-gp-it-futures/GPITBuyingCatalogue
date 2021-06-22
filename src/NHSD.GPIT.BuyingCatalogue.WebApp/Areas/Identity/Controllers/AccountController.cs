@@ -49,8 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            viewModel.ValidateNotNull(nameof(viewModel));
-
             logger.LogInformation($"Handling post for {nameof(AccountController)}.{nameof(Login)}");
 
             if (!ModelState.IsValid)
@@ -116,8 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel viewModel)
         {
-            viewModel.ValidateNotNull(nameof(viewModel));
-
             logger.LogInformation($"Handling post for {nameof(AccountController)}.{nameof(ForgotPassword)}");
 
             if (!ModelState.IsValid)
@@ -145,9 +141,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpGet("ResetPassword")]
         public async Task<IActionResult> ResetPassword(string email, string token)
         {
-            email.ValidateNotNullOrWhiteSpace(nameof(email));
-            token.ValidateNotNullOrWhiteSpace(nameof(token));
-
             logger.LogInformation($"Taking user to {nameof(AccountController)}.{nameof(ResetPassword)}");
 
             var isValid = await passwordService.IsValidPasswordResetTokenAsync(email, token);
@@ -161,8 +154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
         {
-            viewModel.ValidateNotNull(nameof(viewModel));
-
             logger.LogInformation($"Handling post for {nameof(AccountController)}.{nameof(ResetPassword)}");
 
             if (!ModelState.IsValid)

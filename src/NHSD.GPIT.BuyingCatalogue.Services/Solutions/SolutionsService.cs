@@ -30,7 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
+            this.marketingContactRepository = marketingContactRepository
+                ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
@@ -42,10 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType.Name == "Solution"
-                            && x.PublishedStatus.Name == "Published"
-                            && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                            && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+                .Where(
+                    x => x.CatalogueItemType.Name == "Solution"
+                        && x.PublishedStatus.Name == "Published"
+                        && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
+                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
         }
 
@@ -56,20 +58,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType.Name == "Solution"
-                            && x.PublishedStatus.Name == "Published"
-                            && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+                .Where(
+                    x => x.CatalogueItemType.Name == "Solution"
+                        && x.PublishedStatus.Name == "Published"
+                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
                 .ToListAsync();
 
             // TODO - Refactor this. Should be possible to include in the above expression
             if (capabilities?.Length > 0)
             {
-                solutions = solutions.Where(solution => capabilities.All(capability =>
-                        solution.Solution.SolutionCapabilities.Any(x => x.Capability.CapabilityRef == capability)))
+                solutions = solutions.Where(
+                        solution => capabilities.All(
+                            capability =>
+                                solution.Solution.SolutionCapabilities.Any(
+                                    x => x.Capability.CapabilityRef == capability)))
                     .ToList();
             }
 
             return solutions;
+        }
+
+        public async Task<CatalogueItem> GetSolutionListPrices(string solutionId)
+        {
+            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
+
+            return await dbContext.CatalogueItems
+                .Include(x => x.CataloguePrices)
+                .ThenInclude(x => x.ProvisioningType)
+                .Include(x => x.CataloguePrices)
+                .ThenInclude(x => x.CataloguePriceType)
+                .Include(x => x.CataloguePrices)
+                .ThenInclude(x => x.TimeUnit)
+                .Where(x => x.CatalogueItemId == solutionId)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<CatalogueItem> GetSolution(string solutionId)
@@ -102,6 +123,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.TimeUnit)
                 .Include(x => x.CataloguePrices)
                 .ThenInclude(x => x.PricingUnit)
+
+                .Include(x => x.Supplier)
+                .ThenInclude(s => s.CatalogueItems)
+                .ThenInclude(c => c.AssociatedService)
+                .Include(x => x.Supplier)
+                .ThenInclude(s => s.CatalogueItems)
+                .ThenInclude(c => c.CataloguePrices)
+                .ThenInclude(cp => cp.PricingUnit)
+
                 .Where(x => x.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
@@ -113,16 +143,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.CatalogueItemType.Name == "Solution"
-                            && x.PublishedStatus.Name == "Published"
-                            && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "DFOCVC001"))
+                .Where(
+                    x => x.CatalogueItemType.Name == "Solution"
+                        && x.PublishedStatus.Name == "Published"
+                        && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == "DFOCVC001"))
                 .ToListAsync();
         }
 
         public async Task<List<Capability>> GetFuturesCapabilities()
         {
             return await dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
-                .OrderBy(x => x.Name).ToListAsync();
+                .OrderBy(x => x.Name)
+                .ToListAsync();
         }
 
         public async Task SaveSolutionDescription(string solutionId, string summary, string description, string link)
@@ -264,9 +296,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(x => x.SolutionCapabilities)
                 .ThenInclude(x => x.Capability)
                 .Include(x => x.Supplier)
-                .Where(x => x.SupplierId == supplierId
-                            && x.CatalogueItemType.Name == "Solution"
-                            && x.PublishedStatus.Name == "Published")
+                .Where(
+                    x => x.SupplierId == supplierId
+                        && x.CatalogueItemType.Name == "Solution"
+                        && x.PublishedStatus.Name == "Published")
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }
