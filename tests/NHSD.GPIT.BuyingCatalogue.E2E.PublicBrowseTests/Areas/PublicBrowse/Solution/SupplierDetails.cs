@@ -33,7 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             var supplierInfo = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 
             supplierInfo.Should().Contain(info);
-            
         }
     }
 }
