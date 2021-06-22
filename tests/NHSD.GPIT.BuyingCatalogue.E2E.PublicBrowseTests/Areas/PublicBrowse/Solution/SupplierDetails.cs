@@ -20,13 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [InlineData("Contact name")]
         [InlineData("Contact details")]
 
-        public void SupplierDetails_AdminHeaderDisplayed(string rowHeader)
+        public void SupplierDetails_ContactDetailsDisplayed(string rowHeader)
         {
             PublicBrowsePages.SolutionAction.GetTableRowContent(rowHeader).Should().NotBeNullOrEmpty();
         }
         
         [Fact]
-        public async Task SupplierDetails_VerifyInformation()
+        public async Task SupplierDetails_VerifySupplierSummary()
         {
             using var context = GetBCContext();
             var info = (await context.Suppliers.SingleAsync(s => s.Id == "99999")).Summary;
