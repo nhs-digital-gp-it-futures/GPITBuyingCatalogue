@@ -18,28 +18,36 @@
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Looping Table">
     <nhs-table>
+        <nhs-table-column>First Column</nhs-table-column>
+        <nhs-table-column>Second Column</nhs-table-column>
+        <nhs-table-column>Third Column</nhs-table-column>
+        <nhs-table-column>Fourth Column</nhs-table-column>
+        <nhs-table-column>Fifth Column</nhs-table-column>
+        <nhs-table-column>Sixth Column</nhs-table-column>
+        <nhs-table-column>Seventh Column</nhs-table-column>
+
         @foreach (var item in Model.Rows)
         {
             <nhs-table-row-container>
-                <nhs-table-cell column-name="First Column">
+                <nhs-table-cell>
                     @item.FirstColumn
                 </nhs-table-cell>
-                <nhs-table-cell column-name="Second Column">
+                <nhs-table-cell>
                     @item.SecondColumn
                 </nhs-table-cell>
-                <nhs-table-cell column-name="Third Column">
+                <nhs-table-cell>
                     @item.ThirdColumn
                 </nhs-table-cell>
-                <nhs-table-cell column-name="Fourth Column">
+                <nhs-table-cell>
                     @item.FourthColumn
                 </nhs-table-cell>
-                <nhs-table-cell column-name="Fifth Column">
+                <nhs-table-cell>
                     @item.FifthColumn
                 </nhs-table-cell>
-                <nhs-table-cell column-name="Sixth Column">
+                <nhs-table-cell>
                     @item.SixthColumn
                 </nhs-table-cell>
-                <nhs-table-cell column-name="Seventh Column">
+                <nhs-table-cell>
                     @item.SeventhColumn
                 </nhs-table-cell>
             </nhs-table-row-container>
@@ -182,13 +190,17 @@
     <p>This order is enforced by razor, and will throw a compiler error if you try to use it in a different way.</p>
 
     <nhs-table label-text="Attributes For Table Cell">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">column-name</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>column-name</nhs-table-cell>
+            <nhs-table-cell>
                 <p>This Attribute defines the Column name the cell is a part of.</p>
                 <p>If you do not supply this value, the column will still be created, but will have a blank title.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -200,16 +212,20 @@
                              label-text="Table From Manual Rows">
 
     <nhs-table>
+        <nhs-table-column>Contains some Text</nhs-table-column>
+        <nhs-table-column>Contains another Component</nhs-table-column>
+        <nhs-table-column>Contains a Random Tag</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Contains some Text">
+            <nhs-table-cell>
                 This Column Contains Some Text
             </nhs-table-cell>
-            <nhs-table-cell column-name="Contains another Component">
+            <nhs-table-cell>
                 <nhs-inset-text>
                     Here is some text inside an inset
                 </nhs-inset-text>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Contains a Random Tag">
+            <nhs-table-cell>
                 <nhs-tag text="This is a Nice Purple Tag" colour="Purple" />
             </nhs-table-cell>
         </nhs-table-row-container>
