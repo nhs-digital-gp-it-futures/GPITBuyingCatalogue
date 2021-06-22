@@ -17,9 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         }
 
         [Fact]
-        public void ImplementationDetails_ImplementationNameDisplayed()
+        public async Task ImplementationDetails_ImplementationNameDisplayedAsync()
         {
-            PublicBrowsePages.SolutionAction.ImplementationNameDisplayed().Should().NotBeNullOrEmpty();
+            using var context = GetBCContext();
+            var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == "99999-001")).Name;
+            PublicBrowsePages.SolutionAction.ImplementationNameDisplayed().Should().BeEquivalentTo($"implementation - {pageTitle}");
         }
 
         [Fact]
