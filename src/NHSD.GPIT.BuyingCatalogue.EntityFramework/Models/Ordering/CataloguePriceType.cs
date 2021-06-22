@@ -14,15 +14,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering
             : base(id, name)
         {
         }
-
-        public static CataloguePriceType Parse(string name)
-        {
-            if (name.Equals(nameof(Flat), System.StringComparison.InvariantCultureIgnoreCase))
-                return Flat;
-            else if (name.Equals(nameof(Tiered), System.StringComparison.InvariantCultureIgnoreCase))
-                return Tiered;
-
-            throw new ArgumentException("Invalid CataloguePriceType", nameof(name));
-        }
     }
 }

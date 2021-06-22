@@ -20,9 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class BrowserBasedControllerTests
-    {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
+    {        
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -66,16 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be("additional-information");
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_AdditionalInformation_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id));
         }
 
         [Test, AutoData]
@@ -152,18 +140,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be("additional-information");
-        }
-
-        [Test]
-        public static void Post_AdditionalInformation_NullModel_ThrowsException()
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.AdditionalInformation(default(AdditionalInformationModel)));
-
-            actual.ParamName.Should().Be("model");
         }
 
         [Test]
@@ -273,16 +249,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("connectivity-and-resolution");
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_ConnectivityAndResolution_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.ConnectivityAndResolution(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_ConnectivityAndResolution_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -357,18 +323,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be("connectivity-and-resolution");
-        }
-
-        [Test]
-        public static void Post_ConnectivityAndResolution_NullModel_ThrowsException()
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.ConnectivityAndResolution(default(ConnectivityAndResolutionModel)));
-
-            actual.ParamName.Should().Be("model");
         }
 
         [Test]
@@ -479,16 +433,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("hardware-requirements");
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_HardwareRequirements_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_HardwareRequirements_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -563,18 +507,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be("hardware-requirements");
-        }
-
-        [Test]
-        public static void Post_HardwareRequirements_NullModel_ThrowsException()
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.HardwareRequirements(default(HardwareRequirementsModel)));
-
-            actual.ParamName.Should().Be("model");
         }
 
         [Test]
@@ -684,16 +616,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("supported-browsers");
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_SupportedBrowsers_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.SupportedBrowsers(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_SupportedBrowsers_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -768,18 +690,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be("supported-browsers");
-        }
-
-        [Test]
-        public static void Post_SupportedBrowsers_NullModel_ThrowsException()
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.SupportedBrowsers(default(SupportedBrowsersModel)));
-
-            actual.ParamName.Should().Be("model");
         }
 
         [Test]
@@ -890,16 +800,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("mobile-first-approach");
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_BrowserBasedMobileFirstApproach_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.MobileFirstApproach(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_MobileFirstApproach_ValidId_GetsSolutionFromService(string id)
         {
@@ -975,18 +875,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be("mobile-first-approach");
-        }
-
-        [Test]
-        public static void Post_MobileFirstApproach_NullModel_ThrowsException()
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.MobileFirstApproach(default(MobileFirstApproachModel)));
-
-            actual.ParamName.Should().Be("model");
         }
 
         [Test]
@@ -1166,16 +1054,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_PlugInsOrExtensions_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.PlugInsOrExtensions(id));
-        }
-
-        [Test]
         public static void Post_PlugInsOrExtensions_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(BrowserBasedController)
@@ -1185,18 +1063,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be("plug-ins-or-extensions");
-        }
-
-        [Test]
-        public static void Post_PlugInsOrExtensions_NullModel_ThrowsException()
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.PlugInsOrExtensions(default(PlugInsOrExtensionsModel)));
-
-            actual.ParamName.Should().Be("model");
         }
 
         [Test]
@@ -1297,36 +1163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
             actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
             actual.RouteValues["id"].Should().Be(model.SolutionId);
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_BrowserBasedConnectivityAndResolution_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.ConnectivityAndResolution(id));
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_BrowserBasedHardwareRequirements_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.HardwareRequirements(id));
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_BrowserBasedAdditionalInformation_InvalidId_ThrowsException(string id)
-        {
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalInformation(id));
-        }
+        }       
     }
 }

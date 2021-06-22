@@ -50,6 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             if (HiddenFor != null)
                 output.Content.AppendHtml(GetHiddenInputBuilder());
+
+            TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
         }
 
         private TagBuilder GetCheckboxInputBuilder()
