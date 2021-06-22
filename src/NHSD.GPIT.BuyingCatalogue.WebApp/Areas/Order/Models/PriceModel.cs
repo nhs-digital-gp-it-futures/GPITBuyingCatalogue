@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models
 {
     public class PriceModel
     {

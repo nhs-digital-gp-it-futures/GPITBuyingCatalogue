@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Route("order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions")]
     public class CatalogueSolutionsController : Controller
     {
-        private readonly ILogWrapper<OrderController> logger;
+        private readonly ILogWrapper<CatalogueSolutionsController> logger;
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
         private readonly ISessionService sessionService;
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IOrderSessionService orderSessionService;
 
         public CatalogueSolutionsController(
-            ILogWrapper<OrderController> logger,
+            ILogWrapper<CatalogueSolutionsController> logger,
             IOrderService orderService,
             ISolutionsService solutionsService,
             ISessionService sessionService,
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.defaultDeliveryDateService = defaultDeliveryDateService ?? throw new ArgumentNullException(nameof(defaultDeliveryDateService));
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var solutions = await solutionsService.GetSupplierSolutions(state.SupplierId);
 
-            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueSolutionId));
+            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId));
         }
 
         [HttpPost("select/solution")]
@@ -107,8 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     routeValues: new { odsCode, callOffId, id = existingOrder.CatalogueItemId });
             }
 
-            state.CatalogueSolutionId = model.SelectedSolutionId;
-            var solution = await solutionsService.GetSolution(state.CatalogueSolutionId);
+            state.CatalogueItemId = model.SelectedSolutionId;
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
             state.CatalogueItemName = solution.Name;
             orderSessionService.SetOrderStateToSession(state);
 
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var solution = await solutionsService.GetSolution(state.CatalogueSolutionId);
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
 
             var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
 
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var solution = await solutionsService.GetSolution(state.CatalogueSolutionId);
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
 
             if (!ModelState.IsValid)
             {
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 orderSessionService.SetOrderStateToSession(state);
             }
 
-            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode, state.IsNewOrder, state.CatalogueSolutionId));
+            return View(new SelectSolutionServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode, state.IsNewOrder, state.CatalogueItemId));
         }
 
         [HttpPost("select/solution/price/recipients")]
@@ -204,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return RedirectToAction(
                     actionName: nameof(EditSolution),
                     controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                    routeValues: new { odsCode, callOffId, id = state.CatalogueSolutionId });
+                    routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
             }
 
             return RedirectToAction(
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueSolutionId);
+            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId);
 
             return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate, defaultDeliveryDate));
         }
@@ -248,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return true;
             });
 
-            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueSolutionId, date.Value);
+            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId, date.Value);
 
             orderSessionService.SetOrderStateToSession(state);
 
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(EditSolution),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueSolutionId });
+                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
         }
 
         [HttpGet("select/solution/price/flat/declarative")]
@@ -311,7 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(EditSolution),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueSolutionId });
+                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
         }
 
         [HttpGet("select/solution/price/flat/ondemand")]
@@ -356,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(EditSolution),
                 controllerName: typeof(CatalogueSolutionsController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueSolutionId });
+                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
         }
 
         [HttpGet("{id}")]
@@ -392,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");
             }
 
-            var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueSolutionId);
+            var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueItemId);
 
             var solutionPrice = solutionListPrices.CataloguePrices.Where(cp =>
                 cp.ProvisioningType.ProvisioningTypeId == state.ProvisioningType.Id
@@ -452,7 +452,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("delete/{id}/confirmation/{solutionName}/continue")]
         public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string solutionName)
         {
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
+            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(DeleteContinue)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(solutionName)} {solutionName}");
 
             return View(new DeleteContinueModel(odsCode, callOffId, solutionName));
         }
