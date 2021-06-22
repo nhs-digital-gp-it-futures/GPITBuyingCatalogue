@@ -43,9 +43,15 @@
 </nhs-fieldset-form-container>
 
 <nhs-table label-text="Attributes">
+    <nhs-table-column>Attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+
+
+
     <nhs-table-row-container>
-        <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
-        <nhs-table-cell column-name="Functionality">
+        <nhs-table-cell>asp-for</nhs-table-cell>
+        <nhs-table-cell>
             <p>This is a reference to the field that the input will load and save its value too/from.</p>
             <p>This Property on the model can also store other validation attributes.</p>
             <ul>
@@ -56,7 +62,7 @@
             </ul>
             <p>While there are other data attributes, These 4 will be the most used with a text input.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -66,7 +72,7 @@
             <p>Setting this attribute will set the title of the input.</p>
             <p>If not set, no label will be displayed.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="No" colour="Green" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -76,7 +82,7 @@
             <p>Setting this attribute will add a hint under the title on the input.</p>
             <p>If not set, no hint will be displayed.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="No" colour="Green" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -86,7 +92,7 @@
             <p>Setting this to true will display the Character Count Under the Input.</p>
             <p>Defaults to False</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="No" colour="Green" />
         </nhs-table-cell>
     </nhs-table-row-container>
