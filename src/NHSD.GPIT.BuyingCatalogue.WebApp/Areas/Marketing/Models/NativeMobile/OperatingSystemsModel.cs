@@ -22,8 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
 
-            OperatingSystems = new List<SupportedOperatingSystemModel>(ProfileDefaults.SupportedOperatingSystems)
-                .ToArray();
+            OperatingSystems = new SupportedOperatingSystemModel[] {
+                new() { OperatingSystemName = "Apple IOS" },
+                new() { OperatingSystemName = "Android" },
+                new() { OperatingSystemName = "Other" },
+            };
 
             CheckOperatingSystems();
 

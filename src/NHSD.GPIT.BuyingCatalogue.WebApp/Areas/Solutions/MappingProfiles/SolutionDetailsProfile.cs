@@ -261,16 +261,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         src =>
                             $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
 
-            CreateMap<CataloguePrice, PriceViewModel>()
-                .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode == null ? null : CurrencyCodeSigns.Code[src.CurrencyCode]))
-                .ForMember(dest => dest.Price, opt =>
-                {
-                    opt.PreCondition(src => src.Price != null);
-                    opt.MapFrom(src => Math.Round(src.Price.Value, 2));
-                })
-                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src =>
-                $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
-
             CreateMap<CataloguePrice, string>()
                 .ConstructUsing(
                     src => src.Price == null
