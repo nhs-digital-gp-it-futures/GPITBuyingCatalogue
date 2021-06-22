@@ -294,9 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(x => x.Supplier)
                 .Where(
                     x => x.SupplierId == supplierId
-                        // TODO - Use an enum value
                         && x.CatalogueItemType.Name == "Solution"
-                        // TODO - Use an enum value
                         && x.PublishedStatus.Name == "Published")
                 .OrderBy(x => x.Name)
                 .ToListAsync();

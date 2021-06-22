@@ -29,9 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .Include(x => x.AdditionalService)
                 .Where(
                     x => solutionIds.Contains(x.AdditionalService.SolutionId)
-                    // TODO - use an enum
                         && x.CatalogueItemType.Name == "Additional Service"
-                        // TODO - use an enum
                         && x.PublishedStatus.Name == "Published")
                 .OrderBy(x => x.Name)
                 .ToListAsync();

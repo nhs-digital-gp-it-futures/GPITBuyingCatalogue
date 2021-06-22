@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 DeliveryDate = r.DeliveryDate,
                 Quantity = r.Quantity.GetValueOrDefault(),
-                OdsCodeNavigation = serviceRecipients[r.OdsCode],
+                Recipient = serviceRecipients[r.OdsCode],
             }));
 
             if (defaultDeliveryDate is not null)
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return await dbContext.Orders
                 .Where(o => o.Id == callOffIdStruct.Id)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
+                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.PricingUnit)
                 .SelectMany(orderItems)
                 .AsNoTracking()
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return await dbContext.Orders
                 .Where(o => o.Id == callOffIdStruct.Id)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
-                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.OdsCodeNavigation)
+                .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.PricingUnit)
                 .SelectMany(orderItems)
                 .SingleOrDefaultAsync();

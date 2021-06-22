@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
+    [ExcludeFromCodeCoverage]
     public sealed class CreateOrderItemModel
     {
         public DateTime? CommencementDate { get; set; }
