@@ -20,9 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class HostingTypeControllerTests
-    {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
+    {        
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -67,17 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(
                     $"{nameof(HostingTypeController).ToControllerName()}{nameof(HostingTypeController.PublicCloud)}"
                         .ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_PublicCloud_InvalidId_ThrowsException(string id)
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.PublicCloud(id))
-                .Message.Should().Be($"hosting-type-public-cloud-{nameof(id)}");
         }
 
         [Test, AutoData]
@@ -156,17 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(
                     $"{nameof(HostingTypeController).ToControllerName()}{nameof(HostingTypeController.PublicCloud)}"
                         .ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_PublicCloud_NullModel_ThrowsException()
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.PublicCloud(default(PublicCloudModel)))
-                .ParamName.Should().Be("model");
         }
 
         [Test]
@@ -278,17 +254,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_PrivateCloud_InvalidId_ThrowsException(string id)
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.PrivateCloud(id))
-                .Message.Should().Be($"hosting-type-private-cloud-{nameof(id)}");
-        }
-
         [Test, AutoData]
         public static async Task Get_PrivateCloud_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -365,17 +330,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(
                     $"{nameof(HostingTypeController).ToControllerName()}{nameof(HostingTypeController.PrivateCloud)}"
                         .ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_PrivateCloud_NullModel_ThrowsException()
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.PrivateCloud(default(PrivateCloudModel)))
-                .ParamName.Should().Be("model");
         }
 
         [Test]
@@ -487,17 +441,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_Hybrid_InvalidId_ThrowsException(string id)
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.Hybrid(id))
-                .Message.Should().Be($"hosting-type-hybrid-{nameof(id)}");
-        }
-
         [Test, AutoData]
         public static async Task Get_Hybrid_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -574,17 +517,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(
                     $"{nameof(HostingTypeController).ToControllerName()}{nameof(HostingTypeController.Hybrid)}"
                         .ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_Hybrid_NullModel_ThrowsException()
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.Hybrid(default(HybridModel)))
-                .ParamName.Should().Be("model");
         }
 
         [Test]
@@ -696,17 +628,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_OnPremise_InvalidId_ThrowsException(string id)
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.OnPremise(id))
-                .Message.Should().Be($"hosting-type-onpremise-{nameof(id)}");
-        }
-
         [Test, AutoData]
         public static async Task Get_OnPremise_ValidId_CallsGetSolutionOnService(string id)
         {
@@ -783,17 +704,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(
                     $"{nameof(HostingTypeController).ToControllerName()}{nameof(HostingTypeController.OnPremise)}"
                         .ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_OnPremise_NullModel_ThrowsException()
-        {
-            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.OnPremise(default(OnPremiseModel)))
-                .ParamName.Should().Be("model");
         }
 
         [Test]

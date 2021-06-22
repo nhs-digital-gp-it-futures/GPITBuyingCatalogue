@@ -32,9 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("about-supplier")]
         public async Task<IActionResult> AboutSupplier(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"about-supplier-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -46,9 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("about-supplier")]
         public async Task<IActionResult> AboutSupplier(AboutSupplierModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -63,9 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("contact-details")]
         public async Task<IActionResult> ContactDetails(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"contact-details-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -77,9 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("contact-details")]
         public async Task<IActionResult> ContactDetails(ContactDetailsModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 

@@ -31,9 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("operating-systems")]
         public async Task<IActionResult> OperatingSystems(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"operating-systems-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -44,9 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("operating-systems")]
         public async Task<IActionResult> OperatingSystems(OperatingSystemsModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -65,9 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("connectivity")]
         public async Task<IActionResult> Connectivity(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"connectivity-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -79,9 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("connectivity")]
         public async Task<IActionResult> Connectivity(ConnectivityModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -100,9 +88,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"memory-and-storage-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -114,9 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(MemoryAndStorageModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -136,9 +118,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("third-party")]
         public async Task<IActionResult> ThirdParty(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"third-party-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -150,9 +129,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("third-party")]
         public async Task<IActionResult> ThirdParty(ThirdPartyModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -171,9 +147,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"hardware-requirments-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -185,9 +158,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(HardwareRequirementsModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -206,9 +176,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpGet("additional-information")]
         public async Task<IActionResult> AdditionalInformation(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"additional-information-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
 
             if (solution == null)
@@ -220,9 +187,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         [HttpPost("additional-information")]
         public async Task<IActionResult> AdditionalInformation(AdditionalInformationModel model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
             if (!ModelState.IsValid)
                 return View(model);
 

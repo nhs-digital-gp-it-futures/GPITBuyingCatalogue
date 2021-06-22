@@ -20,9 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class AboutSolutionControllerTests
-    {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
+    {        
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -65,16 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(AboutSolutionController.Features).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_Features_InvalidId_ThrowsException(string id)
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.Features(id));
         }
 
         [Test, AutoData]
@@ -151,15 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be(nameof(AboutSolutionController.Features).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_Features_NullModel_ThrowsException()
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.Features((FeaturesModel)null));
         }
 
         [Test]
@@ -250,16 +229,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(AboutSolutionController.Implementation).ToLowerCaseHyphenated());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_ImplementationTimescales_InvalidId_ThrowsException(string id)
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.Implementation(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(string id)
         {
@@ -338,16 +307,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static void Post_ImplementationTimescales_NullModel_ThrowsException()
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.Implementation((ImplementationTimescalesModel)null));
-        }
-
-        [Test]
         public static async Task Post_ImplementationTimescales_InvalidModel_DoesNotCallService()
         {
             var mockService = new Mock<ISolutionsService>();
@@ -415,16 +374,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(AboutSolutionController.Integrations).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_Integrations_InvalidId_ThrowsException(string id)
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.Integrations(id));
         }
 
         [Test, AutoData]
@@ -505,15 +454,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static void Post_Integrations_NullModel_ThrowsException()
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.Integrations((IntegrationsModel)null));
-        }
-
-        [Test]
         public static async Task Post_Integrations_InvalidModel_DoesNotCallService()
         {
             var mockService = new Mock<ISolutionsService>();
@@ -579,16 +519,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(AboutSolutionController.Roadmap).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_Roadmap_InvalidId_ThrowsException(string id)
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.Roadmap(id));
         }
 
         [Test, AutoData]
@@ -669,15 +599,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static void Post_Roadmap_NullModel_ThrowsException()
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.Roadmap((RoadmapModel)null));
-        }
-
-        [Test]
         public static async Task Post_Roadmap_InvalidModel_DoesNotCallService()
         {
             var mockService = new Mock<ISolutionsService>();
@@ -742,16 +663,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(AboutSolutionController.SolutionDescription).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_SolutionDescription_InvalidId_ThrowsException(string id)
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.SolutionDescription(id));
         }
 
         [Test, AutoData]
@@ -828,16 +739,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be(nameof(AboutSolutionController.SolutionDescription).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_SolutionDescription_NullModel_ThrowsException()
-        {
-            var controller = new AboutSolutionController(Mock.Of<ILogWrapper<AboutSolutionController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() =>
-                controller.SolutionDescription((SolutionDescriptionModel)null));
         }
 
         [Test]

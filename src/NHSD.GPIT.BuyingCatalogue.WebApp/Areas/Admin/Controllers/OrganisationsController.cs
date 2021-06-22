@@ -49,8 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(Guid id)
         {
-            id.ValidateGuid(nameof(id));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Details)} for {nameof(id)} {id}");
 
             var organisation = await organisationsService.GetOrganisation(id);
@@ -63,8 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{id}/edit")]
         public async Task<IActionResult> EditOrganisation(Guid id)
         {
-            id.ValidateGuid(nameof(id));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(EditOrganisation)} for {nameof(id)} {id}");
 
             var organisation = await organisationsService.GetOrganisation(id);
@@ -75,9 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{id}/edit")]
         public async Task<IActionResult> EditOrganisation(Guid id, EditOrganisationModel model)
         {
-            id.ValidateGuid(nameof(id));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(EditOrganisation)} for {nameof(id)} {id}");
 
             if (!ModelState.IsValid)
@@ -94,8 +87,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{id}/edit/confirmation")]
         public async Task<IActionResult> EditConfirmation(Guid id)
         {
-            id.ValidateGuid(nameof(id));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(EditConfirmation)} for {nameof(id)} {id}");
 
             var organisation = await organisationsService.GetOrganisation(id);
@@ -106,8 +97,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find")]
         public IActionResult Find(string ods)
         {
-            ods.ValidateNotNullOrWhiteSpace(nameof(ods));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Find)} for {nameof(ods)} {ods}");
 
             return View(new FindOrganisationModel(ods));
@@ -116,8 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("find")]
         public IActionResult Find(FindOrganisationModel model)
         {
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(Find)}");
 
             if (!ModelState.IsValid)
@@ -134,8 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select")]
         public async Task<IActionResult> Select(string ods)
         {
-            ods.ValidateNotNullOrWhiteSpace(nameof(ods));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Select)} for {nameof(ods)} {ods}");
 
             var organisation = await odsService.GetOrganisationByOdsCode(ods);
@@ -146,8 +131,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("find/select")]
         public IActionResult Select(SelectOrganisationModel model)
         {
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(Select)}");
 
             if (!ModelState.IsValid)
@@ -162,8 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select/create")]
         public async Task<IActionResult> Create(string ods)
         {
-            ods.ValidateNotNullOrWhiteSpace(nameof(ods));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Create)} for {nameof(ods)} {ods}");
 
             var organisation = await odsService.GetOrganisationByOdsCode(ods);
@@ -174,8 +155,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("find/select/create")]
         public async Task<IActionResult> Create(CreateOrganisationModel model)
         {
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(Create)}");
 
             if (!ModelState.IsValid)
@@ -193,8 +172,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select/create/confirmation")]
         public async Task<IActionResult> Confirmation(string id)
         {
-            id.ValidateNotNullOrWhiteSpace(nameof(id));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(Confirmation)} for {nameof(id)} {id}");
 
             var organisation = await organisationsService.GetOrganisation(new Guid(id));
@@ -205,8 +182,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{id}/adduser")]
         public async Task<IActionResult> AddUser(Guid id)
         {
-            id.ValidateGuid(nameof(id));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(AddUser)} for {nameof(id)} {id}");
 
             var organisation = await organisationsService.GetOrganisation(id);
@@ -217,9 +192,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{organisationId}/adduser")]
         public async Task<IActionResult> AddUser(Guid organisationId, AddUserModel model)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(AddUser)} for {nameof(organisationId)} {organisationId}");
 
             if (!ModelState.IsValid)
@@ -236,9 +208,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/adduser/confirmation")]
         public async Task<IActionResult> AddUserConfirmation(Guid organisationId, string id)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-            id.ValidateNotNullOrWhiteSpace(nameof(id));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(AddUserConfirmation)} for {nameof(organisationId)} {organisationId} {nameof(id)} {id}");
 
             var user = await userService.GetUser(id);
@@ -249,9 +218,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/{userId}")]
         public async Task<IActionResult> UserDetails(Guid organisationId, string userId)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-            userId.ValidateNotNullOrWhiteSpace(nameof(userId));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(UserDetails)} for {nameof(organisationId)} {organisationId} {nameof(userId)} {userId}");
 
             var user = await userService.GetUser(userId);
@@ -263,9 +229,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/{userId}/disable")]
         public async Task<IActionResult> UserDisabled(Guid organisationId, string userId)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-            userId.ValidateNotNullOrWhiteSpace(nameof(userId));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(UserDisabled)} for {nameof(organisationId)} {organisationId} {nameof(userId)} {userId}");
 
             var organisation = await organisationsService.GetOrganisation(organisationId);
@@ -277,8 +240,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{organisationId}/{userId}/disable")]
         public async Task<IActionResult> UserDisabled(UserDetailsModel model)
         {
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(UserDisabled)}");
 
             if (!ModelState.IsValid)
@@ -291,9 +252,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/{userId}/enable")]
         public async Task<IActionResult> UserEnabled(Guid organisationId, string userId)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-            userId.ValidateNotNullOrWhiteSpace(nameof(userId));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(UserEnabled)} for {nameof(organisationId)} {organisationId} {nameof(userId)} {userId}");
 
             var organisation = await organisationsService.GetOrganisation(organisationId);
@@ -305,8 +263,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{organisationId}/{userId}/enable")]
         public async Task<IActionResult> UserEnabled(UserDetailsModel model)
         {
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(UserEnabled)}");
 
             if (!ModelState.IsValid)
@@ -319,8 +275,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("proxy/{organisationId}")]
         public async Task<IActionResult> AddAnOrganisation(Guid organisationId)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(AddAnOrganisation)} for {nameof(organisationId)} {organisationId}");
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var availableOrganisations = await organisationsService.GetUnrelatedOrganisations(organisationId);
@@ -331,8 +285,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("proxy/{organisationId}")]
         public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model)
         {
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(AddAnOrganisation)}");
 
             if (!ModelState.IsValid)
@@ -349,9 +301,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-            relatedOrganisationId.ValidateGuid(nameof(relatedOrganisationId));
-
             logger.LogInformation($"Taking user to {nameof(OrganisationsController)}.{nameof(RemoveAnOrganisation)} for {nameof(organisationId)} {organisationId}, {nameof(relatedOrganisationId)} {relatedOrganisationId}");
 
             var relatedOrganisation = await organisationsService.GetOrganisation(relatedOrganisationId);
@@ -362,10 +311,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
         public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId, RemoveAnOrganisationModel model)
         {
-            organisationId.ValidateGuid(nameof(organisationId));
-            relatedOrganisationId.ValidateGuid(nameof(relatedOrganisationId));
-            model.ValidateNotNull(nameof(model));
-
             logger.LogInformation($"Handling post for {nameof(OrganisationsController)}.{nameof(RemoveAnOrganisation)}");
 
             if (!ModelState.IsValid)

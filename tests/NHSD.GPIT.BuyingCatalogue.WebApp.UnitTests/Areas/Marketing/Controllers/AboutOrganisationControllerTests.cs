@@ -22,9 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class AboutOrganisationControllerTests
-    {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
+    {        
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -65,16 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_AboutSupplier_InvalidId_ThrowsException(string id)
-        {
-            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.AboutSupplier(id));
         }
 
         [Test, AutoData]
@@ -136,15 +124,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_AboutSupplier_NullModel_ThrowsException()
-        {
-            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.AboutSupplier((AboutSupplierModel)null));
         }
 
         [Test]
@@ -216,16 +195,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_ContactDetails_InvalidId_ThrowsException(string id)
-        {
-            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.ContactDetails(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_ContactDetails_ValidId_GetsSolutionFromService(string id)
         {
@@ -286,15 +255,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
-        }
-
-        [Test]
-        public static void Post_ContactDetails_NullModel_ThrowsException()
-        {
-            var controller = new AboutOrganisationController(Mock.Of<ILogWrapper<AboutOrganisationController>>(),
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentNullException>(() => controller.ContactDetails((ContactDetailsModel)null));
         }
 
         [Test]

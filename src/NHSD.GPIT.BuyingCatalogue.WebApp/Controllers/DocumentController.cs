@@ -18,8 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [Route("Document/{documentName}")]
         public async Task<IActionResult> GetDocument(string documentName)
         {
-            documentName.ValidateNotNullOrWhiteSpace(nameof(documentName));
-
             var document = await documentService.DownloadDocumentAsync(documentName);
 
             if (document == null)
