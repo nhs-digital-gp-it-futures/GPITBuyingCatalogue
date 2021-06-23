@@ -1,63 +1,122 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModel
 @{
     ViewData["Title"] = "Manage Catalogue Solutions";
+    Layout = "_Layout";
 }
 
-<div class="nhsuk-width-container" data-test-id="organisations">
+<div class="nhsuk-grid-row">
 
-    <div class="nhsuk-width-container">
+    <div class="nhsuk-grid-column-full">
         <h1>Manage Catalogue Solutions</h1>
         <p class="nhsuk-lede-text">
             Add a new solution or edit one that's already been published.
         </p>
 
+        <div class="nhsuk-action-link">
+            <a class="nhsuk-action-link__link" href="#">
+                <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+                </svg>
+                <span class="nhsuk-action-link__text">Add a solution</span>
+            </a>
+        </div>
+
+        <details class="nhsuk-details nhsuk-expander" nhsuk-polyfilled="true" id="nhsuk-details0">
+            <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
+                <span class="nhsuk-details__summary-text">
+                    Filter Catalogue Solutions
+                </span>
+            </summary>
+            <div class="nhsuk-details__text" id="nhsuk-details__text0" aria-hidden="true">
+                <p class="nhsuk-hint">
+                    Select one option.
+                </p>
+                <div class="nhsuk-form-group">
+                    <div class="nhsuk-radios">
+                        @foreach (var status in Model.AllPublicationStatuses)
+                        {
+                            <div class="nhsuk-radios__item">
+                                <input class="nhsuk-radios__input" id="@status.Id" name="frameworks" type="radio" value="@status.Id">
+                                <label class="nhsuk-label nhsuk-radios__label" for="@Model.PublicationStatusId">
+                                    @status.Display
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </details>
+
         <table role="table" class="nhsuk-table-responsive">
             <thead role="rowgroup" class="nhsuk-table__head">
-                <tr role="row">
-                    <th role="columnheader" class="" scope="col">
-                        Solution ID
+            <tr role="row">
+                @foreach (var heading in new[]
+                {
+                    "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty,
+                })
+                {
+                    <th role="columnheader" scope="col">
+                        @heading
                     </th>
-                    <th role="columnheader" class="" scope="col">
-                        Solution name
-                    </th>
-                    <th role="columnheader" class="" scope="col">
-                        Supplier
-                    </th>
-                    <th role="columnheader" class="" scope="col">
-                        Last updated
-                    </th>
-                    <th role="columnheader" class="" scope="col">
-                        Status
-                    </th>
-                    <th role="columnheader" class="" scope="col">
-
-                    </th>
-                </tr>
+                }
+            </tr>
             </thead>
             <tbody class="nhsuk-table__body">
-                @foreach (var item in Model.CatalogueItems)
-                {
-                    <tr role="row" class="nhsuk-table__row">
+            @foreach (var item in Model.CatalogueItems)
+            {
+                <tr role="row" class="nhsuk-table__row">
+                    @foreach (var cell in new[]
+                    {
+                        item.Id, item.Name, item.SupplierName, item.LastUpdated.ToShortDateString(),
+                    })
+                    {
                         <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Solution </span>@item.CatalogueItemId
+                            @cell
                         </td>
-                        <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Solution </span>@item.Name
-                        </td>
-                        <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Supplier </span>@item.Supplier.Name
-                        </td>
-                        <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Last updated </span>@item.Supplier.LastUpdated.ToShortDateString()
-                        </td>
-                        <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Status </span><strong class="nhsuk-tag @Model.GetStatusClass(item.PublishedStatusId)">@item.PublishedStatus.Name</strong>
-                        </td>
-                        <td role="cell" class="nhsuk-table__cell">
-                            <span class="nhsuk-table-responsive__heading">Action </span><a href="#" style="white-space: nowrap;">Edit</a>
-                        </td>
-                    </tr>
-                }
+                    }
+                    @* <td role="cell" class="nhsuk-table__cell"> *@
+                    @*     @item.CatalogueItemId *@
+                    @* </td> *@
+                    @* <td role="cell" class="nhsuk-table__cell"> *@
+                    @*     @item.Name *@
+                    @* </td> *@
+                    @* <td role="cell" class="nhsuk-table__cell"> *@
+                    @*     @item.Supplier.Name *@
+                    @* </td> *@
+                    @* <td role="cell" class="nhsuk-table__cell"> *@
+                    @*     @item.Supplier.LastUpdated.ToShortDateString() *@
+                    @* </td> *@
+                    @{
+                        var cssClass = "nhsuk-tag--";
+                        switch (item.PublishedStatusId)
+                        {
+                            case 1:
+                                cssClass = "red";
+                                break;
+                            case 2:
+                                cssClass += "white";
+                                break;
+                            case 3:
+                                cssClass += "green";
+                                break;
+                            case 4:
+                                cssClass += "yellow";
+                                break;
+                        }
+                    }
+                    <td role="cell" class="nhsuk-table__cell">
+                        <strong class="nhsuk-tag @cssClass">
+                            @item.PublishedStatus.Name
+                        </strong>
+                    </td>
+                    <td role="cell" class="nhsuk-table__cell">
+                        <a href="#" style="white-space: nowrap;">
+                            Edit
+                        </a>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
 

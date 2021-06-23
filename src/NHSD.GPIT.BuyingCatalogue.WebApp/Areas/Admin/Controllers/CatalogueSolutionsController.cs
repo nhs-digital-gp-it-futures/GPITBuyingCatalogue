@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -14,25 +13,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly ILogWrapper<CatalogueSolutionsController> logger;
         private readonly ISolutionsService solutionsService;
+        private readonly IMapper mapper;
 
         public CatalogueSolutionsController(
             ILogWrapper<CatalogueSolutionsController> logger,
-            ISolutionsService solutionsService)
+            ISolutionsService solutionsService,
+            IMapper mapper)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<IActionResult> Index()
         {
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(Index)}");
-
             var solutions = await solutionsService.GetAllSolutions();
 
-            var solutionModel = new CatalogueSolutionsModel()
-            {
-                CatalogueItems = solutions,
-            };
+            var solutionModel = mapper.Map<Ca>();
 
             return View(solutionModel);
         }

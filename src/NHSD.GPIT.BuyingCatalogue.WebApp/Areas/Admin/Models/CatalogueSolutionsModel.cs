@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+﻿using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class CatalogueSolutionsModel : NavBaseModel
+    public class CatalogueSolutionsModel
     {
-        public List<PublicationStatus> PublicationStatuses { get; set; }
+        public List<CatalogueModel> CatalogueItems { get; set; }
 
-        public List<CatalogueItem> CatalogueItems { get; set; }
+        public IList<PublicationStatusModel> AllPublicationStatuses { get; set; }
 
-        public string GetStatusClass(int statusId)
-        {
-            string colour = "white";
+        public int PublicationStatusId { get; set; }
 
-            if (PublicationStatus.Published.Id == statusId)
-                colour = "white";
-            if (PublicationStatus.Unpublished.Id == statusId)
-                colour = "yellow";
-            if (PublicationStatus.Published.Id == statusId)
-                colour = "green";
-            if (PublicationStatus.Withdrawn.Id == statusId)
-                colour = "red";
-
-            return $"nhsuk-tag--{colour}";
-        }
+        // public string GetStatusClass(int statusId)
+        // {
+        //     string colour = "white";
+        //
+        //     if (PublicationStatus.Published.Id == statusId)
+        //         colour = "white";
+        //     if (PublicationStatus.Unpublished.Id == statusId)
+        //         colour = "yellow";
+        //     if (PublicationStatus.Published.Id == statusId)
+        //         colour = "green";
+        //     if (PublicationStatus.Withdrawn.Id == statusId)
+        //         colour = "red";
+        //
+        //     return $"nhsuk-tag--{colour}";
+        // }
     }
 }
