@@ -51,9 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)
-                throw new ArgumentNullException(nameof(output));
-
             var formGroup = GetGovFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);

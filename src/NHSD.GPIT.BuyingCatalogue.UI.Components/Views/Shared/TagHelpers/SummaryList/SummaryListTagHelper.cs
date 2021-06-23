@@ -14,7 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Summar
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            output.Reinitialize("dl", TagMode.StartTagAndEndTag);
+            output.TagName = "dl";
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, SummaryListClass));
 

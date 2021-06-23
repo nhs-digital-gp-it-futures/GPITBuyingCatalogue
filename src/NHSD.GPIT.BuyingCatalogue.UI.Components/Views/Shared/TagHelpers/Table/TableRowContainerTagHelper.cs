@@ -33,7 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            output.Reinitialize("tr", TagMode.StartTagAndEndTag);
+            output.TagName = "tr";
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, TableRowRole));
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TableRowClass));
