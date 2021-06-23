@@ -1,0 +1,51 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectAdditionalServiceRecipientsModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="solution-recipients-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@Model.Title" advice="These are all the possible Service Recipients for this Call-off Ordering Party. Select those you’ll be ordering this Additional Service for." />
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+
+            <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/select/additional-service/price/recipients?selectionMode=@Model.SelectionParameter"
+                                     text="@Model.SelectionPrompt" />
+
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+
+                <nhs-table>
+                    <nhs-table-column>Organisation</nhs-table-column>
+                    <nhs-table-column>ODS Code</nhs-table-column>
+                    @for (int i = 0; i < Model.ServiceRecipients.Count; i++)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <nhs-checkbox-container>
+                                    <nhs-checkbox asp-for="@Model.ServiceRecipients[i].Selected"
+                                                  label-text="@Model.ServiceRecipients[i].Name"
+                                                  hidden-input="@Model.ServiceRecipients[i].Name" />
+                                </nhs-checkbox-container>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <div class="bc-c-data-text nhsuk-input--width-10 nhsuk-u-margin-top-2">@Model.ServiceRecipients[i].OdsCode</div>
+                                <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode" />
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+                <br />
+                <nhs-submit-button text="Continue" />
+            </form>
+        </div>
+    </div>
+</div>

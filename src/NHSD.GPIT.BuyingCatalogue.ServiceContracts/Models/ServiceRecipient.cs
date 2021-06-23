@@ -1,5 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
+    [ExcludeFromCodeCoverage]
     public class ServiceRecipient
     {
         public string Name { get; set; }
