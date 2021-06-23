@@ -6,6 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
     {
         internal static By SubmitButton => By.Id("Submit");
 
-        internal static By OrganisationRadioButtons => By.Id("SelectedOrganisation");
+        internal static By OrganisationRadioButtons => By.Name("SelectedOrganisation");
     }
 }

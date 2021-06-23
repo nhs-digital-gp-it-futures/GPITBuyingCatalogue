@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
                 entity.Property(e => e.OdsCode).HasMaxLength(8);
                 entity.Property(e => e.DeliveryDate).HasColumnType("date");
-                entity.HasOne(d => d.OdsCodeNavigation)
+                entity.HasOne(d => d.Recipient)
                     .WithMany(p => p.OrderItemRecipients)
                     .HasForeignKey(d => d.OdsCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
