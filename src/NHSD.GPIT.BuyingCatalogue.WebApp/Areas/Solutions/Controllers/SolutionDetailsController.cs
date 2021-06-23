@@ -122,9 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("solutions/futures/{id}/additional-services")]
         public async Task<IActionResult> AdditionalServices(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(AdditionalServices)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");

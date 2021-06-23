@@ -818,16 +818,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Be("solutions/futures/{id}/additional-services");
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void Get_AdditionalServices_InvalidId_ThrowsException(string id)
-        {
-            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            Assert.ThrowsAsync<ArgumentException>(() => controller.AdditionalServices(id));
-        }
-
         [Test, AutoData]
         public static async Task Get_AdditionalServices_ValidId_InvokesGetSolution(string id)
         {
