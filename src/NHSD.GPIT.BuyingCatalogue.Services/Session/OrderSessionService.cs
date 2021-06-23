@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
@@ -18,19 +19,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
         private readonly IOdsService odsService;
+        private readonly IOrganisationsService organisationService;
 
         public OrderSessionService(
             ISessionService sessionService,
             IOrderItemService orderItemService,
             IOrderService orderService,
             ISolutionsService solutionsService,
-            IOdsService odsService)
+            IOdsService odsService,
+            IOrganisationsService organisationService)
         {
             this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
+            this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
         public CreateOrderItemModel GetOrderStateFromSession()
@@ -97,8 +101,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 CatalogueSolutionId = orderItem.CatalogueItem.ParentCatalogueItemId?.ToString(),
             };
 
-            var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-            state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
+            if (state.CatalogueItemType == CatalogueItemType.AssociatedService)
+            {
+                var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
+                state.ServiceRecipients = new List<OrderItemRecipientModel> { new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name } };
+            }
+            else
+            {
+                var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+                state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
+            }
 
             foreach (var serviceRecipient in state.ServiceRecipients)
             {

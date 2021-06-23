@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -123,9 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.CatalogueItemId = model.SelectedSolutionId;
             var solution = await solutionsService.GetSolution(state.CatalogueItemId);
             state.CatalogueItemName = solution.Name;
-
-            var additionalService = await additionalServicesService.GetAdditionalService(model.SelectedSolutionId);
-            state.CatalogueSolutionId = additionalService.SolutionId;
+            state.CatalogueSolutionId = model.SelectedSolutionId;
 
             orderSessionService.SetOrderStateToSession(state);
 
