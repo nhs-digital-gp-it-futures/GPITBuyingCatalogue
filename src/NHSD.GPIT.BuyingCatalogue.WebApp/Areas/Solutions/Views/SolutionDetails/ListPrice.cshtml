@@ -13,48 +13,47 @@
 
                     @if (Model.FlatListPrices.Count() > 0)
                     {
-                        <table data-test-id="flat-list-price-table">
-                            <caption>Flat list price</caption>
-                            <thead role="rowgroup">
-                                <tr role="row">
-                                    <th>Price</th>
-                                    <th>Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.FlatListPrices)
-                                {
-                                    <tr role="row">
-                                        <td data-test-id="price">@item.CurrencyCode@item.Price</td>
-                                        <td data-test-id="pricing-unit">@item.Unit</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                        <nhs-table>
+                            <nhs-table-column>Price</nhs-table-column>
+                            <nhs-table-column>Unit</nhs-table-column>
+
+                            @foreach (var item in Model.FlatListPrices)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        @item.CurrencyCode@item.Price
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        @item.Unit
+                                    </nhs-table-cell>
+
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
                     }
 
                     @if (Model.TierListPrices.Count() > 0)
                     {
-                        <table data-test-id="tiered-list-price-table">
-                            <caption>Tiered list price</caption>
-                            <thead role="rowgroup">
-                                <tr role="row">
-                                    <th>Price</th>
-                                    <th>Unit</th>
-                                    <th>Volume</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.TierListPrices)
-                                {
-                                    <tr role="row">
-                                        <td data-test-id="price">@item.CurrencyCode@item.Price</td>
-                                        <td data-test-id="pricing-unit">@item.Unit</td>
-                                        <td>Volume</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                        <nhs-table  label-text="Tiered list price">
+                            <nhs-table-column>Price</nhs-table-column>
+                            <nhs-table-column>Unit</nhs-table-column>
+                            <nhs-table-column>Volume</nhs-table-column>
+
+                            @foreach (var item in Model.TierListPrices)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        @item.CurrencyCode@item.Price
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        @item.Unit
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        Volume
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
                     }
 
                 </div>
