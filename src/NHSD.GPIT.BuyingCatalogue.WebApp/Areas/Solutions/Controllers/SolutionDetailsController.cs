@@ -131,13 +131,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [Route("solutions/futures/{id}/check-capability-epic")]
-        public IActionResult CheckCapabilityEpic()
+        public IActionResult CheckCapabilityEpic(string id)
         {
             return View();
         }
 
         [Route("solutions/futures/{id}/check-associated-service")]
-        public IActionResult CheckAssociatedService()
+        public IActionResult CheckAssociatedService(string id)
         {
             return View();
         }

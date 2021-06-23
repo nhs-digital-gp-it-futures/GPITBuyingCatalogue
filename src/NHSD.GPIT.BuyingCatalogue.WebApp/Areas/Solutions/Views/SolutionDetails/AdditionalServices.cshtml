@@ -75,14 +75,18 @@
                     <dt class="nhsuk-summary-list__key">Capabilities and Epics</dt>
                     <dd class="nhsuk-summary-list__value">
                         @*TODO: Update URL with new page once implemented*@
-                        <a href="/solutions/futures/{id}/check-capability-epic">Check Capabilities and Epics</a>
+                        <a asp-action="CheckCapabilityEpic" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" class="nhsuk-breadcrumb__link">
+                            Check Capabilities and Epics
+                        </a> 
                     </dd>
                 </div>
                 <div class="nhsuk-summary-list__row">
                     <dt class="nhsuk-summary-list__key">Associated Services</dt>
                     <dd class="nhsuk-summary-list__value">
                         @*TODO: Update URL with new page once implemented*@
-                        <a href="/solutions/futures/{id}/check-associated-service">Check Associated Services</a>
+                        <a asp-action="CheckAssociatedService" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" class="nhsuk-breadcrumb__link">
+                            Check Associated Services
+                        </a>
                     </dd>
                 </div>
                 <div class="nhsuk-summary-list__row">
