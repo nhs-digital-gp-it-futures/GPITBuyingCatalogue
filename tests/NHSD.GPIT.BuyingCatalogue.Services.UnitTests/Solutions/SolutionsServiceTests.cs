@@ -7,7 +7,6 @@ using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
@@ -24,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static void SaveSupplierContacts_ModelNull_ThrowsException()
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel()
         {
             var mockModel = new Mock<SupplierContactsModel>();
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -59,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 .Callback((Expression<Func<MarketingContact, bool>> predicate) => predicate.Compile()
                     .Invoke(new MarketingContact { SolutionId = solutionId }).Should().BeTrue());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -80,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(Array.Empty<MarketingContact>());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -108,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(savedModels.ToArray);
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -136,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(savedModels);
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -158,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(new[] { new MarketingContact() });
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -173,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>();
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -186,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void GetSolution_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -199,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveIntegrationLink_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -215,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object, Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -228,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveSolutionDescription_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -241,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveSolutionDescription_InvalidSummary_ThrowsException(string summary)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -257,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object, Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -270,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveSolutionFeatures_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -286,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object, Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -299,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveImplementationDetail_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -315,7 +314,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object, Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -328,7 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveRoadmap_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -344,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object, Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -357,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void GetClientApplication_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -370,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveClientApplication_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -382,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static void SaveClientApplication_InvalidModel_ThrowsException()
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -398,7 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object, Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -411,7 +410,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void GetHosting_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -424,7 +423,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void SaveHosting_InvalidSolutionId_ThrowsException(string solutionId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -436,7 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Test]
         public static void SaveHosting_InvalidModel_ThrowsException()
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -452,7 +451,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object, Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -465,7 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [TestCaseSource(nameof(InvalidStrings))]
         public static void GetSupplier_InvalidSupplierId_ThrowsException(string supplierId)
         {
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
@@ -481,7 +480,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSupplierRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Supplier, bool>>>()))
                 .ReturnsAsync(new Supplier());
 
-            var service = new SolutionsService(Mock.Of<ILogWrapper<SolutionsService>>(),
+            var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), mockSupplierRepository.Object);
 

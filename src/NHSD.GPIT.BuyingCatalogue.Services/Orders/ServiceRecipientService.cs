@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SelectMany(o => o.OrderItems)
                 .Where(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
                 .SelectMany(o => o.OrderItemRecipients)
-                .Select(r => new { r.OdsCodeNavigation.OdsCode, r.OdsCodeNavigation.Name })
+                .Select(r => new { r.Recipient.OdsCode, r.Recipient.Name })
                 .Distinct()
                 .OrderBy(r => r.Name)
                 .Select(r => new ServiceRecipient { OdsCode = r.OdsCode, Name = r.Name })
