@@ -25,4 +25,5 @@ module "webapp" {
   webapp_cname_url = local.gw_webappURL
   core_environment = local.coreEnv
   sa_connection_string = module.storage_account.primary_connection_string
+  aspnet_environment = "Development"
 }

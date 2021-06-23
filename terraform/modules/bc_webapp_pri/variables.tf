@@ -57,5 +57,9 @@ variable "core_environment" {
 }
 variable "sa_connection_string" {
   type = string
-  #sensitive = true
+  sensitive = true
+}
+
+variable "aspnet_environment" {
+  type = string
 }

@@ -11,4 +11,5 @@ locals {
   corekv_id = "/subscriptions/${var.subscription_id}/resourceGroups/${var.project}-${local.coreEnv}-rg-kv/providers/Microsoft.KeyVault/vaults/${var.project}-${local.coreEnv}-core-kv"
   # WebApp URLs
   gw_webappURL = var.environment != "preprod" && var.environment != "prod" ? join("", ["private", trim(data.azurerm_key_vault_secret.coreurl.value, var.environment)]) : "private.${data.azurerm_key_vault_secret.coreurl.value}"
+  aspnetcoreEnvironment = local.shortenv != "production" ? "Development" : "Production"
 }

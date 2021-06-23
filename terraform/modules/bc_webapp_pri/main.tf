@@ -25,7 +25,7 @@ resource "azurerm_app_service" "webapp" {
   app_settings = {
     # Main Settings
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
-    ASPNETCORE_ENVIRONMENT: "Development"
+    ASPNETCORE_ENVIRONMENT: var.aspnet_environment
 
     # Settings for Container Registy  
     # DOCKER_REGISTRY_SERVER_URL          = "https://${data.azurerm_container_registry.acr.login_server}"
@@ -34,8 +34,6 @@ resource "azurerm_app_service" "webapp" {
 
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
-
-   
     BLOB_CONNECTION                     = var.sa_connection_string
     
     WEBSITE_HTTPLOGGING_RETENTION_DAYS  = "2"
@@ -86,7 +84,7 @@ resource "azurerm_app_service" "webapp" {
 
   lifecycle {
     ignore_changes = [
-      #app_settings,
+      app_settings,
       site_config[0].ip_restriction[0]
     ]
   }
