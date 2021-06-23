@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using AutoFixture;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
-    internal sealed class CataloguePriceCustomization : ICustomization
+    internal sealed class CatalogueItemCustomization : ICustomization
     {
         private static readonly Random Random = new();
 

@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
         private const string FlatPriceType = "Flat";
-        private const string TieredPriceType = "Tiered";
 
         private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
         {
@@ -108,12 +107,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.SupplierUrl))
                 .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Contacts, opt => opt.MapFrom(src => src.Supplier == null ? new List<SupplierContact>() : src.Supplier.SupplierContacts))
+                .ForMember(dest => dest.Contacts, opt => opt.MapFrom(src => src.Solution.MarketingContacts))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
-            CreateMap<SupplierContact, SupplierContactViewModel>()
+            CreateMap<MarketingContact, SupplierContactViewModel>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
             CreateMap<CatalogueItem, ClientApplicationTypesModel>()
@@ -263,24 +263,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         opt.PreCondition(src => src.CataloguePrices != null);
                         opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(FlatPriceType)));
                     })
-                .ForMember(
-                    dest => dest.TierListPrices,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.CataloguePrices != null);
-                        opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(TieredPriceType)));
-                    })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CataloguePrice, PriceViewModel>()
-                .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode == null ? null : CurrencyCodeSigns.Code[src.CurrencyCode]))
-                .ForMember(dest => dest.Price, opt =>
-                {
-                    opt.PreCondition(src => src.Price != null);
-                    opt.MapFrom(src => Math.Round(src.Price.Value, 2));
-                })
-                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src =>
-                $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
+                .ForMember(
+                    dest => dest.CurrencyCode,
+                    opt => opt.MapFrom(
+                        src => CurrencyCodeSigns.Code.ContainsKey(src.CurrencyCode)
+                            ? CurrencyCodeSigns.Code[src.CurrencyCode]
+                            : null))
+                .ForMember(
+                    dest => dest.Price,
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.Price != null);
+                        opt.MapFrom(src => Math.Round(src.Price.Value, 2));
+                    })
+                .ForMember(
+                    dest => dest.Unit,
+                    opt => opt.MapFrom(
+                        src =>
+                            $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
 
             CreateMap<CataloguePrice, string>()
                 .ConstructUsing(
