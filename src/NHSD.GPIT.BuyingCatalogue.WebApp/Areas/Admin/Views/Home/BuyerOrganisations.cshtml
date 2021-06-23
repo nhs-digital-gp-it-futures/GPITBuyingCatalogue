@@ -1,68 +1,50 @@
-﻿@model IList<NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModel>
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsBreadcumbs
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListOrganisationsModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Manage Buyer Organisations and Users";
 }
-<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-  <div class="nhsuk-width-container">
-    <ol class="nhsuk-breadcrumb__list">
-        <li class="nhsuk-breadcrumb__item">
-            <a asp-action="Index" asp-controller="Home" class="nhsuk-breadcrumb__link">
-                Home
-            </a>
-        </li>
-    </ol>
-  </div>
-</nav>
-<div class="nhsuk-width-container ">
-    <main class="nhsuk-main-wrapper " id="maincontent" role="main">
-        <div class="nhsuk-grid-row govuk-!-margin-0">
-            <h1>Manage buyer organisations and users</h1>
-            <p class="nhsuk-lede-text">
-                Manage existing account information or add new users to an organisation.
-            </p>
-            <div class="nhsuk-action-link">
-                <a class="nhsuk-action-link__link" href="#">
-                    <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-                    </svg>
-                    <span class="nhsuk-action-link__text">Add an organisation</span>
-                </a>
-            </div>
-            @if (Model != null)
-            {
-                <table class="nhsuk-table">
-                    <thead role="rowgroup" class="nhsuk-table__head">
-                    <tr role="row">
-                        @foreach (var header in new[] { "Organisation", "ODS code", null, })
-                        {
-                            <th role="columnheader" class="" scope="col">
-                                @header
-                            </th>
-                        }
-                    </tr>
-                    </thead>
-                    <tbody class="nhsuk-table__body">
-                    @foreach (var organisationModel in Model)
-                    {
-                        <tr role="row" class="nhsuk-table__row">
-                            @foreach (var row in new[] { @organisationModel.Name, @organisationModel.OdsCode, })
-                            {
-                                <td class="nhsuk-table__cell">
-                                    @row
-                                </td>
-                            }
-                            <td class="nhsuk-table__cell ">
-                                <a href="#">Manage</a>
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            }
-        </div>
-        <br><br>
 
-    </main>
+@section Breadcrumbs {
+    <vc:nhs-breadcrumbs items="@Model.Breadcrumb()" />
+}
+
+<div class="nhsuk-width-container" data-test-id="organisations">
+    <h1 data-test-id="org-dashboard-title">Manage organisations and users</h1>
+    <p data-test-id="org-dashboard-description" class="nhsuk-lede-text">Edit existing account information or add new users to an organisation.</p>
+    <div class="nhsuk-action-link" data-test-id="add-org-button">
+        <a class="nhsuk-action-link__link" href="/admin/organisations/find">
+            <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg>
+            <span class="nhsuk-action-link__text">Add an organisation</span>
+        </a>
+    </div>
+
+    <nhs-table data-test-id="org-table">
+        <nhs-table-column>Organisation name</nhs-table-column>
+        <nhs-table-column class="nhsuk-u-nowrap">ODS code</nhs-table-column>
+        <nhs-table-column>
+        </nhs-table-column>
+
+        @foreach (var organisationModel in Model.Organisations)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>
+                    <span data-test-id="org-name">
+                        @organisationModel.Name
+                    </span>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <span data-test-id="org-ods-code">
+                        @organisationModel.OdsCode
+                    </span>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a data-test-id="org-link" data-org-id="@organisationModel.Id" href="/admin/organisations/@organisationModel.Id">Manage</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
 </div>

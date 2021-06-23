@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsBreadcumbs;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -29,6 +30,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public Address OrganisationAddress
         {
             get { return Organisation.GetAddress(); }
+        }
+
+        public List<NhsBreadcrumbModel> Breadcrumb()
+        {
+            return new List<NhsBreadcrumbModel>()
+            {
+                new NhsBreadcrumbModel {
+                    Controller = "admin",
+                    Action = nameof(HomeController.Index),
+                    Text = "Home",
+                },
+                new NhsBreadcrumbModel {
+                    Controller = "admin",
+                    Action = "buyer-organisations",
+                    Text = "Manage Catalogue Solutions",
+                },
+            };
         }
     }
 }

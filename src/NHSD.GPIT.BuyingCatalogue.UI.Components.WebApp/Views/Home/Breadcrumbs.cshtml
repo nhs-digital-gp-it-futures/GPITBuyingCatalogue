@@ -38,10 +38,10 @@
     <nhs-table-column>Required</nhs-table-column>
 
     <nhs-table-row-container>
-        <nhs-table-cell>items</nhs-table-cell>
+        <nhs-table-cell>&commat;Url.Action</nhs-table-cell>
         <nhs-table-cell>
-            <p>This attribute requires a Dictionary&lt;string,string&gt; object</p>
-            <p>The key of this Dictionary will be the display text, while the Value will be the Url</p>
+            <p>Directly implements <a href="https://docs.microsoft.com/en-us/dotnet/api/system.web.mvc.urlhelper.action?view=aspnet-mvc-5.2#System_Web_Mvc_UrlHelper_Action_System_String_System_String_System_Object_">UrlHelper.Action</a></p>
+            <p>public virtual string Action (string actionName, string controllerName, object routeValues);</p>
         </nhs-table-cell>
         <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
@@ -52,16 +52,17 @@
 <nhs-fieldset-form-container asp-for="@Model"
                              size="Medium"
                              label-text="Example of the Model">
-
-    <span>var model = new BreadcrumbsModel()</span><br />
-    <span>{</span><br />
-    <span>&nbsp;  Breadcrumbs = new Dictionary&lt;string, string&gt;</span><br/>
-    <span>&nbsp;{</span><br/>
-    <span>&nbsp;&nbsp;{"Action Links", "action-links" },</span><br/>
-    <span>&nbsp;&nbsp;{"Address", "address" },</span><br/>
-    <span>&nbsp;},</span><br/>
-    <span> };</span><br/>
-
+<pre>
+    model.Breadcrumbs = new List<NhsBreadcrumbModel>()
+    {
+        new NhsBreadcrumbModel {
+            Action = "Action",
+            Controller = "Controller",
+            Text = "Text",
+            Values = new { ParamOne = "hello", ParamTwo = "world" },
+        },
+    };
+</pre>
 </nhs-fieldset-form-container>
 
 <nhs-endnote>

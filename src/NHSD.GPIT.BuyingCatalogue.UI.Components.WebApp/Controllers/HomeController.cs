@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsBreadcumbs;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel;
 
@@ -38,12 +39,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         [Route("breadcrumbs")]
         public IActionResult Breadcrumbs()
         {
-            var model = new BreadcrumbsModel
+            var model = new BreadcrumbsModel();
+
+            model.Breadcrumbs = new List<NhsBreadcrumbModel>()
             {
-                Breadcrumbs = new Dictionary<string, string>
+                new NhsBreadcrumbModel
                 {
-                    { "Action Links", "action-links" },
-                    { "Address", "address" },
+                    Action = "Action",
+                    Controller = "Controller",
+                    Text = "Text",
+                    Values = new { ParamOne = "hello", ParamTwo = "world" },
                 },
             };
 

@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsBre
 {
     public sealed class NhsBreadcrumbsViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(Dictionary<string, string> items)
+        public async Task<IViewComponentResult> InvokeAsync(List<NhsBreadcrumbModel> items)
         {
             return await Task.FromResult(View("Breadcrumbs", items));
         }

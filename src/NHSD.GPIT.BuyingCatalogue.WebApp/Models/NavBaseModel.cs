@@ -7,6 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
     {
         public string BackLink { get; set; } = "./";
 
-        public string BackLinkText { get; set; } = "Go back to previous page";
+        public string BackLinkText { get; set; } = "Go back";
     }
 }
