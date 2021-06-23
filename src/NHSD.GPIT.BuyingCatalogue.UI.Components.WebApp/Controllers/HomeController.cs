@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
 {
-    public class HomeController : Controller
+    public sealed class HomeController : Controller
     {
         public IActionResult Index()
         {
@@ -24,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         [Route("address")]
         public IActionResult Address()
         {
-            var address = new EntityFramework.Models.Ordering.Address()
+            var address = new Address
             {
                 Line1 = "Our House",
                 Line2 = "In The Middle",
@@ -40,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         [Route("breadcrumbs")]
         public IActionResult Breadcrumbs()
         {
-            var model = new BreadcrumbsModel()
+            var model = new BreadcrumbsModel
             {
                 Breadcrumbs = new Dictionary<string, string>
                 {
@@ -103,9 +101,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             {
                 ListOfObjects = new List<CheckBoxModel.CheckBoxListObject>
                 {
-                    new CheckBoxModel.CheckBoxListObject { Name = "First Checkbox" },
-                    new CheckBoxModel.CheckBoxListObject { Name = "Second Checkbox" },
-                    new CheckBoxModel.CheckBoxListObject { Name = "Third Checkbox" },
+                    new() { Name = "First Checkbox" },
+                    new() { Name = "Second Checkbox" },
+                    new() { Name = "Third Checkbox" },
                 },
             };
 
@@ -169,13 +167,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         [Route("radio-lists")]
         public IActionResult RadioLists()
         {
-            var model = new RadioListModel()
+            var model = new RadioListModel
             {
                 Options = new List<RadioListOptions>
                 {
-                    new RadioListOptions { Name = "First Option", Value = "1" },
-                    new RadioListOptions { Name = "Second Option", Value = "2" },
-                    new RadioListOptions { Name = "Third Option", Value = "3" },
+                    new() { Name = "First Option", Value = "1" },
+                    new() { Name = "Second Option", Value = "2" },
+                    new() { Name = "Third Option", Value = "3" },
                 },
             };
 
@@ -195,9 +193,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             {
                 SelectListItems = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
                 {
-                    new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem("First Option", "1"),
-                    new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem("Second Option", "2"),
-                    new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem("Third Option", "3"),
+                    new("First Option", "1"),
+                    new("Second Option", "2"),
+                    new("Third Option", "3"),
                 },
             };
 
@@ -217,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
             {
                 Rows = new List<TableModel.TableRowModel>
                 {
-                    new TableModel.TableRowModel
+                    new()
                     {
                         FirstColumn = "First Column",
                         SecondColumn = "Second Column",
@@ -227,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
                         SixthColumn = "Sixth Column",
                         SeventhColumn = "Seventh Column",
                     },
-                    new TableModel.TableRowModel
+                    new()
                     {
                         FirstColumn = "First Column",
                         SecondColumn = "Second Column",
@@ -237,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
                         SixthColumn = "Sixth Column",
                         SeventhColumn = "Seventh Column",
                     },
-                    new TableModel.TableRowModel
+                    new()
                     {
                         FirstColumn = "First Column",
                         SecondColumn = "Second Column",
@@ -262,8 +260,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         [Route("validation-summary")]
         public IActionResult ValidationSummary()
         {
-            var error = "This Input is in Error.";
-            var secondError = "I am an Input in Error at the bottom of the Page.";
+            const string error = "This Input is in Error.";
+            const string secondError = "I am an Input in Error at the bottom of the Page.";
 
             ModelState.AddModelError("ARandomField", error);
             ModelState.AddModelError("SecondRandomField", secondError);

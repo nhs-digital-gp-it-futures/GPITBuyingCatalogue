@@ -21,23 +21,6 @@ services:
         ports:
         - "10100:10000"
         - "10101:10001"
-
-    nhsd_codb_deploy:
-        image: ${DOCKER_REGISTRY}catalogueorderingdatabase
-        container_name: nhsd_codb_deploy
-        build:
-            context: .
-            dockerfile: database/NHSD.BuyingCatalogue.Ordering.OrderingDatabase.Deployment/Docker/Dockerfile
-        environment:
-            SA_PASSWORD: "Abc123Abc123"
-            NHSD_PASSWORD: "DisruptTheMarket1!"
-            DB_NAME: "CatalogueOrdering"
-            DB_SERVER: sqlserver            
-            INCLUDE_IMPORT: "TRUE"
-            INCLUDE_PUBLISH: "TRUE"
-            INSERT_TEST_DATA: "TRUE"
-        depends_on:
-            - "sqlserver"  
                  
     nhsd_gpitbcdb_deploy:
         image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase

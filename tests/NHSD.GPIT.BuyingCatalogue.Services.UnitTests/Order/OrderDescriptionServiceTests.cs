@@ -14,13 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Order
         [Test]
         public static void Constructor_NullLogger_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new OrderDescriptionService(null, Mock.Of<IDbRepository<EntityFramework.Models.Ordering.Order, OrderingDbContext>>()));
+            Assert.Throws<ArgumentNullException>(() => _ = new OrderDescriptionService(null, Mock.Of<IDbRepository<EntityFramework.Ordering.Models.Order, GPITBuyingCatalogueDbContext>>()));
         }
 
         [Test]
         public static void Constructor_NullRepository_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new OrderDescriptionService(Mock.Of<ILogWrapper<OrderDescriptionService>>(), null));
-        }   
+        }
     }
 }

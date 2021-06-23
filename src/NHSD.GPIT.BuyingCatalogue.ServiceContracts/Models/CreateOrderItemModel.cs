@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -22,11 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public string CatalogueSolutionId { get; set; }
 
+        // TODO: should be of type CatalogueItemId
         public string CatalogueItemId { get; set; }
 
         public string CurrencyCode { get; set; }
 
-        public TimeUnit EstimationPeriod { get; set; }
+        public TimeUnit? EstimationPeriod { get; set; }
 
         public ItemUnitModel ItemUnit { get; set; }
 
@@ -38,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public List<OrderItemRecipientModel> ServiceRecipients { get; set; }
 
-        public TimeUnit TimeUnit { get; set; }
+        public TimeUnit? TimeUnit { get; set; }
 
         public CataloguePriceType Type { get; set; }
 

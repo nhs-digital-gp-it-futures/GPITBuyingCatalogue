@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
-    public class CatalogueSolutionsModel : OrderingBaseModel
+    public sealed class CatalogueSolutionsModel : OrderingBaseModel
     {
-        public CatalogueSolutionsModel(string odsCode, EntityFramework.Models.Ordering.Order order, List<OrderItem> orderItems)
+        public CatalogueSolutionsModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             BackLinkText = "Go back";
@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public string OrderDescription { get; set; }
 
+        // TODO: should be of type CallOffId
         public string CallOffId { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }

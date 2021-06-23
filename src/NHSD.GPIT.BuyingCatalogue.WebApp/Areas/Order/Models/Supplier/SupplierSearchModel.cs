@@ -1,8 +1,8 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 {
-    public class SupplierSearchModel : OrderingBaseModel
+    public sealed class SupplierSearchModel : OrderingBaseModel
     {
-        public SupplierSearchModel(string odsCode, EntityFramework.Models.Ordering.Order order)
+        public SupplierSearchModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";

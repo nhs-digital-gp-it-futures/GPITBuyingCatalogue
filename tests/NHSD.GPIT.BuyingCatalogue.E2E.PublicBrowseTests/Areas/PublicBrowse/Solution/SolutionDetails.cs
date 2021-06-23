@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async Task SolutionDetails_VerifySummary()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var summary = (await context.Solutions.SingleAsync(s => s.Id == "99999-001")).Summary;
 
             var summaryAndDescription = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
@@ -43,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async Task SolutionDetails_VerifyDescription()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var description = (await context.Solutions.SingleAsync(s => s.Id == "99999-001")).FullDescription;
 
             var summaryAndDescription = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -11,12 +12,11 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 {
-    public class SolutionDetailsProfile : Profile
+    public sealed class SolutionDetailsProfile : Profile
     {
         private const string KeyBrowserBased = "browser-based";
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
-        private const string FlatPriceType = "Flat";
 
         private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
         {
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt =>
                     {
                         opt.PreCondition(src => src.CataloguePrices != null);
-                        opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(FlatPriceType)));
+                        opt.MapFrom(src => src.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat));
                     })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     dest => dest.Unit,
                     opt => opt.MapFrom(
                         src =>
-                            $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
+                            $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Value.Description())}"));
 
             CreateMap<CataloguePrice, string>()
                 .ConstructUsing(

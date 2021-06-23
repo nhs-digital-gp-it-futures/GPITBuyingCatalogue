@@ -1,15 +1,10 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public class PublicationStatus : EnumerationBase
+    public enum PublicationStatus
     {
-        public static readonly PublicationStatus Draft = new(1, nameof(Draft));
-        public static readonly PublicationStatus Unpublished = new(2, nameof(Unpublished));
-        public static readonly PublicationStatus Published = new(3, nameof(Published));
-        public static readonly PublicationStatus Withdrawn = new(4, nameof(Withdrawn));
-
-        public PublicationStatus(int id, string name)
-            : base(id, name)
-        {
-        }
+        Draft = 1,
+        Unpublished = 2,
+        Published = 3,
+        Withdrawn = 4,
     }
 }
