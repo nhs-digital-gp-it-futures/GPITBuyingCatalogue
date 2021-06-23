@@ -36,7 +36,7 @@
                             <nhs-details label-text="Service recipients (ODS code)">
                                 @foreach (var recipient in item.OrderItemRecipients)
                                 {
-                                    @string.Format("{0}({1})", recipient.OdsCodeNavigation.Name, recipient.OdsCodeNavigation.OdsCode)
+                                    @string.Format("{0}({1})", recipient.Recipient.Name, recipient.Recipient.OdsCode)
                                     <br><br>
                                 }
                             </nhs-details>
