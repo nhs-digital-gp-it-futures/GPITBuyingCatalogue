@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
@@ -191,13 +192,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
+        
         [Test, CommonAutoData]
         public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
            CatalogueItem catalogueItem)
         {
+            var expected = catalogueItem.CataloguePrices.Count(c => c.CataloguePriceType.Name.Equals("Flat"));
+            expected.Should().BeGreaterThan(0);
+            
             var actual = mapper.Map<CatalogueItem, ListPriceModel>(catalogueItem);
 
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.FlatListPrices.Count.Should().Be(expected);
             actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
             {
@@ -211,7 +217,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
                 Next = new SectionModel
                 {
-                    //TODO: Update action to 'AdditionalServices'
                     Action = "Description",
                     Controller = "SolutionDetails",
                     Name = "Additional Services",
@@ -223,6 +228,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
+        [Test, CommonAutoData]
+        public void Map_CataloguePriceToPriceViewModel_ResultAsExpected(CataloguePrice cataloguePrice)
+        {
+            var expected = $"{cataloguePrice.PricingUnit.Description} {cataloguePrice.TimeUnit.Description}";
+            
+            var actual = mapper.Map<CataloguePrice, PriceViewModel>(cataloguePrice);
+
+            actual.CurrencyCode.Should().Be(CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode]);
+            actual.Price.Should().Be(Math.Round(cataloguePrice.Price.Value, 2));
+            actual.Unit.Should().Be(expected);
+        }
 
         [Test, CommonAutoData]
         public void Map_CatalogueItemToHostingTypesModel_ResultAsExpected(

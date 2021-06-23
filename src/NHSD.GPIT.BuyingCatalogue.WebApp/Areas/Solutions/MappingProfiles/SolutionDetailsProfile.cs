@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         private const string KeyNativeDesktop = "native-desktop";
         private const string KeyNativeMobile = "native-mobile";
         private const string FlatPriceType = "Flat";
-        private const string TieredPriceType = "Tiered";
 
         private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
         {
@@ -240,24 +239,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         opt.PreCondition(src => src.CataloguePrices != null);
                         opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(FlatPriceType)));
                     })
-                .ForMember(
-                    dest => dest.TierListPrices,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.CataloguePrices != null);
-                        opt.MapFrom(src => src.CataloguePrices.Where(x => x.CataloguePriceType.Name.Equals(TieredPriceType)));
-                    })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CataloguePrice, PriceViewModel>()
-                .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode == null ? null : CurrencyCodeSigns.Code[src.CurrencyCode]))
-                .ForMember(dest => dest.Price, opt =>
-                {
-                    opt.PreCondition(src => src.Price != null);
-                    opt.MapFrom(src => Math.Round(src.Price.Value, 2));
-                })
-                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src =>
-                $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
+                .ForMember(
+                    dest => dest.CurrencyCode,
+                    opt => opt.MapFrom(
+                        src => CurrencyCodeSigns.Code.ContainsKey(src.CurrencyCode)
+                            ? CurrencyCodeSigns.Code[src.CurrencyCode]
+                            : null))
+                .ForMember(
+                    dest => dest.Price,
+                    opt =>
+                    {
+                        opt.PreCondition(src => src.Price != null);
+                        opt.MapFrom(src => Math.Round(src.Price.Value, 2));
+                    })
+                .ForMember(
+                    dest => dest.Unit,
+                    opt => opt.MapFrom(
+                        src =>
+                            $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Description)}"));
 
             CreateMap<CataloguePrice, string>()
                 .ConstructUsing(
