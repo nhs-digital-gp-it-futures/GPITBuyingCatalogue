@@ -48,14 +48,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)
-                throw new ArgumentNullException(nameof(output));
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             var day = BuildInputItem(Day, "Day", DateInputWidth2Class, false);
             var month = BuildInputItem(Month, "Month", DateInputWidth2Class, false);
             var year = BuildInputItem(Year, "Year", DateInputWidth4Class, true);
-
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
             (htmlHelper as IViewContextAware).Contextualize(ViewContext);
             var id = htmlHelper.GenerateIdFromName(TagHelperFunctions.GetModelKebabNameFromFor(For));

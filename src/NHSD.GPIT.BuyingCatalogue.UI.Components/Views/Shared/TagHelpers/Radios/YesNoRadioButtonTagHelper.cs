@@ -22,12 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
+
             var isYesChecked = For.Model?.ToString() == "Yes";
 
             var yesRadio = BuildYesRadio(isYesChecked);
             var noRadio = BuildNoRadio(!isYesChecked);
-
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsRadios));
 
