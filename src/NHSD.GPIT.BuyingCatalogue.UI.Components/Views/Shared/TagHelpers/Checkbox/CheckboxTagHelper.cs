@@ -35,10 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (output is null)
-                throw new ArgumentNullException(nameof(output));
-
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Attributes.Add(TagHelperConstants.Class, NhsCheckboxItem);
 

@@ -18,7 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             bool isInError = false,
             int defaultMaxLength = 0)
         {
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Content.AppendHtml(htmlContent);
 
