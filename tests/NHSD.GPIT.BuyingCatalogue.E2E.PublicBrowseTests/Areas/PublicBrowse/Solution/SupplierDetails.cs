@@ -19,10 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Theory]
         [InlineData("Contact name")]
         [InlineData("Contact details")]
-
+        [InlineData("Department")]
+        
         public void SupplierDetails_ContactDetailsDisplayed(string rowHeader)
         {
-            PublicBrowsePages.SolutionAction.GetTableRowContent(rowHeader).Should().NotBeNullOrEmpty();
+            PublicBrowsePages.SolutionAction.GetTableRowContent(rowHeader).Should().NotBeNullOrEmpty(); 
         }
         
         [Fact]
