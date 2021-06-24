@@ -2,8 +2,6 @@
 {
     public class IntegrationModel
     {
-        public string Link { get; set; }
-
         public string Name { get; set; }
 
         public IntegrationTableModel[] Tables { get; set; }

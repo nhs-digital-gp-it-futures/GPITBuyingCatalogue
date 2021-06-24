@@ -17,16 +17,9 @@
                         NHS assured integrations
                     </h2>
                     <p>
-                        @Model.TextDescriptionsProvided() Use the links to find out more about these integrations.
+                        @Model.TextDescriptionsProvided() You can find more information about <a href="https://digital.nhs.uk/services/gp-systems-of-choice/pairing-integration">IM1 integrations</a>
+                        and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
                     </p>
-                    @foreach (var integration in Model.Integrations)
-                    {
-                        <p>
-                            <b>@integration.Name:</b>
-                            <a href="@integration.Link">@integration.Link</a>
-                        </p>
-                    }
-
 
                     @for (var index = 0; index < Model.Integrations.Count; index++)
                     {
