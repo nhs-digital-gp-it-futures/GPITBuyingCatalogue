@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
         private static TagBuilder GetHeaderSpanBuilder(TagHelperContext context)
         {
-            if (!context.Items.TryGetValue(TaskListContainerTagHelper.SectionNumberCounterName, out object taskListContext))            
+            if (!context.Items.TryGetValue(TaskListContainerTagHelper.SectionNumberCounterName, out var taskListContext))
                 return null;
 
             var builder = new TagBuilder(TagHelperConstants.Span);
