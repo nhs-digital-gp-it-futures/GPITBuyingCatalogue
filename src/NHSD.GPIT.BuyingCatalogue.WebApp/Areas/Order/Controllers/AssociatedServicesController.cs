@@ -211,6 +211,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (solutionPrice is not null)
             {
+                if (model.OrderItem.Price is null)
+                    ModelState.AddModelError("OrderItem.Price", "Price is Required");
+
                 if (model.OrderItem.Price > solutionPrice.Price)
                     ModelState.AddModelError("OrderItem.Price", "Price cannot be greater than list price");
             }
