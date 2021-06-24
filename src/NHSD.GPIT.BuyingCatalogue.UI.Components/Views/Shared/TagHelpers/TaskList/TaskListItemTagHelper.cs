@@ -107,15 +107,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                 },
             };
 
-            var attributeList = new TagHelperAttributeList()
+            var attributeList = new TagHelperAttributeList
             {
-                new TagHelperAttribute(TagHelperConstants.Id, TagBuilder.CreateSanitizedId($"{LabelText}-status", "_")),
+                new(TagHelperConstants.Id, TagBuilder.CreateSanitizedId($"{LabelText}-status", "_")),
             };
 
             var nhsTagOutput = new TagHelperOutput(
-                tagName: string.Empty,
-                attributes: attributeList,
-                getChildContentAsync: (usedCachedResult, encoder) =>
+                string.Empty,
+                attributeList,
+                (usedCachedResult, encoder) =>
                     Task.Factory.StartNew<TagHelperContent>(
                         () => new DefaultTagHelperContent()));
 

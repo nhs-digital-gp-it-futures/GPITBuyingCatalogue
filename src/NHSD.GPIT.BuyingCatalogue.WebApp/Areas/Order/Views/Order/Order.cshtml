@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers; 
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -18,57 +19,57 @@
                     <nhs-task-list-section label-text="Start your order">
                         <nhs-task-list-item label-text="Provide a description of your order"
                                             url="@Url.Action(
-                                                action:"OrderDescription",
-                                                controller:"Order",
-                                                values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                nameof(OrderController.OrderDescription),
+                                                "Order",
+                                                new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Organisation Information">
                         <nhs-task-list-item label-text="Provide Call-off Ordering Party Information"
                                             url="@Url.Action(
-                                                action:"OrderingParty",
-                                                controller:"Order",
-                                                values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                nameof(OrderController.OrderingParty),
+                                                "Order",
+                                                new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
                         <nhs-task-list-item label-text="Provide Supplier information"
                                             url="@Url.Action(
-                                                action:"Supplier",
-                                                controller:"Supplier",
-                                                values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                nameof(SupplierController.Supplier),
+                                                "Supplier",
+                                                new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Add services">
                         <nhs-task-list-item label-text="Provide commencement date for this agreement"
                                             url="@Url.Action(
-                                                action:"CommencementDate",
-                                                controller:"Order",
-                                                values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                nameof(OrderController.CommencementDate),
+                                                "Order",
+                                                new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
                         <nhs-task-list-item label-text="Add Catalogue Solutions to your order"
                                             url="@Url.Action(
-                                                action:"Index",
-                                                controller:"CatalogueSolutions",
-                                                values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                nameof(CatalogueSolutionsController.Index),
+                                                "CatalogueSolutions",
+                                                new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
                         <nhs-task-list-item label-text="Add Additional Services to your order"
                                             url="@Url.Action(
-                                                action:"Index",
-                                                controller:"AdditionalServices",
-                                                values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                nameof(AdditionalServicesController.Index),
+                                                "AdditionalServices",
+                                                new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
-                        <nhs-task-list-item label-text="Add Associated Solutions to your order"
+                        <nhs-task-list-item label-text="Add Associated Services to your order"
                                             url="@Url.Action(
-                                                action:"Index",
-                                                controller:"AssociatedServices",
-                                                values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                nameof(AssociatedServicesController.Index),
+                                                "AssociatedServices",
+                                                new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
                     </nhs-task-list-section>
                     <nhs-task-list-section label-text="Indicate funding source">
                         <nhs-task-list-item label-text="Explain how you're paying for this order"
                                             url="@Url.Action(
-                                                    action:"FundingSource",
-                                                    controller:"Order",
-                                                    values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId})"
+                                                    nameof(OrderController.FundingSource),
+                                                    "Order",
+                                                    new { Model.OdsCode, Model.CallOffId})"
                                             status="Completed" />
                     </nhs-task-list-section>
                 </nhs-task-list>
@@ -76,23 +77,23 @@
 
             <vc:nhs-secondary-button text="Complete Order"
                                      url="@Url.Action(
-                                            action:"CompleteOrder",
-                                            controller:"Order",
-                                            values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId })"
+                                            "CompleteOrder",
+                                            "Order",
+                                            new { Model.OdsCode, Model.CallOffId })"
                                      use-primary-colour="true"/><br />
 
             <vc:nhs-secondary-button text="Preview order summary"
                                      url="@Url.Action(
-                                            action: "Summary",
-                                            controller:"Order",
-                                            values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId })"
+                                            nameof(OrderController.Summary),
+                                            "Order",
+                                            new { Model.OdsCode, Model.CallOffId })"
                                      use-primary-colour="false"/><br />
 
             <vc:nhs-delete-button text="Delete order"
                                   url="@Url.Action(
-                                            action: "DeleteOrder",
-                                            controller:"Order",
-                                            values: new { odsCode = Model.OdsCode, CallOffId = Model.CallOffId })"/>
+                                            nameof(OrderController.DeleteOrder),
+                                            "Order",
+                                            new { Model.OdsCode, Model.CallOffId })"/>
         </div>
     </div>
 </div>
