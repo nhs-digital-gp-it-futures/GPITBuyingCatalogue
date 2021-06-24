@@ -23,24 +23,27 @@
                                      label-text="Code Example for the above button"
                                      size="Medium">
             <div class="app-tabs__container js-tabs__container bc-code-snippet">
-                <span class="vs-light-theme-blue bracket">&lt;</span>
-                <span class="vs-light-theme-purple">nhs-submit-button</span>
+                <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">nhs-submit-button</span>
                 <span class="vs-light-theme-blue bracket">/&gt;</span>
             </div>
         </nhs-fieldset-form-container>
 
 
-    <nhs-table label-text="Attributes">
-        <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">text</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
-                <p>When the text attritbute is supplied, then the label text will be overriden with the input text</p>
-            </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
-                <nhs-tag text="No" colour="Green" />
-            </nhs-table-cell>
-        </nhs-table-row-container>
-    </nhs-table>
+        <nhs-table label-text="Attributes">
+            <nhs-table-column>Attribute</nhs-table-column>
+            <nhs-table-column>Functionality</nhs-table-column>
+            <nhs-table-column>Required</nhs-table-column>
+
+            <nhs-table-row-container>
+                <nhs-table-cell>text</nhs-table-cell>
+                <nhs-table-cell>
+                    <p>When the text attritbute is supplied, then the label text will be overriden with the input text</p>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag text="No" colour="Green" />
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        </nhs-table>
     <br />
     <br />
    <nhs-fieldset-form-container asp-for="@Model"
@@ -49,9 +52,7 @@
         <nhs-submit-button text="This text has been overriden" />
 
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue bracket">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-submit-button text</span>
-            <span class="vs-light-theme-blue">="This text has been overridden"</span>
+            <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">nhs-submit-button text</span><span class="vs-light-theme-blue">="This text has been overridden"</span>
             <span class="vs-light-theme-blue bracket">/&gt;</span>
         </div>
 
@@ -81,23 +82,24 @@
                                  label-text="Code Example for the above button"
                                  size="Medium">
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue bracket">&lt;</span>
-            <span class="vs-light-theme-purple">vc:nhs-secondary-button url</span>
-            <span class="vs-light-theme-blue">="buttons"&nbsp;</span>
-            <span class="vs-light-theme-purple">text</span>
-            <span class="vs-light-theme-blue">="Secondary Button" </span>
+            <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-secondary-button url</span><span class="vs-light-theme-blue">="buttons"&nbsp;</span>
+            <span class="vs-light-theme-purple">text</span><span class="vs-light-theme-blue">="Secondary Button" </span>
             <span class="vs-light-theme-blue bracket">/&gt;</span>
         </div>
     </nhs-fieldset-form-container>
     <br />
     <br />
     <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">text</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>text</nhs-table-cell>
+            <nhs-table-cell>
                 <p>Setting this attribute will set the text that is displayed inside the button</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -106,7 +108,7 @@
             <nhs-table-cell>
                 <p>Setting this attribute will set the url the button will redirect too.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -129,23 +131,24 @@
                                  label-text="Code Example for the above button"
                                  size="Medium">
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue bracket">&lt;</span>
-            <span class="vs-light-theme-purple">vc:nhs-delete-button url</span>
-            <span class="vs-light-theme-blue">="buttons"&nbsp;</span>
-            <span class="vs-light-theme-purple">text</span>
-            <span class="vs-light-theme-blue">="Delete Button" </span>
+            <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-delete-button url</span><span class="vs-light-theme-blue">="buttons"&nbsp;</span>
+            <span class="vs-light-theme-purple">text</span><span class="vs-light-theme-blue">="Delete Button" </span>
             <span class="vs-light-theme-blue bracket">/&gt;</span>
         </div>
     </nhs-fieldset-form-container>
     <br />
     <br />
     <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">text</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>text</nhs-table-cell>
+            <nhs-table-cell>
                 <p>Setting this attribute will set the text that is displayed inside the button</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -154,7 +157,7 @@
             <nhs-table-cell>
                 <p>Setting this attribute will set the url the button will redirect too.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
