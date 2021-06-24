@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class Organisation
+    public sealed class Organisation
     {
         public Organisation()
         {
+            Orders = new HashSet<Order>();
             RelatedOrganisationOrganisations = new HashSet<RelatedOrganisation>();
             RelatedOrganisationRelatedOrganisationNavigations = new HashSet<RelatedOrganisation>();
         }
@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public string Name { get; set; }
 
+        // TODO: model properly
         public string Address { get; set; }
 
         public string OdsCode { get; set; }
@@ -27,8 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public DateTime LastUpdated { get; set; }
 
-        public virtual ICollection<RelatedOrganisation> RelatedOrganisationOrganisations { get; set; }
+        public ICollection<Order> Orders { get; set; }
 
-        public virtual ICollection<RelatedOrganisation> RelatedOrganisationRelatedOrganisationNavigations { get; set; }
+        public ICollection<RelatedOrganisation> RelatedOrganisationOrganisations { get; set; }
+
+        public ICollection<RelatedOrganisation> RelatedOrganisationRelatedOrganisationNavigations { get; set; }
     }
 }

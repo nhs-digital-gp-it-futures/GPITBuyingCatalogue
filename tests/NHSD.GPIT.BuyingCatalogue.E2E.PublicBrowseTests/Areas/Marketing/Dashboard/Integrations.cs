@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     {
         public Integrations(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/integrations")
         {
-            using var context = GetBCContext();
+            using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == "99999-99");
             solution.IntegrationsUrl = string.Empty;
             context.SaveChanges();
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
             solution.IntegrationsUrl.Should().Be(link);
         }

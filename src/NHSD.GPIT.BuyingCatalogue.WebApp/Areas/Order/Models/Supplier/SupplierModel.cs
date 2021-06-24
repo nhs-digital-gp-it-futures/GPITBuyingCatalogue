@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 {
-    public class SupplierModel : OrderingBaseModel
+    public sealed class SupplierModel : OrderingBaseModel
     {
-        public SupplierModel(string odsCode, EntityFramework.Models.Ordering.Order order, ICollection<EntityFramework.Models.GPITBuyingCatalogue.SupplierContact> supplierContacts)
+        public SupplierModel(string odsCode, EntityFramework.Ordering.Models.Order order, ICollection<SupplierContact> supplierContacts)
         {
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task FeatureDetails_VerifyFeatureContent()
         {
             {
-                using var context = GetBCContext();
+                await using var context = GetEndToEndDbContext();
                 var featureInfo = (await context.Solutions.SingleAsync(s => s.Id == "99999-001")).Features;
 
                 var featureList = PublicBrowsePages.SolutionAction.GetFeatureContent();

@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Authorize]
     [Area("Order")]
     [Route("order/organisation/{odsCode}/order/{callOffId}/supplier")]
-    public class SupplierController : Controller
+    public sealed class SupplierController : Controller
     {
         private readonly ILogWrapper<OrderController> logger;
         private readonly IOrderService orderService;
@@ -28,9 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet]
         public async Task<IActionResult> Supplier(string odsCode, string callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(Supplier)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -38,9 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (order.Supplier is null)
             {
                 return RedirectToAction(
-                    actionName: nameof(SupplierSearch),
-                    controllerName: typeof(SupplierController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(SupplierSearch),
+                    typeof(SupplierController).ControllerName(),
+                    new { odsCode, callOffId });
             }
 
             var supplier = await supplierService.GetSupplierFromBuyingCatalogue(order.Supplier.Id);
@@ -48,9 +50,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierModel(odsCode, order, supplier.SupplierContacts));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost]
         public async Task<IActionResult> Supplier(string odsCode, string callOffId, SupplierModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(Supplier)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
@@ -59,14 +63,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await supplierService.AddOrUpdateOrderSupplierContact(callOffId, model.PrimaryContact);
 
             return RedirectToAction(
-                actionName: nameof(OrderController.Order),
-                controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(OrderController.Order),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("search")]
         public async Task<IActionResult> SupplierSearch(string odsCode, string callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(SupplierSearch)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -74,28 +80,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (order.Supplier is not null)
             {
                 return RedirectToAction(
-                    actionName: nameof(Supplier),
-                    controllerName: typeof(SupplierController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(Supplier),
+                    typeof(SupplierController).ControllerName(),
+                    new { odsCode, callOffId });
             }
 
             return View(new SupplierSearchModel(odsCode, order));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("search")]
         public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(SupplierSearch)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             return RedirectToAction(
-                actionName: nameof(SupplierSearchSelect),
-                controllerName: typeof(SupplierController).ControllerName(),
-                routeValues: new { odsCode, callOffId, search = model.SearchString });
+                nameof(SupplierSearchSelect),
+                typeof(SupplierController).ControllerName(),
+                new { odsCode, callOffId, search = model.SearchString });
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, [FromQuery]string search)
+        public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, [FromQuery] string search)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(SupplierSearchSelect)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(search)} {search}");
 
             if (string.IsNullOrWhiteSpace(search))
@@ -109,9 +119,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("search/select")]
         public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, SupplierSearchSelectModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(SupplierSearchSelect)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
@@ -120,9 +132,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await supplierService.AddOrderSupplier(callOffId, model.SelectedSupplierId);
 
             return RedirectToAction(
-                actionName: nameof(Supplier),
-                controllerName: typeof(SupplierController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(Supplier),
+                typeof(SupplierController).ControllerName(),
+                new { odsCode, callOffId });
         }
     }
 }

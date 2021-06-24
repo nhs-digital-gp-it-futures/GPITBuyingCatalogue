@@ -2,8 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
@@ -14,6 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         }
 
         public GPITBuyingCatalogueDbContext(DbContextOptions<GPITBuyingCatalogueDbContext> options)
+            : base(options)
+        {
+        }
+
+        protected GPITBuyingCatalogueDbContext(DbContextOptions options)
             : base(options)
         {
         }
@@ -30,15 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
 
-        public virtual DbSet<CatalogueItemType> CatalogueItemTypes { get; set; }
-
         public virtual DbSet<CataloguePrice> CataloguePrices { get; set; }
 
         public virtual DbSet<CataloguePriceTier> CataloguePriceTiers { get; set; }
 
-        public virtual DbSet<CataloguePriceType> CataloguePriceTypes { get; set; }
-
         public virtual DbSet<CompliancyLevel> CompliancyLevels { get; set; }
+
+        public DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
 
         public virtual DbSet<Epic> Epics { get; set; }
 
@@ -50,11 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<MarketingContact> MarketingContacts { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
         public virtual DbSet<PricingUnit> PricingUnits { get; set; }
 
-        public virtual DbSet<ProvisioningType> ProvisioningTypes { get; set; }
-
-        public virtual DbSet<PublicationStatus> PublicationStatuses { get; set; }
+        public DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
         public virtual DbSet<Solution> Solutions { get; set; }
 
@@ -71,8 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public virtual DbSet<SupplierContact> SupplierContacts { get; set; }
 
         public virtual DbSet<SupplierServiceAssociation> SupplierServiceAssociations { get; set; }
-
-        public virtual DbSet<TimeUnit> TimeUnits { get; set; }
 
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
@@ -194,45 +194,25 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             {
                 entity.ToTable("CatalogueItem");
                 entity.Property(e => e.CatalogueItemId).HasMaxLength(14);
+                entity.Property(e => e.CatalogueItemType)
+                    .HasConversion<int>()
+                    .HasColumnName("CatalogueItemTypeId");
                 entity.Property(e => e.Created).HasDefaultValueSql("(getutcdate())");
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(255);
-                entity.Property(e => e.PublishedStatusId).HasDefaultValueSql("((1))");
+                entity.Property(e => e.PublishedStatus)
+                    .HasConversion<int>()
+                    .HasColumnName("PublishedStatusId")
+                    .HasDefaultValue(PublicationStatus.Draft);
                 entity.Property(e => e.SupplierId)
                     .IsRequired()
                     .HasMaxLength(6);
-                entity.HasOne(d => d.CatalogueItemType)
-                    .WithMany()
-                    .HasForeignKey(d => d.CatalogueItemTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CatalogueItem_CatalogueItemType");
-                entity.HasOne(d => d.PublishedStatus)
-                    .WithMany()
-                    .HasForeignKey(d => d.PublishedStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CatalogueItem_PublicationStatus");
                 entity.HasOne(d => d.Supplier)
                     .WithMany(p => p.CatalogueItems)
                     .HasForeignKey(d => d.SupplierId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CatalogueItem_Supplier");
-            });
-
-            modelBuilder.Entity<CatalogueItemType>(entity =>
-            {
-                entity.ToTable("CatalogueItemType");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id)
-                    .HasColumnName("CatalogueItemTypeId")
-                    .HasDefaultValue(1)
-                    .ValueGeneratedNever()
-                    .IsRequired();
-                entity.HasIndex(e => e.Name, "AK_CatalogueItemType_Name")
-                    .IsUnique();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<CataloguePrice>(entity =>
@@ -241,33 +221,28 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.CatalogueItemId)
                     .IsRequired()
                     .HasMaxLength(14);
+                entity.Property(e => e.CataloguePriceType)
+                    .HasConversion<int>()
+                    .HasColumnName("CataloguePriceTypeId");
                 entity.Property(e => e.CurrencyCode)
                     .IsRequired()
                     .HasMaxLength(3);
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 4)");
+                entity.Property(e => e.ProvisioningType)
+                    .HasConversion<int>()
+                    .HasColumnName("ProvisioningTypeId");
+                entity.Property(e => e.TimeUnit)
+                    .HasConversion<int>()
+                    .HasColumnName("TimeUnitId");
 
                 entity.HasOne(d => d.CatalogueItem)
                     .WithMany(p => p.CataloguePrices)
                     .HasForeignKey(d => d.CatalogueItemId);
 
-                entity.HasOne(d => d.CataloguePriceType)
-                    .WithMany(p => p.CataloguePrices)
-                    .HasForeignKey(d => d.CataloguePriceTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-
                 entity.HasOne(d => d.PricingUnit)
                     .WithMany(p => p.CataloguePrices)
                     .HasForeignKey(d => d.PricingUnitId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
-
-                entity.HasOne(d => d.ProvisioningType)
-                    .WithMany(p => p.CataloguePrices)
-                    .HasForeignKey(d => d.ProvisioningTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-
-                entity.HasOne(d => d.TimeUnit)
-                    .WithMany(p => p.CataloguePrices)
-                    .HasForeignKey(d => d.TimeUnitId);
             });
 
             modelBuilder.Entity<CataloguePriceTier>(entity =>
@@ -278,15 +253,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.HasOne(d => d.CataloguePrice)
                     .WithMany(p => p.CataloguePriceTiers)
                     .HasForeignKey(d => d.CataloguePriceId);
-            });
-
-            modelBuilder.Entity<CataloguePriceType>(entity =>
-            {
-                entity.ToTable("CataloguePriceType");
-                entity.Property(e => e.CataloguePriceTypeId).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(10);
             });
 
             modelBuilder.Entity<CompliancyLevel>(entity =>
@@ -403,30 +369,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.TierName)
                     .IsRequired()
                     .HasMaxLength(30);
-            });
-
-            modelBuilder.Entity<ProvisioningType>(entity =>
-            {
-                entity.ToTable("ProvisioningType");
-                entity.Property(e => e.ProvisioningTypeId).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(35);
-            });
-
-            modelBuilder.Entity<PublicationStatus>(entity =>
-            {
-                entity.ToTable("PublicationStatus");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id)
-                    .HasDefaultValue(1)
-                    .ValueGeneratedNever()
-                    .IsRequired();
-                entity.HasIndex(e => e.Name, "IX_PublicationStatusName")
-                    .IsUnique();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(16);
             });
 
             modelBuilder.Entity<Solution>(entity =>
@@ -591,18 +533,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey(d => d.CatalogueItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SupplierServiceAssociation_CatalogueItem");
-            });
-
-            modelBuilder.Entity<TimeUnit>(entity =>
-            {
-                entity.ToTable("TimeUnit");
-                entity.Property(e => e.TimeUnitId).ValueGeneratedNever();
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(32);
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<AspNetRole>(entity =>

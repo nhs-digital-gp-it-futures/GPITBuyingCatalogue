@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     {
         public ImplementationTimescales(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/implementation")
         {
-            using var context = GetBCContext();
+            using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == "99999-99");
             solution.ImplementationDetail = string.Empty;
             context.SaveChanges();
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
             solution.ImplementationDetail.Should().Be(implementation);
         }

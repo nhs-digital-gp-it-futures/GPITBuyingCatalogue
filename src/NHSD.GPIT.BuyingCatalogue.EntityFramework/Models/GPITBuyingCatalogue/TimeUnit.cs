@@ -1,22 +1,18 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class TimeUnit
+    public enum TimeUnit
     {
-        public TimeUnit()
-        {
-            CataloguePrices = new HashSet<CataloguePrice>();
-        }
+        [Display(Name = "month")]
+        [Description("per month")]
+        [AmountInYear(12)]
+        PerMonth = 1,
 
-        public int TimeUnitId { get; set; }
-
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public virtual ICollection<CataloguePrice> CataloguePrices { get; set; }
+        [Display(Name = "year")]
+        [Description("per year")]
+        [AmountInYear(1)]
+        PerYear = 2,
     }
 }

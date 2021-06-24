@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -23,7 +24,7 @@
                                              label-text="What price have you agreed, in pounds?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
                                              Prefix="@Model.CurrencySymbol"
-                                             Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description" />
+                                             Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description()" />
 
                         <nhs-details label-text="How to fill this form">
                             <p><b>@Model.SecondColumnDetailsTitle</b></p>
