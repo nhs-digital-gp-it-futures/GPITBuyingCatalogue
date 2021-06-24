@@ -11,5 +11,5 @@ module "storage_account" {
   ip_rules             = [""]
   vnet_subnet_id       = ""
   kv_id                = local.kv_id
-  kv_key               = "test-to-change"
+  kv_key               = "${var.project}${var.environment}-storage-constring"
 }

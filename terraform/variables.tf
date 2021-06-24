@@ -28,3 +28,6 @@ variable "keyvault" {
 variable "keyvaultrg" {
   type = string
 }
+variable "kv_sqlusername" {
+  type = string
+}

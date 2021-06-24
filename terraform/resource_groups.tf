@@ -15,3 +15,12 @@ resource "azurerm_resource_group" "storageaccount" {
     architecture = "new"
   }
 }
+
+resource "azurerm_resource_group" "keyvault" {
+  name     = "${var.project}-${var.environment}-rg-keyvault"
+  location = var.region
+  tags = {
+    environment = var.environment,
+    architecture = "new"
+  }
+}
