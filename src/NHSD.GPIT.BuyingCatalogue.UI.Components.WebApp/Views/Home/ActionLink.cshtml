@@ -16,32 +16,35 @@
                              label-text="Code Example for the above Action Link"
                              size="Medium">
     <div class="app-tabs__container js-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue bracket">&lt;</span>
-        <span class="vs-light-theme-purple">vc:nhs-action link url</span>
-        <span class="vs-light-theme-blue">="action-link"&nbsp;</span>
-        <span class="vs-light-theme-purple">text</span>
-        <span class="vs-light-theme-blue">="This is an Action Link" </span>
+        <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-action-link url</span><vc:nhs-action link url="action-link"  text="This is an Action Link" /><span class="vs-light-theme-blue">="action-link"&nbsp;</span>
+        <span class="vs-light-theme-purple">text</span><span class="vs-light-theme-blue">="This is an Action Link" </span>
         <span class="vs-light-theme-blue bracket">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
 <br />
 <br />
 <nhs-table label-text="Attributes">
+
+    <nhs-table-column>attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+
     <nhs-table-row-container>
-        <nhs-table-cell column-name="Attribute">text</nhs-table-cell>
-        <nhs-table-cell column-name="Functionality">
+        <nhs-table-cell>text</nhs-table-cell>
+        <nhs-table-cell >
             <p>Setting this attribute will set the text that is displayed for the Action Link</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
+
     <nhs-table-row-container>
         <nhs-table-cell>url</nhs-table-cell>
         <nhs-table-cell>
             <p>Setting this attribute will set the url the action Link will redirect too.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="Yes" colour="Red" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -53,3 +56,4 @@
 
 
 
+<vc:nhs-action link url="action-link"  text="This is an Action Link" />

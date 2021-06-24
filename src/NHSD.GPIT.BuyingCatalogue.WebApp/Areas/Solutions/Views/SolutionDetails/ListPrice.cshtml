@@ -13,24 +13,23 @@
 
                     @if (Model.HasFlatListPrices())
                     {
-                        <table data-test-id="flat-list-price-table">
-                            <caption>Flat list price</caption>
-                            <thead role="rowgroup">
-                                <tr role="row">
-                                    <th>Price</th>
-                                    <th>Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.FlatListPrices)
-                                {
-                                    <tr role="row">
-                                        <td data-test-id="price">@item.CurrencyCode@item.Price</td>
-                                        <td data-test-id="pricing-unit">@item.Unit</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                        <nhs-table data-test-id="flat-list-price-table">
+                            <nhs-table-column>Price</nhs-table-column>
+                            <nhs-table-column>Unit</nhs-table-column>
+
+                            @foreach (var item in Model.FlatListPrices)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell data-test-id="price">
+                                        @item.CurrencyCode@item.Price
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        @item.Unit
+                                    </nhs-table-cell>
+
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
                     }
                 </div>
             </div>
