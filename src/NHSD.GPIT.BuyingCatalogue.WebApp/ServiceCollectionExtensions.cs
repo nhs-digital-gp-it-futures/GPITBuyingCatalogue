@@ -107,7 +107,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
             services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
-            services.AddDbContext<OrderingDbContext>(options => options.UseSqlServer(catalogueOrderingConnectionString));
         }
 
         public static void ConfigureSession(this IServiceCollection services)
@@ -150,9 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             if (string.IsNullOrWhiteSpace(port))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be set for the smtp port");
 
-            int portNumber;
-
-            if (!int.TryParse(port, out portNumber))
+            if (!int.TryParse(port, out var portNumber))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueSmtpPortEnvironmentVariable}' must be a valid smtp port number");
 
             var allowInvalidCertificate = configuration.GetValue<bool>("AllowInvalidCertificate");

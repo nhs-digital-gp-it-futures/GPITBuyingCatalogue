@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
 
             solution.Features.Should().ContainEquivalentOf(feature);
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
 
             foreach (var feature in addedFeatures)

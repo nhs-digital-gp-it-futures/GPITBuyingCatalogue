@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task Organisation_OrganisationDetailsDisplayed()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var jsonString = (await context.Organisations.SingleAsync(s => s.OrganisationId == Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085"))).Address;
             var dbAddress = JsonSerializer.Deserialize<Address>(jsonString, JsonOptions());
 
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task Organisation_OdsCodeDisplayed()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var dbOdsCode = (await context.Organisations.SingleAsync(s => s.OrganisationId == Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085"))).OdsCode;
 
             var pageOdsCode = AdminPages.Organisation.GetOdsCode();
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             AdminPages.Organisation.ViewUserDetails(user.Id);
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var organisationName = (await context.Organisations.SingleAsync(s => s.OrganisationId == currentOrgId)).Name;
 
             AdminPages.UserDetails.GetOrganisationName().Should().BeEquivalentTo(organisationName);
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             AdminPages.UserDetails.DisableEnableUser();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var dbUser = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
             dbUser.Disabled.Should().BeTrue();
         }
@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             AdminPages.UserDetails.DisableEnableUser();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var dbUser = await context.AspNetUsers.SingleAsync(u => u.Id == user.Id);
             dbUser.Disabled.Should().BeFalse();
         }
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             var organisation = AdminPages.Organisation.GetRelatedOrganisation(relatedOrgId);
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var relatedOrgIds = (await context.RelatedOrganisations.ToListAsync()).Where(s => s.OrganisationId == currentOrgId);
             relatedOrgIds.Select(s => s.RelatedOrganisationId).Should().Contain(relatedOrgId);
 
@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             AdminPages.Organisation.RemoveRelatedOrganisation(relatedOrgId);
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var relationships = await context.RelatedOrganisations.ToListAsync();
             var selectedRelationships = relationships.Where(o => o.OrganisationId == currentOrgId);
 
@@ -172,15 +172,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
         private static JsonSerializerOptions JsonOptions()
         {
-            return  new JsonSerializerOptions
+            return new()
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
             };
         }
 
         private async Task<Guid> AddRelatedOrganisation(Guid currentOrgId)
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var organisations = (await context.Organisations.ToListAsync()).Where(o => o.OrganisationId != currentOrgId).ToList();
 
             var relatedOrganisation = new RelatedOrganisation
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         private async Task<AspNetUser> AddUser(Guid currentOrgId, bool IsEnabled = true)
         {
             var user = GenerateUser.GenerateAspNetUser(currentOrgId, DefaultPassword, IsEnabled);
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             context.Add(user);
             await context.SaveChangesAsync();
             driver.Navigate().Refresh();

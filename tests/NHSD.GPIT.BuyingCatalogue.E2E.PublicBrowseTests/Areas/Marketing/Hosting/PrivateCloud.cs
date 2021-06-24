@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
             MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var hosting = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
