@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditonalServices;
@@ -21,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Authorize]
     [Area("Order")]
     [Route("order/organisation/{odsCode}/order/{callOffId}/additional-services")]
-    public class AdditionalServicesController : Controller
+    public sealed class AdditionalServicesController : Controller
     {
         private readonly ILogWrapper<AdditionalServicesController> logger;
         private readonly IOrderService orderService;
@@ -55,8 +53,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.orderSessionService = orderSessionService ?? throw new ArgumentNullException(nameof(orderSessionService));
         }
 
+        // TODO: callOffId should be of type CallOffId
         public async Task<IActionResult> Index(string odsCode, string callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             sessionService.ClearSession();
@@ -67,9 +67,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new AdditionalServiceModel(odsCode, order, orderItems));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("select/additional-service")]
         public async Task<IActionResult> SelectAdditionalService(string odsCode, string callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -91,15 +93,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionIds(solutionIds);
 
-            if (!additionalServices.Any())
-                return View("NoAdditionalServicesFound", new NoAdditionalServicesFoundModel(odsCode, callOffId));
-
-            return View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId));
+            return !additionalServices.Any()
+                ? View("NoAdditionalServicesFound", new NoAdditionalServicesFoundModel(odsCode, callOffId))
+                : View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("select/additional-service")]
         public async Task<IActionResult> SelectAdditionalService(string odsCode, string callOffId, SelectAdditionalServiceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
@@ -112,12 +115,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
 
-            if (existingOrder != null)
+            if (existingOrder is not null)
             {
                 return RedirectToAction(
-                    actionName: nameof(EditAdditionalService),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId, id = existingOrder.CatalogueItemId });
+                    nameof(EditAdditionalService),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId, id = existingOrder.CatalogueItemId });
             }
 
             state.CatalogueItemId = model.SelectedSolutionId;
@@ -129,41 +132,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             orderSessionService.SetOrderStateToSession(state);
 
-            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+            var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
             if (prices.Count == 1)
             {
                 orderSessionService.SetPrice(prices.Single());
 
                 return RedirectToAction(
-                    actionName: nameof(SelectAdditionalServiceRecipients),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(SelectAdditionalServiceRecipients),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId });
             }
 
             return RedirectToAction(
-                actionName: nameof(SelectAdditionalServicePrice),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(SelectAdditionalServicePrice),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("select/additional-service/price")]
         public async Task<IActionResult> SelectAdditionalServicePrice(string odsCode, string callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
             var solution = await solutionsService.GetSolution(state.CatalogueItemId);
 
-            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+            var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
             return View(new SelectAdditionalServicePriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("select/additional-service/price")]
         public async Task<IActionResult> SelectAdditionalServicePrice(string odsCode, string callOffId, SelectAdditionalServicePriceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
@@ -172,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.SetPrices(solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList());
+                model.SetPrices(solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList());
                 return View(model);
             }
 
@@ -181,19 +188,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             orderSessionService.SetPrice(cataloguePrice);
 
             return RedirectToAction(
-                actionName: nameof(SelectAdditionalServiceRecipients),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(SelectAdditionalServiceRecipients),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("select/additional-service/price/recipients")]
         public async Task<IActionResult> SelectAdditionalServiceRecipients(string odsCode, string callOffId, string selectionMode)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            if (state.ServiceRecipients == null)
+            if (state.ServiceRecipients is null)
             {
                 var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
                 state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
@@ -203,6 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectAdditionalServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode, state.IsNewOrder, state.CatalogueItemId));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("select/additional-service/price/recipients")]
         public IActionResult SelectAdditionalServiceRecipients(string odsCode, string callOffId, SelectAdditionalServiceRecipientsModel model)
         {
@@ -223,17 +233,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!state.IsNewOrder)
             {
                 return RedirectToAction(
-                    actionName: nameof(EditAdditionalService),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                    nameof(EditAdditionalService),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId, id = state.CatalogueItemId });
             }
 
             return RedirectToAction(
-                actionName: nameof(SelectAdditionalServiceRecipientsDate),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(SelectAdditionalServiceRecipientsDate),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("select/additional-service/price/recipients/date")]
         public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, string callOffId)
         {
@@ -246,6 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectAdditionalServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate, defaultDeliveryDate));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("select/additional-service/price/recipients/date")]
         public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, string callOffId, SelectAdditionalServiceRecipientsDateModel model)
         {
@@ -253,7 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            (var date, var error) = model.ToDateTime();
+            (DateTime? date, var error) = model.ToDateTime();
 
             if (error != null)
                 ModelState.AddModelError("Day", error);
@@ -263,12 +275,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             state.PlannedDeliveryDate = date;
 
-            state.ServiceRecipients.All(c =>
-            {
-                c.DeliveryDate = date;
-                return true;
-            });
-
             await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId, date.Value);
 
             orderSessionService.SetOrderStateToSession(state);
@@ -276,24 +282,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (state.ProvisioningType == ProvisioningType.Declarative)
             {
                 return RedirectToAction(
-                    actionName: nameof(SelectFlatDeclarativeQuantity),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(SelectFlatDeclarativeQuantity),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId });
             }
-            else if (state.ProvisioningType == ProvisioningType.OnDemand)
+
+            if (state.ProvisioningType == ProvisioningType.OnDemand)
             {
                 return RedirectToAction(
-                    actionName: nameof(SelectFlatOnDemandQuantity),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(SelectFlatOnDemandQuantity),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId });
             }
 
             return RedirectToAction(
-                actionName: nameof(EditAdditionalService),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                nameof(EditAdditionalService),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, id = state.CatalogueItemId });
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("select/additional-service/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, string callOffId)
         {
@@ -304,12 +312,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("select/additional-service/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, string callOffId, SelectFlatDeclarativeQuantityModel model)
         {
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            (var quantity, var error) = model.GetQuantity();
+            (int? quantity, var error) = model.GetQuantity();
 
             if (error != null)
                 ModelState.AddModelError("Quantity", error);
@@ -321,20 +330,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             state.Quantity = quantity;
 
-            state.ServiceRecipients.All(c =>
-            {
-                c.Quantity = quantity;
-                return true;
-            });
-
             orderSessionService.SetOrderStateToSession(state);
 
             return RedirectToAction(
-                actionName: nameof(EditAdditionalService),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                nameof(EditAdditionalService),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, id = state.CatalogueItemId });
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpGet("select/additional-service/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId)
         {
@@ -345,17 +349,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.TimeUnit));
         }
 
+        // TODO: callOffId should be of type CallOffId
         [HttpPost("select/additional-service/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId, SelectFlatOnDemandQuantityModel model)
         {
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            (var quantity, var error) = model.GetQuantity();
+            (int? quantity, var error) = model.GetQuantity();
 
             if (error != null)
                 ModelState.AddModelError(nameof(model.Quantity), error);
 
-            if (string.IsNullOrWhiteSpace(model.TimeUnit))
+            if (model.TimeUnit is null)
                 ModelState.AddModelError(nameof(model.TimeUnit), "Time Unit is Required");
 
             if (!ModelState.IsValid)
@@ -364,22 +369,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = orderSessionService.GetOrderStateFromSession();
 
             state.Quantity = quantity;
-            state.TimeUnit = EnumerationBase.FromName<TimeUnit>(model.TimeUnit);
-
-            state.ServiceRecipients.All(c =>
-            {
-                c.Quantity = quantity;
-                return true;
-            });
+            state.TimeUnit = model.TimeUnit.Value;
 
             orderSessionService.SetOrderStateToSession(state);
 
             return RedirectToAction(
-                actionName: nameof(EditAdditionalService),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                nameof(EditAdditionalService),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, id = state.CatalogueItemId });
         }
 
+        // TODO: callOffId should be of type CallOffId
+        // TODO: id should be renamed to solutionId or catalogueItemId
+        // TODO: solutionId/catalogueItemId should be of type CatalogueItemId
         [HttpGet("{id}")]
         public async Task<IActionResult> EditAdditionalService(string odsCode, string callOffId, string id)
         {
@@ -392,6 +394,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new EditAdditionalServiceModel(odsCode, callOffId, id, state, isNewSolution));
         }
 
+        // TODO: callOffId should be of type CallOffId
+        // TODO: id should be renamed to solutionId or catalogueItemId
+        // TODO: solutionId/catalogueItemId should be of type CatalogueItemId
         [HttpPost("{id}")]
         public async Task<IActionResult> EditAdditionalService(string odsCode, string callOffId, string id, EditAdditionalServiceModel model)
         {
@@ -401,7 +406,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
-                (var date, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
+                (DateTime? date, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
 
                 if (error != null)
                 {
@@ -416,9 +421,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueItemId);
 
             var solutionPrice = solutionListPrices.CataloguePrices.Where(cp =>
-                cp.ProvisioningType.ProvisioningTypeId == state.ProvisioningType.Id
-                && cp.CataloguePriceType.CataloguePriceTypeId == state.Type.Id
-                && (cp.TimeUnit is null || cp.TimeUnit.TimeUnitId == state.TimeUnit.Id)).FirstOrDefault();
+                cp.ProvisioningType == state.ProvisioningType
+                && cp.CataloguePriceType == state.Type
+                && (cp.TimeUnit is null || cp.TimeUnit == state.TimeUnit)).FirstOrDefault();
 
             if (solutionPrice is not null)
             {
@@ -442,11 +447,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             sessionService.ClearSession();
 
             return RedirectToAction(
-                actionName: nameof(Index),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(Index),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
+        // TODO: callOffId should be of type CallOffId
+        // TODO: id should be renamed to solutionId or catalogueItemId
+        // TODO: solutionId/catalogueItemId should be of type CatalogueItemId
         [HttpGet("delete/{id}/confirmation/{serviceName}")]
         public async Task<IActionResult> DeleteAdditionalService(string odsCode, string callOffId, string id, string serviceName)
         {
@@ -457,6 +465,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteAdditionalServiceModel(odsCode, callOffId, id, serviceName, order.Description));
         }
 
+        // TODO: callOffId should be of type CallOffId
+        // TODO: id should be renamed to solutionId or catalogueItemId
+        // TODO: solutionId/catalogueItemId should be of type CatalogueItemId
         [HttpPost("delete/{id}/confirmation/{serviceName}")]
         public async Task<IActionResult> DeleteAdditionalService(string odsCode, string callOffId, string id, string serviceName, DeleteAdditionalServiceModel model)
         {
@@ -465,11 +476,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderItemService.DeleteOrderItem(callOffId, id);
 
             return RedirectToAction(
-                actionName: nameof(DeleteContinue),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id, serviceName });
+                nameof(DeleteContinue),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, id, serviceName });
         }
 
+        // TODO: callOffId should be of type CallOffId
+        // TODO: id should be renamed to solutionId or catalogueItemId
+        // TODO: solutionId/catalogueItemId should be of type CatalogueItemId
         [HttpGet("delete/{id}/confirmation/{serviceName}/continue")]
         public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string serviceName)
         {

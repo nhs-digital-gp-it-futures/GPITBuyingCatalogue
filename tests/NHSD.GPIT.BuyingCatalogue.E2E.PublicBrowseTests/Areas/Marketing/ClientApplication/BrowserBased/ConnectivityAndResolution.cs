@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).ClientApplication;
             clientApplication.Should().ContainEquivalentOf(@$"""MinimumConnectionSpeed"":""0.5Mbps""");
             clientApplication.Should().ContainEquivalentOf(@$"""MinimumDesktopResolution"":""16:9 - 640 x 360""");

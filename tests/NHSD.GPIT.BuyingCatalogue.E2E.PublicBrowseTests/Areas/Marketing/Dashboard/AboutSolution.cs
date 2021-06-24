@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
             solution.Summary.Should().Be(summary);
             solution.FullDescription.Should().Be(description);
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task AboutSolution_SectionMarkedAsIncompleteAsync()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
             solution.Summary = string.Empty;
             solution.FullDescription = string.Empty;
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task AboutSolution_SummaryLeftEmpty()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
             solution.Summary = string.Empty;
 

@@ -13,6 +13,7 @@
 :r ./InsertProvisioningTypes.sql
 :r ./InsertSuppliers.sql
 
+:r ./InsertOrderStatuses.sql
 :r ./InsertTimeUnits.sql
 :r ./InsertSolutions.sql
 :r ./InsertAdditionalServices.sql

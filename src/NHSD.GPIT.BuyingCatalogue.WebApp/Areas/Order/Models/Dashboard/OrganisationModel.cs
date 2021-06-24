@@ -2,16 +2,16 @@
 using System.Linq;
 using System.Security.Claims;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 {
-    public class OrganisationModel : OrderingBaseModel
+    public sealed class OrganisationModel : OrderingBaseModel
     {
-        private readonly IList<EntityFramework.Models.Ordering.Order> allOrders;
+        private readonly IList<EntityFramework.Ordering.Models.Order> allOrders;
 
-        public OrganisationModel(Organisation organisation, ClaimsPrincipal user, IList<EntityFramework.Models.Ordering.Order> allOrders)
+        public OrganisationModel(Organisation organisation, ClaimsPrincipal user, IList<EntityFramework.Ordering.Models.Order> allOrders)
         {
             organisation.ValidateNotNull(nameof(organisation));
 
@@ -28,12 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 
         public bool CanActOnBehalf { get; set; }
 
-        public IList<EntityFramework.Models.Ordering.Order> InCompleteOrders
+        public IList<EntityFramework.Ordering.Models.Order> InCompleteOrders
         {
             get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus == OrderStatus.Incomplete).ToList(); }
         }
 
-        public IList<EntityFramework.Models.Ordering.Order> CompleteOrders
+        public IList<EntityFramework.Ordering.Models.Order> CompleteOrders
         {
             get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus == OrderStatus.Complete).ToList(); }
         }

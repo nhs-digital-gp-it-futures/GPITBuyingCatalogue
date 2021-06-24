@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
     {
         public NativeDesktopDashboard(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop")
         {
-            using var context = GetBCContext();
+            using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == "99999-99");
             solution.ClientApplication = null;
             context.SaveChanges();

@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
-    public class SelectFlatOnDemandQuantityModel : OrderingBaseModel
+    public sealed class SelectFlatOnDemandQuantityModel : OrderingBaseModel
     {
         public SelectFlatOnDemandQuantityModel()
         {
         }
 
-        public SelectFlatOnDemandQuantityModel(string odsCode, string callOffId, string solutionName, int? quantity, EntityFramework.Models.Ordering.TimeUnit timeUnit)
+        public SelectFlatOnDemandQuantityModel(string odsCode, string callOffId, string solutionName, int? quantity, TimeUnit? timeUnit)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/recipients/date";
             BackLinkText = "Go back";
@@ -18,9 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             CallOffId = callOffId;
             SolutionName = solutionName;
             Quantity = quantity.ToString();
-            TimeUnit = timeUnit != null ? timeUnit.Name : string.Empty;
+            TimeUnit = timeUnit;
         }
 
+        // TODO: Should be of type CallOffId
         public string CallOffId { get; set; }
 
         public string SolutionName { get; set; }
@@ -28,19 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         [Required(ErrorMessage = "Enter a quantity")]
         public string Quantity { get; set; }
 
-        public string TimeUnit { get; set; }
+        public TimeUnit? TimeUnit { get; set; }
 
-        public List<EntityFramework.Models.Ordering.TimeUnit> TimeUnits
-        {
-            get
-            {
-                return new List<EntityFramework.Models.Ordering.TimeUnit>
-                {
-                    EntityFramework.Models.Ordering.TimeUnit.PerMonth,
-                    EntityFramework.Models.Ordering.TimeUnit.PerYear,
-                };
-            }
-        }
+        public List<TimeUnit> TimeUnits { get; } = Enum.GetValues<TimeUnit>().ToList();
 
         public (int? Quantity, string Error) GetQuantity()
         {

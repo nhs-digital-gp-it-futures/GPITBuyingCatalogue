@@ -1,20 +1,9 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class ProvisioningType
+    public enum ProvisioningType
     {
-        public ProvisioningType()
-        {
-            CataloguePrices = new HashSet<CataloguePrice>();
-        }
-
-        public int ProvisioningTypeId { get; set; }
-
-        public string Name { get; set; }
-
-        public virtual ICollection<CataloguePrice> CataloguePrices { get; set; }
+        Patient = 1,
+        Declarative = 2,
+        OnDemand = 3,
     }
 }

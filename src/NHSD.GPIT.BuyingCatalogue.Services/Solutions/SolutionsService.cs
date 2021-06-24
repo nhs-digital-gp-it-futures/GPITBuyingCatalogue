@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
-    public class SolutionsService : ISolutionsService
+    public sealed class SolutionsService : ISolutionsService
     {
         private const string GpitFuturesFrameworkId = "NHSDGP001";
         private const string DfocvcFrameworkId = "DFOCVC001";
@@ -34,32 +34,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
 
-        public async Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
+        public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
+                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
                 .ToListAsync();
         }
 
         public async Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities)
         {
             var solutions = await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
                 .ToListAsync();
 
             // TODO - Refactor this. Should be possible to include in the above expression
@@ -76,84 +70,56 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solutions;
         }
 
-        public async Task<CatalogueItem> GetSolutionListPrices(string solutionId)
+        // TODO: solutionId should be of type CatalogueItemId
+        public Task<CatalogueItem> GetSolutionListPrices(string solutionId)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            return await dbContext.CatalogueItems
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.ProvisioningType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.CataloguePriceType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.TimeUnit)
-                .Where(x => x.CatalogueItemId == solutionId)
+            return dbContext.CatalogueItems
+                .Include(i => i.CataloguePrices)
+                .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<CatalogueItem> GetSolution(string solutionId)
+        // TODO: solutionId should be of type CatalogueItemId
+        public Task<CatalogueItem> GetSolution(string solutionId)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.FrameworkSolutions)
-                .ThenInclude(x => x.Framework)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.MarketingContacts)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionEpics)
-                .ThenInclude(x => x.Status)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionEpics)
-                .ThenInclude(x => x.Epic)
-                .ThenInclude(x => x.CompliancyLevel)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.ProvisioningType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.CataloguePriceType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.TimeUnit)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.PricingUnit)
-                .Include(x => x.Supplier)
-                .ThenInclude(s => s.CatalogueItems)
-                .ThenInclude(c => c.AssociatedService)
-                .Include(x => x.Supplier)
-                .ThenInclude(s => s.CatalogueItems)
-                .ThenInclude(c => c.AdditionalService)
-                .Include(x => x.Supplier)
-                .ThenInclude(s => s.CatalogueItems)
-                .ThenInclude(c => c.CataloguePrices)
-                .ThenInclude(cp => cp.PricingUnit)
-                .Where(x => x.CatalogueItemId == solutionId)
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
+                .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
+                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Status)
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Epic).ThenInclude(e => e.CompliancyLevel)
+                .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)                
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AdditionalService)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetDFOCVCSolutions()
+        public Task<List<CatalogueItem>> GetDFOCVCSolutions()
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == DfocvcFrameworkId))
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == DfocvcFrameworkId))
                 .ToListAsync();
         }
 
-        public async Task<List<Capability>> GetFuturesCapabilities()
+        public Task<List<Capability>> GetFuturesCapabilities()
         {
-            return await dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
-                .OrderBy(x => x.Name)
+            return dbContext.Capabilities.Where(c => c.Category.Name == "GP IT Futures")
+                .OrderBy(c => c.Name)
                 .ToListAsync();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task SaveSolutionDescription(string solutionId, string summary, string description, string link)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -166,6 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task SaveSolutionFeatures(string solutionId, string[] features)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -175,6 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task SaveIntegrationLink(string solutionId, string integrationLink)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -184,6 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task SaveImplementationDetail(string solutionId, string detail)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -193,15 +162,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveRoadmap(string solutionId, string roadmap)
+        public async Task SaveRoadmap(string solutionId, string roadMap)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
 
             var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
-            solution.RoadMap = roadmap;
+            solution.RoadMap = roadMap;
             await solutionRepository.SaveChangesAsync();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task<ClientApplication> GetClientApplication(string solutionId)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -210,6 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution.GetClientApplication();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task SaveClientApplication(string solutionId, ClientApplication clientApplication)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -220,6 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task<Hosting> GetHosting(string solutionId)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -228,6 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution.GetHosting();
         }
 
+        // TODO: solutionId should be of type CatalogueItemId
         public async Task SaveHosting(string solutionId, Hosting hosting)
         {
             solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
@@ -238,11 +211,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task<Supplier> GetSupplier(string supplierId)
+        public Task<Supplier> GetSupplier(string supplierId)
         {
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            return await supplierRepository.SingleAsync(x => x.Id == supplierId);
+            return supplierRepository.SingleAsync(x => x.Id == supplierId);
         }
 
         public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
@@ -286,18 +259,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await marketingContactRepository.SaveChangesAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
+        public Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.SupplierId == supplierId
-                        && x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published")
-                .OrderBy(x => x.Name)
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.SupplierId == supplierId
+                    && i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published)
+                .OrderBy(i => i.Name)
                 .ToListAsync();
         }
     }

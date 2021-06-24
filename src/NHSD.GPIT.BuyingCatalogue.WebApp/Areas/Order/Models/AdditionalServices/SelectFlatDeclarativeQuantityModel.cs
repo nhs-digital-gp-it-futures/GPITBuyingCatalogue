@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
-    public class SelectFlatDeclarativeQuantityModel : OrderingBaseModel
+    public sealed class SelectFlatDeclarativeQuantityModel : OrderingBaseModel
     {
         public SelectFlatDeclarativeQuantityModel()
         {
@@ -21,9 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 
         public (int? Quantity, string Error) GetQuantity()
         {
-            int quantity;
-
-            if (!int.TryParse(Quantity, out quantity))
+            if (!int.TryParse(Quantity, out var quantity))
                 return (null, "Quantity must be a number");
 
             if (quantity < 1)

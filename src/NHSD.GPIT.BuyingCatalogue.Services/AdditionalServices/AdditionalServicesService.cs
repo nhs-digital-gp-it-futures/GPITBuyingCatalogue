@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditonalServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 {
-    public class AdditionalServicesService : IAdditionalServicesService
+    public sealed class AdditionalServicesService : IAdditionalServicesService
     {
         private readonly GPITBuyingCatalogueDbContext dbContext;
 
@@ -19,25 +18,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<string> solutionIds)
+        public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<string> solutionIds)
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Include(x => x.AdditionalService)
-                .Where(
-                    x => solutionIds.Contains(x.AdditionalService.SolutionId)
-                        && x.CatalogueItemType.Name == "Additional Service"
-                        && x.PublishedStatus.Name == "Published")
-                .OrderBy(x => x.Name)
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Include(i => i.AdditionalService)
+                .Where(i => solutionIds.Contains(i.AdditionalService.SolutionId)
+                    && i.CatalogueItemType == CatalogueItemType.AdditionalService
+                    && i.PublishedStatus == PublicationStatus.Published)
+                .OrderBy(i => i.Name)
                 .ToListAsync();
         }
 
-        public async Task<AdditionalService> GetAdditionalService(string catalogueItemId)
+        // TODO: catalogueItemId should be of type CatalogueItemId
+        public Task<AdditionalService> GetAdditionalService(string catalogueItemId)
         {
-            return await dbContext.AdditionalServices.SingleAsync(x => x.CatalogueItemId == catalogueItemId);
+            return dbContext.AdditionalServices.SingleAsync(x => x.CatalogueItemId == catalogueItemId);
         }
     }
 }

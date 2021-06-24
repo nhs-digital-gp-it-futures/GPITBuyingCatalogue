@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
         [Fact]
         public async Task CapabilitySelector_AllCapabilitiesDisplayed()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var capabilities = await context.FrameworkCapabilities.Include(s => s.Capability).Where(s => s.FrameworkId == "NHSDGP001").ToListAsync();
 
             var capabilityCheckboxes = PublicBrowsePages.CapabilitySelectorActions.GetAllCheckboxLabels();

@@ -47,7 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            output.Reinitialize("strong", TagMode.StartTagAndEndTag);
+            output.TagName = "strong";
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             var selectedColourClass = ChosenTagColour switch
             {
