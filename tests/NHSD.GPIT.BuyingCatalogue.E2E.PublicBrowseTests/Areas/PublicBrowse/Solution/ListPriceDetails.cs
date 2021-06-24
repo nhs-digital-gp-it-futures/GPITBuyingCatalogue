@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await using var context = GetEndToEndDbContext();
             var dbPrices = await context.CataloguePrices.Where(s => s.CatalogueItemId == "99999-001").ToListAsync();
 
-            prices.Should().BeEquivalentTo(dbPrices.Select(s => $"£{s.Price}"));
+            prices.Should().Contain(dbPrices.Select(s => s.Price.ToString()));
         }
     }
 }
