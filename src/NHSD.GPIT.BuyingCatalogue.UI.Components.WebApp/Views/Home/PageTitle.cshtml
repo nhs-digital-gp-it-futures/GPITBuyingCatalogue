@@ -15,16 +15,11 @@
                              label-text="Code Example for the above Page Title"
                              size="Medium">
     <div class="app-tabs__container js-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue bracket">&lt;</span>
-        <span class="vs-light-theme-purple">nhs-page-title</span><br/>
-        <span class="vs-light-theme-purple first-layer">title</span>
-        <span class="vs-light-theme-blue">="Page Titles"&nbsp;</span><br />
-        <span class="vs-light-theme-purple first-layer">caption</span>
-        <span class="vs-light-theme-blue">="Tag Helper" </span><br />
-        <span class="vs-light-theme-purple first-layer">advice</span>
-        <span class="vs-light-theme-blue">="Help users understand which page they're on" </span><br />
-        <span class="vs-light-theme-purple first-layer">additional-advice</span>
-        <span class="vs-light-theme-blue">="This page is rendered from PageTitle.cshtml using the BlankModel." </span><br />
+        <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">nhs-page-title</span><br/>
+        <span class="vs-light-theme-purple first-layer">title</span><span class="vs-light-theme-blue">="Page Titles"&nbsp;</span><br />
+        <span class="vs-light-theme-purple first-layer">caption</span><span class="vs-light-theme-blue">="Tag Helper" </span><br />
+        <span class="vs-light-theme-purple first-layer">advice</span><span class="vs-light-theme-blue">="Help users understand which page they're on" </span><br />
+        <span class="vs-light-theme-purple first-layer">additional-advice</span><span class="vs-light-theme-blue">="This page is rendered from PageTitle.cshtml using the BlankModel." </span><br />
         <span class="vs-light-theme-blue bracket">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
@@ -32,12 +27,16 @@
 <p style="margin-bottom:30px;"></p>
 
 <nhs-table label-text="Attributes">
+    <nhs-table-column>Attribute</nhs-table-column>
+    <nhs-table-column>Functionality</nhs-table-column>
+    <nhs-table-column>Required</nhs-table-column>
+
     <nhs-table-row-container>
-        <nhs-table-cell column-name="Attribute">title</nhs-table-cell>
-        <nhs-table-cell column-name="Functionality">
+        <nhs-table-cell>title</nhs-table-cell>
+        <nhs-table-cell>
             <p>Setting this attribute will set the page title.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="No" colour="Green" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -46,7 +45,7 @@
         <nhs-table-cell>
             <p>Setting this attribute will add a caption for the title just below the title.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="No" colour="Green" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -55,7 +54,7 @@
         <nhs-table-cell>
             <p>Setting this attribute will add page advice for the user.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="No" colour="Green" />
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -64,7 +63,7 @@
         <nhs-table-cell>
             <p>Setting this attribute will add an inset text below the title. can be used for adding more advice that needs to be prominent.</p>
         </nhs-table-cell>
-        <nhs-table-cell column-name="Required">
+        <nhs-table-cell>
             <nhs-tag text="No" colour="Green" />
         </nhs-table-cell>
     </nhs-table-row-container>
