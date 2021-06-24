@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Status)
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Epic).ThenInclude(e => e.CompliancyLevel)
                 .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)                
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AdditionalService)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.CatalogueItemId == solutionId)
