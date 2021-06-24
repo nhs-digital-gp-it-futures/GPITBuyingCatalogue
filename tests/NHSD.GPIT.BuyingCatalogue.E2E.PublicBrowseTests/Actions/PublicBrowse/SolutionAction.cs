@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
             return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.FlatPriceTable)
                 .FindElements(By.CssSelector("tbody tr"))
-                .Select(s => s.FindElement(Objects.PublicBrowse.SolutionObjects.PriceColumn).Text);
+                .Select(s => s.FindElement(Objects.PublicBrowse.SolutionObjects.PriceColumn).Text.Split("£")[1]);
         }
 
         internal IEnumerable<string> GetSummaryAndDescriptions()
