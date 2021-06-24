@@ -3,7 +3,7 @@
     ViewData["Title"] = Model.Title;
 }
 
-<div class="nhsuk-width-container" data-test-id="delete-catalogue-page">
+<div class="nhsuk-width-container">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
@@ -17,17 +17,15 @@
                 <nhs-fieldset-form-container asp-for="@Model"
                                              label-text="Order Description"
                                              label-hint="@Model.OrderDescription">
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-two-thirds">
-                            <div>
-                                <nhs-submit-button text="Confirm Delete" />
-                            </div>
-                            <div>
-                                <vc:nhs-backlink url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/associated-services/@Model.OrderItemId"
-                                                 text="Cancel delete" />
-                            </div>
-                        </div>
-                    </div>
+
+                    <nhs-submit-button text="Confirm Delete" />
+                    <vc:nhs-backlink text="Cancel delete"
+                                     url="@Url.Action(
+                                            action: "EditAssociatedService",
+                                            controller: "AssociatedServices",
+                                            values: new { odsCode = Model.OdsCode,
+                                                          callOffId = Model.CallOffId,
+                                                          id = Model.OrderItemId })"/>
                 </nhs-fieldset-form-container>
             </form>
         </div>

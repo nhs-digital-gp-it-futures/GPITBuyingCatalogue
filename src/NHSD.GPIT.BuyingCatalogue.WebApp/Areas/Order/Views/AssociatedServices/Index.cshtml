@@ -16,37 +16,40 @@
                                          label-hint="@Model.OrderDescription"
                                          size="Large">
 
-                <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/associated-services/select/associated-service"
+                <vc:nhs-secondary-button url="@Url.Action(
+                                                  action: "SelectAssociatedService",
+                                                  controller:"AssociatedServices",
+                                                  values: new {odsCode = Model.OdsCode, CallOffId = Model.CallOffId })"
                                          text="Add Associated Service" />
-
+                <nhs-table>
+                    <nhs-table-column>Associated Service</nhs-table-column>
+                    <nhs-table-column>Unit of order</nhs-table-column>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <a asp-action="EditAssociatedService"
+                                   asp-controller="AssociatedServices"
+                                   asp-route-id ="@item.CatalogueItemId"
+                                   asp-route-odsCode="@Model.OdsCode"
+                                   asp-route-callOffId="@Model.CallOffId">
+                                @item.CatalogueItem.Name</a>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @item.PricingUnit.Description @item?.PriceTimeUnit?.Description
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
                 @if (!Model.OrderItems.Any())
                 {
-                    <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-3 bc-c-order-table__hr" />
                     <div data-test-id="show-added-orderItems">
                         <div data-test-id="no-added-orderItems">
                             <p>No Associated Services added</p>
                         </div>
                     </div>
                 }
-                else
-                {
-                    <nhs-table>
-                        <nhs-table-column>Associated Service</nhs-table-column>
-                        <nhs-table-column>Unit of order</nhs-table-column>
-                        @foreach (var item in Model.OrderItems)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>
-                                    <a data-test-id="@item.CatalogueItemId-catalogueItemName"
-                                       href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/associated-services/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <div class="bc-c-data-text ">@item.PricingUnit.Description @item?.PriceTimeUnit?.Description</div>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                }
+
             </nhs-fieldset-form-container>
             <div data-test-id="continue-button">
                 <a class="nhsuk-button nhsuk-u-margin-top-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId" draggable="false">

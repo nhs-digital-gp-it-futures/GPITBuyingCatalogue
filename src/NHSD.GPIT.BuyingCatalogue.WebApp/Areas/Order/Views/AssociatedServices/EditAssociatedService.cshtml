@@ -29,123 +29,63 @@
                             Enter the estimated quantity you think you'll need either per month or per year.
                         </nhs-details>
                     </div>
-                    
+
                     @if (Model.OrderItem.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.OnDemand)
                     {
                         <div class="nhsuk-u-margin-bottom-5">
                             <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
                                 <div data-test-id="radiobutton-options">
-                                    <div class="nhsuk-form-group">
-                                        <fieldset class="nhsuk-fieldset">
-                                            <nhs-fieldset-form-label asp-for="@Model"
-                                                                     label-text="Over what period did you estimate the quantity?"
-                                                                     label-hint="Select one option.">
-                                                <nhs-radio-buttons asp-for="@Model.TimeUnit"
-                                                                   values="@Model.TimeUnits"
-                                                                   value-name="Name"
-                                                                   display-name="DisplayText" />
-                                            </nhs-fieldset-form-label>
-                                        </fieldset>
-                                    </div>
+                                    <nhs-fieldset-form-label asp-for="@Model"
+                                                             label-text="Over what period did you estimate the quantity?"
+                                                             label-hint="Select one option.">
+                                        <nhs-radio-buttons asp-for="@Model.TimeUnit"
+                                                           values="@Model.TimeUnits"
+                                                           value-name="Name"
+                                                           display-name="DisplayText" />
+                                    </nhs-fieldset-form-label>
                                 </div>
                             </div>
                             <div data-test-id="view-section-estimation-period-id" class="">
-                                <details class="nhsuk-details">
-                                    <summary class="nhsuk-details__summary">
-                                        <span class="nhsuk-details__summary-text">
-                                            What period should I enter?
-                                        </span>
-                                    </summary>
-                                    <div class="nhsuk-details__text">
-                                        This should be based on how you estimated the quantity you want to order.
-                                    </div>
-                                </details>
+                                <nhs-details label-text="What period should I enter?">
+                                    This should be based on how you estimated the quantity you want to order.
+                                </nhs-details>
                             </div>
                         </div>
                     }
-
-
                 </div>
             </div>
             <div class="nhsuk-grid-column-full">
-                <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-3 bc-c-order-table__hr" />
-                <div data-test-id="price-table" class="nhsuk-u-margin-left-5 nhsuk-u-margin-top-0">
-                    <table data-test-id="table" class="" style="page-break-inside:auto">
-                        <thead data-test-id="table-headings" style="display:table-header-group;">
-                        <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:50%">
-                            <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">What price have you agreed? (£)</div>
-                        </th>
-                        <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-16" style="width:50%">
-                            <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Unit of order</div>
-                        </th>
-                        </thead>
-                        <tbody>
-                            <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
-                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                    <div data-test-id="">
-                                        <div data-test-id="question-price">
-                                            <div data-test-id="text-field-input">
-                                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                                    <input class="nhsuk-input nhsuk-input--width-10" asp-for="@Model.OrderItem.Price" type="text">
-                                                </div>
-                                            </div>
-                                            <div data-test-id="text-field-footer">
-                                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div data-test-id="view-section-input-id" class="">
-                                            <details class="nhsuk-details">
-                                                <summary class="nhsuk-details__summary">
-                                                    <span class="nhsuk-details__summary-text">
-                                                        What price should I enter?
-                                                    </span>
-                                                </summary>
-                                                <div class="nhsuk-details__text">
-                                                    You can change the list price if you’ve agreed a different rate with the supplier.
-                                                </div>
-                                            </details>
+                <nhs-table>
+                    <nhs-table-column>What price have you agreed? (@Model.CurrencySymbol)</nhs-table-column>
+                    <nhs-table-column>Unit of order</nhs-table-column>
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <nhs-bookended-input asp-for="OrderItem.Price"
+                                                 Prefix="@Model.CurrencySymbol" />
+                            <nhs-details label-text="What price should I enter?">
+                                You can change the list price if you’ve agreed a different rate with the supplier.
+                            </nhs-details>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                </nhs-table>
 
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                    <div data-test-id="unit-of-order" class="bc-c-data-text ">@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <nhs-submit-button text="Save" /><br/>
 
-            <div class="nhsuk-grid-column-full">
-                <div class="bc-u-float-right">
-                    <div class="bc-u-inline-block">
-                        <div data-test-id="delete-button">
-                            @if (Model.OrderItem.IsNewOrder)
-                            {
-                                <span class="nhsuk-button nhsuk-u-margin-top-9 nhsuk-button--secondary nhsuk-u-margin-right-5 nhsuk-button--disabled" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/associated-services/delete/@Model.OrderItem.CatalogueItemId/confirmation/@Model.OrderItem.CatalogueItemName" draggable="false" aria-disabled="true">
-                                    Delete
-                                </span>
-                            }
-                            else
-                            {
-                                <a class="nhsuk-button nhsuk-u-margin-top-9 nhsuk-button--secondary nhsuk-u-margin-right-5" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/associated-services/delete/@Model.OrderItem.CatalogueItemId/confirmation/@Model.OrderItem.CatalogueItemName" draggable="false">
-                                    Delete
-                                </a>
-                            }
-                        </div>
-                    </div>
-                    <div class="bc-u-inline-block">
-                        <div data-test-id="save-button">
-                            <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                @if (!Model.OrderItem.IsNewOrder)
+                {
+                    <vc:nhs-delete-button text="Delete Associated Service"
+                                          url="@Url.Action(
+                                          action: "DeleteAssociatedService",
+                                          controller: "AssociatedServices",
+                                          values: new { odsCode = Model.OdsCode,
+                                                        callOffId = Model.CallOffId,
+                                                        id = Model.OrderItem.CatalogueItemId,
+                                                        serviceName = Model.OrderItem.CatalogueItemName,
+                                                       })" />
+                }
             </div>
         </form>
     </div>
