@@ -2,13 +2,13 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
-    public class OrderDescriptionModel : OrderingBaseModel
+    public sealed class OrderDescriptionModel : OrderingBaseModel
     {
         public OrderDescriptionModel()
         {
         }
 
-        public OrderDescriptionModel(string odsCode, EntityFramework.Models.Ordering.Order order)
+        public OrderDescriptionModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";

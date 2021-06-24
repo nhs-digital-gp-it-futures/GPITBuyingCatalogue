@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Addres
 {
     public sealed class NhsAddressViewComponent : ViewComponent
     {
-        public HtmlString Invoke(EntityFramework.Models.Ordering.Address address)
+        public HtmlString Invoke(EntityFramework.Models.GPITBuyingCatalogue.Address address)
         {
             if (address is null)
                 throw new ArgumentNullException(nameof(address));
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Addres
             return new HtmlString(ProcessAdressBreakRowSeperatedString(address));
         }
 
-        private static string ProcessAdressBreakRowSeperatedString(EntityFramework.Models.Ordering.Address address)
+        private static string ProcessAdressBreakRowSeperatedString(EntityFramework.Models.GPITBuyingCatalogue.Address address)
         {
             var addressProperties = address.GetType().GetProperties().Where(a => a.PropertyType == typeof(string));
 

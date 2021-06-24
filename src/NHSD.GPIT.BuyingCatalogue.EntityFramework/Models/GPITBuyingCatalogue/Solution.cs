@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class Solution
+    public class Solution
     {
         public Solution()
         {
@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
             SolutionEpics = new HashSet<SolutionEpic>();
         }
 
+        // TODO: Should be of type CatalogueItemId
         public string Id { get; set; }
 
         public string Version { get; set; }

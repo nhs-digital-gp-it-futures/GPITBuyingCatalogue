@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.CatalogueSolutionsModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.CatalogueSolutionsModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -30,13 +31,13 @@
                                href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            <div class="bc-c-data-text ">@item.PricingUnit.Description @item?.PriceTimeUnit?.Description</div>
+                            <div class="bc-c-data-text ">@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <nhs-details label-text="Service recipients (ODS code)">
                                 @foreach (var recipient in item.OrderItemRecipients)
                                 {
-                                    @string.Format("{0}({1})", recipient.Recipient.Name, recipient.Recipient.OdsCode)
+                                    @($"{recipient.Recipient.Name}({recipient.Recipient.OdsCode})")
                                     <br><br>
                                 }
                             </nhs-details>

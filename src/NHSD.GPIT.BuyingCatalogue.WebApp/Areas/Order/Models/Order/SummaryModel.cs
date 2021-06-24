@@ -1,8 +1,8 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
-    public class SummaryModel : OrderingBaseModel
+    public sealed class SummaryModel : OrderingBaseModel
     {
-        public SummaryModel(string odsCode, EntityFramework.Models.Ordering.Order order)
+        public SummaryModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}";
@@ -11,6 +11,6 @@
             Order = order;
         }
 
-        public EntityFramework.Models.Ordering.Order Order { get; set; }
+        public EntityFramework.Ordering.Models.Order Order { get; set; }
     }
 }

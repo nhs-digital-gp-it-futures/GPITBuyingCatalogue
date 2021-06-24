@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     {
         public SupplierDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/about-supplier")
         {
-            using var context = GetBCContext();
+            using var context = GetEndToEndDbContext();
             var catalogueItem = context.CatalogueItems.Include(c => c.Supplier).Single(s => s.CatalogueItemId == "99999-99");
             catalogueItem.Supplier.Summary = string.Empty;
             catalogueItem.Supplier.SupplierUrl = string.Empty;
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var catalogueItem = await context.CatalogueItems.Include(c => c.Supplier).SingleAsync(s => s.CatalogueItemId == "99999-99");
             catalogueItem.Supplier.Summary.Should().Be(summary);
             catalogueItem.Supplier.SupplierUrl.Should().Be(link);

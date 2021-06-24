@@ -5,26 +5,28 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class DefaultDeliveryDateService : IDefaultDeliveryDateService
     {
-        private readonly OrderingDbContext dbContext;
+        private readonly GPITBuyingCatalogueDbContext dbContext;
 
-        public DefaultDeliveryDateService(OrderingDbContext dbContext)
+        public DefaultDeliveryDateService(GPITBuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        // TODO: callOffId should be of type CallOffId
+        // TODO: catalogueItemId should be of type CatalogueItemId
         public async Task<DateTime?> GetDefaultDeliveryDate(string callOffId, string catalogueItemId)
         {
-            var id = CallOffId.Parse(callOffId);
+            (_, CallOffId id) = CallOffId.Parse(callOffId);
 
             // TODO - handle case of non-success
-            (var success, var catId) = CatalogueItemId.Parse(catalogueItemId);
+            (bool success, var catId) = CatalogueItemId.Parse(catalogueItemId);
 
             Expression<Func<Order, IEnumerable<DefaultDeliveryDate>>> defaultDeliveryDate = o
                 => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catId);
@@ -36,18 +38,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Select(d => d.DeliveryDate)
                 .SingleOrDefaultAsync();
 
-            if (date == default(DateTime))
-                return null;
-
-            return date;
+            return date == default(DateTime) ? null : date;
         }
 
+        // TODO: callOffId should be of type CallOffId
+        // TODO: catalogueItemId should be of type CatalogueItemId
         public async Task<DeliveryDateResult> SetDefaultDeliveryDate(string callOffId, string catalogueItemId, DateTime deliveryDate)
         {
-            var id = CallOffId.Parse(callOffId);
+            (_, CallOffId id) = CallOffId.Parse(callOffId);
 
             // TODO - handle case of non-success
-            (var success, var catId) = CatalogueItemId.Parse(catalogueItemId);
+            (bool success, var catId) = CatalogueItemId.Parse(catalogueItemId);
 
             var order = await GetOrder(id, catId);
 
@@ -58,9 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return addedOrUpdated;
         }
 
-        private async Task<Order> GetOrder(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        private Task<Order> GetOrder(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            return await dbContext.Orders
+            return dbContext.Orders
                 .Where(o => o.Id == callOffId.Id)
                 .Include(o => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId))
                 .SingleOrDefaultAsync();

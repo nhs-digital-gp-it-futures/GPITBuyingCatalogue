@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
     public partial class CatalogueItem
@@ -12,21 +10,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
             CataloguePrices = new HashSet<CataloguePrice>();
         }
 
+        // TODO: Should be of type CatalogueItemId
         public string CatalogueItemId { get; set; }
 
         public string Name { get; set; }
 
-        public int CatalogueItemTypeId { get; set; }
-
         public string SupplierId { get; set; }
-
-        public int PublishedStatusId { get; set; }
 
         public DateTime Created { get; set; }
 
         public virtual CatalogueItemType CatalogueItemType { get; set; }
 
-        public virtual PublicationStatus PublishedStatus { get; set; }
+        public PublicationStatus PublishedStatus { get; set; }
 
         public virtual Supplier Supplier { get; set; }
 
@@ -36,6 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public virtual Solution Solution { get; set; }
 
-        public virtual ICollection<CataloguePrice> CataloguePrices { get; set; }
+        public ICollection<CataloguePrice> CataloguePrices { get; set; }
     }
 }
