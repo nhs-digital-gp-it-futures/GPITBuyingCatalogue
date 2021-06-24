@@ -115,9 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             var nhsTagOutput = new TagHelperOutput(
                 string.Empty,
                 attributeList,
-                (usedCachedResult, encoder) =>
-                    Task.Factory.StartNew<TagHelperContent>(
-                        () => new DefaultTagHelperContent()));
+                (_, _) => Task.Factory.StartNew<TagHelperContent>(() => new DefaultTagHelperContent()));
 
             nhsTag.Process(context, nhsTagOutput);
 
