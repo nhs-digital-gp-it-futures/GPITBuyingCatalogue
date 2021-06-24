@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -19,16 +21,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ILogWrapper<HomeController> logger;
         private readonly IOrganisationsService organisationsService;
         private readonly IMapper mapper;
+        private readonly ISolutionsService solutionsService;
 
         public HomeController(
             ILogWrapper<HomeController> logger,
             IOrganisationsService organisationsService,
-            IMapper mapper)
+            IMapper mapper,
+            ISolutionsService solutionsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.organisationsService =
                 organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.solutionsService =
+                solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [Route("buyer-organisations")]
@@ -37,6 +43,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var organisations = await organisationsService.GetAllOrganisations();
 
             return View(mapper.Map<IList<Organisation>, IList<OrganisationModel>>(organisations));
+        }
+
+        [Route("catalogue-solutions")]
+        public IActionResult ManageCatalogueSolutions()
+        {
+            return View();
+        }
+
+        [HttpGet("catalogue-solutions/add-solution")]
+        public async Task<IActionResult> AddSolution()
+        {
+            logger.LogInformation($"Taking user to {nameof(HomeController)}.{nameof(AddSolution)}");
+
+            var suppliers = await solutionsService.GetAllSuppliers();
+
+            return View(new AddSolutionModel
+            {
+                Suppliers = suppliers?.ToDictionary(x => x.Id, x => x.Name),
+            });
         }
 
         public IActionResult Index()

@@ -118,6 +118,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public async Task<IList<Supplier>> GetAllSuppliers()
+        {
+            return (await supplierRepository.GetAllAsync(x => true)).OrderBy(x => x.Name).ToList();
+        }
+
         // TODO: solutionId should be of type CatalogueItemId
         public async Task SaveSolutionDescription(string solutionId, string summary, string description, string link)
         {
