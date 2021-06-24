@@ -13,14 +13,14 @@
 
                     @if (Model.HasFlatListPrices())
                     {
-                        <nhs-table>
+                        <nhs-table data-test-id="flat-list-price-table">
                             <nhs-table-column>Price</nhs-table-column>
                             <nhs-table-column>Unit</nhs-table-column>
 
                             @foreach (var item in Model.FlatListPrices)
                             {
                                 <nhs-table-row-container>
-                                    <nhs-table-cell>
+                                    <nhs-table-cell data-test-id="price">
                                         @item.CurrencyCode@item.Price
                                     </nhs-table-cell>
                                     <nhs-table-cell>
