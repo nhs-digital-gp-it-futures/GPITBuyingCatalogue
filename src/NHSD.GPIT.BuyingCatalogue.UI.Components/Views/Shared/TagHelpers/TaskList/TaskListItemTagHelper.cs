@@ -89,7 +89,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             builder.AddCssClass($"{TagHelperConstants.NhsMarginRight}-9");
             builder.AddCssClass(TagHelperContainerClass);
 
-
             var nhsTag = new NhsTagsTagHelper
             {
                 ChosenTagColour = Status switch
