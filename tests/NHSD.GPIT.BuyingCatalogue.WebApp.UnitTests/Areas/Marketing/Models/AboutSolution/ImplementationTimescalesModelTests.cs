@@ -2,22 +2,20 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.AboutSolution
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ImplementationTimescalesModelTests
+    public static class ImplementationTimescalesModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new ImplementationTimescalesModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var catalogueItem = new CatalogueItem
@@ -28,33 +26,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var model = new ImplementationTimescalesModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
+            Assert.Equal("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
-            Assert.AreEqual("Some implementation detail", model.Description);
+            Assert.Equal("Some implementation detail", model.Description);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new ImplementationTimescalesModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.Description);
         }
 
-        [Test]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("Some implementation detail", true)]
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData(" ", false)]
+        [InlineData("Some implementation detail", true)]
         public static void IsCompleteIsCorrectlySet(string implementationDetail, bool? expected)
         {
             var catalogueItem = new CatalogueItem { Solution = new Solution { ImplementationDetail = implementationDetail } };
 
             var model = new ImplementationTimescalesModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

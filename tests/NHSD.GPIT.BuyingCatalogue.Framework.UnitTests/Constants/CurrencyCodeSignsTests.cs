@@ -1,17 +1,20 @@
-﻿using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NUnit.Framework;
+﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Constants
 {
-    [TestFixture]
-    internal sealed class CurrencyCodeSignsTests
+    public static class CurrencyCodeSignsTests
     {
-        [TestCase("GBP", "£")]
-        [TestCase("USD", "$")]
-        [TestCase("EUR", "€")]
-        public void CurrencyCode_ReturnsCorrectSymbol(string currencyCode, string symbol)
+        [Theory]
+        [InlineData("GBP", "£")]
+        [InlineData("USD", "$")]
+        [InlineData("EUR", "€")]
+        public static void CurrencyCode_ReturnsCorrectSymbol(string currencyCode, string expectedSymbol)
         {
-            Assert.AreEqual(symbol, CurrencyCodeSigns.Code[currencyCode]);
-        }        
+            var actualSymbol = CurrencyCodeSigns.Code[currencyCode];
+
+            actualSymbol.Should().Be(expectedSymbol);
+        }
     }
 }

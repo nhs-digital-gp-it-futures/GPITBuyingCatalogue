@@ -1,44 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.ClientApplicationType
 
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ClientApplicationTypesModelTests
+    public static class ClientApplicationTypesModelTests
     {
-        [Test]
+        [Fact]
         public static void IsComplete_BrowserBasedIsTrue_ReturnsTrue()
         {
-            var model = new ClientApplicationTypesModel{ BrowserBased = true, };
+            var model = new ClientApplicationTypesModel { BrowserBased = true, };
 
             model.IsComplete.Should().BeTrue();
         }
-        
-        [Test]
+
+        [Fact]
         public static void IsComplete_NativeDesktopIsTrue_ReturnsTrue()
         {
-            var model = new ClientApplicationTypesModel{ NativeDesktop = true, };
+            var model = new ClientApplicationTypesModel { NativeDesktop = true, };
 
             model.IsComplete.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void IsComplete_NativeMobileIsTrue_ReturnsTrue()
         {
-            var model = new ClientApplicationTypesModel{ NativeMobile = true, };
+            var model = new ClientApplicationTypesModel { NativeMobile = true, };
 
             model.IsComplete.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void IsComplete_AllBooleanPropertiesFalse_ReturnsFalse()
         {
             var model = new ClientApplicationTypesModel();

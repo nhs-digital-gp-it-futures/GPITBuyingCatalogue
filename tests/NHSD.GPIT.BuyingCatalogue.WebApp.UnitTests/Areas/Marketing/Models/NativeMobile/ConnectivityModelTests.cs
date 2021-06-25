@@ -10,18 +10,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeMobile
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class ConnectivityModelModelTests
+    public sealed class ConnectivityModelModelTests : IDisposable
     {
         private IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public ConnectivityModelModelTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
@@ -30,20 +27,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             }).CreateMapper();
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        public void Dispose()
         {
             mapper = null;
         }
 
-        [Test]
+        [Fact]
         public void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new ConnectivityModel(null));
         }
 
-        [Test]
+        [Fact]
         public void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication
@@ -64,33 +60,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
-            Assert.AreEqual("15Mbs", model.SelectedConnectionSpeed);
-            Assert.AreEqual("A description", model.Description);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
+            Assert.Equal("15Mbs", model.SelectedConnectionSpeed);
+            Assert.Equal("A description", model.Description);
             model.ConnectionSpeeds.Should().BeEquivalentTo(GetConnectionSpeeds());
-            Assert.AreEqual(7, model.ConnectionTypes.Length);
+            Assert.Equal(7, model.ConnectionTypes.Length);
             Assert.True(model.ConnectionTypes.Single(m => m.ConnectionType == "3G").Checked);
             Assert.True(model.ConnectionTypes.Single(m => m.ConnectionType == "4G").Checked);
-            Assert.AreEqual(5, model.ConnectionTypes.Count(m => !m.Checked));
+            Assert.Equal(5, model.ConnectionTypes.Count(m => !m.Checked));
         }
 
-        [Test]
+        [Fact]
         public void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new ConnectivityModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.Null(model.IsComplete);
             Assert.Null(model.SelectedConnectionSpeed);
         }
 
-        [Test]
-        [TestCase(null, null, false, false)]
-        [TestCase("", "", false, false)]
-        [TestCase(" ", " ", false, false)]
-        [TestCase("15Mbs", null, false, true)]
-        [TestCase(null, "A description", false, true)]
-        [TestCase(null, null, true, true)]
+        [Theory]
+        [InlineData(null, null, false, false)]
+        [InlineData("", "", false, false)]
+        [InlineData(" ", " ", false, false)]
+        [InlineData("15Mbs", null, false, true)]
+        [InlineData(null, "A description", false, true)]
+        [InlineData(null, null, true, true)]
         public void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, string description, bool hasConnectionType, bool? expected)
         {
             var clientApplication = new ClientApplication
@@ -111,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
 
         private static List<SelectListItem> GetConnectionSpeeds() =>

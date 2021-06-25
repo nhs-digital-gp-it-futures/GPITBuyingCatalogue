@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,18 +9,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.BrowserBased
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal sealed class ConnectivityAndResolutionModelTests
+    public sealed class ConnectivityAndResolutionModelTests : IDisposable
     {
         private IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public ConnectivityAndResolutionModelTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
@@ -28,13 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             }).CreateMapper();
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        public void Dispose()
         {
             mapper = null;
         }
 
-        [Test]
+        [Fact]
         public void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication
@@ -52,28 +49,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
 
             var model = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123/section/browser-based", model.BackLink);
-            Assert.AreEqual("15Mbs", model.SelectedConnectionSpeed);
-            Assert.AreEqual("21:9 - 3440 x 1440", model.SelectedScreenResolution);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/browser-based", model.BackLink);
+            Assert.Equal("15Mbs", model.SelectedConnectionSpeed);
+            Assert.Equal("21:9 - 3440 x 1440", model.SelectedScreenResolution);
             model.ConnectionSpeeds.Should().BeEquivalentTo(GetConnectionSpeeds());
             model.ScreenResolutions.Should().BeEquivalentTo(GetResolutions());
         }
 
-        [Test]
+        [Fact]
         public void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new ConnectivityAndResolutionModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.Null(model.SelectedConnectionSpeed);
             Assert.Null(model.SelectedScreenResolution);
         }
 
-        [Test]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("15Mbs", true)]
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData(" ", false)]
+        [InlineData("15Mbs", true)]
         public void IsCompleteIsCorrectlySet(string minimumConnectionSpeed, bool? expected)
         {
             var clientApplication = new ClientApplication { MinimumConnectionSpeed = minimumConnectionSpeed };
@@ -82,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
 
             var model = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
 
         private static IEnumerable<SelectListItem> GetConnectionSpeeds()

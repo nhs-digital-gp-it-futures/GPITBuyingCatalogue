@@ -1,24 +1,21 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
-{
-    using System;
-    using Microsoft.AspNetCore.Html;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.AspNetCore.Mvc.ViewComponents;
-    using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-    using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink;
-    using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Address;
-    using NUnit.Framework;
-    using SparkyTestHelpers.AspNetMvc.Core;
+﻿using System;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.Address;
+using SparkyTestHelpers.AspNetMvc.Core;
+using Xunit;
 
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class ViewComponentUnitTests
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
+{
+    public sealed class ViewComponentUnitTests : IDisposable
     {
         private ViewComponentContext viewComponentContext;
 
-        [OneTimeSetUp]
-        public void ViewComponentTestSetup()
+        public ViewComponentUnitTests()
         {
             var httpContext = new DefaultHttpContext();
 
@@ -26,18 +23,12 @@
             viewComponentContext = new ViewComponentContext { ViewContext = viewContext };
         }
 
-        [OneTimeTearDown]
-        public void ViewComponentTestTearDown()
-        {
-            viewComponentContext = null;
-        }
-
-        [Test]
-        [TestCase("hello/world", "This is a test link")]
-        [TestCase("", "This is a test link")]
-        [TestCase("hello/world", "")]
-        [TestCase("https://hello.world/a/subpage", "AHttpTestLink")]
-        [TestCase("", "")]
+        [Theory]
+        [InlineData("hello/world", "This is a test link")]
+        [InlineData("", "This is a test link")]
+        [InlineData("hello/world", "")]
+        [InlineData("https://hello.world/a/subpage", "AHttpTestLink")]
+        [InlineData("", "")]
         public void ActionLink_ExpectedResult(string url, string text)
         {
             var viewComponent = new NhsActionLinkViewComponent { ViewComponentContext = viewComponentContext };
@@ -47,13 +38,13 @@
                 .ExpectingViewName("ActionLink")
                 .ExpectingModel<ActionLinkModel>(model =>
                 {
-                    Assert.AreEqual(url, model.Url);
-                    Assert.AreEqual(text, model.Text);
+                    Assert.Equal(url, model.Url);
+                    Assert.Equal(text, model.Text);
                 })
                 .TestView();
         }
 
-        [Test]
+        [Fact]
         public void Address_MultipleSetProperties_ExpectedResult()
         {
             var viewComponent = new NhsAddressViewComponent { ViewComponentContext = viewComponentContext };
@@ -74,12 +65,12 @@
 
             var resultString = result.Value;
 
-            Assert.IsInstanceOf<HtmlString>(result);
+            Assert.IsAssignableFrom<HtmlString>(result);
 
-            Assert.AreEqual(expectedResult, resultString);
+            Assert.Equal(expectedResult, resultString);
         }
 
-        [Test]
+        [Fact]
         public void Address_NoPropertiesSet_ExpectedEmptyPTags()
         {
             var viewComponent = new NhsAddressViewComponent { ViewComponentContext = viewComponentContext };
@@ -92,17 +83,22 @@
 
             var resultString = result.Value;
 
-            Assert.IsInstanceOf<HtmlString>(result);
+            Assert.IsAssignableFrom<HtmlString>(result);
 
-            Assert.AreEqual(expectedResult, resultString);
+            Assert.Equal(expectedResult, resultString);
         }
 
-        [Test]
+        [Fact]
         public void Address_NullAddress_ThrowsArgumentNullException()
         {
             var viewComponent = new NhsAddressViewComponent { ViewComponentContext = viewComponentContext };
 
             Assert.Throws<ArgumentNullException>(() => { _ = viewComponent.Invoke(null); });
+        }
+
+        public void Dispose()
+        {
+            viewComponentContext = null;
         }
     }
 }

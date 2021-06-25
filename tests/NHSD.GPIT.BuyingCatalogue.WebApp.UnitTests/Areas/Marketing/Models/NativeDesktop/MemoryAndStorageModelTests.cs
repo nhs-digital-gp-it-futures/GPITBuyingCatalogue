@@ -9,30 +9,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeDesktop
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal sealed class MemoryAndStorageModelTests
+    public sealed class MemoryAndStorageModelTests : IDisposable
     {
         private IMapper mapper;
 
-        [Test]
-        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
-        {
-            var model = new MemoryAndStorageModel();
-
-            Assert.AreEqual("./", model.BackLink);
-            Assert.False(model.IsComplete);
-            Assert.Null(model.SelectedMemorySize);
-            Assert.Null(model.StorageDescription);
-            Assert.Null(model.SelectedScreenResolution);
-        }
-
-        [OneTimeSetUp]
-        public void SetUp()
+        public MemoryAndStorageModelTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
@@ -41,19 +26,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             }).CreateMapper();
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        [Fact]
+        public static void WithoutCatalogueItem_PropertiesAreDefaulted()
+        {
+            var model = new MemoryAndStorageModel();
+
+            Assert.Equal("./", model.BackLink);
+            Assert.False(model.IsComplete);
+            Assert.Null(model.SelectedMemorySize);
+            Assert.Null(model.StorageDescription);
+            Assert.Null(model.SelectedScreenResolution);
+        }
+
+        public void Dispose()
         {
             mapper = null;
         }
 
-        [Test]
+        [Fact]
         public void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new MemoryAndStorageModel(null));
         }
 
-        [Test]
+        [Fact]
         public void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication
@@ -75,28 +71,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = mapper.Map<CatalogueItem, MemoryAndStorageModel>(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
-            Assert.AreEqual("1GB", model.SelectedMemorySize);
-            Assert.AreEqual("Storage requirements", model.StorageDescription);
-            Assert.AreEqual("Xeon", model.MinimumCpu);
-            Assert.AreEqual("4:3 - 1024 x 768", model.SelectedScreenResolution);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
+            Assert.Equal("1GB", model.SelectedMemorySize);
+            Assert.Equal("Storage requirements", model.StorageDescription);
+            Assert.Equal("Xeon", model.MinimumCpu);
+            Assert.Equal("4:3 - 1024 x 768", model.SelectedScreenResolution);
             model.MemorySizes.Should().BeEquivalentTo(GetMemorySizes());
             model.ScreenResolutions.Should().BeEquivalentTo(GetScreenResolutions());
         }
 
-        [Test]
-        [TestCase(null, null, null, null, false)]
-        [TestCase("", "", "", "", false)]
-        [TestCase(" ", " ", " ", " ", false)]
-        [TestCase(null, null, null, "Resolution", false)]
-        [TestCase("Memory", null, null, null, false)]
-        [TestCase(null, "Description", null, null, false)]
-        [TestCase(null, null, "Minimum Cpu", null, false)]
-        [TestCase("Memory", "Description", null, null, false)]
-        [TestCase("Memory", null, "Minimum Cpu", null, false)]
-        [TestCase(null, "Description", "Minimum Cpu", null, false)]
-        [TestCase("Memory", "Description", "Minimum Cpu", null, true)]
-        [TestCase("Memory", "Description", "Minimum Cpu", "Resolution", true)]
+        [Theory]
+        [InlineData(null, null, null, null, false)]
+        [InlineData("", "", "", "", false)]
+        [InlineData(" ", " ", " ", " ", false)]
+        [InlineData(null, null, null, "Resolution", false)]
+        [InlineData("Memory", null, null, null, false)]
+        [InlineData(null, "Description", null, null, false)]
+        [InlineData(null, null, "Minimum Cpu", null, false)]
+        [InlineData("Memory", "Description", null, null, false)]
+        [InlineData("Memory", null, "Minimum Cpu", null, false)]
+        [InlineData(null, "Description", "Minimum Cpu", null, false)]
+        [InlineData("Memory", "Description", "Minimum Cpu", null, true)]
+        [InlineData("Memory", "Description", "Minimum Cpu", "Resolution", true)]
         public void IsCompleteIsCorrectlySet(string memorySize, string description, string minimumCpu, string resolution, bool? expected)
         {
             var clientApplication = new ClientApplication
@@ -114,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = mapper.Map<CatalogueItem, MemoryAndStorageModel>(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
 
         private static IEnumerable<SelectListItem> GetMemorySizes()

@@ -9,18 +9,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeMobile
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal sealed class MemoryAndStorageModelTests
+    public sealed class MemoryAndStorageModelTests : IDisposable
     {
         private IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public MemoryAndStorageModelTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
@@ -29,20 +26,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             }).CreateMapper();
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        public void Dispose()
         {
             mapper = null;
         }
 
-        [Test]
+        [Fact]
         public void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new MemoryAndStorageModel(null));
         }
 
-        [Test]
+        [Fact]
         public void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication
@@ -62,29 +58,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = mapper.Map<CatalogueItem, MemoryAndStorageModel>(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
-            Assert.AreEqual("1GB", model.SelectedMemorySize);
-            Assert.AreEqual("Storage requirements", model.Description);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
+            Assert.Equal("1GB", model.SelectedMemorySize);
+            Assert.Equal("Storage requirements", model.Description);
             model.MemorySizes.Should().BeEquivalentTo(GetMemorySizes());
         }
 
-        [Test]
+        [Fact]
         public void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new MemoryAndStorageModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.SelectedMemorySize);
         }
 
-        [Test]
-        [TestCase(null, null, false)]
-        [TestCase("", "", false)]
-        [TestCase(" ", " ", false)]
-        [TestCase("Memory", null, false)]
-        [TestCase(null, "Description", false)]
-        [TestCase("Memory", "Description", true)]
+        [Theory]
+        [InlineData(null, null, false)]
+        [InlineData("", "", false)]
+        [InlineData(" ", " ", false)]
+        [InlineData("Memory", null, false)]
+        [InlineData(null, "Description", false)]
+        [InlineData("Memory", "Description", true)]
         public void IsCompleteIsCorrectlySet(string memorySize, string description, bool? expected)
         {
             var clientApplication = new ClientApplication
@@ -100,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = mapper.Map<CatalogueItem, MemoryAndStorageModel>(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
 
         private static IEnumerable<SelectListItem> GetMemorySizes()

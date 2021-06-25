@@ -1,27 +1,20 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.ClientApplicationType
 
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class NativeMobileModelTests
+    public static class NativeMobileModelTests
     {
         private const string KeyIncomplete = "INCOMPLETE";
 
-        private static readonly object[] ResultSets =
-        {
-            new object[]{null, KeyIncomplete},
-            new object[]{false, KeyIncomplete},
-            new object[]{true, "COMPLETE"},
-        };
-        
-        [TestCase(false, KeyIncomplete)]
-        [TestCase(true, "COMPLETE")]
+        [Theory]
+        [InlineData(false, KeyIncomplete)]
+        [InlineData(true, "COMPLETE")]
         public static void AdditionalInformationStatus_Various_NativeMobileAdditionalInformationComplete_ResultAsExpected(
             bool complete,
             string expected)
@@ -38,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeMobileAdditionalInformationComplete());
         }
 
-        [Test]
+        [Fact]
         public static void ClientApplication_Null_ValuesFalseOrIncomplete()
         {
             var nativeMobileModel = new NativeMobileModel();
@@ -52,7 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             nativeMobileModel.ThirdPartyStatus.Should().Be(KeyIncomplete);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void ConnectivityStatus_Various_NativeMobileConnectivityComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -69,7 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeMobileConnectivityComplete());
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void HardwareRequirementsStatus_Various_NativeMobileHardwareRequirementsComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -86,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeMobileHardwareRequirementsComplete());
         }
 
-        [Test]
+        [Fact]
         public static void IsComplete_AllValuesValid_ReturnsTrue()
         {
             var mockClientApplication = new Mock<ClientApplication>();
@@ -104,9 +99,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             NativeMobileModel.IsComplete.Should().BeTrue();
         }
 
-        [TestCase(false)]
-        [TestCase(null)]
-        public static void IsComplete_NativeMobileSupportedOperatingSystemsComplete_NotTrue_ReturnsFalse(bool value)
+        [Theory]
+        [InlineData(false)]
+        [InlineData(null)]
+        public static void IsComplete_NativeMobileSupportedOperatingSystemsComplete_NotTrue_ReturnsFalse(bool? value)
         {
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
@@ -123,15 +119,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             NativeMobileModel.IsComplete.Should().BeFalse();
         }
 
-        [TestCase(false)]
-        [TestCase(null)]
-        public static void IsComplete_NativeMobileFirstApproachComplete_NotTrue_ReturnsFalse(bool value)
+        [Fact]
+        public static void IsComplete_NativeMobileFirstApproachComplete_NotTrue_ReturnsFalse()
         {
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
                 .Returns(true);
             mockClientApplication.Setup(c => c.NativeMobileFirstApproachComplete())
-                .Returns(value);
+                .Returns(false);
             mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
                 .Returns(true);
             var NativeMobileModel = new NativeMobileModel
@@ -142,9 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             NativeMobileModel.IsComplete.Should().BeFalse();
         }
 
-        [TestCase(false)]
-        [TestCase(null)]
-        public static void IsComplete_NativeMobileMemoryComplete_NotTrue_ReturnsFalse(bool value)
+        [Theory]
+        [InlineData(false)]
+        [InlineData(null)]
+        public static void IsComplete_NativeMobileMemoryComplete_NotTrue_ReturnsFalse(bool? value)
         {
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
@@ -161,7 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             NativeMobileModel.IsComplete.Should().BeFalse();
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void MemoryAndStorageStatus_Various_NativeMobileMemoryAndStorageComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -178,7 +175,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeMobileMemoryAndStorageComplete());
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void SupportedOperatingSystemsStatus_Various_NativeMobileSupportedOperatingSystemsComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -195,7 +193,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeMobileSupportedOperatingSystemsComplete());
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void ThirdPartyStatus_Various_NativeMobileThirdPartyComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -210,6 +209,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             NativeMobileModel.ThirdPartyStatus.Should().Be(expected);
             mockClientApplication.Verify(c => c.NativeMobileThirdPartyComplete());
+        }
+
+        private static class ResultSetData
+        {
+            public static IEnumerable<object[]> TestData()
+            {
+                yield return new object[] { null, KeyIncomplete };
+                yield return new object[] { false, KeyIncomplete };
+                yield return new object[] { true, "COMPLETE" };
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
@@ -10,24 +11,16 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class CatalogueItemToSolutionStatusModelConverterTests
+    public static class CatalogueItemToSolutionStatusModelConverterTests
     {
         private const string KeyIncomplete = "INCOMPLETE";
 
-        private static readonly object[] ResultSets =
-        {
-            new object[]{null, KeyIncomplete},
-            new object[]{false, KeyIncomplete},
-            new object[]{true, "COMPLETE"},
-        };
-
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsSimpleMappings(
             CatalogueItem catalogueItem)
         {
@@ -43,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsAboutSupplierStatus(
             bool complete,
             string expected)
@@ -64,7 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.AboutSupplierStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsBrowserBasedStatus(
             bool complete,
             string expected)
@@ -85,7 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BrowserBasedStatus.Should().Be(expected);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Convert_CatalogueItemToSolutionStatusModel_ValidCatalogueItem_SetsClientApplication(
             CatalogueItem catalogueItem)
         {
@@ -98,7 +94,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Convert_CatalogueItemToSolutionStatusModel_NoClientAppInSolution_ClientApplicationSetToNew(
             CatalogueItem catalogueItem)
         {
@@ -110,7 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(new ClientApplication());
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Convert_CatalogueItemToSolutionStatusModel_NoSolutionInCatalogueItem_ClientApplicationSetToNew(
             CatalogueItem catalogueItem)
         {
@@ -122,7 +120,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(new ClientApplication());
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsClientApplicationTypeStatus(
             bool complete,
             string expected)
@@ -143,7 +142,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplicationTypeStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsContactDetailsStatus(
             bool complete,
             string expected)
@@ -164,7 +164,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ContactDetailsStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsFeaturesStatus(
             bool complete,
             string expected)
@@ -185,7 +186,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.FeaturesStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsHybridStatus(
             bool complete,
             string expected)
@@ -206,7 +208,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.HybridStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsImplementationTimescalesStatus(
             bool complete,
             string expected)
@@ -227,7 +230,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ImplementationTimescalesStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsIntegrationsStatus(
             bool complete,
             string expected)
@@ -248,7 +252,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.IntegrationsStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsOnPremisesStatus(
             bool complete,
             string expected)
@@ -269,7 +274,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.OnPremisesStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsNativeDesktopStatus(
             bool complete,
             string expected)
@@ -290,7 +296,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.NativeDesktopStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsNativeMobileStatus(
             bool complete,
             string expected)
@@ -311,7 +318,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.NativeMobileStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsPrivateCloudStatus(
             bool complete,
             string expected)
@@ -332,7 +340,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.PrivateCloudStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsPublicCloudStatus(
             bool complete,
             string expected)
@@ -353,7 +362,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.PublicCloudStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsRoadmapStatus(
             bool complete,
             string expected)
@@ -374,7 +384,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.RoadmapStatus.Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void Convert_CatalogueItemToSolutionStatusModel_SetsSolutionDescriptionStatus(
             bool complete,
             string expected)
@@ -431,6 +442,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 .Returns(new SolutionDescriptionModel());
 
             return mockMapper;
+        }
+
+        private static class ResultSetData
+        {
+            public static IEnumerable<object[]> TestData()
+            {
+                yield return new object[] { null, KeyIncomplete };
+                yield return new object[] { false, KeyIncomplete };
+                yield return new object[] { true, "COMPLETE" };
+            }
         }
     }
 }

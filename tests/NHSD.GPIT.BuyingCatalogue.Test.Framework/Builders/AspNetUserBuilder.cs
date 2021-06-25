@@ -60,12 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
 
         public static AspNetUserBuilder Create() => new();
 
-        internal AspNetUserBuilder WithUserId(string id)
-        {
-            userId = id;
-            return this;
-        }
-
         public AspNetUserBuilder WithFirstName(string name)
         {
             firstName = name;
@@ -90,15 +84,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             return this;
         }
 
-        internal AspNetUserBuilder WithUsername(string name)
-        {
-            username = name;
-            return this;
-        }
-
         public AspNetUserBuilder WithPrimaryOrganisationId(Guid id)
         {
             primaryOrganisationId = id;
+            return this;
+        }
+
+        public AspNetUser Build() => CreateUserByOrganisationFunction();
+
+        internal AspNetUserBuilder WithUserId(string id)
+        {
+            userId = id;
+            return this;
+        }
+
+        internal AspNetUserBuilder WithUsername(string name)
+        {
+            username = name;
             return this;
         }
 
@@ -118,31 +120,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
         {
             catalogueAgreementSigned = agreementSigned;
             return this;
-        }
-
-        public AspNetUser Build() => CreateUserByOrganisationFunction();
-
-        private AspNetUser CreateUserByOrganisationFunction()
-        {
-            if (!ApplicationUserFactory.TryGetValue(organisationFunction, out var factory))
-            {
-                throw new InvalidOperationException($"Unknown type of user '{organisationFunction?.DisplayName}'");
-            }
-
-            var user = factory(this);
-            user.Id = userId;
-
-            if (disabled)
-            {
-                user.Disabled = true;
-            }
-
-            if (catalogueAgreementSigned)
-            {
-                user.CatalogueAgreementSigned = true;
-            }
-
-            return user;
         }
 
         private static AspNetUser CreateBuyer(
@@ -187,6 +164,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
                 OrganisationFunction = OrganisationFunction.Authority.DisplayName,
                 PrimaryOrganisationId = primaryOrganisationId
             };
+        }
+
+        private AspNetUser CreateUserByOrganisationFunction()
+        {
+            if (!ApplicationUserFactory.TryGetValue(organisationFunction, out var factory))
+            {
+                throw new InvalidOperationException($"Unknown type of user '{organisationFunction?.DisplayName}'");
+            }
+
+            var user = factory(this);
+            user.Id = userId;
+
+            if (disabled)
+            {
+                user.Disabled = true;
+            }
+
+            if (catalogueAgreementSigned)
+            {
+                user.CatalogueAgreementSigned = true;
+            }
+
+            return user;
         }
     }
 }
