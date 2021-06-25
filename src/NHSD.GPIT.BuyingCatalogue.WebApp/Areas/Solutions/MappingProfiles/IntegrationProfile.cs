@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         {
                             dest.Headings = new List<string>
                             {
-                                "Provider or Consumer", "Additional information",
+                                "Provider or consumer", "Additional information",
                             };
                             foreach (var (role, description) in details)
                             {
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
                         dest.Headings = new List<string>
                         {
-                            "Provider or Consumer", "System integrating with", "Description",
+                            "Provider or consumer", "System integrating with", "Description",
                         };
 
                         foreach (var (role, dictionary) in detailsSystem)
