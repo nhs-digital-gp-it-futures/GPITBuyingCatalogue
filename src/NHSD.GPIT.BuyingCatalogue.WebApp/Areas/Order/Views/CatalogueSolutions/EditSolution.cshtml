@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -23,7 +24,7 @@
                                              label-text="What price have you agreed, in pounds?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
                                              Prefix="@Model.CurrencySymbol"
-                                             Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description" />
+                                             Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description()" />
 
                         <nhs-details label-text="How to fill this form">
                             <p><b>@Model.SecondColumnDetailsTitle</b></p>
@@ -68,7 +69,8 @@
                 <div style="margin-top:30px">
                     <nhs-submit-button text="Save" /><br />
                     <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/select/solution/price/recipients"
-                                             text="Edit Service Recipients" /><br />
+                                             text="Edit Service Recipients",
+                                             use-primary-colour="false"/><br />
                     <vc:nhs-delete-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/delete/@Model.OrderItem.CatalogueItemId/confirmation/@Model.OrderItem.CatalogueItemName"
                                           text="Delete Catalogue Solution" />
                 </div>

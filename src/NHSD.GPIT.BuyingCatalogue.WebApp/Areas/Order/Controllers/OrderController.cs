@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Authorize]
     [Area("Order")]
     [Route("order/organisation/{odsCode}/order/{callOffId}")]
-    public class OrderController : Controller
+    public sealed class OrderController : Controller
     {
         private readonly ILogWrapper<OrderController> logger;
         private readonly IOrderService orderService;
@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly ICommencementDateService commencementDateService;
         private readonly IFundingSourceService fundingSourceService;
 
+        // TODO: too many dependencies, i.e. too many responsibilities
         public OrderController(
             ILogWrapper<OrderController> logger,
             IOrderService orderService,
@@ -47,8 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Order(string odsCode, string callOffId)
+        public async Task<IActionResult> Order(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(Order)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -57,8 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("summary")]
-        public async Task<IActionResult> Summary(string odsCode, string callOffId, string print = "false")
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, string print = "false")
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(Summary)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(print)} {print}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -74,8 +77,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("delete-order")]
-        public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId)
+        public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(DeleteOrder)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -84,21 +88,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("delete-order")]
-        public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId, DeleteOrderModel model)
+        public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId, DeleteOrderModel model)
         {
+            // TODO: logger invocations should be values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(DeleteOrder)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             await orderService.DeleteOrder(callOffId);
 
             return RedirectToAction(
-                actionName: nameof(DashboardController.Organisation),
-                controllerName: typeof(DashboardController).ControllerName(),
-                routeValues: new { odsCode });
+                nameof(DashboardController.Organisation),
+                typeof(DashboardController).ControllerName(),
+                new { odsCode });
         }
 
         [HttpGet("delete-order/confirmation")]
-        public async Task<IActionResult> DeleteOrderConfirmation(string odsCode, string callOffId)
+        public async Task<IActionResult> DeleteOrderConfirmation(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(DeleteOrderConfirmation)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -107,8 +113,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("description")]
-        public async Task<IActionResult> OrderDescription(string odsCode, string callOffId)
+        public async Task<IActionResult> OrderDescription(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(OrderDescription)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -117,8 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("description")]
-        public async Task<IActionResult> OrderDescription(string odsCode, string callOffId, OrderDescriptionModel model)
+        public async Task<IActionResult> OrderDescription(string odsCode, CallOffId callOffId, OrderDescriptionModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(OrderDescription)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
@@ -127,14 +135,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderDescriptionService.SetOrderDescription(callOffId, model.Description);
 
             return RedirectToAction(
-                actionName: nameof(Order),
-                controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(Order),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
         [HttpGet("ordering-party")]
-        public async Task<IActionResult> OrderingParty(string odsCode, string callOffId)
+        public async Task<IActionResult> OrderingParty(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(OrderingParty)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -144,8 +153,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("ordering-party")]
-        public async Task<IActionResult> OrderingParty(string odsCode, string callOffId, OrderingPartyModel model)
+        public async Task<IActionResult> OrderingParty(string odsCode, CallOffId callOffId, OrderingPartyModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(OrderingParty)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
@@ -153,28 +163,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = await orderService.GetOrder(callOffId);
 
-            var orderingParty = new OrderingParty
-            {
-                Name = model.OrganisationName,
-                OdsCode = model.OdsCode,
-                Address = contactDetailsService.AddOrUpdateAddress(order.OrderingParty.Address, model.Address),
-            };
-
-            Contact contact = contactDetailsService.AddOrUpdatePrimaryContact(
+            var contact = contactDetailsService.AddOrUpdatePrimaryContact(
                 order.OrderingPartyContact,
                 model.Contact);
 
-            await orderingPartyService.SetOrderingParty(order, orderingParty, contact);
+            // TODO: Update naming (only sets contact now)
+            await orderingPartyService.SetOrderingParty(order, null, contact);
 
             return RedirectToAction(
-                actionName: nameof(Order),
-                controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(Order),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
         [HttpGet("commencement-date")]
-        public async Task<IActionResult> CommencementDate(string odsCode, string callOffId)
+        public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(CommencementDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -183,11 +188,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("commencement-date")]
-        public async Task<IActionResult> CommencementDate(string odsCode, string callOffId, CommencementDateModel model)
+        public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId, CommencementDateModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(CommencementDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            (var date, var error) = model.ToDateTime();
+            (DateTime? date, var error) = model.ToDateTime();
 
             if (error != null)
                 ModelState.AddModelError("Day", error);
@@ -198,14 +204,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await commencementDateService.SetCommencementDate(callOffId, date);
 
             return RedirectToAction(
-                actionName: nameof(Order),
-                controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(Order),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
         [HttpGet("funding-source")]
-        public async Task<IActionResult> FundingSource(string odsCode, string callOffId)
+        public async Task<IActionResult> FundingSource(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(FundingSource)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -214,21 +221,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("funding-source")]
-        public async Task<IActionResult> FundingSource(string odsCode, string callOffId, FundingSourceModel model)
+        public async Task<IActionResult> FundingSource(string odsCode, CallOffId callOffId, FundingSourceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(FundingSource)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             if (!ModelState.IsValid)
                 return View(model);
 
-            var onlyGms = model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes") ? true : false;
+            var onlyGms = model.FundingSourceOnlyGms.EqualsIgnoreCase("Yes");
 
             await fundingSourceService.SetFundingSource(callOffId, onlyGms);
 
             return RedirectToAction(
-                actionName: nameof(Order),
-                controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(Order),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, callOffId });
         }
     }
 }

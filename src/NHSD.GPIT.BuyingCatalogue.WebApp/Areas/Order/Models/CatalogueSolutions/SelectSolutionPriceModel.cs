@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
-    public class SelectSolutionPriceModel : OrderingBaseModel
+    public sealed class SelectSolutionPriceModel : OrderingBaseModel
     {
         public SelectSolutionPriceModel()
         {
         }
 
-        public SelectSolutionPriceModel(string odsCode, string callOffId, string solutionName, List<CataloguePrice> prices)
+        // TODO: callOffId should be of type CallOffId
+        public SelectSolutionPriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution";
             BackLinkText = "Go back";
@@ -32,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
                 Prices.Add(new PriceModel
                 {
                     CataloguePriceId = price.CataloguePriceId,
-                    Description = $"{CurrencyCodeSigns.Code[price.CurrencyCode]}{price.Price} {price.PricingUnit?.Description} {price.TimeUnit?.Description}",
+                    Description = $"{CurrencyCodeSigns.Code[price.CurrencyCode]}{price.Price} {price.PricingUnit?.Description} {price.TimeUnit?.Description()}",
                 });
             }
         }

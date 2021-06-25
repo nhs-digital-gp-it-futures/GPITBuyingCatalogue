@@ -1,26 +1,28 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
-    public class DeleteAdditionalServiceModel : OrderingBaseModel
+    public sealed class DeleteAdditionalServiceModel : OrderingBaseModel
     {
         public DeleteAdditionalServiceModel()
         {
         }
 
-        public DeleteAdditionalServiceModel(string odsCode, string callOffId, string orderItemId, string solutionName, string orderDescription)
+        public DeleteAdditionalServiceModel(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId, string solutionName, string orderDescription)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/{orderItemId}";
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/{additionalServiceId}";
             BackLinkText = "Go back";
             Title = $"Delete {solutionName} from {callOffId}?";
             OdsCode = odsCode;
             CallOffId = callOffId;
-            OrderItemId = orderItemId;
+            AdditionalServiceId = additionalServiceId;
             SolutionName = solutionName;
             OrderDescription = orderDescription;
         }
 
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
-        public string OrderItemId { get; set; }
+        public CatalogueItemId AdditionalServiceId { get; set; }
 
         public string SolutionName { get; set; }
 

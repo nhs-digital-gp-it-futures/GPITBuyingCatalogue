@@ -6,31 +6,18 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     public abstract class TestBase
     {
-        private readonly Uri uri;
-
+        internal static string DefaultPassword = "Th1sIsP4ssword!";
         protected readonly LocalWebApplicationFactory factory;
         protected readonly IWebDriver driver;
-
-        internal Actions.PublicBrowse.ActionCollection PublicBrowsePages { get; }
-
-        internal Actions.Marketing.ActionCollection MarketingPages { get; }
-
-        internal Actions.Common.CommonActions CommonActions { get; }
-
-        internal Actions.Authorization.ActionCollection AuthorizationPages{ get; }
-
-        internal Actions.Admin.ActionCollection AdminPages { get; }
-
-        internal TextGenerators TextGenerators { get; }
-
-        internal static string DefaultPassword = "Th1sIsP4ssword!";
+        private readonly Uri uri;
 
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
@@ -50,43 +37,55 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             driver.Navigate().GoToUrl(combinedUri);
         }
 
-        internal GPITBuyingCatalogueDbContext GetBCContext()
+        internal Actions.Common.CommonActions CommonActions { get; }
+
+        internal Actions.PublicBrowse.ActionCollection PublicBrowsePages { get; }
+
+        internal Actions.Marketing.ActionCollection MarketingPages { get; }
+
+        internal Actions.Authorization.ActionCollection AuthorizationPages { get; }
+
+        internal Actions.Admin.ActionCollection AdminPages { get; }
+
+        internal TextGenerators TextGenerators { get; }
+
+        internal EndToEndDbContext GetEndToEndDbContext()
         {
-            var options = new DbContextOptionsBuilder<GPITBuyingCatalogueDbContext>()
+            var options = new DbContextOptionsBuilder<EndToEndDbContext>()
                 .UseInMemoryDatabase(factory.BcDbName)
                 .Options;
 
             return new(options);
         }
 
-        internal GPITBuyingCatalogueDbContext GetUsersContext()
+        internal EndToEndDbContext GetUsersContext()
         {
-            var options = new DbContextOptionsBuilder<GPITBuyingCatalogueDbContext>()
+            var options = new DbContextOptionsBuilder<EndToEndDbContext>()
                 .UseInMemoryDatabase(factory.BcDbName)
                 .Options;
 
             return new(options);
         }
 
-        internal void ClearClientApplication(string solutionId)
+        internal void ClearClientApplication(CatalogueItemId solutionId)
         {
-            using var context = GetBCContext();
+            using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);
             solution.ClientApplication = string.Empty;
             context.SaveChanges();
         }
 
-        internal void ClearHostingTypes(string solutionId)
+        internal void ClearHostingTypes(CatalogueItemId solutionId)
         {
-            using var context = GetBCContext();
+            using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);
             solution.Hosting = null;
             context.SaveChanges();
         }
 
-        internal void ClearFeatures(string solutionId)
+        internal void ClearFeatures(CatalogueItemId solutionId)
         {
-            using var context = GetBCContext();
+            using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);
             solution.Features = string.Empty;
             context.SaveChanges();
@@ -96,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             if (AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
             {
-                using var context = GetBCContext();
+                using var context = GetEndToEndDbContext();
                 var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").Email;
                 AuthorizationPages.LoginActions.Login(user, DefaultPassword);
             }

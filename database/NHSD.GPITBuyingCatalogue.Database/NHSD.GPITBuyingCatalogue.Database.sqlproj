@@ -82,7 +82,9 @@
     <Folder Include="PreDeployment" />
     <Folder Include="Functions" />
     <Folder Include="Indexes" />
-    <Folder Include="BuildUtils" />
+    <Folder Include="Ordering" />
+    <Folder Include="Ordering\Tables" />
+    <Folder Include="Ordering\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\SolutionCapabilityStatus.sql" />
@@ -161,6 +163,17 @@
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
     <None Include="PostDeployment\CreateTables.sql" />
     <Build Include="Tables\SQLSessions.sql" />
+    <Build Include="Security\Schemas\ordering.sql" />
+    <Build Include="Ordering\Tables\Contacts.sql" />
+    <Build Include="Ordering\Tables\DefaultDeliveryDates.sql" />
+    <Build Include="Ordering\Tables\OrderItemRecipients.sql" />
+    <Build Include="Ordering\Tables\OrderItems.sql" />
+    <Build Include="Ordering\Tables\OrderProgress.sql" />
+    <Build Include="Ordering\Tables\Orders.sql" />
+    <Build Include="Ordering\Tables\OrderStatus.sql" />
+    <Build Include="Ordering\Tables\ServiceRecipients.sql" />
+    <Build Include="Ordering\Views\ServiceInstanceItems.sql" />
+    <None Include="PostDeployment\InsertOrderStatuses.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">

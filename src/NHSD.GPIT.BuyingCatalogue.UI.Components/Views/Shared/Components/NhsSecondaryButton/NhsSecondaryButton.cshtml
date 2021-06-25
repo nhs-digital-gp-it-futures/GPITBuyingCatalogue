@@ -1,5 +1,9 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton.NhsSecondaryButtonModel
 
-    <a class="nhsuk-button nhsuk-button--secondary" href="@Model.Url" draggable="false">
+@{ 
+    ViewBag.SecondaryClass = !Model.UsePrimaryColour ? "nhsuk-button--secondary" : string.Empty;
+}
+
+    <a class="nhsuk-button @ViewBag.SecondaryClass" href="@Model.Url" draggable="false">
         @Model.Text
     </a>

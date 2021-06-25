@@ -55,7 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Attributes.SetAttribute(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsFormGroup));
 

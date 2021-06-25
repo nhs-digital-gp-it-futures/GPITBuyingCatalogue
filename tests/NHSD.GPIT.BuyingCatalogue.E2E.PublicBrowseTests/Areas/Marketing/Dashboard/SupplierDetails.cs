@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
@@ -14,8 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     {
         public SupplierDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/about-supplier")
         {
-            using var context = GetBCContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.Supplier).Single(s => s.CatalogueItemId == "99999-99");
+            using var context = GetEndToEndDbContext();
+            var catalogueItem = context.CatalogueItems.Include(c => c.Supplier).Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "99"));
             catalogueItem.Supplier.Summary = string.Empty;
             catalogueItem.Supplier.SupplierUrl = string.Empty;
             context.SaveChanges();
@@ -29,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
-            var catalogueItem = await context.CatalogueItems.Include(c => c.Supplier).SingleAsync(s => s.CatalogueItemId == "99999-99");
+            await using var context = GetEndToEndDbContext();
+            var catalogueItem = await context.CatalogueItems.Include(c => c.Supplier).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "99"));
             catalogueItem.Supplier.Summary.Should().Be(summary);
             catalogueItem.Supplier.SupplierUrl.Should().Be(link);
         }
@@ -54,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearClientApplication(new CatalogueItemId(99999, "99"));
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
     {
         public int Id { get; set; }
 
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         [StringLength(35)]
         public string FirstName { get; set; }

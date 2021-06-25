@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NUnit.Framework;
 
@@ -19,7 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static void HasContacts_ValidContacts_ReturnsTrue(SolutionSupplierDetailsModel model)
         {
             model.Contacts.Any(x => x != null).Should().BeTrue();

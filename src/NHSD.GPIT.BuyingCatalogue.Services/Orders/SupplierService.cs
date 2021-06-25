@@ -5,100 +5,68 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
-    public class SupplierService : ISupplierService
+    public sealed class SupplierService : ISupplierService
     {
-        private readonly ILogWrapper<SupplierService> logger;
-        private readonly OrderingDbContext oDbContext;
-        private readonly GPITBuyingCatalogueDbContext bcDbContext;
-        private readonly IDbRepository<EntityFramework.Models.GPITBuyingCatalogue.Supplier, GPITBuyingCatalogueDbContext> bcRepository;
-        private readonly IContactDetailsService contactDetailsService;
+        private readonly GPITBuyingCatalogueDbContext dbContext;
         private readonly IOrderService orderService;
 
         public SupplierService(
-            ILogWrapper<SupplierService> logger,
-            OrderingDbContext oDbContext,
-            GPITBuyingCatalogueDbContext bcDbContext,
-            IDbRepository<EntityFramework.Models.GPITBuyingCatalogue.Supplier, GPITBuyingCatalogueDbContext> bcRepository,
-            IContactDetailsService contactDetailsService,
+            GPITBuyingCatalogueDbContext dbContext,
             IOrderService orderService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.oDbContext = oDbContext ?? throw new ArgumentNullException(nameof(oDbContext));
-            this.bcDbContext = bcDbContext ?? throw new ArgumentNullException(nameof(bcDbContext));
-            this.bcRepository = bcRepository ?? throw new ArgumentNullException(nameof(bcRepository));
-            this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public async Task<List<EntityFramework.Models.GPITBuyingCatalogue.Supplier>> GetListFromBuyingCatalogue(
+        public Task<List<Supplier>> GetListFromBuyingCatalogue(
             string searchString,
-            EntityFramework.Models.GPITBuyingCatalogue.CatalogueItemType catalogueItemType,
-            PublicationStatus publicationStatus = null)
+            CatalogueItemType? catalogueItemType,
+            PublicationStatus? publicationStatus = null)
         {
-            EntityFramework.Models.GPITBuyingCatalogue.CatalogueItemType cIType =
-                catalogueItemType ?? EntityFramework.Models.GPITBuyingCatalogue.CatalogueItemType.Solution;
+            CatalogueItemType cIType =
+                catalogueItemType ?? CatalogueItemType.Solution;
 
-            IQueryable<EntityFramework.Models.GPITBuyingCatalogue.CatalogueItem> query =
-                bcDbContext.CatalogueItems.Where(ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType);
+            IQueryable<CatalogueItem> query =
+                dbContext.CatalogueItems.Where(ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType);
 
             if (publicationStatus is not null)
                 query.Where(ci => ci.PublishedStatus == publicationStatus);
 
-            return await query.Select(ci => ci.Supplier)
+            return query.Select(ci => ci.Supplier)
                 .Distinct()
                 .OrderBy(s => s.Name)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<EntityFramework.Models.GPITBuyingCatalogue.Supplier> GetSupplierFromBuyingCatalogue(string id)
+        public Task<Supplier> GetSupplierFromBuyingCatalogue(string id)
         {
-            return await bcDbContext.Suppliers
+            return dbContext.Suppliers
                 .Include(o => o.SupplierContacts)
                 .Where(s => s.Id == id)
                 .SingleAsync();
         }
 
-        public async Task<EntityFramework.Models.Ordering.Supplier> GetSupplierFromCatalogueOrdering(string id)
+        public async Task AddOrderSupplier(CallOffId callOffId, string supplierId)
         {
-            return await oDbContext.Suppliers.Where(s => s.Id == id).SingleOrDefaultAsync();
-        }
-
-        public async Task AddOrderSupplier(string callOffId, string supplierId)
-        {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
-
-            var existingSupplier = await GetSupplierFromCatalogueOrdering(supplierId);
-
             var order = await orderService.GetOrder(callOffId);
 
-            var supplierModel = existingSupplier ?? new EntityFramework.Models.Ordering.Supplier
-            {
-                Id = supplier.Id,
-                Name = supplier.Name,
-                Address = contactDetailsService.AddOrUpdateAddress(order.Supplier?.Address, supplier.Address),
-            };
+            order.Supplier = supplier;
 
-            order.Supplier = supplierModel;
-
-            await oDbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddOrUpdateOrderSupplierContact(string callOffId, Contact contact)
+        public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, Contact contact)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             var order = await orderService.GetOrder(callOffId);
 
             switch (order.SupplierContact)
@@ -106,6 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 case null:
                     order.SupplierContact = contact;
                     break;
+
                 default:
                     order.SupplierContact.FirstName = contact.FirstName;
                     order.SupplierContact.LastName = contact.LastName;
@@ -114,10 +83,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     break;
             }
 
-            await oDbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetSupplierSection(Order order, EntityFramework.Models.Ordering.Supplier supplier, Contact contact)
+        public async Task SetSupplierSection(Order order, Supplier supplier, Contact contact)
         {
             if (order is null)
                 throw new ArgumentNullException(nameof(order));
@@ -128,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
 
-            order.Supplier ??= await oDbContext.Suppliers.FindAsync(supplier.Id) ?? new EntityFramework.Models.Ordering.Supplier
+            order.Supplier ??= await dbContext.Suppliers.FindAsync(supplier.Id) ?? new Supplier
             {
                 Id = supplier.Id,
             };
@@ -137,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             order.Supplier.Address = supplier.Address;
             order.SupplierContact = contact;
 
-            await oDbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
     }
 }

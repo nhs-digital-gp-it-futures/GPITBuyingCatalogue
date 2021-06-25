@@ -16,7 +16,7 @@
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
                 <nhs-bookended-input asp-for="@Model.Quantity"
-                           label-text="How many do you think you'll need?" />
+                                     label-text="How many do you think you'll need?" />
                 <nhs-details label-text="What quantity should i enter?">
                     Enter the estimated quantity you think you'll need either per month or per year.
                 </nhs-details>
@@ -24,7 +24,7 @@
                                          label-text="Over what period did you estimate the quantity?"
                                          label-hint="Select one option.">
                     <nhs-radio-buttons asp-for="@Model.TimeUnit"
-                                       values="@Model.TimeUnits"
+                                       values="@Model.TimeUnits.Cast<object>()"
                                        value-name="Name"
                                        display-name="DisplayText" />
                 </nhs-fieldset-form-label>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NUnit.Framework;
@@ -31,16 +32,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new SupportedBrowsersModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/browser-based", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/browser-based", model.BackLink);
             Assert.AreEqual("Yes", model.MobileResponsive);
-            Assert.True(model.Browsers.Single(x => x.BrowserName == "Microsoft Edge").Checked);
-            Assert.AreEqual(7, model.Browsers.Count(x => x.BrowserName != "Microsoft Edge"));
+            Assert.True(model.Browsers.Single(m => m.BrowserName == "Microsoft Edge").Checked);
+            Assert.AreEqual(7, model.Browsers.Count(m => m.BrowserName != "Microsoft Edge"));
         }
 
         [Test]
@@ -71,13 +72,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             var clientApplication = new ClientApplication
             {
                 BrowsersSupported = browsers,
-                MobileResponsive = mobileResponsiveness
+                MobileResponsive = mobileResponsiveness,
             };
+
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new SupportedBrowsersModel(catalogueItem);

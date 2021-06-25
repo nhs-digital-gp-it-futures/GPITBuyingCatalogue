@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IFundingSourceService
     {
-        Task SetFundingSource(string callOffId, bool? onlyGms);
+        Task SetFundingSource(CallOffId callOffId, bool? onlyGms);
     }
 }

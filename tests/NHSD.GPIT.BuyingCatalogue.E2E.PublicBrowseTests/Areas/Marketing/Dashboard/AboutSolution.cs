@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
@@ -24,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
             solution.Summary.Should().Be(summary);
             solution.FullDescription.Should().Be(description);
             solution.AboutUrl.Should().Be(link);
@@ -46,8 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task AboutSolution_SectionMarkedAsIncompleteAsync()
         {
-            using var context = GetBCContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
             solution.Summary = string.Empty;
             solution.FullDescription = string.Empty;
             solution.AboutUrl = string.Empty;
@@ -62,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task AboutSolution_SummaryLeftEmpty()
         {
-            using var context = GetBCContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == "99999-99");
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
             solution.Summary = string.Empty;
 
             await context.SaveChangesAsync();
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearClientApplication(new CatalogueItemId(99999, "99"));
         }
     }
 }
