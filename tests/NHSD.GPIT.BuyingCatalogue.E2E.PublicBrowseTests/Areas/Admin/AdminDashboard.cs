@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public sealed class AdminDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public AdminDashboard(LocalWebApplicationFactory factory) : base(factory, "admin/organisations")
+        public AdminDashboard(LocalWebApplicationFactory factory) : base(factory, "admin/buyer-organisations")
         {
             Login();
         }
@@ -24,13 +25,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public async Task AdminDashboard_AllOrgsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var organisations = await context.Organisations.Select(s => s.Name).ToListAsync();
+            var organisationNames = await context.Organisations.Select(s => s.Name).ToListAsync();
+            var organisationIds = await context.Organisations.Select(s => s.OrganisationId).ToListAsync();
+            var otherProgramList = organisationIds.Select(x => x.ToString()).ToList();
+            var organisationOdsCodes = await context.Organisations.Select(s => s.OdsCode).ToListAsync();
 
-            var orgsDisplayed = AdminPages.Dashboard.GetOrgsOnPage();
+            var orgNames = AdminPages.Dashboard.GetOrgNamesOnPage();
+            var orgCodes = AdminPages.Dashboard.GetOrgOdsCodesOnPage();
+            var orgLinkIds = AdminPages.Dashboard.GetOrgLinkIdsOnPage();
 
-            orgsDisplayed.Should().HaveCount(organisations.Count);
-
-            orgsDisplayed.Should().BeEquivalentTo(organisations);
+            orgNames.Should().HaveCount(organisationNames.Count());
+            orgLinkIds.Should().BeEquivalentTo(otherProgramList);
+            orgCodes.Should().BeEquivalentTo(organisationOdsCodes);
+            orgNames.Should().BeEquivalentTo(organisationNames);
         }
     }
 }

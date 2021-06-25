@@ -54,28 +54,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 _ = new OrganisationsController( Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
                 Mock.Of<ICreateBuyerService>(), null));
         }
-
-        [Fact]
-        public static async Task Get_Index_ReturnsDefaultView()
-        {
-            var mockOrganisationsService = new Mock<IOrganisationsService>();
-
-            var organisations = new List<Organisation>
-            {
-                new() { Name = "Name123", OdsCode = "O12"},
-                new() { Name = "Name124", OdsCode = "O13"}
-            };
-
-            mockOrganisationsService.Setup(x => x.GetAllOrganisations())
-                .ReturnsAsync(organisations);
-
-            var controller = new OrganisationsController( mockOrganisationsService.Object, Mock.Of<IOdsService>(),
-                Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>());
-
-            var result = await controller.Index();
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
-        }
     }
 }
