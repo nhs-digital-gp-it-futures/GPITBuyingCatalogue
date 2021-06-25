@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers; 
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.CatalogueSolutionsModel;
 @{
@@ -19,7 +20,7 @@
 
             <vc:nhs-secondary-button url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.SelectSolution),
-                                                "CatalogueSolutions",
+                                                typeof(CatalogueSolutionsController).ControllerName(),
                                                 new {Model.OdsCode, Model.CallOffId})"
                                      text="Add Catalogue Solution"
                                      use-primary-colour="false" />
