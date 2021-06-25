@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
-    public class SupplierContactsModel
+    public sealed class SupplierContactsModel
     {
-        public virtual string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         public MarketingContact[] Contacts { get; set; }
 
-        public virtual MarketingContact ContactFor(int contactId) => Contacts?.FirstOrDefault(x => x.Id == contactId);
+        public MarketingContact ContactFor(int contactId) => Contacts?.FirstOrDefault(x => x.Id == contactId);
 
-        public virtual void SetSolutionId()
+        public void SetSolutionId()
         {
-            if (Contacts == null || !Contacts.Any())
+            if (Contacts is null || !Contacts.Any())
                 return;
 
             foreach (var contact in Contacts)
@@ -25,10 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
             }
         }
 
-        public virtual IList<MarketingContact> ValidContacts() =>
-            Contacts?.Where(x => !x.IsEmpty()).ToList() ?? new List<MarketingContact>();
+        public IList<MarketingContact> ValidContacts() =>
+            Contacts?.Where(c => !c.IsEmpty()).ToList() ?? new List<MarketingContact>();
 
-        public virtual IList<MarketingContact> NewAndValidContacts() =>
-            Contacts?.Where(x => x.NewAndValid()).ToList() ?? new List<MarketingContact>();
+        public IList<MarketingContact> NewAndValidContacts() =>
+            Contacts?.Where(c => c.NewAndValid()).ToList() ?? new List<MarketingContact>();
     }
 }

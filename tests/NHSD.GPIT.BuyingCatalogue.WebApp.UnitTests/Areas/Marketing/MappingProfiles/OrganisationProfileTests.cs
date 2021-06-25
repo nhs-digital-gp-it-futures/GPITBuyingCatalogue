@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using AutoFixture;
-using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -21,6 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
     {
         private IMapper mapper;
 
+        [Test]
+        public static void Mappings_Configuration_Valid()
+        {
+            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
+
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
+
         [OneTimeSetUp]
         public void SetUp()
         {
@@ -34,14 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
         public void CleanUp()
         {
             mapper = null;
-        }
-
-        [Test]
-        public static void Mappings_Configuration_Valid()
-        {
-            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
-
-            mapperConfiguration.AssertConfigurationIsValid();
         }
 
         [Test, CommonAutoData]
@@ -198,7 +197,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Test]
+        [CommonAutoData]
         public void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
             ContactDetailsModel contactDetailsModel)
         {
@@ -209,7 +209,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SolutionId.Should().Be(contactDetailsModel.SolutionId);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public void Map_FeaturesModelToStringArray_ResultAsExpected(FeaturesModel model)
         {
             var actual = mapper.Map<FeaturesModel, string[]>(model);

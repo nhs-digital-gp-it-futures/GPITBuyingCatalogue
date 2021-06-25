@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NUnit.Framework;
 
@@ -12,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutSupplierModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new AboutSupplierModel(null));
         }
 
         [Test]
@@ -21,13 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Supplier = new Supplier { SupplierUrl = "A link", Summary = "A description" }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Supplier = new Supplier { SupplierUrl = "A link", Summary = "A description" },
             };
 
             var model = new AboutSupplierModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.AreEqual("A link", model.Link);
             Assert.AreEqual("A description", model.Description);
         }
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
+                CatalogueItemId = new CatalogueItemId(1, "123"),
                 Supplier = new Supplier { SupplierUrl = link, Summary = description }
             };
 

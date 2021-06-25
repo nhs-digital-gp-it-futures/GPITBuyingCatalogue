@@ -6,12 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IDefaultDeliveryDateService
     {
-        // TODO: callOffId should be of type CallOffId
-        // TODO: catalogueItemId should be of type CatalogueItemId
-        Task<DateTime?> GetDefaultDeliveryDate(string callOffId, string catalogueItemId);
+        Task<DateTime?> GetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId);
 
-        // TODO: callOffId should be of type CallOffId
-        // TODO: catalogueItemId should be of type CatalogueItemId
-        Task<DeliveryDateResult> SetDefaultDeliveryDate(string callOffId, string catalogueItemId, DateTime deliveryDate);
+        Task<DeliveryDateResult> SetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId, DateTime deliveryDate);
     }
 }

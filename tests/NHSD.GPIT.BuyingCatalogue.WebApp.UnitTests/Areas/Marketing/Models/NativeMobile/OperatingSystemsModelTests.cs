@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 using NUnit.Framework;
@@ -34,17 +35,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new OperatingSystemsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
 
-            Assert.True(model.OperatingSystems.Single(x => x.OperatingSystemName == "Android").Checked);
-            Assert.True(model.OperatingSystems.Single(x => x.OperatingSystemName == "Other").Checked);
-            Assert.False(model.OperatingSystems.Single(x => x.OperatingSystemName == "Apple IOS").Checked);
+            Assert.True(model.OperatingSystems.Single(s => s.OperatingSystemName == "Android").Checked);
+            Assert.True(model.OperatingSystems.Single(s => s.OperatingSystemName == "Other").Checked);
+            Assert.False(model.OperatingSystems.Single(s => s.OperatingSystemName == "Apple IOS").Checked);
         }
 
         [Test]
@@ -83,8 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new OperatingSystemsModel(catalogueItem);

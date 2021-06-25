@@ -4,8 +4,7 @@
     {
         public int OrderId { get; set; }
 
-        // TODO: should be of type CatalogueItemId
-        public string CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string OdsCode { get; set; }
 

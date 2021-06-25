@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -19,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class SolutionControllerTests
-    {        
+    {
         [Test]
         public static void ClassIsCorrectlyDecorated()
         {
@@ -51,8 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ParamName.Should().Be("solutionsService");
         }
 
-        [Test, AutoData]
-        public static async Task Get_Index_ValidId_GetsSolutionFromService(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_Index_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
@@ -63,8 +65,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test, AutoData]
-        public static async Task Get_Index_NullSolutionForId_ReturnsBadRequestResult(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_Index_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
@@ -78,8 +81,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test, AutoData]
-        public static async Task Get_Index_ValidSolutionForId_MapsToModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_Index_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
@@ -94,8 +98,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, SolutionStatusModel>(mockCatalogueItem));
         }
 
-        [Test, AutoData]
-        public static async Task Get_Index_ValidSolutionForId_ReturnsExpectedViewResult(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_Index_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
             var mockSolutionStatusModel = new Mock<SolutionStatusModel>().Object;
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -117,17 +122,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static void Get_Preview_RedirectsToPreview()
+        [CommonAutoData]
+        public static void Get_Preview_RedirectsToPreview(CatalogueItemId id)
         {
             var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
 
-            var result = (controller.Preview("123")).As<RedirectToActionResult>();
+            var result = controller.Preview(id).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(SolutionDetailsController.PreviewSolutionDetail));
             result.ControllerName.Should().Be(typeof(SolutionDetailsController).ControllerName());
-            result.RouteValues["id"].Should().Be("123");
+            result.RouteValues["solutionId"].Should().Be(id);
         }
     }
 }

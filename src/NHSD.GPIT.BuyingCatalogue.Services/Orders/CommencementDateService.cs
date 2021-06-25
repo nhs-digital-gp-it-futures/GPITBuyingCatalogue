@@ -22,17 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task SetCommencementDate(string callOffId, DateTime? commencementDate)
+        public async Task SetCommencementDate(CallOffId callOffId, DateTime? commencementDate)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             commencementDate.ValidateNotNull(nameof(commencementDate));
 
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Setting commencement date for {callOffId} to {commencementDate.Value.ToLongDateString()}");
 
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == id.Id);
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id);
             order.CommencementDate = commencementDate.Value;
             await dbContext.SaveChangesAsync();
         }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
@@ -46,9 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.fundingSourceService = fundingSourceService ?? throw new ArgumentNullException(nameof(fundingSourceService));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet]
-        public async Task<IActionResult> Order(string odsCode, string callOffId)
+        public async Task<IActionResult> Order(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(Order)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -58,9 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new OrderModel(odsCode, order));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("summary")]
-        public async Task<IActionResult> Summary(string odsCode, string callOffId, string print = "false")
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId, string print = "false")
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(Summary)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(print)} {print}");
@@ -77,9 +76,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SummaryModel(odsCode, order));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("delete-order")]
-        public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId)
+        public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(DeleteOrder)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -89,9 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteOrderModel(odsCode, order));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost("delete-order")]
-        public async Task<IActionResult> DeleteOrder(string odsCode, string callOffId, DeleteOrderModel model)
+        public async Task<IActionResult> DeleteOrder(string odsCode, CallOffId callOffId, DeleteOrderModel model)
         {
             // TODO: logger invocations should be values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(DeleteOrder)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -104,9 +101,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 new { odsCode });
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("delete-order/confirmation")]
-        public async Task<IActionResult> DeleteOrderConfirmation(string odsCode, string callOffId)
+        public async Task<IActionResult> DeleteOrderConfirmation(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(DeleteOrderConfirmation)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -116,9 +112,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new DeleteConfirmationModel(odsCode, order));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("description")]
-        public async Task<IActionResult> OrderDescription(string odsCode, string callOffId)
+        public async Task<IActionResult> OrderDescription(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(OrderDescription)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -128,9 +123,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new OrderDescriptionModel(odsCode, order));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost("description")]
-        public async Task<IActionResult> OrderDescription(string odsCode, string callOffId, OrderDescriptionModel model)
+        public async Task<IActionResult> OrderDescription(string odsCode, CallOffId callOffId, OrderDescriptionModel model)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(OrderDescription)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -146,9 +140,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 new { odsCode, callOffId });
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("ordering-party")]
-        public async Task<IActionResult> OrderingParty(string odsCode, string callOffId)
+        public async Task<IActionResult> OrderingParty(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(OrderingParty)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -159,9 +152,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new OrderingPartyModel(odsCode, order, organisation));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost("ordering-party")]
-        public async Task<IActionResult> OrderingParty(string odsCode, string callOffId, OrderingPartyModel model)
+        public async Task<IActionResult> OrderingParty(string odsCode, CallOffId callOffId, OrderingPartyModel model)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(OrderingParty)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -184,9 +176,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 new { odsCode, callOffId });
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("commencement-date")]
-        public async Task<IActionResult> CommencementDate(string odsCode, string callOffId)
+        public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(CommencementDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -196,9 +187,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new CommencementDateModel(odsCode, callOffId, order.CommencementDate));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost("commencement-date")]
-        public async Task<IActionResult> CommencementDate(string odsCode, string callOffId, CommencementDateModel model)
+        public async Task<IActionResult> CommencementDate(string odsCode, CallOffId callOffId, CommencementDateModel model)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(CommencementDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -219,9 +209,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 new { odsCode, callOffId });
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("funding-source")]
-        public async Task<IActionResult> FundingSource(string odsCode, string callOffId)
+        public async Task<IActionResult> FundingSource(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(FundingSource)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -231,9 +220,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new FundingSourceModel(odsCode, callOffId, order.FundingSourceOnlyGms));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost("funding-source")]
-        public async Task<IActionResult> FundingSource(string odsCode, string callOffId, FundingSourceModel model)
+        public async Task<IActionResult> FundingSource(string odsCode, CallOffId callOffId, FundingSourceModel model)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(OrderController)}.{nameof(FundingSource)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
