@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers; 
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -67,10 +68,18 @@
                 </nhs-table>
                 <div style="margin-top:30px">
                     <nhs-submit-button text="Save" /><br />
-                    <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/select/solution/price/recipients"
-                                             text="Edit Service Recipients" /><br />
-                    <vc:nhs-delete-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/delete/@Model.OrderItem.CatalogueItemId/confirmation/@Model.OrderItem.CatalogueItemName"
-                                          text="Delete Catalogue Solution" />
+
+                    <vc:nhs-secondary-button url="@Url.Action(
+                                                nameof(CatalogueSolutionsController.SelectSolutionServiceRecipients),
+                                                "CatalogueSolutions",
+                                                new {Model.OdsCode, Model.CallOffId})"
+                                             text="Edit Service Recipients" />
+                 
+                    <vc:nhs-delete-button url="@Url.Action(
+                                                nameof(CatalogueSolutionsController.DeleteSolution),
+                                                "CatalogueSolutions",
+                                                new {Model.OdsCode, Model.CallOffId, id = @Model.OrderItem.CatalogueItemId, solutionName = @Model.OrderItem.CatalogueItemName})"
+                                             text="Delete Catalogue Solution" />
                 </div>
             </div>
         </form>
