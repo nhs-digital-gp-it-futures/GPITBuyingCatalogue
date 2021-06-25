@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,6 +18,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
     {
         private IMapper mapper;
 
+        [Test]
+        public static void Mappings_Configuration_Valid()
+        {
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            });
+
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
+
         [OneTimeSetUp]
         public void SetUp()
         {
@@ -33,18 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
         public void CleanUp()
         {
             mapper = null;
-        }
-
-        [Test]
-        public static void Mappings_Configuration_Valid()
-        {
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            });
-
-            mapperConfiguration.AssertConfigurationIsValid();
         }
 
         [Test, CommonAutoData]
@@ -203,7 +202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public void Map_MemoryAndStorageModelToNativeDesktopMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
         {

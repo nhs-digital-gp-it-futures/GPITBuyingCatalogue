@@ -1,14 +1,21 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
-    public class SelectAdditionalServiceRecipientsDateModel : OrderingBaseModel
+    public sealed class SelectAdditionalServiceRecipientsDateModel : OrderingBaseModel
     {
         public SelectAdditionalServiceRecipientsDateModel()
         {
         }
 
-        public SelectAdditionalServiceRecipientsDateModel(string odsCode, string callOffId, string solutionName, DateTime? commencementDate, DateTime? plannedDeliveryDate, DateTime? defaultDeliveryDate)
+        public SelectAdditionalServiceRecipientsDateModel(
+            string odsCode,
+            CallOffId callOffId,
+            string solutionName,
+            DateTime? commencementDate,
+            DateTime? plannedDeliveryDate,
+            DateTime? defaultDeliveryDate)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price";
             BackLinkText = "Go back";

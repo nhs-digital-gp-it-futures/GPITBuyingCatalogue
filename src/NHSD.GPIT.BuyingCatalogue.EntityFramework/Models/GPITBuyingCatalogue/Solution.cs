@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 #nullable disable
 
@@ -16,8 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
             SolutionEpics = new HashSet<SolutionEpic>();
         }
 
-        // TODO: Should be of type CatalogueItemId
-        public string Id { get; set; }
+        public CatalogueItemId Id { get; set; }
 
         public string Version { get; set; }
 

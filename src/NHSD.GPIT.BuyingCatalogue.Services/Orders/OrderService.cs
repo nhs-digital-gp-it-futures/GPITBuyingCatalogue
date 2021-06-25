@@ -23,13 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public Task<Order> GetOrder(string callOffId)
+        public Task<Order> GetOrder(CallOffId callOffId)
         {
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
-
             return dbContext.Orders
-                .Where(o => o.Id == id.Id)
+                .Where(o => o.Id == callOffId.Id)
                 .Include(o => o.OrderingParty)
 
                 // TODO: fix address modelling
@@ -106,12 +103,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return order;
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task DeleteOrder(string callOffId)
+        public async Task DeleteOrder(CallOffId callOffId)
         {
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
-
-            var order = await dbContext.Orders.Where(o => o.Id == id.Id).SingleAsync();
+            var order = await dbContext.Orders.Where(o => o.Id == callOffId.Id).SingleAsync();
 
             order.IsDeleted = true;
 

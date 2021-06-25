@@ -1,21 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
-    public class SelectAdditionalServiceRecipientsModel : OrderingBaseModel
+    public sealed class SelectAdditionalServiceRecipientsModel : OrderingBaseModel
     {
         public SelectAdditionalServiceRecipientsModel()
         {
         }
 
-        public SelectAdditionalServiceRecipientsModel(string odsCode, string callOffId, string solutionName, IList<OrderItemRecipientModel> serviceRecipients, string selectionMode, bool isNewOrder, string catalogueSolutionId)
+        public SelectAdditionalServiceRecipientsModel(
+            string odsCode,
+            CallOffId callOffId,
+            string solutionName,
+            IEnumerable<OrderItemRecipientModel> serviceRecipients,
+            string selectionMode,
+            bool isNewOrder,
+            CatalogueItemId additionalServiceId)
         {
             if (isNewOrder)
                 BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/solution";
             else
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/{catalogueSolutionId}";
+                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/{additionalServiceId}";
 
             BackLinkText = "Go back";
             Title = $"Service Recipients for {solutionName} for {callOffId}";
@@ -23,28 +31,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             CallOffId = callOffId;
             ServiceRecipients = serviceRecipients.ToList();
 
-            if (selectionMode != null)
+            if (selectionMode is null)
+                return;
+
+            if (selectionMode.Equals("all", System.StringComparison.InvariantCultureIgnoreCase))
             {
-                if (selectionMode.Equals("all", System.StringComparison.InvariantCultureIgnoreCase))
+                ServiceRecipients.All(c =>
                 {
-                    ServiceRecipients.All(c =>
-                    {
-                        c.Selected = true;
-                        return true;
-                    });
-                    SelectionPrompt = "Deselect all";
-                    SelectionParameter = "none";
-                }
-                else if (selectionMode.Equals("none", System.StringComparison.InvariantCultureIgnoreCase))
+                    c.Selected = true;
+                    return true;
+                });
+                SelectionPrompt = "Deselect all";
+                SelectionParameter = "none";
+            }
+            else if (selectionMode.Equals("none", System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                ServiceRecipients.All(c =>
                 {
-                    ServiceRecipients.All(c =>
-                    {
-                        c.Selected = false;
-                        return true;
-                    });
-                    SelectionPrompt = "Deselect all";
-                    SelectionParameter = "none";
-                }
+                    c.Selected = false;
+                    return true;
+                });
+                SelectionPrompt = "Deselect all";
+                SelectionParameter = "none";
             }
         }
 
@@ -52,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 
         public string SelectionParameter { get; set; } = "all";
 
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public List<OrderItemRecipientModel> ServiceRecipients { get; set; }
     }

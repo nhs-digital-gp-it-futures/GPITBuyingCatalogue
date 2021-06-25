@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             sessionService.SetObject("CatalogueItemState", model);
         }
 
-        public async Task<bool> InitialiseStateForEdit(string odsCode, string callOffId, string catalogueSolutionId)
+        public async Task<bool> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueSolutionId)
         {
             var state = GetOrderStateFromSession();
 
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
             var order = await orderService.GetOrder(callOffId);
 
-            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
+            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId);
 
             state = new CreateOrderItemModel
             {
@@ -84,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 CommencementDate = order.CommencementDate,
                 SupplierId = order.SupplierId,
                 CatalogueItemType = solution.CatalogueItemType,
-                CatalogueItemId = orderItem.CatalogueItemId.ToString(),
+                CatalogueItemId = orderItem.CatalogueItemId,
                 CatalogueItemName = solution.Name,
                 Price = orderItem.Price,
                 ItemUnit = new ItemUnitModel
@@ -94,6 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 },
                 EstimationPeriod = orderItem.EstimationPeriod,
                 PriceId = orderItem.PriceId,
+                ProvisioningType = orderItem.CataloguePrice.ProvisioningType,
                 Type = orderItem.CataloguePrice.CataloguePriceType,
 
                 // TODO: this isn't right – only additional services have a parent catalogue item
@@ -127,6 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
             state.Price = cataloguePrice.Price;
             state.PriceId = cataloguePrice.CataloguePriceId;
+            state.ProvisioningType = cataloguePrice.ProvisioningType;
 
             // TODO: why is this fixed to PerYear?
             state.EstimationPeriod = TimeUnit.PerYear;

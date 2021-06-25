@@ -14,11 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Supplier> GetSupplierFromBuyingCatalogue(string id);
 
-        // TODO: callOffId should be of type CallOffId
-        public Task AddOrderSupplier(string callOffId, string supplierId);
+        public Task AddOrderSupplier(CallOffId callOffId, string supplierId);
 
-        // TODO: callOffId should be of type CallOffId
-        public Task AddOrUpdateOrderSupplierContact(string callOffId, Contact contact);
+        public Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, Contact contact);
 
         public Task SetSupplierSection(Order order, Supplier supplier, Contact contact);
     }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session
 
         public void SetOrderStateToSession(CreateOrderItemModel model);
 
-        public Task<bool> InitialiseStateForEdit(string odsCode, string callOffId, string catalogueSolutionId);
+        public Task<bool> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueSolutionId);
 
         public void SetPrice(EntityFramework.Models.GPITBuyingCatalogue.CataloguePrice cataloguePrice);
     }

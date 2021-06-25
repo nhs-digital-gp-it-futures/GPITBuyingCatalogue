@@ -19,20 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        // TODO: callOffId should be of type CallOffId
-        // TODO: catalogueItemId should be of type CatalogueItemId
-        public async Task<DateTime?> GetDefaultDeliveryDate(string callOffId, string catalogueItemId)
+        public async Task<DateTime?> GetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
-
-            // TODO - handle case of non-success
-            (bool success, var catId) = CatalogueItemId.Parse(catalogueItemId);
-
             Expression<Func<Order, IEnumerable<DefaultDeliveryDate>>> defaultDeliveryDate = o
-                => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catId);
+                => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId);
 
             var date = await dbContext.Orders
-                .Where(o => o.Id == id.Id)
+                .Where(o => o.Id == callOffId.Id)
                 .Include(defaultDeliveryDate)
                 .SelectMany(defaultDeliveryDate)
                 .Select(d => d.DeliveryDate)
@@ -41,18 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return date == default(DateTime) ? null : date;
         }
 
-        // TODO: callOffId should be of type CallOffId
-        // TODO: catalogueItemId should be of type CatalogueItemId
-        public async Task<DeliveryDateResult> SetDefaultDeliveryDate(string callOffId, string catalogueItemId, DateTime deliveryDate)
+        public async Task<DeliveryDateResult> SetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId, DateTime deliveryDate)
         {
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
+            var order = await GetOrder(callOffId, catalogueItemId);
 
-            // TODO - handle case of non-success
-            (bool success, var catId) = CatalogueItemId.Parse(catalogueItemId);
-
-            var order = await GetOrder(id, catId);
-
-            DeliveryDateResult addedOrUpdated = order.SetDefaultDeliveryDate(catId, deliveryDate);
+            DeliveryDateResult addedOrUpdated = order.SetDefaultDeliveryDate(catalogueItemId, deliveryDate);
 
             await dbContext.SaveChangesAsync();
 

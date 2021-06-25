@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
@@ -25,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             var prices = PublicBrowsePages.SolutionAction.GetPrices();
 
             await using var context = GetEndToEndDbContext();
-            var dbPrices = await context.CataloguePrices.Where(s => s.CatalogueItemId == "99999-001").ToListAsync();
+            var dbPrices = await context.CataloguePrices.Where(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")).ToListAsync();
 
             prices.Should().Contain(dbPrices.Select(s => s.Price.ToString()));
         }

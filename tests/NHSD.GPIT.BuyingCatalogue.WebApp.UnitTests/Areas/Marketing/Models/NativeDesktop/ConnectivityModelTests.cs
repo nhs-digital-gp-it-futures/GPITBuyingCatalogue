@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
@@ -48,13 +49,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
             Assert.AreEqual("15Mbs", model.SelectedConnectionSpeed);
             model.ConnectionSpeeds.Should().BeEquivalentTo(GetConnectionSpeeds());
         }
@@ -85,22 +86,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             Assert.AreEqual(expected, model.IsComplete);
         }
 
-        private List<SelectListItem> GetConnectionSpeeds()
+        private static IEnumerable<SelectListItem> GetConnectionSpeeds()
         {
             return new List<SelectListItem>
             {
-                new SelectListItem{ Text = "0.5Mbps", Value="0.5Mbps"},
-                new SelectListItem{ Text = "1Mbps", Value="1Mbps"},
-                new SelectListItem{ Text = "1.5Mbps", Value="1.5Mbps"},
-                new SelectListItem{ Text = "2Mbps", Value="2Mbps"},
-                new SelectListItem{ Text = "3Mbps", Value="3Mbps"},
-                new SelectListItem{ Text = "5Mbps", Value="5Mbps"},
-                new SelectListItem{ Text = "8Mbps", Value="8Mbps"},
-                new SelectListItem{ Text = "10Mbps", Value="10Mbps"},
-                new SelectListItem{ Text = "15Mbps", Value="15Mbps"},
-                new SelectListItem{ Text = "20Mbps", Value="20Mbps"},
-                new SelectListItem{ Text = "30Mbps", Value="30Mbps"},
-                new SelectListItem{ Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
+                new() { Text = "0.5Mbps", Value="0.5Mbps"},
+                new() { Text = "1Mbps", Value="1Mbps"},
+                new() { Text = "1.5Mbps", Value="1.5Mbps"},
+                new() { Text = "2Mbps", Value="2Mbps"},
+                new() { Text = "3Mbps", Value="3Mbps"},
+                new() { Text = "5Mbps", Value="5Mbps"},
+                new() { Text = "8Mbps", Value="8Mbps"},
+                new() { Text = "10Mbps", Value="10Mbps"},
+                new() { Text = "15Mbps", Value="15Mbps"},
+                new() { Text = "20Mbps", Value="20Mbps"},
+                new() { Text = "30Mbps", Value="30Mbps"},
+                new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
             };
         }
     }

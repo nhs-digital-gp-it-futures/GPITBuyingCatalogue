@@ -14,10 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasName("PK_OrderItem");
 
             builder.Property(e => e.CatalogueItemId)
-                .HasMaxLength(14);
+                .HasMaxLength(14)
+                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            // TODO: reapply after converting CatalogueItemId to correct type
-            // .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
             builder.Property(oi => oi.Created).HasDefaultValueSql("(getutcdate())");
             builder.Property(oi => oi.DefaultDeliveryDate).HasColumnType("date");
             builder.Property(oi => oi.EstimationPeriod)

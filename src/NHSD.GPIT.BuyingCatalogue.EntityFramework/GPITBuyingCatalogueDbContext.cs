@@ -102,9 +102,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             {
                 entity.HasKey(e => e.CatalogueItemId);
                 entity.ToTable("AdditionalService");
-                entity.Property(e => e.CatalogueItemId).HasMaxLength(14);
+
+                entity.Property(e => e.CatalogueItemId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.FullDescription).HasMaxLength(3000);
-                entity.Property(e => e.SolutionId).HasMaxLength(14);
+
+                entity.Property(e => e.SolutionId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.Summary).HasMaxLength(300);
 
                 entity.HasOne(d => d.CatalogueItem)
@@ -121,7 +129,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<AssociatedService>(entity =>
             {
                 entity.ToTable("AssociatedService");
-                entity.Property(e => e.AssociatedServiceId).HasMaxLength(14);
+
+                entity.Property(e => e.AssociatedServiceId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.Description).HasMaxLength(1000);
                 entity.Property(e => e.OrderGuidance).HasMaxLength(1000);
 
@@ -193,7 +205,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<CatalogueItem>(entity =>
             {
                 entity.ToTable("CatalogueItem");
-                entity.Property(e => e.CatalogueItemId).HasMaxLength(14);
+
+                entity.Property(e => e.CatalogueItemId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.CatalogueItemType)
                     .HasConversion<int>()
                     .HasColumnName("CatalogueItemTypeId");
@@ -218,9 +234,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<CataloguePrice>(entity =>
             {
                 entity.ToTable("CataloguePrice");
+
                 entity.Property(e => e.CatalogueItemId)
                     .IsRequired()
-                    .HasMaxLength(14);
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.CataloguePriceType)
                     .HasConversion<int>()
                     .HasColumnName("CataloguePriceTypeId");
@@ -322,7 +341,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             {
                 entity.HasKey(e => new { e.FrameworkId, e.SolutionId });
                 entity.Property(e => e.FrameworkId).HasMaxLength(10);
-                entity.Property(e => e.SolutionId).HasMaxLength(14);
+
+                entity.Property(e => e.SolutionId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
                 entity.HasOne(d => d.Framework)
                     .WithMany(p => p.FrameworkSolutions)
@@ -340,7 +362,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             {
                 entity.HasKey(e => new { e.SolutionId, e.Id });
                 entity.ToTable("MarketingContact");
-                entity.Property(e => e.SolutionId).HasMaxLength(14);
+
+                entity.Property(e => e.SolutionId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Department).HasMaxLength(50);
                 entity.Property(e => e.Email).HasMaxLength(255);
@@ -374,7 +400,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             modelBuilder.Entity<Solution>(entity =>
             {
                 entity.ToTable("Solution");
-                entity.Property(e => e.Id).HasMaxLength(14);
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.AboutUrl).HasMaxLength(1000);
                 entity.Property(e => e.FullDescription).HasMaxLength(3000);
                 entity.Property(e => e.ImplementationDetail).HasMaxLength(1100);
@@ -394,7 +424,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             {
                 entity.HasKey(e => new { e.SolutionId, e.CapabilityId });
                 entity.ToTable("SolutionCapability");
-                entity.Property(e => e.SolutionId).HasMaxLength(14);
+
+                entity.Property(e => e.SolutionId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.HasOne(d => d.Capability)
                     .WithMany(p => p.SolutionCapabilities)
                     .HasForeignKey(d => d.CapabilityId)
@@ -426,7 +460,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             {
                 entity.HasKey(e => new { e.SolutionId, e.CapabilityId, e.EpicId });
                 entity.ToTable("SolutionEpic");
-                entity.Property(e => e.SolutionId).HasMaxLength(14);
+
+                entity.Property(e => e.SolutionId)
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.EpicId).HasMaxLength(10);
 
                 entity.HasOne(d => d.Capability)
@@ -519,10 +557,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.ToTable("SupplierServiceAssociation");
                 entity.Property(e => e.AssociatedServiceId)
                     .IsRequired()
-                    .HasMaxLength(14);
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.Property(e => e.CatalogueItemId)
                     .IsRequired()
-                    .HasMaxLength(14);
+                    .HasMaxLength(14)
+                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
+
                 entity.HasOne(d => d.AssociatedService)
                     .WithMany()
                     .HasForeignKey(d => d.AssociatedServiceId)

@@ -54,6 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
         public static void SetSolutionId_ContactsAreNull_NoExceptionThrown()
         {
             var fixture = new Fixture();
+            fixture.Customize(new CatalogueItemIdCustomization());
             var model = fixture.Build<SupplierContactsModel>()
                 .Without(x => x.Contacts).Create();
 
