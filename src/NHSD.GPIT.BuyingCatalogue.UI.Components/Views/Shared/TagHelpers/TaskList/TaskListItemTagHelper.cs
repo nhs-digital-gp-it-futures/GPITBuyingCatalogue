@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
 
@@ -18,14 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
         private const string ItemListItemClasses = "bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3";
         private const string TagHelperContainerClass = "bc-c-task-list__task-status";
 
-        public enum TaskListItemStatus
-        {
-            Completed = 0,
-            Incomplete = 1,
-            InProgress = 2,
-            CannotStart = 3,
-        }
-
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
@@ -33,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
         public string Url { get; set; }
 
         [HtmlAttributeName(ItemStatusName)]
-        public TaskListItemStatus Status { get; set; }
+        public TaskListStatuses Status { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -44,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
             var taskNameSpan = GetTaskNameSpanBuilder();
 
-            if (Status == TaskListItemStatus.CannotStart)
+            if (Status == TaskListStatuses.CannotStart)
             {
                 taskNameSpan.InnerHtml.Append(LabelText);
             }
@@ -93,16 +86,18 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             {
                 ChosenTagColour = Status switch
                 {
-                    TaskListItemStatus.Completed => NhsTagsTagHelper.TagColour.Green,
-                    TaskListItemStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
+                    TaskListStatuses.Completed => NhsTagsTagHelper.TagColour.Green,
+                    TaskListStatuses.InProgress => NhsTagsTagHelper.TagColour.Yellow,
+                    TaskListStatuses.Optional => NhsTagsTagHelper.TagColour.Orange,
                     _ => NhsTagsTagHelper.TagColour.Grey,
                 },
 
                 TagText = Status switch
                 {
-                    TaskListItemStatus.CannotStart => "Cannot Start Yet",
-                    TaskListItemStatus.InProgress => "In Progress",
-                    TaskListItemStatus.Incomplete => "Incomplete",
+                    TaskListStatuses.CannotStart => "Cannot Start Yet",
+                    TaskListStatuses.Optional => "Optional",
+                    TaskListStatuses.InProgress => "In Progress",
+                    TaskListStatuses.Incomplete => "Incomplete",
                     _ => "Complete",
                 },
             };

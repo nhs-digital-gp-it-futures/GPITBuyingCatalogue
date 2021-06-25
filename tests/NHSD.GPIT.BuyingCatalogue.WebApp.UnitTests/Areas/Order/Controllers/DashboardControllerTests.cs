@@ -65,15 +65,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
             Assert.AreEqual("NotBuyer", ((ViewResult)result).ViewName);
         }
-
-        [Test]
-        public static void Get_NewOrder_ReturnsViewResult()
-        {
-            var controller = new DashboardController(Mock.Of<ILogWrapper<OrderController>>(), Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>());
-
-            var result = controller.NewOrder("3OF");
-
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-        }
     }
 }
