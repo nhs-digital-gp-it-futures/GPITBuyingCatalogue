@@ -16,7 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
                 CatalogueItemType.AssociatedService => provisioningType == ProvisioningType.OnDemand
                     ? provisioningType.InferEstimationPeriod(estimationPeriod)
                     : null,
-                _ => provisioningType.InferEstimationPeriod(estimationPeriod),
+                CatalogueItemType.AdditionalService or CatalogueItemType.Solution =>
+                    provisioningType.InferEstimationPeriod(estimationPeriod),
+                _ => throw new ArgumentOutOfRangeException(nameof(itemType)),
             };
         }
 

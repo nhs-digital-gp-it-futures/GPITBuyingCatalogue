@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
@@ -116,8 +115,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
         {
-            var result = orderItems.RemoveAll(o => CatalogueItemId.ParseExact(o.CatalogueItem.CatalogueItemId) == catalogueItemId
-                || CatalogueItemId.ParseExact(o.CatalogueItem.Solution.Id) == catalogueItemId);
+            var result = orderItems.RemoveAll(o => o.CatalogueItem.CatalogueItemId == catalogueItemId
+                || o.CatalogueItem.Solution?.Id == catalogueItemId);
 
             if (!HasSolution())
             {

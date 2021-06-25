@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
 
         public abstract bool? IsComplete { get; }
 
-        public string SolutionId { get; set; }
+        public CatalogueItemId? SolutionId { get; set; }
 
         public string SupplierId { get; set; }
 

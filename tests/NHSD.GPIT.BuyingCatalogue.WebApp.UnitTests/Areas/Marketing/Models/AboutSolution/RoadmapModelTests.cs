@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NUnit.Framework;
 
@@ -12,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new RoadmapModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new RoadmapModel(null));
         }
 
         [Test]
@@ -21,15 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { RoadMap = "A solution roadmap" }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { RoadMap = "A solution road map" },
             };
 
             var model = new RoadmapModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
-            Assert.AreEqual("A solution roadmap", model.Summary);
+            Assert.AreEqual("A solution road map", model.Summary);
         }
 
         [Test]
@@ -46,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [TestCase(null, false)]
         [TestCase("", false)]
         [TestCase(" ", false)]
-        [TestCase("A solution roadmap", true)]
-        public static void IsCompleteIsCorrectlySet(string roadmap, bool? expected)
+        [TestCase("A solution road map", true)]
+        public static void IsCompleteIsCorrectlySet(string roadMap, bool? expected)
         {
-            var catalogueItem = new CatalogueItem { Solution = new Solution { RoadMap = roadmap } };
+            var catalogueItem = new CatalogueItem { Solution = new Solution { RoadMap = roadMap } };
 
             var model = new RoadmapModel(catalogueItem);
 

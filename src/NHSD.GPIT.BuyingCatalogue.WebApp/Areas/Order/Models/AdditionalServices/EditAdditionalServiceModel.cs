@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
         }
 
-        public EditAdditionalServiceModel(string odsCode, string callOffId, string id, CreateOrderItemModel createOrderItemModel, bool isNewSolution)
+        public EditAdditionalServiceModel(string odsCode, CallOffId callOffId, CreateOrderItemModel createOrderItemModel, bool isNewSolution)
         {
             if (!isNewSolution)
             {
@@ -33,12 +33,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             OdsCode = odsCode;
             CallOffId = callOffId;
             OrderItem = createOrderItemModel;
-            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(x => x.Selected).ToList();
-            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode];
+            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(m => m.Selected).ToList();
+
+            // TODO: currency code comes from the catalogue price
+            CurrencySymbol = "£";
         }
 
-        // TODO: should be of type CallOffId
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public CreateOrderItemModel OrderItem { get; set; }
 

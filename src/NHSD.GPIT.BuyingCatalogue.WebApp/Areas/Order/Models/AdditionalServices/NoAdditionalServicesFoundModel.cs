@@ -1,8 +1,10 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
-    public class NoAdditionalServicesFoundModel : OrderingBaseModel
+    public sealed class NoAdditionalServicesFoundModel : OrderingBaseModel
     {
-        public NoAdditionalServicesFoundModel(string odsCode, string callOffId)
+        public NoAdditionalServicesFoundModel(string odsCode, CallOffId callOffId)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}";
             BackLinkText = "Go back";

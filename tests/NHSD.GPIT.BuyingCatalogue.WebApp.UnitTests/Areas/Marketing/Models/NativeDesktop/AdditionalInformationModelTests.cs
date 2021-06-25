@@ -4,6 +4,7 @@ using System.Reflection;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
 using NUnit.Framework;
@@ -39,13 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json }
             };
 
             var model = new AdditionalInformationModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
             Assert.AreEqual("Some additional information", model.AdditionalInformation);
         }
 
@@ -63,12 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase(null, false)]
         [TestCase("", false)]
         [TestCase(" ", false)]
-        [TestCase("Some aditional information", true)]
+        [TestCase("Some additional information", true)]
         public static void IsCompleteIsCorrectlySet(string additionalInformation, bool? expected)
         {
             var clientApplication = new ClientApplication { NativeDesktopAdditionalInformation = additionalInformation };
             var json = JsonConvert.SerializeObject(clientApplication);
-            var catalogueItem = new CatalogueItem { Solution = new EntityFramework.Models.GPITBuyingCatalogue.Solution { ClientApplication = json } };
+            var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
 
             var model = new AdditionalInformationModel(catalogueItem);
 

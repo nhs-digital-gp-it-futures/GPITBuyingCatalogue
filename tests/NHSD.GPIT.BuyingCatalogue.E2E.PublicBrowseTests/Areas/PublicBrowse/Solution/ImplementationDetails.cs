@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public class ImplementationDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ImplementationDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public ImplementationDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001/implementation")
         {
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task ImplementationDetails_ImplementationNameDisplayedAsync()
         {
             await using var context = GetEndToEndDbContext();
-            var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == "99999-001")).Name;
+            var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).Name;
             PublicBrowsePages.SolutionAction.ImplementationNameDisplayed().Should().BeEquivalentTo($"implementation - {pageTitle}");
         }
 
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task ImplementationDetails_VerifyContent()
         {
             await using var context = GetEndToEndDbContext();
-            var info = (await context.Solutions.SingleAsync(s => s.Id == "99999-001")).ImplementationDetail;
+            var info = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).ImplementationDetail;
 
             var implementationContent = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 
