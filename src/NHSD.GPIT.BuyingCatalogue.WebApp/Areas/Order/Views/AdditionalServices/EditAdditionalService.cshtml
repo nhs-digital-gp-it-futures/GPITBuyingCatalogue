@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.EditAdditionalServiceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers; 
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.EditAdditionalServiceModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -71,12 +72,21 @@
                 </nhs-table>
                 <div style="margin-top:30px">
                     <nhs-submit-button text="Save" /><br />
-                    <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/select/additional-service/price/recipients"
-                                             text="Edit Service Recipients" /><br />
-                    <vc:nhs-delete-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/delete/@Model.OrderItem.CatalogueItemId/confirmation/@Model.OrderItem.CatalogueItemName"
-                                          text="Delete Additional Service" />
+
+                    <vc:nhs-secondary-button url="@Url.Action(
+                                                nameof(AdditionalServicesController.SelectAdditionalServiceRecipients),
+                                                "AdditionalServices",
+                                                new {Model.OdsCode, Model.CallOffId})"
+                                             text="Edit Service Recipients" />
+
+                    <vc:nhs-delete-button url="@Url.Action(
+                                                nameof(AdditionalServicesController.DeleteAdditionalService),
+                                                "AdditionalServices",
+                                                new {Model.OdsCode, Model.CallOffId, id = Model.OrderItem.CatalogueItemId, serviceName = Model.OrderItem.CatalogueItemName})"
+                                             text="Delete Additional Service" />
+
                 </div>
             </div>
-        </form>        
+        </form>
     </div>
 </div>
