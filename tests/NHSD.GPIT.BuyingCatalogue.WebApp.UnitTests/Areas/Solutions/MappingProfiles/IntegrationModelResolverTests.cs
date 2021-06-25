@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     {
                         integrationModel.Tables[inner]
                             .Headings.Should()
-                            .BeEquivalentTo("Provider or Consumer", "Additional information");
+                            .BeEquivalentTo("Provider or consumer", "Additional information");
                         integrationModel.Tables[inner]
                             .Rows.Should()
                             .BeEquivalentTo(
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     {
                         integrationModel.Tables[inner]
                             .Headings.Should()
-                            .BeEquivalentTo("Provider or Consumer", "System integrating with", "Description");
+                            .BeEquivalentTo("Provider or consumer", "System integrating with", "Description");
                         integrationModel.Tables[inner]
                             .Rows.Should()
                             .BeEquivalentTo(
