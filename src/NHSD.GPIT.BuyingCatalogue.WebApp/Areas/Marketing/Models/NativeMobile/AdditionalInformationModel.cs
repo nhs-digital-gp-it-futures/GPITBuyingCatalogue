@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
-    public class AdditionalInformationModel : MarketingBaseModel
+    public sealed class AdditionalInformationModel : MarketingBaseModel
     {
         public AdditionalInformationModel()
             : base(null)

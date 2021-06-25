@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,8 +12,8 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
     [Area("Marketing")]
-    [Route("marketing/supplier/solution/{id}/section")]
-    public class HostingTypeController : Controller
+    [Route("marketing/supplier/solution/{solutionId}/section")]
+    public sealed class HostingTypeController : Controller
     {
         private readonly ILogWrapper<HostingTypeController> logger;
         private readonly IMapper mapper;
@@ -29,123 +30,123 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
         }
 
         [HttpGet("hosting-type-public-cloud")]
-        public async Task<IActionResult> PublicCloud(string id)
+        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             return View(mapper.Map<CatalogueItem, PublicCloudModel>(solution));
         }
 
         [HttpPost("hosting-type-public-cloud")]
-        public async Task<IActionResult> PublicCloud(PublicCloudModel model)
+        public async Task<IActionResult> PublicCloud(CatalogueItemId solutionId, PublicCloudModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var hosting = await solutionsService.GetHosting(model.SolutionId);
-            if (hosting == null)
-                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
+            var hosting = await solutionsService.GetHosting(solutionId);
+            if (hosting is null)
+                return BadRequest($"No Hosting found for Solution Id: {solutionId}");
 
             hosting.PublicCloud = model.PublicCloud;
 
-            await solutionsService.SaveHosting(model.SolutionId, hosting);
+            await solutionsService.SaveHosting(solutionId, hosting);
 
             return RedirectToAction(
                 nameof(SolutionController.Index),
                 typeof(SolutionController).ControllerName(),
-                new { id = model.SolutionId });
+                new { solutionId });
         }
 
         [HttpGet("hosting-type-private-cloud")]
-        public async Task<IActionResult> PrivateCloud(string id)
+        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             return View(mapper.Map<CatalogueItem, PrivateCloudModel>(solution));
         }
 
         [HttpPost("hosting-type-private-cloud")]
-        public async Task<IActionResult> PrivateCloud(PrivateCloudModel model)
+        public async Task<IActionResult> PrivateCloud(CatalogueItemId solutionId, PrivateCloudModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var hosting = await solutionsService.GetHosting(model.SolutionId);
-            if (hosting == null)
-                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
+            var hosting = await solutionsService.GetHosting(solutionId);
+            if (hosting is null)
+                return BadRequest($"No Hosting found for Solution Id: {solutionId}");
 
             hosting.PrivateCloud = model.PrivateCloud;
 
-            await solutionsService.SaveHosting(model.SolutionId, hosting);
+            await solutionsService.SaveHosting(solutionId, hosting);
 
             return RedirectToAction(
                 nameof(SolutionController.Index),
                 typeof(SolutionController).ControllerName(),
-                new { id = model.SolutionId });
+                new { solutionId });
         }
 
         [HttpGet("hosting-type-hybrid")]
-        public async Task<IActionResult> Hybrid(string id)
+        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             return View(mapper.Map<CatalogueItem, HybridModel>(solution));
         }
 
         [HttpPost("hosting-type-hybrid")]
-        public async Task<IActionResult> Hybrid(HybridModel model)
+        public async Task<IActionResult> Hybrid(CatalogueItemId solutionId, HybridModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var hosting = await solutionsService.GetHosting(model.SolutionId);
-            if (hosting == null)
-                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
+            var hosting = await solutionsService.GetHosting(solutionId);
+            if (hosting is null)
+                return BadRequest($"No Hosting found for Solution Id: {solutionId}");
 
             hosting.HybridHostingType = model.HybridHostingType;
 
-            await solutionsService.SaveHosting(model.SolutionId, hosting);
+            await solutionsService.SaveHosting(solutionId, hosting);
 
             return RedirectToAction(
                 nameof(SolutionController.Index),
                 typeof(SolutionController).ControllerName(),
-                new { id = model.SolutionId });
+                new { solutionId });
         }
 
         [HttpGet("hosting-type-on-premise")]
-        public async Task<IActionResult> OnPremise(string id)
+        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             return View(mapper.Map<CatalogueItem, OnPremiseModel>(solution));
         }
 
         [HttpPost("hosting-type-on-premise")]
-        public async Task<IActionResult> OnPremise(OnPremiseModel model)
+        public async Task<IActionResult> OnPremise(CatalogueItemId solutionId, OnPremiseModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var hosting = await solutionsService.GetHosting(model.SolutionId);
-            if (hosting == null)
-                return BadRequest($"No Hosting found for Solution Id: {model.SolutionId}");
+            var hosting = await solutionsService.GetHosting(solutionId);
+            if (hosting is null)
+                return BadRequest($"No Hosting found for Solution Id: {solutionId}");
 
             hosting.OnPremise = model.OnPremise;
 
-            await solutionsService.SaveHosting(model.SolutionId, hosting);
+            await solutionsService.SaveHosting(solutionId, hosting);
 
             return RedirectToAction(
                 nameof(SolutionController.Index),
                 typeof(SolutionController).ControllerName(),
-                new { id = model.SolutionId });
+                new { solutionId });
         }
     }
 }

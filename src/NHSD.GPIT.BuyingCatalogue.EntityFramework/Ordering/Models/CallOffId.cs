@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.TypeConverters;
 using static System.FormattableString;
@@ -17,9 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         private static readonly Lazy<Regex> Regex = new(() => new Regex(Pattern, RegexOptions.Compiled));
 
+        [JsonConstructor]
         public CallOffId(int id, byte revision)
         {
-            if (id < 0 || id > MaxId)
+            if (id is < 0 or > MaxId)
                 throw new ArgumentOutOfRangeException(nameof(id));
 
             if (revision > MaxRevision)

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -28,9 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet]
-        public async Task<IActionResult> Supplier(string odsCode, string callOffId)
+        public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(Supplier)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -50,9 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierModel(odsCode, order, supplier.SupplierContacts));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost]
-        public async Task<IActionResult> Supplier(string odsCode, string callOffId, SupplierModel model)
+        public async Task<IActionResult> Supplier(string odsCode, CallOffId callOffId, SupplierModel model)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(Supplier)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -68,9 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 new { odsCode, callOffId });
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("search")]
-        public async Task<IActionResult> SupplierSearch(string odsCode, string callOffId)
+        public async Task<IActionResult> SupplierSearch(string odsCode, CallOffId callOffId)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(SupplierSearch)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -88,9 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierSearchModel(odsCode, order));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost("search")]
-        public IActionResult SupplierSearch(string odsCode, string callOffId, SupplierSearchModel model)
+        public IActionResult SupplierSearch(string odsCode, CallOffId callOffId, SupplierSearchModel model)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(SupplierSearch)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
@@ -101,9 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 new { odsCode, callOffId, search = model.SearchString });
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpGet("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, [FromQuery] string search)
+        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, [FromQuery] string search)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(SupplierController)}.{nameof(SupplierSearchSelect)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(search)} {search}");
@@ -119,9 +115,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(new SupplierSearchSelectModel(odsCode, callOffId, suppliers));
         }
 
-        // TODO: callOffId should be of type CallOffId
         [HttpPost("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, string callOffId, SupplierSearchSelectModel model)
+        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, SupplierSearchSelectModel model)
         {
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(SupplierController)}.{nameof(SupplierSearchSelect)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
@@ -60,6 +61,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             var actual = catalogueItemType.InferEstimationPeriod(provisioningType, estimationPeriod);
 
             actual.Should().Be(expectedEstimationPeriod);
+        }
+
+        [Test]
+        [AutoData]
+        public static void InferEstimationPeriod_InvalidCatalogueItemType_ThrowsException(TimeUnit timeUnit)
+        {
+            const CatalogueItemType itemType = 0;
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => itemType.InferEstimationPeriod(0, timeUnit));
         }
 
         private static IEnumerable<ITestCaseData> MarkOrderSectionAsViewedTestCases()

@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NUnit.Framework;
 
@@ -13,8 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new FeaturesModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new FeaturesModel(null));
         }
 
         [Test]
@@ -25,13 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { Features = features }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { Features = features },
             };
 
             var model = new FeaturesModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.IsEmpty(model.Listing1);
             Assert.IsEmpty(model.Listing2);
@@ -71,12 +71,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { Features = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { Features = json },
             };
 
             var model = new FeaturesModel(catalogueItem);
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
             Assert.AreEqual("Feature 1", model.Listing1);
             Assert.IsEmpty(model.Listing2);
@@ -98,12 +98,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { Features = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { Features = json },
             };
 
             var model = new FeaturesModel(catalogueItem);
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
             Assert.AreEqual("Feature 1", model.Listing1);
             Assert.AreEqual("Feature 2", model.Listing2);

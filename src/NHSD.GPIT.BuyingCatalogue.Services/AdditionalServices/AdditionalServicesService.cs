@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditonalServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<string> solutionIds)
+        public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds)
         {
             return dbContext.CatalogueItems
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
@@ -31,10 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                 .ToListAsync();
         }
 
-        // TODO: catalogueItemId should be of type CatalogueItemId
-        public Task<AdditionalService> GetAdditionalService(string catalogueItemId)
+        public Task<AdditionalService> GetAdditionalService(CatalogueItemId catalogueItemId)
         {
-            return dbContext.AdditionalServices.SingleAsync(x => x.CatalogueItemId == catalogueItemId);
+            return dbContext.AdditionalServices.SingleAsync(a => a.CatalogueItemId == catalogueItemId);
         }
     }
 }

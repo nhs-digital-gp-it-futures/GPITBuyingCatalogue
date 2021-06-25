@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     internal static class UserSeedData
     {
-        private static string TestPassword = "Th1sIsP4ssword!";
+        private static readonly string TestPassword = "Th1sIsP4ssword!";
 
         internal static void Initialize(GPITBuyingCatalogueDbContext context)
         {

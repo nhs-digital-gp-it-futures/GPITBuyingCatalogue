@@ -6,9 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     {
         public int OrderId { get; set; }
 
-        // TODO: should be of type CatalogueItemId
-        // Had to revert to string due to CatalogueItem currently having an incorrect ID type
-        public string CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string OdsCode { get; set; }
 

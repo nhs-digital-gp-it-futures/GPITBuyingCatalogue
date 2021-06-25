@@ -13,10 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasKey(r => new { r.OrderId, r.CatalogueItemId, r.OdsCode });
 
             builder.Property(r => r.CatalogueItemId)
-                .HasMaxLength(14);
+                .HasMaxLength(14)
+                .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            // TODO: reapply after converting CatalogueItemId to correct type
-            // .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
             builder.Property(r => r.OdsCode).HasMaxLength(8);
             builder.Property(r => r.DeliveryDate).HasColumnType("date");
 

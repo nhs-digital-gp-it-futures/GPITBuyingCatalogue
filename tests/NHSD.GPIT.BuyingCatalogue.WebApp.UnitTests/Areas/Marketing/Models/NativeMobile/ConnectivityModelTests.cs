@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
@@ -51,26 +52,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 {
                     MinimumConnectionSpeed = "15Mbs",
                     ConnectionType = new HashSet<string> { "3G", "4G" },
-                    Description = "A description"
+                    Description = "A description",
                 }
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = mapper.Map<CatalogueItem, ConnectivityModel>(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
             Assert.AreEqual("15Mbs", model.SelectedConnectionSpeed);
             Assert.AreEqual("A description", model.Description);
             model.ConnectionSpeeds.Should().BeEquivalentTo(GetConnectionSpeeds());
             Assert.AreEqual(7, model.ConnectionTypes.Length);
-            Assert.True(model.ConnectionTypes.Single(x => x.ConnectionType == "3G").Checked);
-            Assert.True(model.ConnectionTypes.Single(x => x.ConnectionType == "4G").Checked);
-            Assert.AreEqual(5, model.ConnectionTypes.Count(x => !x.Checked));
+            Assert.True(model.ConnectionTypes.Single(m => m.ConnectionType == "3G").Checked);
+            Assert.True(model.ConnectionTypes.Single(m => m.ConnectionType == "4G").Checked);
+            Assert.AreEqual(5, model.ConnectionTypes.Count(m => !m.Checked));
         }
 
         [Test]

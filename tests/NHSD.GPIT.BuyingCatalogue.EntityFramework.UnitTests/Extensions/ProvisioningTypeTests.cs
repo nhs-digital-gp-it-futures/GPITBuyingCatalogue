@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         [Test]
         public static void InferEstimationPeriod_InvalidProvisioningType_ThrowsException()
         {
-            Assert.Throws<InvalidOperationException>(() => ((ProvisioningType)0).InferEstimationPeriod(null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => ((ProvisioningType)0).InferEstimationPeriod(null));
         }
     }
 }
