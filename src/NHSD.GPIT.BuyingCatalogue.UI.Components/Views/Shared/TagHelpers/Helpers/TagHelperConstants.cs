@@ -64,6 +64,7 @@
         internal const string NhsIconChevronLeft = "nhsuk-icon__chevron-left";
         internal const string NhsMarginTop = "nhsuk-u-margin-top";
         internal const string NhsMarginBottom = "nhsuk-u-margin-bottom";
+        internal const string NhsMarginRight = "nhsuk-u-margin-right";
         internal const string NhsFontSize = "nhsuk-u-font-size";
         internal const string NhsButton = "nhsuk-button";
         internal const string RadioItemClass = "nhsuk-radios__item";
