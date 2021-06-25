@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
@@ -10,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public SelectAssociatedServiceModel(string odsCode, string callOffId, List<CatalogueItem> solutions, string selectedSolutionId)
+        public SelectAssociatedServiceModel(string odsCode, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services";
             BackLinkText = "Go back";
@@ -23,6 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         public List<CatalogueItem> Solutions { get; set; }
 
         [Required(ErrorMessage = "Select an Associated Service")]
-        public string SelectedSolutionId { get; set; }
+        public CatalogueItemId? SelectedSolutionId { get; set; }
     }
 }

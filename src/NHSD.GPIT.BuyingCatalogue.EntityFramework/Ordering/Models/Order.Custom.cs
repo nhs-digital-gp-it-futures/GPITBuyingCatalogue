@@ -82,7 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 return orderItem;
             }
 
-            existingItem.PriceTimeUnit = orderItem.PriceTimeUnit;
             existingItem.EstimationPeriod = orderItem.EstimationPeriod;
             existingItem.PriceId = orderItem.PriceId;
             existingItem.Price = orderItem.Price;

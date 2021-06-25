@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
@@ -10,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(string odsCode, string callOffId, string id, CreateOrderItemModel createOrderItemModel, bool isNewSolution)
+        public EditAssociatedServiceModel(string odsCode, CallOffId callOffId, CatalogueItemId id, CreateOrderItemModel createOrderItemModel, bool isNewSolution)
         {
             if (isNewSolution)
             {
@@ -27,28 +31,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
             OdsCode = odsCode;
             CallOffId = callOffId;
             OrderItem = createOrderItemModel;
-            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode];
-            TimeUnit = createOrderItemModel.TimeUnit?.Name;
+            TimeUnit = createOrderItemModel.TimeUnit;
+
+            // TODO: currency code comes from the catalogue price
+            CurrencySymbol = "£";
         }
 
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public CreateOrderItemModel OrderItem { get; set; }
 
         public string CurrencySymbol { get; set; }
 
-        public string TimeUnit { get; set; }
+        public TimeUnit? TimeUnit { get; set; }
 
-        public List<EntityFramework.Models.Ordering.TimeUnit> TimeUnits
-        {
-            get
-            {
-                return new List<EntityFramework.Models.Ordering.TimeUnit>
-                {
-                    EntityFramework.Models.Ordering.TimeUnit.PerMonth,
-                    EntityFramework.Models.Ordering.TimeUnit.PerYear,
-                };
-            }
-        }
+        public List<TimeUnit> TimeUnits { get; } = Enum.GetValues<TimeUnit>().ToList();
     }
 }

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
@@ -52,8 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
-        public async Task<IActionResult> Index(string odsCode, string callOffId)
+        public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             sessionService.ClearSession();
@@ -65,8 +66,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("select/associated-service")]
-        public async Task<IActionResult> SelectAssociatedService(string odsCode, string callOffId)
+        public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -93,8 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("select/associated-service")]
-        public async Task<IActionResult> SelectAssociatedService(string odsCode, string callOffId, SelectAssociatedServiceModel model)
+        public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId, SelectAssociatedServiceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
@@ -105,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId.Value);
 
             if (existingOrder != null)
             {
@@ -116,13 +119,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             state.CatalogueItemId = model.SelectedSolutionId;
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
             state.CatalogueItemName = solution.Name;
             state.CatalogueSolutionId = model.SelectedSolutionId;
 
             orderSessionService.SetOrderStateToSession(state);
 
-            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
             if (prices.Count == 1)
             {
@@ -141,31 +144,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("select/associated-service/price")]
-        public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, string callOffId)
+        public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
 
-            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
             return View(new SelectAssociatedServicePriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
         }
 
         [HttpPost("select/associated-service/price")]
-        public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, string callOffId, SelectAssociatedServicePriceModel model)
+        public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, CallOffId callOffId, SelectAssociatedServicePriceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
 
             if (!ModelState.IsValid)
             {
-                model.SetPrices(solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList());
+                model.SetPrices(solution.CataloguePrices.Where(x => x.CataloguePriceType == CataloguePriceType.Flat).ToList());
                 return View(model);
             }
 
@@ -180,8 +185,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> EditAssociatedService(string odsCode, string callOffId, string id)
+        public async Task<IActionResult> EditAssociatedService(string odsCode, CallOffId callOffId, CatalogueItemId id)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(EditAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var isNewSolution = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, id);
@@ -192,8 +198,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("{id}")]
-        public async Task<IActionResult> EditAssociatedService(string odsCode, string callOffId, string id, EditAssociatedServiceModel model)
+        public async Task<IActionResult> EditAssociatedService(string odsCode, CallOffId callOffId, string id, EditAssociatedServiceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(EditAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
@@ -202,12 +209,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 || model.OrderItem.ServiceRecipients[0].Quantity.Value == 0)
                 ModelState.AddModelError($"OrderItem.ServiceRecipients[0].Quantity", "Quantity is Required");
 
-            var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueItemId);
+            var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.Value);
 
             var solutionPrice = solutionListPrices.CataloguePrices.Where(cp =>
-                cp.ProvisioningType.ProvisioningTypeId == state.ProvisioningType.Id
-                && cp.CataloguePriceType.CataloguePriceTypeId == state.Type.Id
-                && (cp.TimeUnit is null || cp.TimeUnit.TimeUnitId == state.TimeUnit.Id)).FirstOrDefault();
+                cp.ProvisioningType == state.ProvisioningType
+                && cp.CataloguePriceType == state.Type
+                && (cp.TimeUnit is null || cp.TimeUnit == state.TimeUnit)).FirstOrDefault();
 
             if (solutionPrice is not null)
             {
@@ -219,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             if (state.ProvisioningType == ProvisioningType.OnDemand)
-                state.TimeUnit = EnumerationBase.FromName<TimeUnit>(model.TimeUnit);
+                state.TimeUnit = model.TimeUnit;
 
             if (!ModelState.IsValid)
             {
@@ -244,8 +251,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("delete/{id}/confirmation/{serviceName}")]
-        public async Task<IActionResult> DeleteAssociatedService(string odsCode, string callOffId, string id, string serviceName)
+        public async Task<IActionResult> DeleteAssociatedService(string odsCode, CallOffId callOffId, string id, string serviceName)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(DeleteAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(serviceName)} {serviceName}");
 
             var order = await orderService.GetOrder(callOffId);
@@ -254,8 +262,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("delete/{id}/confirmation/{serviceName}")]
-        public async Task<IActionResult> DeleteAssociatedService(string odsCode, string callOffId, string id, string serviceName, DeleteAssociatedServiceModel model)
+        public async Task<IActionResult> DeleteAssociatedService(string odsCode, CallOffId callOffId, CatalogueItemId id, string serviceName, DeleteAssociatedServiceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(DeleteAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(serviceName)} {serviceName}");
 
             await orderItemService.DeleteOrderItem(callOffId, id);

@@ -20,7 +20,8 @@
                                                   action: "SelectAssociatedService",
                                                   controller:"AssociatedServices",
                                                   values: new {odsCode = Model.OdsCode, CallOffId = Model.CallOffId })"
-                                         text="Add Associated Service" />
+                                         text="Add Associated Service"
+                                         use-primary-colour="false"/>
                 <nhs-table>
                     <nhs-table-column>Associated Service</nhs-table-column>
                     <nhs-table-column>Unit of order</nhs-table-column>
@@ -36,7 +37,7 @@
                                 @item.CatalogueItem.Name</a>
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                @item.PricingUnit.Description @item?.PriceTimeUnit?.Description
+                                @item.CataloguePrice.PricingUnit.Description @item?.CataloguePrice.TimeUnit
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }

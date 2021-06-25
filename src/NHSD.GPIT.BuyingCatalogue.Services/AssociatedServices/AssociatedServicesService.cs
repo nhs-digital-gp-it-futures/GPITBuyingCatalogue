@@ -28,8 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .Include(x => x.AssociatedService)
                 .Where(
                     x => x.SupplierId == supplierId
-                        && x.CatalogueItemType.Name == "Associated Service"
-                        && x.PublishedStatus.Name == "Published")
+                        && x.CatalogueItemType == CatalogueItemType.AssociatedService
+                        && x.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }

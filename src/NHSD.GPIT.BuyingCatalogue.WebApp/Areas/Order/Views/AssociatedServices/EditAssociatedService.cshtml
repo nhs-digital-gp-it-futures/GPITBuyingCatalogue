@@ -30,7 +30,7 @@
                         </nhs-details>
                     </div>
 
-                    @if (Model.OrderItem.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering.ProvisioningType.OnDemand)
+                    @if (Model.OrderItem.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.ProvisioningType.OnDemand)
                     {
                         <div class="nhsuk-u-margin-bottom-5">
                             <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
@@ -39,7 +39,7 @@
                                                              label-text="Over what period did you estimate the quantity?"
                                                              label-hint="Select one option.">
                                         <nhs-radio-buttons asp-for="@Model.TimeUnit"
-                                                           values="@Model.TimeUnits"
+                                                           values="@Model.TimeUnits.Cast<object>()"
                                                            value-name="Name"
                                                            display-name="DisplayText" />
                                     </nhs-fieldset-form-label>
@@ -67,7 +67,7 @@
                             </nhs-details>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            @Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description
+                            @Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 </nhs-table>

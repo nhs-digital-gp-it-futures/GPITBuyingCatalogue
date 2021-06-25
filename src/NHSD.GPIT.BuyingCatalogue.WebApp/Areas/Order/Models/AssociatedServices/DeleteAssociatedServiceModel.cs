@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
     public class DeleteAssociatedServiceModel : OrderingBaseModel
     {
@@ -6,7 +8,7 @@
         {
         }
 
-        public DeleteAssociatedServiceModel(string odsCode, string callOffId, string orderItemId, string solutionName, string orderDescription)
+        public DeleteAssociatedServiceModel(string odsCode, CallOffId callOffId, string orderItemId, string solutionName, string orderDescription)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/{orderItemId}";
             BackLinkText = "Go back";
@@ -18,7 +20,7 @@
             OrderDescription = orderDescription;
         }
 
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public string OrderItemId { get; set; }
 
