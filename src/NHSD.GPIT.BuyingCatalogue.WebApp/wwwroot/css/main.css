@@ -11085,11 +11085,11 @@ body {
     .bc-c-task-list__task-name {
       float: left; } }
 
-.bc-c-task-list__task-completed {
+.bc-c-task-list__task-status {
   margin-bottom: 4px;
   margin-top: 8px; }
   @media (min-width: 28.125em) {
-    .bc-c-task-list__task-completed {
+    .bc-c-task-list__task-status {
       float: right;
       margin-bottom: 0;
       margin-top: 0; } }

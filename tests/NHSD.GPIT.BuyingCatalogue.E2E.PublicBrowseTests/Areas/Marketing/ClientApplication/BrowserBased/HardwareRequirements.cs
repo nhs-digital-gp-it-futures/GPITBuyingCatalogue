@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
@@ -16,20 +17,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         }
 
         [Fact]
-        public async Task HarwareRequirements_CompleteAllFields()
+        public async Task HardwareRequirements_CompleteAllFields()
         {
             var hardwareRequirement = TextGenerators.TextInputAddText(CommonSelectors.Description, 500);
 
             CommonActions.ClickSave();
 
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
 
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
             clientApplication.Should().ContainEquivalentOf($"\"HardwareRequirements\":\"{hardwareRequirement}\"");
         }
 
         [Fact]
-        public void HarwareRequirements_SectionComplete()
+        public void HardwareRequirements_SectionComplete()
         {
             TextGenerators.TextInputAddText(CommonSelectors.Description, 500);
 
@@ -39,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         }
 
         [Fact]
-        public void HarwareRequirements_SectionIncomplete()
+        public void HardwareRequirements_SectionIncomplete()
         {
             CommonActions.ClickGoBackLink();
 
@@ -48,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearClientApplication(new CatalogueItemId(99999, "99"));
         }
     }
 }

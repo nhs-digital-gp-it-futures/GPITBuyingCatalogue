@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task AdminDashboard_AllOrgsDisplayed()
         {
-            using var context = GetBCContext();
+            await using var context = GetEndToEndDbContext();
             var organisations = await context.Organisations.Select(s => s.Name).ToListAsync();
 
             var orgsDisplayed = AdminPages.Dashboard.GetOrgsOnPage();

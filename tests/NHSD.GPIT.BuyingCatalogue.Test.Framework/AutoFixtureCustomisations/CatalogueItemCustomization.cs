@@ -11,8 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         public void Customize(IFixture fixture)
         {
             fixture.Customize<CataloguePrice>(
-                c => c.With(cp => cp.CurrencyCode, new[] { "GBP", "USD", "EUR", }[Random.Next(0, 3)])
-                    .With(cp => cp.CataloguePriceType, new CataloguePriceType { Name = "Flat" })
+                c => c.With(cp => cp.CurrencyCode, new[] { "GBP", "USD", "EUR" }[Random.Next(0, 3)])
+                    .With(cp => cp.CataloguePriceType, CataloguePriceType.Flat)
                     .With(cp => cp.PricingUnit, fixture.Create<PricingUnit>())
                     .With(cp => cp.TimeUnit, fixture.Create<TimeUnit>()));
         }

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditonalServices;
@@ -21,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Authorize]
     [Area("Order")]
     [Route("order/organisation/{odsCode}/order/{callOffId}/additional-services")]
-    public class AdditionalServicesController : Controller
+    public sealed class AdditionalServicesController : Controller
     {
         private readonly ILogWrapper<AdditionalServicesController> logger;
         private readonly IOrderService orderService;
@@ -33,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IDefaultDeliveryDateService defaultDeliveryDateService;
         private readonly IOrderSessionService orderSessionService;
 
+        // TODO: too many dependencies, i.e. too many responsibilities
         public AdditionalServicesController(
             ILogWrapper<AdditionalServicesController> logger,
             IOrderService orderService,
@@ -55,8 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.orderSessionService = orderSessionService ?? throw new ArgumentNullException(nameof(orderSessionService));
         }
 
-        public async Task<IActionResult> Index(string odsCode, string callOffId)
+        public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             sessionService.ClearSession();
@@ -68,15 +69,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("select/additional-service")]
-        public async Task<IActionResult> SelectAdditionalService(string odsCode, string callOffId)
+        public async Task<IActionResult> SelectAdditionalService(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var order = await orderService.GetOrder(callOffId);
 
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
 
-            var solutionIds = orderItems.Select(x => x.CatalogueItemId.ToString());
+            var solutionIds = orderItems.Select(i => i.CatalogueItemId).ToList();
 
             var state = new CreateOrderItemModel
             {
@@ -91,15 +93,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionIds(solutionIds);
 
-            if (!additionalServices.Any())
-                return View("NoAdditionalServicesFound", new NoAdditionalServicesFoundModel(odsCode, callOffId));
-
-            return View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId));
+            return !additionalServices.Any()
+                ? View("NoAdditionalServicesFound", new NoAdditionalServicesFoundModel(odsCode, callOffId))
+                : View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId.GetValueOrDefault()));
         }
 
         [HttpPost("select/additional-service")]
-        public async Task<IActionResult> SelectAdditionalService(string odsCode, string callOffId, SelectAdditionalServiceModel model)
+        public async Task<IActionResult> SelectAdditionalService(string odsCode, CallOffId callOffId, SelectAdditionalServiceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
@@ -110,69 +112,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedAdditionalServiceId);
 
-            if (existingOrder != null)
+            if (existingOrder is not null)
             {
                 return RedirectToAction(
-                    actionName: nameof(EditAdditionalService),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId, id = existingOrder.CatalogueItemId });
+                    nameof(EditAdditionalService),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId, id = existingOrder.CatalogueItemId });
             }
 
-            state.CatalogueItemId = model.SelectedSolutionId;
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
+            state.CatalogueItemId = model.SelectedAdditionalServiceId;
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId.GetValueOrDefault());
             state.CatalogueItemName = solution.Name;
 
-            var additionalService = await additionalServicesService.GetAdditionalService(model.SelectedSolutionId);
+            var additionalService = await additionalServicesService.GetAdditionalService(model.SelectedAdditionalServiceId);
             state.CatalogueSolutionId = additionalService.SolutionId;
 
             orderSessionService.SetOrderStateToSession(state);
 
-            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+            var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
             if (prices.Count == 1)
             {
                 orderSessionService.SetPrice(prices.Single());
 
                 return RedirectToAction(
-                    actionName: nameof(SelectAdditionalServiceRecipients),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(SelectAdditionalServiceRecipients),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId });
             }
 
             return RedirectToAction(
-                actionName: nameof(SelectAdditionalServicePrice),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(SelectAdditionalServicePrice),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
         [HttpGet("select/additional-service/price")]
-        public async Task<IActionResult> SelectAdditionalServicePrice(string odsCode, string callOffId)
+        public async Task<IActionResult> SelectAdditionalServicePrice(string odsCode, CallOffId callOffId)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId.GetValueOrDefault());
 
-            var prices = solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList();
+            var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
             return View(new SelectAdditionalServicePriceModel(odsCode, callOffId, state.CatalogueItemName, prices));
         }
 
         [HttpPost("select/additional-service/price")]
-        public async Task<IActionResult> SelectAdditionalServicePrice(string odsCode, string callOffId, SelectAdditionalServicePriceModel model)
+        public async Task<IActionResult> SelectAdditionalServicePrice(string odsCode, CallOffId callOffId, SelectAdditionalServicePriceModel model)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId);
+            var solution = await solutionsService.GetSolution(state.CatalogueItemId.GetValueOrDefault());
 
             if (!ModelState.IsValid)
             {
-                model.SetPrices(solution.CataloguePrices.Where(x => x.CataloguePriceTypeId == CataloguePriceType.Flat.Id).ToList());
+                model.SetPrices(solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList());
                 return View(model);
             }
 
@@ -181,30 +185,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             orderSessionService.SetPrice(cataloguePrice);
 
             return RedirectToAction(
-                actionName: nameof(SelectAdditionalServiceRecipients),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(SelectAdditionalServiceRecipients),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
         [HttpGet("select/additional-service/price/recipients")]
-        public async Task<IActionResult> SelectAdditionalServiceRecipients(string odsCode, string callOffId, string selectionMode)
+        public async Task<IActionResult> SelectAdditionalServiceRecipients(string odsCode, CallOffId callOffId, string selectionMode)
         {
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            if (state.ServiceRecipients == null)
+            if (state.ServiceRecipients is null)
             {
                 var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
                 state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
                 orderSessionService.SetOrderStateToSession(state);
             }
 
-            return View(new SelectAdditionalServiceRecipientsModel(odsCode, callOffId, state.CatalogueItemName, state.ServiceRecipients, selectionMode, state.IsNewOrder, state.CatalogueItemId));
+            return View(new SelectAdditionalServiceRecipientsModel(
+                odsCode,
+                callOffId,
+                state.CatalogueItemName,
+                state.ServiceRecipients,
+                selectionMode,
+                state.IsNewOrder,
+                state.CatalogueItemId.GetValueOrDefault()));
         }
 
         [HttpPost("select/additional-service/price/recipients")]
-        public IActionResult SelectAdditionalServiceRecipients(string odsCode, string callOffId, SelectAdditionalServiceRecipientsModel model)
+        public IActionResult SelectAdditionalServiceRecipients(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsModel model)
         {
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
@@ -223,37 +235,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!state.IsNewOrder)
             {
                 return RedirectToAction(
-                    actionName: nameof(EditAdditionalService),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                    nameof(EditAdditionalService),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId, id = state.CatalogueItemId });
             }
 
             return RedirectToAction(
-                actionName: nameof(SelectAdditionalServiceRecipientsDate),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(SelectAdditionalServiceRecipientsDate),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
         [HttpGet("select/additional-service/price/recipients/date")]
-        public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, string callOffId)
+        public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, CallOffId callOffId)
         {
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId);
+            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
 
             return View(new SelectAdditionalServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate, defaultDeliveryDate));
         }
 
         [HttpPost("select/additional-service/price/recipients/date")]
-        public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, string callOffId, SelectAdditionalServiceRecipientsDateModel model)
+        public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsDateModel model)
         {
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectAdditionalServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            (var date, var error) = model.ToDateTime();
+            (DateTime? date, var error) = model.ToDateTime();
 
             if (error != null)
                 ModelState.AddModelError("Day", error);
@@ -263,39 +275,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             state.PlannedDeliveryDate = date;
 
-            state.ServiceRecipients.All(c =>
-            {
-                c.DeliveryDate = date;
-                return true;
-            });
-
-            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId, date.Value);
+            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), date.Value);
 
             orderSessionService.SetOrderStateToSession(state);
 
             if (state.ProvisioningType == ProvisioningType.Declarative)
             {
                 return RedirectToAction(
-                    actionName: nameof(SelectFlatDeclarativeQuantity),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(SelectFlatDeclarativeQuantity),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId });
             }
-            else if (state.ProvisioningType == ProvisioningType.OnDemand)
+
+            if (state.ProvisioningType == ProvisioningType.OnDemand)
             {
                 return RedirectToAction(
-                    actionName: nameof(SelectFlatOnDemandQuantity),
-                    controllerName: typeof(AdditionalServicesController).ControllerName(),
-                    routeValues: new { odsCode, callOffId });
+                    nameof(SelectFlatOnDemandQuantity),
+                    typeof(AdditionalServicesController).ControllerName(),
+                    new { odsCode, callOffId });
             }
 
             return RedirectToAction(
-                actionName: nameof(EditAdditionalService),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                nameof(EditAdditionalService),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, additionalServiceId = state.CatalogueItemId });
         }
 
         [HttpGet("select/additional-service/price/flat/declarative")]
-        public IActionResult SelectFlatDeclarativeQuantity(string odsCode, string callOffId)
+        public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId)
         {
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
@@ -305,11 +312,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("select/additional-service/price/flat/declarative")]
-        public IActionResult SelectFlatDeclarativeQuantity(string odsCode, string callOffId, SelectFlatDeclarativeQuantityModel model)
+        public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId, SelectFlatDeclarativeQuantityModel model)
         {
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            (var quantity, var error) = model.GetQuantity();
+            (int? quantity, var error) = model.GetQuantity();
 
             if (error != null)
                 ModelState.AddModelError("Quantity", error);
@@ -321,22 +328,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             state.Quantity = quantity;
 
-            state.ServiceRecipients.All(c =>
-            {
-                c.Quantity = quantity;
-                return true;
-            });
-
             orderSessionService.SetOrderStateToSession(state);
 
             return RedirectToAction(
-                actionName: nameof(EditAdditionalService),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                nameof(EditAdditionalService),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, additionalServiceId = state.CatalogueItemId });
         }
 
         [HttpGet("select/additional-service/price/flat/ondemand")]
-        public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId)
+        public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId)
         {
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(SelectFlatOnDemandQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
@@ -346,16 +347,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("select/additional-service/price/flat/ondemand")]
-        public IActionResult SelectFlatOnDemandQuantity(string odsCode, string callOffId, SelectFlatOnDemandQuantityModel model)
+        public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId, SelectFlatOnDemandQuantityModel model)
         {
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            (var quantity, var error) = model.GetQuantity();
+            (int? quantity, var error) = model.GetQuantity();
 
             if (error != null)
                 ModelState.AddModelError(nameof(model.Quantity), error);
 
-            if (string.IsNullOrWhiteSpace(model.TimeUnit))
+            if (model.TimeUnit is null)
                 ModelState.AddModelError(nameof(model.TimeUnit), "Time Unit is Required");
 
             if (!ModelState.IsValid)
@@ -364,36 +365,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = orderSessionService.GetOrderStateFromSession();
 
             state.Quantity = quantity;
-            state.TimeUnit = EnumerationBase.FromName<TimeUnit>(model.TimeUnit);
-
-            state.ServiceRecipients.All(c =>
-            {
-                c.Quantity = quantity;
-                return true;
-            });
+            state.TimeUnit = model.TimeUnit.Value;
 
             orderSessionService.SetOrderStateToSession(state);
 
             return RedirectToAction(
-                actionName: nameof(EditAdditionalService),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id = state.CatalogueItemId });
+                nameof(EditAdditionalService),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, additionalServiceId = state.CatalogueItemId });
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> EditAdditionalService(string odsCode, string callOffId, string id)
+        [HttpGet("{additionalServiceId}")]
+        public async Task<IActionResult> EditAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId)
         {
             logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(EditAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
-            var isNewSolution = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, id);
+            var isNewSolution = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, additionalServiceId);
 
             var state = orderSessionService.GetOrderStateFromSession();
 
-            return View(new EditAdditionalServiceModel(odsCode, callOffId, id, state, isNewSolution));
+            return View(new EditAdditionalServiceModel(odsCode, callOffId, state, isNewSolution));
         }
 
-        [HttpPost("{id}")]
-        public async Task<IActionResult> EditAdditionalService(string odsCode, string callOffId, string id, EditAdditionalServiceModel model)
+        [HttpPost("{additionalServiceId}")]
+        public async Task<IActionResult> EditAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId, EditAdditionalServiceModel model)
         {
             logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(EditAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
 
@@ -401,7 +396,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
-                (var date, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
+                (DateTime? _, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
 
                 if (error != null)
                 {
@@ -413,12 +408,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");
             }
 
-            var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueItemId);
+            var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault());
 
             var solutionPrice = solutionListPrices.CataloguePrices.Where(cp =>
-                cp.ProvisioningType.ProvisioningTypeId == state.ProvisioningType.Id
-                && cp.CataloguePriceType.CataloguePriceTypeId == state.Type.Id
-                && (cp.TimeUnit is null || cp.TimeUnit.TimeUnitId == state.TimeUnit.Id)).FirstOrDefault();
+                cp.ProvisioningType == state.ProvisioningType
+                && cp.CataloguePriceType == state.Type
+                && (cp.TimeUnit is null || cp.TimeUnit == state.TimeUnit)).FirstOrDefault();
 
             if (solutionPrice is not null)
             {
@@ -442,38 +437,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             sessionService.ClearSession();
 
             return RedirectToAction(
-                actionName: nameof(Index),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId });
+                nameof(Index),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId });
         }
 
-        [HttpGet("delete/{id}/confirmation/{serviceName}")]
-        public async Task<IActionResult> DeleteAdditionalService(string odsCode, string callOffId, string id, string serviceName)
+        [HttpGet("delete/{additionalServiceId}/confirmation/{serviceName}")]
+        public async Task<IActionResult> DeleteAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId, string serviceName)
         {
-            logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(DeleteAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(serviceName)} {serviceName}");
+            logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(DeleteAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(additionalServiceId)} {additionalServiceId}, {nameof(serviceName)} {serviceName}");
 
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new DeleteAdditionalServiceModel(odsCode, callOffId, id, serviceName, order.Description));
+            return View(new DeleteAdditionalServiceModel(odsCode, callOffId, additionalServiceId, serviceName, order.Description));
         }
 
-        [HttpPost("delete/{id}/confirmation/{serviceName}")]
-        public async Task<IActionResult> DeleteAdditionalService(string odsCode, string callOffId, string id, string serviceName, DeleteAdditionalServiceModel model)
+        [HttpPost("delete/{additionalServiceId}/confirmation/{serviceName}")]
+        public async Task<IActionResult> DeleteAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId, string serviceName, DeleteAdditionalServiceModel model)
         {
-            logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(DeleteAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(serviceName)} {serviceName}");
+            logger.LogInformation($"Handling post for {nameof(AdditionalServicesController)}.{nameof(DeleteAdditionalService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(additionalServiceId)} {additionalServiceId}, {nameof(serviceName)} {serviceName}");
 
-            await orderItemService.DeleteOrderItem(callOffId, id);
+            await orderItemService.DeleteOrderItem(callOffId, additionalServiceId);
 
             return RedirectToAction(
-                actionName: nameof(DeleteContinue),
-                controllerName: typeof(AdditionalServicesController).ControllerName(),
-                routeValues: new { odsCode, callOffId, id, serviceName });
+                nameof(DeleteContinue),
+                typeof(AdditionalServicesController).ControllerName(),
+                new { odsCode, callOffId, additionalServiceId, serviceName });
         }
 
-        [HttpGet("delete/{id}/confirmation/{serviceName}/continue")]
-        public IActionResult DeleteContinue(string odsCode, string callOffId, string id, string serviceName)
+        [HttpGet("delete/{additionalServiceId}/confirmation/{serviceName}/continue")]
+        public IActionResult DeleteContinue(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId, string serviceName)
         {
-            logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(DeleteContinue)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(serviceName)} {serviceName}");
+            logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(DeleteContinue)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(additionalServiceId)} {additionalServiceId}, {nameof(serviceName)} {serviceName}");
 
             return View(new DeleteContinueModel(odsCode, callOffId, serviceName));
         }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
@@ -76,29 +77,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                var dbTypes = new [] { typeof(GPITBuyingCatalogueDbContext) };
-
-                foreach (var type in dbTypes)
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(GPITBuyingCatalogueDbContext));
+                if (descriptor is not null)
                 {
-                    var descriptor = services.SingleOrDefault(
-                        d => d.ServiceType == type);
-                    if (descriptor is not null)
-                    {
-                        services.Remove(descriptor);
-                    }
+                    services.Remove(descriptor);
                 }
 
-                services.AddDbContext<GPITBuyingCatalogueDbContext>(options =>
+                services.AddDbContext<EndToEndDbContext>(options =>
                 {
                     options.UseInMemoryDatabase(BcDbName);
                 });
+                services.AddDbContext<GPITBuyingCatalogueDbContext, EndToEndDbContext>();
 
                 var sp = services.BuildServiceProvider();
 
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
 
-                var bcDb = scopedServices.GetRequiredService<GPITBuyingCatalogueDbContext>();
+                var bcDb = scopedServices.GetRequiredService<EndToEndDbContext>();
 
                 bcDb.Database.EnsureCreated();
 

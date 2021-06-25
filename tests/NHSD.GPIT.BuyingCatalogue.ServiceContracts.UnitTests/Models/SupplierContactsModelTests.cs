@@ -31,12 +31,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             actual.Should().BeNull();
         }
 
+        // TODO: convert to declarative AutoFixture test
         [Test]
         public static void SetSolutionId_Sets_SolutionIdOnContacts()
         {
             var fixture = new Fixture();
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            fixture.Customize(new CallOffIdCustomization());
+            fixture.Customize(new CatalogueItemIdCustomization());
             var model = fixture.Create<SupplierContactsModel>();
 
             model.SetSolutionId();
@@ -51,6 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
         public static void SetSolutionId_ContactsAreNull_NoExceptionThrown()
         {
             var fixture = new Fixture();
+            fixture.Customize(new CatalogueItemIdCustomization());
             var model = fixture.Build<SupplierContactsModel>()
                 .Without(x => x.Contacts).Create();
 

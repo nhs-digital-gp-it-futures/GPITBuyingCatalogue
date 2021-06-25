@@ -18,7 +18,8 @@
                                                 nameof(CatalogueSolutionsController.SelectSolutionServiceRecipients),
                                                 "CatalogueSolutions",
                                                 new {Model.OdsCode, Model.CallOffId, selectionMode = Model.SelectionParameter})"
-                                     text="@Model.SelectionPrompt" />
+                                     text="@Model.SelectionPrompt" 
+                                     use-primary-colour="false" />
 
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />

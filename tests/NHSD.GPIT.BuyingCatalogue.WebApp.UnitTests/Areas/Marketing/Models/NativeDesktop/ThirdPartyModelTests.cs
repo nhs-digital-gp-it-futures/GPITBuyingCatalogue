@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
 using NUnit.Framework;
@@ -14,8 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new ThirdPartyModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new ThirdPartyModel(null));
         }
 
         [Test]
@@ -28,13 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new ThirdPartyModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
             Assert.AreEqual("Third party components", model.ThirdPartyComponents);
             Assert.AreEqual("Device capabilities", model.DeviceCapabilities);
         }
@@ -58,11 +58,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [TestCase(null, " ", false)]
         [TestCase("Third party", null, true)]
         [TestCase(null, "Device capability", true)]
-        public static void IsCompleteIsCorrectlySet(string thirdPary, string deviceCapabilities, bool? expected)
+        public static void IsCompleteIsCorrectlySet(string thirdParty, string deviceCapabilities, bool? expected)
         {
             var clientApplication = new ClientApplication
             {
-                NativeDesktopThirdParty = new NativeDesktopThirdParty { ThirdPartyComponents = thirdPary, DeviceCapabilities = deviceCapabilities }
+                NativeDesktopThirdParty = new NativeDesktopThirdParty { ThirdPartyComponents = thirdParty, DeviceCapabilities = deviceCapabilities }
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };

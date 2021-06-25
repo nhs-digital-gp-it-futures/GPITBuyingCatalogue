@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NUnit.Framework;
 
@@ -21,13 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ImplementationDetail = "Some implementation detail" }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ImplementationDetail = "Some implementation detail" },
             };
 
             var model = new ImplementationTimescalesModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
             Assert.AreEqual("Some implementation detail", model.Description);
         }

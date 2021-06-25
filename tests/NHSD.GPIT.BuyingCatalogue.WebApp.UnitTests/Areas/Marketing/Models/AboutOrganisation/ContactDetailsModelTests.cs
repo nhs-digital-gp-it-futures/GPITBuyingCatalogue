@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NUnit.Framework;
 
@@ -14,8 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [Test]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new ContactDetailsModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new ContactDetailsModel(null));
         }
 
         [Test]
@@ -23,17 +23,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-
+                CatalogueItemId = new CatalogueItemId(1, "123"),
                 Solution = new Solution
                 {
-                    MarketingContacts = new MarketingContact[0]
-                }
+                    MarketingContacts = Array.Empty<MarketingContact>(),
+                },
             };
 
             var model = new ContactDetailsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.False(model.IsComplete);
             model.Contact1.Should().BeEquivalentTo(new MarketingContact());
             model.Contact2.Should().BeEquivalentTo(new MarketingContact());
@@ -55,17 +54,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-
+                CatalogueItemId = new CatalogueItemId(1, "123"),
                 Solution = new Solution
                 {
-                    MarketingContacts = new MarketingContact[1] { new MarketingContact { FirstName = "Fred" } }
-                }
+                    MarketingContacts = new MarketingContact[] { new() { FirstName = "Fred" } },
+                },
             };
 
             var model = new ContactDetailsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
             model.Contact1.Should().BeEquivalentTo(catalogueItem.Solution.MarketingContacts.Single());
             model.Contact2.Should().BeEquivalentTo(new MarketingContact());
@@ -76,21 +74,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-
+                CatalogueItemId = new CatalogueItemId(1, "123"),
                 Solution = new Solution
                 {
-                    MarketingContacts = new MarketingContact[2]
-                        {
-                            new MarketingContact { FirstName = "Fred" },
-                            new MarketingContact { FirstName = "Bill" }
-                        }
-                }
+                    MarketingContacts = new MarketingContact[]
+                    {
+                        new() { FirstName = "Fred" },
+                        new() { FirstName = "Bill" },
+                    },
+                },
             };
 
             var model = new ContactDetailsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
             model.Contact1.Should().BeEquivalentTo(catalogueItem.Solution.MarketingContacts.First());
             model.Contact2.Should().BeEquivalentTo(catalogueItem.Solution.MarketingContacts.Skip(1).Single());

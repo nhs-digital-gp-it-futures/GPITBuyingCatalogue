@@ -2,33 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     internal static class BuyingCatalogueSeedData
     {
-        internal static void Initialize(GPITBuyingCatalogueDbContext context)
+        internal static void Initialize(EndToEndDbContext context)
         {
             AddDefaultData(context);
             AddCatalogueItems(context);
             context.SaveChanges();
         }
 
-        private static void AddCatalogueItems(GPITBuyingCatalogueDbContext context)
+        private static void AddCatalogueItems(EndToEndDbContext context)
         {
             List<CatalogueItem> dfocvcSolutions = new()
             {
                 new CatalogueItem
                 {
-                    CatalogueItemId = "99999-001",
+                    CatalogueItemId = new CatalogueItemId(99999, "001"),
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Full",
                     Solution = new Solution
                     {
-                        Id = "99999-001",
+                        Id = new CatalogueItemId(99999, "001"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -186,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = "99999-99",
+                    CatalogueItemId = new CatalogueItemId(99999, "99"),
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Empty",
@@ -194,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     PublishedStatus = PublicationStatus.Draft,
                     Solution = new Solution
                     {
-                        Id = "99999-99",
+                        Id = new CatalogueItemId(99999, "99"),
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
@@ -202,13 +203,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = "99999-002",
+                    CatalogueItemId = new CatalogueItemId(99999, "002"),
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full",
                     Solution = new Solution
                     {
-                        Id = "99999-002",
+                        Id = new CatalogueItemId(99999, "002"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -314,13 +315,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 new CatalogueItem
                 {
-                    CatalogueItemId = "99999-003",
+                    CatalogueItemId = new CatalogueItemId(99999, "003"),
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full 2",
                     Solution = new Solution
                     {
-                        Id = "99999-003",
+                        Id = new CatalogueItemId(99999, "003"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution 2",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -428,10 +429,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = "99999-001", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = "99999-99", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = "99999-002", IsFoundation = true, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = "99999-003", IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "99"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "002"), IsFoundation = true, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "003"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
             };
             context.AddRange(frameworkSolutions);
 
@@ -439,26 +440,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 new CataloguePrice
                 {
-                    CatalogueItemId = "99999-001",
-                    CataloguePriceTypeId = 1,
+                    CatalogueItemId = new CatalogueItemId(99999, "001"),
+                    CataloguePriceType = CataloguePriceType.Flat,
                     PricingUnit = new()
                     {
                         PricingUnitId = Guid.NewGuid(),
                         TierName = "patient",
                         Name = "patient",
-                        Description = "per patient"
+                        Description = "per patient",
                     },
                     CurrencyCode = "GBP",
                     Price = 100.01M,
-                    ProvisioningTypeId = 1,
-                    TimeUnitId = 1,
-                    LastUpdated = DateTime.UtcNow
+                    ProvisioningType = ProvisioningType.Patient,
+                    TimeUnit = TimeUnit.PerMonth,
+                    LastUpdated = DateTime.UtcNow,
                 }
             };
             context.AddRange(prices);
         }
 
-        private static void AddDefaultData(GPITBuyingCatalogueDbContext context)
+        private static void AddDefaultData(EndToEndDbContext context)
         {
             // CapabilityStatus
             List<CapabilityStatus> capabilityStatuses = new()
@@ -468,20 +469,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.AddRange(capabilityStatuses);
 
             // CatalogueItemType
-            List<CatalogueItemType> catalogueItemTypes = new()
+            List<Database.Models.CatalogueItemType> catalogueItemTypes = new()
             {
-                CatalogueItemType.Solution,
-                CatalogueItemType.AdditionalService,
-                CatalogueItemType.AssociatedService,
-
+                new Database.Models.CatalogueItemType { Id = 1, Name = "Solution" },
+                new Database.Models.CatalogueItemType { Id = 2, Name = "Additional Service" },
+                new Database.Models.CatalogueItemType { Id = 3, Name = "Associated Service" },
             };
             context.AddRange(catalogueItemTypes);
 
             // CataloguePriceType
-            List<CataloguePriceType> cataloguePriceTypes = new()
+            List<Database.Models.CataloguePriceType> cataloguePriceTypes = new()
             {
-                new CataloguePriceType { CataloguePriceTypeId = 1, Name = "Flat" },
-                new CataloguePriceType { CataloguePriceTypeId = 2, Name = "Tiered" },
+                new Database.Models.CataloguePriceType { CataloguePriceTypeId = 1, Name = "Flat" },
+                new Database.Models.CataloguePriceType { CataloguePriceTypeId = 2, Name = "Tiered" },
             };
             context.AddRange(cataloguePriceTypes);
 
@@ -1055,23 +1055,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.AddRange(frameworkCapabilities);
 
             // ProvisioningType
-            List<ProvisioningType> provisioningTypes = new()
+            List<Database.Models.ProvisioningType> provisioningTypes = new()
             {
-                new ProvisioningType { ProvisioningTypeId = 1, Name = "Patient" },
-                new ProvisioningType { ProvisioningTypeId = 2, Name = "Declarative" },
-                new ProvisioningType { ProvisioningTypeId = 3, Name = "OnDemand" },
+                new Database.Models.ProvisioningType { ProvisioningTypeId = 1, Name = "Patient" },
+                new Database.Models.ProvisioningType { ProvisioningTypeId = 2, Name = "Declarative" },
+                new Database.Models.ProvisioningType { ProvisioningTypeId = 3, Name = "OnDemand" },
             };
             context.AddRange(provisioningTypes);
 
             // PublicationStatus
-            List<PublicationStatus> publicationStatuses = new()
+            List<Database.Models.PublicationStatus> publicationStatuses = new()
             {
-                PublicationStatus.Draft,
-                PublicationStatus.Unpublished,
-                PublicationStatus.Published,
-                PublicationStatus.Withdrawn,
+                new Database.Models.PublicationStatus { Id = 1, Name = "Draft" },
+                new Database.Models.PublicationStatus { Id = 2, Name = "Unpublished" },
+                new Database.Models.PublicationStatus { Id = 3, Name = "Published" },
+                new Database.Models.PublicationStatus { Id = 4, Name = "Withdrawn" },
             };
-
 
             context.AddRange(publicationStatuses);
 
@@ -1130,10 +1129,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.AddRange(supplierContacts);
 
             // TimeUnit
-            List<TimeUnit> timeUnits = new()
+            List<Database.Models.TimeUnit> timeUnits = new()
             {
-                new TimeUnit { TimeUnitId = 1, Name = "month", Description = "per month" },
-                new TimeUnit { TimeUnitId = 2, Name = "year", Description = "per year" },
+                new Database.Models.TimeUnit { TimeUnitId = 1, Name = "month", Description = "per month" },
+                new Database.Models.TimeUnit { TimeUnitId = 2, Name = "year", Description = "per year" },
             };
             context.AddRange(timeUnits);
         }

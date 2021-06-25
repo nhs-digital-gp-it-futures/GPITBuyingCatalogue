@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class CataloguePrice
+    public class CataloguePrice
     {
         public CataloguePrice()
         {
@@ -14,15 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public int CataloguePriceId { get; set; }
 
-        public string CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
-        public int ProvisioningTypeId { get; set; }
-
-        public int CataloguePriceTypeId { get; set; }
-
+        // TODO: remove
         public Guid PricingUnitId { get; set; }
-
-        public int? TimeUnitId { get; set; }
 
         public string CurrencyCode { get; set; }
 
@@ -38,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public virtual ProvisioningType ProvisioningType { get; set; }
 
-        public virtual TimeUnit TimeUnit { get; set; }
+        public virtual TimeUnit? TimeUnit { get; set; }
 
         public virtual ICollection<CataloguePriceTier> CataloguePriceTiers { get; set; }
     }

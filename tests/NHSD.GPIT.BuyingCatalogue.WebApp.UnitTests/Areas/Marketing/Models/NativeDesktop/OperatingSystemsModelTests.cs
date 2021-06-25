@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
 using NUnit.Framework;
@@ -25,13 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new OperatingSystemsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
             Assert.AreEqual("Some operating system details", model.OperatingSystemsDescription);
         }
 
