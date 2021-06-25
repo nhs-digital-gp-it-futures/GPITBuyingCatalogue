@@ -6,12 +6,10 @@
 <div class="nhsuk-width-container" data-test-id="delete-catalogue-confirmation-page">
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="@Model.Title" advice="This Associated Service has been deleted from your order." />
-            <div data-test-id="continue-button">
-                <a class="nhsuk-button nhsuk-u-margin-top-9" href="@Model.ContinueLink" draggable="false">
-                    Continue
-                </a>
-            </div>
+            <nhs-page-title title="@Model.Title" advice="This Additional Service has been deleted from your order." />
+            <vc:nhs-secondary-button url="@Model.ContinueLink"
+                                     text="Continue"
+                                     use-primary-colour="true"/>
         </div>
     </div>
 </div>

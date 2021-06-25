@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -9,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public abstract class SolutionDisplayBaseModel
     {
         private static readonly string ControllerName = typeof(SolutionDetailsController).ControllerName();
+
         private readonly IList<SectionModel> sections = new List<SectionModel>
         {
             new()
@@ -101,14 +103,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string Section => sections[Index].Name;
 
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         public string SolutionName { get; set; }
 
         public virtual IList<SectionModel> GetSections()
         {
             var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
-            sectionsToShow.ForEach(s => s.Id = SolutionId);
+
+            // TODO: what is ID in section model? Should it be CatalogueItemId?
+            sectionsToShow.ForEach(s => s.Id = SolutionId.ToString());
 
             if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is { } sectionModel)
                 sectionModel.Selected = true;

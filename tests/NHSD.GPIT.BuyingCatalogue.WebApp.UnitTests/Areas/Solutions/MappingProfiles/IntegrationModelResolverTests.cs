@@ -58,7 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 var integrationModel = actual[outer];
                 var integration = integrations[outer];
                 
-                integrationModel.Link.Should().Be(integration.Link);
                 integrationModel.Name.Should().Be(integration.Name);
                 
                 for (int inner = 0; inner < integration.SubTypes.Length; inner++)
@@ -68,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     {
                         integrationModel.Tables[inner]
                             .Headings.Should()
-                            .BeEquivalentTo("Provider or Consumer", "Additional information about the integration");
+                            .BeEquivalentTo("Provider or Consumer", "Additional information");
                         integrationModel.Tables[inner]
                             .Rows.Should()
                             .BeEquivalentTo(
@@ -78,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     {
                         integrationModel.Tables[inner]
                             .Headings.Should()
-                            .BeEquivalentTo("Provider or Consumer", "Integrates with system", "Description");
+                            .BeEquivalentTo("Provider or Consumer", "System integrating with", "Description");
                         integrationModel.Tables[inner]
                             .Rows.Should()
                             .BeEquivalentTo(

@@ -42,9 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 return;
             }
 
-            List<TagBuilder> radioItems = BuildRadiosFromValueList();
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
+            List<TagBuilder> radioItems = BuildRadiosFromValueList();
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsRadios));
 
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             builder.AddCssClass(TagHelperConstants.RadioItemClass);
 
             var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, item, ValueName);
-            var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, item, DisplayName);
+            var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, item, DisplayName, ValueName);
 
             builder.InnerHtml.AppendHtml(input);
             builder.InnerHtml.AppendHtml(label);

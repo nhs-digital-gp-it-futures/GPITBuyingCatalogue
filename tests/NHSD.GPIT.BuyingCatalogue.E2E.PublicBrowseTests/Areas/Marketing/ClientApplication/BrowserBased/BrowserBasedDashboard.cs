@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.BrowserBased
@@ -25,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearClientApplication(new CatalogueItemId(99999, "99"));
         }
     }
 }

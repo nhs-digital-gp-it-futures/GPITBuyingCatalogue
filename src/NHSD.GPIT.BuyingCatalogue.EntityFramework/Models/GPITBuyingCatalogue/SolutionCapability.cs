@@ -1,4 +1,5 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 #nullable disable
 
@@ -6,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
     public partial class SolutionCapability
     {
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         public Guid CapabilityId { get; set; }
 

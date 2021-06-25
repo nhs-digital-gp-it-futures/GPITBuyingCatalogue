@@ -13,7 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, NhsCheckboxes));
 

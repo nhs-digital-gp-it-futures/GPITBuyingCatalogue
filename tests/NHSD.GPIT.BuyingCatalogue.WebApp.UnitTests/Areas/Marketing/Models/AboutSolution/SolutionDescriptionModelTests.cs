@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 using NUnit.Framework;
 
@@ -21,13 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { Summary = "A solution summary", FullDescription = "A full description", AboutUrl = "A Url" }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { Summary = "A solution summary", FullDescription = "A full description", AboutUrl = "A Url" },
             };
 
             var model = new SolutionDescriptionModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
             Assert.AreEqual("A solution summary", model.Summary);
             Assert.AreEqual("A full description", model.Description);
@@ -39,13 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { Summary = "", FullDescription = "A full description", AboutUrl = "A Url" }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { Summary = "", FullDescription = "A full description", AboutUrl = "A Url" },
             };
 
             var model = new SolutionDescriptionModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.IsEmpty(model.Summary);
             Assert.AreEqual("A full description", model.Description);
@@ -73,8 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { Summary = summary }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { Summary = summary },
             };
 
             var model = new SolutionDescriptionModel(catalogueItem);

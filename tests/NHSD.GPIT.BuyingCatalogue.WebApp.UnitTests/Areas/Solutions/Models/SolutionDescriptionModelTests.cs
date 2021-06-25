@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using AutoFixture.NUnit3;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NUnit.Framework;
 
@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
     internal static class SolutionDescriptionModelTests
     {
         private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-        
+
         [Test]
         public static void Class_Inherits_SolutionDisplayBaseModel()
         {
@@ -31,7 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .Be("TableListCell");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static void FrameworkTitle_FrameworksMoreThanOne_ReturnsPlural(SolutionDescriptionModel model)
         {
             model.Frameworks.Length.Should().BeGreaterThan(1);
@@ -41,7 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             actual.Should().Be("Frameworks");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static void FrameworkTitle_OneFramework_ReturnsSingle(string framework)
         {
             var model = new SolutionDescriptionModel { Frameworks = new[] { framework, } };
@@ -51,7 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             actual.Should().Be("Framework");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static void FrameworkTitle_NoFramework_ReturnsSingle(string framework)
         {
             var model = new SolutionDescriptionModel { Frameworks = System.Array.Empty<string>(), };
@@ -71,7 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             actual.Should().Be("Framework");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static void HasDescription_ValidDescription_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Description.Should().NotBeNullOrWhiteSpace();
@@ -90,8 +94,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             actual.Should().BeFalse();
         }
-        
-        [Test, AutoData]
+
+        [Test]
+        [CommonAutoData]
         public static void HasSummary_ValidSummary_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Summary.Should().NotBeNullOrWhiteSpace();

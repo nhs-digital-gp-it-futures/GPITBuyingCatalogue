@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
 
             CreateMap<Integration, IntegrationModel>()
-                .ForMember(dest => dest.Link, opt => opt.MapFrom(src => src.Link))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Tables, opt => opt.MapFrom(src => src.SubTypes))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter();
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         {
                             dest.Headings = new List<string>
                             {
-                                "Provider or Consumer", "Additional information about the integration",
+                                "Provider or Consumer", "Additional information",
                             };
                             foreach (var (role, description) in details)
                             {
@@ -55,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
                         dest.Headings = new List<string>
                         {
-                            "Provider or Consumer", "Integrates with system", "Description",
+                            "Provider or Consumer", "System integrating with", "Description",
                         };
 
                         foreach (var (role, dictionary) in detailsSystem)

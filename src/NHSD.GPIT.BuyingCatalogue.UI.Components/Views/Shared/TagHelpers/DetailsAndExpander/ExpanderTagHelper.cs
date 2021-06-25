@@ -22,13 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+            output.TagName = "details";
+            output.TagMode = TagMode.StartTagAndEndTag;
+
             var summary = DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(LabelText);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 
             var children = await output.GetChildContentAsync();
-
-            output.Reinitialize("details", TagMode.StartTagAndEndTag);
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {ExpanderClass}"));
 

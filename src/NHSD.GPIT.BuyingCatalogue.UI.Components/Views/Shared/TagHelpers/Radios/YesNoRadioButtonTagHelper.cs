@@ -22,12 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+            output.TagName = TagHelperConstants.Div;
+            output.TagMode = TagMode.StartTagAndEndTag;
+
             var isYesChecked = For.Model?.ToString() == "Yes";
 
             var yesRadio = BuildYesRadio(isYesChecked);
             var noRadio = BuildNoRadio(!isYesChecked);
-
-            output.Reinitialize(TagHelperConstants.Div, TagMode.StartTagAndEndTag);
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsRadios));
 
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             yesBuilder.AddCssClass(TagHelperConstants.RadioItemClass);
 
             var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "Yes", isChecked);
-            var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "Yes");
+            var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "Yes", "Yes");
 
             yesBuilder.InnerHtml
                 .AppendHtml(input)
@@ -57,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             yesBuilder.AddCssClass(TagHelperConstants.RadioItemClass);
 
             var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "No", isChecked);
-            var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "No");
+            var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "No", "No");
 
             yesBuilder.InnerHtml
                 .AppendHtml(input)

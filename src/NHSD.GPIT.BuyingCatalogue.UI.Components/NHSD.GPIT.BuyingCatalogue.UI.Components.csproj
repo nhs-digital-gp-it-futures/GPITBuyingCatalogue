@@ -16,16 +16,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Shared\TagHelpers\TaskList\**" />
-    <Content Remove="Views\Shared\TagHelpers\TaskList\**" />
-    <EmbeddedResource Remove="Views\Shared\TagHelpers\TaskList\**" />
-    <None Remove="Views\Shared\TagHelpers\TaskList\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <SupportedPlatform Include="browser" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
       <PrivateAssets>all</PrivateAssets>

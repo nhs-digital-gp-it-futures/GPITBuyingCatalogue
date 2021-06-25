@@ -5,62 +5,49 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class DefaultDeliveryDateService : IDefaultDeliveryDateService
     {
-        private readonly OrderingDbContext dbContext;
+        private readonly GPITBuyingCatalogueDbContext dbContext;
 
-        public DefaultDeliveryDateService(OrderingDbContext dbContext)
+        public DefaultDeliveryDateService(GPITBuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<DateTime?> GetDefaultDeliveryDate(string callOffId, string catalogueItemId)
+        public async Task<DateTime?> GetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var id = CallOffId.Parse(callOffId);
-
-            // TODO - handle case of non-success
-            (var success, var catId) = CatalogueItemId.Parse(catalogueItemId);
-
             Expression<Func<Order, IEnumerable<DefaultDeliveryDate>>> defaultDeliveryDate = o
-                => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catId);
+                => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId);
 
             var date = await dbContext.Orders
-                .Where(o => o.Id == id.Id)
+                .Where(o => o.Id == callOffId.Id)
                 .Include(defaultDeliveryDate)
                 .SelectMany(defaultDeliveryDate)
                 .Select(d => d.DeliveryDate)
                 .SingleOrDefaultAsync();
 
-            if (date == default(DateTime))
-                return null;
-
-            return date;
+            return date == default(DateTime) ? null : date;
         }
 
-        public async Task<DeliveryDateResult> SetDefaultDeliveryDate(string callOffId, string catalogueItemId, DateTime deliveryDate)
+        public async Task<DeliveryDateResult> SetDefaultDeliveryDate(CallOffId callOffId, CatalogueItemId catalogueItemId, DateTime deliveryDate)
         {
-            var id = CallOffId.Parse(callOffId);
+            var order = await GetOrder(callOffId, catalogueItemId);
 
-            // TODO - handle case of non-success
-            (var success, var catId) = CatalogueItemId.Parse(catalogueItemId);
-
-            var order = await GetOrder(id, catId);
-
-            DeliveryDateResult addedOrUpdated = order.SetDefaultDeliveryDate(catId, deliveryDate);
+            DeliveryDateResult addedOrUpdated = order.SetDefaultDeliveryDate(catalogueItemId, deliveryDate);
 
             await dbContext.SaveChangesAsync();
 
             return addedOrUpdated;
         }
 
-        private async Task<Order> GetOrder(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        private Task<Order> GetOrder(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            return await dbContext.Orders
+            return dbContext.Orders
                 .Where(o => o.Id == callOffId.Id)
                 .Include(o => o.DefaultDeliveryDates.Where(d => d.CatalogueItemId == catalogueItemId))
                 .SingleOrDefaultAsync();

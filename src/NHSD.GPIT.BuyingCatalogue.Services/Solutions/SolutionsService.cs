@@ -6,62 +6,55 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
-    public class SolutionsService : ISolutionsService
+    public sealed class SolutionsService : ISolutionsService
     {
-        private readonly ILogWrapper<SolutionsService> logger;
+        private const string GpitFuturesFrameworkId = "NHSDGP001";
+        private const string DfocvcFrameworkId = "DFOCVC001";
+
         private readonly GPITBuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository;
 
         public SolutionsService(
-            ILogWrapper<SolutionsService> logger,
             GPITBuyingCatalogueDbContext dbContext,
             IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository,
             IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.marketingContactRepository = marketingContactRepository
-                ?? throw new ArgumentNullException(nameof(marketingContactRepository));
+            this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
 
-        public async Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
+        public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
+                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
                 .ToListAsync();
         }
 
         public async Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities)
         {
             var solutions = await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(x => x.FrameworkId == "NHSDGP001"))
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
                 .ToListAsync();
 
             // TODO - Refactor this. Should be possible to include in the above expression
@@ -78,181 +71,129 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solutions;
         }
 
-        public async Task<CatalogueItem> GetSolutionListPrices(string solutionId)
+        public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            return await dbContext.CatalogueItems
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.ProvisioningType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.CataloguePriceType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.TimeUnit)
-                .Where(x => x.CatalogueItemId == solutionId)
+            return dbContext.CatalogueItems
+                .Include(i => i.CataloguePrices)
+                .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<CatalogueItem> GetSolution(string solutionId)
+        public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .ThenInclude(x => x.SupplierContacts)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.FrameworkSolutions)
-                .ThenInclude(x => x.Framework)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.MarketingContacts)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionEpics)
-                .ThenInclude(x => x.Status)
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionEpics)
-                .ThenInclude(x => x.Epic)
-                .ThenInclude(x => x.CompliancyLevel)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.ProvisioningType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.CataloguePriceType)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.TimeUnit)
-                .Include(x => x.CataloguePrices)
-                .ThenInclude(x => x.PricingUnit)
-
-                .Include(x => x.Supplier)
-                .ThenInclude(s => s.CatalogueItems)
-                .ThenInclude(c => c.AssociatedService)
-                .Include(x => x.Supplier)
-                .ThenInclude(s => s.CatalogueItems)
-                .ThenInclude(c => c.CataloguePrices)
-                .ThenInclude(cp => cp.PricingUnit)
-
-                .Where(x => x.CatalogueItemId == solutionId)
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
+                .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
+                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Status)
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Epic).ThenInclude(e => e.CompliancyLevel)
+                .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetDFOCVCSolutions()
+        public Task<List<CatalogueItem>> GetDFOCVCSolutions()
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published"
-                        && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == "DFOCVC001"))
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == DfocvcFrameworkId))
                 .ToListAsync();
         }
 
-        public async Task<List<Capability>> GetFuturesCapabilities()
+        public Task<List<Capability>> GetFuturesCapabilities()
         {
-            return await dbContext.Capabilities.Where(x => x.Category.Name == "GP IT Futures")
-                .OrderBy(x => x.Name)
+            return dbContext.Capabilities.Where(c => c.Category.Name == "GP IT Futures")
+                .OrderBy(c => c.Name)
                 .ToListAsync();
         }
 
-        public async Task SaveSolutionDescription(string solutionId, string summary, string description, string link)
+        public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveSolutionFeatures(string solutionId, string[] features)
+        public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.Features = JsonConvert.SerializeObject(features);
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveIntegrationLink(string solutionId, string integrationLink)
+        public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.IntegrationsUrl = integrationLink;
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveImplementationDetail(string solutionId, string detail)
+        public async Task SaveImplementationDetail(CatalogueItemId solutionId, string detail)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.ImplementationDetail = detail;
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveRoadmap(string solutionId, string roadmap)
+        public async Task SaveRoadMap(CatalogueItemId solutionId, string roadMap)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
-            solution.RoadMap = roadmap;
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            solution.RoadMap = roadMap;
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task<ClientApplication> GetClientApplication(string solutionId)
+        public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             return solution.GetClientApplication();
         }
 
-        public async Task SaveClientApplication(string solutionId, ClientApplication clientApplication)
+        public async Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task<Hosting> GetHosting(string solutionId)
+        public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             return solution.GetHosting();
         }
 
-        public async Task SaveHosting(string solutionId, Hosting hosting)
+        public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             hosting.ValidateNotNull(nameof(hosting));
 
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.Hosting = JsonConvert.SerializeObject(hosting);
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task<Supplier> GetSupplier(string supplierId)
+        public Task<Supplier> GetSupplier(string supplierId)
         {
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            return await supplierRepository.SingleAsync(x => x.Id == supplierId);
+            return supplierRepository.SingleAsync(s => s.Id == supplierId);
         }
 
         public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
         {
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            var supplier = await supplierRepository.SingleAsync(x => x.Id == supplierId);
+            var supplier = await supplierRepository.SingleAsync(s => s.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
             await supplierRepository.SaveChangesAsync();
@@ -289,18 +230,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await marketingContactRepository.SaveChangesAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
+        public Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Where(
-                    x => x.SupplierId == supplierId
-                        && x.CatalogueItemType.Name == "Solution"
-                        && x.PublishedStatus.Name == "Published")
-                .OrderBy(x => x.Name)
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Supplier)
+                .Where(i => i.SupplierId == supplierId
+                    && i.CatalogueItemType == CatalogueItemType.Solution
+                    && i.PublishedStatus == PublicationStatus.Published)
+                .OrderBy(i => i.Name)
                 .ToListAsync();
         }
     }

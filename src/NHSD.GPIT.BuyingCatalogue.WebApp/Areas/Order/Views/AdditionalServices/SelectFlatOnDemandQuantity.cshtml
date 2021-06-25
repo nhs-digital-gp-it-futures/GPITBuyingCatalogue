@@ -1,0 +1,38 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectFlatOnDemandQuantityModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="order-item-provisiontype-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <nhs-validation-summary />
+        <nhs-page-title title="Quantity of @Model.SolutionName for @Model.CallOffId"
+                        advice="Enter the quantity you think you'll need and over what period" />
+        <div class="nhsuk-grid-column-full">
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <nhs-bookended-input asp-for="@Model.Quantity"
+                                     label-text="How many do you think you'll need?" />
+                <nhs-details label-text="What quantity should i enter?">
+                    Enter the estimated quantity you think you'll need either per month or per year.
+                </nhs-details>
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Which organisation are you looking for?"
+                                         label-hint="Select one option.">
+                    <nhs-radio-buttons asp-for="@Model.TimeUnit"
+                                       values="@Model.TimeUnits.Cast<object>()"
+                                       value-name="Name"
+                                       display-name="DisplayText" />
+                </nhs-fieldset-form-label>
+                <nhs-details label-text="What period should i enter?">
+                    This should be based on how you estimated the quantity you want to order.
+                </nhs-details>
+                <nhs-submit-button text="Continue" />
+            </form>
+        </div>
+    </div>
+</div>

@@ -8,9 +8,11 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NUnit.Framework;
@@ -20,17 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
     internal static class BrowserBasedControllerTests
-    {        
-        [Test]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(BrowserBasedController).Should()
-                .BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
-            typeof(BrowserBasedController).Should()
-                .BeDecoratedWith<RouteAttribute>(x =>
-                    x.Template == "marketing/supplier/solution/{id}/section/browser-based");
-        }
-
+    {
         [Test]
         public static void Constructor_NullLogging_ThrowsException()
         {
@@ -66,8 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("additional-information");
         }
 
-        [Test, AutoData]
-        public static async Task Get_AdditionalInformation_ValidId_CallsGetSolutionOnService(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_AdditionalInformation_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
@@ -78,8 +71,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test, AutoData]
-        public static async Task Get_AdditionalInformation_NullSolutionFromService_ReturnsBadRequestResponse(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_AdditionalInformation_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
@@ -93,8 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test, AutoData]
-        public static async Task Get_AdditionalInformation_ValidSolutionFromService_MapsToModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_AdditionalInformation_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -109,8 +104,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, AdditionalInformationModel>(mockCatalogueItem));
         }
 
-        [Test, AutoData]
-        public static async Task Get_AdditionalInformation_ValidId_ReturnsExpectedViewWithModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_AdditionalInformation_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -143,98 +139,109 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_AdditionalInformation_InvalidModel_ReturnsViewWithModel()
+        [CommonAutoData]
+        public static async Task Post_AdditionalInformation_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockAdditionalInformationModel = new Mock<AdditionalInformationModel>().Object;
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.AdditionalInformation(mockAdditionalInformationModel)).As<ViewResult>();
+            var actual = (await controller.AdditionalInformation(id, mockAdditionalInformationModel)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockAdditionalInformationModel);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_AdditionalInformation_ValidModel_GetsClientApplicationFromService(
+            [Frozen] CatalogueItemId id,
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.AdditionalInformation(model);
+            await controller.AdditionalInformation(id, model);
 
-            mockService.Verify(x => x.GetClientApplication(model.SolutionId));
+            mockService.Verify(s => s.GetClientApplication(id));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_AdditionalInformation_NoClientApplicationFromService_ReturnsBadRequestResult(
+            [Frozen] CatalogueItemId id,
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.AdditionalInformation(model)).As<BadRequestObjectResult>();
+            var actual = (await controller.AdditionalInformation(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_AdditionalInformation_ValidModel_MapsModelToClientApplication(
+            [Frozen] CatalogueItemId id,
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.AdditionalInformation(model);
+            await controller.AdditionalInformation(id, model);
 
             mockClientApplication.VerifySet(x => x.AdditionalInformation = model.AdditionalInformation);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_AdditionalInformation_ValidModel_CallSaveClientApplicationOnService(
+            [Frozen] CatalogueItemId id,
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.AdditionalInformation(model);
+            await controller.AdditionalInformation(id, model);
 
-            mockService.Verify(x => x.SaveClientApplication(model.SolutionId, mockClientApplication));
+            mockService.Verify(x => x.SaveClientApplication(id, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_AdditionalInformation_ValidModel_ReturnsRedirectResult(
+            [Frozen] CatalogueItemId id,
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.AdditionalInformation(model)).As<RedirectToActionResult>();
+            var actual = (await controller.AdditionalInformation(id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
             actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
-            actual.RouteValues["id"].Should().Be(model.SolutionId);
+            actual.RouteValues["solutionId"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -249,8 +256,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("connectivity-and-resolution");
         }
 
-        [Test, AutoData]
-        public static async Task Get_ConnectivityAndResolution_ValidId_CallsGetSolutionOnService(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_ConnectivityAndResolution_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
@@ -261,8 +269,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test, AutoData]
-        public static async Task Get_ConnectivityAndResolution_NullSolutionFromService_ReturnsBadRequestResponse(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_ConnectivityAndResolution_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
@@ -276,8 +285,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test, AutoData]
-        public static async Task Get_ConnectivityAndResolution_ValidSolutionFromService_MapsToModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_ConnectivityAndResolution_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -292,8 +302,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, ConnectivityAndResolutionModel>(mockCatalogueItem));
         }
 
-        [Test, AutoData]
-        public static async Task Get_ConnectivityAndResolution_ValidId_ReturnsExpectedViewWithModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_ConnectivityAndResolution_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -326,99 +337,110 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_ConnectivityAndResolution_InvalidModel_ReturnsViewWithModel()
+        [CommonAutoData]
+        public static async Task Post_ConnectivityAndResolution_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockConnectivityAndResolutionModel = new Mock<ConnectivityAndResolutionModel>().Object;
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.ConnectivityAndResolution(mockConnectivityAndResolutionModel)).As<ViewResult>();
+            var actual = (await controller.ConnectivityAndResolution(id, mockConnectivityAndResolutionModel)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockConnectivityAndResolutionModel);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_ConnectivityAndResolution_ValidModel_GetsClientApplicationFromService(
+            [Frozen] CatalogueItemId id,
             ConnectivityAndResolutionModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.ConnectivityAndResolution(model);
+            await controller.ConnectivityAndResolution(id, model);
 
-            mockService.Verify(x => x.GetClientApplication(model.SolutionId));
+            mockService.Verify(x => x.GetClientApplication(id));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_ConnectivityAndResolution_NoClientApplicationFromService_ReturnsBadRequestResult(
+            [Frozen] CatalogueItemId id,
             ConnectivityAndResolutionModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.ConnectivityAndResolution(model)).As<BadRequestObjectResult>();
+            var actual = (await controller.ConnectivityAndResolution(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_ConnectivityAndResolution_ValidModel_MapsModelToClientApplication(
+            [Frozen] CatalogueItemId id,
             ConnectivityAndResolutionModel model)
         {
             var mockMapper = new Mock<IMapper>();
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 mockMapper.Object, mockService.Object);
 
-            await controller.ConnectivityAndResolution(model);
+            await controller.ConnectivityAndResolution(id, model);
 
             mockMapper.Verify(x => x.Map(model, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_ConnectivityAndResolution_ValidModel_CallSaveClientApplicationOnService(
+            [Frozen] CatalogueItemId id,
             ConnectivityAndResolutionModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.ConnectivityAndResolution(model);
+            await controller.ConnectivityAndResolution(id, model);
 
-            mockService.Verify(x => x.SaveClientApplication(model.SolutionId, mockClientApplication));
+            mockService.Verify(x => x.SaveClientApplication(id, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_ConnectivityAndResolution_ValidModel_ReturnsRedirectResult(
+            [Frozen] CatalogueItemId id,
             ConnectivityAndResolutionModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.ConnectivityAndResolution(model)).As<RedirectToActionResult>();
+            var actual = (await controller.ConnectivityAndResolution(id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
             actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
-            actual.RouteValues["id"].Should().Be(model.SolutionId);
+            actual.RouteValues["solutionId"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -433,8 +455,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("hardware-requirements");
         }
 
-        [Test, AutoData]
-        public static async Task Get_HardwareRequirements_ValidId_CallsGetSolutionOnService(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_HardwareRequirements_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
@@ -445,8 +468,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test, AutoData]
-        public static async Task Get_HardwareRequirements_NullSolutionFromService_ReturnsBadRequestResponse(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_HardwareRequirements_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
@@ -460,8 +484,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test, AutoData]
-        public static async Task Get_HardwareRequirements_ValidSolutionFromService_MapsToModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_HardwareRequirements_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -476,8 +501,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, HardwareRequirementsModel>(mockCatalogueItem));
         }
 
-        [Test, AutoData]
-        public static async Task Get_HardwareRequirements_ValidId_ReturnsExpectedViewWithModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_HardwareRequirements_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -510,98 +536,109 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_HardwareRequirements_InvalidModel_ReturnsViewWithModel()
+        [CommonAutoData]
+        public static async Task Post_HardwareRequirements_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockHardwareRequirementsModel = new Mock<HardwareRequirementsModel>().Object;
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.HardwareRequirements(mockHardwareRequirementsModel)).As<ViewResult>();
+            var actual = (await controller.HardwareRequirements(id, mockHardwareRequirementsModel)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockHardwareRequirementsModel);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_HardwareRequirements_ValidModel_GetsClientApplicationFromService(
+            [Frozen] CatalogueItemId id,
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.HardwareRequirements(model);
+            await controller.HardwareRequirements(id, model);
 
-            mockService.Verify(x => x.GetClientApplication(model.SolutionId));
+            mockService.Verify(x => x.GetClientApplication(id));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_HardwareRequirements_NoClientApplicationFromService_ReturnsBadRequestResult(
+            [Frozen] CatalogueItemId id,
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.HardwareRequirements(model)).As<BadRequestObjectResult>();
+            var actual = (await controller.HardwareRequirements(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_HardwareRequirements_ValidModel_MapsModelToClientApplication(
+            [Frozen] CatalogueItemId id,
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.HardwareRequirements(model);
+            await controller.HardwareRequirements(id, model);
 
             mockClientApplication.VerifySet(x => x.HardwareRequirements = model.Description);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_HardwareRequirements_ValidModel_CallSaveClientApplicationOnService(
+            [Frozen] CatalogueItemId id,
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.HardwareRequirements(model);
+            await controller.HardwareRequirements(id, model);
 
-            mockService.Verify(x => x.SaveClientApplication(model.SolutionId, mockClientApplication));
+            mockService.Verify(x => x.SaveClientApplication(id, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_HardwareRequirements_ValidModel_ReturnsRedirectResult(
+            [Frozen] CatalogueItemId id,
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.HardwareRequirements(model)).As<RedirectToActionResult>();
+            var actual = (await controller.HardwareRequirements(id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
             actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
-            actual.RouteValues["id"].Should().Be(model.SolutionId);
+            actual.RouteValues["solutionId"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -616,8 +653,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("supported-browsers");
         }
 
-        [Test, AutoData]
-        public static async Task Get_SupportedBrowsers_ValidId_CallsGetSolutionOnService(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_SupportedBrowsers_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
@@ -628,8 +666,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test, AutoData]
-        public static async Task Get_SupportedBrowsers_NullSolutionFromService_ReturnsBadRequestResponse(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_SupportedBrowsers_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
@@ -643,8 +682,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test, AutoData]
-        public static async Task Get_SupportedBrowsers_ValidSolutionFromService_MapsToModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_SupportedBrowsers_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -659,8 +699,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, SupportedBrowsersModel>(mockCatalogueItem));
         }
 
-        [Test, AutoData]
-        public static async Task Get_SupportedBrowsers_ValidId_ReturnsExpectedViewWithModel(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_SupportedBrowsers_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
@@ -693,99 +734,110 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_SupportedBrowsers_InvalidModel_ReturnsViewWithModel()
+        [CommonAutoData]
+        public static async Task Post_SupportedBrowsers_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockSupportedBrowsersModel = new Mock<SupportedBrowsersModel>().Object;
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.SupportedBrowsers(mockSupportedBrowsersModel)).As<ViewResult>();
+            var actual = (await controller.SupportedBrowsers(id, mockSupportedBrowsersModel)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockSupportedBrowsersModel);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_SupportedBrowsers_ValidModel_GetsClientApplicationFromService(
+            [Frozen] CatalogueItemId id,
             SupportedBrowsersModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.SupportedBrowsers(model);
+            await controller.SupportedBrowsers(id, model);
 
-            mockService.Verify(x => x.GetClientApplication(model.SolutionId));
+            mockService.Verify(x => x.GetClientApplication(id));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_SupportedBrowsers_NoClientApplicationFromService_ReturnsBadRequestResult(
+            [Frozen] CatalogueItemId id,
             SupportedBrowsersModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.SupportedBrowsers(model)).As<BadRequestObjectResult>();
+            var actual = (await controller.SupportedBrowsers(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_SupportedBrowsers_ValidModel_MapsModelToClientApplication(
+            [Frozen] CatalogueItemId id,
             SupportedBrowsersModel model)
         {
             var mockMapper = new Mock<IMapper>();
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 mockMapper.Object, mockService.Object);
 
-            await controller.SupportedBrowsers(model);
+            await controller.SupportedBrowsers(id, model);
 
             mockMapper.Verify(x => x.Map(model, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_SupportedBrowsers_ValidModel_CallSaveClientApplicationOnService(
+            [Frozen] CatalogueItemId id,
             SupportedBrowsersModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.SupportedBrowsers(model);
+            await controller.SupportedBrowsers(id, model);
 
-            mockService.Verify(x => x.SaveClientApplication(model.SolutionId, mockClientApplication));
+            mockService.Verify(x => x.SaveClientApplication(id, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_SupportedBrowsers_ValidModel_ReturnsRedirectResult(
+            [Frozen] CatalogueItemId id,
             SupportedBrowsersModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.SupportedBrowsers(model)).As<RedirectToActionResult>();
+            var actual = (await controller.SupportedBrowsers(id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
             actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
-            actual.RouteValues["id"].Should().Be(model.SolutionId);
+            actual.RouteValues["solutionId"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -800,8 +852,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("mobile-first-approach");
         }
 
-        [Test, AutoData]
-        public static async Task Get_MobileFirstApproach_ValidId_GetsSolutionFromService(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_MobileFirstApproach_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
@@ -812,8 +865,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test, AutoData]
-        public static async Task Get_MobileFirstApproach_ServiceReturnsNull_ReturnsBadRequestResult(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_MobileFirstApproach_ServiceReturnsNull_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
@@ -827,9 +881,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Get_MobileFirstApproach_ServiceResponseValid_MapsToModel(
-            string id)
+            CatalogueItemId id)
         {
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
@@ -844,9 +899,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, MobileFirstApproachModel>(mockCatalogueItem));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Get_MobileFirstApproach_ServiceResponseValid_ReturnsExpectedView(
-            string id)
+            CatalogueItemId id)
         {
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockMobileFirstApproachModel = new Mock<MobileFirstApproachModel>().Object;
@@ -878,102 +934,114 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_MobileFirstApproach_InvalidModel_ReturnsViewWithModel()
+        [CommonAutoData]
+        public static async Task Post_MobileFirstApproach_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockMobileFirstApproachModel = new Mock<MobileFirstApproachModel>().Object;
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.MobileFirstApproach(mockMobileFirstApproachModel)).As<ViewResult>();
+            var actual = (await controller.MobileFirstApproach(id, mockMobileFirstApproachModel)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockMobileFirstApproachModel);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_MobileFirstApproach_ValidModel_GetsClientApplicationFromService(
+            [Frozen] CatalogueItemId id,
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.MobileFirstApproach(model);
+            await controller.MobileFirstApproach(id, model);
 
-            mockService.Verify(x => x.GetClientApplication(model.SolutionId));
+            mockService.Verify(x => x.GetClientApplication(id));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_MobileFirstApproach_NoClientApplicationFromService_ReturnsBadRequestResult(
+            [Frozen] CatalogueItemId id,
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.MobileFirstApproach(model)).As<BadRequestObjectResult>();
+            var actual = (await controller.MobileFirstApproach(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_MobileFirstApproach_ValidModel_MapsModelToClientApplication(
-            MobileFirstApproachModel model, bool? mobileFirstApproach)
+            [Frozen] CatalogueItemId id,
+            MobileFirstApproachModel model,
+            bool? mobileFirstApproach)
         {
             var mockMapper = new Mock<IMapper>();
             mockMapper.Setup(x => x.Map<string, bool?>(model.MobileFirstApproach))
                 .Returns(mobileFirstApproach);
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 mockMapper.Object, mockService.Object);
 
-            await controller.MobileFirstApproach(model);
+            await controller.MobileFirstApproach(id, model);
 
             mockMapper.Verify(x => x.Map<string, bool?>(model.MobileFirstApproach));
             mockClientApplication.VerifySet(x => x.MobileFirstDesign = mobileFirstApproach);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_MobileFirstApproach_ValidModel_CallSaveClientApplicationOnService(
+            [Frozen] CatalogueItemId id,
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.MobileFirstApproach(model);
+            await controller.MobileFirstApproach(id, model);
 
-            mockService.Verify(x => x.SaveClientApplication(model.SolutionId, mockClientApplication));
+            mockService.Verify(x => x.SaveClientApplication(id, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_MobileFirstApproach_ValidModel_ReturnsRedirectResult(
+            [Frozen] CatalogueItemId id,
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.MobileFirstApproach(model)).As<RedirectToActionResult>();
+            var actual = (await controller.MobileFirstApproach(id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
             actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
-            actual.RouteValues["id"].Should().Be(model.SolutionId);
+            actual.RouteValues["solutionId"].Should().Be(model.SolutionId);
         }
 
         [Test]
@@ -988,8 +1056,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be("plug-ins-or-extensions");
         }
 
-        [Test, AutoData]
-        public static async Task Get_PlugInsOrExtensions_ValidId_GetsSolutionFromService(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_PlugInsOrExtensions_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
@@ -1000,8 +1069,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test, AutoData]
-        public static async Task Get_PlugInsOrExtensions_ServiceReturnsNull_ReturnsBadRequestResult(string id)
+        [Test]
+        [CommonAutoData]
+        public static async Task Get_PlugInsOrExtensions_ServiceReturnsNull_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
@@ -1015,9 +1085,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Get_PlugInsOrExtensions_ServiceResponseValid_MapsToModel(
-            string id)
+            CatalogueItemId id)
         {
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
@@ -1032,9 +1103,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, PlugInsOrExtensionsModel>(mockCatalogueItem));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Get_PlugInsOrExtensions_ServiceResponseValid_ReturnsExpectedView(
-            string id)
+            CatalogueItemId id)
         {
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockPlugInsOrExtensionsModel = new Mock<PlugInsOrExtensionsModel>().Object;
@@ -1066,51 +1138,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Test]
-        public static async Task Post_PlugInsOrExtensions_InvalidModel_ReturnsViewWithModel()
+        [CommonAutoData]
+        public static async Task Post_PlugInsOrExtensions_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockPlugInsOrExtensionsModel = new Mock<PlugInsOrExtensionsModel>().Object;
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
-            var actual = (await controller.PlugInsOrExtensions(mockPlugInsOrExtensionsModel)).As<ViewResult>();
+            var actual = (await controller.PlugInsOrExtensions(id, mockPlugInsOrExtensionsModel)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockPlugInsOrExtensionsModel);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_PlugInsOrExtensions_ValidModel_GetsClientApplicationFromService(
+            [Frozen] CatalogueItemId id,
             PlugInsOrExtensionsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.PlugInsOrExtensions(model);
+            await controller.PlugInsOrExtensions(id, model);
 
-            mockService.Verify(x => x.GetClientApplication(model.SolutionId));
+            mockService.Verify(x => x.GetClientApplication(id));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_PlugInsOrExtensions_NoClientApplicationFromService_ReturnsBadRequestResult(
+            [Frozen] CatalogueItemId id,
             PlugInsOrExtensionsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.PlugInsOrExtensions(model)).As<BadRequestObjectResult>();
+            var actual = (await controller.PlugInsOrExtensions(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Client Application found for Solution Id: {model.SolutionId}");
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_PlugInsOrExtensions_ValidModel_MapsModelToClientApplication(
+            [Frozen] CatalogueItemId id,
             PlugInsOrExtensionsModel model)
         {
             var mockMapper = new Mock<IMapper>();
@@ -1119,50 +1198,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockPlugins);
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>();
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 mockMapper.Object, mockService.Object);
 
-            await controller.PlugInsOrExtensions(model);
+            await controller.PlugInsOrExtensions(id, model);
 
             mockMapper.Verify(x => x.Map<PlugInsOrExtensionsModel, Plugins>(model));
             mockClientApplication.VerifySet(x => x.Plugins = mockPlugins);
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_PlugInsOrExtensions_ValidModel_CallSaveClientApplicationOnService(
+            [Frozen] CatalogueItemId id,
             PlugInsOrExtensionsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            await controller.PlugInsOrExtensions(model);
+            await controller.PlugInsOrExtensions(id, model);
 
-            mockService.Verify(x => x.SaveClientApplication(model.SolutionId, mockClientApplication));
+            mockService.Verify(x => x.SaveClientApplication(id, mockClientApplication));
         }
 
-        [Test, AutoData]
+        [Test]
+        [CommonAutoData]
         public static async Task Post_PlugInsOrExtensions_ValidModel_ReturnsRedirectResult(
+            [Frozen] CatalogueItemId id,
             PlugInsOrExtensionsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
             var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(x => x.GetClientApplication(model.SolutionId))
+            mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
             var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
-            var actual = (await controller.PlugInsOrExtensions(model)).As<RedirectToActionResult>();
+            var actual = (await controller.PlugInsOrExtensions(id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(ClientApplicationTypeController.BrowserBased));
             actual.ControllerName.Should().Be(typeof(ClientApplicationTypeController).ControllerName());
-            actual.RouteValues["id"].Should().Be(model.SolutionId);
-        }       
+            actual.RouteValues["solutionId"].Should().Be(model.SolutionId);
+        }
     }
 }

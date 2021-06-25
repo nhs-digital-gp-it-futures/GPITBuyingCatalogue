@@ -1,12 +1,11 @@
 ﻿using System;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public class AssociatedService
+    public sealed class AssociatedService
     {
-        public string AssociatedServiceId { get; set; }
+        public CatalogueItemId AssociatedServiceId { get; set; }
 
         public string Description { get; set; }
 
@@ -16,6 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Guid? LastUpdatedBy { get; set; }
 
-        public virtual CatalogueItem AssociatedServiceNavigation { get; set; }
+        public CatalogueItem AssociatedServiceNavigation { get; set; }
     }
 }

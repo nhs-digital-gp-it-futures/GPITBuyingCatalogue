@@ -68,29 +68,31 @@
                                  label-text="Code Example of the details with a Paragraph inside"
                                  size="Medium">
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-details label-text</span>
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-details label-text</span>
             <span class="vs-light-theme-blue">="This is a Details Dropdown With Some &lt;p&gt; text"</span>
             <span class="vs-light-theme-blue">&gt;</span>
 
             <span class="vs-light-theme-blue first-layer">&lt;p&gt; And it contains a Paragraph of Text &lt;/p&gt;</span><br />
 
-            <span class="vs-light-theme-blue">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-details</span>
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-details</span>
             <span class="vs-light-theme-blue">&gt;</span>
         </div>
     </nhs-fieldset-form-container>
 
     <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">label-text</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>label-text</nhs-table-cell>
+            <nhs-table-cell>
                 <p>Setting this attribute will set the text that is displayed on the details.</p>
                 <p>While not required, it will create very odd looking details that could be missed by a user</p>
                 <p>Like this example here: </p>
                 <nhs-details><p>Some Content</p></nhs-details>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Recommended" colour="Orange" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -141,29 +143,30 @@
                                  label-text="Code Example of the expander with a Paragraph inside"
                                  size="Medium">
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-expander label-text</span>
-            <span class="vs-light-theme-blue">="This is a Details Dropdown With Some &lt;p&gt; text"</span>
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-expander label-text</span><span class="vs-light-theme-blue">="This is a Details Dropdown With Some &lt;p&gt; text"</span>
             <span class="vs-light-theme-blue">&gt;</span>
 
             <span class="vs-light-theme-blue first-layer">&lt;p&gt; And it contains a Paragraph of Text &lt;/p&gt;</span><br />
 
-            <span class="vs-light-theme-blue">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-expander</span>
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-expander</span>
             <span class="vs-light-theme-blue">&gt;</span>
         </div>
     </nhs-fieldset-form-container>
 
     <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">label-text</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>label-text</nhs-table-cell>
+            <nhs-table-cell>
                 <p>Setting this attribute will set the text that is displayed on the expander.</p>
                 <p>While not required, it will create very odd looking expander that has broken css.</p>
                 <p>Like this example here: </p>
                 <nhs-expander><p>Some Content</p></nhs-expander>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>

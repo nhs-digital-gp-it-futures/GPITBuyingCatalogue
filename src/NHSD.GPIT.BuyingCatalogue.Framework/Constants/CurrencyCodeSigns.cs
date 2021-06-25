@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 {
     public static class CurrencyCodeSigns
     {
-        private static readonly Dictionary<string, string> SignCode = new Dictionary<string, string>
+        public static Dictionary<string, string> Code { get; } = new()
         {
             { "GBP", "£" },
             { "USD", "$" },
             { "EUR", "€" },
         };
-
-        public static Dictionary<string, string> Code
-        {
-            get { return SignCode; }
-        }
     }
 }

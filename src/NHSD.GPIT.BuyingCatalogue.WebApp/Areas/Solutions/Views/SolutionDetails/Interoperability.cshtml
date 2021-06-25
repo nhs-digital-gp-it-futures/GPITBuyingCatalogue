@@ -17,16 +17,9 @@
                         NHS assured integrations
                     </h2>
                     <p>
-                        @Model.TextDescriptionsProvided() Use the links to find out more about these integrations.
+                        @Model.TextDescriptionsProvided() You can find more information about <a href="https://digital.nhs.uk/services/gp-systems-of-choice/pairing-integration">IM1 integrations</a>
+                        and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
                     </p>
-                    @foreach (var integration in Model.Integrations)
-                    {
-                        <p>
-                            <b>@integration.Name:</b>
-                            <a href="@integration.Link">@integration.Link</a>
-                        </p>
-                    }
-
 
                     @for (var index = 0; index < Model.Integrations.Count; index++)
                     {
@@ -38,40 +31,30 @@
                         @for (var modelIndex = 0; modelIndex < integration.Tables.Length; modelIndex++)
                         {
                             var tableViewModel = integration.Tables[modelIndex];
-                            <table role="table" class="nhsuk-table-responsive">
-                                <caption class="nhsuk-table__caption">@integration.Name @tableViewModel.Name</caption>
-                                <thead role="rowgroup" class="nhsuk-table__head">
-                                <tr role="row">
-                                    @foreach (var heading in tableViewModel.Headings)
-                                    {
-                                        <th role="columnheader" class="" scope="col">
-                                            @heading
-                                        </th>
-                                    }
-                                </tr>
-                                </thead>
-                                <tbody class="nhsuk-table__body">
+
+                            <nhs-table label-text="@integration.Name @tableViewModel.Name">
+                                @foreach (var heading in tableViewModel.Headings)
+                                {
+                                    <nhs-table-column>@heading</nhs-table-column>
+                                }
 
                                 @foreach (var rowModel in tableViewModel.Rows)
                                 {
-                                    <tr role="row" class="nhsuk-table__row">
+                                    <nhs-table-row-container>
                                         @foreach (var cell in rowModel)
                                         {
-                                            <td role="cell" class="nhsuk-table__cell">
-                                                @cell
-                                            </td>
+                                            <nhs-table-cell>@cell</nhs-table-cell>
                                         }
-                                    </tr>
+                                    </nhs-table-row-container>
                                 }
-                                </tbody>
-                            </table>
+                            </nhs-table>
 
-                            <partial name="_BackToTop"/>
-                            
+                            <partial name="_BackToTop" />
+
                             @if (modelIndex != integration.Tables.Length - 1)
                             {
-                                <br/>
-                                <br/>
+                                <br />
+                                <br />
                             }
                         }
                         <hr style="border-width: 4px;">

@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 using NUnit.Framework;
@@ -25,13 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
+                CatalogueItemId = new CatalogueItemId(1, "123"),
                 Solution = new Solution { ClientApplication = json }
             };
 
             var model = new HardwareRequirementsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
+            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
             Assert.AreEqual("Some hardware requirements", model.Description);
         }
 

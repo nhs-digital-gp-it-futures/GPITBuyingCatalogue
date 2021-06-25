@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class Supplier
+    public sealed class Supplier
     {
         public Supplier()
         {
             CatalogueItems = new HashSet<CatalogueItem>();
+            Orders = new HashSet<Order>();
             SupplierContacts = new HashSet<SupplierContact>();
         }
 
@@ -35,8 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Guid LastUpdatedBy { get; set; }
 
-        public virtual ICollection<CatalogueItem> CatalogueItems { get; set; }
+        public ICollection<CatalogueItem> CatalogueItems { get; set; }
 
-        public virtual ICollection<SupplierContact> SupplierContacts { get; set; }
+        public ICollection<Order> Orders { get; set; }
+
+        public ICollection<SupplierContact> SupplierContacts { get; set; }
     }
 }
