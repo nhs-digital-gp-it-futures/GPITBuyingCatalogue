@@ -30,8 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         [Test]
         public static void Constructor_AllServicesPresent_Success()
         {
-            new AccountController(
-                Mock.Of<ILogWrapper<AccountController>>(),
+            new AccountController(                
                 CreateDefaultMockSignInManager(),
                 CreateDefaultMockUserManager(),
                 Mock.Of<IPasswordService>(),
@@ -41,23 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(null,
-                CreateDefaultMockSignInManager(),
-                CreateDefaultMockUserManager(),
-                Mock.Of<IPasswordService>(),
-                Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings()
-                ));
-        }
-
-        [Test]
         public static void Constructor_NullSignInManager_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(Mock.Of<ILogWrapper<AccountController>>(),
+                _ = new AccountController(
                 null,
                 CreateDefaultMockUserManager(),
                 Mock.Of<IPasswordService>(),
@@ -70,8 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         public static void Constructor_NullUserManager_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                    Mock.Of<ILogWrapper<AccountController>>(),
+                _ = new AccountController(                    
                     CreateDefaultMockSignInManager(),
                     null,
                     Mock.Of<IPasswordService>(),
@@ -84,8 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         public static void Constructor_NullPasswordService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                    Mock.Of<ILogWrapper<AccountController>>(),
+                _ = new AccountController(                    
                     CreateDefaultMockSignInManager(),
                     CreateDefaultMockUserManager(),
                     null,
@@ -98,8 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         public static void Constructor_NullPasswordResetCallback_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                    Mock.Of<ILogWrapper<AccountController>>(),
+                _ = new AccountController(                    
                     CreateDefaultMockSignInManager(),
                     CreateDefaultMockUserManager(),
                     Mock.Of<IPasswordService>(),
@@ -112,8 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         public static void Constructor_NullDisabledErrorSettings_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AccountController(
-                    Mock.Of<ILogWrapper<AccountController>>(),
+                _ = new AccountController(                    
                     CreateDefaultMockSignInManager(),
                     CreateDefaultMockUserManager(),
                     Mock.Of<IPasswordService>(),
@@ -244,8 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         private static AccountController CreateValidController()
         {
-            return new AccountController(
-                Mock.Of<ILogWrapper<AccountController>>(),
+            return new AccountController(                
                 CreateDefaultMockSignInManager(),
                 CreateDefaultMockUserManager(),
                 Mock.Of<IPasswordService>(),

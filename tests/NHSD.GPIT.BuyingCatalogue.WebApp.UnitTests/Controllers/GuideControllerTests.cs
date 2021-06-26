@@ -12,16 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
     internal static class GuideControllerTests
     {
         [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new GuideController(null));
-        }
-
-        [Test]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new GuideController(Mock.Of<ILogWrapper<GuideController>>());
+            var controller = new GuideController();
 
             var result = controller.Index();
 

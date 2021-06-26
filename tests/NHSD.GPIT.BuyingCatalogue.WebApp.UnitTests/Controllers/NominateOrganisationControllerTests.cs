@@ -12,16 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
     internal static class NominateOrganisationControllerTests
     {
         [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new NominateOrganisationController(null));
-        }
-
-        [Test]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new NominateOrganisationController(Mock.Of<ILogWrapper<NominateOrganisationController>>());
+            var controller = new NominateOrganisationController();
 
             var result = controller.Index();
 

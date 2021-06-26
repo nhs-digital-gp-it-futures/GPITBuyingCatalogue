@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -21,9 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Authorize]
     [Area("Order")]
     [Route("order/organisation/{odsCode}/order/{callOffId}/associated-services")]
-    public class AssociatedServicesController : Controller
+    public sealed class AssociatedServicesController : Controller
     {
-        private readonly ILogWrapper<AssociatedServicesController> logger;
         private readonly IOrderService orderService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly ISessionService sessionService;
@@ -33,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IOrganisationsService organisationService;
 
         public AssociatedServicesController(
-            ILogWrapper<AssociatedServicesController> logger,
             IOrderService orderService,
             IAssociatedServicesService associatedServicesService,
             ISessionService sessionService,
@@ -42,7 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IOrderSessionService orderSessionService,
             IOrganisationsService organisationService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
@@ -54,9 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             sessionService.ClearSession();
 
             var order = await orderService.GetOrder(callOffId);
@@ -68,9 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/associated-service")]
         public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var order = await orderService.GetOrder(callOffId);
 
             var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
@@ -97,9 +87,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/associated-service")]
         public async Task<IActionResult> SelectAssociatedService(string odsCode, CallOffId callOffId, SelectAssociatedServiceModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             if (!ModelState.IsValid)
@@ -146,9 +133,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/associated-service/price")]
         public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
@@ -161,9 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/associated-service/price")]
         public async Task<IActionResult> SelectAssociatedServicePrice(string odsCode, CallOffId callOffId, SelectAssociatedServicePriceModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(SelectAssociatedServicePrice)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
@@ -187,9 +168,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> EditAssociatedService(string odsCode, CallOffId callOffId, CatalogueItemId id)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(EditAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var isNewSolution = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, id);
 
             var state = orderSessionService.GetOrderStateFromSession();
@@ -200,9 +178,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("{id}")]
         public async Task<IActionResult> EditAssociatedService(string odsCode, CallOffId callOffId, string id, EditAssociatedServiceModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(EditAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             if (!model.OrderItem.ServiceRecipients[0].Quantity.HasValue
@@ -253,9 +228,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("delete/{id}/confirmation/{serviceName}")]
         public async Task<IActionResult> DeleteAssociatedService(string odsCode, CallOffId callOffId, string id, string serviceName)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(AssociatedServicesController)}.{nameof(DeleteAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(serviceName)} {serviceName}");
-
             var order = await orderService.GetOrder(callOffId);
 
             return View(new DeleteAssociatedServiceModel(odsCode, callOffId, id, serviceName, order.Description));
@@ -264,9 +236,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("delete/{id}/confirmation/{serviceName}")]
         public async Task<IActionResult> DeleteAssociatedService(string odsCode, CallOffId callOffId, CatalogueItemId id, string serviceName, DeleteAssociatedServiceModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(AssociatedServicesController)}.{nameof(DeleteAssociatedService)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(id)} {id}, {nameof(serviceName)} {serviceName}");
-
             await orderItemService.DeleteOrderItem(callOffId, id);
 
             return RedirectToAction(

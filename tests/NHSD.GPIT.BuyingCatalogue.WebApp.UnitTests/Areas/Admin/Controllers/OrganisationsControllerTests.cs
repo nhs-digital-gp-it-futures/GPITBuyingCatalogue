@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -27,18 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(null, Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
-                Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>()));
-        }
-
-        [Test]
         public static void Constructor_NullOrganisationService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(Mock.Of<ILogWrapper<OrganisationsController>>(), null, Mock.Of<IOdsService>(),
+                _ = new OrganisationsController(null, Mock.Of<IOdsService>(),
                 Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>()));
         }
 
@@ -46,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void Constructor_NullOdsServiceService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(Mock.Of<ILogWrapper<OrganisationsController>>(), Mock.Of<IOrganisationsService>(), null,
+                _ = new OrganisationsController( Mock.Of<IOrganisationsService>(), null,
                 Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>()));
         }
 
@@ -54,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void Constructor_NullCreateBuyerServiceService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(Mock.Of<ILogWrapper<OrganisationsController>>(), Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
+                _ = new OrganisationsController(Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
                 null, Mock.Of<IUsersService>()));
         }
 
@@ -62,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void Constructor_NullUsersServiceService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController(Mock.Of<ILogWrapper<OrganisationsController>>(), Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
+                _ = new OrganisationsController(Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
                 Mock.Of<ICreateBuyerService>(), null));
         }
 
@@ -80,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.Setup(x => x.GetAllOrganisations())
                 .ReturnsAsync(organisations);
 
-            var controller = new OrganisationsController(Mock.Of<ILogWrapper<OrganisationsController>>(), mockOrganisationsService.Object, Mock.Of<IOdsService>(),
+            var controller = new OrganisationsController(mockOrganisationsService.Object, Mock.Of<IOdsService>(),
                 Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>());
 
             var result = await controller.Index();

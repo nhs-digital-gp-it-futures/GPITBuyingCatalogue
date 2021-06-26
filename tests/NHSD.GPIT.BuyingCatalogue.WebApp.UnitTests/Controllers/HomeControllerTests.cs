@@ -15,16 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
     internal static class HomeControllerTests
     {
         [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new HomeController(null));
-        }
-
-        [Test]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
+            var controller = new HomeController();
 
             var result = controller.Index();
 
@@ -35,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_Error500_ReturnsDefaultErrorView()
         {
-            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
+            var controller = new HomeController();
 
             var result = controller.Error(500);
 
@@ -46,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_ErrorNullStatus_ReturnsDefaultErrorView()
         {
-            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
+            var controller = new HomeController();
 
             var result = controller.Error(null);
 
@@ -57,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Test]
         public static void Get_Error404_ReturnsPageNotFound()
         {
-            var controller = new HomeController(Mock.Of<ILogWrapper<HomeController>>());
+            var controller = new HomeController();
 
             IFeatureCollection features = new FeatureCollection();
             features.Set<IStatusCodeReExecuteFeature>(new StatusCodeReExecuteFeature { OriginalPath = "BAD" });
