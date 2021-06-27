@@ -1,17 +1,12 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
     [Area("Solutions")]
     public class VaccinationsController : Controller
     {
-        private readonly ILogWrapper<VaccinationsController> logger;
-
-        public VaccinationsController(ILogWrapper<VaccinationsController> logger)
+        public VaccinationsController()
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [Route("Solutions/Vaccinations")]

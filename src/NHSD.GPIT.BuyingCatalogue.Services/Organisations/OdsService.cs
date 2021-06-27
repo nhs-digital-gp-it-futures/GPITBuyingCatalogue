@@ -6,7 +6,6 @@ using Flurl;
 using Flurl.Http;
 using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -17,14 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     {
         private const int DefaultCacheDuration = 60;
 
-        private readonly ILogWrapper<OdsService> logger;
         private readonly OdsSettings settings;
         private readonly IMemoryCache memoryCache;
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
-        public OdsService(ILogWrapper<OdsService> logger, OdsSettings settings, IMemoryCache memoryCache)
+        public OdsService(OdsSettings settings, IMemoryCache memoryCache)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
 

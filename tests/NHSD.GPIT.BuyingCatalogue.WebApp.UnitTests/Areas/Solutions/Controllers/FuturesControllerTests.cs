@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -23,19 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new FuturesController(null,
-                Mock.Of<ISolutionsService>(),
-                Mock.Of<IDocumentService>()));
-        }
-
-        [Fact]
         public static void Constructor_NullSolutionsService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
+                _ = new FuturesController(
                 null,
                 Mock.Of<IDocumentService>()));
         }
@@ -44,17 +34,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static void Constructor_NullDocumentService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
+                _ = new FuturesController(
                 Mock.Of<ISolutionsService>(),
                 null));
         }
 
         [Fact]
         public static void Get_Index_ReturnsDefaultView()
-        {
-            var mockLogger = new Mock<ILogWrapper<FuturesController>>();
-
-            var controller = new FuturesController(mockLogger.Object,
+        {            
+            var controller = new FuturesController(
                 Mock.Of<ISolutionsService>(), Mock.Of<IDocumentService>());
 
             var result = controller.Index() as ViewResult;
@@ -77,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(x => x.GetFuturesCapabilities()).ReturnsAsync(solutions);
 
-            var controller = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
+            var controller = new FuturesController(
                 mockSolutionsService.Object, Mock.Of<IDocumentService>());
 
             var result = await controller.CapabilitiesSelector() as ViewResult;
@@ -104,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(x => x.GetFuturesFoundationSolutions()).ReturnsAsync(solutions);
 
-            var controller = new FuturesController(Mock.Of<ILogWrapper<FuturesController>>(),
+            var controller = new FuturesController(
                 mockSolutionsService.Object, Mock.Of<IDocumentService>());
 
             var result = await controller.Foundation();

@@ -12,13 +12,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Area("Solutions")]
     public class FuturesController : Controller
     {
-        private readonly ILogWrapper<FuturesController> logger;
         private readonly ISolutionsService solutionsService;
         private readonly IDocumentService documentService;
 
-        public FuturesController(ILogWrapper<FuturesController> logger, ISolutionsService solutionsService, IDocumentService documentService)
+        public FuturesController(ISolutionsService solutionsService, IDocumentService documentService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.documentService = documentService ?? throw new ArgumentNullException(nameof(documentService));
         }
@@ -83,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("Solutions/Futures/SearchResults")]
         public async Task<IActionResult> SearchResults(string capabilities)
         {
-            string[] splitCapabilities = new string[0];
+            string[] splitCapabilities = Array.Empty<string>();
 
             if (!string.IsNullOrWhiteSpace(capabilities))
                 splitCapabilities = capabilities.Split('-', StringSplitOptions.RemoveEmptyEntries);

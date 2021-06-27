@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 

@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class SerilogMvcLoggingAttribute : ActionFilterAttribute
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 {
-    public override void OnActionExecuting(ActionExecutingContext context)
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class SerilogMvcLoggingAttribute : ActionFilterAttribute
     {
-        var diagnosticContext = context.HttpContext.RequestServices.GetService<IDiagnosticContext>();
-        diagnosticContext.Set("ActionName", context.ActionDescriptor.DisplayName);
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            var diagnosticContext = context.HttpContext.RequestServices.GetService<IDiagnosticContext>();
+            diagnosticContext.Set("ActionName", context.ActionDescriptor.DisplayName);
+        }
     }
 }

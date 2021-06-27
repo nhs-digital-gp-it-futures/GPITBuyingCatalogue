@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 

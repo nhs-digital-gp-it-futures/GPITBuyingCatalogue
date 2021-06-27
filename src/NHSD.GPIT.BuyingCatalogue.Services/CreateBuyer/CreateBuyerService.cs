@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -14,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
     public class CreateBuyerService : ICreateBuyerService
     {
-        private readonly ILogWrapper<CreateBuyerService> logger;
         private readonly IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
@@ -23,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
         private readonly IAspNetUserValidator aspNetUserValidator;
 
         public CreateBuyerService(
-            ILogWrapper<CreateBuyerService> logger,
             IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
@@ -31,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             RegistrationSettings settings,
             IAspNetUserValidator aspNetUserValidator)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));

@@ -5,7 +5,6 @@ using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using Xunit;
@@ -17,18 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
         [Fact]
-        public static void Constructor_NullLogger_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(
-                null,
-                Mock.Of<IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext>>()));
-        }
-
-        [Fact]
         public static void Constructor_NullRepository_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(
-                Mock.Of<ILogWrapper<UsersService>>(),
+            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(                
                 null));
         }
 
@@ -36,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static async Task GetUser_InvalidUserId_ThrowsException(string userId)
         {
-            var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
+            var service = new UsersService(
                 Mock.Of<IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext>>());
 
             var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.GetUser(userId));
@@ -51,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             mockUsersRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(new AspNetUser());
 
-            var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
+            var service = new UsersService(
                 mockUsersRepository.Object);
 
             await service.GetUser("123");
@@ -62,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Fact]
         public static async Task GetAllUsersForOrganisation_InvalidId_ThrowsException()
         {
-            var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
+            var service = new UsersService(
                 Mock.Of<IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext>>());
 
             var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.GetAllUsersForOrganisation(Guid.Empty));
@@ -83,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             mockUsersRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(users);
 
-            var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
+            var service = new UsersService(
                 mockUsersRepository.Object);
 
             await service.GetAllUsersForOrganisation(Guid.NewGuid());
@@ -95,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static async Task EnableOrDisableUser_InvalidUserId_ThrowsException(string userId)
         {
-            var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
+            var service = new UsersService(
                 Mock.Of<IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext>>());
 
             var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.EnableOrDisableUser(userId, true));
@@ -114,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             mockUsersRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(user);
 
-            var service = new UsersService(Mock.Of<ILogWrapper<UsersService>>(),
+            var service = new UsersService(
                 mockUsersRepository.Object);
 
             await service.EnableOrDisableUser("123", enabled);

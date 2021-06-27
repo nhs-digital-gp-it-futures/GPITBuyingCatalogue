@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             var orgsDisplayed = AdminPages.Dashboard.GetOrgsOnPage();
 
-            orgsDisplayed.Should().HaveCount(organisations.Count());
+            orgsDisplayed.Should().HaveCount(organisations.Count);
 
             orgsDisplayed.Should().BeEquivalentTo(organisations);
         }
