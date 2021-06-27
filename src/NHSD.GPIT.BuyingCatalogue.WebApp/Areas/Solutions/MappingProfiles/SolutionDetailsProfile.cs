@@ -77,12 +77,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
             CreateMap<CatalogueItem, SolutionSupplierDetailsModel>()
                 .ForMember(
-                    dest => dest.LastReviewed,
-                    opt => opt.MapFrom<IMemberValueResolver<object, object, string, string>, string>(
-                        x => "SolutionsLastReviewedDate"))
-                .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Summary))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
-                .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.SupplierUrl))
+                    dest => dest.Summary,
+                    opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Summary))
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
+                .ForMember(
+                    dest => dest.Url,
+                    opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.SupplierUrl))
                 .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Contacts, opt => opt.MapFrom(src => src.Solution.MarketingContacts))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();

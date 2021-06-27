@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
@@ -64,9 +65,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mapper = null;
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToInteroperabilityModel_ResultAsExpected(CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToInteroperabilityModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
+            
             var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(catalogueItem);
             
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);
@@ -96,11 +99,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
         
-        [Test, CommonAutoData]
+        [Test, AutoData]
         public void Map_CatalogueItemToInteroperabilityModel_SetsIntegrationModelsFromResolver(
-            CatalogueItem catalogueItem, 
             List<IntegrationModel> integrationModels)
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             integrationsResolver.Setup(
                     r => r.Resolve(
                         It.IsAny<CatalogueItem>(),

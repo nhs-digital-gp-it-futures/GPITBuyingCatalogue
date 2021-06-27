@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
@@ -17,18 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
     internal class NativeDesktopProfileTests
     {
         private IMapper mapper;
-
-        [Test]
-        public static void Mappings_Configuration_Valid()
-        {
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            });
-
-            mapperConfiguration.AssertConfigurationIsValid();
-        }
 
         [OneTimeSetUp]
         public void SetUp()
@@ -46,10 +36,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mapper = null;
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public static void Mappings_Configuration_Valid()
         {
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            });
+
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
+
+        [Test]
+        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected()
+        {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -63,10 +65,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToConnectivityModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToConnectivityModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -95,10 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -112,10 +114,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -167,10 +169,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -184,10 +186,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToThirdPartyModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToThirdPartyModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -202,8 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
-        [CommonAutoData]
+        [Test, CommonAutoData]
         public void Map_MemoryAndStorageModelToNativeDesktopMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
         {

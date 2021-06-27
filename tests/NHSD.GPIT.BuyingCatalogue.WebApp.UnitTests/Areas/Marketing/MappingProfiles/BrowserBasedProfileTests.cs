@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,26 +24,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
     {
         private IMapper mapper;
 
-        [Test]
-        public static void Mappings_Configuration_Valid()
-        {
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BrowserBasedProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            });
-
-            mapperConfiguration.AssertConfigurationIsValid();
-        }
-
         [OneTimeSetUp]
-        public void SetUp()
+        public void OneTimeSetUp()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(x =>
                     x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
                 .Returns(new Mock<IMemberValueResolver<object, object, string, bool?>>().Object);
-
+            
             mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BrowserBasedProfile>();
@@ -65,10 +54,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public static void Mappings_Configuration_Valid()
         {
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BrowserBasedProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            });
+
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
+
+        [Test]
+        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected()
+        {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -83,10 +84,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToAdditionalInformationModel_NoClientApplication_AdditionalInfoNotSet(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToAdditionalInformationModel_NoClientApplication_AdditionalInfoNotSet()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution.ClientApplication = null;
 
             var actual = mapper.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem);
@@ -94,10 +95,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.AdditionalInformation.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToConnectivityAndResolutionModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToConnectivityAndResolutionModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
+            
             var actual = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
 
             actual.BackLink.Should()
@@ -146,10 +148,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -164,10 +166,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToHardwareRequirementsModel_NoClientApplication_DescriptionNotSet(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToHardwareRequirementsModel_NoClientApplication_DescriptionNotSet()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution.ClientApplication = null;
 
             var actual = mapper.Map<CatalogueItem, HardwareRequirementsModel>(catalogueItem);
@@ -175,10 +177,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Description.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -192,11 +194,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasValue_MobileFirstApproachSet(
-            CatalogueItem catalogueItem, ClientApplication clientApplication)
+        [Test]
+        public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasValue_MobileFirstApproachSet()
         {
-            clientApplication.MobileFirstDesign = DateTime.Now.Ticks % 2 == 0;
+            var catalogueItem = Fakers.CatalogueItem.Generate();
+            var clientApplication = new ClientApplication{ MobileFirstDesign = DateTime.Now.Ticks % 2 == 0 };
             var expected = clientApplication.MobileFirstDesign.ToYesNo();
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
 
@@ -205,11 +207,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MobileFirstApproach.Should().Be(expected);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasNoValue_MobileFirstApproachNotSet(
-            CatalogueItem catalogueItem, ClientApplication clientApplication)
+        [Test]
+        public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasNoValue_MobileFirstApproachNotSet()
         {
-            clientApplication.MobileFirstDesign = null;
+            var catalogueItem = Fakers.CatalogueItem.Generate();
+            var clientApplication = new ClientApplication{ MobileFirstDesign = null };
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
 
             var actual = mapper.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem);
@@ -217,10 +219,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MobileFirstApproach.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToPlugInsOrExtensionsModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToPlugInsOrExtensionsModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -236,11 +238,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToPlugInsOrExtensionsModel_PluginsRequiredIsNull_PluginsRequiredAndAdditionalInfoNotSet(
-            CatalogueItem catalogueItem, ClientApplication clientApplication)
+        [Test]
+        public void Map_CatalogueItemToPlugInsOrExtensionsModel_PluginsRequiredIsNull_PluginsRequiredAndAdditionalInfoNotSet()
         {
-            clientApplication.Plugins.Required = null;
+            var catalogueItem = Fakers.CatalogueItem.Generate();
+            var clientApplication = new ClientApplication { Plugins = new Plugins() };
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
 
             var actual = mapper.Map<CatalogueItem, PlugInsOrExtensionsModel>(catalogueItem);
@@ -249,10 +251,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.PlugInsRequired.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToSupportedBrowsersModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToSupportedBrowsersModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -278,14 +280,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToSupportedBrowsersModel_NoClientApplication_DependentValuesNotSet(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToSupportedBrowsersModel_NoClientApplication_DependentValuesNotSet()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution.ClientApplication = null;
 
             var actual = mapper.Map<CatalogueItem, SupportedBrowsersModel>(catalogueItem);
-
+            
             actual.Browsers.ToList().ForEach(b => b.Checked.Should().BeFalse());
             actual.MobileResponsive.Should().BeNullOrEmpty();
         }
@@ -308,8 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
         }
 
-        [Test]
-        [CommonAutoData]
+        [Test, CommonAutoData]
         public void Map_PlugInsOrExtensionsModelToPlugins_ResultAsExpected(
             PlugInsOrExtensionsModel model)
         {
@@ -352,8 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
         }
 
-        [Test]
-        [CommonAutoData]
+        [Test, CommonAutoData]
         public void Map_SupportedBrowsersModelToClientApplication_SetsMobileResponsiveFromResolver(
             SupportedBrowsersModel model)
         {
@@ -372,7 +372,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 cfg.AddProfile<BrowserBasedProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper(serviceProvider.Object.GetService);
-
+            
             autoMapper.Map(model, clientApplication);
 
             mobileResponsiveResolver.Verify(x => x.Resolve(It.IsAny<object>(), It.IsAny<object>(),

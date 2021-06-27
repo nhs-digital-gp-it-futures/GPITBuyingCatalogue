@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -47,10 +48,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -70,10 +71,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToBrowserBasedModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToBrowserBasedModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -87,10 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToNativeDesktopModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToNativeDesktopModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -104,10 +105,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToNativeMobileModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToNativeMobileModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 

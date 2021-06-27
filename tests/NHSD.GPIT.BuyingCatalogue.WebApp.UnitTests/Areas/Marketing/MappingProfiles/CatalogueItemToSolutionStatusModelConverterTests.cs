@@ -4,7 +4,7 @@ using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
@@ -27,10 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             new object[]{true, "COMPLETE"},
         };
 
-        [Test, CommonAutoData]
-        public static void Convert_CatalogueItemToSolutionStatusModel_SetsSimpleMappings(
-            CatalogueItem catalogueItem)
+        [Test]
+        public static void Convert_CatalogueItemToSolutionStatusModel_SetsSimpleMappings()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
+
             var converter = new CatalogueItemToSolutionStatusModelConverter(GetMockMapper().Object);
 
             var actual = converter.Convert(catalogueItem, default, default);
@@ -85,10 +86,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BrowserBasedStatus.Should().Be(expected);
         }
 
-        [Test, CommonAutoData]
-        public static void Convert_CatalogueItemToSolutionStatusModel_ValidCatalogueItem_SetsClientApplication(
-            CatalogueItem catalogueItem)
+        [Test]
+        public static void Convert_CatalogueItemToSolutionStatusModel_ValidCatalogueItem_SetsClientApplication()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var converter = new CatalogueItemToSolutionStatusModelConverter(GetMockMapper().Object);
@@ -98,10 +99,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
         }
 
-        [Test, CommonAutoData]
-        public static void Convert_CatalogueItemToSolutionStatusModel_NoClientAppInSolution_ClientApplicationSetToNew(
-            CatalogueItem catalogueItem)
+        [Test]
+        public static void Convert_CatalogueItemToSolutionStatusModel_NoClientAppInSolution_ClientApplicationSetToNew()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution.ClientApplication = null;
             var converter = new CatalogueItemToSolutionStatusModelConverter(GetMockMapper().Object);
 
@@ -110,10 +111,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(new ClientApplication());
         }
 
-        [Test, CommonAutoData]
-        public static void Convert_CatalogueItemToSolutionStatusModel_NoSolutionInCatalogueItem_ClientApplicationSetToNew(
-            CatalogueItem catalogueItem)
+        [Test]
+        public static void Convert_CatalogueItemToSolutionStatusModel_NoSolutionInCatalogueItem_ClientApplicationSetToNew()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution = null;
             var converter = new CatalogueItemToSolutionStatusModelConverter(GetMockMapper().Object);
 

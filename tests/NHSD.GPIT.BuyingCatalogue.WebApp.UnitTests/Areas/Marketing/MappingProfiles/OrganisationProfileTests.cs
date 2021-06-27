@@ -1,11 +1,14 @@
 ﻿using System.Linq;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
@@ -19,14 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
     internal class OrganisationProfileTests
     {
         private IMapper mapper;
-
-        [Test]
-        public static void Mappings_Configuration_Valid()
-        {
-            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
-
-            mapperConfiguration.AssertConfigurationIsValid();
-        }
 
         [OneTimeSetUp]
         public void SetUp()
@@ -43,10 +38,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mapper = null;
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToAboutSupplierModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public static void Mappings_Configuration_Valid()
         {
+            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
+
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
+
+        [Test]
+        public void Map_CatalogueItemToAboutSupplierModel_ResultAsExpected()
+        {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -61,10 +64,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToContactDetailsModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToContactDetailsModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -79,10 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToFeaturesModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToFeaturesModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
             var features = new Fixture().CreateMany<string>(10).ToList();
@@ -107,10 +110,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToFeaturesModel_NoFeaturesString_ListingsNotSet(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToFeaturesModel_NoFeaturesString_ListingsNotSet()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution.ClientApplication = null;
             catalogueItem.Solution.Features = string.Empty;
 
@@ -129,10 +132,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Listing10.Should().Be(string.Empty);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -146,10 +149,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToIntegrationsModel_ResultAsExpected(
-            CatalogueItem catalogueItem, ClientApplication clientApplication)
+        [Test, AutoData]
+        public void Map_CatalogueItemToIntegrationsModel_ResultAsExpected(ClientApplication clientApplication)
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
 
             var actual = mapper.Map<CatalogueItem, IntegrationsModel>(catalogueItem);
@@ -162,10 +165,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToRoadMapModel_ResultAsExpected(
-            CatalogueItem catalogueItem, ClientApplication clientApplication)
+        [Test, AutoData]
+        public void Map_CatalogueItemToRoadMapModel_ResultAsExpected(ClientApplication clientApplication)
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
 
             var actual = mapper.Map<CatalogueItem, RoadmapModel>(catalogueItem);
@@ -178,10 +181,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
-        public void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
+        [Test]
+        public void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected()
         {
+            var catalogueItem = Fakers.CatalogueItem.Generate();
             var clientApplication =
                 JsonConvert.DeserializeObject<ClientApplication>(catalogueItem.Solution.ClientApplication);
 
@@ -197,11 +200,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
-        [CommonAutoData]
+        [Test, CommonAutoData]
         public void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
-            ContactDetailsModel contactDetailsModel)
+            CatalogueItemId catalogueItemId,
+            MarketingContact contact1,
+            MarketingContact contact2)
         {
+            var contactDetailsModel = new ContactDetailsModel
+            {
+                Contact1 = contact1,
+                Contact2 = contact2,
+                SolutionId = catalogueItemId,
+            };
+            
             var actual = mapper.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel);
 
             actual.Contacts.Should()
@@ -209,8 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SolutionId.Should().Be(contactDetailsModel.SolutionId);
         }
 
-        [Test]
-        [CommonAutoData]
+        [Test, CommonAutoData]
         public void Map_FeaturesModelToStringArray_ResultAsExpected(FeaturesModel model)
         {
             var actual = mapper.Map<FeaturesModel, string[]>(model);

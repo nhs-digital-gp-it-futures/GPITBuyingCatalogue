@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Bogus.Extensions;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NUnit.Framework;
@@ -17,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
     [Parallelizable(ParallelScope.All)]
     internal class IntegrationModelResolverTests
     {
+        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
         private static IMapper mapper;
 
         [OneTimeSetUp]
@@ -44,13 +46,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mapper = null;
         }
 
-        [Test, CommonAutoData]
-        public void Map_IntegrationsToIntegrationModels_ResultAsExpected(CatalogueItem catalogueItem)
+        [Test]
+        public void Map_IntegrationsToIntegrationModels_ResultAsExpected()
         {
-            var integrations = JsonConvert.DeserializeObject<List<Integration>>(catalogueItem.Solution.Integrations);
-            integrations.Count.Should().BeGreaterThan(1);
+            var integrations = Fakers.Integration.GenerateBetween(4, 9);
 
-            var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(catalogueItem).Integrations;
+            var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(new CatalogueItem
+            {
+                Solution = new Solution{ Integrations = JsonConvert.SerializeObject(integrations),}
+            }).Integrations;
 
             actual.Count.Should().Be(integrations.Count);
             for (int outer = 0; outer < actual.Count; outer++)
@@ -77,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     {
                         integrationModel.Tables[inner]
                             .Headings.Should()
-                            .BeEquivalentTo("Provider or consumer", "System integrating with", "Description");
+                            .BeEquivalentTo("Provider or Consumer", "Integrates with system", "Description");
                         integrationModel.Tables[inner]
                             .Rows.Should()
                             .BeEquivalentTo(
@@ -87,29 +91,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             }
         }
 
-        [Test, CommonAutoData]
-        public void Map_IntegrationsToIntegrationModels_NoIntegrations_ReturnsEmptyList(CatalogueItem catalogueItem)
+        [Test]
+        public void Map_IntegrationsToIntegrationModels_NoIntegrations_ReturnsEmptyList()
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(new List<Integration>());
-
-            var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(catalogueItem);
+            var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(new CatalogueItem
+            {
+                Solution = new Solution{ Integrations = JsonConvert.SerializeObject(new List<Integration>()),}
+            });
 
             actual.Integrations.Should().BeEmpty();
         }
         
-        [Test, CommonAutoData]
-        public void Map_IntegrationsToIntegrationModels_InvalidIntegrations_ReturnsEmptyList(CatalogueItem catalogueItem)
+        [TestCaseSource(nameof(InvalidStrings))]
+        public void Map_IntegrationsToIntegrationModels_InvalidIntegrations_ReturnsEmptyList(string invalid)
         {
-            new List<string>{null, "", "    "}
-                .ForEach(
-                    invalid =>
-                    {
-                        catalogueItem.Solution.Integrations = invalid;
+            var catalogueItem = new CatalogueItem
+            {
+                Solution = new Solution { Integrations = invalid, }
+            };
 
-                        var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(catalogueItem);
+            var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(catalogueItem);
 
-                        actual.Integrations.Should().BeEmpty();
-                    });
+            actual.Integrations.Should().BeEmpty();
         }
 
         private static IEnumerable<string[]> GetRows(KeyValuePair<string,Dictionary<string,string>> keyValuePair)
