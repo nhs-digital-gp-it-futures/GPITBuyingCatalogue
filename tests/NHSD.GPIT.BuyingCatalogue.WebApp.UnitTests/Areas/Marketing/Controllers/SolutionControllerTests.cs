@@ -26,18 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
-                .ParamName.Should().Be("logger");
-        }
-
-        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), null,
+                _ = new SolutionController( null,
                     Mock.Of<ISolutionsService>()))
                 .ParamName.Should().Be("mapper");
         }
@@ -46,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(), null))
+                _ = new SolutionController( Mock.Of<IMapper>(), null))
                 .ParamName.Should().Be("solutionsService");
         }
 
@@ -55,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_Index_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController( Mock.Of<IMapper>(),
                 mockService.Object);
 
             await controller.Index(id);
@@ -70,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController( Mock.Of<IMapper>(),
                 mockService.Object);
 
             var actual = (await controller.Index(id)).As<BadRequestObjectResult>();
@@ -88,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockMapper.Object,
+            var controller = new SolutionController( mockMapper.Object,
                 mockService.Object);
 
             await controller.Index(id);
@@ -109,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, SolutionStatusModel>(mockCatalogueItem))
                 .Returns(mockSolutionStatusModel);
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), mockMapper.Object,
+            var controller = new SolutionController( mockMapper.Object,
                 mockService.Object);
 
             var actual = (await controller.Index(id)).As<ViewResult>();
@@ -123,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static void Get_Preview_RedirectsToPreview(CatalogueItemId id)
         {
-            var controller = new SolutionController(Mock.Of<ILogWrapper<SolutionController>>(), Mock.Of<IMapper>(),
+            var controller = new SolutionController( Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
 
             var result = controller.Preview(id).As<RedirectToActionResult>();
