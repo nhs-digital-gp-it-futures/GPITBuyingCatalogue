@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.AssociatedServices(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionWithAllAssociatedServices(id));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AssociatedServices_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, AssociatedServicesModel>(mockCatalogueItem))
                 .Returns(mockAssociatedServicesModel);
