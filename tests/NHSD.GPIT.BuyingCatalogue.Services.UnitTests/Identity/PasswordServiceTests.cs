@@ -9,13 +9,11 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class PasswordServiceTests
+    public static class PasswordServiceTests
     {
         private static Mock<IUserStore<AspNetUser>> MockUserStore => new();
 
@@ -30,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         null,
         null);
 
-        [Test]
+        [Fact]
         public static void Constructor_IEmailService_PasswordResetSettings_UserManagerApplicationUser_NullEmailService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -40,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                     MockUserManager.Object));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_IEmailService_PasswordResetSettings_UserManagerApplicationUser_NullSettings_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -50,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                     MockUserManager.Object));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_IEmailService_PasswordResetSettings_UserManagerApplicationUser_NullUserManager_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -60,9 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                     null));
         }
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("\t")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("\t")]
         public static void GeneratePasswordResetTokenAsync_EmptyOrWhiteSpaceEmailAddress_ThrowsException(string emailAddress)
         {
             async Task GeneratePasswordResetTokenAsync()
@@ -78,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             Assert.ThrowsAsync<ArgumentException>(GeneratePasswordResetTokenAsync);
         }
 
-        [Test]
+        [Fact]
         public static async Task GeneratePasswordResetTokenAsync_UserNotFound_ReturnsNull()
         {
             var service = new PasswordService(
@@ -91,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             token.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public static async Task GeneratePasswordResetTokenAsync_UserFound_ReturnsExpectedToken()
         {
             const string emailAddress = "a@b.com";
@@ -118,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             token.User.Should().Be(expectedUser);
         }
 
-        [Test]
+        [Fact]
         public static void SendResetEmailAsync_NullUser_ThrowsException()
         {
             static async Task SendResetEmailAsync()
@@ -134,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
         }
 
-        [Test]
+        [Fact]
         public static void SendResetEmailAsync_NullCallback_ThrowsException()
         {
             static async Task SendResetEmailAsync()
@@ -150,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
         }
 
-        [Test]
+        [Fact]
         public static async Task SendResetEmailAsync_SendsEmail()
         {
             var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
@@ -167,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             mockEmailService.Verify(e => e.SendEmailAsync(It.IsNotNull<EmailMessage>()));
         }
 
-        [Test]
+        [Fact]
         public static async Task SendResetEmailAsync_UsesExpectedTemplate()
         {
             // ReSharper disable once StringLiteralTypo
@@ -191,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             mockEmailService.SentMessage.Subject.Should().Be(subject);
         }
 
-        [Test]
+        [Fact]
         public static async Task SendResetEmailAsync_UsesExpectedRecipient()
         {
             var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
@@ -221,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             recipient.DisplayName.Should().Be($"{user.FirstName} {user.LastName}");
         }
 
-        [Test]
+        [Fact]
         public static async Task SendResetEmailAsync_UsesExpectedCallback()
         {
             const string expectedCallback = "https://callback.nhs.uk/";
@@ -243,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             mockEmailService.SentMessage.TextBody!.FormatItems[0].Should().Be(expectedCallback);
         }
 
-        [Test]
+        [Fact]
         public static async Task ResetPasswordAsync_WithUser_ReturnsIdentityResult()
         {
             const string email = "a@b.c";
@@ -265,13 +264,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             result.Should().Be(expectedResult);
         }
 
-        [TestCase(null, "ValidToken")]
-        [TestCase("", "ValidToken")]
-        [TestCase("\t", "ValidToken")]
-        [TestCase("valid@email.address.test", null)]
-        [TestCase("valid@email.address.test", "")]
-        [TestCase("valid@email.address.test", "\t")]
-        [TestCase("invalid@email.address.test", "ValidToken")]
+        [Theory]
+        [InlineData(null, "ValidToken")]
+        [InlineData("", "ValidToken")]
+        [InlineData("\t", "ValidToken")]
+        [InlineData("valid@email.address.test", null)]
+        [InlineData("valid@email.address.test", "")]
+        [InlineData("valid@email.address.test", "\t")]
+        [InlineData("invalid@email.address.test", "ValidToken")]
         public static async Task IsValidPasswordResetToken_BadInput_ReturnsFalse(string emailAddress, string token)
         {
             var service = new PasswordService(
@@ -284,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             isValid.Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static async Task IsValidPasswordResetToken_InvokesVerifyUserTokenAsync()
         {
             const string emailAddress = "invalid@email.address.test";

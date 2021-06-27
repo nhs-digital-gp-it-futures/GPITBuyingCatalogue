@@ -9,25 +9,24 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class IntegrationModelResolverTests
+    public sealed class IntegrationModelResolverTests : IDisposable
+
     {
         private static IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public IntegrationModelResolverTests()
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<IntegrationProfile>();
-                cfg.AddProfile<SolutionDetailsProfile>();
-            }).CreateMapper(serviceProvider.Object.GetService);
+            mapper = new MapperConfiguration(
+                cfg =>
+                {
+                    cfg.AddProfile<IntegrationProfile>();
+                    cfg.AddProfile<SolutionDetailsProfile>();
+                }).CreateMapper(serviceProvider.Object.GetService);
             serviceProvider.Setup(
                     x =>
                         x.GetService(
@@ -37,14 +36,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             serviceProvider.Setup(x => x.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
                 .Returns(new Mock<IMemberValueResolver<object, object, string, string>>().Object);
         }
-        
-        [OneTimeTearDown]
-        public void CleanUp()
+
+        public void Dispose()
         {
             mapper = null;
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_IntegrationsToIntegrationModels_ResultAsExpected(CatalogueItem catalogueItem)
         {
             var integrations = JsonConvert.DeserializeObject<List<Integration>>(catalogueItem.Solution.Integrations);
@@ -57,9 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             {
                 var integrationModel = actual[outer];
                 var integration = integrations[outer];
-                
+
                 integrationModel.Name.Should().Be(integration.Name);
-                
+
                 for (int inner = 0; inner < integration.SubTypes.Length; inner++)
                 {
                     integrationModel.Tables[inner].Name.Should().Be(integration.SubTypes[inner].Name);
@@ -71,7 +70,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         integrationModel.Tables[inner]
                             .Rows.Should()
                             .BeEquivalentTo(
-                                integration.SubTypes[inner].DetailsDictionary.Select(d => new[] { d.Key, d.Value }));
+                                integration.SubTypes[inner]
+                                    .DetailsDictionary.Select(
+                                        d => new[]
+                                        {
+                                        d.Key, d.Value
+                                        }));
                     }
                     else
                     {
@@ -87,7 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             }
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_IntegrationsToIntegrationModels_NoIntegrations_ReturnsEmptyList(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(new List<Integration>());
@@ -96,11 +101,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             actual.Integrations.Should().BeEmpty();
         }
-        
-        [Test, CommonAutoData]
+
+        [Theory]
+        [CommonAutoData]
         public void Map_IntegrationsToIntegrationModels_InvalidIntegrations_ReturnsEmptyList(CatalogueItem catalogueItem)
         {
-            new List<string>{null, "", "    "}
+            new List<string>
+            {
+                null, "", "    "
+            }
                 .ForEach(
                     invalid =>
                     {
@@ -112,13 +121,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     });
         }
 
-        private static IEnumerable<string[]> GetRows(KeyValuePair<string,Dictionary<string,string>> keyValuePair)
+        private static IEnumerable<string[]> GetRows(KeyValuePair<string, Dictionary<string, string>> keyValuePair)
         {
             var result = new List<string[]>();
 
             foreach (var (key, value) in keyValuePair.Value)
             {
-                result.Add(new []{keyValuePair.Key, key, value});
+                result.Add(
+                    new[]
+                    {
+                    keyValuePair.Key, key, value
+                    });
             }
 
             return result;

@@ -6,22 +6,20 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeMobile
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class OperatingSystemsModelTests
+    public static class OperatingSystemsModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new OperatingSystemsModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication
@@ -41,30 +39,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new OperatingSystemsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
 
             Assert.True(model.OperatingSystems.Single(s => s.OperatingSystemName == "Android").Checked);
             Assert.True(model.OperatingSystems.Single(s => s.OperatingSystemName == "Other").Checked);
             Assert.False(model.OperatingSystems.Single(s => s.OperatingSystemName == "Apple IOS").Checked);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new OperatingSystemsModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.Null(model.IsComplete);
             Assert.Null(model.Description);
             Assert.Null(model.OperatingSystems);
         }
 
-        [Test]
-        [TestCase(false, null, false)]
-        [TestCase(false, "", false)]
-        [TestCase(false, " ", false)]
-        [TestCase(false, "A description", false)]
-        [TestCase(true, null, true)]
+        [Theory]
+        [InlineData(false, null, false)]
+        [InlineData(false, "", false)]
+        [InlineData(false, " ", false)]
+        [InlineData(false, "A description", false)]
+        [InlineData(true, null, true)]
         public static void IsCompleteIsCorrectlySet(bool includeBrowser, string description, bool expected)
         {
             var operatingSystems = new HashSet<string>();
@@ -90,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new OperatingSystemsModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

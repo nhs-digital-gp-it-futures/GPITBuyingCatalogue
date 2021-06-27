@@ -3,24 +3,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ResetPasswordViewModelTests
+    public static class ResetPasswordViewModelTests
     {
         private const string Password = "Password";
         private const string ConfirmPassword = "Password";
         private const string WrongPassword = "Password123";
 
-        [Test]
-        [TestCase(null, null, ResetPasswordViewModel.ErrorMessages.PasswordRequired)]
-        [TestCase(null, ConfirmPassword, ResetPasswordViewModel.ErrorMessages.PasswordRequired, ResetPasswordViewModel.ErrorMessages.PasswordMismatch)]
-        [TestCase(Password, null, ResetPasswordViewModel.ErrorMessages.PasswordMismatch)]
-        [TestCase(Password, WrongPassword, ResetPasswordViewModel.ErrorMessages.PasswordMismatch)]
-        [TestCase(Password, ConfirmPassword)]
+        [Theory]
+        [InlineData(null, null, ResetPasswordViewModel.ErrorMessages.PasswordRequired)]
+        [InlineData(null, ConfirmPassword, ResetPasswordViewModel.ErrorMessages.PasswordRequired, ResetPasswordViewModel.ErrorMessages.PasswordMismatch)]
+        [InlineData(Password, null, ResetPasswordViewModel.ErrorMessages.PasswordMismatch)]
+        [InlineData(Password, WrongPassword, ResetPasswordViewModel.ErrorMessages.PasswordMismatch)]
+        [InlineData(Password, ConfirmPassword)]
         public static void InvalidModel_HasExpectedValidationErrors(string password, string confimPassword, params string[] expectedErrors)
         {
             var errors = new List<ValidationResult>();

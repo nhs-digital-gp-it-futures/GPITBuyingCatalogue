@@ -1,19 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.BrowserBased
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AdditionalInformationModelTests
+    public static class AdditionalInformationModelTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
-        [Test]
+        [Fact]
         public static void AdditionalInformation_StringLengthAttribute_ExpectedValue()
         {
             typeof(AdditionalInformationModel)
@@ -22,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
                 .MaximumLength.Should().Be(500);
         }
 
-        [Test]
+        [Theory]
         [AutoData]
         public static void IsComplete_AdditionalInformationHasValue_ReturnsTrue(string additionalInfo)
         {
@@ -31,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             model.IsComplete.Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsComplete_AdditionalInformationInvalid_ReturnsFalse(string invalid)
         {
             var model = new AdditionalInformationModel { AdditionalInformation = invalid };

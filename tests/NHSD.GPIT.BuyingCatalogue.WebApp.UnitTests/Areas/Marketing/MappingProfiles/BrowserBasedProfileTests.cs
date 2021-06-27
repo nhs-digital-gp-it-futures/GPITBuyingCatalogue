@@ -13,30 +13,15 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class BrowserBasedProfileTests
+    public sealed class BrowserBasedProfileTests : IDisposable
     {
         private IMapper mapper;
 
-        [Test]
-        public static void Mappings_Configuration_Valid()
-        {
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BrowserBasedProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            });
-
-            mapperConfiguration.AssertConfigurationIsValid();
-        }
-
-        [OneTimeSetUp]
-        public void SetUp()
+        public BrowserBasedProfileTests()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(x =>
@@ -50,13 +35,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }).CreateMapper(serviceProvider.Object.GetService);
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        [Fact]
+        public static void Mappings_Configuration_Valid()
         {
-            mapper = null;
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BrowserBasedProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            });
+
+            mapperConfiguration.AssertConfigurationIsValid();
         }
 
-        [TearDown]
+        // TODO: No tear down in xUnit
         public void TearDown()
         {
             foreach (var browser in ProfileDefaults.SupportedBrowsers)
@@ -65,7 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -83,7 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAdditionalInformationModel_NoClientApplication_AdditionalInfoNotSet(
             CatalogueItem catalogueItem)
         {
@@ -94,7 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.AdditionalInformation.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToConnectivityAndResolutionModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -146,7 +140,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -164,7 +159,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToHardwareRequirementsModel_NoClientApplication_DescriptionNotSet(
             CatalogueItem catalogueItem)
         {
@@ -175,7 +171,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Description.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -192,7 +189,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasValue_MobileFirstApproachSet(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -205,7 +203,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MobileFirstApproach.Should().Be(expected);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasNoValue_MobileFirstApproachNotSet(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -217,7 +216,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MobileFirstApproach.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToPlugInsOrExtensionsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -236,7 +236,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToPlugInsOrExtensionsModel_PluginsRequiredIsNull_PluginsRequiredAndAdditionalInfoNotSet(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -249,7 +250,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.PlugInsRequired.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToSupportedBrowsersModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -278,7 +280,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToSupportedBrowsersModel_NoClientApplication_DependentValuesNotSet(
             CatalogueItem catalogueItem)
         {
@@ -290,7 +293,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MobileResponsive.Should().BeNullOrEmpty();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_ConnectivityAndResolutionToClientApplication_ResultAsExpected(
             ConnectivityAndResolutionModel model,
             ClientApplication clientApplication)
@@ -308,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public void Map_PlugInsOrExtensionsModelToPlugins_ResultAsExpected(
             PlugInsOrExtensionsModel model)
@@ -334,7 +338,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Required.Should().Be(expected);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_SupportedBrowsersModelToClientApplication_ResultAsExpected(
             SupportedBrowsersModel model,
             ClientApplication clientApplication)
@@ -352,7 +357,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public void Map_SupportedBrowsersModelToClientApplication_SetsMobileResponsiveFromResolver(
             SupportedBrowsersModel model)
@@ -378,6 +383,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mobileResponsiveResolver.Verify(x => x.Resolve(It.IsAny<object>(), It.IsAny<object>(),
                 model.MobileResponsive, It.IsAny<bool?>(), It.IsAny<ResolutionContext>()));
             clientApplication.MobileResponsive.Should().Be(expected);
+        }
+
+        public void Dispose()
+        {
+            mapper = null;
         }
     }
 }

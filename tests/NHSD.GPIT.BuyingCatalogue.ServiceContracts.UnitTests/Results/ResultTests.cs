@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ResultTests
+    public static class ResultTests
     {
-        [Test]
+        [Fact]
         public static void SuccessResult_IsSuccessIsTrue()
         {
             var actual = Result.Success();
@@ -19,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.IsSuccess.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void SuccessResultT_IsSuccessIsTrue()
         {
             var actual = Result.Success("Test");
@@ -27,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.IsSuccess.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void SuccessResultT_ReturnsValue()
         {
             var actual = Result.Success("Test");
@@ -35,21 +33,21 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Value.Should().Be("Test");
         }
 
-        [Test]
+        [Fact]
         public static void FailureResult_EmptyErrors_IsSuccessIsFalse()
         {
             var actual = Result.Failure(Array.Empty<ErrorDetails>());
             actual.IsSuccess.Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void FailureResultT_EmptyErrors_IsSuccessIsFalse()
         {
             var actual = Result.Failure<string>(Array.Empty<ErrorDetails>());
             actual.IsSuccess.Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void FailureResult_NullErrorList_Errors_ReturnsEmptyList()
         {
             var actual = Result.Failure(null!);
@@ -57,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Errors.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public static void FailureResultT_NullErrorList_Errors_ReturnsEmptyList()
         {
             var actual = Result.Failure<string>(null!);
@@ -65,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Errors.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public static void FailureResult_OneError_Errors_ReturnsError()
         {
             var expectedErrors = new List<ErrorDetails> { new("Test") };
@@ -75,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
-        [Test]
+        [Fact]
         public static void FailureResultT_OneError_Errors_ReturnsError()
         {
             var expectedErrors = new List<ErrorDetails> { new("Test") };
@@ -85,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
-        [Test]
+        [Fact]
         public static void TwoDifferenceResults_AreNotEqual()
         {
             var success = Result.Success();
@@ -96,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void TwoDifferentResultsT_AreNotEqual()
         {
             var success = Result.Success("TestA");
@@ -107,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void ToResult_ConvertSuccessResultT_ReturnsSuccessResult()
         {
             var sut = Result.Success("Test");
@@ -117,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Should().Be(Result.Success());
         }
 
-        [Test]
+        [Fact]
         public static void ToResult_ConvertFailureResultT_ReturnsFailureResult()
         {
             List<ErrorDetails> expectedErrors = new List<ErrorDetails> { new("TestErrorId") };
@@ -128,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Results
             actual.Should().Be(Result.Failure(expectedErrors));
         }
 
-        [Test]
+        [Fact]
         public static void FailureResultT_ReturnsDefaultValue()
         {
             var actual = Result.Failure<int>(Array.Empty<ErrorDetails>());

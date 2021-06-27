@@ -10,21 +10,19 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class FuturesControllerTests
+    public static class FuturesControllerTests
     {
-        [Test]
+        [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(FuturesController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Solutions");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 Mock.Of<IDocumentService>()));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullSolutionsService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -42,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 Mock.Of<IDocumentService>()));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullDocumentService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -51,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 null));
         }
 
-        [Test]
+        [Fact]
         public static void Get_Index_ReturnsDefaultView()
         {
             var mockLogger = new Mock<ILogWrapper<FuturesController>>();
@@ -65,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.ViewName.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public static async Task Get_CapabilitiesSelector_ReturnsDefaultView()
         {
             var solutions = new List<Capability>
@@ -88,19 +86,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var model = result.Model as CapabilitiesModel;
             model.Should().NotBeNull();
 
-            Assert.AreEqual(2, model.LeftCapabilities.Length);
-            Assert.AreEqual(2, model.RightCapabilities.Length);
-            Assert.AreEqual("./", model.BackLink);
-            Assert.AreEqual("Go back to previous page", model.BackLinkText);
+            Assert.Equal(2, model.LeftCapabilities.Length);
+            Assert.Equal(2, model.RightCapabilities.Length);
+            Assert.Equal("./", model.BackLink);
+            Assert.Equal("Go back to previous page", model.BackLinkText);
         }
 
-        [Test]
+        [Fact]
         public static async Task Get_Foundation_ReturnsDefaultViewWithModelPopulated()
         {
             var solutions = new List<CatalogueItem>
             {
-                new CatalogueItem{ Name = "Item 1"},
-                new CatalogueItem{ Name = "Item 2"}
+                new() { Name = "Item 1"},
+                new() { Name = "Item 2"}
             };
 
             var mockSolutionsService = new Mock<ISolutionsService>();
@@ -111,9 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var result = await controller.Foundation();
 
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(SolutionsModel)));
-            Assert.AreEqual(2, ((SolutionsModel)((ViewResult)result).Model).CatalogueItems.Count);
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.IsAssignableFrom<SolutionsModel>(((ViewResult)result).Model);
+            Assert.Equal(2, ((SolutionsModel)((ViewResult)result).Model).CatalogueItems.Count);
         }
     }
 }

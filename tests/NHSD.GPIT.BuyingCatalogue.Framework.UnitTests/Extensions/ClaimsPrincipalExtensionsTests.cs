@@ -1,56 +1,55 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ClaimsPrincipalExtensionsTests
+    public static class ClaimsPrincipalExtensionsTests
     {
-        [Test]
+        [Fact]
         public static void GetPrimaryOrganisationName_GetsValue()
         {
             var user = CreatePrincipal("primaryOrganisationName", "HULL CCJ");
 
             var result = user.GetPrimaryOrganisationName();
 
-            Assert.AreEqual("HULL CCJ", result);
+            Assert.Equal("HULL CCJ", result);
         }
 
-        [Test]
+        [Fact]
         public static void GetPrimaryOdsCode_GetsValue()
         {
             var user = CreatePrincipal("primaryOrganisationOdsCode", "3CY");
 
             var result = user.GetPrimaryOdsCode();
 
-            Assert.AreEqual("3CY", result);
+            Assert.Equal("3CY", result);
         }
 
-        [Test]
+        [Fact]
         public static void GetSecondaryOdsCode_GetsValues()
         {
             var user = CreatePrincipal("secondaryOrganisationOdsCode", new[] { "3CY", "3BY", "ABC" });
 
             var result = user.GetSecondaryOdsCodes();
 
-            Assert.AreEqual(3, result.Length);
-            Assert.True(result.Any(x => x.EqualsIgnoreCase("3CY")));
-            Assert.True(result.Any(x => x.EqualsIgnoreCase("3BY")));
-            Assert.True(result.Any(x => x.EqualsIgnoreCase("ABC")));
+            Assert.Equal(3, result.Length);
+            Assert.Contains(result, s => s.EqualsIgnoreCase("3CY"));
+            Assert.Contains(result, s => s.EqualsIgnoreCase("3BY"));
+            Assert.Contains(result, s => s.EqualsIgnoreCase("ABC"));
         }
 
-        [Test]
+        [Fact]
         public static void GetUserDisplayName_GetsValue()
         {
             var user = CreatePrincipal("userDisplayName", "Bill Smith");
 
-            Assert.AreEqual("Bill Smith", user.GetUserDisplayName());
+            Assert.Equal("Bill Smith", user.GetUserDisplayName());
         }
 
-        [Test]
+        [Fact]
         public static void IsAdmin_True_WithClaim()
         {
             var user = CreatePrincipal("organisationFunction", "Authority");
@@ -59,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             Assert.False(user.IsBuyer());
         }
 
-        [Test]
+        [Fact]
         public static void IsAdmin_False_WithoutClaim()
         {
             var user = CreatePrincipal("UnrelatedClaim", "True");
@@ -67,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             Assert.False(user.IsAdmin());
         }
 
-        [Test]
+        [Fact]
         public static void IsBuyer_True_WithClaim()
         {
             var user = CreatePrincipal("organisationFunction", "Buyer");
@@ -76,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             Assert.True(user.IsBuyer());
         }
 
-        [Test]
+        [Fact]
         public static void IsBuyer_False_WithoutClaim()
         {
             var user = CreatePrincipal("UnrelatedClaim", "True");
@@ -86,14 +85,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
         private static ClaimsPrincipal CreatePrincipal(string claim, string value)
         {
-            return new ClaimsPrincipal(new ClaimsIdentity(new Claim[]{
-                new Claim(claim, value),
-            }, "mock"));
+            return new(new ClaimsIdentity(new Claim[] { new(claim, value) }, "mock"));
         }
 
-        private static ClaimsPrincipal CreatePrincipal(string claim, string[] values)
-        {            
-            return new ClaimsPrincipal(new ClaimsIdentity(values.Select(x => new Claim(claim, x)), "mock"));
+        private static ClaimsPrincipal CreatePrincipal(string claim, IEnumerable<string> values)
+        {
+            return new(new ClaimsIdentity(values.Select(s => new Claim(claim, s)), "mock"));
         }
     }
 }

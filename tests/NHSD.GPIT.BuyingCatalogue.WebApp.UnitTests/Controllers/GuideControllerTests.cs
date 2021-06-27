@@ -3,23 +3,28 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class GuideControllerTests
+    public static class GuideControllerTests
     {
-        [Test]
+        [Fact]
+        public static void Constructor_NullLogging_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new GuideController(null));
+        }
+
+        [Fact]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new GuideController();
+            var controller = new GuideController(Mock.Of<ILogWrapper<GuideController>>());
 
             var result = controller.Index();
 
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.IsNull(((ViewResult)result).ViewName);
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.Null(((ViewResult)result).ViewName);
         }
     }
 }

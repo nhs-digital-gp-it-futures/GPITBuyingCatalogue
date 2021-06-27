@@ -4,21 +4,19 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeDesktop
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ThirdPartyModelTests
+    public static class ThirdPartyModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new ThirdPartyModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication
@@ -34,30 +32,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new ThirdPartyModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
-            Assert.AreEqual("Third party components", model.ThirdPartyComponents);
-            Assert.AreEqual("Device capabilities", model.DeviceCapabilities);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
+            Assert.Equal("Third party components", model.ThirdPartyComponents);
+            Assert.Equal("Device capabilities", model.DeviceCapabilities);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new ThirdPartyModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.ThirdPartyComponents);
             Assert.Null(model.DeviceCapabilities);
         }
 
-        [Test]
-        [TestCase(null, null, false)]
-        [TestCase("", null, false)]
-        [TestCase(" ", null, false)]
-        [TestCase(null, "", false)]
-        [TestCase(null, " ", false)]
-        [TestCase("Third party", null, true)]
-        [TestCase(null, "Device capability", true)]
+        [Theory]
+        [InlineData(null, null, false)]
+        [InlineData("", null, false)]
+        [InlineData(" ", null, false)]
+        [InlineData(null, "", false)]
+        [InlineData(null, " ", false)]
+        [InlineData("Third party", null, true)]
+        [InlineData(null, "Device capability", true)]
         public static void IsCompleteIsCorrectlySet(string thirdParty, string deviceCapabilities, bool? expected)
         {
             var clientApplication = new ClientApplication
@@ -69,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new ThirdPartyModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

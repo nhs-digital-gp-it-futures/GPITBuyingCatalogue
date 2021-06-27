@@ -11,15 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services.Document;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class DocumentServiceTests
+    public static class DocumentServiceTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullLogger_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new DocumentService(
@@ -27,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
                 Mock.Of<IAzureBlobDocumentRepository>()));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullRepository_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new DocumentService(
@@ -35,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
                 null));
         }
 
-        [Test]
+        [Fact]
         public static async Task DownloadDocumentAsync_DocumentRepositoryException_IsLogged()
         {
             var expectedException = new DocumentRepositoryException(
@@ -58,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             mockLogger.Verify(expression);
         }
 
-        [Test]
+        [Fact]
         public static void DownloadDocumentAsync_Exception_DoesNotSwallow()
         {
             var exception = new InvalidOperationException();
@@ -72,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             Assert.ThrowsAsync<InvalidOperationException>(() => controller.DownloadDocumentAsync("directory"));
         }
 
-        [Test]
+        [Fact]
         public static async Task DownloadDocumentAsync_ReturnsFileStreamResult()
         {
             const string expectedContentType = "test/content-type";
@@ -96,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             result.ContentType.Should().Be(expectedContentType);
         }
 
-        [Test]
+        [Fact]
         public static async Task DownloadSolutionDocumentAsync_DocumentRepositoryException_IsLogged()
         {
             var expectedException = new DocumentRepositoryException(
@@ -121,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             mockLogger.Verify(expression);
         }
 
-        [Test]
+        [Fact]
         public static void DownloadSolutionDocumentAsync_Exception_DoesNotSwallow()
         {
             var exception = new InvalidOperationException();
@@ -136,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             Assert.ThrowsAsync<InvalidOperationException>(() => controller.DownloadSolutionDocumentAsync("ID", "directory"));
         }
 
-        [Test]
+        [Fact]
         public static async Task DownloadSolutionDocumentAsync_ReturnsFileStreamResult()
         {
             const string expectedContentType = "test/content-type";
@@ -161,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             result.ContentType.Should().Be(expectedContentType);
         }
 
-        [Test]
+        [Fact]
         public static void GetFileNamesAsync_ReturnsStorageResult()
         {
             var mockEnumerable = new Mock<IAsyncEnumerable<string>>();

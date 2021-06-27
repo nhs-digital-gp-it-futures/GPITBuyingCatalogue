@@ -2,17 +2,16 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
-using NUnit.Framework;
+using Xunit;
 
 // TODO - Getting a namespace vs type clash when using Solution
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.SolutionX
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionStatusModelTests
+    public static class SolutionStatusModelTests
     {
-        [TestCase("browser-based")]
-        [TestCase("BROWSER-based")]
+        [Theory]
+        [InlineData("browser-based")]
+        [InlineData("BROWSER-based")]
         public static void IsBrowserBased_ClientAppHasExpectedType_ReturnsTrue(string type)
         {
             var model = ModelFor(type);
@@ -22,8 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Solu
             actual.Should().BeTrue();
         }
 
-        [TestCase("native-DESKTOP")]
-        [TestCase("native-desktop")]
+        [Theory]
+        [InlineData("native-DESKTOP")]
+        [InlineData("native-desktop")]
         public static void IsNativeDesktop_ClientAppHasExpectedType_ReturnsTrue(string type)
         {
             var model = ModelFor(type);
@@ -33,8 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Solu
             actual.Should().BeTrue();
         }
 
-        [TestCase("native-mobile")]
-        [TestCase("native-MOBILE")]
+        [Theory]
+        [InlineData("native-mobile")]
+        [InlineData("native-MOBILE")]
         public static void IsNativeMobile_ClientAppHasExpectedType_ReturnsTrue(string type)
         {
             var model = ModelFor(type);
@@ -43,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Solu
 
             actual.Should().BeTrue();
         }
-        
-        [Test]
+
+        [Fact]
         public static void GetProperties_NoTypeInClientApp_ReturnFalse()
         {
             var model = ModelFor("some-type");
@@ -53,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Solu
             model.IsNativeDesktop.Should().BeFalse();
             model.IsNativeMobile.Should().BeFalse();
         }
-        
-        [Test]
+
+        [Fact]
         public static void GetProperties_ClientAppIsNull_ReturnFalse()
         {
             var model = new SolutionStatusModel();
