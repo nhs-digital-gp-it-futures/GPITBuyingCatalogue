@@ -1,18 +1,17 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class PasswordValidatorTests
+    public static class PasswordValidatorTests
     {
-        [TestCase("Pass123123")]
-        [TestCase("Pass$$$$$$")]
-        [TestCase("pass$$$123")]
-        [TestCase("PASS$$$123")]
+        [Theory]
+        [InlineData("Pass123123")]
+        [InlineData("Pass$$$$$$")]
+        [InlineData("pass$$$123")]
+        [InlineData("PASS$$$123")]
         public static void ValidateAsync_ValidPassword_ReturnsSuccessfulIdentityResult(string password)
         {
             var validator = new PasswordValidator();
@@ -21,14 +20,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         }
 
         // ReSharper disable once StringLiteralTypo
-        [TestCase("")]
-        [TestCase("Pass12312")]
-        [TestCase("pass123123")]
-        [TestCase("PASS123123")]
-        [TestCase("$$$$123123")]
-        [TestCase("pass$$$$$$")]
-        [TestCase("PASS$$$$$$")]
-        [TestCase("PASSonetwothree")]
+        [Theory]
+        [InlineData("")]
+        [InlineData("Pass12312")]
+        [InlineData("pass123123")]
+        [InlineData("PASS123123")]
+        [InlineData("$$$$123123")]
+        [InlineData("pass$$$$$$")]
+        [InlineData("PASS$$$$$$")]
+        [InlineData("PASSonetwothree")]
         public static void ValidateAsync_InvalidPassword_ReturnsFailureIdentityResult(string password)
         {
             var validator = new PasswordValidator();

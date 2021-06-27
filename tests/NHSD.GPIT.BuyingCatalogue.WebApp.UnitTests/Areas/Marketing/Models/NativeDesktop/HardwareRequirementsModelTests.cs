@@ -4,21 +4,19 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeDesktop
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class HardwareRequirementsModelTests
+    public static class HardwareRequirementsModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new HardwareRequirementsModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication { NativeDesktopHardwareRequirements = "Some hardware requirements" };
@@ -31,25 +29,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new HardwareRequirementsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
-            Assert.AreEqual("Some hardware requirements", model.Description);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
+            Assert.Equal("Some hardware requirements", model.Description);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new HardwareRequirementsModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.Description);
         }
 
-        [Test]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("Some hardware requirements", true)]
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData(" ", false)]
+        [InlineData("Some hardware requirements", true)]
         public static void IsCompleteIsCorrectlySet(string hardwareRequirements, bool? expected)
         {
             var clientApplication = new ClientApplication { NativeDesktopHardwareRequirements = hardwareRequirements };
@@ -58,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new HardwareRequirementsModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

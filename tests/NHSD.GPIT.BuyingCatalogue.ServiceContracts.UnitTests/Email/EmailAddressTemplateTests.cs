@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
 {
-    [TestFixture]
-    internal static class EmailAddressTemplateTests
+    public static class EmailAddressTemplateTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_String_InitializesAddress()
         {
             const string expectedAddress = "address@foo.test";
@@ -19,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             template.Address.Should().Be(expectedAddress);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_String_InitializesDisplayName()
         {
             const string expectedDisplayName = "Super Man";
@@ -29,16 +27,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             template.DisplayName.Should().Be(expectedDisplayName);
         }
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("\t")]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("\t")]
         public static void Address_Set_NullEmptyOrWhiteSpaceAddress_ThrowsArgumentException(string address)
         {
-            Assert.Throws<ArgumentException>(() => new EmailAddressTemplate { Address = address });
+            Assert.Throws<ArgumentException>(() => _ = new EmailAddressTemplate { Address = address });
         }
 
-        [Test]
+        [Fact]
         public static void AsEmailAddress_NullAddress_ReturnsNull()
         {
             var template = new EmailAddressTemplate();
@@ -48,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             address.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public static void AsEmailAddress_ReturnsExpectedAddress()
         {
             const string expectedAddress = "address@foo.test";

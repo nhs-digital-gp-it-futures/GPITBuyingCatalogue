@@ -1,25 +1,16 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ClientApplicationTests
+    public static class ClientApplicationTests
     {
-        private static readonly object[] ResultSets =
-        {
-            new object[]{"some-value", true},
-            new object[]{null, false},
-            new object[]{"", false},
-            new object[]{"     ", false},
-        };
-
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void AdditionalInformationComplete_DifferentInputs_ResultAsExpected(
             string input,
             bool expected)
@@ -32,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.AdditionalInformationComplete().Should().Be(expected);
         }
 
-        [Test]
+        [Fact]
         public static void BrowserBasedModelComplete_AllChecksTrue_ReturnsTrue()
         {
             var clientApplication = new Mock<ClientApplication> { CallBase = true };
@@ -48,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.Object.BrowserBasedModelComplete().Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void BrowserBasedModelComplete_SupportedBrowsersCompleteReturnsFalse_ReturnsFalse()
         {
             var clientApplication = new Mock<ClientApplication> { CallBase = true };
@@ -64,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void BrowserBasedModelComplete_ConnectivityAndResolutionCompleteReturnsFalse_ReturnsFalse()
         {
             var clientApplication = new Mock<ClientApplication> { CallBase = true };
@@ -80,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void BrowserBasedModelComplete_NativeMobileFirstApproachCompleteReturnsFalse_ReturnsFalse()
         {
             var clientApplication = new Mock<ClientApplication> { CallBase = true };
@@ -96,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void BrowserBasedModelComplete_PlugInsOrExtensionsCompleteReturnsFalse_ReturnsFalse()
         {
             var clientApplication = new Mock<ClientApplication> { CallBase = true };
@@ -112,7 +103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void ConnectivityAndResolutionComplete_DifferentInputs_ResultAsExpected(
             string input,
             bool expected)
@@ -125,7 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.ConnectivityAndResolutionComplete().Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void HardwareRequirementsComplete_DifferentInputs_ResultAsExpected(
             string input,
             bool expected)
@@ -138,7 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.HardwareRequirementsComplete().Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void NativeDesktopAdditionalInformationComplete_DifferentInputs_ResultAsExpected(
             string input,
             bool expected)
@@ -151,7 +145,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeDesktopAdditionalInformationComplete().Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void NativeDesktopConnectivityComplete_DifferentInputs_ResultAsExpected(
             string input,
             bool expected)
@@ -164,7 +159,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeDesktopConnectivityComplete().Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void NativeDesktopHardwareRequirementsComplete_DifferentInputs_ResultAsExpected(
             string input,
             bool expected)
@@ -177,8 +173,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeDesktopHardwareRequirementsComplete().Should().Be(expected);
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageNotNull_ReturnsIsValidFromIt(
             bool expected)
         {
@@ -194,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mockNativeDesktopMemoryAndStorage.Verify(x => x.IsValid());
         }
 
-        [Test]
+        [Fact]
         public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageIsNull_ReturnsNull()
         {
             var clientApplication = new ClientApplication
@@ -205,8 +202,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeDesktopMemoryAndStorageComplete().Should().BeNull();
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageNotNull_ReturnsIsValidFromIt(
             bool expected)
         {
@@ -222,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mockMobileMemoryAndStorage.Verify(x => x.IsValid());
         }
 
-        [Test]
+        [Fact]
         public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageIsNull_ReturnsNull()
         {
             var clientApplication = new ClientApplication
@@ -233,7 +231,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileMemoryAndStorageComplete().Should().BeNull();
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void NativeDesktopSupportedOperatingSystemsComplete_DifferentInputs_ResultAsExpected(
             string input,
             bool expected)
@@ -246,8 +245,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeDesktopSupportedOperatingSystemsComplete().Should().Be(expected);
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public static void NativeMobileFirstApproachComplete_MobileFirstDesignHasValue_ReturnsTrue(bool value)
         {
             var clientApplication = new ClientApplication
@@ -258,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileFirstApproachComplete().Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void NativeMobileFirstApproachComplete_MobileFirstDesignHasNoValue_ReturnsFalse()
         {
             var clientApplication = new ClientApplication
@@ -269,7 +269,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileFirstApproachComplete().Should().BeFalse();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void NativeMobileSupportedOperatingSystemsComplete_ValidMobileOperatingSystems_ReturnsTrue(
             ClientApplication clientApplication)
         {
@@ -278,7 +279,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeTrue();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void NativeMobileSupportedOperatingSystemsComplete_OperatingSystemsEmpty_ReturnsFalse(
             ClientApplication clientApplication)
         {
@@ -287,7 +289,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeFalse();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void NativeMobileSupportedOperatingSystemsComplete_OperatingSystemsNull_ReturnsNull(
             ClientApplication clientApplication)
         {
@@ -296,7 +299,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeNull();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void NativeMobileSupportedOperatingSystemsComplete_MobileOperatingSystemsNull_ReturnsNull(
             ClientApplication clientApplication)
         {
@@ -305,7 +309,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeNull();
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void NativeMobileAdditionalInformationComplete_ValidNativeMobileAdditionalInformation_ReturnsTrue(
             string input,
             bool expected)
@@ -318,7 +323,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileAdditionalInformationComplete().Should().Be(expected);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void NativeMobileHardwareRequirementsComplete_ValidNativeMobileHardwareRequirements_ReturnsTrue(
             string input,
             bool expected)
@@ -331,8 +337,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileHardwareRequirementsComplete().Should().Be(expected);
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public static void PlugInsComplete_PluginsRequiredHasValue_ReturnsTrue(bool value)
         {
             var clientApplication = new ClientApplication
@@ -346,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.PlugInsComplete().Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void PlugInsComplete_PluginsRequiredHasNoValue_ReturnsFalse()
         {
             var clientApplication = new ClientApplication
@@ -360,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.PlugInsComplete().Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void PlugInsComplete_PluginsIsNull_ReturnsNull()
         {
             var clientApplication = new ClientApplication
@@ -371,7 +378,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.PlugInsComplete().Should().BeNull();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void SupportedBrowsersComplete_ValidValues_ReturnsTrue(
             ClientApplication clientApplication)
         {
@@ -381,7 +389,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.SupportedBrowsersComplete().Should().BeTrue();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void SupportedBrowsersComplete_BrowsersSupportedIsEmpty_ReturnsFalse(
             ClientApplication clientApplication)
         {
@@ -391,7 +400,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.SupportedBrowsersComplete().Should().BeFalse();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void SupportedBrowsersComplete_BrowsersSupportedIsNull_ReturnsFalse(
             ClientApplication clientApplication)
         {
@@ -401,7 +411,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.SupportedBrowsersComplete().Should().BeFalse();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void SupportedBrowsersComplete_MobileResponsiveIsNull_ReturnsFalse(
             ClientApplication clientApplication)
         {
@@ -411,8 +422,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.SupportedBrowsersComplete().Should().BeFalse();
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
         public static void ThirdPartyComplete_MobileThirdPartyNotNull_ReturnsIsValid(bool expected)
         {
             var mockMobileThirdParty = new Mock<MobileThirdParty>();
@@ -426,7 +438,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.NativeMobileThirdPartyComplete().Should().Be(expected);
         }
 
-        [Test]
+        [Fact]
         public static void ThirdPartyComplete_MobileThirdPartyNull_ReturnsNull()
         {
             var clientApplication = new ClientApplication
@@ -435,6 +447,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             };
 
             clientApplication.NativeMobileThirdPartyComplete().Should().BeNull();
+        }
+
+        private static class ResultSetData
+        {
+            public static IEnumerable<object[]> TestData()
+            {
+                yield return new object[] { "some-value", true };
+                yield return new object[] { null, false };
+                yield return new object[] { "", false };
+                yield return new object[] { "     ", false };
+            }
         }
     }
 }

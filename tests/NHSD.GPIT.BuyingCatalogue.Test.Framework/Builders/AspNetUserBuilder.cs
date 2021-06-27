@@ -60,12 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
 
         public static AspNetUserBuilder Create() => new();
 
-        internal AspNetUserBuilder WithUserId(string id)
-        {
-            userId = id;
-            return this;
-        }
-
         public AspNetUserBuilder WithFirstName(string name)
         {
             firstName = name;
@@ -90,15 +84,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             return this;
         }
 
-        internal AspNetUserBuilder WithUsername(string name)
-        {
-            username = name;
-            return this;
-        }
-
         public AspNetUserBuilder WithPrimaryOrganisationId(Guid id)
         {
             primaryOrganisationId = id;
+            return this;
+        }
+
+        public AspNetUser Build() => CreateUserByOrganisationFunction();
+
+        internal AspNetUserBuilder WithUserId(string id)
+        {
+            userId = id;
+            return this;
+        }
+
+        internal AspNetUserBuilder WithUsername(string name)
+        {
+            username = name;
             return this;
         }
 
@@ -120,7 +122,49 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             return this;
         }
 
-        public AspNetUser Build() => CreateUserByOrganisationFunction();
+        private static AspNetUser CreateBuyer(
+            string userName,
+            string firstName,
+            string lastName,
+            string phoneNumber,
+            string email,
+            Guid primaryOrganisationId)
+        {
+            return new()
+            {
+                UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
+                FirstName = firstName,
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
+                Email = email,
+                NormalizedEmail = email.ToUpper(),
+                OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
+                PrimaryOrganisationId = primaryOrganisationId,
+            };
+        }
+
+        private static AspNetUser CreateAuthority(
+            string userName,
+            string firstName,
+            string lastName,
+            string phoneNumber,
+            string email,
+            Guid primaryOrganisationId)
+        {
+            return new()
+            {
+                UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
+                FirstName = firstName,
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
+                Email = email,
+                NormalizedEmail = email.ToUpper(),
+                OrganisationFunction = OrganisationFunction.Authority.DisplayName,
+                PrimaryOrganisationId = primaryOrganisationId,
+            };
+        }
 
         private AspNetUser CreateUserByOrganisationFunction()
         {
@@ -143,50 +187,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             }
 
             return user;
-        }
-
-        private static AspNetUser CreateBuyer(
-            string userName,
-            string firstName,
-            string lastName,
-            string phoneNumber,
-            string email,
-            Guid primaryOrganisationId)
-        {
-            return new AspNetUser
-            {
-                UserName = userName,
-                NormalizedUserName = userName.ToUpper(),
-                FirstName = firstName,
-                LastName = lastName,
-                PhoneNumber = phoneNumber,
-                Email = email,
-                NormalizedEmail = email.ToUpper(),
-                OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
-                PrimaryOrganisationId = primaryOrganisationId
-            };
-        }
-
-        private static AspNetUser CreateAuthority(
-            string userName,
-            string firstName,
-            string lastName,
-            string phoneNumber,
-            string email,
-            Guid primaryOrganisationId)
-        {
-            return new AspNetUser
-            {
-                UserName = userName,
-                NormalizedUserName = userName.ToUpper(),
-                FirstName = firstName,
-                LastName = lastName,
-                PhoneNumber = phoneNumber,
-                Email = email,
-                NormalizedEmail = email.ToUpper(),
-                OrganisationFunction = OrganisationFunction.Authority.DisplayName,
-                PrimaryOrganisationId = primaryOrganisationId
-            };
         }
     }
 }
