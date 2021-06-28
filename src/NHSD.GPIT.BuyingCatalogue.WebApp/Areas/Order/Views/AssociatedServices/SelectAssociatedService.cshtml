@@ -7,154 +7,21 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-
+            <nhs-validation-summary />
             <nhs-page-title title="@Model.Title" advice="These are the Associated Services provided by this supplier. Select the one you want to purchase from the list." />
-
             <form method="post">
-
-                <div id="selectAssociatedService" data-test-id="question-selectAssociatedService">
-
-                    <div data-test-id="radiobutton-options">
-
-                        <div class="nhsuk-form-group">
-
-                            <fieldset class="nhsuk-fieldset">
-                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Select Associated Service
-                                </legend>
-
-                                <div class="nhsuk-radios">
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-1" name="selectAssociatedService" type="radio" value="10000-S-009">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-1">
-                                            Anywhere Consult – Integrated Device
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-2" name="selectAssociatedService" type="radio" value="10000-S-004">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-2">
-                                            Automated Arrivals – Engineering Half Day
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-3" name="selectAssociatedService" type="radio" value="10000-S-006">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-3">
-                                            Automated Arrivals – Installation of wall mounted kiosk, excludes cabling
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-4" name="selectAssociatedService" type="radio" value="10000-S-007">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-4">
-                                            Automated Arrivals – Specialist Cabling
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-5" name="selectAssociatedService" type="radio" value="10000-S-008">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-5">
-                                            Automated Arrivals – Wall Mount Bracket
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-6" name="selectAssociatedService" type="radio" value="10000-S-069">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-6">
-                                            Doc Management – Migration
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-7" name="selectAssociatedService" type="radio" value="10000-S-036">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-7">
-                                            Engineering
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-8" name="selectAssociatedService" type="radio" value="10000-S-005">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-8">
-                                            Enterprise Search and Reports – Installation
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-9" name="selectAssociatedService" type="radio" value="10000-S-002">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-9">
-                                            Installation
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-10" name="selectAssociatedService" type="radio" value="10000-S-037">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-10">
-                                            Lloyd George digitisation
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-11" name="selectAssociatedService" type="radio" value="10000-S-038">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-11">
-                                            Lloyd George Digitisation (upload only)
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-12" name="selectAssociatedService" type="radio" value="10000-S-039">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-12">
-                                            Migration
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-13" name="selectAssociatedService" type="radio" value="10000-S-141">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-13">
-                                            Online and Video Consult – Implementation
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-14" name="selectAssociatedService" type="radio" value="10000-S-040">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-14">
-                                            Practice Reorganisation
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-15" name="selectAssociatedService" type="radio" value="10000-S-041">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-15">
-                                            Project Management
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-16" name="selectAssociatedService" type="radio" value="10000-S-003">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-16">
-                                            Training Day at Practice
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAssociatedService-17" name="selectAssociatedService" type="radio" value="10000-S-001">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAssociatedService-17">
-                                            Video Consult, Online and Video Consult – Additional Minute Package (3000 minutes)
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-
-                <div data-test-id="continue-button">
-
-                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                        Continue
-                    </button>
-                </div>
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Select Associated Service">
+                    <nhs-radio-buttons asp-for="SelectedSolutionId"
+                                       values="@Model.Solutions"
+                                       value-name="CatalogueItemId"
+                                       display-name="Name" />
+                </nhs-fieldset-form-label>
+                <nhs-submit-button text="Continue" />
             </form>
         </div>
     </div>

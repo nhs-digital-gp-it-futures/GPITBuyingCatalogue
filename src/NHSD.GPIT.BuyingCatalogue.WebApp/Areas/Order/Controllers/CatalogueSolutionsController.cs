@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -21,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Route("order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions")]
     public sealed class CatalogueSolutionsController : Controller
     {
-        private readonly ILogWrapper<CatalogueSolutionsController> logger;
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
         private readonly ISessionService sessionService;
@@ -32,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         // TODO: too many dependencies, i.e. too many responsibilities
         public CatalogueSolutionsController(
-            ILogWrapper<CatalogueSolutionsController> logger,
             IOrderService orderService,
             ISolutionsService solutionsService,
             ISessionService sessionService,
@@ -41,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IDefaultDeliveryDateService defaultDeliveryDateService,
             IOrderSessionService orderSessionService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
@@ -53,9 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(Index)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             sessionService.ClearSession();
 
             var order = await orderService.GetOrder(callOffId);
@@ -67,9 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution")]
         public async Task<IActionResult> SelectSolution(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var order = await orderService.GetOrder(callOffId);
 
             var state = new CreateOrderItemModel
@@ -90,9 +80,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/solution")]
         public async Task<IActionResult> SelectSolution(string odsCode, CallOffId callOffId, SelectSolutionModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             if (!ModelState.IsValid)
@@ -172,9 +159,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution/price/recipients")]
         public async Task<IActionResult> SelectSolutionServiceRecipients(string odsCode, CallOffId callOffId, string selectionMode)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             if (state.ServiceRecipients is null)
@@ -197,9 +181,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/solution/price/recipients")]
         public IActionResult SelectSolutionServiceRecipients(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipients)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             if (!model.ServiceRecipients.Any(sr => sr.Selected))
                 ModelState.AddModelError("ServiceRecipients[0].Selected", "Select a Service Recipient");
 
@@ -229,9 +210,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution/price/recipients/date")]
         public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
@@ -242,9 +220,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/solution/price/recipients/date")]
         public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsDateModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectSolutionServiceRecipientsDate)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             (DateTime? date, var error) = model.ToDateTime();
@@ -286,9 +261,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
@@ -297,9 +269,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/solution/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId, SelectFlatDeclarativeQuantityModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             (int? quantity, var error) = model.GetQuantity();
 
             if (error is not null)
@@ -323,9 +292,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatOnDemandQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.TimeUnit));
@@ -334,9 +300,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/solution/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId, SelectFlatOnDemandQuantityModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(SelectFlatDeclarativeQuantity)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             (int? quantity, var error) = model.GetQuantity();
 
             if (error is not null)
@@ -364,9 +327,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("{solutionId}")]
         public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var isNewSolution = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, solutionId);
 
             var state = orderSessionService.GetOrderStateFromSession();
@@ -377,9 +337,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("{solutionId}")]
         public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, EditSolutionModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(EditSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}");
-
             var state = orderSessionService.GetOrderStateFromSession();
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
@@ -432,9 +389,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("delete/{solutionId}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, string solutionName)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Taking user to {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(solutionId)} {solutionId}, {nameof(solutionName)} {solutionName}");
-
             var order = await orderService.GetOrder(callOffId);
 
             return View(new DeleteSolutionModel(odsCode, callOffId, solutionId, solutionName, order.Description));
@@ -443,9 +397,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("delete/{solutionId}/confirmation/{solutionName}")]
         public async Task<IActionResult> DeleteSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, string solutionName, DeleteSolutionModel model)
         {
-            // TODO: logger invocations should pass values as args
-            logger.LogInformation($"Handling post for {nameof(CatalogueSolutionsController)}.{nameof(DeleteSolution)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(solutionId)} {solutionId}, {nameof(solutionName)} {solutionName}");
-
             await orderItemService.DeleteOrderItem(callOffId, solutionId);
 
             return RedirectToAction(
