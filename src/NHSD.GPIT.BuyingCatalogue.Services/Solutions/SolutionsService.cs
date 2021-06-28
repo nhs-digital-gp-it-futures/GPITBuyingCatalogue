@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetAllSolutions()
+        public async Task<IList<CatalogueItem>> GetAllSolutions()
         {
             return await dbContext.CatalogueItems
                 .Include(x => x.Supplier)
