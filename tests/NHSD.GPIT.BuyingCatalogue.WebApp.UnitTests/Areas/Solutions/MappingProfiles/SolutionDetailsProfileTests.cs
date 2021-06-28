@@ -482,7 +482,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAdditionalServiceModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -497,7 +498,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         .Select(src => $"£{src.Price.GetValueOrDefault():F} {src.PricingUnit.Description}"));
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAdditionalServiceModel_AdditionalServiceNull_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -508,7 +510,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.Description.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAdditionalServicesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
