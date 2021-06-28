@@ -11,15 +11,13 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
 using NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AspNetUserValidatorTests
+    public static class AspNetUserValidatorTests
     {
-        [Test]
+        [Fact]
         public static async Task ValidateAsync_ValidApplicationUser_ReturnsSuccess()
         {
             var context = ApplicationUserValidatorTestContext.Setup();
@@ -34,7 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             actual.Should().Be(Result.Success());
         }
 
-        [TestCaseSource(typeof(TestContextTestCaseData), nameof(TestContextTestCaseData.InvalidFirstNameCases))]
+        [Theory]
+        [MemberData(nameof(TestContextTestCaseData.InvalidFirstNameCases), MemberType = typeof(TestContextTestCaseData))]
         public static async Task ValidateAsync_WithFirstName_ReturnsFailure(string input, params string[] errorMessageIds)
         {
             var context = ApplicationUserValidatorTestContext.Setup();
@@ -51,7 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             actual.Should().Be(expected);
         }
 
-        [TestCaseSource(typeof(TestContextTestCaseData), nameof(TestContextTestCaseData.InvalidLastNameCases))]
+        [Theory]
+        [MemberData(nameof(TestContextTestCaseData.InvalidLastNameCases), MemberType = typeof(TestContextTestCaseData))]
         public static async Task ValidateAsync_WithLastName_ReturnsFailure(string input, params string[] errorMessageIds)
         {
             var context = ApplicationUserValidatorTestContext.Setup();
@@ -68,7 +68,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             actual.Should().Be(expected);
         }
 
-        [TestCaseSource(typeof(TestContextTestCaseData), nameof(TestContextTestCaseData.InvalidPhoneNumberCases))]
+        [Theory]
+        [MemberData(nameof(TestContextTestCaseData.InvalidPhoneNumberCases), MemberType = typeof(TestContextTestCaseData))]
         public static async Task ValidateAsync_WithPhoneNumber_ReturnsFailure(string input, params string[] errorMessageIds)
         {
             var context = ApplicationUserValidatorTestContext.Setup();
@@ -85,7 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             actual.Should().Be(expected);
         }
 
-        [TestCaseSource(typeof(TestContextTestCaseData), nameof(TestContextTestCaseData.InvalidEmailTestCases))]
+        [Theory]
+        [MemberData(nameof(TestContextTestCaseData.InvalidEmailTestCases), MemberType = typeof(TestContextTestCaseData))]
         public static async Task ValidateAsync_WithEmailAddress_ReturnsFailure(string input, string[] errorMessageIds)
         {
             var context = ApplicationUserValidatorTestContext.Setup();
@@ -102,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             actual.Should().Be(expected);
         }
 
-        [Test]
+        [Fact]
         public static async Task ValidateAsync_DuplicateEmailAddress_ReturnsFailure()
         {
             const string duplicateEmailAddress = "duplicate@email.com";
@@ -126,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             actual.Should().Be(expected);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullUserRepository_ThrowsException()
         {
             static void Test()
@@ -137,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             Assert.Throws<ArgumentNullException>(Test);
         }
 
-        [Test]
+        [Fact]
         public static void ValidateAsync_NullApplicationUser_ThrowsException()
         {
             var context = ApplicationUserValidatorTestContext.Setup();
@@ -148,48 +150,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
         private static class TestContextTestCaseData
         {
-            internal static IEnumerable<TestCaseData> InvalidFirstNameCases
+            public static IEnumerable<object[]> InvalidFirstNameCases
             {
                 get
                 {
-                    yield return new TestCaseData(string.Empty, new[] { "FirstNameRequired" });
-                    yield return new TestCaseData("  ", new[] { "FirstNameRequired" });
-                    yield return new TestCaseData(new string('a', 101), new[] { "FirstNameTooLong" });
+                    yield return new object[] { string.Empty, new[] { "FirstNameRequired" } };
+                    yield return new object[] { "  ", new[] { "FirstNameRequired" } };
+                    yield return new object[] { new string('a', 101), new[] { "FirstNameTooLong" } };
                 }
             }
 
-            internal static IEnumerable<TestCaseData> InvalidLastNameCases
+            public static IEnumerable<object[]> InvalidLastNameCases
             {
                 get
                 {
-                    yield return new TestCaseData(string.Empty, new[] { "LastNameRequired" });
-                    yield return new TestCaseData("  ", new[] { "LastNameRequired" });
-                    yield return new TestCaseData(new string('a', 101), new[] { "LastNameTooLong" });
+                    yield return new object[] { string.Empty, new[] { "LastNameRequired" } };
+                    yield return new object[] { "  ", new[] { "LastNameRequired" } };
+                    yield return new object[] { new string('a', 101), new[] { "LastNameTooLong" } };
                 }
             }
 
-            internal static IEnumerable<TestCaseData> InvalidPhoneNumberCases
+            public static IEnumerable<object[]> InvalidPhoneNumberCases
             {
                 get
                 {
-                    yield return new TestCaseData(string.Empty, new[] { "PhoneNumberRequired" });
-                    yield return new TestCaseData("  ", new[] { "PhoneNumberRequired" });
-                    yield return new TestCaseData(new string('p', 36), new[] { "PhoneNumberTooLong" });
+                    yield return new object[] { string.Empty, new[] { "PhoneNumberRequired" } };
+                    yield return new object[] { "  ", new[] { "PhoneNumberRequired" } };
+                    yield return new object[] { new string('p', 36), new[] { "PhoneNumberTooLong" } };
                 }
             }
 
-            internal static IEnumerable<TestCaseData> InvalidEmailTestCases
+            public static IEnumerable<object[]> InvalidEmailTestCases
             {
                 get
                 {
-                    yield return new TestCaseData(string.Empty, new[] { "EmailRequired" });
-                    yield return new TestCaseData("  ", new[] { "EmailRequired" });
-                    yield return new TestCaseData($"a@{new string('b', 255)}", new[] { "EmailTooLong" });
-                    yield return new TestCaseData("test", new[] { "EmailInvalidFormat" });
-                    yield return new TestCaseData("test@", new[] { "EmailInvalidFormat" });
-                    yield return new TestCaseData("@test", new[] { "EmailInvalidFormat" });
-                    yield return new TestCaseData("@", new[] { "EmailInvalidFormat" });
-                    yield return new TestCaseData("bobsmith@test@com", new[] { "EmailInvalidFormat" });
+                    yield return new object[] { string.Empty, new[] { "EmailRequired" } };
+                    yield return new object[] { "  ", new[] { "EmailRequired" } };
+                    yield return new object[] { $"a@{new string('b', 255)}", new[] { "EmailTooLong" } };
+                    yield return new object[] { "test", new[] { "EmailInvalidFormat" } };
+                    yield return new object[] { "test@", new[] { "EmailInvalidFormat" } };
+                    yield return new object[] { "@test", new[] { "EmailInvalidFormat" } };
+                    yield return new object[] { "@", new[] { "EmailInvalidFormat" } };
+                    yield return new object[] { "bobsmith@test@com", new[] { "EmailInvalidFormat" } };
                 }
             }
         }

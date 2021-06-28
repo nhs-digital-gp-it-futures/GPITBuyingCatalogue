@@ -11,17 +11,13 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionDetailsControllerTests
+    public static class SolutionDetailsControllerTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
-        [Test]
+        [Fact]
         public static void Class_AreaAttribute_ExpectedAreaName()
         {
             typeof(SolutionDetailsController)
@@ -30,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Be("Solutions");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(
@@ -39,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Be("mapper");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new SolutionDetailsController(Mock.Of<IMapper>(), null))
@@ -47,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Be("solutionsService");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AssociatedServices_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -60,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolutionWithAllAssociatedServices(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AssociatedServices_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -76,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AssociatedServices_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -93,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, AssociatedServicesModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -116,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockAssociatedServicesModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Capabilities_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -129,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Capabilities_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -145,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Capabilities_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -162,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, CapabilitiesViewModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Capabilities_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -185,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockCapabilitiesViewModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -198,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -214,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -231,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, ClientApplicationTypesModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -254,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionClientApplicationTypesModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Description_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -267,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Description_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -283,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Description_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -300,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Description_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -323,7 +319,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionDescriptionModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Features_ValidId_InvokesGetSolution(CatalogueItemId id)
         {
@@ -336,7 +332,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Features_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -352,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Features_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -369,7 +365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, SolutionFeaturesModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Features_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -392,7 +388,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionFeaturesModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_HostingType_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -405,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_HostingType_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -421,7 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_HostingType_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -438,7 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, HostingTypesModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_HostingType_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -461,7 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionHostingTypeModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -474,7 +470,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ImplementationTimescales_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -490,7 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ImplementationTimescales_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -507,7 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ImplementationTimescales_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -530,7 +526,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionImplementationTimescalesModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ListPrice_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -543,7 +539,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ListPrice_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -559,7 +555,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ListPrice_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -576,7 +572,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, ListPriceModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ListPrice_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -599,7 +595,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionListPriceModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -612,7 +608,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -628,7 +624,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -645,7 +641,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, InteroperabilityModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -668,7 +664,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Model.Should().Be(mockSolutionInteroperabilityModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierDetails_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -681,7 +677,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierDetails_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -697,7 +693,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierDetails_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -714,7 +710,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, SolutionSupplierDetailsModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierDetails_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {

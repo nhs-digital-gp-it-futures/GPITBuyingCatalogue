@@ -1,21 +1,19 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class TypeExtensionsTests
+    public static class TypeExtensionsTests
     {
-        [Test]
+        [Fact]
         public static void ControllerName_TrimsController()
         {
             var result = typeof(TestController).ControllerName();
 
-            Assert.AreEqual("Test", result);
+            Assert.Equal("Test", result);
         }
 
-        internal class TestController
+        internal static class TestController
         {
         }
     }

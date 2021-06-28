@@ -1,14 +1,12 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AmountInYearAttributeTests
+    public static class AmountInYearAttributeTests
     {
-        [Test]
+        [Theory]
         [AutoData]
         public static void Constructor_Initializes_AmountInYear(
             [Frozen] int expectedAmountInYear,

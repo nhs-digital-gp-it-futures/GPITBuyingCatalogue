@@ -7,13 +7,11 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionDisplayBaseModelTests
+    public static class SolutionDisplayBaseModelTests
     {
         private static readonly IList<SectionModel> SectionModels = new List<SectionModel>
         {
@@ -97,10 +95,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
         };
 
-        [TestCase(typeof(ClientApplicationTypesModel))]
-        [TestCase(typeof(ImplementationTimescalesModel))]
-        [TestCase(typeof(SolutionDescriptionModel))]
-        [TestCase(typeof(SolutionFeaturesModel))]
+        [Theory]
+        [InlineData(typeof(ClientApplicationTypesModel))]
+        [InlineData(typeof(ImplementationTimescalesModel))]
+        [InlineData(typeof(SolutionDescriptionModel))]
+        [InlineData(typeof(SolutionFeaturesModel))]
         public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
         {
             childType
@@ -108,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static void GetSections_ValidSectionProperty_ReturnsSectionsWithSelected(CatalogueItemId solutionId)
         {

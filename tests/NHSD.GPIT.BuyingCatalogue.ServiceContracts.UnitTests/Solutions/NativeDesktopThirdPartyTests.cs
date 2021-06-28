@@ -1,19 +1,18 @@
 ﻿using AutoFixture;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NUnit.Framework;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class NativeDesktopThirdPartyTests
+    public static class NativeDesktopThirdPartyTests
     {
         private static readonly Fixture Fixture = new();
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
-        [Test, AutoData]
+        [Theory]
+        [AutoData]
         public static void IsValid_BothPropertiesValid_ReturnsTrue(NativeDesktopThirdParty nativeDesktopThirdParty)
         {
             nativeDesktopThirdParty.DeviceCapabilities.Should().NotBeNullOrWhiteSpace();
@@ -22,7 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             nativeDesktopThirdParty.IsValid().Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsValid_DeviceCapabilitiesIsInvalid_ReturnsTrue(string invalid)
         {
             var mobileMemoryAndStorage =
@@ -32,7 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileMemoryAndStorage.IsValid().Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsValid_ThirdPartyComponentsIsInvalid_ReturnsTrue(string invalid)
         {
             var mobileMemoryAndStorage =
@@ -42,7 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileMemoryAndStorage.IsValid().Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsValid_BothPropertiesInvalid_ReturnsFalse(string invalid)
         {
             var mobileMemoryAndStorage = new NativeDesktopThirdParty

@@ -1,19 +1,18 @@
 ﻿using System;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ProvisioningTypeTests
+    public static class ProvisioningTypeTests
     {
-        [TestCase(ProvisioningType.Patient, TimeUnit.PerMonth)]
-        [TestCase(ProvisioningType.Declarative, TimeUnit.PerYear)]
-        public static void InferEstimationPeriod_ReturnsExpectedValue(
+        [Theory]
+        [InlineData(ProvisioningType.Patient, TimeUnit.PerMonth)]
+        [InlineData(ProvisioningType.Declarative, TimeUnit.PerYear)]
+        public static void InferEstimationPeriod_DeclarativeOrPatient_ReturnsExpectedValue(
             ProvisioningType provisioningType,
             TimeUnit expectedTimeUnit)
         {
@@ -22,16 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             estimationPeriod.Should().Be(expectedTimeUnit);
         }
 
-        [Test]
+        [Theory]
         [AutoData]
-        public static void InferEstimationPeriod_ReturnsExpectedValue(TimeUnit expectedEstimationPeriod)
+        public static void InferEstimationPeriod_OnDemand_ReturnsExpectedValue(TimeUnit expectedEstimationPeriod)
         {
             var actualEstimationPeriod = ProvisioningType.OnDemand.InferEstimationPeriod(expectedEstimationPeriod);
 
             actualEstimationPeriod.Should().Be(expectedEstimationPeriod);
         }
 
-        [Test]
+        [Fact]
         public static void InferEstimationPeriod_InvalidProvisioningType_ThrowsException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => ((ProvisioningType)0).InferEstimationPeriod(null));

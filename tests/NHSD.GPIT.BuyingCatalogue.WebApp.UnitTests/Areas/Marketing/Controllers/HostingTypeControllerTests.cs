@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +15,13 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class HostingTypeControllerTests
+    public static class HostingTypeControllerTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -31,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ParamName.Should().Be("logger");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -39,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                     Mock.Of<ISolutionsService>())).ParamName.Should().Be("mapper");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -47,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ParamName.Should().Be("solutionsService");
         }
 
-        [Test]
+        [Fact]
         public static void Get_PublicCloud_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -61,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PublicCloud_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
@@ -74,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PublicCloud_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
@@ -90,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PublicCloud_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
@@ -107,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, PublicCloudModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PublicCloud_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
@@ -129,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockHostingTypePublicCloudModel);
         }
 
-        [Test]
+        [Fact]
         public static void Post_PublicCloud_HttpPostAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -143,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_InvalidModel_ReturnsViewWithModel(CatalogueItemId id)
         {
@@ -159,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockPublicCloudModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_ValidModel_GetsHostingFromService(
             [Frozen] CatalogueItemId id,
@@ -174,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetHosting(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_NoHostingFromService_ReturnsBadRequestResult(
             [Frozen] CatalogueItemId id,
@@ -192,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
@@ -211,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockHosting.VerifySet(h => h.PublicCloud = model.PublicCloud);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
@@ -229,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.SaveHosting(id, mockHosting));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
@@ -249,7 +247,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ControllerName.Should().Be(nameof(SolutionController).ToControllerName());
         }
 
-        [Test]
+        [Fact]
         public static void Get_PrivateCloud_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -263,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PrivateCloud_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
@@ -276,7 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PrivateCloud_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
@@ -292,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PrivateCloud_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
@@ -309,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, PrivateCloudModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_PrivateCloud_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
@@ -331,7 +329,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockHostingTypePrivateCloudModel);
         }
 
-        [Test]
+        [Fact]
         public static void Post_PrivateCloud_HttpPostAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -345,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
@@ -361,7 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockPrivateCloudModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_ValidModel_GetsHostingFromService(
             [Frozen] CatalogueItemId id,
@@ -376,7 +374,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetHosting(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_NoHostingFromService_ReturnsBadRequestResult(
             [Frozen] CatalogueItemId id,
@@ -393,7 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
@@ -412,7 +410,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockHosting.VerifySet(h => h.PrivateCloud = model.PrivateCloud);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
@@ -430,7 +428,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.SaveHosting(id, mockHosting));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
@@ -450,7 +448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ControllerName.Should().Be(nameof(SolutionController).ToControllerName());
         }
 
-        [Test]
+        [Fact]
         public static void Get_Hybrid_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -464,7 +462,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Hybrid_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
@@ -477,7 +475,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Hybrid_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
@@ -493,7 +491,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Hybrid_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
@@ -510,7 +508,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, HybridModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Hybrid_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
@@ -532,7 +530,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockHybridModel);
         }
 
-        [Test]
+        [Fact]
         public static void Post_Hybrid_HttpPostAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -546,7 +544,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
@@ -562,7 +560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockHybridModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_ValidModel_GetsHostingFromService(
             [Frozen] CatalogueItemId id,
@@ -577,7 +575,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetHosting(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_NoHostingFromService_ReturnsBadRequestResult(
             [Frozen] CatalogueItemId id,
@@ -595,7 +593,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
@@ -614,7 +612,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockHosting.VerifySet(h => h.HybridHostingType = model.HybridHostingType);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
@@ -632,7 +630,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.SaveHosting(id, mockHosting));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
@@ -652,7 +650,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ControllerName.Should().Be(nameof(SolutionController).ToControllerName());
         }
 
-        [Test]
+        [Fact]
         public static void Get_OnPremise_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -666,7 +664,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_OnPremise_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
@@ -679,7 +677,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_OnPremise_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
@@ -695,7 +693,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_OnPremise_ValidSolutionFromService_MapsToModel(CatalogueItemId id)
         {
@@ -712,7 +710,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, OnPremiseModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_OnPremise_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
         {
@@ -734,7 +732,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockOnPremiseModel);
         }
 
-        [Test]
+        [Fact]
         public static void Post_OnPremise_HttpPostAttribute_ExpectedTemplate()
         {
             typeof(HostingTypeController)
@@ -748,7 +746,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                         .ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
@@ -764,7 +762,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockOnPremiseModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_ValidModel_GetsHostingFromService(
             [Frozen] CatalogueItemId id,
@@ -779,7 +777,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetHosting(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_NoHostingFromService_ReturnsBadRequestResult(
             [Frozen] CatalogueItemId id,
@@ -797,7 +795,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Hosting found for Solution Id: {model.SolutionId}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
@@ -816,7 +814,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockHosting.VerifySet(h => h.OnPremise = model.OnPremise);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
@@ -834,7 +832,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.SaveHosting(id, mockHosting));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
