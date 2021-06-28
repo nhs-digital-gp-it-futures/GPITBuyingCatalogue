@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
-using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,15 +13,13 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class NativeMobileProfileTests
+    public static class NativeMobileProfileTests
     {
-        [Test]
+        [Fact]
         public static void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg =>
@@ -34,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
-        [Test]
+        [Fact]
         public static void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -56,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public static void Map_CatalogueItemToConnectivityModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -105,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public static void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -127,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public static void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -161,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public static void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -183,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public static void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -211,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public static void Map_CatalogueItemToThirdPartyModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -234,7 +231,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Map_ConnectivityModelToMobileConnectionDetails_ResultAsExpected(
             ConnectivityModel connectivityModel)
         {
@@ -260,7 +258,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MinimumConnectionSpeed.Should().Be(connectivityModel.SelectedConnectionSpeed);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Map_MemoryAndStorageModelToMobileMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
         {
@@ -276,7 +275,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MinimumMemoryRequirement.Should().Be(memoryAndStorageModel.SelectedMemorySize);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Map_OperatingSystemsModelToMobileOperatingSystems_ResultAsExpected(
             OperatingSystemsModel operatingSystemsModel)
         {
@@ -301,7 +301,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.OperatingSystemsDescription.Should().BeEquivalentTo(operatingSystemsModel.Description);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public static void Map_ThirdPartyModelToMobileThirdParty_ResultAsExpected(
             ThirdPartyModel thirdPartyModel)
         {

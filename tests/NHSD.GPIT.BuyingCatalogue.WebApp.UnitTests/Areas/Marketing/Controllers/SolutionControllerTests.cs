@@ -13,21 +13,19 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionControllerTests
+    public static class SolutionControllerTests
     {
-        [Test]
+        [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(SolutionController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -35,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ParamName.Should().Be("logger");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -44,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ParamName.Should().Be("mapper");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -52,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ParamName.Should().Be("solutionsService");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Index_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -65,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(s => s.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Index_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
@@ -81,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Index_ValidSolutionForId_MapsToModel(CatalogueItemId id)
         {
@@ -98,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, SolutionStatusModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_Index_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
@@ -121,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockSolutionStatusModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static void Get_Preview_RedirectsToPreview(CatalogueItemId id)
         {

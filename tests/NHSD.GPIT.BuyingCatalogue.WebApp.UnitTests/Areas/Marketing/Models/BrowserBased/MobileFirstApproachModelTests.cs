@@ -1,16 +1,13 @@
 ﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.BrowserBased
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class MobileFirstApproachModelTests
+    public static class MobileFirstApproachModelTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-        
-        [Test]
+        [Fact]
         public static void IsComplete_MobileFirstApproachHasValue_ReturnsTrue()
         {
             var model = new MobileFirstApproachModel { MobileFirstApproach = "someValue" };
@@ -18,7 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             model.IsComplete.Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsComplete_MobileFirstApproachHasNoValue_ReturnsFalse(string invalid)
         {
             var model = new MobileFirstApproachModel { MobileFirstApproach = invalid };

@@ -1,15 +1,13 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class EmailMessageBodyTests
+    public static class EmailMessageBodyTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_String_ObjectArray_InitializesContent()
         {
             const string expectedContent = "Message content";
@@ -19,9 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             body.Content.Should().Be(expectedContent);
         }
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("\t")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("\t")]
         public static void Constructor_String_ObjectArray_NullOrWhiteSpaceContent_InitializesEmptyContent(string content)
         {
             var body = new EmailMessageBody(content);
@@ -29,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             body.Content.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_ObjectArray_InitializesFormatItems()
         {
             const int one = 1;
@@ -42,9 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             body.FormatItems.Should().BeEquivalentTo(expectedFormatItems);
         }
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("\t")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("\t")]
         public static void ToString_NullOrWhiteSpaceContent_ReturnsEmptyString(string content)
         {
             var body = new EmailMessageBody(content);
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             formattedContent.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public static void ToString_ReturnsFormattedString()
         {
             // ReSharper disable once StringLiteralTypo (date format)

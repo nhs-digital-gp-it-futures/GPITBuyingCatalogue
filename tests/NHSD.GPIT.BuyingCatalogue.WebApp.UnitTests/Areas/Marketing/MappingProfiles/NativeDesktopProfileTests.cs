@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
+using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,18 +10,15 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class NativeDesktopProfileTests
+    public sealed class NativeDesktopProfileTests : IDisposable
     {
         private IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public NativeDesktopProfileTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
@@ -30,14 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }).CreateMapper();
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
-        {
-            mapper = null;
-        }
-
-        [Test]
-        public static void Mappings_Configuration_Valid()
+        [Fact]
+        public void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
@@ -47,8 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             mapperConfiguration.AssertConfigurationIsValid();
         }
+        
+        public void Dispose()
+        {
+            mapper = null;
+        }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -65,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToConnectivityModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -97,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -114,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToMemoryAndStorageModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -169,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToOperatingSystemsModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -186,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToThirdPartyModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -204,7 +200,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_MemoryAndStorageModelToNativeDesktopMemoryAndStorage_ResultAsExpected(
             MemoryAndStorageModel memoryAndStorageModel)
         {

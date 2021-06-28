@@ -3,18 +3,16 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionExtensionsTests
+    public static class SolutionExtensionsTests
     {
-        [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
         public static void SolutionExtension_ReturnsDefaultClientApplicationWhenNotSet(string clientApplication)
         {
             var solution = new Solution { ClientApplication = clientApplication };
@@ -24,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             result.Should().BeEquivalentTo(new ClientApplication());
         }
 
-        [Test]
+        [Fact]
         public static void SolutionExtension_ReturnsClientApplicationWhenSet()
         {
             var clientApplication = new ClientApplication { AdditionalInformation = "Additional Information" };
@@ -36,20 +34,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             result.Should().BeEquivalentTo(clientApplication);
         }
 
-        [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
         public static void SolutionExtension_ReturnsDefaultFeaturesWhenNotSet(string features)
         {
             var solution = new Solution { Features = features };
 
             var result = solution.GetFeatures();
 
-            result.Should().BeEquivalentTo(new string[0]);
+            result.Should().BeEquivalentTo();
         }
 
-        [Test]
+        [Fact]
         public static void SolutionExtension_ReturnsFeaturesWhenSet()
         {
             var features = new string[3] { "Feature 1", "Feature 2", "Feature 3" };
@@ -61,10 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             result.Should().BeEquivalentTo(features);
         }
 
-        [Test]
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase(" ")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
         public static void SolutionExtension_ReturnsDefaultHostingWhenNotSet(string hosting)
         {
             var solution = new Solution { Hosting = hosting };
@@ -74,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             result.Should().BeEquivalentTo(new Hosting());
         }
 
-        [Test]
+        [Fact]
         public static void SolutionExtension_ReturnsHostingWhenSet()
         {
             var hosting = new Hosting { HybridHostingType = new HybridHostingType { Summary = "Hybrid Summary" } };

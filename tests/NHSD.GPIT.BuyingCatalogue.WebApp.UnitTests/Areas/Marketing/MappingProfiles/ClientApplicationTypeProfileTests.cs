@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using AutoFixture.NUnit3;
+using System;
+using System.Linq;
 using AutoMapper;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -10,18 +10,15 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class ClientApplicationTypeProfileTests
+    public sealed class ClientApplicationTypeProfileTests : IDisposable
     {
         private IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public ClientApplicationTypeProfileTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
@@ -30,13 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }).CreateMapper();
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        public void Dispose()
         {
             mapper = null;
         }
 
-        [Test]
+        [Fact]
         public void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg =>
@@ -48,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -71,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToBrowserBasedModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -88,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToNativeDesktopModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -105,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToNativeMobileModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
@@ -122,7 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_ClientApplicationTypesModelToClientApplication_ResultAsExpected(
             ClientApplication clientApplication, ClientApplicationTypesModel model)
         {

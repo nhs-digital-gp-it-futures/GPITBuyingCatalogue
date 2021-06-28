@@ -1,16 +1,15 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class TimeUnitTests
+    public static class TimeUnitTests
     {
-        [TestCase(TimeUnit.PerMonth, 12)]
-        [TestCase(TimeUnit.PerYear, 1)]
+        [Theory]
+        [InlineData(TimeUnit.PerMonth, 12)]
+        [InlineData(TimeUnit.PerYear, 1)]
         public static void EachTimeUnit_HasExpectedAmountInYear(TimeUnit timeUnit, int expectedAmountInYear)
         {
             var actualAmountInYear = timeUnit.AmountInYear();
@@ -18,8 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             actualAmountInYear.Should().Be(expectedAmountInYear);
         }
 
-        [TestCase(TimeUnit.PerMonth, "per month")]
-        [TestCase(TimeUnit.PerYear, "per year")]
+        [Theory]
+        [InlineData(TimeUnit.PerMonth, "per month")]
+        [InlineData(TimeUnit.PerYear, "per year")]
         public static void EachTimeUnit_HasExpectedDescription(TimeUnit timeUnit, string expectedDescription)
         {
             var actualDescription = timeUnit.Description();
@@ -27,8 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             actualDescription.Should().Be(expectedDescription);
         }
 
-        [TestCase(TimeUnit.PerMonth, "month")]
-        [TestCase(TimeUnit.PerYear, "year")]
+        [Theory]
+        [InlineData(TimeUnit.PerMonth, "month")]
+        [InlineData(TimeUnit.PerYear, "year")]
         public static void EachTimeUnit_HasExpectedDisplayName(TimeUnit timeUnit, string expectedDisplayName)
         {
             var actualDisplayName = timeUnit.Name();

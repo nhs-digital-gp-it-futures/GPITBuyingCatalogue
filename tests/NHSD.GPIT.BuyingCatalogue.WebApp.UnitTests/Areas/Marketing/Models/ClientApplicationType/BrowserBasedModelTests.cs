@@ -1,43 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.ClientApplicationType
 
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class BrowserBasedModelTests
+    public static class BrowserBasedModelTests
     {
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new BrowserBasedModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
         }
 
-        [Test]
+        [Fact]
         public static void WithEmptyCatalogueItem_AllStatusesIncomplete()
         {
             var model = new BrowserBasedModel();
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("INCOMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("INCOMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("INCOMPLETE", model.PlugInsStatus);
+            Assert.Equal("INCOMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WithSupportedBrowsersStatusComplete_SupportedBrowsersStatus_IsComplete()
         {
             var model = new BrowserBasedModel
@@ -51,15 +46,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("COMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("INCOMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("INCOMPLETE", model.PlugInsStatus);
+            Assert.Equal("INCOMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WithMobileFirstApproachComplete_MobileFirstApproachStatus_IsComplete()
         {
             var model = new BrowserBasedModel
@@ -72,15 +67,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("INCOMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("COMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("INCOMPLETE", model.PlugInsStatus);
+            Assert.Equal("INCOMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WithPlugInsStatusComplete_PlugInsStatusStatus_IsComplete()
         {
             var model = new BrowserBasedModel
@@ -93,15 +88,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("INCOMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("INCOMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("COMPLETE", model.PlugInsStatus);
+            Assert.Equal("INCOMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WithConnectivityStatusComplete_ConnectivityStatusStatus_IsComplete()
         {
             var model = new BrowserBasedModel
@@ -114,15 +109,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("INCOMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("INCOMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("INCOMPLETE", model.PlugInsStatus);
+            Assert.Equal("COMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WithHardwareRequirementsComplete_HardwareRequirementsStatus_IsComplete()
         {
             var model = new BrowserBasedModel
@@ -135,15 +130,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("COMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("INCOMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("INCOMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("INCOMPLETE", model.PlugInsStatus);
+            Assert.Equal("INCOMPLETE", model.ConnectivityStatus);
+            Assert.Equal("COMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WithAdditionalInformationStatusComplete_AdditionalInformationStatus_IsComplete()
         {
             var model = new BrowserBasedModel
@@ -156,15 +151,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("COMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("INCOMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("INCOMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("INCOMPLETE", model.PlugInsStatus);
+            Assert.Equal("INCOMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("COMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WithMandatorySectionsComplete_IsComplete()
         {
             var model = new BrowserBasedModel
@@ -181,15 +176,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.True(model.IsComplete);
 
-            Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("COMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("COMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("COMPLETE", model.PlugInsStatus);
+            Assert.Equal("COMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WhenSupportedBrowsersIncomplete_IsntComplete()
         {
             var model = new BrowserBasedModel
@@ -204,15 +199,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("INCOMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("INCOMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("COMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("COMPLETE", model.PlugInsStatus);
+            Assert.Equal("COMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WhenMobileFirstApproachIncomplete_IsntComplete()
         {
             var model = new BrowserBasedModel
@@ -228,15 +223,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("INCOMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("COMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("INCOMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("COMPLETE", model.PlugInsStatus);
+            Assert.Equal("COMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WhenPluginsIncomplete_IsntComplete()
         {
             var model = new BrowserBasedModel
@@ -253,15 +248,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("INCOMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("COMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("COMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("COMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("INCOMPLETE", model.PlugInsStatus);
+            Assert.Equal("COMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
 
-        [Test]
+        [Fact]
         public static void WhenConnectivityIncomplete_IsntComplete()
         {
             var model = new BrowserBasedModel
@@ -277,12 +272,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             Assert.False(model.IsComplete);
 
-            Assert.AreEqual("COMPLETE", model.SupportedBrowsersStatus);
-            Assert.AreEqual("COMPLETE", model.MobileFirstApproachStatus);
-            Assert.AreEqual("COMPLETE", model.PlugInsStatus);
-            Assert.AreEqual("INCOMPLETE", model.ConnectivityStatus);
-            Assert.AreEqual("INCOMPLETE", model.HardwareRequirementsStatus);
-            Assert.AreEqual("INCOMPLETE", model.AdditionalInformationStatus);
+            Assert.Equal("COMPLETE", model.SupportedBrowsersStatus);
+            Assert.Equal("COMPLETE", model.MobileFirstApproachStatus);
+            Assert.Equal("COMPLETE", model.PlugInsStatus);
+            Assert.Equal("INCOMPLETE", model.ConnectivityStatus);
+            Assert.Equal("INCOMPLETE", model.HardwareRequirementsStatus);
+            Assert.Equal("INCOMPLETE", model.AdditionalInformationStatus);
         }
     }
 }

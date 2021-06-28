@@ -1,20 +1,16 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Settings
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ValidationSettingsTests
+    public static class ValidationSettingsTests
     {
-        [Test]
+        [Fact]
         public static void ValidationSettings_MaxDeliveryDateOffsetInDays_CorrectlyReturned()
         {
-            var settings = new ValidationSettings();
+            var settings = new ValidationSettings { MaxDeliveryDateWeekOffset = 10 };
 
-            settings.MaxDeliveryDateWeekOffset = 10;
-
-            Assert.AreEqual(70, settings.MaxDeliveryDateOffsetInDays);
+            Assert.Equal(70, settings.MaxDeliveryDateOffsetInDays);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -12,23 +12,23 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class IntegrationProfileTests
+    public sealed class IntegrationProfileTests : IDisposable
     {
+        private const string LastReviewedDate = "26 Aug 2025";
+
+        private readonly
+            Mock<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>>
+            integrationsResolver;
+
         private IMapper mapper;
         private Mock<IConfiguration> configuration;
         private MapperConfiguration mapperConfiguration;
-        private Mock<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string,
-            IList<IntegrationModel>>> integrationsResolver;
-        private const string LastReviewedDate = "26 Aug 2025";
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public IntegrationProfileTests()
         {
             configuration = new Mock<IConfiguration>();
             configuration.Setup(c => c["SolutionsLastReviewedDate"])
@@ -36,16 +36,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             integrationsResolver =
                 new Mock<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>>();
-            
+
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(
-                    x =>
-                        x.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
+                    s => s.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
                 .Returns(new ConfigSettingResolver(configuration.Object));
             serviceProvider.Setup(
-                    x =>
-                        x.GetService(typeof(IMemberValueResolver<CatalogueItem, InteroperabilityModel, string,
-                            IList<IntegrationModel>>)))
+                    s => s.GetService(typeof(IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>)))
                 .Returns(integrationsResolver.Object);
             mapperConfiguration = new MapperConfiguration(
                 cfg =>
@@ -53,25 +50,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     cfg.AddProfile<IntegrationProfile>();
                     cfg.AddProfile<SolutionDetailsProfile>();
                 });
-            
+
             mapper = mapperConfiguration.CreateMapper(serviceProvider.Object.GetService);
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        public void Dispose()
         {
             configuration = null;
             mapperConfiguration = null;
             mapper = null;
         }
 
-        [Test]
+        [Fact]
         public void Map_CatalogueItemToInteroperabilityModel_ResultAsExpected()
         {
             var catalogueItem = Fakers.CatalogueItem.Generate();
             
             var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(catalogueItem);
-            
+
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);
             actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should()
@@ -98,8 +94,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-        
-        [Test, AutoData]
+
+        [Theory]
+        [AutoData]
         public void Map_CatalogueItemToInteroperabilityModel_SetsIntegrationModelsFromResolver(
             List<IntegrationModel> integrationModels)
         {
@@ -114,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 .Returns(integrationModels);
 
             var actual = mapper.Map<CatalogueItem, InteroperabilityModel>(catalogueItem);
-            
+
             integrationsResolver.Verify(
                     r => r.Resolve(
                         It.IsAny<CatalogueItem>(),

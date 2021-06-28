@@ -5,19 +5,16 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class AdminProfileTests
+    public sealed class AdminProfileTests : IDisposable
     {
         private IMapper mapper;
         private MapperConfiguration mapperConfiguration;
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public AdminProfileTests()
         {
             mapperConfiguration = new MapperConfiguration(cfg =>
             {
@@ -26,20 +23,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.MappingProfiles
             mapper = mapperConfiguration.CreateMapper();
         }
 
-        [OneTimeTearDown]
-        public void CleanUp()
+        public void Dispose()
         {
             mapperConfiguration = null;
             mapper = null;
         }
 
-        [Test]
+        [Fact]
         public void Mappings_Configuration_Valid()
         {
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
-        [Test]
+        [Fact]
         public void Map_OrganisationToOrganisationModel_ResultAsExpected()
         {
             var organisation = new Faker<Organisation>()

@@ -2,21 +2,19 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.AboutOrganisation
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AboutSupplierModelTests
+    public static class AboutSupplierModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new AboutSupplierModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var catalogueItem = new CatalogueItem
@@ -27,27 +25,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var model = new AboutSupplierModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
-            Assert.AreEqual("A link", model.Link);
-            Assert.AreEqual("A description", model.Description);
+            Assert.Equal("/marketing/supplier/solution/1-123", model.BackLink);
+            Assert.Equal("A link", model.Link);
+            Assert.Equal("A description", model.Description);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new AboutSupplierModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.Description);
             Assert.Null(model.Link);
         }
 
-        [Test]
-        [TestCase(null, null, false)]
-        [TestCase("", "", false)]
-        [TestCase(" ", " ", false)]
-        [TestCase("Some description", "Some link", true)]
+        [Theory]
+        [InlineData(null, null, false)]
+        [InlineData("", "", false)]
+        [InlineData(" ", " ", false)]
+        [InlineData("Some description", "Some link", true)]
         public static void IsCompleteIsCorrectlySet(string description, string link, bool? expected)
         {
             var catalogueItem = new CatalogueItem
@@ -58,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var model = new AboutSupplierModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

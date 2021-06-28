@@ -65,15 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework
                 .Without(s => s.SupplierContacts)
                 .Create());
 
-        // public static readonly Faker<CataloguePrice> CataloguePrice = Fixture.Build<CataloguePrice>()
-        //     .With(cp => cp.CataloguePriceType, CataloguePriceType.Flat)
-        //     .With(cp => cp.CurrencyCode, new[] { "GBP", "USD", "EUR", }[new Random().Next(0, 3)])
-        //     .With(cp => cp.PricingUnit, Fakers.Fixture.Build<PricingUnit>().Without(pu => pu.CataloguePrices).Create())
-        //     .With(cp => cp.TimeUnit, Fakers.Fixture.Create<TimeUnit>())
-        //     .Without(cp => cp.CatalogueItem)
-        //     .Without(cp => cp.CataloguePriceTiers)
-        //     .Without(cp => cp.ProvisioningType);
-
         public static readonly Faker<CataloguePrice> CataloguePrice = new Faker<CataloguePrice>()
             .RuleFor(cp => cp.CataloguePriceType, CataloguePriceType.Flat)
             .RuleFor(cp => cp.CurrencyCode, f => new[] { "GBP", "USD", "EUR", }[Random.Next(0, 3)])
