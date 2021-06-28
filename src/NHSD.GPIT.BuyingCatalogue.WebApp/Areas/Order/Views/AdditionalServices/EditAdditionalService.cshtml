@@ -26,7 +26,7 @@
                 <div class="nhsuk-u-margin-bottom-5">
                     <div>
                         <nhs-bookended-input asp-for="@Model.OrderItem.Price"
-                                             label-text="What price have you agreed, in pounds?"
+                                             label-text="What price have you agreed?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
                                              Prefix="@Model.CurrencySymbol"
                                              Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description()" />

@@ -1,12 +1,31 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class DeleteAssociatedServiceModel : OrderingBaseModel
+    public sealed class DeleteAssociatedServiceModel : OrderingBaseModel
     {
         public DeleteAssociatedServiceModel()
         {
-            BackLink = "/order/organisation/03F/order/C010000-01/associated-services/10000-S-003"; // TODO
-            BackLinkText = "Go back";
-            Title = "Delete Training Day at Practice from C010000-01?"; // TODO
         }
+
+        public DeleteAssociatedServiceModel(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string solutionName, string orderDescription)
+        {
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/{catalogueItemId}";
+            BackLinkText = "Go back";
+            Title = $"Delete {solutionName} from {callOffId}?";
+            OdsCode = odsCode;
+            CallOffId = callOffId;
+            CatalogueItemId = catalogueItemId;
+            SolutionName = solutionName;
+            OrderDescription = orderDescription;
+        }
+
+        public CallOffId CallOffId { get; set; }
+
+        public CatalogueItemId CatalogueItemId { get; set; }
+
+        public string SolutionName { get; set; }
+
+        public string OrderDescription { get; set; }
     }
 }

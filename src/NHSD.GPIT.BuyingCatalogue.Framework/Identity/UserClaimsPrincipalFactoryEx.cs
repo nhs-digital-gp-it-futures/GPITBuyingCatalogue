@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
@@ -12,17 +11,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
     public class UserClaimsPrincipalFactoryEx<TUser> : UserClaimsPrincipalFactory<TUser>
         where TUser : AspNetUser
     {
-        private readonly ILogWrapper<UserClaimsPrincipalFactoryEx<TUser>> logger;
         private readonly IOrganisationsService organisationService;
 
         public UserClaimsPrincipalFactoryEx(
             UserManager<TUser> userManager,
             IOptions<IdentityOptions> optionsAccessor,
-            ILogWrapper<UserClaimsPrincipalFactoryEx<TUser>> logger,
             IOrganisationsService organisationService)
             : base(userManager, optionsAccessor)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 

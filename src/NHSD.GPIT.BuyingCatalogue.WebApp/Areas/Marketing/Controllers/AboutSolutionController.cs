@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
 
@@ -15,16 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     [Route("marketing/supplier/solution/{solutionId}/section")]
     public sealed class AboutSolutionController : Controller
     {
-        private readonly ILogWrapper<AboutSolutionController> logger;
         private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
 
         public AboutSolutionController(
-            ILogWrapper<AboutSolutionController> logger,
             IMapper mapper,
             ISolutionsService solutionsService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }

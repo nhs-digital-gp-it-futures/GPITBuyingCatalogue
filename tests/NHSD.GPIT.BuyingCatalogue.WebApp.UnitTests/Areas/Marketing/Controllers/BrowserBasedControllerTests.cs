@@ -10,7 +10,6 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
@@ -22,17 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     public static class BrowserBasedControllerTests
     {
         [Fact]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new BrowserBasedController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()));
-        }
-
-        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), null,
+                _ = new BrowserBasedController( null,
                     Mock.Of<ISolutionsService>()));
         }
 
@@ -40,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(), Mock.Of<IMapper>(),
+                _ = new BrowserBasedController( Mock.Of<IMapper>(),
                     null));
         }
 
@@ -61,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_AdditionalInformation_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id);
@@ -76,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.AdditionalInformation(id)).As<BadRequestObjectResult>();
@@ -94,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.AdditionalInformation(id);
@@ -114,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockAdditionalInformationModel = new Mock<AdditionalInformationModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, AdditionalInformationModel>(mockCatalogueItem))
                 .Returns(mockAdditionalInformationModel);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.AdditionalInformation(id)).As<ViewResult>();
@@ -141,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_AdditionalInformation_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockAdditionalInformationModel = new Mock<AdditionalInformationModel>().Object;
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -159,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id, model);
@@ -176,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.AdditionalInformation(id, model)).As<BadRequestObjectResult>();
@@ -195,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id, model);
@@ -213,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id, model);
@@ -231,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.AdditionalInformation(id, model)).As<RedirectToActionResult>();
@@ -259,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_ConnectivityAndResolution_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ConnectivityAndResolution(id);
@@ -274,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.ConnectivityAndResolution(id)).As<BadRequestObjectResult>();
@@ -292,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.ConnectivityAndResolution(id);
@@ -312,7 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockConnectivityAndResolutionModel = new Mock<ConnectivityAndResolutionModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, ConnectivityAndResolutionModel>(mockCatalogueItem))
                 .Returns(mockConnectivityAndResolutionModel);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.ConnectivityAndResolution(id)).As<ViewResult>();
@@ -339,7 +331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_ConnectivityAndResolution_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockConnectivityAndResolutionModel = new Mock<ConnectivityAndResolutionModel>().Object;
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -357,7 +349,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             ConnectivityAndResolutionModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ConnectivityAndResolution(id, model);
@@ -374,7 +366,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.ConnectivityAndResolution(id, model)).As<BadRequestObjectResult>();
@@ -394,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.ConnectivityAndResolution(id, model);
@@ -412,7 +404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ConnectivityAndResolution(id, model);
@@ -430,7 +422,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.ConnectivityAndResolution(id, model)).As<RedirectToActionResult>();
@@ -458,7 +450,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_HardwareRequirements_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id);
@@ -473,7 +465,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.HardwareRequirements(id)).As<BadRequestObjectResult>();
@@ -491,7 +483,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.HardwareRequirements(id);
@@ -511,7 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHardwareRequirementsModel = new Mock<HardwareRequirementsModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, HardwareRequirementsModel>(mockCatalogueItem))
                 .Returns(mockHardwareRequirementsModel);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.HardwareRequirements(id)).As<ViewResult>();
@@ -538,7 +530,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_HardwareRequirements_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockHardwareRequirementsModel = new Mock<HardwareRequirementsModel>().Object;
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -556,7 +548,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id, model);
@@ -573,7 +565,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.HardwareRequirements(id, model)).As<BadRequestObjectResult>();
@@ -592,7 +584,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id, model);
@@ -610,7 +602,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id, model);
@@ -628,7 +620,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.HardwareRequirements(id, model)).As<RedirectToActionResult>();
@@ -656,7 +648,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_SupportedBrowsers_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.SupportedBrowsers(id);
@@ -671,7 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.SupportedBrowsers(id)).As<BadRequestObjectResult>();
@@ -689,7 +681,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.SupportedBrowsers(id);
@@ -709,7 +701,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSupportedBrowsersModel = new Mock<SupportedBrowsersModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, SupportedBrowsersModel>(mockCatalogueItem))
                 .Returns(mockSupportedBrowsersModel);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.SupportedBrowsers(id)).As<ViewResult>();
@@ -736,7 +728,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_SupportedBrowsers_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockSupportedBrowsersModel = new Mock<SupportedBrowsersModel>().Object;
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -754,7 +746,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             SupportedBrowsersModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.SupportedBrowsers(id, model);
@@ -771,7 +763,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.SupportedBrowsers(id, model)).As<BadRequestObjectResult>();
@@ -791,7 +783,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.SupportedBrowsers(id, model);
@@ -809,7 +801,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.SupportedBrowsers(id, model);
@@ -827,7 +819,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.SupportedBrowsers(id, model)).As<RedirectToActionResult>();
@@ -855,7 +847,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_MobileFirstApproach_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(id);
@@ -870,7 +862,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MobileFirstApproach(id)).As<BadRequestObjectResult>();
@@ -889,7 +881,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.MobileFirstApproach(id);
@@ -910,7 +902,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockMapper.Setup(x => x.Map<CatalogueItem, MobileFirstApproachModel>(mockCatalogueItem))
                 .Returns(mockMobileFirstApproachModel);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.MobileFirstApproach(id)).As<ViewResult>();
@@ -936,7 +928,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_MobileFirstApproach_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockMobileFirstApproachModel = new Mock<MobileFirstApproachModel>().Object;
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -954,7 +946,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(id, model);
@@ -971,7 +963,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MobileFirstApproach(id, model)).As<BadRequestObjectResult>();
@@ -994,7 +986,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.MobileFirstApproach(id, model);
@@ -1013,7 +1005,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(id, model);
@@ -1031,7 +1023,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MobileFirstApproach(id, model)).As<RedirectToActionResult>();
@@ -1059,7 +1051,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_PlugInsOrExtensions_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PlugInsOrExtensions(id);
@@ -1074,7 +1066,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PlugInsOrExtensions(id)).As<BadRequestObjectResult>();
@@ -1093,7 +1085,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.PlugInsOrExtensions(id);
@@ -1114,7 +1106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockMapper.Setup(x => x.Map<CatalogueItem, PlugInsOrExtensionsModel>(mockCatalogueItem))
                 .Returns(mockPlugInsOrExtensionsModel);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.PlugInsOrExtensions(id)).As<ViewResult>();
@@ -1140,7 +1132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_PlugInsOrExtensions_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockPlugInsOrExtensionsModel = new Mock<PlugInsOrExtensionsModel>().Object;
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -1158,7 +1150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             PlugInsOrExtensionsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PlugInsOrExtensions(id, model);
@@ -1175,7 +1167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PlugInsOrExtensions(id, model)).As<BadRequestObjectResult>();
@@ -1198,7 +1190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>();
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 mockMapper.Object, mockService.Object);
 
             await controller.PlugInsOrExtensions(id, model);
@@ -1217,7 +1209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PlugInsOrExtensions(id, model);
@@ -1235,7 +1227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockClientApplication = new Mock<ClientApplication>().Object;
             mockService.Setup(x => x.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new BrowserBasedController(Mock.Of<ILogWrapper<BrowserBasedController>>(),
+            var controller = new BrowserBasedController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PlugInsOrExtensions(id, model)).As<RedirectToActionResult>();
