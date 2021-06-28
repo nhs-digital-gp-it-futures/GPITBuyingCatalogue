@@ -80,11 +80,10 @@
                                           url="@Url.Action(
                                           "DeleteAssociatedService",
                                           "AssociatedServices",
-                                          new { odsCode = Model.OdsCode,
-                                                        callOffId = Model.CallOffId,
-                                                        id = Model.OrderItem.CatalogueItemId,
-                                                        serviceName = Model.OrderItem.CatalogueItemName,
-                                                       })" />
+                                          new { Model.OdsCode,
+                                                Model.CallOffId,
+                                                Model.OrderItem.CatalogueItemId,
+                                                serviceName = Model.OrderItem.CatalogueItemName})" />
                 }
             </div>
         </form>
