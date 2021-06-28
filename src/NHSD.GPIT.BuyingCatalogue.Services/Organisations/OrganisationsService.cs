@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
-    public class OrganisationsService : IOrganisationsService
+    public sealed class OrganisationsService : IOrganisationsService
     {
         private readonly GPITBuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<Organisation, GPITBuyingCatalogueDbContext> organisationRepository;

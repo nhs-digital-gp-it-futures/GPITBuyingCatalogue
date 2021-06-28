@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
-    public class UsersService : IUsersService
+    public sealed class UsersService : IUsersService
     {
         private readonly IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository;
 

@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
-    public class OdsService : IOdsService
+    public sealed class OdsService : IOdsService
     {
         private const int DefaultCacheDuration = 60;
 

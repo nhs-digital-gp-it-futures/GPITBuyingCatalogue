@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Results;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
-    public class CreateBuyerService : ICreateBuyerService
+    public sealed class CreateBuyerService : ICreateBuyerService
     {
         private readonly IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository;
         private readonly IPasswordService passwordService;

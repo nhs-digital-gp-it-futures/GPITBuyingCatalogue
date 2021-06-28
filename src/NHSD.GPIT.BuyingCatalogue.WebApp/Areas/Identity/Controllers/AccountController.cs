@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
     [Area("Identity")]
     [Route("Identity/Account")]
-    public class AccountController : Controller
+    public sealed class AccountController : Controller
     {
         public const string SignInErrorMessage = "Enter a valid email address and password";
 

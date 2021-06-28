@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin")]
-    public class HomeController : Controller
+    public sealed class HomeController : Controller
     {
         private readonly IOrganisationsService organisationsService;
         private readonly IMapper mapper;
