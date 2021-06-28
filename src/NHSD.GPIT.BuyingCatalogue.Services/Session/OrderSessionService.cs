@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -11,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 {
-    public class OrderSessionService : IOrderSessionService
+    public sealed class OrderSessionService : IOrderSessionService
     {
         private readonly ISessionService sessionService;
         private readonly IOrderItemService orderItemService;
@@ -43,19 +44,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             sessionService.SetObject("CatalogueItemState", model);
         }
 
-        public async Task<bool> InitialiseStateForEdit(string odsCode, string callOffId, string catalogueSolutionId)
+        public async Task<bool> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueSolutionId)
         {
             var state = GetOrderStateFromSession();
 
             var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueSolutionId);
 
-            if (state is not null && state.CatalogueSolutionId is not null)
+            if (state?.CatalogueItemId is not null)
             {
                 if (state.IsNewOrder)
                     return true;
 
                 foreach (var recipient in state.ServiceRecipients.Where(x => !x.DeliveryDate.HasValue))
                     recipient.DeliveryDate = orderItem.DefaultDeliveryDate;
+
+                foreach (var serviceRecipient in state.ServiceRecipients)
+                {
+                    var orderRecipient = orderItem.OrderItemRecipients.FirstOrDefault(r => r.OdsCode.EqualsIgnoreCase(serviceRecipient.OdsCode));
+
+                    if (orderRecipient is not null)
+                    {
+                        serviceRecipient.Selected = true;
+                        serviceRecipient.Quantity = orderRecipient.Quantity;
+                        serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
+                    }
+                }
 
                 SetOrderStateToSession(state);
 
@@ -64,24 +77,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
             var order = await orderService.GetOrder(callOffId);
 
-            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId.ToString());
+            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId);
 
             state = new CreateOrderItemModel
             {
                 IsNewOrder = false,
                 CommencementDate = order.CommencementDate,
                 SupplierId = order.SupplierId,
-                CatalogueItemType = CatalogueItemType.Solution,
-                CatalogueSolutionId = orderItem.CatalogueItemId.ToString(),
+                CatalogueItemType = solution.CatalogueItemType,
+                CatalogueItemId = orderItem.CatalogueItemId,
                 CatalogueItemName = solution.Name,
                 Price = orderItem.Price,
-                ItemUnit = new ItemUnitModel { Name = orderItem.PricingUnit.Name, Description = orderItem.PricingUnit.Description },
-                TimeUnit = orderItem.PriceTimeUnit,
-                ProvisioningType = orderItem.ProvisioningType,
-                CurrencyCode = orderItem.CurrencyCode,
+                ItemUnit = new ItemUnitModel
+                {
+                    Name = orderItem.CataloguePrice.PricingUnit.Name,
+                    Description = orderItem.CataloguePrice.PricingUnit.Description,
+                },
                 EstimationPeriod = orderItem.EstimationPeriod,
                 PriceId = orderItem.PriceId,
-                Type = orderItem.CataloguePriceType,
+                ProvisioningType = orderItem.CataloguePrice.ProvisioningType,
+                Type = orderItem.CataloguePrice.CataloguePriceType,
+
+                // TODO: this isn't right – only additional services have a parent catalogue item
+                // CatalogueSolutionId = orderItem.CatalogueItem.ParentCatalogueItemId?.ToString(),
             };
 
             var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
@@ -104,18 +122,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             return false;
         }
 
-        public void SetPrice(EntityFramework.Models.GPITBuyingCatalogue.CataloguePrice cataloguePrice)
+        public void SetPrice(CataloguePrice cataloguePrice)
         {
             var state = GetOrderStateFromSession();
 
-            state.ProvisioningType = ProvisioningType.FromName<ProvisioningType>(cataloguePrice.ProvisioningType.Name);
-            state.CurrencyCode = cataloguePrice.CurrencyCode;
-            state.Type = CataloguePriceType.FromName<CataloguePriceType>(cataloguePrice.CataloguePriceType.Name);
             state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
-            if (cataloguePrice.TimeUnit != null)
-                state.TimeUnit = TimeUnit.FromName<TimeUnit>(cataloguePrice.TimeUnit.Name);
             state.Price = cataloguePrice.Price;
             state.PriceId = cataloguePrice.CataloguePriceId;
+            state.ProvisioningType = cataloguePrice.ProvisioningType;
+
+            // TODO: why is this fixed to PerYear?
             state.EstimationPeriod = TimeUnit.PerYear;
 
             SetOrderStateToSession(state);

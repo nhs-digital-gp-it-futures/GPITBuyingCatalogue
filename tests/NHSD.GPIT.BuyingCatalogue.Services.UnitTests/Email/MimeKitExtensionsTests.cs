@@ -6,19 +6,17 @@ using FluentAssertions;
 using MimeKit;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class MimeKitExtensionsTests
+    public static class MimeKitExtensionsTests
     {
         private static EmailMessageTemplate BasicTemplate => new(new EmailAddressTemplate("sender@somedomain.nhs.test"));
 
         private static ICollection<EmailAddress> SingleRecipient => new[] { new EmailAddress("recipient@somedomain.nhs.test") };
 
-        [Test]
+        [Fact]
         public static void AsMailboxAddress_ReturnsExpectedType()
         {
             const string name = "Some Body";
@@ -29,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mailboxAddress.Should().BeOfType<MailboxAddress>();
         }
 
-        [Test]
+        [Fact]
         public static void AsMailboxAddress_InitializesName()
         {
             const string name = "Some Body";
@@ -40,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mailboxAddress.Name.Should().Be(name);
         }
 
-        [Test]
+        [Fact]
         public static void AsMailboxAddress_InitializesAddress()
         {
             const string address = "somebody@notarealaddress.test";
@@ -52,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mailboxAddress.Address.Should().Be(address);
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_NullSubject_SetsSubjectToEmptyString()
         {
             var emailMessage = new EmailMessage(BasicTemplate, SingleRecipient);
@@ -62,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mimeMessage.Subject.Should().Be(string.Empty);
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_ReturnsExpectedType()
         {
             var emailMessage = new EmailMessage(BasicTemplate, SingleRecipient);
@@ -72,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mimeMessage.Should().BeOfType<MimeMessage>();
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_InitializesSender()
         {
             const string sender = "sender@somedomain.test";
@@ -87,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             from.First().As<MailboxAddress>().Address.Should().Be(sender);
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_InitializesRecipients()
         {
             const string recipient1 = "recipient1@somedomain.test";
@@ -105,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             to.Last().As<MailboxAddress>().Address.Should().Be(recipient2);
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_InitializesSubject()
         {
             const string subject = "Subject";
@@ -119,9 +117,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mimeMessage.Subject.Should().Be(subject);
         }
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("\t")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("\t")]
         public static void AsMimeMessage_NullOrWhiteSpaceSubjectPrefix_InitializesSubject(string emailSubjectPrefix)
         {
             const string subject = "Subject";
@@ -135,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mimeMessage.Subject.Should().Be(subject);
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_WithSubjectPrefix_InitializesSubject()
         {
             const string emailSubjectPrefix = "Prefix";
@@ -150,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mimeMessage.Subject.Should().Be($"{emailSubjectPrefix} {subject}");
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_InitializesHtmlBody()
         {
             const string expectedContent = "HTML";
@@ -164,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mimeMessage.HtmlBody.Should().Be(expectedContent);
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_InitializesTextBody()
         {
             const string expectedContent = "Text";
@@ -178,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mimeMessage.TextBody.Should().Be(expectedContent);
         }
 
-        [Test]
+        [Fact]
         public static void AsMimeMessage_WithAttachment_HasExpectedAttachment()
         {
             var fileNames = new[] { "hello.csv", "world.txt" };

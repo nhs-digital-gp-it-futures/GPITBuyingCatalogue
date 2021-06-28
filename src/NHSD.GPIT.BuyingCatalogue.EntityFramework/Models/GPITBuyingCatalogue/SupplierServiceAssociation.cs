@@ -1,15 +1,15 @@
-﻿#nullable disable
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class SupplierServiceAssociation
+    public sealed class SupplierServiceAssociation
     {
-        public string AssociatedServiceId { get; set; }
+        public CatalogueItemId AssociatedServiceId { get; set; }
 
-        public string CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
-        public virtual AssociatedService AssociatedService { get; set; }
+        public AssociatedService AssociatedService { get; set; }
 
-        public virtual CatalogueItem CatalogueItem { get; set; }
+        public CatalogueItem CatalogueItem { get; set; }
     }
 }

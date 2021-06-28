@@ -1,23 +1,21 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ContactExtensionsTests
-    {       
-        [Test]
+    public static class ContactExtensionsTests
+    {
+        [Fact]
         public static void ToDomain_NullModel_ReturnsExpectedContact()
         {
             ContactExtensions.ToDomain(null).Should().BeEquivalentTo(new Contact());
         }
 
-        [Test]
+        [Theory]
         [AutoData]
         public static void ToDomain_ReturnsExpectedContact(PrimaryContactModel model)
         {

@@ -1,11 +1,13 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
-    public class DeleteContinueModel : OrderingBaseModel
+    public sealed class DeleteContinueModel : OrderingBaseModel
     {
-        public DeleteContinueModel()
+        public DeleteContinueModel(string odsCode, CallOffId callOffId, string solutionName)
         {
-            Title = "Training Day at Practice deleted from C010000-01"; // TODO
-            ContinueLink = "/order/organisation/03F/order/C010000-01"; // TODO - and possibly add to base class if more crop up
+            Title = $"{solutionName} deleted from {callOffId}";
+            ContinueLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services";
         }
 
         public string ContinueLink { get; set; }

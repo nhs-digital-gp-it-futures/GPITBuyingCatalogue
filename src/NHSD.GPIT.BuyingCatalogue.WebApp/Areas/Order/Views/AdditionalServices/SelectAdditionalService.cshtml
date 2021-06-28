@@ -5,94 +5,24 @@
 
 <div class="nhsuk-width-container" data-test-id="additional-service-select-page">
     <partial name="Partials/_BackLink" model="Model" />
-
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-
-            <nhs-page-title title="@Model.Title" advice="These are the Additional Services for the Catalogue Solutions you&#39;ve added to this order. Select the one you want to purchase from the list." />
+            <nhs-validation-summary />
+            <nhs-page-title title="@Model.Title" advice="These are the Additional Services for the Catalogue Solutions you've added to this order. Select the one you want to purchase from the list." />
 
             <form method="post">
-
-                <div id="selectAdditionalService" data-test-id="question-selectAdditionalService">
-
-                    <div data-test-id="radiobutton-options">
-
-                        <div class="nhsuk-form-group">
-
-                            <fieldset class="nhsuk-fieldset">
-                                <legend class="nhsuk-fieldset__legend nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Select Additional Service
-                                </legend>
-
-                                <div class="nhsuk-radios">
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-1" name="selectAdditionalService" type="radio" value="10000-001A003">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-1">
-                                            Automated Arrivals
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-2" name="selectAdditionalService" type="radio" value="10000-001A006">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-2">
-                                            Document Management
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-3" name="selectAdditionalService" type="radio" value="10000-001A002">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-3">
-                                            EMIS Mobile
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-4" name="selectAdditionalService" type="radio" value="10000-001A005">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-4">
-                                            EMIS Web Dispensing
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-5" name="selectAdditionalService" type="radio" value="10000-001A008">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-5">
-                                            Enterprise Search and Reports
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-6" name="selectAdditionalService" type="radio" value="10000-001A004">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-6">
-                                            Extract Services
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-7" name="selectAdditionalService" type="radio" value="10000-001A001">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-7">
-                                            Long Term Conditions Manager
-                                        </label>
-                                    </div>
-
-                                    <div class="nhsuk-radios__item">
-                                        <input class="nhsuk-radios__input" id="selectAdditionalService-8" name="selectAdditionalService" type="radio" value="10000-001A007">
-                                        <label class="nhsuk-label nhsuk-radios__label" for="selectAdditionalService-8">
-                                            Risk Stratification
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-
-                <div data-test-id="continue-button">
-
-                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                        Continue
-                    </button>
-                </div>
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Select Additional Service">
+                    <nhs-radio-buttons asp-for="SelectedAdditionalServiceId"
+                                       values="@Model.Solutions"
+                                       value-name="CatalogueItemId"
+                                       display-name="Name" />
+                </nhs-fieldset-form-label>
+                <nhs-submit-button text="Continue" />
             </form>
         </div>
     </div>

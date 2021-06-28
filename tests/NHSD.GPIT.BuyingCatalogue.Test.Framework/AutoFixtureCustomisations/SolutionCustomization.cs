@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                                         "Google Chrome",
                                         "OPERA",
                                         "safari",
-                                        "mozilla firefox"
+                                        "mozilla firefox",
                                     })
                                 .With(ca => ca.ClientApplicationTypes, GetClientApplicationTypes())
                                 .With(
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                                 .With(
                                     ca => ca.MobileOperatingSystems,
                                     fixture.Build<MobileOperatingSystems>()
-                                        .With(m => m.OperatingSystems, new HashSet<string> { "andrOID", "Apple ios", })
+                                        .With(m => m.OperatingSystems, new HashSet<string> { "andrOID", "Apple ios" })
                                         .Create())
                                 .Create()
                         ))
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
             return result;
         }
-        
+
         private List<Integration> GetIntegrations(IFixture fixture)
         {
             var result = fixture.Build<Integration>()
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     }
                 }
             }
-            
+
             return result;
         }
     }

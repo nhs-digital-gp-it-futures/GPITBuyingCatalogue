@@ -1,39 +1,38 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
-    public class OrderingPartyService : IOrderingPartyService
+    public sealed class OrderingPartyService : IOrderingPartyService
     {
         private readonly ILogWrapper<OrderingPartyService> logger;
-        private readonly OrderingDbContext dbContext;
+        private readonly GPITBuyingCatalogueDbContext dbContext;
 
         public OrderingPartyService(
             ILogWrapper<OrderingPartyService> logger,
-            OrderingDbContext dbContext)
+            GPITBuyingCatalogueDbContext dbContext)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SetOrderingParty(Order order, OrderingParty orderingParty, Contact contact)
+        // TODO: remove orderingParty
+        public Task SetOrderingParty(Order order, Organisation orderingParty, Contact contact)
         {
             order.ValidateNotNull(nameof(order));
-            orderingParty.ValidateNotNull(nameof(orderingParty));
             contact.ValidateNotNull(nameof(contact));
 
+            // TODO: logger invocations should pass values as args
             logger.LogInformation($"Setting ordering party for {order.CallOffId}");
 
-            order.OrderingParty.Name = orderingParty.Name;
-            order.OrderingParty.OdsCode = orderingParty.OdsCode;
-            order.OrderingParty.Address = orderingParty.Address;
             order.OrderingPartyContact = contact;
-            await dbContext.SaveChangesAsync();
+            return dbContext.SaveChangesAsync();
         }
     }
 }

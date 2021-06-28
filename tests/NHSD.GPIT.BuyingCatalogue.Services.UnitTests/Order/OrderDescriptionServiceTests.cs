@@ -3,24 +3,22 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Order
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class OrderDescriptionServiceTests
+    public static class OrderDescriptionServiceTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullLogger_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new OrderDescriptionService(null, Mock.Of<IDbRepository<EntityFramework.Models.Ordering.Order, OrderingDbContext>>()));
+            Assert.Throws<ArgumentNullException>(() => _ = new OrderDescriptionService(null, Mock.Of<IDbRepository<EntityFramework.Ordering.Models.Order, GPITBuyingCatalogueDbContext>>()));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullRepository_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new OrderDescriptionService(Mock.Of<ILogWrapper<OrderDescriptionService>>(), null));
-        }   
+        }
     }
 }

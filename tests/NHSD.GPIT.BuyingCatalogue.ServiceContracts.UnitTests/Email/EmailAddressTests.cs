@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class EmailAddressTests
+    public static class EmailAddressTests
     {
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("\t")]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("\t")]
         public static void Constructor_String_NullEmptyOrWhiteSpaceAddress_ThrowsArgumentException(string address)
         {
-            Assert.Throws<ArgumentException>(() => new EmailAddress(address));
+            Assert.Throws<ArgumentException>(() => _ = new EmailAddress(address));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_InitializesAddress()
         {
             const string address = "somebody@notarealaddress.test";
@@ -29,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             emailAddress.Address.Should().Be(address);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_DoesNotInitializeDisplayName()
         {
             var emailAddress = new EmailAddress("somebody@notarealaddress.test");
@@ -37,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             emailAddress.DisplayName.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_String_InitializesAddress()
         {
             const string address = "somebody@notarealaddress.test";
@@ -47,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             emailAddress.Address.Should().Be(address);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_String_InitializesDisplayName()
         {
             const string name = "Some Body";
@@ -57,21 +54,19 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             emailAddress.DisplayName.Should().Be(name);
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_EmailAddressTemplate_NullTemplate_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new EmailAddress(null!));
+            Assert.Throws<ArgumentNullException>(() => _ = new EmailAddress(null!));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_EmailAddressTemplate_NullAddress_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => new EmailAddress(new EmailAddressTemplate()));
+            Assert.Throws<ArgumentException>(() => _ = new EmailAddress(new EmailAddressTemplate()));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailAddressTemplate_InitializesAddress()
         {
             const string expectedAddress = "bob@marley.test";
@@ -81,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             emailAddress.Address.Should().Be(expectedAddress);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailAddressTemplate_InitializesDisplayName()
         {
             const string expectedDisplayName = "Bob Marley ";

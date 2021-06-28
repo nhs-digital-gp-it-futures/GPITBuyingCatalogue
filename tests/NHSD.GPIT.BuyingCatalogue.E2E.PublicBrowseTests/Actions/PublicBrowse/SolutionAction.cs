@@ -6,7 +6,7 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
-    internal sealed class SolutionAction : ActionBase
+    internal class SolutionAction : ActionBase
     {
         public SolutionAction(IWebDriver driver) : base(driver)
         {
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
             return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.FlatPriceTable)
                 .FindElements(By.CssSelector("tbody tr"))
-                .Select(s => s.FindElement(Objects.PublicBrowse.SolutionObjects.PriceColumn).Text);
+                .Select(s => s.FindElement(Objects.PublicBrowse.SolutionObjects.PriceColumn).Text.Split("£")[1]);
         }
 
         internal IEnumerable<string> GetSummaryAndDescriptions()
@@ -51,6 +51,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             return Driver.FindElement(By.TagName("article"))
                 .FindElements(By.TagName("li"))
                 .Select(s => s.Text);
+        }
+
+        internal string ImplementationNameDisplayed()
+        {
+            return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.ImplementationName).Text;
         }
 
         internal IEnumerable<string> GetCapabilitiesContent()

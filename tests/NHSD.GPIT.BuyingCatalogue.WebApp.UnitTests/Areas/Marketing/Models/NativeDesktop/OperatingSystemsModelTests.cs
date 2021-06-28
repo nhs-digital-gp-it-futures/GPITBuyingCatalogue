@@ -1,55 +1,54 @@
 ﻿using System;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeDesktop
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class OperatingSystemsModelTests
+    public static class OperatingSystemsModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new OperatingSystemsModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication { NativeDesktopOperatingSystemsDescription = "Some operating system details" };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new OperatingSystemsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-desktop", model.BackLink);
-            Assert.AreEqual("Some operating system details", model.OperatingSystemsDescription);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-desktop", model.BackLink);
+            Assert.Equal("Some operating system details", model.OperatingSystemsDescription);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new OperatingSystemsModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.OperatingSystemsDescription);
         }
 
-        [Test]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("Some operating system details", true)]
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData(" ", false)]
+        [InlineData("Some operating system details", true)]
         public static void IsCompleteIsCorrectlySet(string operatingSystemsDescription, bool? expected)
         {
             var clientApplication = new ClientApplication { NativeDesktopOperatingSystemsDescription = operatingSystemsDescription };
@@ -58,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new OperatingSystemsModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

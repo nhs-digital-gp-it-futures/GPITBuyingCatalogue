@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string PhoneNumber { get; set; }
 
+        public string Department { get; set; }
+
         public string Email { get; set; }
     }
 }

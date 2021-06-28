@@ -1,28 +1,31 @@
-﻿using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NUnit.Framework;
+﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class BooleanExtensionsTests
+    public static class BooleanExtensionsTests
     {
-        [TestCase(null, "INCOMPLETE")]
-        [TestCase(true, "COMPLETE")]
-        [TestCase(false, "INCOMPLETE")]
+        [Theory]
+        [InlineData(null, "INCOMPLETE")]
+        [InlineData(true, "COMPLETE")]
+        [InlineData(false, "INCOMPLETE")]
         public static void BooleanExtension_ToStatus_ReturnsCorrectValue(bool? value, string expected)
         {
             var result = value.ToStatus();
-            Assert.AreEqual(result, expected);
+
+            result.Should().Be(expected);
         }
 
-        [TestCase(null, "")]
-        [TestCase(true, "Yes")]
-        [TestCase(false, "No")]
+        [Theory]
+        [InlineData(null, "")]
+        [InlineData(true, "Yes")]
+        [InlineData(false, "No")]
         public static void BooleanExtension_ToYesNo_ReturnsYesOrNoCorrectly(bool? value, string expected)
         {
             var result = value.ToYesNo();
-            Assert.AreEqual(result, expected);
+
+            result.Should().Be(expected);
         }
     }
 }

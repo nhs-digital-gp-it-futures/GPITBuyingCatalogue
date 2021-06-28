@@ -1,8 +1,8 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
-    public class DeleteConfirmationModel : OrderingBaseModel
+    public sealed class DeleteConfirmationModel : OrderingBaseModel
     {
-        public DeleteConfirmationModel(string odsCode, EntityFramework.Models.Ordering.Order order)
+        public DeleteConfirmationModel(string odsCode, EntityFramework.Ordering.Models.Order order)
         {
             BackLinkText = "Go back to all orders";
             BackLink = $"/order/organisation/{odsCode}";
