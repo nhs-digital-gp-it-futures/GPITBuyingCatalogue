@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -28,21 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new HomeController(null, Mock.Of<IOrganisationsService>(), Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
-                .ParamName.Should()
-                .Be("logger");
-        }
-
-        [Fact]
         public static void Constructor_NullOrganisationService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(
                     () =>
-                        _ = new HomeController(Mock.Of<ILogWrapper<HomeController>>(), null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
+                        _ = new HomeController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
                 .ParamName.Should()
                 .Be("organisationsService");
         }
@@ -52,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             Assert.Throws<ArgumentNullException>(
                     () =>
-                        _ = new HomeController(Mock.Of<ILogWrapper<HomeController>>(),
+                        _ = new HomeController(
                             Mock.Of<IOrganisationsService>(),
                             null,
                             Mock.Of<ISolutionsService>()))
@@ -87,8 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_BuyerOrganisations_GetsAllOrganisations()
         {
             var mockOrganisationService = new Mock<IOrganisationsService>();
-            var controller = new HomeController(
-                Mock.Of<ILogWrapper<HomeController>>(),
+            var controller = new HomeController(                
                 mockOrganisationService.Object,
                 Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
@@ -106,9 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationService.Setup(o => o.GetAllOrganisations())
                 .ReturnsAsync(mockOrganisations);
             var mockMapper = new Mock<IMapper>();
+          
             var mockSolutionService = new Mock<ISolutionsService>();
-            var controller = new HomeController(
-                Mock.Of<ILogWrapper<HomeController>>(),
+
+            var controller = new HomeController(                
                 mockOrganisationService.Object,
                 mockMapper.Object,
                 mockSolutionService.Object);
@@ -131,8 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Returns(mockOrganisationModels);
             var mockSolutionService = new Mock<ISolutionsService>();
 
-            var controller = new HomeController(
-                Mock.Of<ILogWrapper<HomeController>>(),
+          var controller = new HomeController(                
                 mockOrganisationService.Object,
                 mockMapper.Object,
                 mockSolutionService.Object);
@@ -148,7 +136,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void Get_Index_ReturnsDefaultView()
         {
             var controller = new HomeController(
-                Mock.Of<ILogWrapper<HomeController>>(),
                 Mock.Of<IOrganisationsService>(),
                 Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());

@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
+                options.Filters.Add<SerilogMvcLoggingAttribute>();
             });
 
             services.AddMvc(options =>
@@ -86,6 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseSerilogRequestLogging(opts =>
             {
                 opts.GetLevel = SerilogRequestLoggingOptions.GetLevel;
+                opts.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms. Action {ActionName}";
             });
 
             if (env.IsDevelopment())
