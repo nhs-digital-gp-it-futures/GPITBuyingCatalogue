@@ -22,60 +22,60 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
 
             model.OrderingPartyStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.OrderingParty) => TaskListStatuses.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.OrderingPartyComplete) => TaskListStatuses.Completed,
                 _ => TaskListStatuses.Incomplete,
             };
 
             model.SupplierStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.Supplier) => TaskListStatuses.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.OrderingParty) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskListStatuses.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.OrderingPartyComplete) => TaskListStatuses.Incomplete,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.CommencementDateStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDate) => TaskListStatuses.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.Supplier) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskListStatuses.Incomplete,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.CatalogueSolutionsStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutions) => TaskListStatuses.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServices) => TaskListStatuses.Optional,
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDate) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskListStatuses.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.Optional,
+                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.Incomplete,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.AdditionalServiceStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.AdditionalServices) => TaskListStatuses.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutions) => TaskListStatuses.Optional,
+                var cs when cs.HasFlag(TaskListOrderSections.AdditionalServicesComplete) => TaskListStatuses.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskListStatuses.Optional,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.AssociatedServiceStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServices) => TaskListStatuses.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutions) => TaskListStatuses.Optional,
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDate) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskListStatuses.Optional,
+                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.Incomplete,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.FundingSourceStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.FundingSource) => TaskListStatuses.Completed,
+                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskListStatuses.Completed,
                 var cs when 
-                cs.HasFlag(TaskListOrderSections.CatalogueSolutions)
-                || cs.HasFlag(TaskListOrderSections.AssociatedServices) => TaskListStatuses.Incomplete,
+                cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete)
+                || cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.Incomplete,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.OrderCompletable =
-                (completedSections.HasFlag(TaskListOrderSections.FundingSource)
-                && completedSections.HasFlag(TaskListOrderSections.CatalogueSolutions))
-                || completedSections.HasFlag(TaskListOrderSections.AssociatedServices);
+                (completedSections.HasFlag(TaskListOrderSections.FundingSourceComplete)
+                && completedSections.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete))
+                || completedSections.HasFlag(TaskListOrderSections.AssociatedServicesComplete);
 
             model.OrderComplete = order.Completed.HasValue;
 

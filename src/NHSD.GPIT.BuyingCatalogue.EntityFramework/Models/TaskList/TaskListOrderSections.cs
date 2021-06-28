@@ -6,12 +6,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.TaskList
     public enum TaskListOrderSections
     {
         Description = 0,
-        OrderingParty = 1 | Description,
-        Supplier = 2 | OrderingParty,
-        CommencementDate = 4 | Supplier,
-        CatalogueSolutions = 8 | CommencementDate,
-        AdditionalServices = 16 | CatalogueSolutions,
-        AssociatedServices = 32 | CommencementDate,
+        OrderingParty = 1,
+        Supplier = 2,
+        CommencementDate = 4,
+        CatalogueSolutions = 8,
+        AdditionalServices = 16,
+        AssociatedServices = 32,
         FundingSource = 64,
+        DescriptionComplete = Description,
+        OrderingPartyComplete = OrderingParty | DescriptionComplete,
+        SupplierComplete = Supplier | OrderingPartyComplete,
+        CommencementDateComplete = CommencementDate | SupplierComplete,
+        CatalogueSolutionsComplete = CatalogueSolutions | CommencementDateComplete,
+        AdditionalServicesComplete = AdditionalServices | CatalogueSolutionsComplete,
+        AssociatedServicesComplete = AssociatedServices | CommencementDateComplete,
+        FundingSourceComplete = FundingSource,
     }
 }
