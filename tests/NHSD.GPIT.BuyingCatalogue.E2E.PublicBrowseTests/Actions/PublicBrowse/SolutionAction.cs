@@ -63,6 +63,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CapabilitiesContent).Select(s => s.Text);
         }
 
+        internal bool AssociatedServicesTableDisplayed()
+        {
+            return ElementDisplayed(Objects.PublicBrowse.SolutionObjects.AssociatedServicesTable);
+        }
+
+        internal IEnumerable<string> GetAssociationServiesInfo()
+        {
+            return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.AssociatedServicesInformation).Select(s => s.Text);
+        }
+
         private bool ElementDisplayed(By by)
         {
             try
@@ -77,4 +87,3 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         }
     }
 }
-

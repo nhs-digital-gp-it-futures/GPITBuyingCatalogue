@@ -20,6 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By FlatPriceTable => CustomBy.DataTestId("flat-list-price-table");
 
         internal static By PriceColumn => CustomBy.DataTestId("price");
+
+        internal static By AssociatedServicesTable => By.ClassName("nhsuk-table__body");
+
+        internal static By AssociatedServicesInformation => By.ClassName("nhsuk-summary-list__row");
     }
 }
 
