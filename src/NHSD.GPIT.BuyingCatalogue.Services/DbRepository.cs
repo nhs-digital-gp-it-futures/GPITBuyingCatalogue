@@ -4,8 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
@@ -13,13 +11,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
         where T : class
         where TDbContext : DbContext
     {
-        private readonly ILogWrapper<SolutionsService> logger;
         private readonly DbSet<T> dbSet;
 
-        public DbRepository(ILogWrapper<SolutionsService> logger, TDbContext dbContext)
+        public DbRepository(TDbContext dbContext)
             : base(dbContext)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             dbSet = dbContext.Set<T>();
         }
 

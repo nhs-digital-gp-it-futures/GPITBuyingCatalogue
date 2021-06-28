@@ -10,7 +10,6 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -29,18 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new NativeMobileController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
-                .ParamName.Should().Be("logger");
-        }
-
-        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                    _ = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), null,
+                    _ = new NativeMobileController( null,
                         Mock.Of<ISolutionsService>()))
                 .ParamName.Should().Be("mapper");
         }
@@ -49,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(), Mock.Of<IMapper>(),
+                _ = new NativeMobileController( Mock.Of<IMapper>(),
                     null))
                 .ParamName.Should().Be("solutionsService");
         }
@@ -71,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_AdditionalInformation_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             await controller.AdditionalInformation(id);
@@ -86,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             var actual = (await controller.AdditionalInformation(id)).As<BadRequestObjectResult>();
@@ -104,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             await controller.AdditionalInformation(id);
@@ -125,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockAdditionalInformationModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             var actual = (await controller.AdditionalInformation(id)).As<ViewResult>();
@@ -154,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -170,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             AdditionalInformationModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -190,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id, model);
@@ -207,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.AdditionalInformation(id, model)).As<BadRequestObjectResult>();
@@ -226,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id, model);
@@ -245,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.AdditionalInformation(id, model);
@@ -262,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.AdditionalInformation(id, model)).As<RedirectToActionResult>();
@@ -290,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_Connectivity_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             await controller.Connectivity(id);
@@ -305,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             var actual = (await controller.Connectivity(id)).As<BadRequestObjectResult>();
@@ -323,7 +314,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             await controller.Connectivity(id);
@@ -343,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockConnectivityModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             var actual = (await controller.Connectivity(id)).As<ViewResult>();
@@ -372,7 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             ConnectivityModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -388,7 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             ConnectivityModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -408,7 +399,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Connectivity(id, model);
@@ -425,7 +416,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.Connectivity(id, model)).As<BadRequestObjectResult>();
@@ -448,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMobileConnectionDetails = new Mock<MobileConnectionDetails>().Object;
             mockMapper.Setup(m => m.Map<ConnectivityModel, MobileConnectionDetails>(model))
                 .Returns(mockMobileConnectionDetails);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockService.Object);
 
             await controller.Connectivity(id, model);
@@ -467,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Connectivity(id, model);
@@ -484,7 +475,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.Connectivity(id, model)).As<RedirectToActionResult>();
@@ -514,7 +505,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_HardwareRequirements_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             await controller.HardwareRequirements(id);
@@ -529,7 +520,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             var actual = (await controller.HardwareRequirements(id)).As<BadRequestObjectResult>();
@@ -547,7 +538,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             await controller.HardwareRequirements(id);
@@ -567,7 +558,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockHardwareRequirementsModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             var actual = (await controller.HardwareRequirements(id)).As<ViewResult>();
@@ -596,7 +587,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -612,7 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             HardwareRequirementsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -632,7 +623,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id, model);
@@ -649,7 +640,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.HardwareRequirements(id, model)).As<BadRequestObjectResult>();
@@ -668,7 +659,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id, model);
@@ -687,7 +678,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.HardwareRequirements(id, model);
@@ -704,7 +695,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.HardwareRequirements(id, model)).As<RedirectToActionResult>();
@@ -732,7 +723,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_MemoryAndStorage_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             await controller.MemoryAndStorage(id);
@@ -747,7 +738,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             var actual = (await controller.MemoryAndStorage(id)).As<BadRequestObjectResult>();
@@ -765,7 +756,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             await controller.MemoryAndStorage(id);
@@ -785,7 +776,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockMemoryAndStorageModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             var actual = (await controller.MemoryAndStorage(id)).As<ViewResult>();
@@ -814,7 +805,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             MemoryAndStorageModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -830,7 +821,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             MemoryAndStorageModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -850,7 +841,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MemoryAndStorage(id, model);
@@ -867,7 +858,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MemoryAndStorage(id, model)).As<BadRequestObjectResult>();
@@ -890,7 +881,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMobileMemoryAndStorage = new Mock<MobileMemoryAndStorage>().Object;
             mockMapper.Setup(m => m.Map<MemoryAndStorageModel, MobileMemoryAndStorage>(model))
                 .Returns(mockMobileMemoryAndStorage);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockService.Object);
 
             await controller.MemoryAndStorage(id, model);
@@ -909,7 +900,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MemoryAndStorage(id, model);
@@ -926,7 +917,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MemoryAndStorage(id, model)).As<RedirectToActionResult>();
@@ -956,7 +947,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_MobileFirstApproach_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             await controller.MobileFirstApproach(id);
@@ -971,7 +962,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             var actual = (await controller.MobileFirstApproach(id)).As<BadRequestObjectResult>();
@@ -989,7 +980,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             await controller.MobileFirstApproach(id);
@@ -1009,7 +1000,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockMobileFirstApproachModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             var actual = (await controller.MobileFirstApproach(id)).As<ViewResult>();
@@ -1038,7 +1029,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -1054,7 +1045,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -1072,7 +1063,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             MobileFirstApproachModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(id, model);
@@ -1089,7 +1080,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MobileFirstApproach(id, model)).As<BadRequestObjectResult>();
@@ -1115,7 +1106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(solutionId))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(solutionId, mockModel.Object);
@@ -1134,7 +1125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.MobileFirstApproach(id, model);
@@ -1151,7 +1142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.MobileFirstApproach(id, model)).As<RedirectToActionResult>();
@@ -1179,7 +1170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_OperatingSystems_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             await controller.OperatingSystems(id);
@@ -1194,7 +1185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             var actual = (await controller.OperatingSystems(id)).As<BadRequestObjectResult>();
@@ -1212,7 +1203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             await controller.OperatingSystems(id);
@@ -1232,7 +1223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockOperatingSystemsModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             var actual = (await controller.OperatingSystems(id)).As<ViewResult>();
@@ -1261,7 +1252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             OperatingSystemsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -1277,7 +1268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             OperatingSystemsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -1295,7 +1286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             OperatingSystemsModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OperatingSystems(id, model);
@@ -1312,7 +1303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.OperatingSystems(id, model)).As<BadRequestObjectResult>();
@@ -1335,7 +1326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockMobileOperatingSystems);
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockService.Object);
 
             await controller.OperatingSystems(id, model);
@@ -1353,7 +1344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OperatingSystems(id, model);
@@ -1370,7 +1361,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.OperatingSystems(id, model)).As<RedirectToActionResult>();
@@ -1398,7 +1389,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_ThirdParty_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             await controller.ThirdParty(id);
@@ -1413,7 +1404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockSolutionsService.Object);
 
             var actual = (await controller.ThirdParty(id)).As<BadRequestObjectResult>();
@@ -1431,7 +1422,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMapper = new Mock<IMapper>();
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             await controller.ThirdParty(id);
@@ -1451,7 +1442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(mockThirdPartyModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockSolutionsService.Object);
 
             var actual = (await controller.ThirdParty(id)).As<ViewResult>();
@@ -1480,7 +1471,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             ThirdPartyModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -1496,7 +1487,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             ThirdPartyModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -1516,7 +1507,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ThirdParty(id, model);
@@ -1533,7 +1524,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.ThirdParty(id, model)).As<BadRequestObjectResult>();
@@ -1556,7 +1547,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockMobileThirdParty = new Mock<MobileThirdParty>().Object;
             mockMapper.Setup(m => m.Map<ThirdPartyModel, MobileThirdParty>(model))
                 .Returns(mockMobileThirdParty);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 mockMapper.Object, mockService.Object);
 
             await controller.ThirdParty(id, model);
@@ -1575,7 +1566,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.ThirdParty(id, model);
@@ -1592,7 +1583,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetClientApplication(id))
                 .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(Mock.Of<ILogWrapper<NativeMobileController>>(),
+            var controller = new NativeMobileController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.ThirdParty(id, model)).As<RedirectToActionResult>();

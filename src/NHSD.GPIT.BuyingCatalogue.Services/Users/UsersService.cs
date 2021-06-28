@@ -5,21 +5,17 @@ using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
-    public class UsersService : IUsersService
+    public sealed class UsersService : IUsersService
     {
-        private readonly ILogWrapper<UsersService> logger;
         private readonly IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository;
 
         public UsersService(
-            ILogWrapper<UsersService> logger,
             IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
