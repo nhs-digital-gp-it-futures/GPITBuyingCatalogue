@@ -1,19 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.BrowserBased
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class HardwareRequirementsModelTests
+    public static class HardwareRequirementsModelTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-        
-        [Test]
+        [Fact]
         public static void Description_StringLengthAttribute_ExpectedMaxLength()
         {
             typeof(HardwareRequirementsModel)
@@ -23,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
                 .Be(500);
         }
 
+        [Theory]
         [AutoData]
-        [Test]
         public static void IsComplete_DescriptionValid_ReturnsTrue(string description)
         {
             var model = new HardwareRequirementsModel { Description = description };
@@ -32,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Brow
             model.IsComplete.Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsComplete_DescriptionNotValid_ReturnsFalse(string invalid)
         {
             var model = new HardwareRequirementsModel { Description = invalid };

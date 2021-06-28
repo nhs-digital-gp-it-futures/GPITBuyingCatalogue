@@ -1,26 +1,18 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.ClientApplicationType
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class NativeDesktopModelTests
+    public static class NativeDesktopModelTests
     {
         private const string KeyIncomplete = "INCOMPLETE";
 
-        private static readonly object[] ResultSets =
-        {
-            new object[]{null, KeyIncomplete},
-            new object[]{false, KeyIncomplete},
-            new object[]{true, "COMPLETE"},
-        };
-        
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void AdditionalInformationStatus_Various_NativeDesktopAdditionalInformationComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -37,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeDesktopAdditionalInformationComplete());
         }
 
-        [Test]
+        [Fact]
         public static void ClientApplication_Null_ValuesFalseOrIncomplete()
         {
             var nativeDesktopModel = new NativeDesktopModel();
@@ -51,7 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             nativeDesktopModel.ThirdPartyStatus.Should().Be(KeyIncomplete);
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void ConnectivityStatus_Various_NativeDesktopConnectivityComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -68,7 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeDesktopConnectivityComplete());
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void HardwareRequirementsStatus_Various_NativeDesktopHardwareRequirementsComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -85,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeDesktopHardwareRequirementsComplete());
         }
 
-        [Test]
+        [Fact]
         public static void IsComplete_AllValuesValid_ReturnsTrue()
         {
             var mockClientApplication = new Mock<ClientApplication>();
@@ -103,8 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             nativeDesktopModel.IsComplete.Should().BeTrue();
         }
 
-        [TestCase(false)]
-        [TestCase(null)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(null)]
         public static void IsComplete_NativeDesktopSupportedOperatingSystemsComplete_NotTrue_ReturnsFalse(bool? value)
         {
             var mockClientApplication = new Mock<ClientApplication>();
@@ -122,8 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             nativeDesktopModel.IsComplete.Should().BeFalse();
         }
 
-        [TestCase(false)]
-        [TestCase(null)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(null)]
         public static void IsComplete_NativeDesktopConnectivityComplete_NotTrue_ReturnsFalse(bool? value)
         {
             var mockClientApplication = new Mock<ClientApplication>();
@@ -141,8 +137,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             nativeDesktopModel.IsComplete.Should().BeFalse();
         }
 
-        [TestCase(false)]
-        [TestCase(null)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(null)]
         public static void IsComplete_NativeDesktopMemoryComplete_NotTrue_ReturnsFalse(bool? value)
         {
             var mockClientApplication = new Mock<ClientApplication>();
@@ -160,7 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             nativeDesktopModel.IsComplete.Should().BeFalse();
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void MemoryAndStorageStatus_Various_NativeDesktopMemoryAndStorageComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -177,7 +175,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeDesktopMemoryAndStorageComplete());
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void SupportedOperatingSystemsStatus_Various_NativeDesktopSupportedOperatingSystemsComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -194,7 +193,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             mockClientApplication.Verify(c => c.NativeDesktopSupportedOperatingSystemsComplete());
         }
 
-        [TestCaseSource(nameof(ResultSets))]
+        [Theory]
+        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
         public static void ThirdPartyStatus_Various_NativeDesktopThirdPartyComplete_ResultAsExpected(
             bool? complete,
             string expected)
@@ -209,6 +209,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 
             nativeDesktopModel.ThirdPartyStatus.Should().Be(expected);
             mockClientApplication.Verify(c => c.NativeDesktopThirdPartyComplete());
+        }
+
+        private static class ResultSetData
+        {
+            public static IEnumerable<object[]> TestData()
+            {
+                yield return new object[] { null, KeyIncomplete };
+                yield return new object[] { false, KeyIncomplete };
+                yield return new object[] { true, "COMPLETE" };
+            }
         }
     }
 }

@@ -1,15 +1,13 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Identity
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class PasswordResetTokenTests
+    public static class PasswordResetTokenTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_String_ApplicationUser_InitializesExpectedMembers()
         {
             const string expectedToken = "TokenToken";
