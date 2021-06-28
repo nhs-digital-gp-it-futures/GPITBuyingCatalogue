@@ -23,6 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.MappingProfiles
             mapper = mapperConfiguration.CreateMapper();
         }
 
+        public void Dispose()
+        {
+            mapperConfiguration = null;
+            mapper = null;
+        }
+
         [Fact]
         public void Mappings_Configuration_Valid()
         {
@@ -38,12 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.MappingProfiles
             actual.Id.Should().Be(organisation.OrganisationId);
             actual.Name.Should().Be(organisation.Name);
             actual.OdsCode.Should().Be(organisation.OdsCode);
-        }
-
-        public void Dispose()
-        {
-            mapperConfiguration = null;
-            mapper = null;
         }
     }
 }

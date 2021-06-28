@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -21,10 +22,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     public static class HostingTypeControllerTests
     {
         [Fact]
+        public static void Constructor_NullLogging_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                _ = new HostingTypeController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
+                .ParamName.Should().Be("logger");
+        }
+
+        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new HostingTypeController( null,
+                _ = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), null,
                     Mock.Of<ISolutionsService>())).ParamName.Should().Be("mapper");
         }
 
@@ -32,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new HostingTypeController( Mock.Of<IMapper>(), null))
+                _ = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(), Mock.Of<IMapper>(), null))
                 .ParamName.Should().Be("solutionsService");
         }
 
@@ -55,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_PublicCloud_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PublicCloud(id);
@@ -70,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PublicCloud(id)).As<BadRequestObjectResult>();
@@ -88,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.PublicCloud(id);
@@ -108,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHostingTypePublicCloudModel = new Mock<PublicCloudModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, PublicCloudModel>(mockCatalogueItem))
                 .Returns(mockHostingTypePublicCloudModel);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.PublicCloud(id)).As<ViewResult>();
@@ -137,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_PublicCloud_InvalidModel_ReturnsViewWithModel(CatalogueItemId id)
         {
             var mockPublicCloudModel = new Mock<PublicCloudModel>().Object;
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -155,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             PublicCloudModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PublicCloud(id, model);
@@ -172,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(default(Hosting));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PublicCloud(id, model)).As<BadRequestObjectResult>();
@@ -192,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>();
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting.Object);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.PublicCloud(id, model);
@@ -210,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PublicCloud(id, model);
@@ -228,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PublicCloud(id, model)).As<RedirectToActionResult>();
@@ -257,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_PrivateCloud_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PrivateCloud(id);
@@ -272,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PrivateCloud(id)).As<BadRequestObjectResult>();
@@ -290,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.PrivateCloud(id);
@@ -310,7 +319,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHostingTypePrivateCloudModel = new Mock<PrivateCloudModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, PrivateCloudModel>(mockCatalogueItem))
                 .Returns(mockHostingTypePrivateCloudModel);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.PrivateCloud(id)).As<ViewResult>();
@@ -339,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_PrivateCloud_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockPrivateCloudModel = new Mock<PrivateCloudModel>().Object;
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -357,7 +366,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             PrivateCloudModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PrivateCloud(id, model);
@@ -373,7 +382,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetHosting(id)).ReturnsAsync(default(Hosting));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PrivateCloud(id, model)).As<BadRequestObjectResult>();
@@ -393,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>();
             mockService.Setup(s => s.GetHosting(id)).ReturnsAsync(mockHosting.Object);
 
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.PrivateCloud(id, model);
@@ -411,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PrivateCloud(id, model);
@@ -429,7 +438,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.PrivateCloud(id, model)).As<RedirectToActionResult>();
@@ -458,7 +467,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_Hybrid_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Hybrid(id);
@@ -473,7 +482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.Hybrid(id)).As<BadRequestObjectResult>();
@@ -491,7 +500,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.Hybrid(id);
@@ -511,7 +520,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHybridModel = new Mock<HybridModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, HybridModel>(mockCatalogueItem))
                 .Returns(mockHybridModel);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.Hybrid(id)).As<ViewResult>();
@@ -540,7 +549,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_Hybrid_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockHybridModel = new Mock<HybridModel>().Object;
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -558,7 +567,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             HybridModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Hybrid(id, model);
@@ -575,7 +584,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(default(Hosting));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.Hybrid(id, model)).As<BadRequestObjectResult>();
@@ -595,7 +604,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>();
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting.Object);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.Hybrid(id, model);
@@ -613,7 +622,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Hybrid(id, model);
@@ -631,7 +640,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id)).ReturnsAsync(mockHosting);
 
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.Hybrid(id, model)).As<RedirectToActionResult>();
@@ -660,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_OnPremise_ValidId_CallsGetSolutionOnService(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OnPremise(id);
@@ -675,7 +684,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.OnPremise(id)).As<BadRequestObjectResult>();
@@ -693,7 +702,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.OnPremise(id);
@@ -713,7 +722,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockOnPremiseModel = new Mock<OnPremiseModel>().Object;
             mockMapper.Setup(x => x.Map<CatalogueItem, OnPremiseModel>(mockCatalogueItem))
                 .Returns(mockOnPremiseModel);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             var actual = (await controller.OnPremise(id)).As<ViewResult>();
@@ -742,7 +751,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Post_OnPremise_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockOnPremiseModel = new Mock<OnPremiseModel>().Object;
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
@@ -760,7 +769,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             OnPremiseModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OnPremise(id, model);
@@ -777,7 +786,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(default(Hosting));
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.OnPremise(id, model)).As<BadRequestObjectResult>();
@@ -797,7 +806,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>();
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting.Object);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 mockMapper.Object, mockService.Object);
 
             await controller.OnPremise(id, model);
@@ -815,7 +824,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OnPremise(id, model);
@@ -833,7 +842,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
                 .ReturnsAsync(mockHosting);
-            var controller = new HostingTypeController(
+            var controller = new HostingTypeController(Mock.Of<ILogWrapper<HostingTypeController>>(),
                 Mock.Of<IMapper>(), mockService.Object);
 
             var actual = (await controller.OnPremise(id, model)).As<RedirectToActionResult>();

@@ -11,8 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new ImplementationTimescalesModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new ImplementationTimescalesModel(null));
         }
 
         [Fact]

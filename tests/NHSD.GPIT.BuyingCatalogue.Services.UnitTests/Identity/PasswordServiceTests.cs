@@ -64,14 +64,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [InlineData("\t")]
         public static void GeneratePasswordResetTokenAsync_EmptyOrWhiteSpaceEmailAddress_ThrowsException(string emailAddress)
         {
-            async Task GeneratePasswordResetTokenAsync()
+            Task GeneratePasswordResetTokenAsync()
             {
                 var service = new PasswordService(
                     Mock.Of<IEmailService>(),
                     new PasswordResetSettings(),
                     MockUserManager.Object);
 
-                await service.GeneratePasswordResetTokenAsync(emailAddress);
+                return service.GeneratePasswordResetTokenAsync(emailAddress);
             }
 
             Assert.ThrowsAsync<ArgumentException>(GeneratePasswordResetTokenAsync);
@@ -120,14 +120,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [Fact]
         public static void SendResetEmailAsync_NullUser_ThrowsException()
         {
-            static async Task SendResetEmailAsync()
+            static Task SendResetEmailAsync()
             {
                 var service = new PasswordService(
                     Mock.Of<IEmailService>(),
                     new PasswordResetSettings(),
                     MockUserManager.Object);
 
-                await service.SendResetEmailAsync(null, new Uri("https://www.google.co.uk/"));
+                return service.SendResetEmailAsync(null, new Uri("https://www.google.co.uk/"));
             }
 
             Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);
@@ -136,14 +136,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [Fact]
         public static void SendResetEmailAsync_NullCallback_ThrowsException()
         {
-            static async Task SendResetEmailAsync()
+            static Task SendResetEmailAsync()
             {
                 var service = new PasswordService(
                     Mock.Of<IEmailService>(),
                     new PasswordResetSettings(),
                     MockUserManager.Object);
 
-                await service.SendResetEmailAsync(AspNetUserBuilder.Create().Build(), null);
+                return service.SendResetEmailAsync(AspNetUserBuilder.Create().Build(), null);
             }
 
             Assert.ThrowsAsync<ArgumentNullException>(SendResetEmailAsync);

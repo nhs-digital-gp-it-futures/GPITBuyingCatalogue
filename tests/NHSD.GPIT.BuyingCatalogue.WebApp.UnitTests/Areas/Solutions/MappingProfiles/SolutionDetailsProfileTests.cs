@@ -39,8 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(
-                    x =>
-                        x.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
+                    s =>
+                        s.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
                 .Returns(new ConfigSettingResolver(configuration.Object));
             mapperConfiguration = new MapperConfiguration(
                 cfg =>

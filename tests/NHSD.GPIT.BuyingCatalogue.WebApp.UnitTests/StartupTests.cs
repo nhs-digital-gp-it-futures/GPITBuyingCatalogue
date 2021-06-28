@@ -21,7 +21,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
 {
-    public sealed class StartupTests : IDisposable
+    public sealed class StartupTests
     {
         public StartupTests()
         {
@@ -67,15 +67,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
 
             webHost.Services.GetRequiredService(requiredInterface).Should().BeOfType(expectedType);
         }
-
-        public void Dispose()
-        {
-        }
     }
 
-    public class StartupTest : Startup
+    public sealed class StartupTest : Startup
     {
-        public StartupTest(IConfiguration configuration) : base(configuration)
+        public StartupTest(IConfiguration configuration)
+            : base(configuration)
         {
         }
     }

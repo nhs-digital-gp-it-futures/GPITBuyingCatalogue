@@ -28,12 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     cfg.AddProfile<SolutionDetailsProfile>();
                 }).CreateMapper(serviceProvider.Object.GetService);
             serviceProvider.Setup(
-                    x =>
-                        x.GetService(
+                    s =>
+                        s.GetService(
                             typeof(IMemberValueResolver<CatalogueItem, InteroperabilityModel, string,
                                 IList<IntegrationModel>>)))
                 .Returns(new IntegrationModelsResolver(mapper));
-            serviceProvider.Setup(x => x.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
+            serviceProvider.Setup(s => s.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
                 .Returns(new Mock<IMemberValueResolver<object, object, string, string>>().Object);
         }
 
@@ -70,12 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         integrationModel.Tables[inner]
                             .Rows.Should()
                             .BeEquivalentTo(
-                                integration.SubTypes[inner]
-                                    .DetailsDictionary.Select(
-                                        d => new[]
-                                        {
-                                        d.Key, d.Value
-                                        }));
+                                integration.SubTypes[inner].DetailsDictionary.Select(d => new[] { d.Key, d.Value }));
                     }
                     else
                     {
@@ -106,10 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         [CommonAutoData]
         public void Map_IntegrationsToIntegrationModels_InvalidIntegrations_ReturnsEmptyList(CatalogueItem catalogueItem)
         {
-            new List<string>
-            {
-                null, "", "    "
-            }
+            new List<string> { null, "", "    " }
                 .ForEach(
                     invalid =>
                     {
@@ -127,11 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             foreach (var (key, value) in keyValuePair.Value)
             {
-                result.Add(
-                    new[]
-                    {
-                    keyValuePair.Key, key, value
-                    });
+                result.Add(new[] { keyValuePair.Key, key, value });
             }
 
             return result;

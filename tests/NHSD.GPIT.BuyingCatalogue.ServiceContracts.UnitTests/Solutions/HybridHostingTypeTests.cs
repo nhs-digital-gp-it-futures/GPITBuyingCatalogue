@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void IsValid_LinkHasValue_ReturnsTrue()
         {
-            var model = new HybridHostingType { Link = "some-value", };
+            var model = new HybridHostingType { Link = "some-value" };
 
             var actual = model.IsValid();
 
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void IsValid_HostingModelHasValue_ReturnsTrue()
         {
-            var model = new HybridHostingType { HostingModel = "some-value", };
+            var model = new HybridHostingType { HostingModel = "some-value" };
 
             var actual = model.IsValid();
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void IsValid_RequiresHscnHasValue_ReturnsTrue()
         {
-            var model = new HybridHostingType { RequiresHscn = "some-value", };
+            var model = new HybridHostingType { RequiresHscn = "some-value" };
 
             var actual = model.IsValid();
 
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void IsValid_SummaryHasValue_ReturnsTrue()
         {
-            var model = new HybridHostingType { Summary = "some-value", };
+            var model = new HybridHostingType { Summary = "some-value" };
 
             var actual = model.IsValid();
 

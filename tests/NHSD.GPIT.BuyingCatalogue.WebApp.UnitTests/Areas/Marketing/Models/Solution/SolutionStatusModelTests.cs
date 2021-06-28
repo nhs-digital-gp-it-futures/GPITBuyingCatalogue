@@ -66,11 +66,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Solu
             model.IsNativeMobile.Should().BeFalse();
         }
 
-        private static SolutionStatusModel ModelFor(string type) =>
-            new()
-            {
-                ClientApplication =
-                    new ClientApplication { ClientApplicationTypes = new HashSet<string> { type, } },
-            };
+        private static SolutionStatusModel ModelFor(string type) => new()
+        {
+            ClientApplication = new ClientApplication { ClientApplicationTypes = new HashSet<string> { type } },
+        };
     }
 }

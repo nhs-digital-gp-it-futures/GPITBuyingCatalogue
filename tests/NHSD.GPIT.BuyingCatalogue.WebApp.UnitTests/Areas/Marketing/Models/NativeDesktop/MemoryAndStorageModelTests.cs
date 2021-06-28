@@ -17,15 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
     {
         private IMapper mapper;
 
-        public MemoryAndStorageModelTests()
-        {
-            mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
-        }
-
         [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
@@ -36,6 +27,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             Assert.Null(model.SelectedMemorySize);
             Assert.Null(model.StorageDescription);
             Assert.Null(model.SelectedScreenResolution);
+        }
+
+        public MemoryAndStorageModelTests()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
         }
 
         public void Dispose()

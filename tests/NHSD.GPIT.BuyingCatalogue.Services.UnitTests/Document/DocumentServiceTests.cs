@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Common;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Services.Document;
@@ -87,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 
             var controller = new DocumentService(Mock.Of<ILogWrapper<DocumentService>>(), mockStorage.Object);
 
-            var result = await controller.DownloadDocumentAsync("directory") as FileStreamResult;
+            var result = await controller.DownloadDocumentAsync("directory");
 
             Assert.NotNull(result);
             result.FileStream.IsSameOrEqualTo(expectedStream);
@@ -152,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 
             var controller = new DocumentService(Mock.Of<ILogWrapper<DocumentService>>(), mockStorage.Object);
 
-            var result = await controller.DownloadSolutionDocumentAsync("ID", "directory") as FileStreamResult;
+            var result = await controller.DownloadSolutionDocumentAsync("ID", "directory");
 
             Assert.NotNull(result);
             result.FileStream.IsSameOrEqualTo(expectedStream);

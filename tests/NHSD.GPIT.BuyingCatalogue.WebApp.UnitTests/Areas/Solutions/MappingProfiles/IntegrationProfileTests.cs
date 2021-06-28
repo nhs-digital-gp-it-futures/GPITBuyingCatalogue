@@ -18,12 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
     public sealed class IntegrationProfileTests : IDisposable
     {
         private const string LastReviewedDate = "26 Aug 2025";
+
+        private readonly Mock<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>> integrationsResolver;
+
         private IMapper mapper;
         private Mock<IConfiguration> configuration;
         private MapperConfiguration mapperConfiguration;
-
-        private Mock<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string,
-            IList<IntegrationModel>>> integrationsResolver;
 
         public IntegrationProfileTests()
         {
@@ -36,13 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(
-                    x =>
-                        x.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
+                    s => s.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
                 .Returns(new ConfigSettingResolver(configuration.Object));
             serviceProvider.Setup(
-                    x =>
-                        x.GetService(typeof(IMemberValueResolver<CatalogueItem, InteroperabilityModel, string,
-                            IList<IntegrationModel>>)))
+                    s => s.GetService(typeof(IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>)))
                 .Returns(integrationsResolver.Object);
             mapperConfiguration = new MapperConfiguration(
                 cfg =>

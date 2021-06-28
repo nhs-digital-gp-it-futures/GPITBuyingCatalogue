@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         [InlineData(null, false)]
         [InlineData("", false)]
         [InlineData(" ", false)]
-        [InlineData("Some aditional information", true)]
+        [InlineData("Some additional information", true)]
         public static void IsCompleteIsCorrectlySet(string additionalInformation, bool? expected)
         {
             var clientApplication = new ClientApplication { NativeMobileAdditionalInformation = additionalInformation };

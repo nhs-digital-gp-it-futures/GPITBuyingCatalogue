@@ -21,6 +21,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
     {
         private IMapper mapper;
 
+        [Fact]
+        public static void Mappings_Configuration_Valid()
+        {
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BrowserBasedProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            });
+
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
+
         public BrowserBasedProfileTests()
         {
             var serviceProvider = new Mock<IServiceProvider>();
@@ -35,16 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }).CreateMapper(serviceProvider.Object.GetService);
         }
 
-        [Fact]
-        public static void Mappings_Configuration_Valid()
+        public void Dispose()
         {
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BrowserBasedProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            });
-
-            mapperConfiguration.AssertConfigurationIsValid();
+            mapper = null;
         }
 
         // TODO: No tear down in xUnit
@@ -110,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 new() {Text = "15Mbps", Value = "15Mbps"},
                 new() {Text = "20Mbps", Value = "20Mbps"},
                 new() {Text = "30Mbps", Value = "30Mbps"},
-                new() {Text = "Higher than 30Mbps", Value = "Higher than 30Mbps"}
+                new() {Text = "Higher than 30Mbps", Value = "Higher than 30Mbps"},
             });
             actual.ScreenResolutions.Should().BeEquivalentTo(new List<SelectListItem>
             {
@@ -383,11 +388,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mobileResponsiveResolver.Verify(x => x.Resolve(It.IsAny<object>(), It.IsAny<object>(),
                 model.MobileResponsive, It.IsAny<bool?>(), It.IsAny<ResolutionContext>()));
             clientApplication.MobileResponsive.Should().Be(expected);
-        }
-
-        public void Dispose()
-        {
-            mapper = null;
         }
     }
 }

@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             string email,
             Guid primaryOrganisationId)
         {
-            return new AspNetUser
+            return new()
             {
                 UserName = userName,
                 NormalizedUserName = userName.ToUpper(),
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
                 Email = email,
                 NormalizedEmail = email.ToUpper(),
                 OrganisationFunction = OrganisationFunction.Buyer.DisplayName,
-                PrimaryOrganisationId = primaryOrganisationId
+                PrimaryOrganisationId = primaryOrganisationId,
             };
         }
 
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             string email,
             Guid primaryOrganisationId)
         {
-            return new AspNetUser
+            return new()
             {
                 UserName = userName,
                 NormalizedUserName = userName.ToUpper(),
@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
                 Email = email,
                 NormalizedEmail = email.ToUpper(),
                 OrganisationFunction = OrganisationFunction.Authority.DisplayName,
-                PrimaryOrganisationId = primaryOrganisationId
+                PrimaryOrganisationId = primaryOrganisationId,
             };
         }
 

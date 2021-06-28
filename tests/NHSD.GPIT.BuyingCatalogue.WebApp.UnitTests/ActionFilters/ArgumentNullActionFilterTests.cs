@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 Mock.Of<Controller>()
             )
             {
-                Result = new OkResult() // It will return ok unless during code execution you change this when by condition
+                Result = new OkResult(), // It will return ok unless during code execution you change this when by condition
             };
 
             var ListOfLogStrings = new List<string>();
@@ -54,9 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
 
-            var ActionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
+            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
 
-            await ActionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, async () => { return await Task.FromResult(context); });
+            await actionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(context));
 
             actionExecutingContext.Result.Should().BeOfType<OkResult>();
             ListOfLogStrings.Count.Should().Be(0);
@@ -84,16 +84,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 Mock.Of<Controller>()
             )
             {
-                Result = new OkResult() // It will return ok unless during code execution you change this when by condition
+                Result = new OkResult(), // It will return ok unless during code execution you change this when by condition
             };
 
-            var ListOfLogStrings = new List<string>();
+            var listOfLogStrings = new List<string>();
 
             var mockLogger = new Mock<ILogWrapper<ActionArgumentNullFilter>>();
 
             mockLogger
                 .Setup(l => l.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()))
-                .Callback<string, object[]>((l, _) => ListOfLogStrings.Add(l));
+                .Callback<string, object[]>((l, _) => listOfLogStrings.Add(l));
 
             actionExecutingContext.ActionArguments.Add("AStringValue", AStringValue);
             actionExecutingContext.ActionArguments.Add("AGuidValue", AGuidValue);
@@ -101,12 +101,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
 
-            var ActionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
+            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
 
-            await ActionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, async () => { return await Task.FromResult(context); });
+            await actionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(context));
 
             actionExecutingContext.Result.Should().BeOfType<BadRequestResult>();
-            ListOfLogStrings.Count.Should().Be(1);
+            listOfLogStrings.Count.Should().Be(1);
         }
 
         private static class FailingCaseData

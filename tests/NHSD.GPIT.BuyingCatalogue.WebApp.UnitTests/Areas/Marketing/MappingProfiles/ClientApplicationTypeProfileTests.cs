@@ -27,6 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }).CreateMapper();
         }
 
+        public void Dispose()
+        {
+            mapper = null;
+        }
+
         [Fact]
         public void Mappings_Configuration_Valid()
         {
@@ -134,11 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 .Should().Be(model.NativeMobile);
             clientApplication.ValidateAllPropertiesExcept(original,
                 new[] { nameof(ClientApplication.ClientApplicationTypes) });
-        }
-
-        public void Dispose()
-        {
-            mapper = null;
         }
     }
 }

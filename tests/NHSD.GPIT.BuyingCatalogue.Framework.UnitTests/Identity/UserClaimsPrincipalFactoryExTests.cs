@@ -9,6 +9,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using Xunit;
 
@@ -16,6 +17,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 {
     public static class UserClaimsPrincipalFactoryExTests
     {
+        [Fact]
+        public static void Constructor_NullLogging_ThrowsException()
+        {
+            var options = new Mock<IOptions<IdentityOptions>>();
+            var identityOptions = new IdentityOptions();
+            options.Setup(a => a.Value).Returns(identityOptions);
+
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                _ = new UserClaimsPrincipalFactoryEx<AspNetUser>(
+                MockUserManager<AspNetUser>().Object,
+                options.Object,
+                null,
+                Mock.Of<IOrganisationsService>()));
+
+            Assert.Equal("Value cannot be null. (Parameter 'logger')", ex.Message);
+        }
+
         [Theory]
         [InlineData("Buyer")]
         [InlineData("Authority")]
@@ -43,7 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             var factory = new UserClaimsPrincipalFactoryEx<AspNetUser>(
                 userManager.Object,
-                options.Object,                
+                options.Object,
+                Mock.Of<ILogWrapper<UserClaimsPrincipalFactoryEx<AspNetUser>>>(),
                 orgService.Object);
 
             var principal = await factory.CreateAsync(user);

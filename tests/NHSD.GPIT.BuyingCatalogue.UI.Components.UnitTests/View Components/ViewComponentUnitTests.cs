@@ -23,6 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
             viewComponentContext = new ViewComponentContext { ViewContext = viewContext };
         }
 
+        public void Dispose()
+        {
+            viewComponentContext = null;
+        }
+
         [Theory]
         [InlineData("hello/world", "This is a test link")]
         [InlineData("", "This is a test link")]
@@ -94,11 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
             var viewComponent = new NhsAddressViewComponent { ViewComponentContext = viewComponentContext };
 
             Assert.Throws<ArgumentNullException>(() => { _ = viewComponent.Invoke(null); });
-        }
-
-        public void Dispose()
-        {
-            viewComponentContext = null;
         }
     }
 }

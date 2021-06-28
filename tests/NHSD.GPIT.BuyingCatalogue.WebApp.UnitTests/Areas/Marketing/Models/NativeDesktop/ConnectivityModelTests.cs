@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 new() { Text = "15Mbps", Value="15Mbps"},
                 new() { Text = "20Mbps", Value="20Mbps"},
                 new() { Text = "30Mbps", Value="30Mbps"},
-                new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"}
+                new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"},
             };
         }
     }
