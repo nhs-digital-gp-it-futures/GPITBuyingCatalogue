@@ -460,17 +460,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderItemService.DeleteOrderItem(callOffId, additionalServiceId);
 
             return RedirectToAction(
-                nameof(DeleteContinue),
+                nameof(Index),
                 typeof(AdditionalServicesController).ControllerName(),
-                new { odsCode, callOffId, additionalServiceId, serviceName });
-        }
-
-        [HttpGet("delete/{additionalServiceId}/confirmation/{serviceName}/continue")]
-        public IActionResult DeleteContinue(string odsCode, CallOffId callOffId, CatalogueItemId additionalServiceId, string serviceName)
-        {
-            logger.LogInformation($"Taking user to {nameof(AdditionalServicesController)}.{nameof(DeleteContinue)} for {nameof(odsCode)} {odsCode}, {nameof(callOffId)} {callOffId}, {nameof(additionalServiceId)} {additionalServiceId}, {nameof(serviceName)} {serviceName}");
-
-            return View(new DeleteContinueModel(odsCode, callOffId, serviceName));
+                new { odsCode, callOffId});
         }
     }
 }
