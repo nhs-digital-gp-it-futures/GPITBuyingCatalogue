@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 {
-    public class ActionArgumentNullFilter : IAsyncActionFilter
+    public sealed class ActionArgumentNullFilter : IAsyncActionFilter
     {
         private readonly ILogWrapper<ActionArgumentNullFilter> logger;
 

@@ -1,12 +1,25 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class AssociatedServiceModel : OrderingBaseModel
+    public sealed class AssociatedServiceModel : OrderingBaseModel
     {
-        public AssociatedServiceModel()
+        public AssociatedServiceModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {
-            BackLink = "/order/organisation/03F/order/C010000-01"; // TODO
+            BackLink = $"/order/organisation/{odsCode}/order/{order.CallOffId}";
             BackLinkText = "Go back";
-            Title = "Associated Services for C010000-01"; // TODO
+            Title = $"Associated Services for {order.CallOffId}";
+            OdsCode = odsCode;
+            OrderDescription = order.Description;
+            CallOffId = order.CallOffId;
+            OrderItems = orderItems;
         }
+
+        public string OrderDescription { get; set; }
+
+        public CallOffId CallOffId { get; set; }
+
+        public List<OrderItem> OrderItems { get; set; }
     }
 }

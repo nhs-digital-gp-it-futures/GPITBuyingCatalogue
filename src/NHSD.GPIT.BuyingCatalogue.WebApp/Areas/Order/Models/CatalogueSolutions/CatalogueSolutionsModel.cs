@@ -12,14 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
             Title = $"Catalogue Solution for {order.CallOffId}";
             OdsCode = odsCode;
             OrderDescription = order.Description;
-            CallOffId = order.CallOffId.ToString();
+            CallOffId = order.CallOffId;
             OrderItems = orderItems;
         }
 
         public string OrderDescription { get; set; }
 
-        // TODO: should be of type CallOffId
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
     }

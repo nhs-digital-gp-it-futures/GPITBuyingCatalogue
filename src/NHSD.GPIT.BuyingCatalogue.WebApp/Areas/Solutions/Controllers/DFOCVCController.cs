@@ -8,14 +8,12 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
     [Area("Solutions")]
-    public class DFOCVCController : Controller
+    public sealed class DFOCVCController : Controller
     {
-        private readonly ILogWrapper<DFOCVCController> logger;
         private readonly ISolutionsService solutionsService;
 
-        public DFOCVCController(ILogWrapper<DFOCVCController> logger, ISolutionsService solutionsService)
+        public DFOCVCController(ISolutionsService solutionsService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 

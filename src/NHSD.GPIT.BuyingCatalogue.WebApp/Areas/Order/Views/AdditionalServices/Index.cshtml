@@ -54,7 +54,11 @@
                     }
                 </nhs-table>
             </nhs-fieldset-form-container>
-            <nhs-submit-button text="Continue" />
+            <div data-test-id="continue-button">
+                <a class="nhsuk-button nhsuk-u-margin-top-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId" draggable="false">
+                    Continue
+                </a>
+            </div>
         </div>
     </div>
 </div>

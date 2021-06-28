@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var relatedOrganisation = new RelatedOrganisation
             {
                 OrganisationId = currentOrgId,
-                RelatedOrganisationId = organisations[new Random().Next(organisations.Count())].OrganisationId,
+                RelatedOrganisationId = organisations[new Random().Next(organisations.Count)].OrganisationId,
             };
 
             context.RelatedOrganisations.Add(relatedOrganisation);

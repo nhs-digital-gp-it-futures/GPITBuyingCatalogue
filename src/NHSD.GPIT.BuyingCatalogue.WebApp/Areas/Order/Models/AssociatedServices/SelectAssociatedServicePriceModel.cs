@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public sealed class SelectSolutionPriceModel : OrderingBaseModel
+    public sealed class SelectAssociatedServicePriceModel : OrderingBaseModel
     {
-        public SelectSolutionPriceModel()
+        public SelectAssociatedServicePriceModel()
         {
         }
 
-        public SelectSolutionPriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
+        public SelectAssociatedServicePriceModel(string odsCode, CallOffId callOffId, string solutionName, List<CataloguePrice> prices)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution";
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service";
             BackLinkText = "Go back";
             Title = $"List price for {solutionName}";
             OdsCode = odsCode;
@@ -34,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
                 Prices.Add(new PriceModel
                 {
                     CataloguePriceId = price.CataloguePriceId,
-                    Description = $"{CurrencyCodeSigns.Code[price.CurrencyCode]}{price.Price} {price.PricingUnit?.Description} {price.TimeUnit?.Description()}",
+                    Description = $"{CurrencyCodeSigns.Code[price.CurrencyCode]}{price.Price} {price.PricingUnit?.Description} {price.TimeUnit}",
                 });
             }
         }

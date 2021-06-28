@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
@@ -14,18 +13,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Authorize]
     [Area("Order")]
     [Route("order")]
-    public class DashboardController : Controller
+    public sealed class DashboardController : Controller
     {
-        private readonly ILogWrapper<OrderController> logger;
         private readonly IOrganisationsService organisationsService;
         private readonly IOrderService orderService;
 
         public DashboardController(
-            ILogWrapper<OrderController> logger,
             IOrganisationsService organisationsService,
             IOrderService orderService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
@@ -46,8 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}")]
         public async Task<IActionResult> Organisation(string odsCode)
         {
-            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(Organisation)} for {nameof(odsCode)} {odsCode}");
-
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
 
             var allOrders = await orderService.GetOrders(organisation.OrganisationId);
@@ -58,8 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}/select")]
         public async Task<IActionResult> SelectOrganisation(string odsCode)
         {
-            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(SelectOrganisation)} for {nameof(odsCode)} {odsCode}");
-
             var odsCodes = new List<string>(User.GetSecondaryOdsCodes())
             {
                 User.GetPrimaryOdsCode(),
@@ -73,8 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("organisation/{odsCode}/select")]
         public IActionResult SelectOrganisation(string odsCode, SelectOrganisationModel model)
         {
-            logger.LogInformation($"Handling post for {nameof(DashboardController)}.{nameof(SelectOrganisation)} for {nameof(odsCode)} {odsCode}");
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -87,24 +77,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("organisation/{odsCode}/order/neworder")]
         public IActionResult NewOrder(string odsCode)
         {
-            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(NewOrder)} for {nameof(odsCode)} {odsCode}");
-
             return View(new NewOrderModel(odsCode));
         }
 
         [HttpGet("organisation/{odsCode}/order/neworder/description")]
         public IActionResult NewOrderDescription(string odsCode)
         {
-            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
-
             return View(new NewOrderDescriptionModel(odsCode));
         }
 
         [HttpPost("organisation/{odsCode}/order/neworder/description")]
         public async Task<IActionResult> NewOrderDescription(string odsCode, NewOrderDescriptionModel model)
         {
-            logger.LogInformation($"Handling post for {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -113,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(OrderController.Order),
                 controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode = odsCode, callOffId = order.CallOffId });
+                routeValues: new { odsCode, callOffId = order.CallOffId });
         }
     }
 }
