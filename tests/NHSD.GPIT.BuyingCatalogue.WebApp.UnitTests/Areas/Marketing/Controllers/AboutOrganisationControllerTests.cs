@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -16,29 +16,27 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AboutOrganisationControllerTests
+    public static class AboutOrganisationControllerTests
     {
-        [Test]
+        [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(AboutOrganisationController).Should()
                 .BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullLogging_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new AboutOrganisationController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -46,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                     Mock.Of<ISolutionsService>()));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -54,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                     Mock.Of<IMapper>(), null));
         }
 
-        [Test]
+        [Fact]
         public static void Get_AboutSupplier_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(AboutOrganisationController)
@@ -66,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AboutSupplier_ValidIdInput_RetrievesSolutionFromService(CatalogueItemId id)
         {
@@ -79,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AboutSupplier_ValidIdInput_MapsSolutionToModel(CatalogueItemId id)
         {
@@ -96,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(x => x.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AboutSupplier_ValidIdInput_ReturnsViewWithExpectedModel(CatalogueItemId id)
         {
@@ -118,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockAboutSupplierModel);
         }
 
-        [Test]
+        [Fact]
         public static void Post_AboutSupplier_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(AboutOrganisationController)
@@ -130,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_AboutSupplier_ModelNotValid_DoesNotCallService(CatalogueItemId id)
         {
@@ -146,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 Times.Never);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_AboutSupplier_ModelNotValid_ReturnsViewWithModel(CatalogueItemId id)
         {
@@ -162,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockAboutSupplierModel);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_AboutSupplier_ModelValid_CallsSaveOnService(CatalogueItemId id, AboutSupplierModel model)
         {
@@ -176,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 model.Description, model.Link));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_AboutSupplier_ModelValid_RedirectsToSolution(
             [Frozen] CatalogueItemId id,
@@ -193,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.RouteValues["solutionId"].Should().Be(model.SolutionId);
         }
 
-        [Test]
+        [Fact]
         public static void Get_ContactDetails_HttpGetAttribute_ExpectedTemplate()
         {
             typeof(AboutOrganisationController)
@@ -205,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ContactDetails_ValidId_GetsSolutionFromService(CatalogueItemId id)
         {
@@ -218,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.GetSolution(id));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ContactDetails_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
@@ -234,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Get_ContactDetails_ValidId_MapsSolutionToViewModel_ReturnsExpectedView(CatalogueItemId id)
         {
@@ -258,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(mockContactDetailsModel);
         }
 
-        [Test]
+        [Fact]
         public static void Post_ContactDetails_HttpPostAttribute_ExpectedTemplate()
         {
             typeof(AboutOrganisationController)
@@ -270,7 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_ContactDetails_InvalidModel_DoesNotCallService(CatalogueItemId id)
         {
@@ -284,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.SaveSupplierContacts(It.IsAny<SupplierContactsModel>()), Times.Never);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_ContactDetails_InvalidModel_ReturnsViewWithModel(CatalogueItemId id)
         {
@@ -299,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.Model.Should().Be(model);
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_ContactDetails_ModelValid_ConvertsModelToSupplierContactsModel(CatalogueItemId id)
         {
@@ -314,8 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Theory(Skip = "Broken")]
         [CommonAutoData]
         public static async Task Post_ContactDetails_ModelValid_CallsSaveOnService(CatalogueItemId id)
         {
@@ -333,7 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Verify(x => x.SaveSupplierContacts(supplierContactsModel));
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static async Task Post_ContactDetails_ModelValid_RedirectToSolutionAction([Frozen] CatalogueItemId id)
         {

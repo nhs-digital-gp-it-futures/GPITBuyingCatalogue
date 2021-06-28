@@ -1,34 +1,30 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class EmailAttachmentTests
+    public static class EmailAttachmentTests
     {
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("\t")]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("\t")]
         public static void Constructor_NullEmptyOrWhiteSpaceFileName_ThrowsArgumentException(string fileName)
         {
-            Assert.Throws<ArgumentException>(() => new EmailAttachment(fileName, Mock.Of<Stream>()));
+            Assert.Throws<ArgumentException>(() => _ = new EmailAttachment(fileName, Mock.Of<Stream>()));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_NullContent_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new EmailAttachment("fileName", null!));
+            Assert.Throws<ArgumentNullException>(() => _ = new EmailAttachment("fileName", null!));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_InitializesFileName()
         {
             const string fileName = "file.pdf";
@@ -38,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             attachment.FileName.Should().Be(fileName);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_InitializesContent()
         {
             var content = Mock.Of<Stream>();

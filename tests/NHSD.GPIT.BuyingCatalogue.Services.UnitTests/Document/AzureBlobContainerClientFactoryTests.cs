@@ -1,15 +1,13 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.Services.Document;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AzureBlobContainerClientFactoryTests
+    public static class AzureBlobContainerClientFactoryTests
     {
-        [Test]
+        [Fact]
         public static void Create_NullRetryOptions_ReturnsContainerClient()
         {
             const string accountName = "devstoreaccount1";
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             client.Name.Should().Be(containerName);
         }
 
-        [Test]
+        [Fact]
         public static void Create_WithRetryOptions_ReturnsContainerClient()
         {
             const string accountName = "devstoreaccount1";

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using AutoMapper;
 using FluentAssertions;
 using MailKit;
@@ -18,16 +17,13 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class StartupTests
+    public sealed class StartupTests
     {
-        [SetUp]
-        public static void SetUp()
+        public StartupTests()
         {
             Environment.SetEnvironmentVariable("BC_DB_CONNECTION",
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=BC_Catalog;Trusted_Connection=True;");
@@ -40,30 +36,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             Environment.SetEnvironmentVariable("BC_SMTP_PORT", "1081");
         }
 
-        [TestCase(typeof(DisabledErrorMessageSettings))]
-        [TestCase(typeof(GPITBuyingCatalogueDbContext))]
-        [TestCase(typeof(DataProtectorTokenProvider<AspNetUser>))]
-        [TestCase(typeof(SmtpSettings))]        
-        public static void ContainsTheExpectedServiceInstances(Type expectedType)
+        [Theory]
+        [InlineData(typeof(DisabledErrorMessageSettings))]
+        [InlineData(typeof(GPITBuyingCatalogueDbContext))]
+        [InlineData(typeof(DataProtectorTokenProvider<AspNetUser>))]
+        [InlineData(typeof(SmtpSettings))]
+        public void ContainsTheExpectedServiceInstances_A(Type expectedType)
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<StartupTest>().Build();
 
             webHost.Services.GetRequiredService(expectedType).Should().NotBeNull();
         }
 
-        [TestCase(typeof(IEmailService), typeof(MailKitEmailService))]
-        [TestCase(typeof(IMailTransport), typeof(SmtpClient))]
-        [TestCase(typeof(IMemberValueResolver<object, object, string, string>), typeof(ConfigSettingResolver))]
-        [TestCase(typeof(IMemberValueResolver<object, object, string, bool?>), typeof(StringToNullableBoolResolver))]
-        [TestCase(typeof(IPasswordResetCallback), typeof(PasswordResetCallback))]
-        [TestCase(typeof(IPasswordService), typeof(PasswordService))]
-        [TestCase(typeof(IPasswordValidator<AspNetUser>), typeof(PasswordValidator))]
-        [TestCase(
-            typeof(ITypeConverter<EntityFramework.Models.GPITBuyingCatalogue.CatalogueItem, SolutionStatusModel>),
+        [Theory]
+        [InlineData(typeof(IEmailService), typeof(MailKitEmailService))]
+        [InlineData(typeof(IMailTransport), typeof(SmtpClient))]
+        [InlineData(typeof(IMemberValueResolver<object, object, string, string>), typeof(ConfigSettingResolver))]
+        [InlineData(typeof(IMemberValueResolver<object, object, string, bool?>), typeof(StringToNullableBoolResolver))]
+        [InlineData(typeof(IPasswordResetCallback), typeof(PasswordResetCallback))]
+        [InlineData(typeof(IPasswordService), typeof(PasswordService))]
+        [InlineData(typeof(IPasswordValidator<AspNetUser>), typeof(PasswordValidator))]
+        [InlineData(
+            typeof(ITypeConverter<CatalogueItem, SolutionStatusModel>),
             typeof(CatalogueItemToSolutionStatusModelConverter))]
-        [TestCase(typeof(ITypeConverter<string, bool?>), typeof(StringToNullableBoolResolver))]
-        [TestCase(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx<AspNetUser>))]
-        public static void ContainsTheExpectedServiceInstances(Type requiredInterface, Type expectedType)
+        [InlineData(typeof(ITypeConverter<string, bool?>), typeof(StringToNullableBoolResolver))]
+        [InlineData(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx<AspNetUser>))]
+        public void ContainsTheExpectedServiceInstances_B(Type requiredInterface, Type expectedType)
         {
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<StartupTest>().Build();
 
@@ -71,9 +69,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         }
     }
 
-    public class StartupTest : Startup
+    public sealed class StartupTest : Startup
     {
-        public StartupTest(IConfiguration configuration) : base(configuration)
+        public StartupTest(IConfiguration configuration)
+            : base(configuration)
         {
         }
     }
