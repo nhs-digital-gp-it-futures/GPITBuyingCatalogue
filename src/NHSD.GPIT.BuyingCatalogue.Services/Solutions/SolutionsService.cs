@@ -113,6 +113,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public async Task<IList<Supplier>> GetAllSuppliers()
+        {
+            return (await supplierRepository.GetAllAsync(x => true)).OrderBy(x => x.Name).ToList();
+        }
+
         public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));

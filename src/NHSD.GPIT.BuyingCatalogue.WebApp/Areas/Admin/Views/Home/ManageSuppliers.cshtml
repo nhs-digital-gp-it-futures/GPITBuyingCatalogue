@@ -1,0 +1,84 @@
+﻿@model IList<NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.Supplier>;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Manage Suppliers";
+}
+<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+    <div class="nhsuk-width-container">
+        <ol class="nhsuk-breadcrumb__list">
+            <li class="nhsuk-breadcrumb__item">
+                <a asp-action="Index" asp-controller="Home" class="nhsuk-breadcrumb__link">
+                    Home
+                </a>
+            </li>
+        </ol>
+    </div>
+</nav>
+<div class="nhsuk-width-container ">
+    <main class="nhsuk-main-wrapper " id="maincontent" role="main">
+        <div class="nhsuk-grid-row govuk-!-margin-0">
+            <h1>Manage supplier organisations</h1>
+            
+            <p class="nhsuk-lede-text">
+                Add a new supplier organisation or edit the details for one that's already been created.
+            </p>
+
+            <div class="nhsuk-action-link">
+                <a class="nhsuk-action-link__link" href="admin-add-supplier">
+                    <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+                    </svg>
+                    <span class="nhsuk-action-link__text">Add a supplier</span>
+                </a>
+            </div>
+
+            <div class="app-search__contents">
+                <input class="app-search__input ui-autocomplete-input" id="query" placeholder="Search by organisation or ODS code" autocomplete="off" name="query" type="search" maxlength="50">
+                <button type="submit" class="app-search__submit">
+                    <svg class="icon icon__search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M19.71 18.29l-4.11-4.1a7 7 0 1 0-1.41 1.41l4.1 4.11a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM5 10a5 5 0 1 1 5 5 5 5 0 0 1-5-5z" fill="white"></path>
+                        <image class="icon__search icon__search--fallback" src="/apps-library/static/apps_library/images/icon-search-blue.352e1118d687.png" xlink:href="">
+                        </image>
+                    </svg>
+                    <span class="visually-hidden">Search</span>
+                </button>
+            </div>
+
+            @if (Model?.Count > 0)
+            {
+                <table class="nhsuk-table">
+                    <thead role="rowgroup" class="nhsuk-table__head">
+                        <tr role="row">
+                            @foreach (var header in new[] { "Supplier name", "Supplier ID", null, })
+                            {
+                                <th role="columnheader" class="" scope="col">
+                                    @header
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody class="nhsuk-table__body">
+                        @foreach (var supplierModel in Model)
+                        {
+                            <tr role="row" class="nhsuk-table__row">
+
+                                <td class="nhsuk-table__cell">
+                                    @supplierModel.Name
+                                </td>
+                                <td class="nhsuk-table__cell">
+                                    @supplierModel.Id
+                                </td>
+                                <td class="nhsuk-table__cell ">
+                                    <a href="#">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <br><br>
+
+    </main>
+</div>
