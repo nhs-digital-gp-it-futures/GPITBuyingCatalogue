@@ -14,11 +14,10 @@
             <nhs-page-title title="@Model.Title"
                             advice="Add the Additional Services you want to be part of this order."
                             additional-advice="If you do not want to add any, or have finished adding Additional Services, continue to the next step." />
-            <form method="post">
-                <nhs-fieldset-form-container asp-for="@Model"
-                                             label-text="Order description"
-                                             label-hint="@Model.OrderDescription"
-                                             size="Large">
+            <nhs-fieldset-form-container asp-for="@Model"
+                                         label-text="Order description"
+                                         label-hint="@Model.OrderDescription"
+                                         size="Large">
 
                 <vc:nhs-secondary-button url="@Url.Action(
                                                 nameof(AdditionalServicesController.SelectAdditionalService),
@@ -27,35 +26,39 @@
                                          text="Add Additional Service"
                                          use-primary-colour="false" />
 
-                    <nhs-table>
-                        <nhs-table-column>Additional Service</nhs-table-column>
-                        <nhs-table-column>Unit of order</nhs-table-column>
-                        <nhs-table-column>Service Recipients (ODS code)</nhs-table-column>
-                        @foreach (var item in Model.OrderItems)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>
-                                    <a data-test-id="@item.CatalogueItemId-catalogueItemName"
-                                       href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <div class="bc-c-data-text ">@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <nhs-details label-text="Service recipients (ODS code)">
-                                        @foreach (var recipient in item.OrderItemRecipients)
-                                        {
-                                            @($"{recipient.Recipient.Name}({recipient.Recipient.OdsCode})")
-                                            <br><br>
-                                        }
-                                    </nhs-details>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                </nhs-fieldset-form-container>
-                <nhs-submit-button text="Continue" />
-            </form>
+                <nhs-table>
+                    <nhs-table-column>Additional Service</nhs-table-column>
+                    <nhs-table-column>Unit of order</nhs-table-column>
+                    <nhs-table-column>Service Recipients (ODS code)</nhs-table-column>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <a data-test-id="@item.CatalogueItemId-catalogueItemName"
+                                   href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <div class="bc-c-data-text ">@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-details label-text="Service recipients (ODS code)">
+                                    @foreach (var recipient in item.OrderItemRecipients)
+                                    {
+                                        @($"{recipient.Recipient.Name}({recipient.Recipient.OdsCode})")
+                                        <br><br>
+                                    }
+                                </nhs-details>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-fieldset-form-container>
+            <vc:nhs-secondary-button text="Continue"
+                                     use-primary-colour="true"
+                                     url="@Url.Action(
+                                     nameof(OrderController.Order),
+                                     typeof(OrderController).ControllerName(),
+                                     new { Model.OdsCode, Model.CallOffId })" />
         </div>
     </div>
 </div>
