@@ -1,4 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.AdditionalServiceModel
 @{
     ViewData["Title"] = Model.Title;
@@ -18,9 +20,12 @@
                                              label-hint="@Model.OrderDescription"
                                              size="Large">
 
-                    <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/select/additional-service"
-                                             text="Add Additional Service"
-                                             use-primary-colour="false" />
+                <vc:nhs-secondary-button url="@Url.Action(
+                                                nameof(AdditionalServicesController.SelectAdditionalService),
+                                                typeof(AdditionalServicesController).ControllerName(),
+                                                new {Model.OdsCode, Model.CallOffId})"
+                                         text="Add Additional Service"
+                                         use-primary-colour="false" />
 
                     <nhs-table>
                         <nhs-table-column>Additional Service</nhs-table-column>
