@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -66,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             model.FundingSourceStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskListStatuses.Completed,
-                var cs when 
+                var cs when
                 cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete)
                 || cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.Incomplete,
                 _ => TaskListStatuses.CannotStart,
