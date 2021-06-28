@@ -21,13 +21,14 @@ variable "project" {
   type = string
 }
 
-variable "keyvault" {
+variable "kv_sqlusername" {
   type = string
 }
 
-variable "keyvaultrg" {
+variable "coreurl" {
   type = string
 }
-variable "kv_sqlusername" {
+
+variable "certname" {
   type = string
 }

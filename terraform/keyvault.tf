@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "keyvault" {
-  name                            = var.keyvault
+  name                            = "gpitf-${var.environment}-kv"
   resource_group_name             = azurerm_resource_group.keyvault.name
   location                        = var.region
   tenant_id                       = var.tenant_id

@@ -1,7 +1,7 @@
 resource "azurerm_key_vault_secret" "sqladminusername" {
   name         = "${local.secretPrefix}sqladminusername"
   value        = var.kv_sqlusername
-  content_type = "${var.project}-SQL-Username"
+  content_type = "${var.project}-SQL-username"
   key_vault_id = azurerm_key_vault.keyvault.id
 
   tags = {

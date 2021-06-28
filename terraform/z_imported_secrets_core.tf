@@ -4,7 +4,7 @@ data "azurerm_key_vault" "keyvault_core" {
 }
 
 data "azurerm_key_vault_secret" "ssl_cert" {
-  name         = "${data.azurerm_key_vault_secret.certname.value}-star"
+  name         = "${var.certname}-star"
   key_vault_id = data.azurerm_key_vault.keyvault_core.id
 }
 
