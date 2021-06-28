@@ -25,7 +25,7 @@
                                          label-hint="Select one option.">
                     <nhs-radio-buttons asp-for="@Model.TimeUnit"
                                        values="@Model.TimeUnits.Cast<object>()"
-                                       value-name="Name"
+                                       value-name="EnumMemberName"
                                        display-name="Description" />
                 </nhs-fieldset-form-label>
                 <nhs-details label-text="What period should i enter?">
