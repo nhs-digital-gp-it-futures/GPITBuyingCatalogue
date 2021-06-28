@@ -11,31 +11,27 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
-using NUnit.Framework;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionsServiceTests
+    public static class SolutionsServiceTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
-        [Test]
-        public static void SaveSupplierContacts_ModelNull_ThrowsException()
+        [Fact]
+        public static async Task SaveSupplierContacts_ModelNull_ThrowsException()
         {
             var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveSupplierContacts(default));
+            var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveSupplierContacts(default));
 
             actual.ParamName.Should().Be("model");
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel()
         {
             var mockModel = new Mock<SupplierContactsModel>();
@@ -49,8 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_Retrieves_ContactsForSolutionId()
         {
             var mockModel = new Mock<SupplierContactsModel>();
@@ -72,8 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_NoContactsInDatabase_AddsValidContactsToRepository()
         {
             var validContacts = new Mock<IList<MarketingContact>>().Object;
@@ -96,8 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_ContactsInDatabase_RemovesEmptyContactsFromDatabase()
         {
             var savedModels = new Faker<MarketingContact>()
@@ -126,8 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_ContactsInDatabase_UpdatesNonEmptyContacts()
         {
             var savedModel = new Mock<MarketingContact> { CallBase = true, };
@@ -156,8 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_AddsNewAndValidContacts_ToRepository()
         {
             var mockModel = new Mock<SupplierContactsModel>();
@@ -180,8 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         // TODO: fix
-        [Ignore("Broken")]
-        [Test]
+        [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_CallsSaveChangesAsync_OnRepository()
         {
             var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>();
@@ -195,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockMarketingContactRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveIntegrationLink_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>();
@@ -211,20 +201,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void SaveSolutionDescription_InvalidSummary_ThrowsException(string summary)
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
+        public static async Task SaveSolutionDescription_InvalidSummary_ThrowsException(string summary)
         {
             var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
-            var actual = Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(new CatalogueItemId(100000, "001"), summary, "Description", "Link"));
+            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(new CatalogueItemId(100000, "001"), summary, "Description", "Link"));
 
             actual.ParamName.Should().Be("summary");
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveSolutionDescription_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>();
@@ -240,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveSolutionFeatures_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>();
@@ -256,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveImplementationDetail_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>();
@@ -272,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveRoadMap_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>();
@@ -288,19 +278,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
-        public static void SaveClientApplication_InvalidModel_ThrowsException()
+        [Fact]
+        public static async Task SaveClientApplication_InvalidModel_ThrowsException()
         {
             var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveClientApplication(new CatalogueItemId(100000, "001"), null));
+            var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveClientApplication(new CatalogueItemId(100000, "001"), null));
 
             actual.ParamName.Should().Be("clientApplication");
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveClientApplication_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>();
@@ -316,19 +306,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
-        public static void SaveHosting_InvalidModel_ThrowsException()
+        [Fact]
+        public static async Task SaveHosting_InvalidModel_ThrowsException()
         {
             var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
-            var actual = Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveHosting(new CatalogueItemId(100000, "001"), null));
+            var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveHosting(new CatalogueItemId(100000, "001"), null));
 
             actual.ParamName.Should().Be("hosting");
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveHosting_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>();
@@ -344,20 +334,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
-        public static void GetSupplier_InvalidSupplierId_ThrowsException(string supplierId)
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
+        public static async Task GetSupplier_InvalidSupplierId_ThrowsException(string supplierId)
         {
             var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(), Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(), Mock.Of<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>());
 
-            var actual = Assert.ThrowsAsync<ArgumentException>(() => service.GetSupplier(supplierId));
+            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.GetSupplier(supplierId));
 
             actual.ParamName.Should().Be("supplierId");
         }
 
-        [Test]
+        [Fact]
         public static async Task SaveSupplier_CallsSaveChangesAsync_OnRepository()
         {
             var mockSupplierRepository = new Mock<IDbRepository<Supplier, GPITBuyingCatalogueDbContext>>();

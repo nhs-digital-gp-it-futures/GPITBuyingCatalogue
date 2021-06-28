@@ -1,14 +1,12 @@
-﻿using System.Text.Json;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Settings
 {
-    [TestFixture]
-    internal static class AzureBlobStorageSettingsTests
+    public static class AzureBlobStorageSettingsTests
     {
-        [Test]
+        [Fact]
         public static void Uri_HasConnectionString_ReturnsUri()
         {
             // ReSharper disable once StringLiteralTypo
@@ -23,13 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Settings
             settings.Uri.AbsoluteUri.Should().BeEquivalentTo(uri);
         }
 
-        [TestCase(null)]
-        [TestCase("DefaultEndpointsProtocol=http;NotValid=foo;")]
+        [Theory]
+        [InlineData(null)]
+        [InlineData("DefaultEndpointsProtocol=http;NotValid=foo;")]
         public static void Uri_NullConnectionString_ReturnsNull(string connectionString)
         {
             var settings = new AzureBlobStorageSettings { ConnectionString = connectionString };
 
             settings.Uri.Should().BeNull();
-        }      
+        }
     }
 }

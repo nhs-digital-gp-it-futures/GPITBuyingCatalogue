@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -9,33 +8,29 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class PasswordResetCallbackTests
+    public static class PasswordResetCallbackTests
     {
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_IHttpContextAccessor_LinkGenerator_NullAccessor_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => new PasswordResetCallback(
+            Assert.Throws<ArgumentNullException>(() => _ = new PasswordResetCallback(
                 null,
                 Mock.Of<LinkGenerator>()));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_IHttpContextAccessor_LinkGenerator_NullGenerator_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => new PasswordResetCallback(
+            Assert.Throws<ArgumentNullException>(() => _ = new PasswordResetCallback(
                 Mock.Of<IHttpContextAccessor>(),
                 null));
         }
 
-        [Test]
+        [Fact]
         public static void GetPasswordResetCallback_NullToken_ThrowsException()
         {
             var callback = new PasswordResetCallback(
@@ -45,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             Assert.Throws<ArgumentNullException>(() => callback.GetPasswordResetCallback(null));
         }
 
-        [Test]
+        [Fact]
         public static void GetPasswordResetCallback_GetsExpectedAction()
         {
             const string expectedToken = "IAmBecomeToken";
@@ -67,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             context.RouteValues.Should().BeEquivalentTo(expectedValues);
         }
 
-        [Test]
+        [Fact]
         public static void GetPasswordResetCallback_ReturnsExpectedValue()
         {
             const string url = "https://nhs.uk/reset";
@@ -91,8 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             internal PasswordResetCallbackContext(string url)
             {
                 var mockRequest = new Mock<HttpRequest>();
-                mockRequest.Setup(x => x.Scheme).Returns("https");
-                mockRequest.Setup(x => x.Host).Returns(new HostString(url));
+                mockRequest.Setup(r => r.Scheme).Returns("https");
+                mockRequest.Setup(r => r.Host).Returns(new HostString(url));
 
                 var mockContext = new Mock<HttpContext>();
                 mockContext.Setup(c => c.Request).Returns(mockRequest.Object);

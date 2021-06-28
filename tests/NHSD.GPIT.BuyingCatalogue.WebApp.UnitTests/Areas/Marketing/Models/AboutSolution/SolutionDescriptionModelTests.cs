@@ -2,22 +2,19 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.AboutSolution
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionDescriptionModelTests
+    public static class SolutionDescriptionModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionDescriptionModel(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new SolutionDescriptionModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var catalogueItem = new CatalogueItem
@@ -28,14 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var model = new SolutionDescriptionModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
+            Assert.Equal("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
-            Assert.AreEqual("A solution summary", model.Summary);
-            Assert.AreEqual("A full description", model.Description);
-            Assert.AreEqual("A Url", model.Link);
+            Assert.Equal("A solution summary", model.Summary);
+            Assert.Equal("A full description", model.Description);
+            Assert.Equal("A Url", model.Link);
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_WithoutSummary_NotComplete()
         {
             var catalogueItem = new CatalogueItem
@@ -46,30 +43,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var model = new SolutionDescriptionModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
+            Assert.Equal("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.False(model.IsComplete);
-            Assert.IsEmpty(model.Summary);
-            Assert.AreEqual("A full description", model.Description);
-            Assert.AreEqual("A Url", model.Link);
+            Assert.Empty(model.Summary);
+            Assert.Equal("A full description", model.Description);
+            Assert.Equal("A Url", model.Link);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new SolutionDescriptionModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.Summary);
             Assert.Null(model.Description);
             Assert.Null(model.Link);
         }
 
-        [Test]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("A summary", true)]
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData(" ", false)]
+        [InlineData("A summary", true)]
         public static void IsCompleteIsCorrectlySet(string summary, bool? expected)
         {
             var catalogueItem = new CatalogueItem
@@ -80,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var model = new SolutionDescriptionModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

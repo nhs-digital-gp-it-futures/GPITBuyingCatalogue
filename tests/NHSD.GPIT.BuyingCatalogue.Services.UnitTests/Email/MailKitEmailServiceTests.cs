@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Mail;
 using System.Net.Security;
 using System.Threading;
@@ -15,13 +14,11 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class MailKitEmailServiceTests
+    public static class MailKitEmailServiceTests
     {
         private static EmailMessageTemplate BasicTemplate => new(new EmailAddressTemplate("from@sender.test"))
         {
@@ -30,15 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
 
         private static ICollection<EmailAddress> SingleRecipient => new[] { new EmailAddress("to@recipient.test") };
 
-        [Test]
-        [SuppressMessage("Usage", "CA1806:Do not ignore method results", Justification = "Testing")]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Testing")]
+        [Fact]
         public static void Constructor_IMailTransport_SmtpSettings_AllowInvalidCertificateFalse_DoesNotSetCertificateValidationCallback()
         {
             var mockTransport = new Mock<IMailTransport>();
             mockTransport.SetupProperty(t => t.ServerCertificateValidationCallback);
 
-            new MailKitEmailService(
+            _ = new MailKitEmailService(
                 mockTransport.Object,
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
@@ -46,45 +41,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             mockTransport.Object.ServerCertificateValidationCallback.Should().BeNull();
         }
 
-        [Test]
-        [SuppressMessage("Usage", "CA1806:Do not ignore method results", Justification = "Testing")]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Testing")]
+        [Fact]
         public static void Constructor_IMailTransport_SmtpSettings_AllowInvalidCertificateTrue_SetsCertificateValidationCallback()
         {
             var mockTransport = new Mock<IMailTransport>();
             mockTransport.SetupProperty(t => t.ServerCertificateValidationCallback);
 
-            new MailKitEmailService(
+            _ = new MailKitEmailService(
                 mockTransport.Object,
                 new SmtpSettings { AllowInvalidCertificate = true },
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
 
             var callback = mockTransport.Object.ServerCertificateValidationCallback;
 
-            callback.Invoke(null!, null, null, SslPolicyErrors.None).Should().BeTrue();
+            callback(null!, null, null, SslPolicyErrors.None).Should().BeTrue();
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Testing")]
+        [Fact]
         public static void Constructor_IMailTransport_SmtpSettings_NullMailTransport_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => new MailKitEmailService(
+            Assert.Throws<ArgumentNullException>(() => _ = new MailKitEmailService(
                 null!,
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>()));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Testing")]
+        [Fact]
         public static void Constructor_IMailTransport_SmtpSettings_NullSettings_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => new MailKitEmailService(
+            Assert.Throws<ArgumentNullException>(() => _ = new MailKitEmailService(
                 Mock.Of<IMailTransport>(),
                 null!,
                 Mock.Of<ILogWrapper<MailKitEmailService>>()));
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_ConnectsWithExpectedSettings()
         {
             var settings = new Fixture().Build<SmtpSettings>().Create();
@@ -107,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Once());
         }
 
-        [Test]
+        [Fact]
         public static void SendEmailAsync_ExceptionConnected_DoesDisconnect()
         {
             var mockTransport = new Mock<IMailTransport>();
@@ -126,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
 
-            Assert.ThrowsAsync<ServiceNotAuthenticatedException>(async () => await service.SendEmailAsync(message));
+            Assert.ThrowsAsync<ServiceNotAuthenticatedException>(() => service.SendEmailAsync(message));
 
             mockTransport.Verify(
                 t => t.DisconnectAsync(
@@ -135,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Once());
         }
 
-        [Test]
+        [Fact]
         public static void SendEmailAsync_ExceptionNotConnected_DoesNotDisconnect()
         {
             var mockTransport = new Mock<IMailTransport>();
@@ -153,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
 
-            Assert.ThrowsAsync<ServiceNotConnectedException>(async () => await service.SendEmailAsync(message));
+            Assert.ThrowsAsync<ServiceNotConnectedException>(() => service.SendEmailAsync(message));
 
             mockTransport.Verify(
                 t => t.DisconnectAsync(
@@ -162,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Never());
         }
 
-        [Test]
+        [Fact]
         public static void SendEmailAsync_NullEmailMessage_ThrowsException()
         {
             var emailService = new MailKitEmailService(
@@ -170,10 +161,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 new SmtpSettings(),
                 Mock.Of<ILogWrapper<MailKitEmailService>>());
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await emailService.SendEmailAsync(null!));
+            Assert.ThrowsAsync<ArgumentNullException>(() => emailService.SendEmailAsync(null!));
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_RequireAuthenticationIsTrue_AuthenticatesUsingExpectedCredentials()
         {
             const string userName = "User";
@@ -203,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Once());
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_RequireAuthenticationIsFalse_DoesNotAuthenticate()
         {
             var settings = new SmtpSettings { Authentication = new SmtpAuthenticationSettings() };
@@ -223,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Never());
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_SendsExpectedMessage()
         {
             var settings = new SmtpSettings { Authentication = new SmtpAuthenticationSettings() };
@@ -246,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Once());
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_UsesSettingsSubjectPrefix()
         {
             const string subjectPrefix = "Bananas";
@@ -270,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Once());
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_Connected_Disconnects()
         {
             var settings = new SmtpSettings { Authentication = new SmtpAuthenticationSettings() };
@@ -291,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 Times.Once());
         }
 
-        [Test]
+        [Fact]
         public static void SendEmailAsync_Exception_LogsError()
         {
             const string formatErrorMessage =
@@ -314,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 settings,
                 mockLogger.Object);
 
-            Assert.ThrowsAsync<SmtpFailedRecipientException>(async () => await service.SendEmailAsync(message));
+            Assert.ThrowsAsync<SmtpFailedRecipientException>(() => service.SendEmailAsync(message));
             mockLogger.Verify(l => l.LogError(
                 exception,
                 formatErrorMessage,

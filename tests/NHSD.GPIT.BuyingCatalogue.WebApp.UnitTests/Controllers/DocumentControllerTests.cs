@@ -1,17 +1,12 @@
 ﻿using System;
-using Moq;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class DocumentControllerTests
+    public static class DocumentControllerTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullDocumentService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>

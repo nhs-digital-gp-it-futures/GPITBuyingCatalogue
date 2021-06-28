@@ -1,14 +1,13 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
 {
-    [TestFixture]
-    internal static class EmailMessageTemplateTests
+    public static class EmailMessageTemplateTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_EmailAddressTemplate_InitializesSender()
         {
             var addressTemplate = new EmailAddressTemplate();
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             template.Sender.Should().BeSameAs(addressTemplate);
         }
 
-        [Test]
+        [Fact]
         public static void GetSenderAsEmailAddress_NullAddress_ReturnsNull()
         {
             var template = new EmailMessageTemplate();
@@ -28,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             address.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public static void GetSenderAsEmailAddress_ReturnsExpectedAddress()
         {
             var addressTemplate = new EmailAddressTemplate { Address = "someone@somewhere.test" };
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             actualAddress.Should().BeEquivalentTo(expectedAddress);
         }
 
-        [Test]
+        [Fact]
         public static void Sender_Set_NullSender_ThrowsArgumentNullException()
         {
             var template = new EmailMessageTemplate();
