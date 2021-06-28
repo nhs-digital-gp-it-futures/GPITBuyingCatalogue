@@ -2,53 +2,53 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeMobile
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class MobileFirstApproachModelTests
+    public static class MobileFirstApproachModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new MobileFirstApproachModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var clientApplication = new ClientApplication { NativeMobileFirstDesign = true };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = "123",
-                Solution = new Solution { ClientApplication = json }
+                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new MobileFirstApproachModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/123/section/native-mobile", model.BackLink);
-            Assert.AreEqual("Yes", model.MobileFirstApproach);
+            Assert.Equal("/marketing/supplier/solution/1-123/section/native-mobile", model.BackLink);
+            Assert.Equal("Yes", model.MobileFirstApproach);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new MobileFirstApproachModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.Null(model.IsComplete);
             Assert.Null(model.MobileFirstApproach);
         }
 
-        [TestCase(null, false)]
-        [TestCase(false, true)]
-        [TestCase(true, true)]
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
         public static void IsCompleteIsCorrectlySet(bool? mobileFirstDesign, bool? expected)
         {
             var clientApplication = new ClientApplication { NativeMobileFirstDesign = mobileFirstDesign };
@@ -57,15 +57,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
 
             var model = new MobileFirstApproachModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
 
-        [TestCase(null, null)]
-        [TestCase("", null)]
-        [TestCase("     ", null)]
-        [TestCase("Yes", true)]
-        [TestCase("YES", true)]
-        [TestCase("No", false)]
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", null)]
+        [InlineData("     ", null)]
+        [InlineData("Yes", true)]
+        [InlineData("YES", true)]
+        [InlineData("No", false)]
         public static void MobileFirstDesign_DifferentValuesForMobileFirstApproach_ResultAsExpected(
             string mobileFirstApproach,
             bool? expected)

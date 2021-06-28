@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             return new(options);
         }
 
-        internal void ClearClientApplication(string solutionId)
+        internal void ClearClientApplication(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);
@@ -74,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.SaveChanges();
         }
 
-        internal void ClearHostingTypes(string solutionId)
+        internal void ClearHostingTypes(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);
@@ -82,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.SaveChanges();
         }
 
-        internal void ClearFeatures(string solutionId)
+        internal void ClearFeatures(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);

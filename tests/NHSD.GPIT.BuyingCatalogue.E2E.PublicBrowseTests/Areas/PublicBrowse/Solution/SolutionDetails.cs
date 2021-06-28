@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
@@ -29,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task SolutionDetails_VerifySummary()
         {
             await using var context = GetEndToEndDbContext();
-            var summary = (await context.Solutions.SingleAsync(s => s.Id == "99999-001")).Summary;
+            var summary = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Summary;
 
             var summaryAndDescription = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task SolutionDetails_VerifyDescription()
         {
             await using var context = GetEndToEndDbContext();
-            var description = (await context.Solutions.SingleAsync(s => s.Id == "99999-001")).FullDescription;
+            var description = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).FullDescription;
 
             var summaryAndDescription = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 

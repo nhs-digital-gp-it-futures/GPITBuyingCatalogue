@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
@@ -12,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
         }
 
-        public SelectFlatOnDemandQuantityModel(string odsCode, string callOffId, string solutionName, int? quantity, TimeUnit? timeUnit)
+        public SelectFlatOnDemandQuantityModel(string odsCode, CallOffId callOffId, string solutionName, int? quantity, TimeUnit? timeUnit)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/recipients/date";
             BackLinkText = "Go back";
@@ -24,8 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             TimeUnit = timeUnit;
         }
 
-        // TODO: Should be of type CallOffId
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public string SolutionName { get; set; }
 

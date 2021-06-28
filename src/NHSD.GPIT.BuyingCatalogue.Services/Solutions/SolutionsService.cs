@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -70,22 +71,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solutions;
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public Task<CatalogueItem> GetSolutionListPrices(string solutionId)
+        public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
             return dbContext.CatalogueItems
                 .Include(i => i.CataloguePrices)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public Task<CatalogueItem> GetSolution(string solutionId)
+        public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
             return dbContext.CatalogueItems
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
@@ -119,94 +114,71 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task SaveSolutionDescription(string solutionId, string summary, string description, string link)
+        public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
             await solutionRepository.SaveChangesAsync();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task SaveSolutionFeatures(string solutionId, string[] features)
+        public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.Features = JsonConvert.SerializeObject(features);
             await solutionRepository.SaveChangesAsync();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task SaveIntegrationLink(string solutionId, string integrationLink)
+        public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.IntegrationsUrl = integrationLink;
             await solutionRepository.SaveChangesAsync();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task SaveImplementationDetail(string solutionId, string detail)
+        public async Task SaveImplementationDetail(CatalogueItemId solutionId, string detail)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.ImplementationDetail = detail;
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveRoadmap(string solutionId, string roadMap)
+        public async Task SaveRoadMap(CatalogueItemId solutionId, string roadMap)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.RoadMap = roadMap;
             await solutionRepository.SaveChangesAsync();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task<ClientApplication> GetClientApplication(string solutionId)
+        public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             return solution.GetClientApplication();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task SaveClientApplication(string solutionId, ClientApplication clientApplication)
+        public async Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
             await solutionRepository.SaveChangesAsync();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task<Hosting> GetHosting(string solutionId)
+        public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
-
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             return solution.GetHosting();
         }
 
-        // TODO: solutionId should be of type CatalogueItemId
-        public async Task SaveHosting(string solutionId, Hosting hosting)
+        public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
         {
-            solutionId.ValidateNotNullOrWhiteSpace(nameof(solutionId));
             hosting.ValidateNotNull(nameof(hosting));
 
-            var solution = await solutionRepository.SingleAsync(x => x.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
             solution.Hosting = JsonConvert.SerializeObject(hosting);
             await solutionRepository.SaveChangesAsync();
         }
@@ -215,14 +187,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            return supplierRepository.SingleAsync(x => x.Id == supplierId);
+            return supplierRepository.SingleAsync(s => s.Id == supplierId);
         }
 
         public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
         {
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
-            var supplier = await supplierRepository.SingleAsync(x => x.Id == supplierId);
+            var supplier = await supplierRepository.SingleAsync(s => s.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
             await supplierRepository.SaveChangesAsync();

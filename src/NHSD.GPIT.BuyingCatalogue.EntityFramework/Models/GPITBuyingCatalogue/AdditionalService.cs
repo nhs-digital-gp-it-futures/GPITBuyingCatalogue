@@ -1,12 +1,11 @@
 ﻿using System;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class AdditionalService
+    public sealed class AdditionalService
     {
-        public string CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string Summary { get; set; }
 
@@ -16,10 +15,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Guid? LastUpdatedBy { get; set; }
 
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
-        public virtual CatalogueItem CatalogueItem { get; set; }
+        public CatalogueItem CatalogueItem { get; set; }
 
-        public virtual Solution Solution { get; set; }
+        public Solution Solution { get; set; }
     }
 }

@@ -22,17 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task SetFundingSource(string callOffId, bool? onlyGms)
+        public async Task SetFundingSource(CallOffId callOffId, bool? onlyGms)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             onlyGms.ValidateNotNull(nameof(onlyGms));
 
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Setting funding source for {callOffId} to {onlyGms.Value}");
 
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == id.Id);
+            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id);
             order.FundingSourceOnlyGms = onlyGms.Value;
             await dbContext.SaveChangesAsync();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
@@ -12,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public int CataloguePriceId { get; set; }
 
-        public string CatalogueItemId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         // TODO: remove
         public Guid PricingUnitId { get; set; }

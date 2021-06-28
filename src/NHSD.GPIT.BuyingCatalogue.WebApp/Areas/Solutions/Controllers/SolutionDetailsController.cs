@@ -3,13 +3,15 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
     [Area("Solutions")]
-    public class SolutionDetailsController : Controller
+    [Route("solutions")]
+    public sealed class SolutionDetailsController : Controller
     {
         private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
@@ -20,35 +22,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [Route("solutions/futures/{id}/associated-services")]
-        public async Task<IActionResult> AssociatedServices(string id)
+        [Route("futures/{solutionId}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(AssociatedServices)}-{nameof(id)}");
-
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
             return View(mapper.Map<CatalogueItem, AssociatedServicesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/capabilities")]
-        public async Task<IActionResult> Capabilities(string id)
+        [Route("futures/{id}/capabilities")]
+        public async Task<IActionResult> Capabilities(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/client-application-types")]
-        public async Task<IActionResult> ClientApplicationTypes(string id)
+        [Route("futures/{id}/client-application-types")]
+        public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             var model = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(solution);
@@ -56,11 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(model);
         }
 
-        [Route("solutions/futures/{id}")]
-        public async Task<IActionResult> Description(string id)
+        [Route("futures/{id}")]
+        public async Task<IActionResult> Description(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             var model = mapper.Map<CatalogueItem, SolutionDescriptionModel>(solution);
@@ -68,59 +67,59 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(model);
         }
 
-        [Route("solutions/futures/{id}/features")]
-        public async Task<IActionResult> Features(string id)
+        [Route("futures/{id}/features")]
+        public async Task<IActionResult> Features(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, SolutionFeaturesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/hosting-type")]
-        public async Task<IActionResult> HostingType(string id)
+        [Route("futures/{id}/hosting-type")]
+        public async Task<IActionResult> HostingType(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, HostingTypesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/implementation")]
-        public async Task<IActionResult> Implementation(string id)
+        [Route("futures/{id}/implementation")]
+        public async Task<IActionResult> Implementation(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ImplementationTimescalesModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/interoperability")]
-        public async Task<IActionResult> Interoperability(string id)
+        [Route("futures/{id}/interoperability")]
+        public async Task<IActionResult> Interoperability(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             var viewModel = mapper.Map<CatalogueItem, InteroperabilityModel>(solution);
             return View(viewModel);
         }
 
-        [Route("solutions/futures/{id}/list-price")]
-        public async Task<IActionResult> ListPrice(string id)
+        [Route("futures/{id}/list-price")]
+        public async Task<IActionResult> ListPrice(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
         }
 
-        [Route("solutions/futures/{id}/additional-services")]
-        public async Task<IActionResult> AdditionalServices(string id)
+        [Route("futures/{id}/additional-services")]
+        public async Task<IActionResult> AdditionalServices(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
             if (solution == null)
@@ -130,57 +129,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(temp);
         }
 
-        [Route("solutions/futures/{id}/check-capability-epic")]
+        [Route("futures/{id}/check-capability-epic")]
         public IActionResult CheckCapabilityEpic(string id)
         {
             return View();
         }
 
-        [Route("solutions/futures/{id}/check-associated-service")]
+        [Route("futures/{id}/check-associated-service")]
         public IActionResult CheckAssociatedService(string id)
         {
             return View();
         }
 
-        [Route("solutions/futures/{id}/supplier-details")]
-        public async Task<IActionResult> SupplierDetails(string id)
+        [Route("futures/{id}/supplier-details")]
+        public async Task<IActionResult> SupplierDetails(CatalogueItemId id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentException($"{nameof(SupplierDetails)}-{nameof(id)}");
-
             var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, SolutionSupplierDetailsModel>(solution));
         }
 
-        [Route("solutions/futures/foundation/{id}")]
-        public async Task<IActionResult> FoundationSolutionDetail(string id)
+        [Route("futures/foundation/{id}")]
+        public async Task<IActionResult> FoundationSolutionDetail(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
 
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
 
-        [Route("solutions/dfocvc/{id}")]
-        public async Task<IActionResult> DVOCVCSolutionDetail(string id)
+        [Route("dfocvc/{id}")]
+        public async Task<IActionResult> DVOCVCSolutionDetail(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
 
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
 
-        [Route("solutions/vaccinations/{id}")]
-        public async Task<IActionResult> VaccinationsSolutionDetail(string id)
+        [Route("vaccinations/{id}")]
+        public async Task<IActionResult> VaccinationsSolutionDetail(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
 
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
 
-        [Route("solutions/preview/{id}")]
-        public async Task<IActionResult> PreviewSolutionDetail(string id)
+        [Route("preview/{id}")]
+        public async Task<IActionResult> PreviewSolutionDetail(CatalogueItemId id)
         {
             var solution = await solutionsService.GetSolution(id);
 

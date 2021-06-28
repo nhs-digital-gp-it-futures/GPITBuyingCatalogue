@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectAdditionalServiceRecipientsModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectAdditionalServiceRecipientsModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -14,8 +16,12 @@
 
         <div class="nhsuk-grid-column-full">
 
-            <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/select/additional-service/price/recipients?selectionMode=@Model.SelectionParameter"
-                                     text="@Model.SelectionPrompt" />
+            <vc:nhs-secondary-button url="@Url.Action(
+                                                nameof(AdditionalServicesController.SelectAdditionalServiceRecipients),
+                                                typeof(AdditionalServicesController).ControllerName(),
+                                                new { Model.OdsCode, Model.CallOffId, selectionMode = Model.SelectionParameter})"
+                                     text="@Model.SelectionPrompt"
+                                     use-primary-colour="false" />
 
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />

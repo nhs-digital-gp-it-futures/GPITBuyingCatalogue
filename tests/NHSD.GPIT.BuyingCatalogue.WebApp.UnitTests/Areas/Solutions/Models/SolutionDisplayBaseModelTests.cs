@@ -1,52 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionDisplayBaseModelTests
+    public static class SolutionDisplayBaseModelTests
     {
-        [TestCase(typeof(ClientApplicationTypesModel))]
-        [TestCase(typeof(ImplementationTimescalesModel))]
-        [TestCase(typeof(SolutionDescriptionModel))]
-        [TestCase(typeof(SolutionFeaturesModel))]
-        public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
-        {
-            childType
-            .Should()
-            .BeAssignableTo<SolutionDisplayBaseModel>();
-        }
-        
-        [AutoData]
-        [Test]
-        public static void GetSections_ValidSectionProperty_ReturnsSectionsWithSelected(string solutionId)
-        {
-            var model = new TestSolutionDisplayBaseModel { SolutionId = solutionId, };
-            for (int i = 0; i < 12; i++)
-            {
-                if (i % 2 != 0) continue;
-                model.SetShowTrue(i);
-                SectionModels[i].Show = true;
-            }
-            
-            var expected = new List<SectionModel>(SectionModels.Where(s => s.Show));
-            expected.ForEach(s => s.Id = solutionId);
-            expected.Single(s => s.Name.EqualsIgnoreCase(model.Section)).Selected = true;
-            
-            var actual = model.GetSections();
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-        
-        public static readonly IList<SectionModel> SectionModels = new List<SectionModel>
+        private static readonly IList<SectionModel> SectionModels = new List<SectionModel>
         {
             new()
             {
@@ -127,5 +94,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 Name = "Supplier details",
             },
         };
+
+        [Theory]
+        [InlineData(typeof(ClientApplicationTypesModel))]
+        [InlineData(typeof(ImplementationTimescalesModel))]
+        [InlineData(typeof(SolutionDescriptionModel))]
+        [InlineData(typeof(SolutionFeaturesModel))]
+        public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
+        {
+            childType
+            .Should()
+            .BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetSections_ValidSectionProperty_ReturnsSectionsWithSelected(CatalogueItemId solutionId)
+        {
+            var model = new TestSolutionDisplayBaseModel { SolutionId = solutionId, };
+            for (int i = 0; i < 12; i++)
+            {
+                if (i % 2 != 0) continue;
+                model.SetShowTrue(i);
+                SectionModels[i].Show = true;
+            }
+
+            var expected = new List<SectionModel>(SectionModels.Where(s => s.Show));
+            expected.ForEach(s => s.Id = solutionId.ToString());
+            expected.Single(s => s.Name.EqualsIgnoreCase(model.Section)).Selected = true;
+
+            var actual = model.GetSections();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
     }
 }

@@ -1,58 +1,68 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NUnit.Framework;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ValidationExtensionsTests
+    public static class ValidationExtensionsTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
-        [Test]
+        [Fact]
         public static void NullObject_ThrowsException()
         {
-            var val = (string)null;
+            const string val = null;
+
             var actual = Assert.Throws<ArgumentNullException>(() => val.ValidateNotNull("arg"));
+
             actual.ParamName.Should().Be("arg");
         }
 
-        [Test]
-        public static void ValidObject_DoesntThrowException()
+        [Fact]
+        public static void ValidObject_DoesNotThrowException()
         {
-            var val = "123";
-            Assert.DoesNotThrow(() => val.ValidateNotNull("arg"));
+            const string val = "123";
+
+            var ex = Record.Exception(() => val.ValidateNotNull("arg"));
+
+            ex.Should().BeNull();
         }
 
-        [Test]
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void InvalidString_ThrowsException(string value)
         {
             var actual = Assert.Throws<ArgumentException>(() => value.ValidateNotNullOrWhiteSpace("arg"));
+
             actual.ParamName.Should().Be("arg");
         }
 
-        [Test]        
-        public static void ValidString_DoesntThrowException()
+        [Fact]
+        public static void ValidString_DoesNotThrowException()
         {
-            var val = "123";
-            Assert.DoesNotThrow(() => val.ValidateNotNullOrWhiteSpace("arg"));
+            const string val = "123";
+
+            var ex = Record.Exception(() => val.ValidateNotNullOrWhiteSpace("arg"));
+
+            ex.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public static void InvalidGuid_ThrowsException()
         {
             var actual = Assert.Throws<ArgumentException>(() => Guid.Empty.ValidateGuid("id"));
+
             actual.ParamName.Should().Be("id");
         }
 
-        [Test]
-        public static void ValidGuid_DoesntThrowsException()
+        [Fact]
+        public static void ValidGuid_DoesNotThrowException()
         {
             var val = Guid.NewGuid();
-            Assert.DoesNotThrow(() => val.ValidateGuid("arg"));
+
+            var ex = Record.Exception(() => val.ValidateGuid("arg"));
+
+            ex.Should().BeNull();
         }
     }
 }

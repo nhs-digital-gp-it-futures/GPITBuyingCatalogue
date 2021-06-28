@@ -1,12 +1,11 @@
 ﻿using System;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
     public partial class SolutionEpic
     {
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         public Guid CapabilityId { get; set; }
 

@@ -1,15 +1,15 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
-    public class CommencementDateModel : OrderingBaseModel
+    public sealed class CommencementDateModel : OrderingBaseModel
     {
         public CommencementDateModel()
         {
         }
 
-        public CommencementDateModel(string odsCode, string callOffId, DateTime? commencementDate)
+        public CommencementDateModel(string odsCode, CallOffId callOffId, DateTime? commencementDate)
         {
             BackLinkText = "Go back";
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}";

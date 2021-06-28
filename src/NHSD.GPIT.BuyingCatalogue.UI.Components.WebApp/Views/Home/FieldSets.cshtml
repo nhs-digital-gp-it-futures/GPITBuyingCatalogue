@@ -31,41 +31,36 @@
                                  label-text="Code Example for a Date input that contains a Fieldset-Label"
                                  size="Medium">
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
-            <span class="vs-light-theme-purple first-layer">asp-for</span>
-            <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
-            <span class="vs-light-theme-purple first-layer">label-text</span>
-            <span class="vs-light-theme-blue">="This is a date input"&nbsp;</span>
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a date input"&nbsp;</span>
             <span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue first-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-date-input</span><br />
-            <span class="vs-light-theme-purple second-layer">asp-for</span>
-            <span class="vs-light-theme-blue">"@@Model"&nbsp;</span><br />
-            <span class="vs-light-theme-purple second-layer">day</span>
-            <span class="vs-light-theme-blue">="Day"&nbsp;</span><br />
-            <span class="vs-light-theme-purple second-layer">month</span>
-            <span class="vs-light-theme-blue">="Month"&nbsp;</span><br />
-            <span class="vs-light-theme-purple second-layer">year</span>
-            <span class="vs-light-theme-blue">="Year"&nbsp;</span>
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-date-input</span><br />
+            <span class="vs-light-theme-purple second-layer">asp-for</span><span class="vs-light-theme-blue">"@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">day</span><span class="vs-light-theme-blue">="Day"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">month</span><span class="vs-light-theme-blue">="Month"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">year</span><span class="vs-light-theme-blue">="Year"&nbsp;</span>
             <span class="vs-light-theme-blue">/&gt;</span><br />
 
 
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
-            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+            <span class="vs-light-theme-blue">&gt;</span>
         </div>
     </nhs-fieldset-form-container>
 
     <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>asp-for</nhs-table-cell>
+            <nhs-table-cell>
                 <p>This is a Reference to the Model as a Whole. It's Required for generated Correct Id's and aria attributes</p>
                 <p>This should Typically always be @@Model</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -74,7 +69,7 @@
             <nhs-table-cell>
                 <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -83,7 +78,7 @@
             <nhs-table-cell>
                 <p>This will add a hint under the Label Text.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -102,7 +97,7 @@
                 <p>Attempting to put in another option will force the tag to fail to compile.</p>
                 <p>Defaults to Large.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -143,22 +138,16 @@
                                  label-text="Code Example for the above Fieldset Form Container"
                                  size="Medium">
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-fieldset-form-container</span><br />
-            <span class="vs-light-theme-purple first-layer">asp-for</span>
-            <span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
-            <span class="vs-light-theme-purple first-layer">label-text</span>
-            <span class="vs-light-theme-blue">="This is a Fieldset Form Container Grouping Inputs together with a Large Label"&nbsp;</span><br />
-            <span class="vs-light-theme-purple first-layer">label-hint</span>
-            <span class="vs-light-theme-blue">="This is a hint"&nbsp;</span><br />
-            <span class="vs-light-theme-purple first-layer">Size</span>
-            <span class="vs-light-theme-blue">="Large"&nbsp;</span>
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-container</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a Fieldset Form Container Grouping Inputs together with a Large Label"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-hint</span><span class="vs-light-theme-blue">="This is a hint"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">Size</span><span class="vs-light-theme-blue">="Large"&nbsp;</span>
             <span class="vs-light-theme-blue">&gt;</span><br />
 
 
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-fieldset-form-container</span>
-            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-container</span>
+            <span class="vs-light-theme-blue">&gt;</span>
         </div>
     </nhs-fieldset-form-container>
 
@@ -180,13 +169,17 @@
     </nhs-fieldset-form-container>
 
     <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
         <nhs-table-row-container>
-            <nhs-table-cell column-name="Attribute">asp-for</nhs-table-cell>
-            <nhs-table-cell column-name="Functionality">
+            <nhs-table-cell>asp-for</nhs-table-cell>
+            <nhs-table-cell>
                 <p>This is a Reference to the Model as a Whole. It's Required for generated Correct Id's and aria attributes</p>
                 <p>This should Typically always be @@Model</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="Yes" colour="Red" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -195,7 +188,7 @@
             <nhs-table-cell>
                 <p>This will set the display text for the label. It can come from a Model Property or a string typed in the View Page.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -204,7 +197,7 @@
             <nhs-table-cell>
                 <p>This will add a hint under the Label Text.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>
@@ -223,7 +216,7 @@
                 <p>Attempting to put in another option will force the tag to fail to compile.</p>
                 <p>Defaults to Large.</p>
             </nhs-table-cell>
-            <nhs-table-cell column-name="Required">
+            <nhs-table-cell>
                 <nhs-tag text="No" colour="Green" />
             </nhs-table-cell>
         </nhs-table-row-container>

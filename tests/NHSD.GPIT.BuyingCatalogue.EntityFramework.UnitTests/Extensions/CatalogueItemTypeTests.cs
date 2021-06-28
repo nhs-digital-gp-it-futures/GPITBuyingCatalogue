@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NUnit.Framework;
-using NUnit.Framework.Interfaces;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class CatalogueItemTypeTests
+    public static class CatalogueItemTypeTests
     {
-        [TestCase(CatalogueItemType.AdditionalService, "Additional Service")]
-        [TestCase(CatalogueItemType.AssociatedService, "Associated Service")]
-        [TestCase(CatalogueItemType.Solution, "Catalogue Solution")]
+        [Theory]
+        [InlineData(CatalogueItemType.AdditionalService, "Additional Service")]
+        [InlineData(CatalogueItemType.AssociatedService, "Associated Service")]
+        [InlineData(CatalogueItemType.Solution, "Catalogue Solution")]
         public static void DisplayName_ReturnsExpectedName(CatalogueItemType itemType, string expectedName)
         {
             var displayName = itemType.DisplayName();
@@ -23,13 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             displayName.Should().Be(expectedName);
         }
 
-        [Test]
+        [Fact]
         public static void MarkOrderSectionAsViewed_NullOrder_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => CatalogueItemType.AdditionalService.MarkOrderSectionAsViewed(null));
         }
 
-        [Test]
+        [Fact]
         public static void MarkOrderSectionAsViewed_InvalidType_ThrowsException()
         {
             var order = new Order();
@@ -37,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             Assert.Throws<ArgumentException>(() => CatalogueItemTypeExtensions.MarkOrderSectionAsViewed(0, order));
         }
 
-        [TestCaseSource(nameof(MarkOrderSectionAsViewedTestCases))]
+        [Theory]
+        [MemberData(nameof(MarkOrderSectionAsViewedTestData.TestData), MemberType = typeof(MarkOrderSectionAsViewedTestData))]
         public static void MarkOrderSectionAsViewed_MarksExpectedSection(
             CatalogueItemType itemType,
             Func<Order, bool> sectionViewed)
@@ -50,7 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             sectionViewed(order).Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InferEstimationPeriodTestCases))]
+        [Theory]
+        [MemberData(nameof(InferEstimationPeriodTestData.TestData), MemberType = typeof(InferEstimationPeriodTestData))]
         public static void InferEstimationPeriod_ReturnsExpectedEstimationPeriod(
             CatalogueItemType catalogueItemType,
             ProvisioningType provisioningType,
@@ -62,42 +63,57 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             actual.Should().Be(expectedEstimationPeriod);
         }
 
-        private static IEnumerable<ITestCaseData> MarkOrderSectionAsViewedTestCases()
+        [Theory]
+        [AutoData]
+        public static void InferEstimationPeriod_InvalidCatalogueItemType_ThrowsException(TimeUnit timeUnit)
         {
-            yield return new TestCaseData(CatalogueItemType.AdditionalService, new Func<Order, bool>(o => o.Progress.AdditionalServicesViewed));
-            yield return new TestCaseData(CatalogueItemType.AssociatedService, new Func<Order, bool>(o => o.Progress.AssociatedServicesViewed));
-            yield return new TestCaseData(CatalogueItemType.Solution, new Func<Order, bool>(o => o.Progress.CatalogueSolutionsViewed));
+            const CatalogueItemType itemType = 0;
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => itemType.InferEstimationPeriod(0, timeUnit));
         }
 
-        private static IEnumerable<ITestCaseData> InferEstimationPeriodTestCases()
+        private static class MarkOrderSectionAsViewedTestData
         {
-            foreach (var data in AdditionalServiceSolutionData(CatalogueItemType.AdditionalService))
-                yield return new TestCaseData(data);
-
-            foreach (var data in AdditionalServiceSolutionData(CatalogueItemType.Solution))
-                yield return new TestCaseData(data);
-
-            yield return new TestCaseData(CatalogueItemType.AssociatedService, ProvisioningType.OnDemand, null, null);
-            yield return new TestCaseData(CatalogueItemType.AssociatedService, ProvisioningType.OnDemand, TimeUnit.PerYear, TimeUnit.PerYear);
-            yield return new TestCaseData(CatalogueItemType.AssociatedService, ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerMonth);
-            yield return new TestCaseData(CatalogueItemType.AssociatedService, ProvisioningType.Declarative, null, null);
-            yield return new TestCaseData(CatalogueItemType.AssociatedService, ProvisioningType.Declarative, TimeUnit.PerYear, null);
-            yield return new TestCaseData(CatalogueItemType.AssociatedService, ProvisioningType.Declarative, TimeUnit.PerMonth, null);
+            public static IEnumerable<object[]> TestData()
+            {
+                yield return new object[] { CatalogueItemType.AdditionalService, new Func<Order, bool>(o => o.Progress.AdditionalServicesViewed) };
+                yield return new object[] { CatalogueItemType.AssociatedService, new Func<Order, bool>(o => o.Progress.AssociatedServicesViewed) };
+                yield return new object[] { CatalogueItemType.Solution, new Func<Order, bool>(o => o.Progress.CatalogueSolutionsViewed) };
+            }
         }
 
-        private static IEnumerable<object[]> AdditionalServiceSolutionData(CatalogueItemType itemType)
+        private static class InferEstimationPeriodTestData
         {
-            yield return new object[] { itemType, ProvisioningType.OnDemand, null, null };
-            yield return new object[] { itemType, ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerMonth };
-            yield return new object[] { itemType, ProvisioningType.OnDemand, TimeUnit.PerYear, TimeUnit.PerYear };
+            public static IEnumerable<object[]> TestData()
+            {
+                foreach (var data in AdditionalServiceSolutionData(CatalogueItemType.AdditionalService))
+                    yield return data;
 
-            yield return new object[] { itemType, ProvisioningType.Patient, null, TimeUnit.PerMonth };
-            yield return new object[] { itemType, ProvisioningType.Patient, TimeUnit.PerMonth, TimeUnit.PerMonth };
-            yield return new object[] { itemType, ProvisioningType.Patient, TimeUnit.PerYear, TimeUnit.PerMonth };
+                foreach (var data in AdditionalServiceSolutionData(CatalogueItemType.Solution))
+                    yield return data;
 
-            yield return new object[] { itemType, ProvisioningType.Declarative, null, TimeUnit.PerYear };
-            yield return new object[] { itemType, ProvisioningType.Declarative, TimeUnit.PerMonth, TimeUnit.PerYear };
-            yield return new object[] { itemType, ProvisioningType.Declarative, TimeUnit.PerYear, TimeUnit.PerYear };
+                yield return new object[] { CatalogueItemType.AssociatedService, ProvisioningType.OnDemand, null, null };
+                yield return new object[] { CatalogueItemType.AssociatedService, ProvisioningType.OnDemand, TimeUnit.PerYear, TimeUnit.PerYear };
+                yield return new object[] { CatalogueItemType.AssociatedService, ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerMonth };
+                yield return new object[] { CatalogueItemType.AssociatedService, ProvisioningType.Declarative, null, null };
+                yield return new object[] { CatalogueItemType.AssociatedService, ProvisioningType.Declarative, TimeUnit.PerYear, null };
+                yield return new object[] { CatalogueItemType.AssociatedService, ProvisioningType.Declarative, TimeUnit.PerMonth, null };
+            }
+
+            private static IEnumerable<object[]> AdditionalServiceSolutionData(CatalogueItemType itemType)
+            {
+                yield return new object[] { itemType, ProvisioningType.OnDemand, null, null };
+                yield return new object[] { itemType, ProvisioningType.OnDemand, TimeUnit.PerMonth, TimeUnit.PerMonth };
+                yield return new object[] { itemType, ProvisioningType.OnDemand, TimeUnit.PerYear, TimeUnit.PerYear };
+
+                yield return new object[] { itemType, ProvisioningType.Patient, null, TimeUnit.PerMonth };
+                yield return new object[] { itemType, ProvisioningType.Patient, TimeUnit.PerMonth, TimeUnit.PerMonth };
+                yield return new object[] { itemType, ProvisioningType.Patient, TimeUnit.PerYear, TimeUnit.PerMonth };
+
+                yield return new object[] { itemType, ProvisioningType.Declarative, null, TimeUnit.PerYear };
+                yield return new object[] { itemType, ProvisioningType.Declarative, TimeUnit.PerMonth, TimeUnit.PerYear };
+                yield return new object[] { itemType, ProvisioningType.Declarative, TimeUnit.PerYear, TimeUnit.PerYear };
+            }
         }
     }
 }
