@@ -97,14 +97,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
         {
             return dbContext.CatalogueItems
-                .Include(x => x.Solution).ThenInclude(x => x.SolutionCapabilities)
-                .Include(x => x.Solution).ThenInclude(x => x.FrameworkSolutions)
-                .Include(x => x.Solution).ThenInclude(x => x.MarketingContacts)
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
+                .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
+                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
-                .Include(x => x.CataloguePrices)
-                .Include(x => x.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
-                .Include(x => x.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
-                .Where(x => x.CatalogueItemId == solutionId)
+                .Include(i => i.CataloguePrices)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
 
