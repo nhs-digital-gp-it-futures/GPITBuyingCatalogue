@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.TaskList
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
 {
     public sealed class OrderTaskList
     {

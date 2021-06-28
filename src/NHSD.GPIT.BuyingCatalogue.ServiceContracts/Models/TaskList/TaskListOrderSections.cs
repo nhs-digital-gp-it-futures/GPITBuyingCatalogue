@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.TaskList
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
 {
     [Flags]
     public enum TaskListOrderSections
