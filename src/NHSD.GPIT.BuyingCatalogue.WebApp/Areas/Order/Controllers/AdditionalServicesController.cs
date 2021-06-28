@@ -462,7 +462,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(Index),
                 typeof(AdditionalServicesController).ControllerName(),
-                new { odsCode, callOffId});
+                new { odsCode, callOffId });
         }
     }
 }

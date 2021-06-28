@@ -165,7 +165,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 object item,
                 string valueName)
         {
-
             var itemValue = GetGenericValueFromName(item, valueName);
 
             if (string.IsNullOrWhiteSpace(itemValue))
@@ -211,6 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             {
                 return propertyInfo.GetValue(item).ToString();
             }
+
             var methodInfo = item.GetType().GetExtensionMethod(Assembly.GetAssembly(item.GetType()), targetName);
 
             if (methodInfo is not null)
