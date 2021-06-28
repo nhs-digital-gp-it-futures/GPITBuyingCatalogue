@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -130,9 +133,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             string displayName,
             string valueName)
         {
-            var itemText = item.GetType().GetProperty(displayName).GetValue(item).ToString();
+            var itemText = GetGenericValueFromName(item, displayName);
 
-            var itemValue = item.GetType().GetProperty(valueName).GetValue(item).ToString();
+            var itemValue = GetGenericValueFromName(item, valueName);
 
             if (string.IsNullOrWhiteSpace(itemText))
                 return null;
@@ -162,7 +165,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 object item,
                 string valueName)
         {
-            var itemValue = item.GetType().GetProperty(valueName).GetValue(item).ToString();
+
+            var itemValue = GetGenericValueFromName(item, valueName);
 
             if (string.IsNullOrWhiteSpace(itemValue))
                 return null;
@@ -197,6 +201,24 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             builder.InnerHtml.Append(TagHelperConstants.NhsVisuallyHiddenSpanContent);
 
             return builder;
+        }
+
+        private static string GetGenericValueFromName(object item, string targetName)
+        {
+            var propertyInfo = item.GetType().GetProperty(targetName);
+
+            if (propertyInfo is not null)
+            {
+                return propertyInfo.GetValue(item).ToString();
+            }
+            var methodInfo = item.GetType().GetExtensionMethod(Assembly.GetAssembly(item.GetType()), targetName);
+
+            if (methodInfo is not null)
+            {
+                return methodInfo.Invoke(item, new[] { item }).ToString();
+            }
+
+            return string.Empty;
         }
     }
 }
