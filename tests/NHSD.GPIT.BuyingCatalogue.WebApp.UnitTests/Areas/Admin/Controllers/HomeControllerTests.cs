@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             Assert.Throws<ArgumentNullException>(
                     () =>
-                        _ = new HomeController(Mock.Of<ILogWrapper<HomeController>>(),
+                        _ = new HomeController(
                             Mock.Of<IOrganisationsService>(),
                             Mock.Of<IMapper>(),
                             null))
@@ -161,7 +161,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var mockSolutionService = new Mock<ISolutionsService>();
             var controller = new HomeController(
-                Mock.Of<ILogWrapper<HomeController>>(),
                 Mock.Of<IOrganisationsService>(),
                 Mock.Of<IMapper>(),
                 mockSolutionService.Object);
@@ -182,7 +181,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockSolutionService.Setup(o => o.GetAllSuppliers()).ReturnsAsync(mockSuppliers);
 
             var controller = new HomeController(
-                Mock.Of<ILogWrapper<HomeController>>(),
                 mockOrganisationService.Object,
                 mockMapper.Object,
                 mockSolutionService.Object);

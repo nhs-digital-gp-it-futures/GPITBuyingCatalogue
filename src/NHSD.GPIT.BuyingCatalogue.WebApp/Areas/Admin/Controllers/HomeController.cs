@@ -42,8 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [Route("manage-suppliers")]
         public async Task<IActionResult> ManageSuppliers()
         {
-            logger.LogInformation($"Taking user to {nameof(HomeController)}.{nameof(ManageSuppliers)}");
-
             var suppliers = await solutionsService.GetAllSuppliers();
             return View(suppliers);
         }
