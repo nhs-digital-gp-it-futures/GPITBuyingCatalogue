@@ -66,11 +66,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return View(orderModel);
         }
 
+        [HttpGet("complete-order")]
+        public async Task<IActionResult> CompleteOrder(string odsCode, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrder(callOffId);
+
+            var model = new CompleteOrderModel(odsCode, callOffId, order)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("complete-order")]
+        public async Task<IActionResult> CompleteOrder(string odsCode, CallOffId callOffId, CompleteOrderModel model)
+        {
+            var order = await orderService.GetOrder(callOffId);
+
+            if (!order.CanComplete())
+            {
+                ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
+                return View(model);
+            }
+
+            await orderService.CompleteOrder(callOffId);
+
+            return RedirectToAction(
+                nameof(OrderController.CompletedOrderConfirmation),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, callOffId });
+        }
+
+        [HttpGet("complete-order/order-confirmation")]
+        public IActionResult CompletedOrderConfirmation(string odsCode, CallOffId callOffId)
+        {
+            var model = new CompletedOrderConfirmationModel(odsCode, callOffId)
+            {
+                BackLink = Url.Action(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { odsCode }),
+            };
+
+            return View(model);
+        }
+
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
         public IActionResult NewOrder(string odsCode)
         {
-            logger.LogInformation($"Taking user to {nameof(OrderController)}.{nameof(NewOrder)} for {nameof(odsCode)} {odsCode}");
-
             var orderModel = new OrderModel(odsCode, null, new OrderTaskList())
             {
                 DescriptionUrl = Url.Action(
@@ -157,8 +204,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("~/organisation/{odsCode}/order/neworder/description")]
         public IActionResult NewOrderDescription(string odsCode)
         {
-            logger.LogInformation($"Taking user to {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
-
             var descriptionModel = new OrderDescriptionModel(odsCode, null)
             {
                 BackLink = Url.Action(
@@ -173,8 +218,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("~/organisation/{odsCode}/order/neworder/description")]
         public async Task<IActionResult> NewOrderDescription(string odsCode, OrderDescriptionModel model)
         {
-            logger.LogInformation($"Handling post for {nameof(DashboardController)}.{nameof(NewOrderDescription)} for {nameof(odsCode)} {odsCode}");
-
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 

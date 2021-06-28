@@ -10,9 +10,7 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-
             <nhs-page-title title="@Model.Title" advice="Manage orders currently in progress and view completed orders." />
-
             @if (Model.CanActOnBehalf)
             {
                 <h2>Current organisation</h2>
@@ -28,7 +26,7 @@
                                      url="@Url.Action(
                                          nameof(OrderController.NewOrder),
                                          typeof(OrderController).ControllerName(),
-                                         new {Model.OdsCode})"
+                                         new { Model.OdsCode })"
                                      use-primary-colour="true" />
         </div>
 
@@ -74,10 +72,9 @@
                         </nhs-table-cell>
                         <nhs-table-cell>@Model.CompleteOrders[i].Description</nhs-table-cell>
                         <nhs-table-cell>@Model.CompleteOrders[i].LastUpdatedByName</nhs-table-cell>
-                        <nhs-table-cell>@Model.CompleteOrders[i].LastUpdated.ToLongDateString()</nhs-table-cell>
                         <nhs-table-cell>@Model.CompleteOrders[i].Completed?.ToLongDateString()</nhs-table-cell>
                         <nhs-table-cell>@Model.CompleteOrders[i].Created.ToLongDateString()</nhs-table-cell>
-                        <nhs-table-cell>TODO</nhs-table-cell>
+                        <nhs-table-cell>@(Model.CompleteOrders[i].FundingSourceOnlyGms == true ? "Yes" : "No")</nhs-table-cell>
                     </nhs-table-row-container>
                 }
             </nhs-table>

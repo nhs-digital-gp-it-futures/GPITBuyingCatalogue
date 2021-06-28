@@ -111,5 +111,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task CompleteOrder(CallOffId callOffId)
+        {
+            var order = await GetOrder(callOffId);
+
+            order.Complete();
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

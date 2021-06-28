@@ -8,12 +8,15 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
             <nhs-page-title title="@Model.Title"
                             advice="@Model.TitleAdvice" />
+
 
             <nhs-fieldset-form-container asp-for="@Model"
                                          label-text="Order Description"
                                          label-hint="@Model.Description">
+                <br />
                 <br />
                 <nhs-task-list>
                     <nhs-task-list-section label-text="Start your order">
@@ -74,7 +77,7 @@
 
             <vc:nhs-secondary-button text="Complete Order"
                                      url="@Url.Action(
-                                            "CompleteOrder",
+                                            nameof(OrderController.CompleteOrder),
                                             "Order",
                                             new { Model.OdsCode, Model.CallOffId })"
                                      use-primary-colour="true"/><br />
