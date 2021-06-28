@@ -2,15 +2,13 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AssociatedServicesModelTests
+    public static class AssociatedServicesModelTests
     {
-        [Test]
+        [Fact]
         public static void Class_Inherits_SolutionDisplayBaseModel()
         {
             typeof(AssociatedServicesModel)
@@ -18,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static void HasServices_ValidServices_ReturnsTrue(AssociatedServicesModel model)
         {
@@ -27,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.HasServices().Should().BeTrue();
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static void HasServices_NoService_ReturnsFalse(AssociatedServicesModel model)
         {
@@ -36,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.HasServices().Should().BeFalse();
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static void HasServices_NullService_ReturnsFalse(AssociatedServicesModel model)
         {

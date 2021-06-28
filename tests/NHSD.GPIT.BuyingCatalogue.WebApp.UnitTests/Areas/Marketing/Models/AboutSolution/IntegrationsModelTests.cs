@@ -2,21 +2,19 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.AboutSolution
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class IntegrationsModelTests
+    public static class IntegrationsModelTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_NullCatalogueItem_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() => _ = new IntegrationsModel(null));
         }
 
-        [Test]
+        [Fact]
         public static void WithCatalogueItem_PropertiesCorrectlySet()
         {
             var catalogueItem = new CatalogueItem
@@ -27,33 +25,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
 
             var model = new IntegrationsModel(catalogueItem);
 
-            Assert.AreEqual("/marketing/supplier/solution/1-123", model.BackLink);
+            Assert.Equal("/marketing/supplier/solution/1-123", model.BackLink);
             Assert.True(model.IsComplete);
-            Assert.AreEqual("Some integrations url", model.Link);
+            Assert.Equal("Some integrations url", model.Link);
         }
 
-        [Test]
+        [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
             var model = new IntegrationsModel();
 
-            Assert.AreEqual("./", model.BackLink);
+            Assert.Equal("./", model.BackLink);
             Assert.False(model.IsComplete);
             Assert.Null(model.Link);
         }
 
-        [Test]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("Some integrations url", true)]
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData(" ", false)]
+        [InlineData("Some integrations url", true)]
         public static void IsCompleteIsCorrectlySet(string integrationsUrl, bool? expected)
         {
             var catalogueItem = new CatalogueItem { Solution = new Solution { IntegrationsUrl = integrationsUrl } };
 
             var model = new IntegrationsModel(catalogueItem);
 
-            Assert.AreEqual(expected, model.IsComplete);
+            Assert.Equal(expected, model.IsComplete);
         }
     }
 }

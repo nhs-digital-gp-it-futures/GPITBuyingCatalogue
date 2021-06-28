@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class NativeDesktopMemoryAndStorageTests
+    public static class NativeDesktopMemoryAndStorageTests
     {
-        private static readonly List<string> InvalidStrings = new List<string>{ null, string.Empty, "    " };
-        
+        private static readonly List<string> InvalidStrings = new() { null, string.Empty, "    " };
+
+        [Theory]
         [AutoData]
-        [Test]
         public static void IsValid_AllPropertiesValid_ReturnsTrue(
             NativeDesktopMemoryAndStorage model)
         {
@@ -22,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             actual.Should().BeTrue();
         }
 
+        [Theory]
         [AutoData]
-        [Test]
         public static void IsValid_MinimumCpuNotValid_ReturnsFalse(
             NativeDesktopMemoryAndStorage model)
         {
@@ -31,15 +29,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 invalid =>
                 {
                     model.MinimumCpu = invalid;
-                    
+
                     var actual = model.IsValid();
 
                     actual.Should().BeFalse();
                 });
         }
 
+        [Theory]
         [AutoData]
-        [Test]
         public static void IsValid_MinimumMemoryRequirementNotValid_ReturnsFalse(
             NativeDesktopMemoryAndStorage model)
         {
@@ -47,15 +45,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 invalid =>
                 {
                     model.MinimumMemoryRequirement = invalid;
-                    
+
                     var actual = model.IsValid();
 
                     actual.Should().BeFalse();
                 });
         }
 
+        [Theory]
         [AutoData]
-        [Test]
         public static void IsValid_StorageRequirementsDescriptionNotValid_ReturnsFalse(
             NativeDesktopMemoryAndStorage model)
         {
@@ -63,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 invalid =>
                 {
                     model.StorageRequirementsDescription = invalid;
-                    
+
                     var actual = model.IsValid();
 
                     actual.Should().BeFalse();

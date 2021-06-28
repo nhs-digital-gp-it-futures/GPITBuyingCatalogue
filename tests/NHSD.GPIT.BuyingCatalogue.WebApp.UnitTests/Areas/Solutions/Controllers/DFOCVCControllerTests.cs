@@ -5,60 +5,49 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class DFOCVCControllerTests
+    public static class DFOCVCControllerTests
     {
-        [Test]
+        [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(DFOCVCController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Solutions");
         }
 
-        [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new DFOCVCController(null,
-                Mock.Of<ISolutionsService>()));
-        }
-
-        [Test]
+        [Fact]
         public static void Constructor_NullSolutionsService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new DFOCVCController(Mock.Of<ILogWrapper<DFOCVCController>>(),
+                _ = new DFOCVCController(
                 null));
         }
 
-        [Test]
+        [Fact]
         public static async Task Get_Index_ReturnsDefaultViewWithModelPopulated()
         {
             var solutions = new List<CatalogueItem>
             {
-                new CatalogueItem{ Name = "Item 1"},
-                new CatalogueItem{ Name = "Item 2"}
+                new() { Name = "Item 1"},
+                new() { Name = "Item 2"}
             };
 
             var mockSolutionsService = new Mock<ISolutionsService>();
             mockSolutionsService.Setup(x => x.GetDFOCVCSolutions()).ReturnsAsync(solutions);
 
-            var controller = new DFOCVCController(Mock.Of<ILogWrapper<DFOCVCController>>(),
+            var controller = new DFOCVCController(
                 mockSolutionsService.Object);
 
             var result = await controller.Index();
 
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.That(((ViewResult)result).Model, Is.InstanceOf(typeof(SolutionsModel)));
-            Assert.AreEqual(2, ((SolutionsModel)((ViewResult)result).Model).CatalogueItems.Count);
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.IsAssignableFrom<SolutionsModel>(((ViewResult)result).Model);
+            Assert.Equal(2, ((SolutionsModel)((ViewResult)result).Model).CatalogueItems.Count);
         }
     }
 }

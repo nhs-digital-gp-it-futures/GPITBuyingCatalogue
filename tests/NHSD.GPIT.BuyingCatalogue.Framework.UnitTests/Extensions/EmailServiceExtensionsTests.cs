@@ -3,15 +3,13 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class EmailServiceExtensionsTests
+    public static class EmailServiceExtensionsTests
     {
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_MessageHasExpectedRecipient()
         {
             var recipient = new EmailAddress("to@recipient.test");
@@ -24,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             service.SentMessage.Recipients[0].Should().BeSameAs(recipient);
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_MessageHasExpectedFormatItems()
         {
             object[] formatItems = { 1, "2" };
@@ -37,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             service.SentMessage.TextBody!.FormatItems.Should().BeEquivalentTo(formatItems);
         }
 
-        [Test]
+        [Fact]
         public static async Task SendEmailAsync_UsesMessageTemplate()
         {
             // ReSharper disable once StringLiteralTypo

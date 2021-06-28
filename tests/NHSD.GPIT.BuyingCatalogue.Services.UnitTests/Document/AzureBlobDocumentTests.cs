@@ -2,15 +2,13 @@
 using Azure.Storage.Blobs.Models;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Services.Document;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class AzureBlobDocumentTests
+    public static class AzureBlobDocumentTests
     {
-        [Test]
+        [Fact]
         public static void ContentInfo_ReturnsExpectedValue()
         {
             using var stream = new MemoryStream();
@@ -22,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             document.Content.Should().Be(downloadInfo.Content);
         }
 
-        [Test]
+        [Fact]
         public static void ContentType_ReturnsExpectedValue()
         {
             const string contentType = "test/content";

@@ -2,15 +2,13 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class ListPriceModelTests
+    public static class ListPriceModelTests
     {
-        [Test]
+        [Fact]
         public static void Class_Inherits_SolutionDisplayBaseModel()
         {
             typeof(ListPriceModel)
@@ -18,14 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static void HasFlatListPrices_ValidPrices_ReturnsTrue(ListPriceModel model)
         {
             model.HasFlatListPrices().Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void HasFlatListPrices_NoPrices_ReturnsFalse()
         {
             var model = new ListPriceModel { FlatListPrices = new List<PriceViewModel>(), };
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.HasFlatListPrices().Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void HasFlatListPrices_NullPrices_ReturnsFalse()
         {
             var model = new ListPriceModel { FlatListPrices = null, };

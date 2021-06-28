@@ -8,7 +8,8 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="@Model.Title" 
+            <nhs-validation-summary />
+            <nhs-page-title title="@Model.Title"
                             advice="Select the list price for this Additional Service. If you’ve agreed a different price with the supplier, the values can be altered later." />
 
             <form method="post">
@@ -17,13 +18,13 @@
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
                 <nhs-fieldset-form-label asp-for="@Model"
-                                    label-text="Select list price">
+                                         label-text="Select list price">
                     <nhs-radio-buttons asp-for="@Model.SelectedPrice"
-                                        values="@Model.Prices"
-                                        value-name="CataloguePriceId"
-                                        display-name="Description" />
+                                       values="@Model.Prices"
+                                       value-name="CataloguePriceId"
+                                       display-name="Description" />
                 </nhs-fieldset-form-label>
-                <nhs-submit-button text="Continue"/>
+                <nhs-submit-button text="Continue" />
             </form>
         </div>
     </div>
