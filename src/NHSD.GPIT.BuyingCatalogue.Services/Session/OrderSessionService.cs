@@ -109,12 +109,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             if (state.CatalogueItemType == CatalogueItemType.AssociatedService)
             {
                 var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
-                state.ServiceRecipients = new List<OrderItemRecipientModel> { new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name } };
+                state.ServiceRecipients = new List<OrderItemRecipientModel> { new() { OdsCode = odsCode, Name = organisation.Name } };
             }
             else
             {
                 var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
+                state.ServiceRecipients = recipients.Select(r => new OrderItemRecipientModel(r)).ToList();
             }
 
             foreach (var serviceRecipient in state.ServiceRecipients)
@@ -142,9 +142,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             state.Price = cataloguePrice.Price;
             state.PriceId = cataloguePrice.CataloguePriceId;
             state.ProvisioningType = cataloguePrice.ProvisioningType;
-
-            // TODO: why is this fixed to PerYear?
-            state.EstimationPeriod = TimeUnit.PerYear;
 
             SetOrderStateToSession(state);
         }

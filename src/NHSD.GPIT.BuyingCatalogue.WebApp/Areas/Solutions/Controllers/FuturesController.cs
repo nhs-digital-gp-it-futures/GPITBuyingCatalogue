@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -10,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
     [Area("Solutions")]
-    public class FuturesController : Controller
+    public sealed class FuturesController : Controller
     {
         private readonly ISolutionsService solutionsService;
         private readonly IDocumentService documentService;

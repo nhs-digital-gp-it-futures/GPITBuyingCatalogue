@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
     [Area("Solutions")]
-    public class DFOCVCController : Controller
+    public sealed class DFOCVCController : Controller
     {
         private readonly ISolutionsService solutionsService;
 

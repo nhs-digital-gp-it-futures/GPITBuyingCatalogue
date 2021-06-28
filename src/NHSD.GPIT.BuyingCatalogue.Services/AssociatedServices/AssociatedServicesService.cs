@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
 {
-    public class AssociatedServicesService : IAssociatedServicesService
+    public sealed class AssociatedServicesService : IAssociatedServicesService
     {
         private readonly GPITBuyingCatalogueDbContext dbContext;
 
@@ -18,18 +18,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(string supplierId)
+        public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(string supplierId)
         {
-            return await dbContext.CatalogueItems
-                .Include(x => x.Solution)
-                .ThenInclude(x => x.SolutionCapabilities)
-                .ThenInclude(x => x.Capability)
-                .Include(x => x.Supplier)
-                .Include(x => x.AssociatedService)
+            return dbContext.CatalogueItems
+                .Include(c => c.Solution)
+                .ThenInclude(s => s.SolutionCapabilities)
+                .ThenInclude(sc => sc.Capability)
+                .Include(c => c.Supplier)
+                .Include(c => c.AssociatedService)
                 .Where(
-                    x => x.SupplierId == supplierId
-                        && x.CatalogueItemType == CatalogueItemType.AssociatedService
-                        && x.PublishedStatus == PublicationStatus.Published)
+                    c => c.SupplierId == supplierId
+                        && c.CatalogueItemType == CatalogueItemType.AssociatedService
+                        && c.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }
