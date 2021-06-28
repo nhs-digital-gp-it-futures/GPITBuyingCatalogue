@@ -1,4 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.CatalogueSolutionsModel;
 @{
     ViewData["Title"] = Model.Title;
@@ -16,9 +18,12 @@
                                      label-hint="@Model.OrderDescription"
                                      size="Large">
 
-            <vc:nhs-secondary-button url="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/select/solution"
+            <vc:nhs-secondary-button url="@Url.Action(
+                                                nameof(CatalogueSolutionsController.SelectSolution),
+                                                typeof(CatalogueSolutionsController).ControllerName(),
+                                                new {Model.OdsCode, Model.CallOffId})"
                                      text="Add Catalogue Solution"
-                                     use-primary-colour="false"/>
+                                     use-primary-colour="false" />
 
             <nhs-table>
                 <nhs-table-column>Catalogue Solution</nhs-table-column>
