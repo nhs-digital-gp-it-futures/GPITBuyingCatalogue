@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class AssociatedServiceModel : OrderingBaseModel
+    public sealed class AssociatedServiceModel : OrderingBaseModel
     {
         public AssociatedServiceModel(string odsCode, EntityFramework.Ordering.Models.Order order, List<OrderItem> orderItems)
         {

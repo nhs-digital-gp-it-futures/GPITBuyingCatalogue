@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class EditAssociatedServiceModel : OrderingBaseModel
+    public sealed class EditAssociatedServiceModel : OrderingBaseModel
     {
         public EditAssociatedServiceModel()
         {

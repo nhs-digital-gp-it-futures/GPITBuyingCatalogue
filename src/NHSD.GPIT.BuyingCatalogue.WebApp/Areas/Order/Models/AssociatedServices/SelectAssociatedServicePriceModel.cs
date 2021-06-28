@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class SelectAssociatedServicePriceModel : OrderingBaseModel
+    public sealed class SelectAssociatedServicePriceModel : OrderingBaseModel
     {
         public SelectAssociatedServicePriceModel()
         {

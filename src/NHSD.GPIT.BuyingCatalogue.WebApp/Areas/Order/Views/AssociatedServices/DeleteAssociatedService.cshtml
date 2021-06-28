@@ -21,11 +21,11 @@
                     <nhs-submit-button text="Confirm Delete" />
                     <vc:nhs-backlink text="Cancel delete"
                                      url="@Url.Action(
-                                            action: "EditAssociatedService",
-                                            controller: "AssociatedServices",
-                                            values: new { odsCode = Model.OdsCode,
+                                            "EditAssociatedService",
+                                            "AssociatedServices",
+                                            new { odsCode = Model.OdsCode,
                                                           callOffId = Model.CallOffId,
-                                                          id = Model.OrderItemId })"/>
+                                                          id = Model.CatalogueItemId })"/>
                 </nhs-fieldset-form-container>
             </form>
         </div>

@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class NoAssociatedServicesFoundModel : OrderingBaseModel
+    public sealed class NoAssociatedServicesFoundModel : OrderingBaseModel
     {
         public NoAssociatedServicesFoundModel(string odsCode, CallOffId callOffId)
         {

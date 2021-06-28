@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class SelectAssociatedServiceModel : OrderingBaseModel
+    public sealed class SelectAssociatedServiceModel : OrderingBaseModel
     {
         public SelectAssociatedServiceModel()
         {

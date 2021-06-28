@@ -6,7 +6,7 @@ using Serilog;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class SerilogMvcLoggingAttribute : ActionFilterAttribute
+    public sealed class SerilogMvcLoggingAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {

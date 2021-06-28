@@ -78,9 +78,9 @@
                 {
                     <vc:nhs-delete-button text="Delete Associated Service"
                                           url="@Url.Action(
-                                          action: "DeleteAssociatedService",
-                                          controller: "AssociatedServices",
-                                          values: new { odsCode = Model.OdsCode,
+                                          "DeleteAssociatedService",
+                                          "AssociatedServices",
+                                          new { odsCode = Model.OdsCode,
                                                         callOffId = Model.CallOffId,
                                                         id = Model.OrderItem.CatalogueItemId,
                                                         serviceName = Model.OrderItem.CatalogueItemName,

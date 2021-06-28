@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -15,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/organisations")]
-    public class OrganisationsController : Controller
+    public sealed class OrganisationsController : Controller
     {
         private readonly IOrganisationsService organisationsService;
         private readonly IOdsService odsService;

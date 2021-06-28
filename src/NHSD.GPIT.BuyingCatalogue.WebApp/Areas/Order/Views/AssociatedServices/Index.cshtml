@@ -17,9 +17,9 @@
                                          size="Large">
 
                 <vc:nhs-secondary-button url="@Url.Action(
-                                                  action: "SelectAssociatedService",
-                                                  controller:"AssociatedServices",
-                                                  values: new {odsCode = Model.OdsCode, CallOffId = Model.CallOffId })"
+                                                  "SelectAssociatedService",
+                                                  "AssociatedServices",
+                                                  new { Model.OdsCode, Model.CallOffId })"
                                          text="Add Associated Service"
                                          use-primary-colour="false"/>
                 <nhs-table>
@@ -37,7 +37,7 @@
                                 @item.CatalogueItem.Name</a>
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                @item.CataloguePrice.PricingUnit.Description @item?.CataloguePrice.TimeUnit
+                                @item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }
