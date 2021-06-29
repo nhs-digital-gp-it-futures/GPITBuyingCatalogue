@@ -74,6 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Cookie.Name = "user-session";
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
+
                 // TODO: - This will need addressing. Its causing issues due to SSL termination in Azure
                 options.Cookie.SecurePolicy = CookieSecurePolicy.None;
                 options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
