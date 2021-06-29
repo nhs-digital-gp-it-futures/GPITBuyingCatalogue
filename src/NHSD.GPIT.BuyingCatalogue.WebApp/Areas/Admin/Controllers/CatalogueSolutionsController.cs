@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
@@ -16,14 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public class CatalogueSolutionsController : Controller
     {
         private readonly ISolutionsService solutionsService;
-        private readonly IMapper mapper;
 
         public CatalogueSolutionsController(
-            ISolutionsService solutionsService,
-            IMapper mapper)
+            ISolutionsService solutionsService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
@@ -31,7 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solutions = await solutionsService.GetAllSolutions();
 
-            var solutionModel = mapper.Map<IList<CatalogueItem>, CatalogueSolutionsModel>(solutions);
+            var solutionModel = new CatalogueSolutionsModel
+            {
+                Solutions = solutions.Select(s => new CatalogueModel(s)).ToList(),
+            };
 
             return View(solutionModel);
         }

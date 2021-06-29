@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using AutoMapper;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
@@ -32,23 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             Assert.Throws<ArgumentNullException>(
                     () =>
-                        _ = new CatalogueSolutionsController(null, Mock.Of<IMapper>()))
+                        _ = new CatalogueSolutionsController(null))
                 .ParamName.Should()
                 .Be("solutionsService");
         }
-
-        [Fact]
-        public static void Constructor_NullMapper_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new CatalogueSolutionsController(
-                            Mock.Of<ISolutionsService>(),
-                            null))
-                .ParamName.Should()
-                .Be("mapper");
-        }
-
+        
         [Fact]
         public static void Get_Index_HttpGetAttribute_Present()
         {
@@ -59,51 +49,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .NotBeNull();
         }
 
-        [Fact]
-        public static async Task Get_Index_GetsAllSolutions()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Index_SolutionsInDatabase_ReturnsExpectedResult(
+            [Frozen] Mock<ISolutionsService> service,
+            List<CatalogueItem> solutions,
+            CatalogueSolutionsController controller)
         {
-            var mockSolutionsService = new Mock<ISolutionsService>();
-            var controller = new CatalogueSolutionsController(mockSolutionsService.Object, Mock.Of<IMapper>());
-
-            await controller.Index();
-            
-            mockSolutionsService.Verify(s => s.GetAllSolutions());
-        }
-
-        [Fact]
-        public static async Task Get_Index_MapsAllSolutions()
-        {
-            var mockSolutionsService = new Mock<ISolutionsService>();
-            var solutions = new Mock<IList<CatalogueItem>>().Object;
-            mockSolutionsService.Setup(s => s.GetAllSolutions())
+            var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
+            service.Setup(s => s.GetAllSolutions())
                 .ReturnsAsync(solutions);
-            
-            var mockMapper = new Mock<IMapper>();
-            var controller = new CatalogueSolutionsController(mockSolutionsService.Object, mockMapper.Object);
-
-            await controller.Index();
-            
-            mockMapper.Verify(m => m.Map<IList<CatalogueItem>, CatalogueSolutionsModel>(solutions));
-        }
-
-        [Fact]
-        public static async Task Get_Index_ReturnsViewWithExpectedModel()
-        {
-            var mockSolutionsService = new Mock<ISolutionsService>();
-            var solutions = new Mock<IList<CatalogueItem>>().Object;
-            mockSolutionsService.Setup(s => s.GetAllSolutions())
-                .ReturnsAsync(solutions);
-            
-            var mockMapper = new Mock<IMapper>();
-            var mockCatalogueSolutionsModel = new Mock<CatalogueSolutionsModel>().Object;
-            mockMapper.Setup(m => m.Map<IList<CatalogueItem>, CatalogueSolutionsModel>(solutions))
-                .Returns(mockCatalogueSolutionsModel);
-            var controller = new CatalogueSolutionsController(mockSolutionsService.Object, mockMapper.Object);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
             actual.Should().NotBeNull();
-            actual.Model.Should().Be(mockCatalogueSolutionsModel);
+            actual.ViewName.Should().BeNull();
+            actual.Model.As<CatalogueSolutionsModel>().Solutions.Should().BeEquivalentTo(expected);
         }
     }
 }

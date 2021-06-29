@@ -70,12 +70,12 @@
             </tr>
             </thead>
             <tbody class="nhsuk-table__body">
-            @foreach (var item in Model.CatalogueItems)
+            @foreach (var item in Model.Solutions)
             {
                 <tr role="row" class="nhsuk-table__row">
                     @foreach (var cell in new[]
                     {
-                        item.Id,
+                        item.CatalogueItemId,
                         item.Name,
                         item.Supplier,
                         item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"),
