@@ -10,8 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public DateTime LastUpdated { get; set; }
 
+        public string PublishedStatus { get; set; }
+
         public int PublishedStatusId { get; set; }
 
-        public string SupplierName { get; set; }
+        public string Supplier { get; set; }
     }
 }
