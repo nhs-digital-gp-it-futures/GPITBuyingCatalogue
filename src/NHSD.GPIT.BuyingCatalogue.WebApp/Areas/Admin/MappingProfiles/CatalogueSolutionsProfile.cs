@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.MappingProfiles
@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.MappingProfiles
                 .ForMember(
                     dest => dest.LastUpdated,
                     opt => opt.MapFrom(src => src.Supplier == null ? DateTime.MinValue : src.Supplier.LastUpdated))
-                .ForMember(dest => dest.PublishedStatus, opt => opt.MapFrom(src => GetStatus(src.PublishedStatus)))
+                .ForMember(dest => dest.PublishedStatus, opt => opt.MapFrom(src => src.PublishedStatus.GetDisplayName()))
                 .ForMember(dest => dest.PublishedStatusId, opt => opt.MapFrom(src => src.PublishedStatus))
                 .ForMember(
                     dest => dest.Supplier,
@@ -33,15 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.MappingProfiles
             CreateMap<PublicationStatus, PublicationStatusModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.Checked, opt => opt.Ignore())
-                .ForMember(dest => dest.Display, opt => opt.MapFrom(src => GetStatus(src)));
+                .ForMember(dest => dest.Display, opt => opt.MapFrom(src => src.GetDisplayName()));
         }
-
-        private static string GetStatus(PublicationStatus publicationStatus) =>
-            publicationStatus switch
-            {
-                PublicationStatus.Draft => "Suspended",
-                PublicationStatus.Withdrawn => "Deleted",
-                _ => publicationStatus.ToString(),
-            };
     }
 }
