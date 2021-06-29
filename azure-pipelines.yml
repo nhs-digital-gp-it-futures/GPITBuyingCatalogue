@@ -65,12 +65,12 @@ jobs:
       projects: '**/*Tests.csproj'
       arguments: '--no-restore'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Run unit tests'
-    inputs:
-      command: test
-      projects: '**/*UnitTests.csproj'
-      arguments: '-v n --no-build --collect "Code coverage"'
+#  - task: DotNetCoreCLI@2
+#    displayName: 'Run unit tests'
+#    inputs:
+#      command: test
+#      projects: '**/*UnitTests.csproj'
+#      arguments: '-v n --no-build --collect "Code coverage"'
 
   - task: DockerInstaller@0
     inputs:
@@ -79,19 +79,19 @@ jobs:
   # - script: docker-compose up --build -d
   #   displayName: 'Docker up'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Run integration tests'
-    inputs:
-      command: test
-      projects: '**/*IntegrationTests.csproj'
-      arguments: '-v n --no-build'
+#  - task: DotNetCoreCLI@2
+#    displayName: 'Run integration tests'
+#    inputs:
+#      command: test
+#      projects: '**/*IntegrationTests.csproj'
+#      arguments: '-v n --no-build'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Run E2E Tests'
-    inputs:
-      command: test
-      projects: '**/*E2ETests.csproj'
-      arguments: '-v n --no-build'
+#  - task: DotNetCoreCLI@2
+#    displayName: 'Run E2E Tests'
+#    inputs:
+#      command: test
+#      projects: '**/*E2ETests.csproj'
+#      arguments: '-v n --no-build'
   
   - script: docker-compose logs
     displayName: 'Docker logs'
