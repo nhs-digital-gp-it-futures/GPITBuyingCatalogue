@@ -94,6 +94,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, Guid capabilityId)
+        {
+            catalogueItemId.ValidateNotNull(nameof(catalogueItemId));
+            if (capabilityId == Guid.Empty)
+                throw new ArgumentException(nameof(capabilityId));
+
+            return await dbContext.CatalogueItems
+                .Include(c => c.Solution)
+                .ThenInclude(s => s.SolutionCapabilities)
+                .ThenInclude(sc => sc.Capability)
+                .ThenInclude(sc => sc.Epics)
+                .Where(
+                    c => c.CatalogueItemId == catalogueItemId
+                        && c.Solution.SolutionCapabilities.Any(sc => sc.CapabilityId == capabilityId))
+                .FirstOrDefaultAsync();
+        }
+        
         public Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
         {
             return dbContext.CatalogueItems
