@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session
 
         public void SetOrderStateToSession(CreateOrderItemModel model);
 
-        public CreateOrderItemModel InitialiseStateForCreate(string odsCode, CallOffId callOffId, DateTime? commencementDate, string supplierId, CatalogueItemType catalogueItemType, IEnumerable<CatalogueItemId> solutionIds, OrderItemRecipientModel associatedOrderRecipient);
+        public CreateOrderItemModel InitialiseStateForCreate(CallOffId callOffId, DateTime? commencementDate, string supplierId, CatalogueItemType catalogueItemType, IEnumerable<CatalogueItemId> solutionIds, OrderItemRecipientModel associatedOrderRecipient);
 
         public Task<CreateOrderItemModel> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId);
 

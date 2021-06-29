@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            var state = orderSessionService.InitialiseStateForCreate(odsCode, callOffId, order.CommencementDate, order.SupplierId, CatalogueItemType.Solution, null, null);
+            var state = orderSessionService.InitialiseStateForCreate(callOffId, order.CommencementDate, order.SupplierId, CatalogueItemType.Solution, null, null);
 
             var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
 

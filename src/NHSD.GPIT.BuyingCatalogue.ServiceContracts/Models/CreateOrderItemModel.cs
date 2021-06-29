@@ -9,8 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
     [ExcludeFromCodeCoverage]
     public sealed class CreateOrderItemModel
     {
-        public string OdsCode { get; set; }
-
         public CallOffId CallOffId { get; set; }
 
         public DateTime? CommencementDate { get; set; }
@@ -46,5 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public bool IsNewSolution { get; set; }
 
         public IEnumerable<CatalogueItemId> SolutionIds { get; set; }
+
+        public bool SkipAssociatedServicePrices { get; set; }
     }
 }

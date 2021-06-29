@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
 
-            var state = orderSessionService.InitialiseStateForCreate(odsCode, callOffId, order.CommencementDate, order.SupplierId, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name });
+            var state = orderSessionService.InitialiseStateForCreate(callOffId, order.CommencementDate, order.SupplierId, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name });
 
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(order.SupplierId);
 
@@ -107,6 +107,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (prices.Count == 1)
             {
                 orderSessionService.SetPrice(callOffId, prices.Single());
+
+                state.SkipAssociatedServicePrices = true;
+                orderSessionService.SetOrderStateToSession(state);
 
                 return RedirectToAction(
                     nameof(EditAssociatedService),

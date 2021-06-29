@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             sessionService.SetObject(model.CallOffId.ToString(), model);
         }
 
-        public CreateOrderItemModel InitialiseStateForCreate(string odsCode, CallOffId callOffId, DateTime? commencementDate, string supplierId, CatalogueItemType catalogueItemType, IEnumerable<CatalogueItemId> solutionIds, OrderItemRecipientModel associatedOrderRecipient)
+        public CreateOrderItemModel InitialiseStateForCreate(CallOffId callOffId, DateTime? commencementDate, string supplierId, CatalogueItemType catalogueItemType, IEnumerable<CatalogueItemId> solutionIds, OrderItemRecipientModel associatedOrderRecipient)
         {
             var model = GetOrderStateFromSession(callOffId);
 
@@ -57,7 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 model = new CreateOrderItemModel
                 {
                     IsNewSolution = true,
-                    OdsCode = odsCode,
                     CallOffId = callOffId,
                     CommencementDate = commencementDate,
                     SupplierId = supplierId,
@@ -90,7 +89,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
                 state = new CreateOrderItemModel
                 {
-                    OdsCode = odsCode,
                     CallOffId = callOffId,
                     IsNewSolution = false,
                     CommencementDate = order.CommencementDate,

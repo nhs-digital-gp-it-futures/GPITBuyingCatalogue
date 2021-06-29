@@ -18,8 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
             if (createOrderItemModel.IsNewSolution)
             {
-                // TODO - If there is only one price for this service then the back link should go to the select associated service page
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service/price";
+                if (createOrderItemModel.SkipAssociatedServicePrices)
+                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service/price";
+                else
+                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service/price";
             }
             else
             {
@@ -31,8 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
             OdsCode = odsCode;
             CallOffId = callOffId;
             OrderItem = createOrderItemModel;
-            TimeUnit = createOrderItemModel.TimeUnit;            
-            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode]; ;
+            TimeUnit = createOrderItemModel.TimeUnit;
+            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode];
         }
 
         public CallOffId CallOffId { get; set; }
