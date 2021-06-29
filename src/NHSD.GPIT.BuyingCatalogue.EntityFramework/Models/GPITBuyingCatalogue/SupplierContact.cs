@@ -1,10 +1,8 @@
 ﻿using System;
 
-#nullable disable
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class SupplierContact
+    public sealed class SupplierContact
     {
         public Guid Id { get; set; }
 
@@ -21,7 +19,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         public DateTime LastUpdated { get; set; }
 
         public Guid LastUpdatedBy { get; set; }
-
-        public virtual Supplier Supplier { get; set; }
     }
 }
