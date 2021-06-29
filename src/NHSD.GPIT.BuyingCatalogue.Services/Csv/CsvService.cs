@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             await WriteRecordsAsync<PatientOrderCsvModel, PatientOrderCsvModelMap>(stream, items);
         }
 
-        private static async Task WriteRecordsAsync<TEntity,TClassMap>(MemoryStream stream, IEnumerable<TEntity> items)
+        private static async Task WriteRecordsAsync<TEntity, TClassMap>(MemoryStream stream, IEnumerable<TEntity> items)
             where TClassMap : ClassMap<TEntity>
         {
             if (stream is null)
