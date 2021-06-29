@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-
-#nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class Framework
+    public sealed class Framework
     {
-        public Framework()
-        {
-            FrameworkCapabilities = new HashSet<FrameworkCapability>();
-            FrameworkSolutions = new HashSet<FrameworkSolution>();
-        }
-
         public string Id { get; set; }
 
         public string Name { get; set; }
@@ -26,9 +17,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         public DateTime? ActiveDate { get; set; }
 
         public DateTime? ExpiryDate { get; set; }
-
-        public virtual ICollection<FrameworkCapability> FrameworkCapabilities { get; set; }
-
-        public virtual ICollection<FrameworkSolution> FrameworkSolutions { get; set; }
     }
 }
