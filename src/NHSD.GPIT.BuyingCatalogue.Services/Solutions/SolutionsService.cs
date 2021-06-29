@@ -87,12 +87,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Status)
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Epic).ThenInclude(e => e.CompliancyLevel)
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Epic)
                 .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AdditionalService)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.CatalogueItemId == solutionId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, Guid capabilityId)
+        {
+            catalogueItemId.ValidateNotNull(nameof(catalogueItemId));
+            if (capabilityId == Guid.Empty)
+                throw new ArgumentException(nameof(capabilityId));
+
+            return await dbContext.CatalogueItems
+                .Include(c => c.Solution)
+                .ThenInclude(s => s.SolutionCapabilities)
+                .ThenInclude(sc => sc.Capability)
+                .ThenInclude(sc => sc.Epics)
+                .Where(
+                    c => c.CatalogueItemId == catalogueItemId
+                        && c.Solution.SolutionCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
         }
 

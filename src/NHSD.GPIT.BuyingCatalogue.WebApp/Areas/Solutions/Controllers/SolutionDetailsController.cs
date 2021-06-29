@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
+        }
+
+        [Route("futures/{catalogueItemId}/capability/{capabilityId:guid}")]
+        public async Task<IActionResult> CheckEpics(CatalogueItemId catalogueItemId, Guid capabilityId)
+        {
+            var solution = await solutionsService.GetSolutionCapability(catalogueItemId, capabilityId);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {catalogueItemId} with Capability Id: {capabilityId}");
+
+            var solutionCapability = solution.Solution != null ?
+                solution.Solution.SolutionCapabilities.FirstOrDefault(sc => sc.Capability.Id == capabilityId)
+                ?? new SolutionCapability() : new SolutionCapability();
+
+            var model = mapper.Map<SolutionCapability, SolutionCheckEpicsModel>(solutionCapability);
+
+            if (solution.Name != null)
+            {
+                model.SolutionName = solution.Name;
+            }
+
+            return View(model);
         }
 
         [Route("futures/{id}/client-application-types")]

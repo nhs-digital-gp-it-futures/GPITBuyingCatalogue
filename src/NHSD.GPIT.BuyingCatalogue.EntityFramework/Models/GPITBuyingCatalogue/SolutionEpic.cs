@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class SolutionEpic
+    public sealed class SolutionEpic
     {
         public CatalogueItemId SolutionId { get; set; }
 
@@ -17,12 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Guid LastUpdatedBy { get; set; }
 
-        public virtual Capability Capability { get; set; }
+        public Epic Epic { get; set; }
 
-        public virtual Epic Epic { get; set; }
-
-        public virtual Solution Solution { get; set; }
-
-        public virtual SolutionEpicStatus Status { get; set; }
+        public SolutionEpicStatus Status { get; set; }
     }
 }

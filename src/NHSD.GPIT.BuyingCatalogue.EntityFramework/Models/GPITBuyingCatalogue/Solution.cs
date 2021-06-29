@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-#nullable disable
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public class Solution
+    public sealed class Solution
     {
         public Solution()
         {
@@ -43,22 +41,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public string ServiceLevelAgreement { get; set; }
 
-        public string WorkOfPlan { get; set; }
-
         public DateTime LastUpdated { get; set; }
 
         public Guid LastUpdatedBy { get; set; }
 
-        public virtual CatalogueItem IdNavigation { get; set; }
+        public CatalogueItem IdNavigation { get; set; }
 
-        public virtual ICollection<AdditionalService> AdditionalServices { get; set; }
+        public ICollection<AdditionalService> AdditionalServices { get; set; }
 
-        public virtual ICollection<FrameworkSolution> FrameworkSolutions { get; set; }
+        public ICollection<FrameworkSolution> FrameworkSolutions { get; set; }
 
-        public virtual ICollection<MarketingContact> MarketingContacts { get; set; }
+        public ICollection<MarketingContact> MarketingContacts { get; set; }
 
-        public virtual ICollection<SolutionCapability> SolutionCapabilities { get; set; }
+        public ICollection<SolutionCapability> SolutionCapabilities { get; set; }
 
-        public virtual ICollection<SolutionEpic> SolutionEpics { get; set; }
+        public ICollection<SolutionEpic> SolutionEpics { get; set; }
     }
 }
