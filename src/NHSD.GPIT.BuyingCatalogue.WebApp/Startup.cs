@@ -56,6 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureValidationSettings(Configuration);
 
+            services.ConfigureOrderMessageSettings(Configuration);
+
             services.ConfigureConsentCookieSettings(Configuration);
 
             services.ConfigureCookies(Configuration);
