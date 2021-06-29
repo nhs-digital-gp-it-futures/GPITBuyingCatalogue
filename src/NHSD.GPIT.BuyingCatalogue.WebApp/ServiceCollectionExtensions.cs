@@ -74,7 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Cookie.Name = "user-session";
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+                // TODO: - This will need addressing. Its causing issues due to SSL termination in Azure
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
                 options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
                 options.AccessDeniedPath = "/404";
@@ -82,7 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddAntiforgery(options =>
             {
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                // TODO: - This will need addressing. Its causing issues due to SSL termination in Azure
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
                 options.Cookie.Name = "antiforgery";
             });
         }

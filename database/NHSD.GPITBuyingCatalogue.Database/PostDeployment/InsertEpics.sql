@@ -633,37 +633,40 @@ VALUES
 
 SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C44');
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
-VALUES
-('E00039', 'conduct Video Consultation', @capabilityId, 1, 1),
-('E00040', 'conduct Video Consultation with a Proxy', @capabilityId, 3, 1),
-('E00041', 'conduct Video Consultation with the Patient/Service User without registration', @capabilityId, 3, 1),
-('E00042', 'conduct Video Consultation with a Proxy without registration', @capabilityId, 3, 1),
-('E00043', 'end Video Consultation with a Patient/Service User', @capabilityId, 3, 1),
-('E00045', 'Direct Messaging during a Video Consultation', @capabilityId, 3, 1),
-('E00047', 'view the Patient Record during Video Consultation', @capabilityId, 3, 1),
-('E00048', 'conduct group Video Consultations', @capabilityId, 3, 1),
-('E00051', 'electronically share files during a Video Consultation', @capabilityId, 3, 1),
-('E00053', 'Health or Care Professional can share their screen during a Video Consultation', @capabilityId, 3, 1),
-('E00055', 'record Video Consultation outcome to the Patient record ', @capabilityId, 3, 1),
-('E00059', 'Health or Care Professional can record a Video Consultation', @capabilityId, 3, 1),
-('E00060', 'Patient/Service User can record a Video Consultation', @capabilityId, 3, 1),
-('E00061', 'accessibility options', @capabilityId, 3, 1),
-('E00062', 'waiting room', @capabilityId, 3, 1),
-('E00063', 'disable and enable Direct Messaging during a Video Consultation for the Patient/Service User', @capabilityId, 3, 1),
-('E00064', 'record Direct Messages to the Patient Record', @capabilityId, 3, 1),
-('E00065', 'Patient/Service User name is not automatically visible in a group Video Consultation', @capabilityId, 3, 1),
-('E00066', 'invite new participants to an existing Video Consultation with a Patient/Service User', @capabilityId, 3, 1),
-('E00067', 'disable and enable electronic file sharing during a Video Consultation', @capabilityId, 3, 1),
-('E00068', 'disable and enable screen sharing during a Video Consultation', @capabilityId, 3, 1),
-('E00069', 'Patient/Service User feedback on Video Consultations', @capabilityId, 3, 1),
-('E00070', 'test the Video Consultation settings', @capabilityId, 3, 1),
-('E00071', 'consecutive consultations with multiple Patients/Service Users via a single Video Consultation', @capabilityId, 3, 1),
-('E00072', 'reminder of upcoming or scheduled Video Consultation', @capabilityId, 3, 1),
-('E00073', 'disable and enable audio during a group Video Consultation', @capabilityId, 3, 1),
-('E00074', 'disable and enable video during a group Video Consultation', @capabilityId, 3, 1),
-('E00087', 'retain attachments (file and images) received during Video Consultation in the Patient Record', @capabilityId, 3, 1),
-('E00088', 'SNOMED code Video Consultation', @capabilityId, 3, 1);
+IF '$(INSERT_TEST_DATA)' = 'False'
+BEGIN
+    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+    VALUES
+    ('E00039', 'conduct Video Consultation', @capabilityId, 1, 1),
+    ('E00040', 'conduct Video Consultation with a Proxy', @capabilityId, 3, 1),
+    ('E00041', 'conduct Video Consultation with the Patient/Service User without registration', @capabilityId, 3, 1),
+    ('E00042', 'conduct Video Consultation with a Proxy without registration', @capabilityId, 3, 1),
+    ('E00043', 'end Video Consultation with a Patient/Service User', @capabilityId, 3, 1),
+    ('E00045', 'Direct Messaging during a Video Consultation', @capabilityId, 3, 1),
+    ('E00047', 'view the Patient Record during Video Consultation', @capabilityId, 3, 1),
+    ('E00048', 'conduct group Video Consultations', @capabilityId, 3, 1),
+    ('E00051', 'electronically share files during a Video Consultation', @capabilityId, 3, 1),
+    ('E00053', 'Health or Care Professional can share their screen during a Video Consultation', @capabilityId, 3, 1),
+    ('E00055', 'record Video Consultation outcome to the Patient record ', @capabilityId, 3, 1),
+    ('E00059', 'Health or Care Professional can record a Video Consultation', @capabilityId, 3, 1),
+    ('E00060', 'Patient/Service User can record a Video Consultation', @capabilityId, 3, 1),
+    ('E00061', 'accessibility options', @capabilityId, 3, 1),
+    ('E00062', 'waiting room', @capabilityId, 3, 1),
+    ('E00063', 'disable and enable Direct Messaging during a Video Consultation for the Patient/Service User', @capabilityId, 3, 1),
+    ('E00064', 'record Direct Messages to the Patient Record', @capabilityId, 3, 1),
+    ('E00065', 'Patient/Service User name is not automatically visible in a group Video Consultation', @capabilityId, 3, 1),
+    ('E00066', 'invite new participants to an existing Video Consultation with a Patient/Service User', @capabilityId, 3, 1),
+    ('E00067', 'disable and enable electronic file sharing during a Video Consultation', @capabilityId, 3, 1),
+    ('E00068', 'disable and enable screen sharing during a Video Consultation', @capabilityId, 3, 1),
+    ('E00069', 'Patient/Service User feedback on Video Consultations', @capabilityId, 3, 1),
+    ('E00070', 'test the Video Consultation settings', @capabilityId, 3, 1),
+    ('E00071', 'consecutive consultations with multiple Patients/Service Users via a single Video Consultation', @capabilityId, 3, 1),
+    ('E00072', 'reminder of upcoming or scheduled Video Consultation', @capabilityId, 3, 1),
+    ('E00073', 'disable and enable audio during a group Video Consultation', @capabilityId, 3, 1),
+    ('E00074', 'disable and enable video during a group Video Consultation', @capabilityId, 3, 1),
+    ('E00087', 'retain attachments (file and images) received during Video Consultation in the Patient Record', @capabilityId, 3, 1),
+    ('E00088', 'SNOMED code Video Consultation', @capabilityId, 3, 1);
+END;
 
 IF '$(INSERT_TEST_DATA)' = 'True'
 BEGIN
@@ -690,8 +693,8 @@ WHEN MATCHED THEN
                TARGET.CompliancyLevelId = SOURCE.CompliancyLevelId,
                TARGET.Active = SOURCE.Active
 WHEN NOT MATCHED BY TARGET THEN
-    INSERT (Id, [Name], CapabilityId, CompliancyLevelId, Active)
-    VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.CapabilityId, SOURCE.CompliancyLevelId, Active);
+    INSERT (Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
+    VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.CapabilityId, SOURCE.CompliancyLevelId, Active, SOURCE.SupplierDefined);
 
 DROP TABLE #Epics;
 GO
