@@ -16,8 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
                     // TODO: causes test run initialization slow down
                     new SolutionCustomization(),
-                    new SupplierCustomization(),
-                    new CataloguePriceCustomization()
+                    new SupplierCustomization()
+                    
+                    // TODO: This one in particular, yet no tests broken when its removed
+                    //new CataloguePriceCustomization()
                     )))
         {
         }
