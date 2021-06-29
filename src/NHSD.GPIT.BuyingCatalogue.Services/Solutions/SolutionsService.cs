@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         && c.Solution.SolutionCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
         }
-        
+
         public Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
         {
             return dbContext.CatalogueItems
