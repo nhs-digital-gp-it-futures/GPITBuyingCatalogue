@@ -25,8 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public CatalogueItemId? CatalogueItemId { get; set; }
 
-        public string CurrencyCode { get; set; }
-
         public TimeUnit? EstimationPeriod { get; set; }
 
         public ItemUnitModel ItemUnit { get; set; }

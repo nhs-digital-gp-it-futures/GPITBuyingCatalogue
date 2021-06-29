@@ -73,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return aggregateValidationResult;
         }
 
-        // TODO: callOffId should be of type CallOffId
         public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, CatalogueItemType? catalogueItemType)
         {
             Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = catalogueItemType is null

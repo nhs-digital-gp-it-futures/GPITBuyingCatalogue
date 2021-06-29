@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
     public sealed class OrderModel : OrderingBaseModel
     {
@@ -8,12 +10,11 @@
             BackLink = $"/order/organisation/{odsCode}";
             Title = $"Order {order.CallOffId}";
             OdsCode = odsCode;
-            CallOffId = order.CallOffId.ToString();
+            CallOffId = order.CallOffId;
             Description = order.Description;
         }
 
-        // TODO: should be of type CallOffId
-        public string CallOffId { get; set; }
+        public CallOffId CallOffId { get; set; }
 
         public string Description { get; set; }
     }
