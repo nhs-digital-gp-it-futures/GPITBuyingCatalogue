@@ -55,15 +55,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             Assert.IsAssignableFrom<ViewResult>(result);
             Assert.Equal("NotBuyer", ((ViewResult)result).ViewName);
         }
-
-        [Fact]
-        public static void Get_NewOrder_ReturnsViewResult()
-        {
-            var controller = new DashboardController( Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>());
-
-            var result = controller.NewOrder("3OF");
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-        }
     }
 }
