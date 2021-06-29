@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var descriptionModel = new OrderDescriptionModel(odsCode, order)
             {
                 BackLink = Url.Action(
-                            nameof(OrderController.OrderDescription),
+                            nameof(OrderController.Order),
                             typeof(OrderController).ControllerName(),
                             new { odsCode, callOffId }),
             };
@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var descriptionModel = new OrderDescriptionModel(odsCode, null)
             {
                 BackLink = Url.Action(
-                            nameof(OrderController.NewOrderDescription),
+                            nameof(OrderController.NewOrder),
                             typeof(OrderController).ControllerName(),
                             new { odsCode }),
             };
