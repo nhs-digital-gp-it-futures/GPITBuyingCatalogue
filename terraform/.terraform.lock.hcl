@@ -20,7 +20,8 @@ provider "registry.terraform.io/hashicorp/azuread" {
 }
 
 provider "registry.terraform.io/hashicorp/azurerm" {
-  version = "2.58.0"
+  version     = "2.58.0"
+  constraints = "2.58.0"
   hashes = [
     "h1:LIFQ6lMWek0p1qDAuaNotZ0JDCAubZ638S46zclBmCw=",
     "h1:aa08YhdrH00zPiwfAlYXjlqNhUKMSBTzWUHq264+CrU=",
