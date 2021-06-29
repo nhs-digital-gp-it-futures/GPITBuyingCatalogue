@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 {
@@ -12,22 +13,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public SelectAdditionalServiceRecipientsDateModel(
             string odsCode,
             CallOffId callOffId,
-            string solutionName,
-            DateTime? commencementDate,
-            DateTime? plannedDeliveryDate,
+            CreateOrderItemModel state,
             DateTime? defaultDeliveryDate)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price";
             BackLinkText = "Go back";
-            Title = $"Planned delivery date of {solutionName} for {callOffId}";
+            Title = $"Planned delivery date of {state.CatalogueItemName} for {callOffId}";
 
-            CommencementDate = commencementDate;
+            CommencementDate = state.CommencementDate;
 
-            if (plannedDeliveryDate.HasValue)
+            if (state.PlannedDeliveryDate.HasValue)
             {
-                Day = plannedDeliveryDate.Value.Day.ToString("00");
-                Month = plannedDeliveryDate.Value.Month.ToString("00");
-                Year = plannedDeliveryDate.Value.Year.ToString("0000");
+                Day = state.PlannedDeliveryDate.Value.Day.ToString("00");
+                Month = state.PlannedDeliveryDate.Value.Month.ToString("00");
+                Year = state.PlannedDeliveryDate.Value.Year.ToString("0000");
             }
             else if (defaultDeliveryDate.HasValue)
             {
@@ -35,11 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
                 Month = defaultDeliveryDate.Value.Month.ToString("00");
                 Year = defaultDeliveryDate.Value.Year.ToString("0000");
             }
-            else if (commencementDate.HasValue)
+            else if (state.CommencementDate.HasValue)
             {
-                Day = commencementDate.Value.Day.ToString("00");
-                Month = commencementDate.Value.Month.ToString("00");
-                Year = commencementDate.Value.Year.ToString("0000");
+                Day = state.CommencementDate.Value.Day.ToString("00");
+                Month = state.CommencementDate.Value.Month.ToString("00");
+                Year = state.CommencementDate.Value.Year.ToString("0000");
             }
         }
 

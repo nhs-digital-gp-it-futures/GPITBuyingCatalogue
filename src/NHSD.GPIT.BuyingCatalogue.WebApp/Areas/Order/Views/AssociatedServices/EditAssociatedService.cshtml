@@ -60,21 +60,21 @@
                     <nhs-table-column>Unit of order</nhs-table-column>
                     <nhs-table-row-container>
                         <nhs-table-cell>
-                            <nhs-bookended-input asp-for="OrderItem.Price"
+                            <nhs-bookended-input asp-for="OrderItem.AgreedPrice"
                                                  Prefix="@Model.CurrencySymbol" />
                             <nhs-details label-text="What price should I enter?">
                                 You can change the list price if you’ve agreed a different rate with the supplier.
                             </nhs-details>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            @Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit
-                        </nhs-table-cell>
+                            @Model.OrderItem.PricingUnit.Description @Model.OrderItem.TimeUnit
+                        </nhs-table-cell>                        
                     </nhs-table-row-container>
                 </nhs-table>
 
                 <nhs-submit-button text="Save" /><br/>
 
-                @if (!Model.OrderItem.IsNewOrder)
+                @if (!Model.OrderItem.IsNewSolution)
                 {
                     <vc:nhs-delete-button text="Delete Associated Service"
                                           url="@Url.Action(
@@ -83,7 +83,7 @@
                                           new { Model.OdsCode,
                                                 Model.CallOffId,
                                                 Model.OrderItem.CatalogueItemId,
-                                                serviceName = Model.OrderItem.CatalogueItemName})" />
+                                                Model.OrderItem.CatalogueItemName})" />
                 }
             </div>
         </form>

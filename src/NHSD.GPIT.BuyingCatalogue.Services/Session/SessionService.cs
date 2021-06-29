@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 
@@ -27,17 +28,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
         public T GetObject<T>(string key)
         {
             var value = session.GetString(key);
-            return value is null ? default : JsonSerializer.Deserialize<T>(value);
+            return value is null ? default : JsonSerializer.Deserialize<T>(value, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve });
         }
 
         public void SetObject(string key, object value)
         {
-            session.SetString(key, JsonSerializer.Serialize(value));
+            session.SetString(key, JsonSerializer.Serialize(value, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve }));
         }
 
-        public void ClearSession()
+        public void ClearSession(string key)
         {
-            session.Clear();
+            session.Remove(key);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);
 
             var defaultDeliveryDate = order.DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
-            var estimationPeriod = catalogueItem.CatalogueItemType.InferEstimationPeriod(model.ProvisioningType, model.EstimationPeriod);
+            var estimationPeriod = catalogueItem.CatalogueItemType.InferEstimationPeriod(model.ProvisioningType, model.TimeUnit);
 
             var item = order.AddOrUpdateOrderItem(new OrderItem
             {
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 EstimationPeriod = estimationPeriod,
                 OrderId = order.Id,
                 PriceId = model.PriceId.Value,
-                Price = model.Price,
+                Price = model.AgreedPrice,
             });
 
             item.SetRecipients(model.ServiceRecipients.Select(r => new OrderItemRecipient

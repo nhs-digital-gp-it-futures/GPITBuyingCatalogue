@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
@@ -13,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(string odsCode, CallOffId callOffId, CatalogueItemId id, CreateOrderItemModel createOrderItemModel, bool isNewSolution)
+        public EditAssociatedServiceModel(string odsCode, CallOffId callOffId, CreateOrderItemModel createOrderItemModel)
         {
-            if (isNewSolution)
+            if (createOrderItemModel.IsNewSolution)
             {
                 // TODO - If there is only one price for this service then the back link should go to the select associated service page
                 BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service/price";
@@ -30,10 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
             OdsCode = odsCode;
             CallOffId = callOffId;
             OrderItem = createOrderItemModel;
-            TimeUnit = createOrderItemModel.TimeUnit;
-
-            // TODO: currency code comes from the catalogue price
-            CurrencySymbol = "£";
+            TimeUnit = createOrderItemModel.TimeUnit;            
+            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode]; ;
         }
 
         public CallOffId CallOffId { get; set; }

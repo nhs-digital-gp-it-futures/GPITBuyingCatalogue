@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
@@ -12,9 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
         }
 
-        public EditAdditionalServiceModel(string odsCode, CallOffId callOffId, CreateOrderItemModel createOrderItemModel, bool isNewSolution)
+        public EditAdditionalServiceModel(string odsCode, CallOffId callOffId, CreateOrderItemModel createOrderItemModel)
         {
-            if (!isNewSolution)
+            if (!createOrderItemModel.IsNewSolution)
             {
                 BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services";
             }
@@ -33,10 +34,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             OdsCode = odsCode;
             CallOffId = callOffId;
             OrderItem = createOrderItemModel;
+
+            // TODO: Legacy appears to order based on recipient name, unless some recipients have info missing in which case they appear at the top
             OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(m => m.Selected).ToList();
 
-            // TODO: currency code comes from the catalogue price
-            CurrencySymbol = "£";
+            foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.Quantity is null))
+                recipient.Quantity = createOrderItemModel.Quantity;
+
+            foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.DeliveryDate is null))
+                recipient.DeliveryDate = createOrderItemModel.PlannedDeliveryDate;
+
+            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode];
         }
 
         public CallOffId CallOffId { get; set; }

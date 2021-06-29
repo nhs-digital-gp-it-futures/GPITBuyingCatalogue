@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 actionName: nameof(OrderController.Order),
                 controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode, callOffId = order.CallOffId });
+                routeValues: new { odsCode, order.CallOffId });
         }
     }
 }
