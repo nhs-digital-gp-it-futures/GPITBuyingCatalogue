@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasConstraintName("FK_Order_SupplierContact");
 
             builder.HasOne(o => o.Supplier)
-                .WithMany(s => s.Orders)
+                .WithMany()
                 .HasForeignKey(o => o.SupplierId)
                 .HasConstraintName("FK_Order_Supplier");
 
