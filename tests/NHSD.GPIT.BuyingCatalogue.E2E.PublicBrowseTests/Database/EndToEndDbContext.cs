@@ -17,6 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 
             modelBuilder.ApplyConfiguration(new CatalogueItemTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new CataloguePriceTypeEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CapabilityStatusEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CompliancyLevelEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ProvisioningTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PublicationStatusEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TimeUnitEntityTypeConfiguration());

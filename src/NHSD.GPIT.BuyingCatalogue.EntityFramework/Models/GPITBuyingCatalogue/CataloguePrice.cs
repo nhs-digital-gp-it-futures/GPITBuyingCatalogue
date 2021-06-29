@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public class CataloguePrice
+    public sealed class CataloguePrice
     {
         public CataloguePrice()
         {
@@ -24,16 +24,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public decimal? Price { get; set; }
 
-        public virtual CatalogueItem CatalogueItem { get; set; }
+        public CatalogueItem CatalogueItem { get; set; }
 
-        public virtual CataloguePriceType CataloguePriceType { get; set; }
+        public CataloguePriceType CataloguePriceType { get; set; }
 
-        public virtual PricingUnit PricingUnit { get; set; }
+        public PricingUnit PricingUnit { get; set; }
 
-        public virtual ProvisioningType ProvisioningType { get; set; }
+        public ProvisioningType ProvisioningType { get; set; }
 
-        public virtual TimeUnit? TimeUnit { get; set; }
+        public TimeUnit? TimeUnit { get; set; }
 
-        public virtual ICollection<CataloguePriceTier> CataloguePriceTiers { get; set; }
+        public ICollection<CataloguePriceTier> CataloguePriceTiers { get; set; }
     }
 }
