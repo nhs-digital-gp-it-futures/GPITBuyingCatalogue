@@ -90,10 +90,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (existingOrder != null)
             {
+                orderSessionService.ClearSession(callOffId);
+
                 return RedirectToAction(
                     nameof(EditAssociatedService),
                     typeof(AssociatedServicesController).ControllerName(),
-                    new { odsCode, callOffId, id = existingOrder.CatalogueItemId });
+                    new { odsCode, callOffId, existingOrder.CatalogueItemId });
             }
 
             state.CatalogueItemId = model.SelectedSolutionId;
@@ -106,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (prices.Count == 1)
             {
-                orderSessionService.SetPrice(callOffId, prices.Single());
+                state = orderSessionService.SetPrice(callOffId, prices.Single());
 
                 state.SkipAssociatedServicePrices = true;
                 orderSessionService.SetOrderStateToSession(state);
@@ -186,8 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.OrderItem.CataloguePrice = state.CataloguePrice;
-                model.OrderItem.TimeUnit = state.TimeUnit;
+                model.UpdateModel(state);
                 return View(model);
             }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -100,6 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                     TimeUnit = orderItem.CataloguePrice.TimeUnit,
                     PriceId = orderItem.PriceId,
                     CurrencyCode = orderItem.CataloguePrice.CurrencyCode,
+                    CurrencySymbol = CurrencyCodeSigns.Code[orderItem.CataloguePrice.CurrencyCode],
                     ProvisioningType = orderItem.CataloguePrice.ProvisioningType,
                     PricingUnit = orderItem.CataloguePrice.PricingUnit,
                 };
@@ -148,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             return state;
         }
 
-        public void SetPrice(CallOffId callOffId, CataloguePrice cataloguePrice)
+        public CreateOrderItemModel SetPrice(CallOffId callOffId, CataloguePrice cataloguePrice)
         {
             var state = GetOrderStateFromSession(callOffId);
 
@@ -157,10 +159,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             state.ProvisioningType = cataloguePrice.ProvisioningType;
             state.CataloguePrice = cataloguePrice.Price;
             state.CurrencyCode = cataloguePrice.CurrencyCode;
+            state.CurrencySymbol = CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode];
             state.PricingUnit = cataloguePrice.PricingUnit;
             state.TimeUnit = cataloguePrice.TimeUnit;
 
             SetOrderStateToSession(state);
+
+            return state;
         }
 
         public void ClearSession(CallOffId callOffId)

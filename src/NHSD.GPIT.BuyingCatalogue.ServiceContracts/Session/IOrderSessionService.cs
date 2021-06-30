@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session
 
         public Task<CreateOrderItemModel> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId);
 
-        public void SetPrice(CallOffId callOffId, CataloguePrice cataloguePrice);
+        public CreateOrderItemModel SetPrice(CallOffId callOffId, CataloguePrice cataloguePrice);
 
         public void ClearSession(CallOffId callOffId);
     }

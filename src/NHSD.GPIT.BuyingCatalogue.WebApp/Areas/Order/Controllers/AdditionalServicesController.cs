@@ -92,6 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (existingOrder is not null)
             {
+                orderSessionService.ClearSession(callOffId);
+
                 return RedirectToAction(
                     nameof(EditAdditionalService),
                     typeof(AdditionalServicesController).ControllerName(),
@@ -357,7 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.OrderItem.TimeUnit = state.TimeUnit;
+                model.UpdateModel(state);
                 return View(model);
             }
 

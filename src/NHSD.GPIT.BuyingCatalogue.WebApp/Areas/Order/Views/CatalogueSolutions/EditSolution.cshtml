@@ -15,17 +15,16 @@
         </div>
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.BackLinkText" />
+            <input type="hidden" asp-for="@Model.BackLinkText" />   
             <input type="hidden" asp-for="@Model.OdsCode" />
-            <input type="hidden" asp-for="@Model.Title" />
-            <input type="hidden" asp-for="@Model.CurrencySymbol" />
+            <input type="hidden" asp-for="@Model.Title" />                     
             <div class="nhsuk-grid-column-two-thirds">
                 <div class="nhsuk-u-margin-bottom-5">
                     <div>
                         <nhs-bookended-input asp-for="@Model.OrderItem.AgreedPrice"
                                              label-text="What price have you agreed, in pounds?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
-                                             Prefix="@Model.CurrencySymbol"
+                                             Prefix="@Model.OrderItem.CurrencySymbol"
                                              Suffix="@Model.OrderItem.PricingUnit.Description @Model.OrderItem.TimeUnit?.Description()" />
 
                         <nhs-details label-text="How to fill this form">
@@ -74,14 +73,14 @@
                     <vc:nhs-secondary-button url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.SelectSolutionServiceRecipients),
                                                 typeof(CatalogueSolutionsController).ControllerName(),
-                                                new {Model.OdsCode, Model.CallOffId})"
+                                                new {Model.OdsCode, Model.OrderItem.CallOffId})"
                                              text="Edit Service Recipients"
                                              use-primary-colour="false" /><br />
 
                     <vc:nhs-delete-button url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.DeleteSolution),
                                                 typeof(CatalogueSolutionsController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId, @Model.OrderItem.CatalogueItemId, @Model.OrderItem.CatalogueItemName})"
+                                                new { Model.OdsCode, Model.OrderItem.CallOffId, @Model.OrderItem.CatalogueItemId, @Model.OrderItem.CatalogueItemName})"
                                           text="Delete Catalogue Solution" />
                 </div>
             </div>

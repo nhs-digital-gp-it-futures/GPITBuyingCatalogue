@@ -32,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             BackLinkText = "Go back";
             Title = $"{createOrderItemModel.CatalogueItemName} information for {callOffId}";
             OdsCode = odsCode;
-            CallOffId = callOffId;
             OrderItem = createOrderItemModel;
 
             // TODO: Legacy appears to order based on recipient name, unless some recipients have info missing in which case they appear at the top
@@ -43,15 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.DeliveryDate is null))
                 recipient.DeliveryDate = createOrderItemModel.PlannedDeliveryDate;
-
-            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode];
         }
 
-        public CallOffId CallOffId { get; set; }
-
         public CreateOrderItemModel OrderItem { get; set; }
-
-        public string CurrencySymbol { get; set; }
 
         public string SecondColumnName
         {
@@ -61,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
                     return "Quantity";
 
                 if (OrderItem.ProvisioningType == ProvisioningType.OnDemand)
-                    return "Quantity" + OrderItem.TimeUnit?.Description();
+                    return "Quantity " + OrderItem.TimeUnit?.Description();
 
                 return "Practice list size";
             }
@@ -100,6 +93,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 
                 return "Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.";
             }
+        }
+
+        public void UpdateModel(CreateOrderItemModel state)
+        {
+            OrderItem.CallOffId = state.CallOffId;
+            OrderItem.PricingUnit = state.PricingUnit;
+            OrderItem.TimeUnit = state.TimeUnit;
+            OrderItem.CurrencyCode = state.CurrencyCode;
+            OrderItem.CurrencySymbol = state.CurrencySymbol;
+            OrderItem.ProvisioningType = state.ProvisioningType;
         }
     }
 }

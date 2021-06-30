@@ -46,5 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public IEnumerable<CatalogueItemId> SolutionIds { get; set; }
 
         public bool SkipAssociatedServicePrices { get; set; }
+
+        public string CurrencySymbol { get; set; }
     }
 }

@@ -31,20 +31,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
             BackLinkText = "Go back";
             Title = $"{createOrderItemModel.CatalogueItemName} associated service information for {callOffId}";
             OdsCode = odsCode;
-            CallOffId = callOffId;
             OrderItem = createOrderItemModel;
             TimeUnit = createOrderItemModel.TimeUnit;
-            CurrencySymbol = CurrencyCodeSigns.Code[createOrderItemModel.CurrencyCode];
         }
 
-        public CallOffId CallOffId { get; set; }
-
         public CreateOrderItemModel OrderItem { get; set; }
-
-        public string CurrencySymbol { get; set; }
 
         public TimeUnit? TimeUnit { get; set; }
 
         public List<TimeUnit> TimeUnits { get; } = Enum.GetValues<TimeUnit>().ToList();
+
+        public void UpdateModel(CreateOrderItemModel state)
+        {
+            OrderItem.CallOffId = state.CallOffId;
+            OrderItem.PricingUnit = state.PricingUnit;
+            OrderItem.TimeUnit = state.TimeUnit;
+            OrderItem.CurrencyCode = state.CurrencyCode;
+            OrderItem.CurrencySymbol = state.CurrencySymbol;
+            OrderItem.ProvisioningType = state.ProvisioningType;
+        }
     }
 }
