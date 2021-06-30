@@ -106,18 +106,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<int> DeleteOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task DeleteOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             var order = await orderService.GetOrder(callOffId);
 
             if (order is null)
                 throw new ArgumentNullException(nameof(catalogueItemId));
 
-            var result = order.DeleteOrderItemAndUpdateProgress(catalogueItemId);
+            order.DeleteOrderItemAndUpdateProgress(catalogueItemId);
 
             await dbContext.SaveChangesAsync();
-
-            return result;
         }
 
         private Task<IReadOnlyDictionary<string, ServiceRecipient>> AddOrUpdateServiceRecipients(CreateOrderItemModel model)
