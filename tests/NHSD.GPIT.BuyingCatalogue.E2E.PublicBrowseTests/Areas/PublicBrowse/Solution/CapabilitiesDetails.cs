@@ -34,28 +34,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             }
         }
 
+        //[Fact]
+        //public async Task CapabilitiesDetails_CheckEpics_NhsDefinedSolutionEpics()
+        //{
+        //    await using var context = GetEndToEndDbContext();
+        //    var nhsEpicsInfo = (await context.Solutions.Include(s => s.SolutionEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionEpics.Select(s => s.Epic);
+        //    var nhsEpicsList = PublicBrowsePages.SolutionAction.GetNhsSolutionEpics().ToArray();
+
+        //    var nhsSolutionEpics = nhsEpicsInfo.Where(e => !e.SupplierDefined).Select(c => c.Name);
+
+        //    nhsEpicsList.Should().BeEquivalentTo(nhsSolutionEpics);
+        //}
+
         [Fact]
         public async Task CapabilitiesDetails_CheckEpics_NhsDefinedSolutionEpics()
         {
-            await using var context = GetEndToEndDbContext();
-            var nhsEpicsInfo = (await context.Solutions.Include(s => s.SolutionEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionEpics.Select(s => s.Epic);
+            PublicBrowsePages.SolutionAction.ClickEpics();
             var nhsEpicsList = PublicBrowsePages.SolutionAction.GetNhsSolutionEpics().ToArray();
 
-            var nhsSolutionEpics = nhsEpicsInfo.Where(e => !e.SupplierDefined).Select(c => c.Name);
+            await using var context = GetEndToEndDbContext();
+            var nhsEpicsInfo = (await context.Solutions.Include(s => s.SolutionEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionEpics.Select(s => s.Epic);
 
-            nhsEpicsList.Should().BeEquivalentTo(nhsSolutionEpics);
+            nhsEpicsList.Should().BeEquivalentTo(nhsEpicsInfo.Where(e => !e.SupplierDefined).Select(c => c.Name));
         }
 
         [Fact]
         public async Task CapabilitiesDetails_CheckEpics_SupplierDefinedSolutionEpics()
         {
+            PublicBrowsePages.SolutionAction.ClickEpics();
+            var supplierEpicsList = PublicBrowsePages.SolutionAction.GetSupplierSolutionEpics();
+           
             await using var context = GetEndToEndDbContext();
             var supplierEpicsInfo = (await context.Solutions.Include(s => s.SolutionEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionEpics.Select(s => s.Epic);
-            var supplierEpicsList = PublicBrowsePages.SolutionAction.GetSupplierSolutionEpics().ToArray();
 
-            var supplierSolutionEpics = supplierEpicsInfo.Where(e => e.SupplierDefined).Select(c => c.Name);
-
-            supplierEpicsList.Should().BeEquivalentTo(supplierSolutionEpics);
+            supplierEpicsList.Should().BeEquivalentTo(supplierEpicsInfo.Where(e => e.SupplierDefined).Select(c => c.Name));
         }
     }
 }

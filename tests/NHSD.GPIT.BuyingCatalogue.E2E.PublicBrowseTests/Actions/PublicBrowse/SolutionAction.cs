@@ -63,15 +63,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CapabilitiesContent).Select(s => s.Text);
         }
 
-        internal IEnumerable<string> GetNhsSolutionEpics()
+        public void ClickEpics()
         {
             Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
+        }
+
+        internal IEnumerable<string> GetNhsSolutionEpics()
+        {
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.NhsSolutionEpics).Select(s => s.Text);
         }
 
         internal IEnumerable<string> GetSupplierSolutionEpics()
         {
-            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.SupplierSolutionEpics).Select(s => s.Text);
         }
 
