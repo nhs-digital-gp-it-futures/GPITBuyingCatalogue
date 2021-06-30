@@ -97,10 +97,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("search/select")]
-        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, SupplierSearchSelectModel model)
+        public async Task<IActionResult> SupplierSearchSelect(string odsCode, CallOffId callOffId, SupplierSearchSelectModel model, [FromQuery] string search)
         {
             if (!ModelState.IsValid)
+            {
+                model.Suppliers = await supplierService.GetListFromBuyingCatalogue(search, null, null);
                 return View(model);
+            }
 
             await supplierService.AddOrderSupplier(callOffId, model.SelectedSupplierId);
 
