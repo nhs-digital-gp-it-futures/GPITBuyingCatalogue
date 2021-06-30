@@ -18,7 +18,7 @@
         </a>
     </p>
 
-    <ul>
+    <ul data-test-id="nhs-defined-epics">
         @foreach (string epic in Model.NhsDefined)
         {
             <li>@epic</li>
@@ -30,10 +30,10 @@
 {
     <h2>Supplier defined Epics</h2>
 
-    <ul>
+    <ul data-test-id="supplier-defined-epics">
         @foreach (string epic in Model.SupplierDefined)
         {
             <li>@epic</li>
         }
     </ul>
-}
+}           
