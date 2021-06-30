@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class PublicationStatusModel
+    public sealed class PublicationStatus
     {
         public int Id { get; set; }
 

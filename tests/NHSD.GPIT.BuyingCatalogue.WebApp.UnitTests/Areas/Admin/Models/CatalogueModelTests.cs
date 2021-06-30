@@ -1,4 +1,5 @@
 ﻿using System;
+using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -63,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var actual = new CatalogueModel(catalogueItem);
 
-            actual.PublishedStatus.Should().Be(catalogueItem.PublishedStatus.GetDisplayName());
+            actual.PublishedStatus.Should().Be(catalogueItem.PublishedStatus.AsString(EnumFormat.DisplayName));
         }
 
         [Theory]

@@ -1,4 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModel
 @{
     ViewData["Title"] = "Manage Catalogue Solutions";
@@ -23,15 +23,14 @@
             </a>
         </div>
 
-        <details 
+        <details
             class="nhsuk-details nhsuk-expander"
             id="nhsuk-details0"
             nhsuk-polyfilled="true"
             @if (Model.HasSelected)
             {
-                <text>open=""</text> 
-            }
-        >
+                <text>open=""</text>
+            }>
             <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
                 <span class="nhsuk-details__summary-text">
                     Filter Catalogue Solutions
@@ -47,11 +46,11 @@
                             @foreach (var status in Model.AllPublicationStatuses)
                             {
                                 <div class="nhsuk-radios__item">
-                                    <input name="publicationStatus" 
-                                           checked="@status.Checked" 
-                                           class="nhsuk-radios__input" 
-                                           id="@status.Id" 
-                                           type="radio" 
+                                    <input name="publicationStatus"
+                                           checked="@status.Checked"
+                                           class="nhsuk-radios__input"
+                                           id="@status.Id"
+                                           type="radio"
                                            value="@status.Id"/>
                                     <label class="nhsuk-label nhsuk-radios__label" for="@status.Id">
                                         @status.Display
@@ -69,24 +68,18 @@
             </div>
         </details>
 
-        <table role="table" class="nhsuk-table-responsive">
-            <thead role="rowgroup" class="nhsuk-table__head">
-            <tr role="row">
-                @foreach (var heading in new[]
-                {
-                    "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty,
-                })
-                {
-                    <th role="columnheader" scope="col">
-                        @heading
-                    </th>
-                }
-            </tr>
-            </thead>
-            <tbody class="nhsuk-table__body">
+        <nhs-table>
+            @foreach (var heading in new[]
+            {
+                "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty,
+            })
+            {
+                <nhs-table-column>@heading</nhs-table-column>
+            }
+
             @foreach (var item in Model.Solutions)
             {
-                <tr role="row" class="nhsuk-table__row">
+                <nhs-table-row-container>
                     @foreach (var cell in new[]
                     {
                         item.CatalogueItemId,
@@ -95,42 +88,37 @@
                         item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"),
                     })
                     {
-                        <td role="cell" class="nhsuk-table__cell">
-                            @cell
-                        </td>
+                        <nhs-table-cell>@cell</nhs-table-cell>
                     }
-                    @{
-                        var cssClass = "nhsuk-tag--";
-                        switch (item.PublishedStatusId)
-                        {
-                            case 1:
-                                cssClass = "red";
-                                break;
-                            case 2:
-                                cssClass += "white";
-                                break;
-                            case 3:
-                                cssClass += "green";
-                                break;
-                            case 4:
-                                cssClass += "yellow";
-                                break;
+
+                    <nhs-table-cell>
+                        @{
+                            NhsTagsTagHelper.TagColour colour = NhsTagsTagHelper.TagColour.White;
+                            switch (item.PublishedStatusId)
+                            {
+                                case 1:
+                                    colour = NhsTagsTagHelper.TagColour.Red;
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+                                    colour = NhsTagsTagHelper.TagColour.Green;
+                                    break;
+                                case 4:
+                                    colour = NhsTagsTagHelper.TagColour.Yellow;
+                                    break;
+                            }
                         }
-                    }
-                    <td role="cell" class="nhsuk-table__cell">
-                        <strong class="nhsuk-tag @cssClass">
-                            @item.PublishedStatus
-                        </strong>
-                    </td>
-                    <td role="cell" class="nhsuk-table__cell">
+                        <nhs-tag text="@item.PublishedStatus" colour="@colour"/>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
                         <a href="#" style="white-space: nowrap;">
                             Edit
                         </a>
-                    </td>
-                </tr>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
             }
-            </tbody>
-        </table>
+        </nhs-table>
 
     </div>
 </div>

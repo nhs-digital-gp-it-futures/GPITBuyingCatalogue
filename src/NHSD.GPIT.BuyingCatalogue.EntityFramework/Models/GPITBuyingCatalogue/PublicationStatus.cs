@@ -7,8 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         [Display(Name = "Suspended")]
         Draft = 1,
 
+        [Display(Name = nameof(Unpublished))]
         Unpublished = 2,
 
+        [Display(Name = nameof(Published))]
         Published = 3,
 
         [Display(Name = "Deleted")]
