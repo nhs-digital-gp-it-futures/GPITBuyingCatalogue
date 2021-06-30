@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var odsCode = User.GetPrimaryOdsCode();
 
             return RedirectToAction(
-                actionName: nameof(Organisation),
-                controllerName: typeof(DashboardController).ControllerName(),
-                routeValues: new { odsCode });
+                nameof(Organisation),
+                typeof(DashboardController).ControllerName(),
+                new { odsCode });
         }
 
         [HttpGet("organisation/{odsCode}")]
@@ -69,35 +69,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
 
             return RedirectToAction(
-                actionName: nameof(Organisation),
-                controllerName: typeof(DashboardController).ControllerName(),
-                routeValues: new { odsCode = model.SelectedOrganisation });
-        }
-
-        [HttpGet("organisation/{odsCode}/order/neworder")]
-        public IActionResult NewOrder(string odsCode)
-        {
-            return View(new NewOrderModel(odsCode));
-        }
-
-        [HttpGet("organisation/{odsCode}/order/neworder/description")]
-        public IActionResult NewOrderDescription(string odsCode)
-        {
-            return View(new NewOrderDescriptionModel(odsCode));
-        }
-
-        [HttpPost("organisation/{odsCode}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string odsCode, NewOrderDescriptionModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var order = await orderService.CreateOrder(model.Description, model.OdsCode);
-
-            return RedirectToAction(
-                actionName: nameof(OrderController.Order),
-                controllerName: typeof(OrderController).ControllerName(),
-                routeValues: new { odsCode, callOffId = order.CallOffId });
+                nameof(Organisation),
+                typeof(DashboardController).ControllerName(),
+                new { odsCode = model.SelectedOrganisation });
         }
     }
 }
