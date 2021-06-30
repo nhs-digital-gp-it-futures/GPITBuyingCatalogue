@@ -81,7 +81,7 @@
                     <vc:nhs-delete-button url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.DeleteSolution),
                                                 typeof(CatalogueSolutionsController).ControllerName(),
-                                                new {Model.OdsCode, Model.CallOffId, id = @Model.OrderItem.CatalogueItemId, solutionName = @Model.OrderItem.CatalogueItemName})"
+                                                new { Model.OdsCode, Model.CallOffId, solutionId = @Model.OrderItem.CatalogueItemId, solutionName = @Model.OrderItem.CatalogueItemName})"
                                           text="Delete Catalogue Solution" />
                 </div>
             </div>

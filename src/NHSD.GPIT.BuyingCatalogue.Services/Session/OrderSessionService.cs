@@ -54,11 +54,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 
             var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueSolutionId);
 
+            if (orderItem is null)
+            {
+                foreach (var serviceRecipient in state.ServiceRecipients.Where(sr => sr.Selected))
+                {
+                    serviceRecipient.Quantity ??= state.Quantity;
+                    serviceRecipient.DeliveryDate ??= state.PlannedDeliveryDate;
+                }
+
+                SetOrderStateToSession(state);
+
+                return true;
+            }
+
             if (state?.CatalogueItemId is not null)
             {
-                if (state.IsNewOrder)
-                    return true;
-
                 foreach (var recipient in state.ServiceRecipients.Where(x => !x.DeliveryDate.HasValue))
                     recipient.DeliveryDate = orderItem.DefaultDeliveryDate;
 
