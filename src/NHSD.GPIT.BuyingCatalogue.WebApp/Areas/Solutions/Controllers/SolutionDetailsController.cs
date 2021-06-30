@@ -156,12 +156,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View();
         }
 
-        [Route("futures/{id}/check-associated-service")]
-        public IActionResult CheckAssociatedService(string id)
-        {
-            return View();
-        }
-
         [Route("futures/{id}/supplier-details")]
         public async Task<IActionResult> SupplierDetails(CatalogueItemId id)
         {
