@@ -8,6 +8,8 @@ resource "azurerm_key_vault_secret" "sqladminusername" {
     environment = var.environment,
     architecture = "new"
   }
+
+  depends_on = [azurerm_key_vault_access_policy.keyvault_pipeline_access]
 }
 
 resource "azurerm_key_vault_secret" "sqladminpassword" {
@@ -20,6 +22,8 @@ resource "azurerm_key_vault_secret" "sqladminpassword" {
     environment = var.environment,
     architecture = "new"
   }
+
+  depends_on = [azurerm_key_vault_access_policy.keyvault_pipeline_access]
 }
 
 resource "random_password" "password" {
