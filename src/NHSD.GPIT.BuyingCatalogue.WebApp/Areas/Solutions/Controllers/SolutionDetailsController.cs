@@ -23,14 +23,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [Route("futures/{solutionId}/associated-services")]
-        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
+        [Route("futures/{id}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithAllAssociatedServices(id);
             if (solution is null)
-                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+                return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, AssociatedServicesModel>(solution));
+        }
+
+        [Route("futures/{id}/additional-services")]
+        public async Task<IActionResult> AdditionalServices(CatalogueItemId id)
+        {
+            var solution = await solutionsService.GetSolutionWithAllAdditionalServices(id);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, AdditionalServicesModel>(solution));
         }
 
         [Route("futures/{id}/capabilities")]
@@ -138,17 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
-        }
-
-        [Route("futures/{id}/additional-services")]
-        public async Task<IActionResult> AdditionalServices(CatalogueItemId id)
-        {
-            var solution = await solutionsService.GetSolution(id);
-            if (solution == null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
-
-            var temp = mapper.Map<CatalogueItem, AdditionalServicesModel>(solution);
-            return View(temp);
         }
 
         [Route("futures/{id}/check-capability-epic")]
