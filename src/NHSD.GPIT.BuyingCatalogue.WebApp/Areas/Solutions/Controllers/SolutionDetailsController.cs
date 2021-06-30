@@ -23,12 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [Route("futures/{solutionId}/associated-services")]
-        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
+        [Route("futures/{id}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(solutionId);
+            var solution = await solutionsService.GetSolutionWithAllAssociatedServices(id);
             if (solution is null)
-                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+                return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, AssociatedServicesModel>(solution));
         }

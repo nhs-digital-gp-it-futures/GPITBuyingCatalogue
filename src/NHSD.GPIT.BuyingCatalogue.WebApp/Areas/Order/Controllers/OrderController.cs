@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
@@ -23,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IContactDetailsService contactDetailsService;
         private readonly ICommencementDateService commencementDateService;
         private readonly IFundingSourceService fundingSourceService;
+        private readonly ITaskListService taskListService;
 
         // TODO: too many dependencies, i.e. too many responsibilities
         public OrderController(
@@ -32,7 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             IOrganisationsService organisationService,
             IContactDetailsService contactDetailsService,
             ICommencementDateService commencementDateService,
-            IFundingSourceService fundingSourceService)
+            IFundingSourceService fundingSourceService,
+            ITaskListService taskListService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderDescriptionService = orderDescriptionService ?? throw new ArgumentNullException(nameof(orderDescriptionService));
@@ -41,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
             this.commencementDateService = commencementDateService ?? throw new ArgumentNullException(nameof(commencementDateService));
             this.fundingSourceService = fundingSourceService ?? throw new ArgumentNullException(nameof(fundingSourceService));
+            this.taskListService = taskListService ?? throw new ArgumentNullException(nameof(taskListService));
         }
 
         [HttpGet]
@@ -48,7 +53,80 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new OrderModel(odsCode, order));
+            var sectionStatuses = taskListService.GetTaskListStatusModelForOrder(order);
+
+            var orderModel = new OrderModel(odsCode, order, sectionStatuses)
+            {
+                DescriptionUrl = Url.Action(
+                                    nameof(OrderController.OrderDescription),
+                                    typeof(OrderController).ControllerName(),
+                                    new { odsCode, order.CallOffId }),
+            };
+
+            return View(orderModel);
+        }
+
+        [HttpGet("complete-order")]
+        public async Task<IActionResult> CompleteOrder(string odsCode, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrder(callOffId);
+
+            var model = new CompleteOrderModel(odsCode, callOffId, order)
+            {
+                BackLink = Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("complete-order")]
+        public async Task<IActionResult> CompleteOrder(string odsCode, CallOffId callOffId, CompleteOrderModel model)
+        {
+            var order = await orderService.GetOrder(callOffId);
+
+            if (!order.CanComplete())
+            {
+                ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
+                return View(model);
+            }
+
+            await orderService.CompleteOrder(callOffId);
+
+            return RedirectToAction(
+                nameof(OrderController.CompletedOrderConfirmation),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, callOffId });
+        }
+
+        [HttpGet("complete-order/order-confirmation")]
+        public IActionResult CompletedOrderConfirmation(string odsCode, CallOffId callOffId)
+        {
+            var model = new CompletedOrderConfirmationModel(odsCode, callOffId)
+            {
+                BackLink = Url.Action(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { odsCode }),
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
+        public IActionResult NewOrder(string odsCode)
+        {
+            var orderModel = new OrderModel(odsCode, null, new OrderTaskList())
+            {
+                DescriptionUrl = Url.Action(
+                                    nameof(OrderController.NewOrderDescription),
+                                    typeof(OrderController).ControllerName(),
+                                    new { odsCode }),
+            };
+
+            return View("Order", orderModel);
         }
 
         [HttpGet("summary")]
@@ -98,7 +176,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new OrderDescriptionModel(odsCode, order));
+            var descriptionModel = new OrderDescriptionModel(odsCode, order)
+            {
+                BackLink = Url.Action(
+                            nameof(OrderController.Order),
+                            typeof(OrderController).ControllerName(),
+                            new { odsCode, callOffId }),
+            };
+
+            return View(descriptionModel);
         }
 
         [HttpPost("description")]
@@ -113,6 +199,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 nameof(Order),
                 typeof(OrderController).ControllerName(),
                 new { odsCode, callOffId });
+        }
+
+        [HttpGet("~/organisation/{odsCode}/order/neworder/description")]
+        public IActionResult NewOrderDescription(string odsCode)
+        {
+            var descriptionModel = new OrderDescriptionModel(odsCode, null)
+            {
+                BackLink = Url.Action(
+                            nameof(OrderController.NewOrder),
+                            typeof(OrderController).ControllerName(),
+                            new { odsCode }),
+            };
+
+            return View("OrderDescription", descriptionModel);
+        }
+
+        [HttpPost("~/organisation/{odsCode}/order/neworder/description")]
+        public async Task<IActionResult> NewOrderDescription(string odsCode, OrderDescriptionModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("OrderDescription", model);
+
+            var order = await orderService.CreateOrder(model.Description, model.OdsCode);
+
+            return RedirectToAction(
+                nameof(OrderController.Order),
+                typeof(OrderController).ControllerName(),
+                new { odsCode, order.CallOffId });
         }
 
         [HttpGet("ordering-party")]
