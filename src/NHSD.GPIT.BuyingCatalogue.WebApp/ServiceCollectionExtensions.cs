@@ -210,6 +210,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
         }
 
+        public static void ConfigureOrderMessageSettings(this IServiceCollection servies, IConfiguration configuration)
+        {
+            var orderMessageSettings = configuration.GetSection("orderMessage").Get<OrderMessageSettings>();
+            servies.AddSingleton(orderMessageSettings);
+        }
+
         public static void ConfigureRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();

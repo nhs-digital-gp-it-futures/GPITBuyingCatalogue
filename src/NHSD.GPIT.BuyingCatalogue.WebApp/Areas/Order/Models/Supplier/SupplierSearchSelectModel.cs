@@ -19,9 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         {
         }
 
-        public List<EntityFramework.Models.GPITBuyingCatalogue.Supplier> Suppliers { get; init; }
+        public List<EntityFramework.Models.GPITBuyingCatalogue.Supplier> Suppliers { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please select a supplier")]
         public string SelectedSupplierId { get; set; }
     }
 }

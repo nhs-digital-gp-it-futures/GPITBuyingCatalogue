@@ -20,14 +20,14 @@
             <input type="hidden" asp-for="@Model.Title" />
             <input type="hidden" asp-for="@Model.CurrencySymbol" />
             <div class="nhsuk-grid-column-two-thirds">
-                <div class="nhsAgreeduk-u-margin-bottom-5">
+                <div class="nhsuk-u-margin-bottom-5">
                     <div>
-                        <nhs-bookended-input asp-for="@Model.OrderItem.AgreedPrice"
+                        <nhs-bookended-input asp-for="@Model.OrderItem.Price"
                                              label-text="What price have you agreed, in pounds?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
                                              Prefix="@Model.CurrencySymbol"
-                                             Suffix="@Model.OrderItem.PricingUnit.Description @Model.OrderItem.TimeUnit?.Description()" />
-                        
+                                             Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description()" />
+
                         <nhs-details label-text="How to fill this form">
                             <p><b>@Model.SecondColumnDetailsTitle</b></p>
                             <p>@Model.SecondColumnDetailsContent</p>
@@ -81,7 +81,7 @@
                     <vc:nhs-delete-button url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.DeleteSolution),
                                                 typeof(CatalogueSolutionsController).ControllerName(),
-                                                new {Model.OdsCode, Model.CallOffId, Model.OrderItem.CatalogueItemId, Model.OrderItem.CatalogueItemName})"
+                                                new { Model.OdsCode, Model.CallOffId, solutionId = @Model.OrderItem.CatalogueItemId, solutionName = @Model.OrderItem.CatalogueItemName})"
                                           text="Delete Catalogue Solution" />
                 </div>
             </div>

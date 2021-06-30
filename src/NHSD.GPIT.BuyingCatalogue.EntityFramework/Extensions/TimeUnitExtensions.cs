@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 
         public static string Name(this TimeUnit timeUnit) => timeUnit.AsString(EnumFormat.DisplayName);
 
+        public static string EnumMemberName(this TimeUnit timeUnit) => timeUnit.ToString();
+
         internal static int AmountInYear(this TimeUnit timeUnit)
         {
             var amountInYearAttribute = timeUnit.GetAttributes()?.Get<AmountInYearAttribute>();
