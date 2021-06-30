@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
@@ -14,25 +12,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(string odsCode, CallOffId callOffId, CreateOrderItemModel createOrderItemModel)
+        public EditAssociatedServiceModel(string odsCode, CreateOrderItemModel state)
         {
-            if (createOrderItemModel.IsNewSolution)
+            if (state.IsNewSolution)
             {
-                if (createOrderItemModel.SkipAssociatedServicePrices)
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service/price";
+                if (state.SkipPriceSelection)
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service";
                 else
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service/price";
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service/price";
             }
             else
             {
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services";
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services";
             }
 
             BackLinkText = "Go back";
-            Title = $"{createOrderItemModel.CatalogueItemName} associated service information for {callOffId}";
+            Title = $"{state.CatalogueItemName} associated service information for {state.CallOffId}";
             OdsCode = odsCode;
-            OrderItem = createOrderItemModel;
-            TimeUnit = createOrderItemModel.TimeUnit;
+            OrderItem = state;
+            TimeUnit = state.TimeUnit;
         }
 
         public CreateOrderItemModel OrderItem { get; set; }

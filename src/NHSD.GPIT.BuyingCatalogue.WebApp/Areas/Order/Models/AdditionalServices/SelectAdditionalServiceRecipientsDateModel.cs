@@ -1,5 +1,4 @@
 ﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
@@ -12,13 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
 
         public SelectAdditionalServiceRecipientsDateModel(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             DateTime? defaultDeliveryDate)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price";
+            if (state.SkipPriceSelection)
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price/recipients";
+            else
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price";
+
             BackLinkText = "Go back";
-            Title = $"Planned delivery date of {state.CatalogueItemName} for {callOffId}";
+            Title = $"Planned delivery date of {state.CatalogueItemName} for {state.CallOffId}";
 
             CommencementDate = state.CommencementDate;
 

@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
 
-            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId.GetValueOrDefault()));
+            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId));
         }
 
         [HttpPost("select/solution")]
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId.GetValueOrDefault());
 
             if (existingOrder is not null)
             {
@@ -96,9 +96,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
+            if (!prices.Any())
+                throw new InvalidOperationException($"Catalogue Solution {state.CatalogueItemId.GetValueOrDefault()} does not have any Flat prices associated");
+
             if (prices.Count == 1)
             {
-                orderSessionService.SetPrice(callOffId, prices.Single());
+                state = orderSessionService.SetPrice(callOffId, prices.Single());
+
+                state.SkipPriceSelection = true;
+                orderSessionService.SetOrderStateToSession(state);
 
                 return RedirectToAction(
                     nameof(SelectSolutionServiceRecipients),
@@ -205,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
 
-            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate, defaultDeliveryDate));
+            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate));
         }
 
         [HttpPost("select/solution/price/recipients/date")]

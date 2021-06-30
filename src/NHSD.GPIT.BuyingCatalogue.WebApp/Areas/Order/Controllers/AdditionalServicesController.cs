@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             return !additionalServices.Any()
                 ? View("NoAdditionalServicesFound", new NoAdditionalServicesFoundModel(odsCode, callOffId))
-                : View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId.GetValueOrDefault()));
+                : View(new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId));
         }
 
         [HttpPost("select/additional-service")]
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedAdditionalServiceId);
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedAdditionalServiceId.GetValueOrDefault());
 
             if (existingOrder is not null)
             {
@@ -108,9 +108,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
+            if (!prices.Any())
+                throw new InvalidOperationException($"Additional Service {state.CatalogueItemId.GetValueOrDefault()} does not have any Flat prices associated");
+
             if (prices.Count == 1)
             {
-                orderSessionService.SetPrice(callOffId, prices.Single());
+                state = orderSessionService.SetPrice(callOffId, prices.Single());
+
+                state.SkipPriceSelection = true;
+                orderSessionService.SetOrderStateToSession(state);
 
                 return RedirectToAction(
                     nameof(SelectAdditionalServiceRecipients),
@@ -217,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
 
-            return View(new SelectAdditionalServiceRecipientsDateModel(odsCode, callOffId, state, defaultDeliveryDate));
+            return View(new SelectAdditionalServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate));
         }
 
         [HttpPost("select/additional-service/price/recipients/date")]

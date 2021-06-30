@@ -100,6 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                     AgreedPrice = orderItem.Price,
                     TimeUnit = orderItem.CataloguePrice.TimeUnit,
                     PriceId = orderItem.PriceId,
+                    CataloguePrice = orderItem.CataloguePrice.Price,
                     CurrencyCode = orderItem.CataloguePrice.CurrencyCode,
                     CurrencySymbol = CurrencyCodeSigns.Code[orderItem.CataloguePrice.CurrencyCode],
                     ProvisioningType = orderItem.CataloguePrice.ProvisioningType,

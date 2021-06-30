@@ -106,11 +106,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
+            if (!prices.Any())
+                throw new InvalidOperationException($"Associated Service {state.CatalogueItemId.GetValueOrDefault()} does not have any Flat prices associated");
+
             if (prices.Count == 1)
             {
                 state = orderSessionService.SetPrice(callOffId, prices.Single());
 
-                state.SkipAssociatedServicePrices = true;
+                state.SkipPriceSelection = true;
                 orderSessionService.SetOrderStateToSession(state);
 
                 return RedirectToAction(
@@ -165,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
 
-            return View(new EditAssociatedServiceModel(odsCode, callOffId, state));
+            return View(new EditAssociatedServiceModel(odsCode, state));
         }
 
         [HttpPost("{catalogueItemId}")]
