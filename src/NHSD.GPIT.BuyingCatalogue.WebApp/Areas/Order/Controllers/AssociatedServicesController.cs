@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly IAssociatedServicesService associatedServicesService;
-        private readonly ISessionService sessionService;
         private readonly ISolutionsService solutionsService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderSessionService orderSessionService;
@@ -33,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public AssociatedServicesController(
             IOrderService orderService,
             IAssociatedServicesService associatedServicesService,
-            ISessionService sessionService,
             ISolutionsService solutionsService,
             IOrderItemService orderItemService,
             IOrderSessionService orderSessionService,
@@ -41,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
-            this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderSessionService = orderSessionService ?? throw new ArgumentNullException(nameof(orderSessionService));
@@ -65,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
 
-            var state = orderSessionService.InitialiseStateForCreate(callOffId, order.CommencementDate, order.SupplierId, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name });
+            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AssociatedService, null, new OrderItemRecipientModel { OdsCode = odsCode, Name = organisation.Name });
 
             var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(order.SupplierId);
 
@@ -176,9 +172,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            if (!model.OrderItem.ServiceRecipients[0].Quantity.HasValue
-                || model.OrderItem.ServiceRecipients[0].Quantity.Value == 0)
-                ModelState.AddModelError($"OrderItem.ServiceRecipients[0].Quantity", "Quantity is Required");
+            if (model.OrderItem.ServiceRecipients[0].Quantity.GetValueOrDefault() == 0)
+                ModelState.AddModelError("OrderItem.ServiceRecipients[0].Quantity", "Quantity is Required");
 
             if (model.OrderItem.AgreedPrice is null)
                 ModelState.AddModelError("OrderItem.Price", "Price is Required");
@@ -210,7 +205,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteAssociatedService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName)
+        public async Task<IActionResult> DeleteAssociatedService(
+            string odsCode,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string catalogueItemName)
         {
             var order = await orderService.GetOrder(callOffId);
 
@@ -218,7 +217,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteAssociatedService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName, DeleteAssociatedServiceModel model)
+        public async Task<IActionResult> DeleteAssociatedService(
+            string odsCode,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string catalogueItemName,
+            DeleteAssociatedServiceModel model)
         {
             await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
 

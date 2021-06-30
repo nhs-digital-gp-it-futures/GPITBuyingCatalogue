@@ -49,13 +49,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
             get
             {
-                if (OrderItem.ProvisioningType == ProvisioningType.Declarative)
-                    return "Quantity";
-
-                if (OrderItem.ProvisioningType == ProvisioningType.OnDemand)
-                    return "Quantity " + OrderItem.TimeUnit?.Description();
-
-                return "Practice list size";
+                return OrderItem.ProvisioningType switch
+                {
+                    ProvisioningType.Declarative => "Quantity",
+                    ProvisioningType.OnDemand => "Quantity " + OrderItem.TimeUnit?.Description(),
+                    _ => "Practice list size",
+                };
             }
         }
 

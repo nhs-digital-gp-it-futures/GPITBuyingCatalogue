@@ -104,13 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             var order = orderItems.Single(o => o.CatalogueItemId == catalogueItemId);
 
-            if (order.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
-            {
-                orderItems.RemoveAll(o => o.CatalogueItem.AdditionalService?.SolutionId == catalogueItemId);
-            }
-
             orderItems.RemoveAll(o => o.CatalogueItem.CatalogueItemId == catalogueItemId
-                || o.CatalogueItem.Solution?.Id == catalogueItemId);
+                || o.CatalogueItem.AdditionalService?.SolutionId == catalogueItemId);
 
             if (!HasSolution())
             {

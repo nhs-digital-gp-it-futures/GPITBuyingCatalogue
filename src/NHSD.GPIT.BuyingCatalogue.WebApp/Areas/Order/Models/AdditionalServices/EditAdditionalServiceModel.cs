@@ -2,7 +2,6 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
@@ -50,13 +49,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
             get
             {
-                if (OrderItem.ProvisioningType == ProvisioningType.Declarative)
-                    return "Quantity";
-
-                if (OrderItem.ProvisioningType == ProvisioningType.OnDemand)
-                    return "Quantity " + OrderItem.TimeUnit?.Description();
-
-                return "Practice list size";
+                return OrderItem.ProvisioningType switch
+                {
+                    ProvisioningType.Declarative => "Quantity",
+                    ProvisioningType.OnDemand => "Quantity " + OrderItem.TimeUnit?.Description(),
+                    _ => "Practice list size",
+                };
             }
         }
 

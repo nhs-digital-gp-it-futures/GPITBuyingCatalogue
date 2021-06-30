@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            var state = orderSessionService.InitialiseStateForCreate(callOffId, order.CommencementDate, order.SupplierId, CatalogueItemType.Solution, null, null);
+            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.Solution, null, null);
 
             var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
 
@@ -371,7 +371,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpGet("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteSolution(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName)
+        public async Task<IActionResult> DeleteSolution(
+            string odsCode,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string catalogueItemName)
         {
             var order = await orderService.GetOrder(callOffId);
 
@@ -379,7 +383,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         }
 
         [HttpPost("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteSolution(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName, DeleteSolutionModel model)
+        public async Task<IActionResult> DeleteSolution(
+            string odsCode,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string catalogueItemName,
+            DeleteSolutionModel model)
         {
             await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
 

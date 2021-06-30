@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
             var solutionIds = orderItems.Select(i => i.CatalogueItemId).ToList();
 
-            var state = orderSessionService.InitialiseStateForCreate(callOffId, order.CommencementDate, order.SupplierId, CatalogueItemType.AdditionalService, solutionIds, null);
+            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.AdditionalService, solutionIds, null);
 
             // Get Additional Services that are related to any Catalogue Solution in the order
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionIds(solutionIds);

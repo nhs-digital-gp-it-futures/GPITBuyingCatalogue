@@ -49,27 +49,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             sessionService.SetObject(model.CallOffId.ToString(), model);
         }
 
-        public CreateOrderItemModel InitialiseStateForCreate(CallOffId callOffId, DateTime? commencementDate, string supplierId, CatalogueItemType catalogueItemType, IEnumerable<CatalogueItemId> solutionIds, OrderItemRecipientModel associatedOrderRecipient)
+        public CreateOrderItemModel InitialiseStateForCreate(
+            Order order,
+            CatalogueItemType catalogueItemType,
+            IEnumerable<CatalogueItemId> solutionIds,
+            OrderItemRecipientModel associatedOrderRecipient)
         {
-            var model = GetOrderStateFromSession(callOffId);
+            var model = GetOrderStateFromSession(order.CallOffId);
 
-            if (model is null)
+            if (model is not null)
+                return model;
+
+            model = new CreateOrderItemModel
             {
-                model = new CreateOrderItemModel
-                {
-                    IsNewSolution = true,
-                    CallOffId = callOffId,
-                    CommencementDate = commencementDate,
-                    SupplierId = supplierId,
-                    CatalogueItemType = catalogueItemType,
-                    SolutionIds = solutionIds,
-                };
+                IsNewSolution = true,
+                CallOffId = order.CallOffId,
+                CommencementDate = order.CommencementDate,
+                SupplierId = order.SupplierId,
+                CatalogueItemType = catalogueItemType,
+                SolutionIds = solutionIds,
+            };
 
-                if (associatedOrderRecipient is not null)
-                    model.ServiceRecipients = new List<OrderItemRecipientModel> { associatedOrderRecipient };
+            if (associatedOrderRecipient is not null)
+                model.ServiceRecipients = new List<OrderItemRecipientModel> { associatedOrderRecipient };
 
-                SetOrderStateToSession(model);
-            }
+            SetOrderStateToSession(model);
 
             return model;
         }
@@ -142,8 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                     serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
                 }
 
-                if (serviceRecipient.DeliveryDate is null)
-                    serviceRecipient.DeliveryDate = orderItem.DefaultDeliveryDate;
+                serviceRecipient.DeliveryDate ??= orderItem.DefaultDeliveryDate;
             }
 
             SetOrderStateToSession(state);
