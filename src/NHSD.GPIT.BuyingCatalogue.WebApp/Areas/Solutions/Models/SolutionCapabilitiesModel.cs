@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class SolutionCapabilitiesModel
+    public sealed class SolutionCapabilitiesModel
     {
         public SolutionCapabilitiesModel(SolutionCapability solutionCapability, Solution solution)
         {
@@ -40,18 +40,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateEpics(Solution solution)
         {
-            foreach (var solutionEpic in solution.SolutionEpics.Where(x => x.CapabilityId == Id && x.Epic.Active && x.Epic.CompliancyLevel != null))
+            foreach (var solutionEpic in solution.SolutionEpics.Where(se => se.CapabilityId == Id && se.Epic.Active))
             {
                 var epicLabel = $"{solutionEpic.Epic.Name} ({solutionEpic.Epic.Id})";
 
-                if (solutionEpic.Epic.CompliancyLevel.Name == "MUST")
+                if (solutionEpic.Epic.CompliancyLevel == CompliancyLevel.Must)
                 {
                     if (solutionEpic.Status.IsMet)
                         MustEpicsMet.Add(epicLabel);
                     else
                         MustEpicsNotMet.Add(epicLabel);
                 }
-                else if (solutionEpic.Epic.CompliancyLevel.Name == "MAY")
+                else if (solutionEpic.Epic.CompliancyLevel == CompliancyLevel.May)
                 {
                     if (solutionEpic.Status.IsMet)
                         MayEpicsMet.Add(epicLabel);

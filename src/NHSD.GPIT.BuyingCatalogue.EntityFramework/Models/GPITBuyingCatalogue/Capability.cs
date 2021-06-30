@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class Capability
+    public sealed class Capability
     {
         public Capability()
         {
             Epics = new HashSet<Epic>();
-            FrameworkCapabilities = new HashSet<FrameworkCapability>();
-            SolutionCapabilities = new HashSet<SolutionCapability>();
-            SolutionEpics = new HashSet<SolutionEpic>();
         }
 
         public Guid Id { get; set; }
@@ -22,8 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         public string Version { get; set; }
 
         public string PreviousVersion { get; set; }
-
-        public int StatusId { get; set; }
 
         public string Name { get; set; }
 
@@ -35,16 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public int CategoryId { get; set; }
 
-        public virtual CapabilityCategory Category { get; set; }
+        public CapabilityCategory Category { get; set; }
 
-        public virtual CapabilityStatus Status { get; set; }
+        public ICollection<Epic> Epics { get; set; }
 
-        public virtual ICollection<Epic> Epics { get; set; }
-
-        public virtual ICollection<FrameworkCapability> FrameworkCapabilities { get; set; }
-
-        public virtual ICollection<SolutionCapability> SolutionCapabilities { get; set; }
-
-        public virtual ICollection<SolutionEpic> SolutionEpics { get; set; }
+        public CapabilityStatus Status { get; set; }
     }
 }

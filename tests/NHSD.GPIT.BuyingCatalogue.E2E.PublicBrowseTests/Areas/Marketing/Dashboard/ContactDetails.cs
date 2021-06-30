@@ -33,10 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
 
-            solution.MarketingContacts.First().Should().BeEquivalentTo(contact, options => options.Excluding(s => s.Id)
-                                                                                                  .Excluding(s => s.SolutionId)
-                                                                                                  .Excluding(s => s.LastUpdated)
-                                                                                                  .Excluding(s => s.Solution));
+            solution.MarketingContacts.First().Should().BeEquivalentTo(
+                contact,
+                options => options.Excluding(s => s.Id).Excluding(s => s.SolutionId).Excluding(s => s.LastUpdated));
         }
 
         [Fact]
@@ -55,15 +54,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
 
-            solution.MarketingContacts.First().Should().BeEquivalentTo(firstContact, options => options.Excluding(s => s.Id)
-                                                                                                  .Excluding(s => s.SolutionId)
-                                                                                                  .Excluding(s => s.LastUpdated)
-                                                                                                  .Excluding(s => s.Solution));
+            solution.MarketingContacts.First().Should().BeEquivalentTo(
+                firstContact,
+                options => options.Excluding(s => s.Id).Excluding(s => s.SolutionId).Excluding(s => s.LastUpdated));
 
-            solution.MarketingContacts.Last().Should().BeEquivalentTo(secondContact, options => options.Excluding(s => s.Id)
-                                                                                                  .Excluding(s => s.SolutionId)
-                                                                                                  .Excluding(s => s.LastUpdated)
-                                                                                                  .Excluding(s => s.Solution));
+            solution.MarketingContacts.Last().Should().BeEquivalentTo(
+                secondContact,
+                options => options.Excluding(s => s.Id).Excluding(s => s.SolutionId).Excluding(s => s.LastUpdated));
         }
 
         [Fact]

@@ -10,8 +10,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <nhs-page-title title="@Model.Title"
-                        advice="Add the Catalogue Solutions you want to be part of this order."
-                        additional-advice="If you do not want to add any, or have finished adding Catalogue Solutions, continue to the next step." />
+                        advice="Add the Catalogue Solutions you want to be part of this order." />
 
         <nhs-fieldset-form-container asp-for="@Model"
                                      label-text="Order description"
@@ -52,10 +51,12 @@
                 }
             </nhs-table>
         </nhs-fieldset-form-container>
-        <div data-test-id="continue-button">
-            <a class="nhsuk-button nhsuk-u-margin-top-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId" draggable="false">
-                Continue
-            </a>
-        </div>
+        <vc:nhs-secondary-button text="Continue"
+                                 use-primary-colour="true"
+                                 url="@Url.Action(
+                                     nameof(OrderController.Order),
+                                     typeof(OrderController).ControllerName(),
+                                     new { Model.OdsCode, Model.CallOffId })" />
+
     </div>
 </div>
