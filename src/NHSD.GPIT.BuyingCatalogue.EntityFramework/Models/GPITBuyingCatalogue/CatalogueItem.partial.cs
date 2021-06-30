@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
             Supplier?.CatalogueItems?.Select(c => c.AdditionalService).Any() == true;
 
         public virtual bool HasAssociatedServices() => AssociatedService != null
-            || (Supplier?.CatalogueItems?.Any(c => c.AssociatedService is not null) == true);
+            || Supplier?.CatalogueItems?.Any(c => c.AssociatedService is not null) == true;
 
         public virtual bool HasCapabilities() => Solution?.SolutionCapabilities?.Any() == true;
 
