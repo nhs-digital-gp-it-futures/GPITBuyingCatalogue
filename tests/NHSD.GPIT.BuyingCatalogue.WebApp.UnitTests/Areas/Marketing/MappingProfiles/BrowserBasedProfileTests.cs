@@ -50,11 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
         public void Dispose()
         {
             mapper = null;
-        }
-
-        // TODO: No tear down in xUnit
-        public void TearDown()
-        {
             foreach (var browser in ProfileDefaults.SupportedBrowsers)
             {
                 browser.Checked = false;

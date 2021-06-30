@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
@@ -102,10 +103,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         public void Map_CatalogueItemToAssociatedServicesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
+            catalogueItem.Supplier.CatalogueItems = GetAllCatalogueItems();
+            var expected =
+                catalogueItem.Supplier.CatalogueItems.Count(
+                    c => c.CatalogueItemType == CatalogueItemType.AssociatedService);
+            expected.Should().BeGreaterThan(0);
+            
             var actual = mapper.Map<CatalogueItem, AssociatedServicesModel>(catalogueItem);
 
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);
             actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.Services.Count.Should().Be(expected);
             actual.Services.Should().BeInAscendingOrder(s => s.Name);
             actual.PaginationFooter.Should()
                 .BeEquivalentTo(
@@ -131,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-
+        
         [Theory]
         [CommonAutoData]
         public void Map_CatalogueItemToCapabilitiesViewModel_ResultAsExpected(
@@ -480,6 +488,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             var actual = mapper.Map<CataloguePrice, string>(cataloguePrice);
 
             actual.Should().BeNull();
+        }
+        
+        private IList<CatalogueItem> GetAllCatalogueItems()
+        {
+            var fixture = new Fixture();
+            var items = Enumerable.Range(1, 5)
+                .ToList()
+                .Select(_ => new CatalogueItem
+                {
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                    Name = fixture.Create<string>(),
+                })
+                .ToList();
+            items.AddRange(Enumerable.Range(1, 3).ToList().Select(_ => new CatalogueItem
+            {
+                CatalogueItemType =  CatalogueItemType.Solution,
+                Name = fixture.Create<string>(),
+            }));
+            items.AddRange(Enumerable.Range(1, 8).ToList().Select(_ => new CatalogueItem
+            {
+                CatalogueItemType =  CatalogueItemType.AdditionalService,
+                Name = fixture.Create<string>(),
+            }));
+            return items;
         }
     }
 }

@@ -90,7 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Epic)
                 .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
         }
@@ -110,6 +109,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     c => c.CatalogueItemId == catalogueItemId
                         && c.Solution.SolutionCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
+        }
+
+        public Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
+        {
+            return dbContext.CatalogueItems
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
+                .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
+                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
+                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
+                .Include(i => i.CataloguePrices)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.AssociatedService)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Where(i => i.CatalogueItemId == solutionId)
+                .SingleOrDefaultAsync();
         }
 
         public Task<List<CatalogueItem>> GetDFOCVCSolutions()

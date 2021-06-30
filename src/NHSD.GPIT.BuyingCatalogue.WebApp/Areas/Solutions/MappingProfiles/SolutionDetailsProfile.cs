@@ -60,7 +60,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt => opt.MapFrom(
                         src => src.Supplier == null ? new List<CatalogueItem>() :
                             src.Supplier.CatalogueItems == null ? new List<CatalogueItem>() :
-                            src.Supplier.CatalogueItems.OrderBy(c => c.Name).ToList()))
+                            src.Supplier.CatalogueItems
+                                .Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)
+                                .OrderBy(c => c.Name)
+                                .ToList()))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
                 .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
 
