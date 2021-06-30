@@ -1,41 +1,27 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddSolutionModel
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddSolutionModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Add a Solution page";
 }
 <div class="nhsuk-width-container ">
     <main class="nhsuk-main-wrapper " id="maincontent" role="main">
-        <div class="nhsuk-back-link">
-            <a class="nhsuk-back-link__link" asp-controller="Home" asp-action="ManageCatalogueSolutions">
-                <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
-                </svg>
-                Go back
-            </a>
-        </div>
+        <partial name="Partials/_BackLink" model="Model" />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <h1>Add a solution</h1>
                 <p class="nhsuk-lede-text">Provide the following information about your Catalogue Solution.</p>
                 <h2>Solution details</h2>
-                <form action="admin-solution" method="post">
-                    <div class="nhsuk-form-group">
-                        <label class="nhsuk-label" asp-for="@Model.SolutionName" type="text">
-                            Solution name
-                        </label>
-                        <input class="nhsuk-input" asp-for="@Model.SolutionName" type="text">
-                    </div>
-                    <div class="nhsuk-form-group">
-                        <label class="nhsuk-label" for="select-1">
-                            Supplier name
-                        </label>
-                        <select class="nhsuk-select" asp-for="@Model.SupplierId">
-                            @foreach (var supplier in @Model.Suppliers)
-                            {
-                            <option value="@supplier.Key">@supplier.Value (@supplier.Key)</option>
-                            }
-                        </select>
-                    </div>
+                <form method="post">
+                    <input type="hidden" asp-for="@Model.BackLink" />
+                    <input type="hidden" asp-for="@Model.BackLinkText" />
+                    <nhs-input asp-for="@Model.SolutionName"
+                               label-text="Solution name" />
+                    <nhs-select asp-for="@Model.SupplierId"
+                                asp-items="@(new SelectList(Model.Suppliers.Select(s => new SelectListItem($"{s.Value} ({s.Key})", s.Key)).ToList(),"Value","Text"))"
+                                label-text="Supplier name" />
+
                     <div class="nhsuk-form-group">
                         <fieldset class="nhsuk-fieldset" aria-describedby="contact-hint">
                             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
@@ -75,9 +61,7 @@
                         </fieldset>
                     </div>
                     <br>
-                    <button class="nhsuk-button" type="submit">
-                        Save and continue
-                    </button>
+                    <nhs-submit-button text="Save and continue" />
                 </form>
             </div>
         </div>

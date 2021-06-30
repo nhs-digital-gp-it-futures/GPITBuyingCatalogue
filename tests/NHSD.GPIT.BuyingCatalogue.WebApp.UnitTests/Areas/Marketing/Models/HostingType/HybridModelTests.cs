@@ -2,27 +2,25 @@
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.HostingType
 
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class HybridModelTests
+    public static class HybridModelTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-
-        [TestCase(false)]
-        [TestCase(true)]
-        [TestCase(null)]
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        [InlineData(null)]
         public static void IsComplete_HybridHostingTypeNotNull_ReturnsIsValid(bool? expected)
         {
             var mockHybridHostingType = new Mock<HybridHostingType>();
             mockHybridHostingType.Setup(h => h.IsValid())
                 .Returns(expected);
-            var model = new HybridModel { HybridHostingType = mockHybridHostingType.Object, };
+            var model = new HybridModel { HybridHostingType = mockHybridHostingType.Object };
 
             var actual = model.IsComplete;
 
@@ -30,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
             actual.Should().Be(expected);
         }
 
-        [Test]
+        [Fact]
         public static void IsComplete_HybridHostingTypeIsNull_ReturnsNull()
         {
             var model = new HybridModel();
@@ -42,9 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         }
 
         // TODO: fix
-        [Ignore("Broken")]
+        [Theory(Skip = "Broken")]
         [CommonAutoData]
-        [Test]
         public static void Get_RequiresHscnChecked_HybridHostingTypeHasValidRequiresHscn_ReturnsTrue(HybridModel model)
         {
             model.HybridHostingType.RequiresHscn.Should().NotBeNullOrWhiteSpace();
@@ -54,19 +51,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
             actual.Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void Get_RequiresHscnChecked_HybridHostingTypeHasInvalidRequiresHscn_ReturnsFalse(
             string requiresHscn)
         {
-            var model = new HybridModel { HybridHostingType = new HybridHostingType { RequiresHscn = requiresHscn, }, };
+            var model = new HybridModel { HybridHostingType = new HybridHostingType { RequiresHscn = requiresHscn } };
 
             var actual = model.RequiresHscnChecked;
 
             actual.Should().BeFalse();
         }
 
+        [Theory]
         [CommonAutoData]
-        [Test]
         public static void Set_RequiresHscnChecked_TrueInput_SetsExpectedValueOnHybridHostingTypeRequiresHscn(
             HybridModel model)
         {
@@ -75,8 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
             model.HybridHostingType.RequiresHscn.Should().Be("End user devices must be connected to HSCN/N3");
         }
 
+        [Theory]
         [CommonAutoData]
-        [Test]
         public static void Set_RequiresHscnChecked_FalseInput_SetsNullOnHybridHostingTypeRequiresHscn(
             HybridModel model)
         {

@@ -61,8 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public int? Quantity { get; set; }
 
-        public decimal? CostPerYear { get; init; }
-
         public (DateTime? Date, string Error) ToDateTime(DateTime? commencementDate)
         {
             try

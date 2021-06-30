@@ -1,12 +1,29 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 {
-    public class SelectAssociatedServiceModel : OrderingBaseModel
+    public sealed class SelectAssociatedServiceModel : OrderingBaseModel
     {
         public SelectAssociatedServiceModel()
         {
-            BackLink = "/order/organisation/03F/order/C010000-01/associated-services"; // TODO
-            BackLinkText = "Go back";
-            Title = "Add Associated Service for C010000-01"; // TODO
         }
+
+        public SelectAssociatedServiceModel(string odsCode, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId? selectedSolutionId)
+        {
+            BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services";
+            BackLinkText = "Go back";
+            Title = $"Add Associated Service for {callOffId}";
+            OdsCode = odsCode;
+            Solutions = solutions;
+            SelectedSolutionId = selectedSolutionId;
+        }
+
+        public List<CatalogueItem> Solutions { get; set; }
+
+        [Required(ErrorMessage = "Select an Associated Service")]
+        public CatalogueItemId? SelectedSolutionId { get; set; }
     }
 }

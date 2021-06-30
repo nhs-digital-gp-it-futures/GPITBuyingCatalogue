@@ -3,15 +3,13 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionSupplierDetailsModelTests
+    public static class SolutionSupplierDetailsModelTests
     {
-        [Test]
+        [Fact]
         public static void Class_Inherits_SolutionDisplayBaseModel()
         {
             typeof(SolutionSupplierDetailsModel)
@@ -19,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
-        [Test]
+        [Theory]
         [CommonAutoData]
         public static void HasContacts_ValidContacts_ReturnsTrue(SolutionSupplierDetailsModel model)
         {
@@ -28,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.HasContacts().Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public static void HasContacts_NullContacts_ReturnsFalse()
         {
             var model = new SolutionSupplierDetailsModel
@@ -39,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.HasContacts().Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void HasContacts_EmptyContacts_ReturnsFalse()
         {
             var model = new SolutionSupplierDetailsModel
@@ -50,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.HasContacts().Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void HasContacts_NullCollection_ReturnsFalse()
         {
             var model = new SolutionSupplierDetailsModel

@@ -1,32 +1,20 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class NominateOrganisationControllerTests
+    public static class NominateOrganisationControllerTests
     {
-        [Test]
-        public static void Constructor_NullLogging_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new NominateOrganisationController(null));
-        }
-
-        [Test]
+        [Fact]
         public static void Get_Index_ReturnsDefaultView()
         {
-            var controller = new NominateOrganisationController(Mock.Of<ILogWrapper<NominateOrganisationController>>());
+            var controller = new NominateOrganisationController();
 
             var result = controller.Index();
 
-            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
-            Assert.IsNull(((ViewResult)result).ViewName);
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.Null(((ViewResult)result).ViewName);
         }
     }
 }

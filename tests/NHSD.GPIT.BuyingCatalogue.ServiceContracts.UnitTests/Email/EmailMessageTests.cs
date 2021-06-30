@@ -5,56 +5,49 @@ using System.IO;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class EmailMessageTests
+    public static class EmailMessageTests
     {
         private static EmailMessageTemplate EmptyTemplate => new(new EmailAddressTemplate("from@sender.test"));
 
         private static ICollection<EmailAddress> SingleRecipient => new[] { new EmailAddress("to@recipient.test") };
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_NullTemplate_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new EmailMessage(null!, SingleRecipient));
+            Assert.Throws<ArgumentNullException>(() => _ = new EmailMessage(null!, SingleRecipient));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_NullSender_ThrowsArgumentException()
         {
             var template = new EmailMessageTemplate();
 
-            Assert.Throws<ArgumentException>(() => new EmailMessage(template, SingleRecipient));
+            Assert.Throws<ArgumentException>(() => _ = new EmailMessage(template, SingleRecipient));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_NullRecipients_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new EmailMessage(EmptyTemplate, null!));
+            Assert.Throws<ArgumentNullException>(() => _ = new EmailMessage(EmptyTemplate, null!));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_EmptyRecipients_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => new EmailMessage(EmptyTemplate, Array.Empty<EmailAddress>()));
+            Assert.Throws<ArgumentException>(() => _ = new EmailMessage(EmptyTemplate, Array.Empty<EmailAddress>()));
         }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "Exception testing")]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_NullFormatItems_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new EmailMessage(EmptyTemplate, SingleRecipient, null, null!));
+            Assert.Throws<ArgumentNullException>(() => _ = new EmailMessage(EmptyTemplate, SingleRecipient, null, null!));
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_InitializesSender()
         {
             const string sender = "from@sender.test";
@@ -65,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.Sender.Address.Should().Be(sender);
         }
 
-        [Test]
+        [Fact]
         [SuppressMessage("ReSharper", "CoVariantArrayConversion", Justification = "Type will match")]
         public static void Constructor_EmailMessageTemplate_InitializesRecipients()
         {
@@ -79,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.Recipients.Should().BeEquivalentTo(recipients);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_InitializesSubject()
         {
             const string subject = "Ant Morphology";
@@ -91,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.Subject.Should().BeSameAs(subject);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_InitializesHtmlBodyContent()
         {
             const string htmlContent = "HTML Body";
@@ -104,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.HtmlBody!.Content.Should().BeSameAs(htmlContent);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_InitializesHtmlBodyFormatItems()
         {
             const int one = 1;
@@ -118,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.HtmlBody!.FormatItems.Should().BeEquivalentTo(formatItems);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_InitializesTextBodyContent()
         {
             const string textContent = "Plain-text Body";
@@ -131,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.TextBody!.Content.Should().BeSameAs(textContent);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_EmailMessageTemplate_InitializesTextBodyFormatItems()
         {
             const int one = 1;
@@ -145,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.TextBody!.FormatItems.Should().BeEquivalentTo(formatItems);
         }
 
-        [Test]
+        [Fact]
         [SuppressMessage("ReSharper", "CoVariantArrayConversion", Justification = "Type will match")]
         public static void Constructor_EmailMessageTemplate_InitializesAttachments()
         {
@@ -159,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.Attachments.Should().BeEquivalentTo(attachments);
         }
 
-        [Test]
+        [Fact]
         public static void HasAttachments_NoAttachments_ReturnsFalse()
         {
             var message = new EmailMessage(EmptyTemplate, SingleRecipient);
@@ -167,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
             message.HasAttachments.Should().BeFalse();
         }
 
-        [Test]
+        [Fact]
         public static void HasAttachments_WithAttachment_ReturnsTrue()
         {
             var message = new EmailMessage(
