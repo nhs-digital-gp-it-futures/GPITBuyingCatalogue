@@ -166,6 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00089", StatusId = 1 },
                             new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00090", StatusId = 1 },
                             new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00091", StatusId = 1 },
+                            new SolutionEpic {CapabilityId  = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00099", StatusId = 1 }
                         },
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -922,7 +923,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new Epic { Id = "C47E20", Name = "View reports on COVID-19 vaccination data", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C47").Id, CompliancyLevelId = 1, Active = true },
                 new Epic { Id = "E00001", Name = "Conduct Online Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 1, Active = true },
                 new Epic { Id = "E00002", Name = "Conduct Online Consultation with a Proxy", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 3, Active = true },
-                new Epic { Id = "E00003", Name = "Patient/Service User requests for Online Consultation support and provides information", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 3, Active = true },
+                new Epic { Id = "E00003", Name = "Patient/Service User requests for Online Consultation support and provides information", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 3, Active = true},
                 new Epic { Id = "E00004", Name = "Proxy requests for Online Consultation support and provides information", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 3, Active = true },
                 new Epic { Id = "E00005", Name = "Respond to Online Consultation requests for support from Patients/Service Users", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 3, Active = true },
                 new Epic { Id = "E00006", Name = "Respond to Online Consultation requests for support from Proxies", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 3, Active = true },
@@ -1004,6 +1005,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new Epic { Id = "E00074", Name = "Disable and enable video during a group Video Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevelId = 3, Active = true },
                 new Epic { Id = "E00087", Name = "Retain attachments (file and images) received during Video Consultation in the Patient Record", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevelId = 3, Active = true },
                 new Epic { Id = "E00088", Name = "SNOMED code Video Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevelId = 3, Active = true },
+                new Epic { Id = "E00099", Name = "User Friendly", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevelId = 3, Active = true, SupplierDefined = true },
             };
             context.AddRange(epics);
 
