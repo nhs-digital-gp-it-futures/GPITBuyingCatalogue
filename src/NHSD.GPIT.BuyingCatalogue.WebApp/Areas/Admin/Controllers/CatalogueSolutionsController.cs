@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
@@ -26,10 +28,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solutions = await solutionsService.GetAllSolutions();
 
-            var solutionModel = new CatalogueSolutionsModel
-            {
-                Solutions = solutions.Select(s => new CatalogueModel(s)).ToList(),
-            };
+            var solutionModel = new CatalogueSolutionsModel(solutions);
+
+            return View(solutionModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(PublicationStatus publicationStatus)
+        {
+            var solutions = await solutionsService.GetAllSolutions(publicationStatus);
+
+            var solutionModel = new CatalogueSolutionsModel(solutions);
+            solutionModel.SetSelected(publicationStatus);
 
             return View(solutionModel);
         }

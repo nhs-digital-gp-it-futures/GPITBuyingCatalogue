@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
@@ -13,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Fact]
         public static void AllPublicationStatuses_StandardCall_ResultAsExpected()
         {
-            var actual = new CatalogueSolutionsModel().AllPublicationStatuses;
+            var actual = new CatalogueSolutionsModel(new List<CatalogueItem>()).AllPublicationStatuses;
 
             var publicationStatuses = Enum.GetValues<PublicationStatus>();
             actual.Count.Should().Be(publicationStatuses.Length);
@@ -21,6 +22,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             {
                 actual.Single(p => p.Id == (int)status).Display.Should().Be(status.GetDisplayName());
             }
+        }
+
+        [Theory]
+        [InlineData(PublicationStatus.Draft)]
+        [InlineData(PublicationStatus.Published)]
+        [InlineData(PublicationStatus.Unpublished)]
+        [InlineData(PublicationStatus.Withdrawn)]
+        public static void HasSelected_StatusSelected_ReturnsTrue(PublicationStatus publicationStatus)
+        {
+            var model = new CatalogueSolutionsModel(new List<CatalogueItem>());
+            model.HasSelected.Should().BeFalse();
+            
+            model.SetSelected(publicationStatus);
+
+            model.HasSelected.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(PublicationStatus.Draft)]
+        [InlineData(PublicationStatus.Published)]
+        [InlineData(PublicationStatus.Unpublished)]
+        [InlineData(PublicationStatus.Withdrawn)]
+        public static void SetSelected_StatusInput_SetsCorrespondingItemSelected(PublicationStatus publicationStatus)
+        {
+            var model = new CatalogueSolutionsModel(new List<CatalogueItem>());
+            
+            model.SetSelected(publicationStatus);
+
+            model.AllPublicationStatuses.Single(p => p.Checked).Id.Should().Be((int)publicationStatus);
         }
     }
 }

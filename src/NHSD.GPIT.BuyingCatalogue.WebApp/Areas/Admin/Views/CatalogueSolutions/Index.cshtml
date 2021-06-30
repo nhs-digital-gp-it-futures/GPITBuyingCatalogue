@@ -23,35 +23,49 @@
             </a>
         </div>
 
-        <details class="nhsuk-details nhsuk-expander" nhsuk-polyfilled="true" id="nhsuk-details0">
+        <details 
+            class="nhsuk-details nhsuk-expander"
+            id="nhsuk-details0"
+            nhsuk-polyfilled="true"
+            @if (Model.HasSelected)
+            {
+                <text>open=""</text> 
+            }
+        >
             <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
                 <span class="nhsuk-details__summary-text">
                     Filter Catalogue Solutions
                 </span>
             </summary>
             <div class="nhsuk-details__text" id="nhsuk-details__text0" aria-hidden="true">
-                <p class="nhsuk-hint">
-                    Select one option.
-                </p>
-                <div class="nhsuk-form-group">
-                    <div class="nhsuk-radios">
-                        @foreach (var status in Model.AllPublicationStatuses)
-                        {
-                            <div class="nhsuk-radios__item">
-                                <input name="@nameof(CatalogueSolutionsModel.PublicationStatusId)" checked="@status.Checked" class="nhsuk-radios__input" id="@status.Id" type="radio" value="@status.Id">
-                                <label class="nhsuk-label nhsuk-radios__label" for="@status.Id">
-                                    @status.Display
-                                </label>
-                            </div>
-                        }
+                <form method="post">
+                    <p class="nhsuk-hint">
+                        Select one option.
+                    </p>
+                    <div class="nhsuk-form-group">
+                        <div class="nhsuk-radios">
+                            @foreach (var status in Model.AllPublicationStatuses)
+                            {
+                                <div class="nhsuk-radios__item">
+                                    <input name="publicationStatus" 
+                                           checked="@status.Checked" 
+                                           class="nhsuk-radios__input" 
+                                           id="@status.Id" 
+                                           type="radio" 
+                                           value="@status.Id"/>
+                                    <label class="nhsuk-label nhsuk-radios__label" for="@status.Id">
+                                        @status.Display
+                                    </label>
+                                </div>
+                            }
+                        </div>
                     </div>
-                </div>
-                <hr style="margin: 0; margin-bottom: 1em;">
-                <a class="nhsuk-button" href="#" draggable="false">
-                    Apply filter
-                </a>
-                <br/>
-                <a href="#">Clear filter</a>
+                    <hr style="margin: 0; margin-bottom: 1em;">
+                    <button id="Submit" class="nhsuk-button" type="submit">
+                        Apply filter
+                    </button>
+                </form>
+                <a asp-action="Index" asp-controller="CatalogueSolutions">Clear filter</a>
             </div>
         </details>
 

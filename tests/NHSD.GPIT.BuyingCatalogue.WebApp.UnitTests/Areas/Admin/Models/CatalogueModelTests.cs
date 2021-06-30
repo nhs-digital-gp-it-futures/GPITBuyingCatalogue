@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var actual = new CatalogueModel(catalogueItem);
 
-            actual.CatalogueItemId.Should().Be(catalogueItem.Name);
+            actual.CatalogueItemId.Should().Be(catalogueItem.CatalogueItemId.ToString());
         }
         
         [Theory]

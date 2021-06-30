@@ -272,12 +272,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task<IList<CatalogueItem>> GetAllSolutions()
+        public async Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null)
         {
-            return await dbContext.CatalogueItems
+            var query = dbContext.CatalogueItems
                 .Include(i => i.Supplier)
-                .OrderBy(i => i.Created)
-                .ThenBy(i => i.Name)
+                .OrderByDescending(i => i.Created)
+                .ThenBy(i => i.Name);
+
+            if (publicationStatus == null)
+            {
+                return await query.ToListAsync();
+            }
+
+            return await query
+                .Where(i => i.PublishedStatus == publicationStatus.Value)
                 .ToListAsync();
         }
     }

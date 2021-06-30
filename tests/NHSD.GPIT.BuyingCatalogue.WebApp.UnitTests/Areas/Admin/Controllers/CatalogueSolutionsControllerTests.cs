@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,25 +36,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ParamName.Should()
                 .Be("solutionsService");
         }
-        
-        [Fact]
-        public static void Get_Index_HttpGetAttribute_Present()
-        {
-            typeof(CatalogueSolutionsController)
-                .GetMethod(nameof(CatalogueSolutionsController.Index))
-                .GetCustomAttribute<HttpGetAttribute>()
-                .Should()
-                .NotBeNull();
-        }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Index_SolutionsInDatabase_ReturnsExpectedResult(
+        public static async Task Get_Index_SolutionsInDatabase_ReturnsViewWithExpectedModel(
             List<CatalogueItem> solutions)
         {
             var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetAllSolutions())
+            mockService.Setup(s => s.GetAllSolutions(null))
                 .ReturnsAsync(solutions);
             var controller = new CatalogueSolutionsController(mockService.Object);
 
@@ -64,7 +52,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
-            actual.Model.As<CatalogueSolutionsModel>().Solutions.Should().BeEquivalentTo(expected);
+            var model = actual.Model.As<CatalogueSolutionsModel>();
+            model.Solutions.Should().BeEquivalentTo(expected);
+            model.HasSelected.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Index_StatusInput_SetsSelectedOnModel_ReturnsViewWithModel(
+            List<CatalogueItem> solutions)
+        {
+            Enum.GetValues<PublicationStatus>().ToList()
+                .ForEach(
+                    async status =>
+                    {
+                        var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
+                        var mockService = new Mock<ISolutionsService>();
+                        mockService.Setup(s => s.GetAllSolutions(status))
+                            .ReturnsAsync(solutions);
+                        var controller = new CatalogueSolutionsController(mockService.Object);
+
+                        var actual = (await controller.Index()).As<ViewResult>();
+
+                        actual.Should().NotBeNull();
+                        actual.ViewName.Should().BeNull();
+                        var model = actual.Model.As<CatalogueSolutionsModel>();
+                        model.Solutions.Should().BeEquivalentTo(expected);
+                        model.HasSelected.Should().BeTrue();
+                        model.AllPublicationStatuses.Single(p => p.Checked).Id.Should().Be((int)status);
+                    });
         }
     }
 }
