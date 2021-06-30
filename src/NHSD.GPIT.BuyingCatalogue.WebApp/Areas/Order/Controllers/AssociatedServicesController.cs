@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             }
 
             state.CatalogueItemId = model.SelectedSolutionId;
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
+            var solution = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.Value);
             state.CatalogueItemName = solution.Name;
 
             orderSessionService.SetOrderStateToSession(state);
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
+            var solution = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.Value);
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId.Value);
+            var solution = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.Value);
 
             if (!ModelState.IsValid)
             {
