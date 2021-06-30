@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
     {
         public CatalogueModel(CatalogueItem catalogueItem)
         {
+            catalogueItem.ValidateNotNull(nameof(catalogueItem));
+
             CatalogueItemId = catalogueItem.CatalogueItemId.ToString();
             Name = catalogueItem.Name;
             LastUpdated = catalogueItem.Supplier?.LastUpdated ?? DateTime.MinValue;

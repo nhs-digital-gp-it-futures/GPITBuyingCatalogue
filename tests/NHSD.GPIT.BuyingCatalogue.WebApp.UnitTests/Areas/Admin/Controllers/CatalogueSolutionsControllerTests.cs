@@ -52,13 +52,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_SolutionsInDatabase_ReturnsExpectedResult(
-            [Frozen] Mock<ISolutionsService> service,
-            List<CatalogueItem> solutions,
-            CatalogueSolutionsController controller)
+            List<CatalogueItem> solutions)
         {
             var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
-            service.Setup(s => s.GetAllSolutions())
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetAllSolutions())
                 .ReturnsAsync(solutions);
+            var controller = new CatalogueSolutionsController(mockService.Object);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
