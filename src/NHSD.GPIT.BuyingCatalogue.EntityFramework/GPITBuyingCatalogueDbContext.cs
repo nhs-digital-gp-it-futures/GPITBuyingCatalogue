@@ -28,67 +28,25 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public virtual DbSet<Capability> Capabilities { get; set; }
 
-        public virtual DbSet<CapabilityCategory> CapabilityCategories { get; set; }
-
-        public virtual DbSet<CapabilityStatus> CapabilityStatuses { get; set; }
-
         public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
 
         public virtual DbSet<CataloguePrice> CataloguePrices { get; set; }
 
-        public virtual DbSet<CataloguePriceTier> CataloguePriceTiers { get; set; }
-
-        public virtual DbSet<CompliancyLevel> CompliancyLevels { get; set; }
-
         public DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
 
-        public virtual DbSet<Epic> Epics { get; set; }
-
-        public virtual DbSet<Framework> Frameworks { get; set; }
-
         public virtual DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
-
-        public virtual DbSet<FrameworkSolution> FrameworkSolutions { get; set; }
 
         public virtual DbSet<MarketingContact> MarketingContacts { get; set; }
 
         public DbSet<Order> Orders { get; set; }
 
-        public virtual DbSet<PricingUnit> PricingUnits { get; set; }
-
         public DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
         public virtual DbSet<Solution> Solutions { get; set; }
 
-        public virtual DbSet<SolutionCapability> SolutionCapabilities { get; set; }
-
-        public virtual DbSet<SolutionCapabilityStatus> SolutionCapabilityStatuses { get; set; }
-
-        public virtual DbSet<SolutionEpic> SolutionEpics { get; set; }
-
-        public virtual DbSet<SolutionEpicStatus> SolutionEpicStatuses { get; set; }
-
         public virtual DbSet<Supplier> Suppliers { get; set; }
 
-        public virtual DbSet<SupplierContact> SupplierContacts { get; set; }
-
-        public virtual DbSet<SupplierServiceAssociation> SupplierServiceAssociations { get; set; }
-
-        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-
-        public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
-
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
-
-        public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-
-        public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-
-        public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
-
-        public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
-
-        public virtual DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
         public virtual DbSet<Organisation> Organisations { get; set; }
 
@@ -163,6 +121,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasMaxLength(255);
                 entity.Property(e => e.PreviousVersion).HasMaxLength(10);
                 entity.Property(e => e.SourceUrl).HasMaxLength(1000);
+                entity.Property(e => e.Status)
+                    .HasConversion<int>()
+                    .HasColumnName("StatusId");
                 entity.Property(e => e.Version)
                     .IsRequired()
                     .HasMaxLength(10);
@@ -172,12 +133,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Capability_CapabilityCategory");
-
-                entity.HasOne(d => d.Status)
-                    .WithMany(p => p.Capabilities)
-                    .HasForeignKey(d => d.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Capability_CapabilityStatus");
             });
 
             modelBuilder.Entity<CapabilityCategory>(entity =>
@@ -189,17 +144,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<CapabilityStatus>(entity =>
-            {
-                entity.ToTable("CapabilityStatus");
-                entity.HasIndex(e => e.Name, "IX_CapabilityStatusName")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(16);
             });
 
             modelBuilder.Entity<CatalogueItem>(entity =>
@@ -259,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasForeignKey(d => d.CatalogueItemId);
 
                 entity.HasOne(d => d.PricingUnit)
-                    .WithMany(p => p.CataloguePrices)
+                    .WithMany()
                     .HasForeignKey(d => d.PricingUnitId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
@@ -269,20 +213,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.ToTable("CataloguePriceTier");
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 3)");
 
-                entity.HasOne(d => d.CataloguePrice)
-                    .WithMany(p => p.CataloguePriceTiers)
+                entity.HasOne<CataloguePrice>()
+                    .WithMany()
                     .HasForeignKey(d => d.CataloguePriceId);
-            });
-
-            modelBuilder.Entity<CompliancyLevel>(entity =>
-            {
-                entity.ToTable("CompliancyLevel");
-                entity.HasIndex(e => e.Name, "IX_CompliancyLevelName")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(16);
             });
 
             modelBuilder.Entity<Epic>(entity =>
@@ -291,20 +224,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .IsClustered(false);
                 entity.ToTable("Epic");
                 entity.Property(e => e.Id).HasMaxLength(10);
+                entity.Property(e => e.CompliancyLevel)
+                    .HasConversion<int>()
+                    .HasColumnName("CompliancyLevelId");
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(150);
                 entity.Property(e => e.Active).IsRequired();
                 entity.Property(e => e.SupplierDefined).IsRequired().HasDefaultValue(false);
-                entity.HasOne(d => d.Capability)
+                entity.HasOne<Capability>()
                     .WithMany(p => p.Epics)
                     .HasForeignKey(d => d.CapabilityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Epic_Capability");
-                entity.HasOne(d => d.CompliancyLevel)
-                    .WithMany(p => p.Epics)
-                    .HasForeignKey(d => d.CompliancyLevelId)
-                    .HasConstraintName("FK_Epic_CompliancyLevel");
             });
 
             modelBuilder.Entity<Framework>(entity =>
@@ -322,16 +254,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
             modelBuilder.Entity<FrameworkCapability>(entity =>
             {
+                entity.ToTable("FrameworkCapabilities");
                 entity.HasKey(e => new { e.FrameworkId, e.CapabilityId });
                 entity.Property(e => e.FrameworkId).HasMaxLength(10);
                 entity.HasOne(d => d.Capability)
-                    .WithMany(p => p.FrameworkCapabilities)
+                    .WithMany()
                     .HasForeignKey(d => d.CapabilityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FrameworkCapabilities_Capability");
 
                 entity.HasOne(d => d.Framework)
-                    .WithMany(p => p.FrameworkCapabilities)
+                    .WithMany()
                     .HasForeignKey(d => d.FrameworkId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FrameworkCapabilities_Framework");
@@ -339,6 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
             modelBuilder.Entity<FrameworkSolution>(entity =>
             {
+                entity.ToTable("FrameworkSolutions");
                 entity.HasKey(e => new { e.FrameworkId, e.SolutionId });
                 entity.Property(e => e.FrameworkId).HasMaxLength(10);
 
@@ -347,12 +281,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
                 entity.HasOne(d => d.Framework)
-                    .WithMany(p => p.FrameworkSolutions)
+                    .WithMany()
                     .HasForeignKey(d => d.FrameworkId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FrameworkSolutions_Framework");
 
-                entity.HasOne(d => d.Solution)
+                entity.HasOne<Solution>()
                     .WithMany(p => p.FrameworkSolutions)
                     .HasForeignKey(d => d.SolutionId)
                     .HasConstraintName("FK_FrameworkSolutions_Solution");
@@ -373,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 entity.Property(e => e.FirstName).HasMaxLength(35);
                 entity.Property(e => e.LastName).HasMaxLength(35);
                 entity.Property(e => e.PhoneNumber).HasMaxLength(35);
-                entity.HasOne(d => d.Solution)
+                entity.HasOne<Solution>()
                     .WithMany(p => p.MarketingContacts)
                     .HasForeignKey(d => d.SolutionId)
                     .HasConstraintName("FK_MarketingContact_Solution");
@@ -430,16 +364,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
                 entity.HasOne(d => d.Capability)
-                    .WithMany(p => p.SolutionCapabilities)
+                    .WithMany()
                     .HasForeignKey(d => d.CapabilityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SolutionCapability_Capability");
-                entity.HasOne(d => d.Solution)
+                entity.HasOne<Solution>()
                     .WithMany(p => p.SolutionCapabilities)
                     .HasForeignKey(d => d.SolutionId)
                     .HasConstraintName("FK_SolutionCapability_Solution");
                 entity.HasOne(d => d.Status)
-                    .WithMany(p => p.SolutionCapabilities)
+                    .WithMany()
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SolutionCapability_SolutionCapabilityStatus");
@@ -467,25 +401,25 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
                 entity.Property(e => e.EpicId).HasMaxLength(10);
 
-                entity.HasOne(d => d.Capability)
-                    .WithMany(p => p.SolutionEpics)
+                entity.HasOne<Capability>()
+                    .WithMany()
                     .HasForeignKey(d => d.CapabilityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SolutionEpic_Capability");
 
                 entity.HasOne(d => d.Epic)
-                    .WithMany(p => p.SolutionEpics)
+                    .WithMany()
                     .HasForeignKey(d => d.EpicId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SolutionEpic_Epic");
 
-                entity.HasOne(d => d.Solution)
+                entity.HasOne<Solution>()
                     .WithMany(p => p.SolutionEpics)
                     .HasForeignKey(d => d.SolutionId)
                     .HasConstraintName("FK_SolutionEpic_Solution");
 
                 entity.HasOne(d => d.Status)
-                    .WithMany(p => p.SolutionEpics)
+                    .WithMany()
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SolutionEpicStatus");
@@ -545,7 +479,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     .IsRequired()
                     .HasMaxLength(6);
 
-                entity.HasOne(d => d.Supplier)
+                entity.HasOne<Supplier>()
                     .WithMany(p => p.SupplierContacts)
                     .HasForeignKey(d => d.SupplierId)
                     .HasConstraintName("FK_SupplierContact_Supplier");

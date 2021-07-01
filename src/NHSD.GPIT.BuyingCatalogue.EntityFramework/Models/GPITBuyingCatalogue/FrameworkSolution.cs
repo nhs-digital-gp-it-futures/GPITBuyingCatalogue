@@ -1,8 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-#nullable disable
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
     public sealed class FrameworkSolution
@@ -18,7 +16,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         public Guid LastUpdatedBy { get; set; }
 
         public Framework Framework { get; set; }
-
-        public Solution Solution { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class MarketingContact
+    public class MarketingContact
     {
         public int Id { get; set; }
 
@@ -29,8 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         public DateTime LastUpdated { get; set; }
 
         public Guid LastUpdatedBy { get; set; }
-
-        public virtual Solution Solution { get; set; }
 
         public virtual bool IsEmpty() =>
             string.IsNullOrWhiteSpace(FirstName)

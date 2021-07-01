@@ -18,5 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task<Order> CreateOrder(string description, string odsCode);
 
         public Task DeleteOrder(CallOffId callOffId);
+
+        public Task CompleteOrder(CallOffId callOffId);
     }
 }
