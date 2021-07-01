@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         CallOffId = order.CallOffId,
                         OdsCode = order.OrderingParty.OdsCode,
                         OrganisationName = order.OrderingParty.Name,
-                        CommencementDate = order.CommencementDate.Value,
+                        CommencementDate = order.CommencementDate,
                         ServiceRecipientId = recipient.Recipient.OdsCode,
                         ServiceRecipientName = recipient.Recipient.Name,
                         ServiceRecipientItemId = $"{order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId}",
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         : orderItem.EstimationPeriod?.Description(),
                         Price = orderItem.Price.GetValueOrDefault(),
                         OrderType = (int)orderItem.CataloguePrice.ProvisioningType,
-                        M1Planned = recipient.DeliveryDate.Value,
+                        M1Planned = recipient.DeliveryDate,
                     };
 
                     items.Add(orderCsvModel);
