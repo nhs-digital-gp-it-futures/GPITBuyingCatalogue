@@ -46,12 +46,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             var formgroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
+            var errorMessage = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
             var selectlist = GetSelectListBuilder();
 
-            formgroup.InnerHtml.AppendHtml(label);
-            formgroup.InnerHtml.AppendHtml(hint);
-            formgroup.InnerHtml.AppendHtml(selectlist);
+            formgroup.InnerHtml
+                .AppendHtml(label)
+                .AppendHtml(errorMessage)
+                .AppendHtml(hint)
+                .AppendHtml(selectlist);
 
             TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formgroup, true);
         }
