@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return View(new AddSolutionModel
             {
-                Suppliers = suppliers?.ToDictionary(x => x.Id, x => x.Name),
+                Suppliers = suppliers?.ToDictionary(s => s.Id, s => s.Name),
             });
         }
 

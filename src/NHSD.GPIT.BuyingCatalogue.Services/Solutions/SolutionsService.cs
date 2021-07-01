@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<IList<Supplier>> GetAllSuppliers()
         {
-            return (await supplierRepository.GetAllAsync(x => true)).OrderBy(x => x.Name).ToList();
+            return await dbContext.Suppliers.OrderBy(s => s.Name).ToListAsync();
         }
 
         public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)

@@ -160,10 +160,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
             var mockSuppliers = new Mock<IList<Supplier>>().Object;
-            var mockAddSolutionModel = new Mock<AddSolutionModel>().Object;
             mockSolutionsService.Setup(o => o.GetAllSuppliers())
                 .ReturnsAsync(mockSuppliers);
-            var mockOrganisationModels = new Mock<IList<OrganisationModel>>().Object;
             var controller = new HomeController(
                 Mock.Of<IOrganisationsService>(),
                 Mock.Of<IMapper>(),

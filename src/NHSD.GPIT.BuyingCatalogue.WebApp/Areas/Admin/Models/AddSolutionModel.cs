@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class AddSolutionModel : NavBaseModel
+    public sealed class AddSolutionModel : NavBaseModel
     {
         public AddSolutionModel()
         {
@@ -17,11 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string SupplierName { get; set; }
 
-        public bool GPITFuturesFramework { get; set; }
+        public bool GpitFuturesFramework { get; set; }
 
         public bool FoundationSolutionFramework { get; set; }
 
-        public bool DFOCVCFramework { get; set; }
+        public bool DfocvcFramework { get; set; }
 
         public IDictionary<string, string> Suppliers { get; set; } = new Dictionary<string, string>();
     }
