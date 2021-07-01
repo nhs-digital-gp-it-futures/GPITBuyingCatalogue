@@ -102,17 +102,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                     CatalogueItemId = orderItem.CatalogueItemId,
                     CatalogueItemName = solution.Name,
                     AgreedPrice = orderItem.Price,
-                    TimeUnit = orderItem.CataloguePrice.TimeUnit,
+                    CataloguePriceTimeUnit = orderItem.CataloguePrice.TimeUnit,
                     PriceId = orderItem.PriceId,
                     CataloguePrice = orderItem.CataloguePrice.Price,
                     CurrencyCode = orderItem.CataloguePrice.CurrencyCode,
                     CurrencySymbol = CurrencyCodeSigns.Code[orderItem.CataloguePrice.CurrencyCode],
                     ProvisioningType = orderItem.CataloguePrice.ProvisioningType,
                     PricingUnit = orderItem.CataloguePrice.PricingUnit,
+                    EstimationPeriod = orderItem.EstimationPeriod,
                 };
-
-                if (state.ProvisioningType == ProvisioningType.OnDemand)
-                    state.TimeUnit = orderItem.EstimationPeriod;
 
                 if (state.CatalogueItemType == CatalogueItemType.AssociatedService)
                 {
@@ -165,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             state.CurrencyCode = cataloguePrice.CurrencyCode;
             state.CurrencySymbol = CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode];
             state.PricingUnit = cataloguePrice.PricingUnit;
-            state.TimeUnit = cataloguePrice.TimeUnit;
+            state.CataloguePriceTimeUnit = cataloguePrice.TimeUnit;
 
             SetOrderStateToSession(state);
 

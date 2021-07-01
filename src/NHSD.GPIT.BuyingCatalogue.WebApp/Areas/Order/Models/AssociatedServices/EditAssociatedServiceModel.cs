@@ -15,27 +15,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         public EditAssociatedServiceModel(string odsCode, CreateOrderItemModel state)
         {
             if (state.IsNewSolution)
-            {
-                if (state.SkipPriceSelection)
-                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service";
-                else
-                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service/price";
-            }
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service{(!state.SkipPriceSelection ? "/price" : string.Empty)}";
             else
-            {
                 BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services";
-            }
 
             BackLinkText = "Go back";
             Title = $"{state.CatalogueItemName} associated service information for {state.CallOffId}";
             OdsCode = odsCode;
             OrderItem = state;
-            TimeUnit = state.TimeUnit;
+            EstimationPeriod = state.EstimationPeriod;
         }
 
         public CreateOrderItemModel OrderItem { get; set; }
 
-        public TimeUnit? TimeUnit { get; set; }
+        public TimeUnit? EstimationPeriod { get; set; }
 
         public List<TimeUnit> TimeUnits { get; } = Enum.GetValues<TimeUnit>().ToList();
 
@@ -43,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
             OrderItem.CallOffId = state.CallOffId;
             OrderItem.PricingUnit = state.PricingUnit;
-            OrderItem.TimeUnit = state.TimeUnit;
+            OrderItem.CataloguePriceTimeUnit = state.CataloguePriceTimeUnit;
+            OrderItem.EstimationPeriod = state.EstimationPeriod;
             OrderItem.CurrencyCode = state.CurrencyCode;
             OrderItem.CurrencySymbol = state.CurrencySymbol;
             OrderItem.ProvisioningType = state.ProvisioningType;

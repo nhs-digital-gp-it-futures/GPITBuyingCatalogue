@@ -95,7 +95,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
             OrderItem.CallOffId = state.CallOffId;
             OrderItem.PricingUnit = state.PricingUnit;
-            OrderItem.TimeUnit = state.TimeUnit;
+            OrderItem.CataloguePriceTimeUnit = state.CataloguePriceTimeUnit;
+            OrderItem.EstimationPeriod = state.EstimationPeriod;
             OrderItem.CurrencyCode = state.CurrencyCode;
             OrderItem.CurrencySymbol = state.CurrencySymbol;
             OrderItem.ProvisioningType = state.ProvisioningType;

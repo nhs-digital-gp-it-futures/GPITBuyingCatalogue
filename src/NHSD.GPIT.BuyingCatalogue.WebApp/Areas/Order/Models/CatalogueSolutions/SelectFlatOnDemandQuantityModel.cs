@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public SelectFlatOnDemandQuantityModel(string odsCode, CallOffId callOffId, string solutionName, int? quantity, TimeUnit? timeUnit)
+        public SelectFlatOnDemandQuantityModel(string odsCode, CallOffId callOffId, string solutionName, int? quantity, TimeUnit? estimationPeriod)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date";
             BackLinkText = "Go back";
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
             CallOffId = callOffId;
             SolutionName = solutionName;
             Quantity = quantity.ToString();
-            TimeUnit = timeUnit;
+            EstimationPeriod = estimationPeriod;
         }
 
         public CallOffId CallOffId { get; set; }
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         [Required(ErrorMessage = "Enter a quantity")]
         public string Quantity { get; set; }
 
-        public TimeUnit? TimeUnit { get; set; }
+        public TimeUnit? EstimationPeriod { get; set; }
 
         public List<TimeUnit> TimeUnits { get; } = Enum.GetValues<TimeUnit>().ToList();
 

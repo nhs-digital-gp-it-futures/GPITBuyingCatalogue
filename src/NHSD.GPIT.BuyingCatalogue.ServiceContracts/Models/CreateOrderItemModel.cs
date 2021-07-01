@@ -37,7 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public List<OrderItemRecipientModel> ServiceRecipients { get; set; }
 
-        public TimeUnit? TimeUnit { get; set; }
+        public TimeUnit? CataloguePriceTimeUnit { get; set; }
+
+        public TimeUnit? EstimationPeriod { get; set; }
 
         public PricingUnit PricingUnit { get; set; }
 
@@ -48,5 +50,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public bool SkipPriceSelection { get; set; }
 
         public string CurrencySymbol { get; set; }
+
+        public TimeUnit? TimeUnit
+        {
+            get
+            {
+                if (ProvisioningType != ProvisioningType.OnDemand)
+                    return TimeUnit;
+
+                return EstimationPeriod ?? TimeUnit;
+            }
+        }
     }
 }

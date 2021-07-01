@@ -291,7 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.TimeUnit));
+            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod));
         }
 
         [HttpPost("select/solution/price/flat/ondemand")]
@@ -302,8 +302,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (error is not null)
                 ModelState.AddModelError(nameof(model.Quantity), error);
 
-            if (model.TimeUnit is null)
-                ModelState.AddModelError(nameof(model.TimeUnit), "Time Unit is Required");
+            if (model.EstimationPeriod is null)
+                ModelState.AddModelError(nameof(model.EstimationPeriod), "Time Unit is Required");
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -311,7 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             state.Quantity = quantity;
-            state.TimeUnit = model.TimeUnit.Value;
+            state.EstimationPeriod = model.EstimationPeriod.Value;
 
             orderSessionService.SetOrderStateToSession(state);
 

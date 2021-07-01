@@ -38,7 +38,7 @@
                                     <nhs-fieldset-form-label asp-for="@Model"
                                                              label-text="Over what period did you estimate the quantity?"
                                                              label-hint="Select one option.">
-                                        <nhs-radio-buttons asp-for="@Model.TimeUnit"
+                                        <nhs-radio-buttons asp-for="@Model.EstimationPeriod"
                                                            values="@Model.TimeUnits.Cast<object>()"
                                                            value-name="EnumMemberName"
                                                            display-name="Description" />
@@ -75,7 +75,7 @@
                 <nhs-submit-button text="Save" /><br />
 
                 @if (!Model.OrderItem.IsNewSolution)
-                {
+                { 
                     <vc:nhs-delete-button text="Delete Associated Service"
                                           url="@Url.Action(
                                           "DeleteAssociatedService",

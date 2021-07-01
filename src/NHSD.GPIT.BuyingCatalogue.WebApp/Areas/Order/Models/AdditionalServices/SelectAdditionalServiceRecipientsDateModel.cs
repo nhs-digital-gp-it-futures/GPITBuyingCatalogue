@@ -14,11 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             CreateOrderItemModel state,
             DateTime? defaultDeliveryDate)
         {
-            if (state.SkipPriceSelection)
-                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price/recipients";
-            else
-                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price";
-
+            BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price{(state.SkipPriceSelection ? "/recipients" : string.Empty)}";
             BackLinkText = "Go back";
             Title = $"Planned delivery date of {state.CatalogueItemName} for {state.CallOffId}";
 
