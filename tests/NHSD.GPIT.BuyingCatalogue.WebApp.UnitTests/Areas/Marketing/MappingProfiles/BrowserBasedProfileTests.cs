@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,47 +13,15 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class BrowserBasedProfileTests
+    public sealed class BrowserBasedProfileTests : IDisposable
     {
         private IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
-        {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Setup(x =>
-                    x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
-                .Returns(new Mock<IMemberValueResolver<object, object, string, bool?>>().Object);
-            
-            mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BrowserBasedProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper(serviceProvider.Object.GetService);
-        }
-
-        [OneTimeTearDown]
-        public void CleanUp()
-        {
-            mapper = null;
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            foreach (var browser in ProfileDefaults.SupportedBrowsers)
-            {
-                browser.Checked = false;
-            }
-        }
-
-        [Test]
+        [Fact]
         public static void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg =>
@@ -66,7 +33,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
-        [Test, CommonAutoData]
+        public BrowserBasedProfileTests()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(x =>
+                    x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
+                .Returns(new Mock<IMemberValueResolver<object, object, string, bool?>>().Object);
+
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BrowserBasedProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper(serviceProvider.Object.GetService);
+        }
+
+        public void Dispose()
+        {
+            mapper = null;
+            foreach (var browser in ProfileDefaults.SupportedBrowsers)
+            {
+                browser.Checked = false;
+            }
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAdditionalInformationModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -84,7 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAdditionalInformationModel_NoClientApplication_AdditionalInfoNotSet(
             CatalogueItem catalogueItem)
         {
@@ -95,7 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.AdditionalInformation.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToConnectivityAndResolutionModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -117,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 new() {Text = "15Mbps", Value = "15Mbps"},
                 new() {Text = "20Mbps", Value = "20Mbps"},
                 new() {Text = "30Mbps", Value = "30Mbps"},
-                new() {Text = "Higher than 30Mbps", Value = "Higher than 30Mbps"}
+                new() {Text = "Higher than 30Mbps", Value = "Higher than 30Mbps"},
             });
             actual.ScreenResolutions.Should().BeEquivalentTo(new List<SelectListItem>
             {
@@ -147,7 +140,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToHardwareRequirementsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -165,7 +159,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToHardwareRequirementsModel_NoClientApplication_DescriptionNotSet(
             CatalogueItem catalogueItem)
         {
@@ -176,7 +171,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Description.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToMobileFirstApproachModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -193,7 +189,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasValue_MobileFirstApproachSet(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -206,7 +203,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MobileFirstApproach.Should().Be(expected);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToMobileFirstApproachModel_MobileFirstDesignHasNoValue_MobileFirstApproachNotSet(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -218,7 +216,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.MobileFirstApproach.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToPlugInsOrExtensionsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -237,7 +236,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToPlugInsOrExtensionsModel_PluginsRequiredIsNull_PluginsRequiredAndAdditionalInfoNotSet(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -250,7 +250,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.PlugInsRequired.Should().BeNull();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToSupportedBrowsersModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -279,19 +280,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToSupportedBrowsersModel_NoClientApplication_DependentValuesNotSet(
             CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.ClientApplication = null;
 
             var actual = mapper.Map<CatalogueItem, SupportedBrowsersModel>(catalogueItem);
-            
+
             actual.Browsers.ToList().ForEach(b => b.Checked.Should().BeFalse());
             actual.MobileResponsive.Should().BeNullOrEmpty();
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_ConnectivityAndResolutionToClientApplication_ResultAsExpected(
             ConnectivityAndResolutionModel model,
             ClientApplication clientApplication)
@@ -309,7 +312,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_PlugInsOrExtensionsModelToPlugins_ResultAsExpected(
             PlugInsOrExtensionsModel model)
         {
@@ -334,7 +338,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Required.Should().Be(expected);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_SupportedBrowsersModelToClientApplication_ResultAsExpected(
             SupportedBrowsersModel model,
             ClientApplication clientApplication)
@@ -352,7 +357,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_SupportedBrowsersModelToClientApplication_SetsMobileResponsiveFromResolver(
             SupportedBrowsersModel model)
         {
@@ -371,7 +377,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 cfg.AddProfile<BrowserBasedProfile>();
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper(serviceProvider.Object.GetService);
-            
+
             autoMapper.Map(model, clientApplication);
 
             mobileResponsiveResolver.Verify(x => x.Resolve(It.IsAny<object>(), It.IsAny<object>(),

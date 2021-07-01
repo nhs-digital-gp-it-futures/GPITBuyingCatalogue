@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
@@ -13,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         public ContactDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/contact-details")
         {
             using var context = GetEndToEndDbContext();
-            var contacts = context.MarketingContacts.Where(s => s.SolutionId == "99999-99");
+            var contacts = context.MarketingContacts.Where(s => s.SolutionId == new CatalogueItemId(99999, "99"));
             context.MarketingContacts.RemoveRange(contacts);
             context.SaveChanges();
         }
@@ -30,12 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == "99999-99");
+            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
 
-            solution.MarketingContacts.First().Should().BeEquivalentTo(contact, options => options.Excluding(s => s.Id)
-                                                                                                  .Excluding(s => s.SolutionId)
-                                                                                                  .Excluding(s => s.LastUpdated)
-                                                                                                  .Excluding(s => s.Solution));
+            solution.MarketingContacts.First().Should().BeEquivalentTo(
+                contact,
+                options => options.Excluding(s => s.Id).Excluding(s => s.SolutionId).Excluding(s => s.LastUpdated));
         }
 
         [Fact]
@@ -52,17 +52,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == "99999-99");
+            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
 
-            solution.MarketingContacts.First().Should().BeEquivalentTo(firstContact, options => options.Excluding(s => s.Id)
-                                                                                                  .Excluding(s => s.SolutionId)
-                                                                                                  .Excluding(s => s.LastUpdated)
-                                                                                                  .Excluding(s => s.Solution));
+            solution.MarketingContacts.First().Should().BeEquivalentTo(
+                firstContact,
+                options => options.Excluding(s => s.Id).Excluding(s => s.SolutionId).Excluding(s => s.LastUpdated));
 
-            solution.MarketingContacts.Last().Should().BeEquivalentTo(secondContact, options => options.Excluding(s => s.Id)
-                                                                                                  .Excluding(s => s.SolutionId)
-                                                                                                  .Excluding(s => s.LastUpdated)
-                                                                                                  .Excluding(s => s.Solution));
+            solution.MarketingContacts.Last().Should().BeEquivalentTo(
+                secondContact,
+                options => options.Excluding(s => s.Id).Excluding(s => s.SolutionId).Excluding(s => s.LastUpdated));
         }
 
         [Fact]
@@ -91,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearClientApplication("99999-99");
+            ClearClientApplication(new CatalogueItemId(99999, "99"));
         }
     }
 }

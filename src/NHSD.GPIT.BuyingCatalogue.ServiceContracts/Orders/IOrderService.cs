@@ -7,8 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderService
     {
-        // TODO: callOffId should be of type CallOffId
-        public Task<Order> GetOrder(string callOffId);
+        public Task<Order> GetOrder(CallOffId callOffId);
 
         public Task<IList<Order>> GetOrders(Guid organisationId);
 
@@ -18,7 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> CreateOrder(string description, string odsCode);
 
-        // TODO: callOffId should be of type CallOffId
-        public Task DeleteOrder(string callOffId);
+        public Task DeleteOrder(CallOffId callOffId);
+
+        public Task CompleteOrder(CallOffId callOffId);
     }
 }

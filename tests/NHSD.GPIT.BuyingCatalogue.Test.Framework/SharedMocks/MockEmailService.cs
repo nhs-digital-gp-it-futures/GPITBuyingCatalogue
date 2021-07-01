@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Moq;
-
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks
@@ -21,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.SharedMocks
 
         public EmailMessage SentMessage { get; private set; }
 
-        public async Task SendEmailAsync(EmailMessage emailMessage)
+        public Task SendEmailAsync(EmailMessage emailMessage)
         {
-            await service.SendEmailAsync(emailMessage);
+            return service.SendEmailAsync(emailMessage);
         }
     }
 }

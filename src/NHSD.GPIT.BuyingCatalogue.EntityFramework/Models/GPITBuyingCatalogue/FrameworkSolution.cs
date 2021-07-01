@@ -1,14 +1,13 @@
 ﻿using System;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class FrameworkSolution
+    public sealed class FrameworkSolution
     {
         public string FrameworkId { get; set; }
 
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         public bool IsFoundation { get; set; }
 
@@ -16,8 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Guid LastUpdatedBy { get; set; }
 
-        public virtual Framework Framework { get; set; }
-
-        public virtual Solution Solution { get; set; }
+        public Framework Framework { get; set; }
     }
 }

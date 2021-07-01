@@ -1,14 +1,21 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
-    public class SelectSolutionServiceRecipientsDateModel : OrderingBaseModel
+    public sealed class SelectSolutionServiceRecipientsDateModel : OrderingBaseModel
     {
         public SelectSolutionServiceRecipientsDateModel()
         {
         }
 
-        public SelectSolutionServiceRecipientsDateModel(string odsCode, string callOffId, string solutionName, DateTime? commencementDate, DateTime? plannedDeliveryDate, DateTime? defaultDeliveryDate)
+        public SelectSolutionServiceRecipientsDateModel(
+            string odsCode,
+            CallOffId callOffId,
+            string solutionName,
+            DateTime? commencementDate,
+            DateTime? plannedDeliveryDate,
+            DateTime? defaultDeliveryDate)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price";
             BackLinkText = "Go back";

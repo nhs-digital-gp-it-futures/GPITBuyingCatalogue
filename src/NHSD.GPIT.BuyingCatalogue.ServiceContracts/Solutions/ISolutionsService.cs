@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
@@ -11,31 +13,35 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities);
 
-        Task<CatalogueItem> GetSolutionListPrices(string solutionId);
+        Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId);
 
-        Task<CatalogueItem> GetSolution(string solutionId);
+        Task<CatalogueItem> GetSolution(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, Guid capabilityId);
+
+        Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId);
 
         Task<List<CatalogueItem>> GetDFOCVCSolutions();
 
         Task<List<Capability>> GetFuturesCapabilities();
 
-        Task SaveSolutionDescription(string solutionId, string summary, string description, string link);
+        Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link);
 
-        Task SaveSolutionFeatures(string solutionId, string[] features);
+        Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features);
 
-        Task SaveIntegrationLink(string solutionId, string integrationLink);
+        Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink);
 
-        Task SaveImplementationDetail(string solutionId, string detail);
+        Task SaveImplementationDetail(CatalogueItemId solutionId, string detail);
 
-        Task SaveRoadmap(string solutionId, string roadmap);
+        Task SaveRoadMap(CatalogueItemId solutionId, string roadMap);
 
-        Task<ClientApplication> GetClientApplication(string solutionId);
+        Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId);
 
-        Task SaveClientApplication(string solutionId, ClientApplication clientApplication);
+        Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication);
 
-        Task<Hosting> GetHosting(string solutionId);
+        Task<Hosting> GetHosting(CatalogueItemId solutionId);
 
-        Task SaveHosting(string solutionId, Hosting hosting);
+        Task SaveHosting(CatalogueItemId solutionId, Hosting hosting);
 
         Task<Supplier> GetSupplier(string supplierId);
 

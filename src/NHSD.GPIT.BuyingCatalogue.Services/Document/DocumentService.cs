@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Document;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Document
 {
-    public class DocumentService : IDocumentService
+    public sealed class DocumentService : IDocumentService
     {
         private readonly ILogWrapper<DocumentService> logger;
         private readonly IAzureBlobDocumentRepository documentRepository;

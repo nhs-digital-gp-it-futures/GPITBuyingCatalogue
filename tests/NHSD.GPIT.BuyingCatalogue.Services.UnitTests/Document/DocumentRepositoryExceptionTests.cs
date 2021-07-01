@@ -1,15 +1,13 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Services.Document;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class DocumentRepositoryExceptionTests
+    public static class DocumentRepositoryExceptionTests
     {
-        [Test]
+        [Fact]
         public static void Constructor_Exception_Int_InitializesCorrectly()
         {
             const string message = "This is a message.";
@@ -23,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             repositoryException.Message.Should().Be(message);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_InitializesCorrectly()
         {
             var repositoryException = new DocumentRepositoryException();
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             repositoryException.Message.Should().Be(DocumentRepositoryException.DefaultMessage);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_Exception_InitializesCorrectly()
         {
             const string message = "This is a message.";
@@ -46,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             repositoryException.Message.Should().Be(message);
         }
 
-        [Test]
+        [Fact]
         public static void Constructor_String_InitializesCorrectly()
         {
             const string message = "This is a message.";

@@ -33,8 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task<AggregateValidationResult> Create(string callOffId, CreateOrderItemModel model)
+        public async Task<AggregateValidationResult> Create(CallOffId callOffId, CreateOrderItemModel model)
         {
             var order = await orderService.GetOrder(callOffId);
 
@@ -42,9 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (!aggregateValidationResult.Success)
                 return aggregateValidationResult;
 
-            // TODO - handle case of non-success
-            (bool success, var catalogueItemId) = CatalogueItemId.Parse(model.CatalogueItemId);
-
+            var catalogueItemId = model.CatalogueItemId;
             var catalogueItem = await dbContext.FindAsync<CatalogueItem>(catalogueItemId);
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);
 
@@ -76,20 +73,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return aggregateValidationResult;
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task<List<OrderItem>> GetOrderItems(string callOffId, CatalogueItemType? catalogueItemType)
+        public async Task<List<OrderItem>> GetOrderItems(CallOffId callOffId, CatalogueItemType? catalogueItemType)
         {
             Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = catalogueItemType is null
                 ? o => o.OrderItems
                 : o => o.OrderItems.Where(i => i.CatalogueItem.CatalogueItemType == catalogueItemType);
 
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
-
-            if (!await dbContext.Orders.AnyAsync(o => o.Id == id.Id))
+            if (!await dbContext.Orders.AnyAsync(o => o.Id == callOffId.Id))
                 return null;
 
             return await dbContext.Orders
-                .Where(o => o.Id == id.Id)
+                .Where(o => o.Id == callOffId.Id)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
@@ -98,20 +92,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToListAsync();
         }
 
-        // TODO: callOffId should be of type CallOffId
-        // TODO: catalogueItemId should be of type CatalogueItemId
-        public Task<OrderItem> GetOrderItem(string callOffId, string catalogueItemId)
+        public Task<OrderItem> GetOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            // TODO - handle non-success
-            (bool success, CatalogueItemId itemId) = CatalogueItemId.Parse(catalogueItemId);
-
             Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = o =>
-                o.OrderItems.Where(i => CatalogueItemId.ParseExact(i.CatalogueItem.CatalogueItemId) == itemId);
-
-            (_, CallOffId id) = CallOffId.Parse(callOffId);
+                o.OrderItems.Where(i => i.CatalogueItem.CatalogueItemId == catalogueItemId);
 
             return dbContext.Orders
-                .Where(o => o.Id == id.Id)
+                .Where(o => o.Id == callOffId.Id)
                 .Include(orderItems).ThenInclude(i => i.CatalogueItem)
                 .Include(orderItems).ThenInclude(i => i.OrderItemRecipients).ThenInclude(r => r.Recipient)
                 .Include(orderItems).ThenInclude(i => i.CataloguePrice).ThenInclude(p => p.PricingUnit)
@@ -119,19 +106,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        // TODO: callOffId should be of type CallOffId
-        // TODO: catalogueItemId should be of type CatalogueItemId
-        public async Task<int> DeleteOrderItem(string callOffId, string catalogueItemId)
+        public async Task<int> DeleteOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            // TODO - handle non-success
-            (bool success, CatalogueItemId itemId) = CatalogueItemId.Parse(catalogueItemId);
-
             var order = await orderService.GetOrder(callOffId);
 
             if (order is null)
                 throw new ArgumentNullException(nameof(catalogueItemId));
 
-            var result = order.DeleteOrderItemAndUpdateProgress(itemId);
+            var result = order.DeleteOrderItemAndUpdateProgress(catalogueItemId);
 
             await dbContext.SaveChangesAsync();
 

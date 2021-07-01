@@ -2,18 +2,17 @@
 using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NUnit.Framework;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class MobileConnectionDetailsTests
+    public static class MobileConnectionDetailsTests
     {
         private static readonly Fixture Fixture = new();
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsValid_DescriptionHasValidValue_ReturnsTrue(string invalid)
         {
             var mobileConnectionDetails = Fixture.Build<MobileConnectionDetails>()
@@ -25,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileConnectionDetails.IsValid().Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void IsValid_MinimumConnectionSpeedHasValidValue_ReturnsTrue(string invalid)
         {
             var mobileConnectionDetails = Fixture.Build<MobileConnectionDetails>()
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileConnectionDetails.IsValid().Should().BeTrue();
         }
 
-        [TestCase]
+        [Fact]
         public static void IsValid_ConnectionTypeHasValidValue_ReturnsTrue()
         {
             var mobileConnectionDetails = new MobileConnectionDetails
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileConnectionDetails.IsValid().Should().BeTrue();
         }
 
-        [TestCase]
+        [Fact]
         public static void IsValid_AllPropertiesInvalid_ConnectionTypeNull_ReturnsNull()
         {
             var mobileConnectionDetails = new MobileConnectionDetails();
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileConnectionDetails.IsValid().Should().BeNull();
         }
 
-        [TestCase]
+        [Fact]
         public static void IsValid_AllPropertiesInvalid_ConnectionTypeEmpty_ReturnsFalse()
         {
             var mobileConnectionDetails = new MobileConnectionDetails

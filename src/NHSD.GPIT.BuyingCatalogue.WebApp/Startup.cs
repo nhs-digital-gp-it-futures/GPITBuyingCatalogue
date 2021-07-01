@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
                 options.Filters.Add(typeof(OrdersActionFilter));
+                options.Filters.Add<SerilogMvcLoggingAttribute>();
             });
 
             services.AddMvc(options =>
@@ -54,6 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureIdentity();
 
             services.ConfigureValidationSettings(Configuration);
+
+            services.ConfigureOrderMessageSettings(Configuration);
 
             services.ConfigureConsentCookieSettings(Configuration);
 
@@ -86,6 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseSerilogRequestLogging(opts =>
             {
                 opts.GetLevel = SerilogRequestLoggingOptions.GetLevel;
+                opts.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms. Action {ActionName}";
             });
 
             if (env.IsDevelopment())
@@ -142,6 +147,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
 
             app.UseCookiePolicy();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto,
+            });
 
             app.Use(async (context, next) =>
             {

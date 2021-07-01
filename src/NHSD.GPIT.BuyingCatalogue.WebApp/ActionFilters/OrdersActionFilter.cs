@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 {
-    public class OrdersActionFilter : IAsyncActionFilter
+    public sealed class OrdersActionFilter : IAsyncActionFilter
     {
         private readonly ILogWrapper<OrdersActionFilter> logger;
 

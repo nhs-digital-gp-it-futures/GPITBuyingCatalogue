@@ -63,111 +63,83 @@
                                  label-text=" Code Example of the Above Table"
                                  size="Medium">
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-table</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue">@@foreach (var item in Model.Rows)</span><br />
-            <span class="vs-light-theme-blue">{</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            First Column
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            Second Column
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            Third Column
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            FourthColumn
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            FifthColumn
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            Sixth Column
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            Seventh Column
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue first-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-row-container</span>
-            <span class="vs-light-theme-blue bracket">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="First Column"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue">@@foreach (var item in Model.Rows)</span><br /><span class="vs-light-theme-blue">{</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">@@item.FirstColumn</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Second Column"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">@@item.SecondColumn</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Third Column"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">@@item.ThirdColumn</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Fourth Column"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">@@item.FourthColumn</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Fifth Column"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">@@item.FifthColumn</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Sixth Column"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">@@item.SixthColumn</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Seventh Column"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">@@item.SeventhColumn</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
 
-            <span class="vs-light-theme-blue first-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-row-container</span>
-            <span class="vs-light-theme-blue">/&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue">}</span><br />
 
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table</span>
-            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-table</span><span class="vs-light-theme-blue">&gt;</span>
         </div>
     </nhs-fieldset-form-container>
 
@@ -247,119 +219,66 @@
                                  size="Medium">
 
         <div class="app-tabs__container js-tabs__container bc-code-snippet">
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-table</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue first-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-row-container</span>
-            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            Contains some Text
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            Contains another Component
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
+            Contains a Random Tag
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Contains some Text"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
 
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue bracket">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
             <span class="vs-light-theme-blue third-layer">This Column Contains Some Text</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
-
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Contains another Component"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
-
-            <span class="vs-light-theme-blue third-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-inset-text</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
-
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
+            
+            <span class="vs-light-theme-blue third-layer">&lt;</span><span class="vs-light-theme-purple">nhs-inset-text</span><span class="vs-light-theme-blue">&gt;</span><br />
             <span class="vs-light-theme-blue third-layer">Here is some text inside an inset</span><br />
+            <span class="vs-light-theme-blue third-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-inset-text</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue third-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-inset-text</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue third-layer">&lt;</span><span class="vs-light-theme-purple">nhs-tag text</span><span class="vs-light-theme-blue">="This is a Nice Purple Tag" </span><span class="vs-light-theme-purple">colour</span><span class="vs-light-theme-blue">="Purple" /&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Contains a Random Tag"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue third-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-tag text</span>
-            <span class="vs-light-theme-blue"> ="This is a Nice Purple Tag" </span>
-            <span class="vs-light-theme-purple">colour</span>
-            <span class="vs-light-theme-blue"> ="Purple" /&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue">/&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue bracket">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
-
-            <span class="vs-light-theme-blue first-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-row-container</span>
-            <span class="vs-light-theme-blue">/&gt;</span><br />
-
-            <span class="vs-light-theme-blue first-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-row-container</span>
-            <span class="vs-light-theme-blue bracket">&gt;</span><br />
-
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue third-layer">This is another row with some more text</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue third-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-input</span><br />
-            <span class="vs-light-theme-purple third-layer">asp-for</span>
-            <span class="vs-light-theme-blue"> ="SelectableString"</span><br />
-            <span class="vs-light-theme-purple third-layer">label-text</span>
-            <span class="vs-light-theme-blue"> ="Here is a Text Input"</span>
+            <span class="vs-light-theme-blue third-layer">&lt;</span><span class="vs-light-theme-purple">nhs-input</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue"> ="SelectableString"</span><br />
+            <span class="vs-light-theme-purple third-layer">label-text</span><span class="vs-light-theme-blue">="Here is a Text Input"</span>
             <span class="vs-light-theme-blue">/&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-purple">column-name</span>
-            <span class="vs-light-theme-blue"> ="Contains a Random Tag"</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue third-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-tag text</span>
-            <span class="vs-light-theme-blue"> ="This is a Nice Aqua Green Tag" </span>
+            <span class="vs-light-theme-blue third-layer">&lt;</span><span class="vs-light-theme-purple">nhs-tag text</span><span class="vs-light-theme-blue">="This is a Nice Aqua Green Tag" </span>
             <span class="vs-light-theme-purple">colour</span>
             <span class="vs-light-theme-blue"> ="AquaGreen" /&gt;</span><br />
 
-            <span class="vs-light-theme-blue second-layer">&lt;/</span>
-            <span class="vs-light-theme-purple">nhs-table-cell</span>
-            <span class="vs-light-theme-blue">&gt;</span><br />
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue first-layer">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table-row-container</span>
-            <span class="vs-light-theme-blue">/&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-            <span class="vs-light-theme-blue">&lt;</span>
-            <span class="vs-light-theme-purple">nhs-table</span>
-            <span class="vs-light-theme-blue">/&gt;</span>
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-table</span><span class="vs-light-theme-blue">&gt;</span>
         </div>
     </nhs-fieldset-form-container>
 

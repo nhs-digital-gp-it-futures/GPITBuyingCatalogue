@@ -1,12 +1,11 @@
 ﻿using System;
-
-#nullable disable
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class SolutionCapability
+    public class SolutionCapability
     {
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         public Guid CapabilityId { get; set; }
 
@@ -17,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         public Guid LastUpdatedBy { get; set; }
 
         public virtual Capability Capability { get; set; }
-
-        public virtual Solution Solution { get; set; }
 
         public virtual SolutionCapabilityStatus Status { get; set; }
     }

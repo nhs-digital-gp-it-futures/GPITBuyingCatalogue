@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 {
-    public class SelectSolutionModel : OrderingBaseModel
+    public sealed class SelectSolutionModel : OrderingBaseModel
     {
         public SelectSolutionModel()
         {
         }
 
-        public SelectSolutionModel(string odsCode, string callOffId, List<CatalogueItem> solutions, string selectedSolutionId)
+        public SelectSolutionModel(string odsCode, CallOffId callOffId, List<CatalogueItem> solutions, CatalogueItemId selectedSolutionId)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
             BackLinkText = "Go back";
@@ -23,6 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         public List<CatalogueItem> Solutions { get; set; }
 
         [Required(ErrorMessage = "Select a Catalogue Solution")]
-        public string SelectedSolutionId { get; set; }
+        public CatalogueItemId SelectedSolutionId { get; set; }
     }
 }

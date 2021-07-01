@@ -53,10 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleAsync();
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task AddOrderSupplier(string callOffId, string supplierId)
+        public async Task AddOrderSupplier(CallOffId callOffId, string supplierId)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
 
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
@@ -67,11 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task AddOrUpdateOrderSupplierContact(string callOffId, Contact contact)
+        public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, Contact contact)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
-
             var order = await orderService.GetOrder(callOffId);
 
             switch (order.SupplierContact)

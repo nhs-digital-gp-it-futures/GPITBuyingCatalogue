@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class InteroperabilityModelTests
+    public static class InteroperabilityModelTests
     {
-        [Test]
+        [Fact]
         public static void Class_Inherits_SolutionDisplayBaseModel()
         {
             typeof(InteroperabilityModel)
@@ -20,7 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public static void TextDescriptionsProvided_MultipleIntegrations_ReturnsPluralText(
             InteroperabilityModel model)
         {
@@ -29,23 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var actual = model.TextDescriptionsProvided();
 
             actual.Should()
-                .Be(
-                    $"There are {model.Integrations.Count.ToEnglish()} types of integrations specified and assured by the NHS.");
-        }
-        
-        [Test, AutoData]
-        public static void TextDescriptionsProvided_OneIntegration_ReturnsSingularText(
-            InteroperabilityModel model)
-        {
-            model.Integrations = new List<IntegrationModel>{model.Integrations[0]};
-
-            var actual = model.TextDescriptionsProvided();
-
-            actual.Should()
-                .Be($"There is one type of integration specified and assured by the NHS.");
+                .Be("IM1 and GP Connect offer integrations specified and assured by the NHS.");
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public static void TextDescriptionsProvided_NoIntegration_ReturnsDefaultText(
             InteroperabilityModel model)
         {
@@ -53,10 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.TextDescriptionsProvided();
 
-            actual.Should().Be($"No integration yet");
+            actual.Should().Be("No integration yet");
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public static void TextDescriptionsProvided_NullIntegration_ReturnsDefaultText(
             InteroperabilityModel model)
         {
@@ -64,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             var actual = model.TextDescriptionsProvided();
 
-            actual.Should().Be($"No integration yet");
+            actual.Should().Be("No integration yet");
         }
     }
 }

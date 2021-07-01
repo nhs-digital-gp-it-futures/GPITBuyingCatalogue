@@ -1,19 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using AutoFixture.NUnit3;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SolutionDescriptionModelTests
+    public static class SolutionDescriptionModelTests
     {
-        private static readonly string[] InvalidStrings = { null, string.Empty, "    " };
-        
-        [Test]
+        [Fact]
         public static void Class_Inherits_SolutionDisplayBaseModel()
         {
             typeof(SolutionDescriptionModel)
@@ -21,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .BeAssignableTo<SolutionDisplayBaseModel>();
         }
 
-        [Test]
+        [Fact]
         public static void Frameworks_UIHintAttribute_ExpectedHint()
         {
             typeof(SolutionDescriptionModel)
@@ -31,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 .Be("TableListCell");
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public static void FrameworkTitle_FrameworksMoreThanOne_ReturnsPlural(SolutionDescriptionModel model)
         {
             model.Frameworks.Length.Should().BeGreaterThan(1);
@@ -41,37 +39,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             actual.Should().Be("Frameworks");
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public static void FrameworkTitle_OneFramework_ReturnsSingle(string framework)
         {
-            var model = new SolutionDescriptionModel { Frameworks = new[] { framework, } };
+            var model = new SolutionDescriptionModel { Frameworks = new[] { framework } };
 
             var actual = model.FrameworkTitle();
 
             actual.Should().Be("Framework");
         }
 
-        [Test, AutoData]
-        public static void FrameworkTitle_NoFramework_ReturnsSingle(string framework)
+        [Fact]
+        public static void FrameworkTitle_NoFramework_ReturnsSingle()
         {
-            var model = new SolutionDescriptionModel { Frameworks = System.Array.Empty<string>(), };
+            var model = new SolutionDescriptionModel { Frameworks = System.Array.Empty<string>() };
 
             var actual = model.FrameworkTitle();
 
             actual.Should().Be("Framework");
         }
 
-        [Test]
+        [Fact]
         public static void FrameworkTitle_NullFramework_ReturnsSingle()
         {
-            var model = new SolutionDescriptionModel { Frameworks = null, };
+            var model = new SolutionDescriptionModel { Frameworks = null };
 
             var actual = model.FrameworkTitle();
 
             actual.Should().Be("Framework");
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public static void HasDescription_ValidDescription_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Description.Should().NotBeNullOrWhiteSpace();
@@ -81,7 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             actual.Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void HasDescription_InvalidDescription_ReturnsFalse(string invalid)
         {
             var model = new SolutionDescriptionModel { Description = invalid };
@@ -90,8 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             actual.Should().BeFalse();
         }
-        
-        [Test, AutoData]
+
+        [Theory]
+        [CommonAutoData]
         public static void HasSummary_ValidSummary_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Summary.Should().NotBeNullOrWhiteSpace();
@@ -101,7 +103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             actual.Should().BeTrue();
         }
 
-        [TestCaseSource(nameof(InvalidStrings))]
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static void HasSummary_InvalidSummary_ReturnsFalse(string invalid)
         {
             var model = new SolutionDescriptionModel { Summary = invalid };

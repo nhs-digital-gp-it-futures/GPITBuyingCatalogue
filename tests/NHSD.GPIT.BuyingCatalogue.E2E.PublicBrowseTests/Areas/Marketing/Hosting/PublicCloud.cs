@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
@@ -26,13 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
                 Link = link,
                 Summary = summary,
             };
-            
+
             MarketingPages.HostingTypeActions.ToggleHSCNCheckbox();
 
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == "99999-99")).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PublicCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
@@ -60,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 
         public void Dispose()
         {
-            ClearHostingTypes("99999-99");
+            ClearHostingTypes(new CatalogueItemId(99999, "99"));
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Session
 {
-    public class SessionService : ISessionService
+    public sealed class SessionService : ISessionService
     {
         private readonly ISession session;
 
@@ -27,12 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
         public T GetObject<T>(string key)
         {
             var value = session.GetString(key);
-            return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
+            return value is null ? default : JsonSerializer.Deserialize<T>(value);
         }
 
         public void SetObject(string key, object value)
         {
-            session.SetString(key, JsonConvert.SerializeObject(value));
+            session.SetString(key, JsonSerializer.Serialize(value));
         }
 
         public void ClearSession()

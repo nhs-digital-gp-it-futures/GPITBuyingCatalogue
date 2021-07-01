@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoFixture;
-using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -11,32 +11,15 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal class OrganisationProfileTests
+    public sealed class OrganisationProfileTests : IDisposable
     {
         private IMapper mapper;
 
-        [OneTimeSetUp]
-        public void SetUp()
-        {
-            mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
-        }
-
-        [OneTimeTearDown]
-        public void CleanUp()
-        {
-            mapper = null;
-        }
-
-        [Test]
+        [Fact]
         public static void Mappings_Configuration_Valid()
         {
             var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
@@ -44,7 +27,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             mapperConfiguration.AssertConfigurationIsValid();
         }
 
-        [Test, CommonAutoData]
+        public OrganisationProfileTests()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
+        public void Dispose()
+        {
+            mapper = null;
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToAboutSupplierModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -62,7 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToContactDetailsModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -80,7 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToFeaturesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -108,7 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToFeaturesModel_NoFeaturesString_ListingsNotSet(
             CatalogueItem catalogueItem)
         {
@@ -130,7 +130,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Listing10.Should().Be(string.Empty);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToImplementationTimescalesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -147,7 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToIntegrationsModel_ResultAsExpected(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -163,7 +165,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToRoadMapModel_ResultAsExpected(
             CatalogueItem catalogueItem, ClientApplication clientApplication)
         {
@@ -179,7 +182,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -198,7 +202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
-        [Test, CommonAutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_ContactDetailsModelToSupplierContactsModel_ResultAsExpected(
             ContactDetailsModel contactDetailsModel)
         {
@@ -209,7 +214,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.SolutionId.Should().Be(contactDetailsModel.SolutionId);
         }
 
-        [Test, AutoData]
+        [Theory]
+        [CommonAutoData]
         public void Map_FeaturesModelToStringArray_ResultAsExpected(FeaturesModel model)
         {
             var actual = mapper.Map<FeaturesModel, string[]>(model);

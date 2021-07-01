@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile;
 
@@ -87,16 +88,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             new() { ConnectionType = "Wifi" },
         };
 
-        public static string GetBrowserBasedBackLink(string catalogueItemId) =>
+        public static string GetBrowserBasedBackLink(CatalogueItemId catalogueItemId) =>
             $"{GetSolutionBackLink(catalogueItemId)}/section/browser-based";
 
-        public static string GetNativeDesktopBackLink(string catalogueItemId) =>
+        public static string GetNativeDesktopBackLink(CatalogueItemId catalogueItemId) =>
             $"{GetSolutionBackLink(catalogueItemId)}/section/native-desktop";
 
-        public static string GetNativeMobileBackLink(string catalogueItemId) =>
+        public static string GetNativeMobileBackLink(CatalogueItemId catalogueItemId) =>
             $"{GetSolutionBackLink(catalogueItemId)}/section/native-mobile";
 
-        public static string GetSolutionBackLink(string catalogueItemId) =>
+        public static string GetSolutionBackLink(CatalogueItemId catalogueItemId) =>
             $"/marketing/supplier/solution/{catalogueItemId}";
     }
 }

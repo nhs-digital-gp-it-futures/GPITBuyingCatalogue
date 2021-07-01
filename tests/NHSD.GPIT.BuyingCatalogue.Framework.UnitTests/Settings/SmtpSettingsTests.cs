@@ -1,14 +1,12 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NUnit.Framework;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Settings
 {
-    [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-    internal static class SmtpSettingsTests
+    public static class SmtpSettingsTests
     {
-        [Test]
+        [Fact]
         public static void SmtpSettings_AuthenticationSettings_IsInitialized()
         {
             var settings = new SmtpSettings();

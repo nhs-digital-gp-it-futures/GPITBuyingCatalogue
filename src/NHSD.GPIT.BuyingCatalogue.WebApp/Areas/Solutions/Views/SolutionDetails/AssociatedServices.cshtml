@@ -8,16 +8,10 @@
     <p>
         <b>These are the Associated Services offered with this Catalogue Solution:</b>
     </p>
-    <details class="nhsuk-details" nhsuk-polyfilled="true" id="nhsuk-details0">
-        <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
-            <span class="nhsuk-details__summary-text">
-                What are Associated Services?
-            </span>
-        </summary>
-        <div class="nhsuk-details__text" id="nhsuk-details__text0" aria-hidden="true">
-            <p>Associated Services help you to implement or optimise the live operation of a Catalogue Solution or Additional Service, for example, training or data migration.</p>
-        </div>
-    </details>
+
+    <nhs-details label-text="What are Associated Services?">
+        <p>Associated Services help you to implement or optimise the live operation of a Catalogue Solution or Additional Service, for example, training or data migration.</p>
+    </nhs-details>
 
     @if (!Model.HasServices())
     {
@@ -25,23 +19,18 @@
     }
     else
     {
-        <table role="table" class="nhsuk-table-responsive">
-            <caption class="nhsuk-table__caption">Associated Services available</caption>
-            <thead role="rowgroup" class="nhsuk-table__head">
-            <tr role="row">
-                <th role="columnheader" class="" scope="col">Associated Service</th>
-                <th role="columnheader" class="" scope="col">Price</th>
-            </tr>
-            </thead>
-            <tbody class="nhsuk-table__body">
+        <nhs-table label-text="Associated Services available" data-test-id="associated-services-table">
+            <nhs-table-column>Associated Service</nhs-table-column>
+            <nhs-table-column>Price</nhs-table-column>
+
             @for (int i = 0; i < Model.Services.Count; i++)
             {
-                <tr role="row" class="nhsuk-table__row">
-                    <td role="cell" class="nhsuk-table__cell">
+                <nhs-table-row-container>
+                    <nhs-table-cell>
                         @{ var id = $"#assoc{i + 1}"; }
                         <a href="@id">@Model.Services[i].Name</a>
-                    </td>
-                    <td role="cell" class="nhsuk-table__cell">
+                    </nhs-table-cell>
+                    <nhs-table-cell>
                         @for (int j = 0; j < Model.Services[i].Prices.Count; j++)
                         {
                             <span style="white-space: nowrap;">
@@ -49,16 +38,16 @@
                             </span>
                             @if (j < @Model.Services[i].Prices.Count - 1)
                             {
-                                <br/>
+                                <br />
                             }
                         }
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+                    </nhs-table-cell>
 
-        <dl class="nhsuk-summary-list">
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+
+        <dl class="nhsuk-summary-list" data-test-id="associated-services-details">
             @for (int i = 0; i < Model.Services.Count; i++)
             {
                 var id = $"assoc{i + 1}";
@@ -67,20 +56,20 @@
                 <h3>@Model.Services[i].Name</h3>
                 <dl class="nhsuk-summary-list">
                     <div class="nhsuk-summary-list__row">
-                        <dt class="nhsuk-summary-list__key">Description</dt>
-                        <dd class="nhsuk-summary-list__value">
-                            @Model.Services[i].Description
-                        </dd>
-                    </div>
+                    <dt class="nhsuk-summary-list__key">Description</dt>
+                    <dd class="nhsuk-summary-list__value" data-test-id="description">
+                        @Model.Services[i].Description
+                    </dd>
+        </div>
                     <div class="nhsuk-summary-list__row">
                         <dt class="nhsuk-summary-list__key">Order guidance</dt>
-                        <dd class="nhsuk-summary-list__value">
+                        <dd class="nhsuk-summary-list__value" data-test-id="order-guidance">
                             @Model.Services[i].OrderGuidance
                         </dd>
                     </div>
                     <div class="nhsuk-summary-list__row">
                         <dt class="nhsuk-summary-list__key">Price</dt>
-                        <dd class="nhsuk-summary-list__value">
+                        <dd class="nhsuk-summary-list__value" data-test-id="price">
                             @for (var index = 0; index < Model.Services[i].Prices.Count; index++)
                             {
                                 <span style="white-space: nowrap;">@Model.Services[i].Prices[index]</span>

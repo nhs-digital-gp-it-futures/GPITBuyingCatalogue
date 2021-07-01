@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -6,162 +7,93 @@
 <div class="nhsuk-width-container" data-test-id="@Model.CallOffId-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
-        <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="@Model.Title" advice="Complete the following steps to create an order" />
-            <div>
-                <h2 data-test-id="@Model.CallOffId-order-description-title" class="nhsuk-u-margin-bottom-3">Order description</h2>
-                <p data-test-id="@Model.CallOffId-order-description" class="nhsuk-heading-s nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">@Model.Description</p>
-            </div>
-        </div>
-    </div>
-
-    <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-3 bc-c-order-table__hr" />
-
-    <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="@Model.Title"
+                            advice="@Model.TitleAdvice" />
 
-            <ol data-test-id="task-list" class="bc-c-task-list">
 
-                <li data-test-id="task-0">
-                    <h2 data-test-id="task-0-name" class="bc-c-task-list__task">
-                        <span class="bc-c-task-list__task-number">1.</span>
-                        <div>Start your order</div>
-                    </h2>
-                    <ul class="bc-c-task-list__items">
-                        <li data-test-id="task-0-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-0-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/description">Provide a description of your order</a>
-                            </span>
-                            <strong data-test-id="task-0-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
-                    </ul>
-                </li>
+            <nhs-fieldset-form-container asp-for="@Model"
+                                         label-text="Order Description"
+                                         label-hint="@Model.Description">
+                <br />
+                <br />
+                <nhs-task-list>
+                    <nhs-task-list-section label-text="Start your order">
+                        <nhs-task-list-item label-text="Provide a description of your order"
+                                            url="@Model.DescriptionUrl"
+                                            status="@Model.SectionStatuses.DescriptionStatus" />
+                    </nhs-task-list-section>
+                    <nhs-task-list-section label-text="Organisation Information">
+                        <nhs-task-list-item label-text="Provide Call-off Ordering Party Information"
+                                            url="@Url.Action(
+                                                nameof(OrderController.OrderingParty),
+                                                "Order",
+                                                new { Model.OdsCode, Model.CallOffId})"
+                                            status="@Model.SectionStatuses.OrderingPartyStatus" />
+                        <nhs-task-list-item label-text="Provide Supplier information"
+                                            url="@Url.Action(
+                                                nameof(SupplierController.Supplier),
+                                                "Supplier",
+                                                new { Model.OdsCode, Model.CallOffId})"
+                                            status="@Model.SectionStatuses.SupplierStatus" />
+                    </nhs-task-list-section>
+                    <nhs-task-list-section label-text="Add services">
+                        <nhs-task-list-item label-text="Provide commencement date for this agreement"
+                                            url="@Url.Action(
+                                                nameof(OrderController.CommencementDate),
+                                                "Order",
+                                                new { Model.OdsCode, Model.CallOffId})"
+                                            status="@Model.SectionStatuses.CommencementDateStatus" />
+                        <nhs-task-list-item label-text="Add Catalogue Solutions to your order"
+                                            url="@Url.Action(
+                                                nameof(CatalogueSolutionsController.Index),
+                                                "CatalogueSolutions",
+                                                new { Model.OdsCode, Model.CallOffId})"
+                                            status="@Model.SectionStatuses.CatalogueSolutionsStatus" />
+                        <nhs-task-list-item label-text="Add Additional Services to your order"
+                                            url="@Url.Action(
+                                                nameof(AdditionalServicesController.Index),
+                                                "AdditionalServices",
+                                                new { Model.OdsCode, Model.CallOffId})"
+                                            status="@Model.SectionStatuses.AdditionalServiceStatus" />
+                        <nhs-task-list-item label-text="Add Associated Services to your order"
+                                            url="@Url.Action(
+                                                nameof(AssociatedServicesController.Index),
+                                                "AssociatedServices",
+                                                new { Model.OdsCode, Model.CallOffId})"
+                                            status="@Model.SectionStatuses.AssociatedServiceStatus" />
+                    </nhs-task-list-section>
+                    <nhs-task-list-section label-text="Indicate funding source">
+                        <nhs-task-list-item label-text="Explain how you're paying for this order"
+                                            url="@Url.Action(
+                                                    nameof(OrderController.FundingSource),
+                                                    "Order",
+                                                    new { Model.OdsCode, Model.CallOffId})"
+                                            status="@Model.SectionStatuses.FundingSourceStatus" />
+                    </nhs-task-list-section>
+                </nhs-task-list>
+            </nhs-fieldset-form-container>
 
-                <li data-test-id="task-1">
-                    <h2 data-test-id="task-1-name" class="bc-c-task-list__task">
-                        <span class="bc-c-task-list__task-number">2.</span>
-                        <div>Organisation information</div>
-                    </h2>
-                    <ul class="bc-c-task-list__items">
-                        <li data-test-id="task-1-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-1-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/ordering-party">Provide Call-off Ordering Party information</a>
-                            </span>
-                            <strong data-test-id="task-1-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
+            <vc:nhs-secondary-button text="Complete Order"
+                                     url="@Url.Action(
+                                            nameof(OrderController.CompleteOrder),
+                                            "Order",
+                                            new { Model.OdsCode, Model.CallOffId })"
+                                     use-primary-colour="true"/><br />
 
-                        <li data-test-id="task-1-item-1" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-1-item-1-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/supplier">Provide Supplier information</a>
-                            </span>
-                            <strong data-test-id="task-1-item-1-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
-                    </ul>
-                </li>
+            <vc:nhs-secondary-button text="Preview order summary"
+                                     url="@Url.Action(
+                                            nameof(OrderController.Summary),
+                                            "Order",
+                                            new { Model.OdsCode, Model.CallOffId })"
+                                     use-primary-colour="false"/><br />
 
-                <li data-test-id="task-2">
-                    <h2 data-test-id="task-2-name" class="bc-c-task-list__task">
-                        <span class="bc-c-task-list__task-number">3.</span>
-                        <div>Commencement date</div>
-                    </h2>
-                    <ul class="bc-c-task-list__items">
-                        <li data-test-id="task-2-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-2-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/commencement-date">Provide commencement date for this agreement</a>
-                            </span>
-                            <strong data-test-id="task-2-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
-                    </ul>
-                </li>
-
-                <li data-test-id="task-3">
-                    <h2 data-test-id="task-3-name" class="bc-c-task-list__task">
-                        <span class="bc-c-task-list__task-number">4.</span>
-                        <div>Add Catalogue Solutions</div>
-                    </h2>
-                    <ul class="bc-c-task-list__items">
-                        <li data-test-id="task-3-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-3-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions">Add Catalogue Solutions to your order</a>
-                            </span>
-                            <strong data-test-id="task-3-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
-                    </ul>
-                </li>
-
-                <li data-test-id="task-4">
-                    <h2 data-test-id="task-4-name" class="bc-c-task-list__task">
-                        <span class="bc-c-task-list__task-number">5.</span>
-                        <div>Add Additional Services</div>
-                    </h2>
-                    <ul class="bc-c-task-list__items">
-                        <li data-test-id="task-4-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-4-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services">Add Additional Services to your order</a>
-                            </span>
-                            <strong data-test-id="task-4-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
-                    </ul>
-                </li>
-
-                <li data-test-id="task-5">
-                    <h2 data-test-id="task-5-name" class="bc-c-task-list__task">
-                        <span class="bc-c-task-list__task-number">6.</span>
-                        <div>Add Associated Services</div>
-                    </h2>
-                    <ul class="bc-c-task-list__items">
-                        <li data-test-id="task-5-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-5-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/associated-services">Add Associated Services to your order</a>
-                            </span>
-                            <strong data-test-id="task-5-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
-                    </ul>
-                </li>
-
-                <li data-test-id="task-6">
-                    <h2 data-test-id="task-6-name" class="bc-c-task-list__task">
-                        <span class="bc-c-task-list__task-number">7.</span>
-                        <div>Indicate funding source</div>
-                    </h2>
-                    <ul class="bc-c-task-list__items">
-                        <li data-test-id="task-6-item-0" class="bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3">
-                            <span class="bc-c-task-list__task-name">
-                                <a data-test-id="task-6-item-0-description" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/funding-source">Explain how you&#39;re paying for this order</a>
-                            </span>
-                            <strong data-test-id="task-6-item-0-complete-tag" class="bc-c-tag-outline govuk-tag bc-c-task-list__task-completed nhsuk-u-margin-right-9" id="complete">Complete</strong>
-                        </li>
-                    </ul>
-                </li>
-            </ol>
-        </div>
-    </div>
-
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-one-third">
-            <div data-test-id="delete-order-button">
-                <a class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/delete-order" draggable="false">
-                    Delete order
-                </a>
-            </div>
-        </div>
-        <div class="nhsuk-grid-column-two-thirds">
-            <div class="bc-u-float-right">
-                <div class="bc-u-inline-block">
-                    <div data-test-id="preview-order-button">
-                        <a class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-9 nhsuk-u-margin-right-5" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/summary" draggable="false">
-                            Preview order summary
-                        </a>
-                    </div>
-                </div>
-                <div class="bc-u-inline-block">
-                    <div data-test-id="complete-order-button">
-                        <a class="nhsuk-button nhsuk-u-margin-bottom-9" href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/complete-order" draggable="false">
-                            Complete order
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <vc:nhs-delete-button text="Delete order"
+                                  url="@Url.Action(
+                                            nameof(OrderController.DeleteOrder),
+                                            "Order",
+                                            new { Model.OdsCode, Model.CallOffId })"/>
         </div>
     </div>
 </div>

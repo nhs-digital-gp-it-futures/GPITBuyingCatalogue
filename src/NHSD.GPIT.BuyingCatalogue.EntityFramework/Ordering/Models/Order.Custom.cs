@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
@@ -92,32 +91,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool CanComplete()
         {
-            if (!FundingSourceOnlyGms.HasValue)
-                return false;
-
-            int catalogueSolutionsCount = OrderItems.Count(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
-            int associatedServicesCount = OrderItems.Count(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);
-
-            var solutionAndAssociatedServices = catalogueSolutionsCount > 0
-                && associatedServicesCount > 0;
-
-            var solutionAndNoAssociatedServices = catalogueSolutionsCount > 0
-                && associatedServicesCount == 0
-                && Progress.AssociatedServicesViewed;
-
-            var noSolutionsAndAssociatedServices = catalogueSolutionsCount == 0
-                && Progress.CatalogueSolutionsViewed
-                && associatedServicesCount > 0;
-
-            return solutionAndNoAssociatedServices
-                || solutionAndAssociatedServices
-                || noSolutionsAndAssociatedServices;
+            return
+                !string.IsNullOrWhiteSpace(Description)
+                && OrderingPartyContact is not null
+                && Supplier is not null
+                && CommencementDate is not null
+                && (HasSolution() || HasAssociatedService())
+                && FundingSourceOnlyGms.HasValue;
         }
 
         public int DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
         {
-            var result = orderItems.RemoveAll(o => CatalogueItemId.ParseExact(o.CatalogueItem.CatalogueItemId) == catalogueItemId
-                || CatalogueItemId.ParseExact(o.CatalogueItem.Solution.Id) == catalogueItemId);
+            var result = orderItems.RemoveAll(o => o.CatalogueItem.CatalogueItemId == catalogueItemId
+                || o.CatalogueItem.Solution?.Id == catalogueItemId);
 
             if (!HasSolution())
             {

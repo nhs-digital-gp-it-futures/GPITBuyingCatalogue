@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
                 ProvisioningType.Patient => TimeUnit.PerMonth,
                 ProvisioningType.Declarative => TimeUnit.PerYear,
                 ProvisioningType.OnDemand => estimationPeriod,
-                _ => throw new InvalidOperationException(),
+                _ => throw new ArgumentOutOfRangeException(nameof(provisioningType)),
             };
         }
     }

@@ -22,16 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
         }
 
-        // TODO: callOffId should be of type CallOffId
-        public async Task SetOrderDescription(string callOffId, string description)
+        public async Task SetOrderDescription(CallOffId callOffId, string description)
         {
-            callOffId.ValidateNotNullOrWhiteSpace(nameof(callOffId));
             description.ValidateNotNullOrWhiteSpace(nameof(description));
 
             // TODO: logger invocations should pass values as args
             logger.LogInformation($"Setting order description for {callOffId} to {description}");
 
-            var order = (await orderRepository.GetAllAsync(o => o.Id == CallOffId.Parse(callOffId).Id.Id)).Single();
+            var order = (await orderRepository.GetAllAsync(o => o.Id == callOffId.Id)).Single();
             order.Description = description;
             await orderRepository.SaveChangesAsync();
         }
