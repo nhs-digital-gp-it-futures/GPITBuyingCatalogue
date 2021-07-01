@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -26,23 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public CatalogueItemId? CatalogueItemId { get; set; }
 
-        public int? PriceId { get; set; }
-
-        public decimal? CataloguePrice { get; set; }
+        public CataloguePrice CataloguePrice { get; set; }
 
         public decimal? AgreedPrice { get; set; }
 
-        public string CurrencyCode { get; set; }
-
-        public ProvisioningType ProvisioningType { get; set; }
-
         public List<OrderItemRecipientModel> ServiceRecipients { get; set; }
 
-        public TimeUnit? CataloguePriceTimeUnit { get; set; }
-
         public TimeUnit? EstimationPeriod { get; set; }
-
-        public PricingUnit PricingUnit { get; set; }
 
         public bool IsNewSolution { get; set; }
 
@@ -56,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         {
             get
             {
-                if (ProvisioningType != ProvisioningType.OnDemand)
-                    return CataloguePriceTimeUnit?.Description();
+                if (CataloguePrice?.ProvisioningType != ProvisioningType.OnDemand)
+                    return CataloguePrice?.TimeUnit?.Description();
 
-                return (EstimationPeriod ?? CataloguePriceTimeUnit)?.Description();
+                return (EstimationPeriod ?? CataloguePrice?.TimeUnit)?.Description();
             }
         }
     }

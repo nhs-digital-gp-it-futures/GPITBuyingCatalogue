@@ -245,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             orderSessionService.SetOrderStateToSession(state);
 
-            if (state.ProvisioningType == ProvisioningType.Declarative)
+            if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
             {
                 return RedirectToAction(
                     nameof(SelectFlatDeclarativeQuantity),
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { odsCode, callOffId });
             }
 
-            if (state.ProvisioningType == ProvisioningType.OnDemand)
+            if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
             {
                 return RedirectToAction(
                     nameof(SelectFlatOnDemandQuantity),
@@ -360,7 +360,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");
             }
 
-            if (model.OrderItem.AgreedPrice > state.CataloguePrice)
+            if (model.OrderItem.AgreedPrice > state.CataloguePrice.Price)
                 ModelState.AddModelError("OrderItem.Price", "Price cannot be greater than list price");
 
             if (!ModelState.IsValid)

@@ -29,7 +29,7 @@
                         </nhs-details>
                     </div>
 
-                    @if (Model.OrderItem.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.ProvisioningType.OnDemand)
+                    @if (Model.OrderItem.CataloguePrice.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.ProvisioningType.OnDemand)
                     {
                         <div class="nhsuk-u-margin-bottom-5">
                             <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
@@ -66,7 +66,7 @@
                             </nhs-details>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            @Model.OrderItem.PricingUnit.Description @Model.OrderItem.TimeUnitDescription
+                            @Model.OrderItem.CataloguePrice.PricingUnit.Description @Model.OrderItem.TimeUnitDescription
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 </nhs-table>

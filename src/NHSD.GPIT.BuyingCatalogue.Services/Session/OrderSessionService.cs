@@ -102,13 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                     CatalogueItemId = orderItem.CatalogueItemId,
                     CatalogueItemName = solution.Name,
                     AgreedPrice = orderItem.Price,
-                    CataloguePriceTimeUnit = orderItem.CataloguePrice.TimeUnit,
-                    PriceId = orderItem.PriceId,
-                    CataloguePrice = orderItem.CataloguePrice.Price,
-                    CurrencyCode = orderItem.CataloguePrice.CurrencyCode,
+                    CataloguePrice = orderItem.CataloguePrice,
                     CurrencySymbol = CurrencyCodeSigns.Code[orderItem.CataloguePrice.CurrencyCode],
-                    ProvisioningType = orderItem.CataloguePrice.ProvisioningType,
-                    PricingUnit = orderItem.CataloguePrice.PricingUnit,
                     EstimationPeriod = orderItem.EstimationPeriod,
                 };
 
@@ -157,13 +152,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             var state = GetOrderStateFromSession(callOffId);
 
             state.AgreedPrice = cataloguePrice.Price;
-            state.PriceId = cataloguePrice.CataloguePriceId;
-            state.ProvisioningType = cataloguePrice.ProvisioningType;
-            state.CataloguePrice = cataloguePrice.Price;
-            state.CurrencyCode = cataloguePrice.CurrencyCode;
+            state.CataloguePrice = cataloguePrice;
             state.CurrencySymbol = CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode];
-            state.PricingUnit = cataloguePrice.PricingUnit;
-            state.CataloguePriceTimeUnit = cataloguePrice.TimeUnit;
 
             SetOrderStateToSession(state);
 

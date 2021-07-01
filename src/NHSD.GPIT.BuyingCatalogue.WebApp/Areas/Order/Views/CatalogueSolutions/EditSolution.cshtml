@@ -24,7 +24,7 @@
                                              label-text="What price have you agreed?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
                                              Prefix="@Model.OrderItem.CurrencySymbol"
-                                             Suffix="@Model.OrderItem.PricingUnit.Description @Model.OrderItem.TimeUnitDescription" />
+                                             Suffix="@Model.OrderItem.CataloguePrice.PricingUnit.Description @Model.OrderItem.TimeUnitDescription" />
 
                         <nhs-details label-text="How to fill this form">
                             <p><b>@Model.SecondColumnDetailsTitle</b></p>

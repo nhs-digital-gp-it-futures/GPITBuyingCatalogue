@@ -35,12 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         public void UpdateModel(CreateOrderItemModel state)
         {
             OrderItem.CallOffId = state.CallOffId;
-            OrderItem.PricingUnit = state.PricingUnit;
-            OrderItem.CataloguePriceTimeUnit = state.CataloguePriceTimeUnit;
+            OrderItem.CataloguePrice = state.CataloguePrice;
             OrderItem.EstimationPeriod = state.EstimationPeriod;
-            OrderItem.CurrencyCode = state.CurrencyCode;
             OrderItem.CurrencySymbol = state.CurrencySymbol;
-            OrderItem.ProvisioningType = state.ProvisioningType;
         }
     }
 }

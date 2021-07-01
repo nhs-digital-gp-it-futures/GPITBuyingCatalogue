@@ -19,9 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             }
             else
             {
-                if (createOrderItemModel.ProvisioningType == ProvisioningType.Declarative)
+                if (createOrderItemModel.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
                     BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/flat/declarative";
-                else if (createOrderItemModel.ProvisioningType == ProvisioningType.OnDemand)
+                else if (createOrderItemModel.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
                     BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/flat/ondemand";
                 else
                     BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/recipients/date";
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
             get
             {
-                return OrderItem.ProvisioningType switch
+                return OrderItem.CataloguePrice?.ProvisioningType switch
                 {
                     ProvisioningType.Declarative => "Quantity",
                     ProvisioningType.OnDemand => "Quantity " + OrderItem.TimeUnitDescription,
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
             get
             {
-                return OrderItem.ProvisioningType == ProvisioningType.OnDemand
+                return OrderItem.CataloguePrice?.ProvisioningType == ProvisioningType.OnDemand
                     ? OrderItem.TimeUnitDescription
                     : string.Empty;
             }
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
             get
             {
-                if (OrderItem.ProvisioningType == ProvisioningType.Patient)
+                if (OrderItem.CataloguePrice?.ProvisioningType == ProvisioningType.Patient)
                     return "What list size should I enter?";
 
                 return "What quantity should I enter?";
@@ -82,10 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
             get
             {
-                if (OrderItem.ProvisioningType == ProvisioningType.Declarative)
+                if (OrderItem.CataloguePrice?.ProvisioningType == ProvisioningType.Declarative)
                     return "Enter the total amount you think you'll need for the entire duration of the order.";
 
-                if (OrderItem.ProvisioningType == ProvisioningType.OnDemand)
+                if (OrderItem.CataloguePrice?.ProvisioningType == ProvisioningType.OnDemand)
                     return "Estimate the quantity you think you'll need either per month or per year.";
 
                 return "Enter the amount you wish to order. This is usually based on each Service Recipient's practice list size to help calculate an estimated price, but the figure can be changed if required.As you’re ordering per patient, we've included each practice list size if we have it. If it's not included, you'll need to add it yourself.";
@@ -95,12 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public void UpdateModel(CreateOrderItemModel state)
         {
             OrderItem.CallOffId = state.CallOffId;
-            OrderItem.PricingUnit = state.PricingUnit;
-            OrderItem.CataloguePriceTimeUnit = state.CataloguePriceTimeUnit;
+            OrderItem.CataloguePrice = state.CataloguePrice;
             OrderItem.EstimationPeriod = state.EstimationPeriod;
-            OrderItem.CurrencyCode = state.CurrencyCode;
             OrderItem.CurrencySymbol = state.CurrencySymbol;
-            OrderItem.ProvisioningType = state.ProvisioningType;
         }
     }
 }
