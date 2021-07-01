@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -51,14 +52,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public string CurrencySymbol { get; set; }
 
-        public TimeUnit? TimeUnit
+        public string TimeUnitDescription
         {
             get
             {
                 if (ProvisioningType != ProvisioningType.OnDemand)
-                    return TimeUnit;
+                    return CataloguePriceTimeUnit?.Description();
 
-                return EstimationPeriod ?? TimeUnit;
+                return (EstimationPeriod ?? CataloguePriceTimeUnit)?.Description();
             }
         }
     }

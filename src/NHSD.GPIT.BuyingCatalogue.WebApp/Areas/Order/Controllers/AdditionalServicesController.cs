@@ -315,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 ModelState.AddModelError(nameof(model.Quantity), error);
 
             if (model.EstimationPeriod is null)
-                ModelState.AddModelError(nameof(model.EstimationPeriod), "Time Unit is Required");
+                ModelState.AddModelError(nameof(model.EstimationPeriod), "Estimation Period is Required");
 
             if (!ModelState.IsValid)
                 return View(model);

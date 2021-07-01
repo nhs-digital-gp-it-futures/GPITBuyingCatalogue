@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -67,7 +66,7 @@
                             </nhs-details>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            @Model.OrderItem.PricingUnit.Description @Model.OrderItem.TimeUnit?.Description()
+                            @Model.OrderItem.PricingUnit.Description @Model.OrderItem.TimeUnitDescription
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 </nhs-table>
