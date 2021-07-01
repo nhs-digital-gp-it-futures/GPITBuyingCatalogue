@@ -27,6 +27,10 @@ resource "azurerm_app_service" "webapp" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
     ASPNETCORE_ENVIRONMENT: var.aspnet_environment
 
+    APPINSIGHTS_INSTRUMENTATIONKEY      = "todo"
+    BC_SMTP_HOST                        = ""
+    BC_SMTP_PORT                        = ""
+    
     # Settings for Container Registy  
     DOCKER_REGISTRY_SERVER_URL          = "https://${data.azurerm_container_registry.acr.login_server}"
     DOCKER_REGISTRY_SERVER_USERNAME     = data.azurerm_container_registry.acr.admin_username
@@ -34,6 +38,7 @@ resource "azurerm_app_service" "webapp" {
 
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
+    CO_DB_CONNECTION                    = "todo"
     BC_BLOB_CONNECTION                  = var.sa_connection_string
     BC_BLOB_CONTAINER                   = "documents"
     
