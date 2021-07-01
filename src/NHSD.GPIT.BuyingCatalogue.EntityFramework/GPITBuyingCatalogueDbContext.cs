@@ -14,6 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
     {
         private readonly IIdentityService identityService;
 
+        public GPITBuyingCatalogueDbContext()
+        {
+        }
+
         public GPITBuyingCatalogueDbContext(DbContextOptions<GPITBuyingCatalogueDbContext> options, IIdentityService identityService)
             : base(options)
         {
@@ -62,7 +66,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is not IAudited auditedEntity)
+                // TODO: Don't like this option of not having an identityService but a lot of tests will require fixing up
+                if (entry.Entity is not IAudited auditedEntity || identityService is null)
                     continue;
 
                 (Guid userId, string userName) = identityService.GetUserInfo();
