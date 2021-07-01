@@ -24,3 +24,12 @@ resource "azurerm_resource_group" "keyvault" {
     architecture = "new"
   }
 }
+
+resource "azurerm_resource_group" "sql-primary" {
+  name     = "${var.project}-${var.environment}-rg-sql-primary"
+  location = var.region
+  tags = {
+    environment = var.environment,
+    architecture = "new"
+  }
+}

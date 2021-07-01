@@ -63,3 +63,10 @@ variable "sa_connection_string" {
 variable "aspnet_environment" {
   type = string
 }
+variable "sqlserver_name" {
+  type = string
+}
+
+variable "sqlserver_rg" {
+  type = string
+}
