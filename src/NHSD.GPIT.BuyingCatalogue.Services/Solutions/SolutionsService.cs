@@ -74,9 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
         {
             return dbContext.CatalogueItems
-                .Include(i => i.CataloguePrices)
+                .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
                 .Where(i => i.CatalogueItemId == solutionId)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
         }
 
         public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
