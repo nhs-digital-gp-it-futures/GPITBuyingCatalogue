@@ -100,10 +100,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && FundingSourceOnlyGms.HasValue;
         }
 
-        public int DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
+        public void DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
         {
-            var result = orderItems.RemoveAll(o => o.CatalogueItem.CatalogueItemId == catalogueItemId
-                || o.CatalogueItem.Solution?.Id == catalogueItemId);
+            orderItems.RemoveAll(o => o.CatalogueItem.CatalogueItemId == catalogueItemId
+                || o.CatalogueItem.AdditionalService?.SolutionId == catalogueItemId);
 
             if (!HasSolution())
             {
@@ -114,8 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             {
                 FundingSourceOnlyGms = null;
             }
-
-            return result;
         }
 
         public bool HasAssociatedService()
