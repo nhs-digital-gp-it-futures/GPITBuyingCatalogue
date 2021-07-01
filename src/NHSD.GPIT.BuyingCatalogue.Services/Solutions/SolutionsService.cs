@@ -74,9 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId)
         {
             return dbContext.CatalogueItems
-                .Include(i => i.CataloguePrices)
+                .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
                 .Where(i => i.CatalogueItemId == solutionId)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
         }
 
         public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
@@ -141,6 +141,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return dbContext.Capabilities.Where(c => c.Category.Name == "GP IT Futures")
                 .OrderBy(c => c.Name)
                 .ToListAsync();
+        }
+
+        public async Task<IList<Supplier>> GetAllSuppliers()
+        {
+            return await dbContext.Suppliers.OrderBy(s => s.Name).ToListAsync();
         }
 
         public async Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link)

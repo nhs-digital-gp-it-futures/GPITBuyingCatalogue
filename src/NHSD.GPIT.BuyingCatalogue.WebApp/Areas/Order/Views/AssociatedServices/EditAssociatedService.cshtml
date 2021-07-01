@@ -16,7 +16,6 @@
             <input type="hidden" asp-for="@Model.BackLinkText" />
             <input type="hidden" asp-for="@Model.OdsCode" />
             <input type="hidden" asp-for="@Model.Title" />
-            <input type="hidden" asp-for="@Model.CurrencySymbol" />
 
             <div class="nhsuk-grid-column-two-thirds">
                 <div class="nhsuk-u-margin-bottom-5">
@@ -30,7 +29,7 @@
                         </nhs-details>
                     </div>
 
-                    @if (Model.OrderItem.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.ProvisioningType.OnDemand)
+                    @if (Model.OrderItem.CataloguePrice.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.ProvisioningType.OnDemand)
                     {
                         <div class="nhsuk-u-margin-bottom-5">
                             <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
@@ -38,10 +37,10 @@
                                     <nhs-fieldset-form-label asp-for="@Model"
                                                              label-text="Over what period did you estimate the quantity?"
                                                              label-hint="Select one option.">
-                                        <nhs-radio-buttons asp-for="@Model.TimeUnit"
+                                        <nhs-radio-buttons asp-for="@Model.EstimationPeriod"
                                                            values="@Model.TimeUnits.Cast<object>()"
-                                                           value-name="Name"
-                                                           display-name="DisplayText" />
+                                                           value-name="EnumMemberName"
+                                                           display-name="Description" />
                                     </nhs-fieldset-form-label>
                                 </div>
                             </div>
@@ -56,34 +55,34 @@
             </div>
             <div class="nhsuk-grid-column-full">
                 <nhs-table>
-                    <nhs-table-column>What price have you agreed? (@Model.CurrencySymbol)</nhs-table-column>
+                    <nhs-table-column>What price have you agreed? (@Model.OrderItem.CurrencySymbol)</nhs-table-column>
                     <nhs-table-column>Unit of order</nhs-table-column>
                     <nhs-table-row-container>
                         <nhs-table-cell>
-                            <nhs-bookended-input asp-for="OrderItem.Price"
-                                                 Prefix="@Model.CurrencySymbol" />
+                            <nhs-bookended-input asp-for="OrderItem.AgreedPrice"
+                                                 Prefix="@Model.OrderItem.CurrencySymbol" />
                             <nhs-details label-text="What price should I enter?">
                                 You can change the list price if you’ve agreed a different rate with the supplier.
                             </nhs-details>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            @Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit
+                            @Model.OrderItem.CataloguePrice.PricingUnit.Description @Model.OrderItem.TimeUnitDescription
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 </nhs-table>
 
-                <nhs-submit-button text="Save" /><br/>
+                <nhs-submit-button text="Save" /><br />
 
-                @if (!Model.OrderItem.IsNewOrder)
-                {
+                @if (!Model.OrderItem.IsNewSolution)
+                { 
                     <vc:nhs-delete-button text="Delete Associated Service"
                                           url="@Url.Action(
                                           "DeleteAssociatedService",
                                           "AssociatedServices",
                                           new { Model.OdsCode,
-                                                Model.CallOffId,
+                                                Model.OrderItem.CallOffId,
                                                 Model.OrderItem.CatalogueItemId,
-                                                serviceName = Model.OrderItem.CatalogueItemName})" />
+                                                Model.OrderItem.CatalogueItemName})" />
                 }
             </div>
         </form>
