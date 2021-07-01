@@ -166,6 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00089", StatusId = 1 },
                             new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00090", StatusId = 1 },
                             new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00091", StatusId = 1 },
+                            new SolutionEpic {CapabilityId  = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00099", StatusId = 1 }
                         },
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -427,6 +428,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             };
             context.AddRange(dfocvcSolutions);
 
+            List<CatalogueItem> associatedServices = new()
+            {
+                new CatalogueItem
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "-S-999"),
+                    Name = "Associated Service For Test",
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = "99999",
+                    AssociatedService = new AssociatedService
+                    {
+                        Description = "This is the description of the Associated Service",
+                        OrderGuidance = "This is how to order",
+                        LastUpdated = DateTime.UtcNow,
+                        LastUpdatedBy = Guid.Empty,
+                    },
+                },
+            };
+            context.AddRange(associatedServices);
+
             List<FrameworkSolution> frameworkSolutions = new()
             {
                 new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
@@ -454,7 +476,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     ProvisioningType = ProvisioningType.Patient,
                     TimeUnit = TimeUnit.PerMonth,
                     LastUpdated = DateTime.UtcNow,
-                }
+                },
+                new CataloguePrice
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "-S-999"),
+                    CataloguePriceType = CataloguePriceType.Flat,
+                    PricingUnit = new()
+                    {
+                        PricingUnitId = Guid.NewGuid(),
+                        TierName = "thing",
+                        Name = "thing",
+                        Description = "per thing"
+                    },
+                    CurrencyCode = "GBP",
+                    Price = 0.01M,
+                    ProvisioningType = ProvisioningType.Declarative,
+                    TimeUnit = TimeUnit.PerYear,
+                    LastUpdated = DateTime.UtcNow,
+                },
             };
             context.AddRange(prices);
         }
@@ -1005,6 +1044,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new Epic { Id = "E00074", Name = "Disable and enable video during a group Video Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, Active = true },
                 new Epic { Id = "E00087", Name = "Retain attachments (file and images) received during Video Consultation in the Patient Record", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, Active = true },
                 new Epic { Id = "E00088", Name = "SNOMED code Video Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, Active = true },
+                new Epic { Id = "E00099", Name = "User Friendly", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, Active = true, SupplierDefined = true },
             };
             context.AddRange(epics);
 
