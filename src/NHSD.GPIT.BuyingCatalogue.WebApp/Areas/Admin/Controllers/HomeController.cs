@@ -40,12 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(mapper.Map<IList<Organisation>, IList<OrganisationModel>>(organisations));
         }
 
-        [Route("catalogue-solutions")]
-        public IActionResult ManageCatalogueSolutions()
-        {
-            return View();
-        }
-
         [HttpGet("catalogue-solutions/add-solution")]
         public async Task<IActionResult> AddSolution()
         {

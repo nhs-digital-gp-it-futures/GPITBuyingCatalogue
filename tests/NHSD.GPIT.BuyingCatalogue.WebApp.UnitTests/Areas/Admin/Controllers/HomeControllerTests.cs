@@ -142,16 +142,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Get_ManageCatalogueSolutions_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(HomeController)
-                .GetMethod(nameof(HomeController.ManageCatalogueSolutions))
-                .GetCustomAttribute<RouteAttribute>()
-                .Template.Should()
-                .Be("catalogue-solutions");
-        }
-
-        [Fact]
         public static async Task Get_AddSolution_GetAllSuppliers()
         {
             var mockSolutionsService = new Mock<ISolutionsService>();
