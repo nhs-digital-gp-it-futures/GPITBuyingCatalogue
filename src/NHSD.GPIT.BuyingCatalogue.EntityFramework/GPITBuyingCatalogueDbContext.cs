@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -8,18 +12,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
     public partial class GPITBuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
     {
-        public GPITBuyingCatalogueDbContext()
-        {
-        }
+        private readonly IIdentityService identityService;
 
-        public GPITBuyingCatalogueDbContext(DbContextOptions<GPITBuyingCatalogueDbContext> options)
+        public GPITBuyingCatalogueDbContext(DbContextOptions<GPITBuyingCatalogueDbContext> options, IIdentityService identityService)
             : base(options)
         {
+            this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
-        protected GPITBuyingCatalogueDbContext(DbContextOptions options)
+        protected GPITBuyingCatalogueDbContext(
+            DbContextOptions options,
+            IIdentityService identityService)
             : base(options)
         {
+            this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
         public virtual DbSet<AdditionalService> AdditionalServices { get; set; }
@@ -51,6 +57,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public virtual DbSet<Organisation> Organisations { get; set; }
 
         public virtual DbSet<RelatedOrganisation> RelatedOrganisations { get; set; }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is not IAudited auditedEntity)
+                    continue;
+
+                (Guid userId, string userName) = identityService.GetUserInfo();
+
+                switch (entry.State)
+                {
+                    case EntityState.Detached:
+                    case EntityState.Unchanged:
+                        continue;
+                    default:
+                        auditedEntity.SetLastUpdatedBy(userId, userName);
+                        continue;
+                }
+            }
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
