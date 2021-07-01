@@ -97,7 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && Supplier is not null
                 && CommencementDate is not null
                 && (HasSolution() || HasAssociatedService())
-                && FundingSourceOnlyGms.HasValue;
+                && FundingSourceOnlyGms.HasValue
+                && OrderStatus == OrderStatus.Complete;
         }
 
         public void DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)

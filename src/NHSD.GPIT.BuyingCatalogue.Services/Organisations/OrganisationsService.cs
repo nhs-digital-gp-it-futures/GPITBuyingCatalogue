@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         {
             var organisation = new Organisation
             {
-                Address = JsonConvert.SerializeObject(odsOrganisation.Address),
+                Address = odsOrganisation.Address,
                 OrganisationId = Guid.NewGuid(),
                 CatalogueAgreementSigned = agreementSigned,
                 LastUpdated = DateTime.UtcNow,
