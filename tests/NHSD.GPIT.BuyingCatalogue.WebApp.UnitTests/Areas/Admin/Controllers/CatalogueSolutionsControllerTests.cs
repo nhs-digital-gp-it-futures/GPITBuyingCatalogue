@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EnumsNET;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -63,25 +64,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Index_StatusInput_SetsSelectedOnModel_ReturnsViewWithModel(
             List<CatalogueItem> solutions)
         {
-            Enum.GetValues<PublicationStatus>().ToList()
-                .ForEach(
-                    async status =>
-                    {
-                        var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
-                        var mockService = new Mock<ISolutionsService>();
-                        mockService.Setup(s => s.GetAllSolutions(status))
-                            .ReturnsAsync(solutions);
-                        var controller = new CatalogueSolutionsController(mockService.Object);
+            var status = Enums.GetValues<PublicationStatus>()[new Random().Next(0, Enums.GetMemberCount<PublicationStatus>())];
+            var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetAllSolutions(status))
+                .ReturnsAsync(solutions);
+            var controller = new CatalogueSolutionsController(mockService.Object);
 
-                        var actual = (await controller.Index()).As<ViewResult>();
+            var actual = (await controller.Index(status)).As<ViewResult>();
 
-                        actual.Should().NotBeNull();
-                        actual.ViewName.Should().BeNull();
-                        var model = actual.Model.As<CatalogueSolutionsModel>();
-                        model.Solutions.Should().BeEquivalentTo(expected);
-                        model.HasSelected.Should().BeTrue();
-                        model.AllPublicationStatuses.Single(p => p.Checked).Id.Should().Be((int)status);
-                    });
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            var model = actual.Model.As<CatalogueSolutionsModel>();
+            model.Solutions.Should().BeEquivalentTo(expected);
+            model.HasSelected.Should().BeTrue();
+            model.AllPublicationStatuses.Single(p => p.Checked).Id.Should().Be((int)status);
         }
     }
 }
