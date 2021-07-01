@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
 {
     internal static class SolutionObjects
-    {    
+    {
         internal static By ImplementationName => By.TagName("h1");
       
         internal static By SolutionName => CustomBy.DataTestId("view-solution-page-solution-name");
@@ -24,6 +24,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By PriceColumn => CustomBy.DataTestId("price");
 
         internal static By SolutionEpicLink => By.LinkText("Check Epics");
-          
+
+        internal static By AssociatedServicesTable => CustomBy.DataTestId("associated-services-table");
+
+        internal static By AssociatedServicesInformation => CustomBy.DataTestId("associated-services-details");
+
+        internal static By Description => CustomBy.DataTestId("description");
+
+        internal static By OrderGuidance => CustomBy.DataTestId("order-guidance");
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
@@ -76,6 +77,35 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         internal IEnumerable<string> GetSupplierSolutionEpics()
         {
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.SupplierSolutionEpics).Select(s => s.Text);
+        }
+
+        internal bool AssociatedServicesTableDisplayed()
+        {
+            return ElementDisplayed(Objects.PublicBrowse.SolutionObjects.AssociatedServicesTable);
+        }
+
+        internal IEnumerable<string> GetAssociatedServicesNamesFromTable()
+        {
+            return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.AssociatedServicesTable).FindElements(By.TagName("a")).Select(s => s.Text);
+        }
+
+        internal IEnumerable<AssociatedService> GetAssociatedServicesInfo()
+        {
+            var associatedServices = new List<AssociatedService>();
+
+            var associatedServicesOnPage = Driver.FindElement(Objects.PublicBrowse.SolutionObjects.AssociatedServicesInformation).FindElements(By.TagName("dl"));
+
+            foreach(var assocServ in associatedServicesOnPage)
+            {
+                associatedServices.Add(
+                    new()
+                    {
+                        Description = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.Description).Text,
+                        OrderGuidance = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.OrderGuidance).Text
+                    });
+            }
+
+            return associatedServices;
         }
 
         private bool ElementDisplayed(By by)
