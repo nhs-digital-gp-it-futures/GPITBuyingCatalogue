@@ -428,6 +428,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             };
             context.AddRange(dfocvcSolutions);
 
+            List<CatalogueItem> associatedServices = new()
+            {
+                new CatalogueItem
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "-S-999"),
+                    Name = "Associated Service For Test",
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = "99999",
+                    AssociatedService = new AssociatedService
+                    {
+                        Description = "This is the description of the Associated Service",
+                        OrderGuidance = "This is how to order",
+                        LastUpdated = DateTime.UtcNow,
+                        LastUpdatedBy = Guid.Empty,
+                    },
+                },
+            };
+            context.AddRange(associatedServices);
+
             List<FrameworkSolution> frameworkSolutions = new()
             {
                 new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty },
@@ -455,7 +476,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     ProvisioningType = ProvisioningType.Patient,
                     TimeUnit = TimeUnit.PerMonth,
                     LastUpdated = DateTime.UtcNow,
-                }
+                },
+                new CataloguePrice
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "-S-999"),
+                    CataloguePriceType = CataloguePriceType.Flat,
+                    PricingUnit = new()
+                    {
+                        PricingUnitId = Guid.NewGuid(),
+                        TierName = "thing",
+                        Name = "thing",
+                        Description = "per thing"
+                    },
+                    CurrencyCode = "GBP",
+                    Price = 0.01M,
+                    ProvisioningType = ProvisioningType.Declarative,
+                    TimeUnit = TimeUnit.PerYear,
+                    LastUpdated = DateTime.UtcNow,
+                },
             };
             context.AddRange(prices);
         }
