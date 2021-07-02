@@ -8,13 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
     public sealed class CatalogueSolutionsModel
     {
         private readonly List<PublicationStatus> publicationStatusModels =
-            new[] { 1, 3, 2, 5, 4 }.Select(
-                    s => new PublicationStatus
-                    {
-                        Id = s,
-                        Display = Enums.ToObject<EntityFramework.Models.GPITBuyingCatalogue.PublicationStatus>(s)
-                            .AsString(EnumFormat.DisplayName),
-                    })
+            Enums.GetValues<EntityFramework.Models.GPITBuyingCatalogue.PublicationStatus>(
+                    EnumMemberSelection.DisplayOrder)
+                .Select(s => new PublicationStatus { Id = (int)s, Display = s.AsString(EnumFormat.DisplayName) })
                 .ToList();
 
         public CatalogueSolutionsModel(IEnumerable<CatalogueItem> solutions)
