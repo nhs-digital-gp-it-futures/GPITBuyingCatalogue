@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Guid LastUpdatedBy { get; set; }
 
-        public CatalogueItem IdNavigation { get; set; }
+        public CatalogueItem CatalogueItem { get; set; }
 
         public ICollection<AdditionalService> AdditionalServices { get; set; }
 

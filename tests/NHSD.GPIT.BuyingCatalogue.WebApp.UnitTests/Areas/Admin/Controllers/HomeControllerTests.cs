@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
@@ -30,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             Assert.Throws<ArgumentNullException>(
                     () =>
-                        _ = new HomeController(null, Mock.Of<IMapper>()))
+                        _ = new HomeController(null, Mock.Of<IMapper>(), null))
                 .ParamName.Should()
                 .Be("organisationsService");
         }
@@ -42,9 +43,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     () =>
                         _ = new HomeController(
                             Mock.Of<IOrganisationsService>(),
-                            null))
+                            null,
+                            Mock.Of<ISolutionsService>()))
                 .ParamName.Should()
                 .Be("mapper");
+        }
+
+        [Fact]
+        public static void Constructor_NullSolutionsService_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                    () =>
+                        _ = new HomeController(
+                            Mock.Of<IOrganisationsService>(),
+                            Mock.Of<IMapper>(),
+                            null))
+                .ParamName.Should()
+                .Be("solutionsService");
         }
 
         [Fact]
@@ -63,7 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockOrganisationService = new Mock<IOrganisationsService>();
             var controller = new HomeController(                
                 mockOrganisationService.Object,
-                Mock.Of<IMapper>());
+                Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
 
             await controller.BuyerOrganisations();
 
@@ -80,7 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockMapper = new Mock<IMapper>();
             var controller = new HomeController(                
                 mockOrganisationService.Object,
-                mockMapper.Object);
+                mockMapper.Object,
+                Mock.Of<ISolutionsService>());
 
             await controller.BuyerOrganisations();
 
@@ -100,7 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Returns(mockOrganisationModels);
             var controller = new HomeController(                
                 mockOrganisationService.Object,
-                mockMapper.Object);
+                mockMapper.Object,
+                Mock.Of<ISolutionsService>());
 
             var actual = (await controller.BuyerOrganisations()).As<ViewResult>();
 
@@ -114,12 +132,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var controller = new HomeController(
                 Mock.Of<IOrganisationsService>(),
-                Mock.Of<IMapper>());
+                Mock.Of<IMapper>(),
+                Mock.Of<ISolutionsService>());
 
             var result = controller.Index().As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
+        }
+
+        [Fact]
+        public static async Task Get_AddSolution_GetAllSuppliers()
+        {
+            var mockSolutionsService = new Mock<ISolutionsService>();
+            var controller = new HomeController(
+                Mock.Of<IOrganisationsService>(),
+                Mock.Of<IMapper>(),
+                mockSolutionsService.Object);
+
+            await controller.AddSolution();
+
+            mockSolutionsService.Verify(o => o.GetAllSuppliers());
+        }
+
+        [Fact]
+        public static async Task Get_AddSolution_ReturnsViewWithExpectedViewModel()
+        {
+            var mockSolutionsService = new Mock<ISolutionsService>();
+            var mockSuppliers = new Mock<IList<Supplier>>().Object;
+            mockSolutionsService.Setup(o => o.GetAllSuppliers())
+                .ReturnsAsync(mockSuppliers);
+            var controller = new HomeController(
+                Mock.Of<IOrganisationsService>(),
+                Mock.Of<IMapper>(),
+                mockSolutionsService.Object);
+
+            var actual = (await controller.AddSolution()).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
         }
     }
 }
