@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Text.Json;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -208,6 +209,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
                 entity.HasIndex(e => e.Name, "IX_OrganisationName")
                     .IsClustered();
+
+                entity.Property(s => s.Address)
+                    .HasConversion(
+                        a => JsonSerializer.Serialize(a, null),
+                        a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
 
                 entity.Property(e => e.OrganisationId).ValueGeneratedNever();
 
