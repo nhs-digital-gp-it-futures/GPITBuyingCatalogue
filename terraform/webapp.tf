@@ -20,8 +20,14 @@ module "webapp" {
   repository_name  = "nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp"
   always_on        = local.shortenv != "production" ? "false" : "true"
   db_name_main     = module.sql_databases_pri.sql_main_dbname # in cluster "bc-${var.environment}-bapi"  
-  auth_pwd         = data.azurerm_key_vault_secret.sqladminpassword.value
-  cert_name        = data.azurerm_key_vault_secret.certname.value
+  auth_pwd         = azurerm_key_vault_secret.sqladminpassword.value
+  cert_name        = var.certname
   webapp_cname_url = local.gw_webappURL
   core_environment = local.coreEnv
+  sa_connection_string = module.storage_account.primary_connection_string
+  aspnet_environment = "Development"
+  sqlserver_name = module.sql_server_pri.sql_server_name
+  sqlserver_rg = azurerm_resource_group.sql-primary.name
+
+  depends_on = [module.sql_server_pri]
 }

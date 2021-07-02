@@ -107,10 +107,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 OrderingParty = orderingParty,
             };
 
-            // TODO: SetLastUpdateBy should be invoked automatically on save by overriding SaveChangesAsync (see ordering API)
-            // It is invoked here to allow an order to be created with the code as is.
-            order.SetLastUpdatedBy(Guid.Empty, "Mr T");
-
             dbContext.Add(order);
             await dbContext.SaveChangesAsync();
 
