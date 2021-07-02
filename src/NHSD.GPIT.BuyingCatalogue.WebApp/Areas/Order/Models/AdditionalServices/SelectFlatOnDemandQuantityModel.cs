@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             CallOffId = callOffId;
             SolutionName = solutionName;
             Quantity = quantity.ToString();
-            TimeUnit = timeUnit;
+            EstimationPeriod = timeUnit;
         }
 
         public CallOffId CallOffId { get; set; }
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         [Required(ErrorMessage = "Enter a quantity")]
         public string Quantity { get; set; }
 
-        public TimeUnit? TimeUnit { get; set; }
+        public TimeUnit? EstimationPeriod { get; set; }
 
         public List<TimeUnit> TimeUnits { get; } = Enum.GetValues<TimeUnit>().ToList();
 

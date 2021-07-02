@@ -10,6 +10,6 @@
 
         void SetObject(string key, object value);
 
-        void ClearSession();
+        void ClearSession(string key);
     }
 }

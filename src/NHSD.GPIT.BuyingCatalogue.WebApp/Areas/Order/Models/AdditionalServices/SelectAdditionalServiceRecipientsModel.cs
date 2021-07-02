@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             CatalogueItemId additionalServiceId)
         {
             if (isNewOrder)
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/solution";
+                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service";
             else
                 BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/{additionalServiceId}";
 

@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
             string odsCode,
             CallOffId callOffId,
             List<CatalogueItem> solutions,
-            CatalogueItemId selectedAdditionalServiceId)
+            CatalogueItemId? selectedAdditionalServiceId)
         {
             BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services";
             BackLinkText = "Go back";
@@ -28,6 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         public List<CatalogueItem> Solutions { get; set; }
 
         [Required(ErrorMessage = "Select an Additional Service")]
-        public CatalogueItemId SelectedAdditionalServiceId { get; set; }
+        public CatalogueItemId? SelectedAdditionalServiceId { get; set; }
     }
 }
