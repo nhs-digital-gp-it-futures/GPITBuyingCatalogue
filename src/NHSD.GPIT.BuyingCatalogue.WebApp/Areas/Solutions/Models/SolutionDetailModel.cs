@@ -28,11 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
         }
 
-        public CatalogueItem CatalogueItem { get; private set; }
+        public CatalogueItem CatalogueItem { get; }
 
         public string Frameworks { get; private set; }
 
-        public string[] Features { get; private set; }
+        public string[] Features { get; }
 
         public ClientApplicationTypeModel BrowserBased { get; set; }
 
