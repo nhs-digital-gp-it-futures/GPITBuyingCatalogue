@@ -304,5 +304,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.PublishedStatus == publicationStatus.Value)
                 .ToListAsync();
         }
+
+        public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
+            dbContext.CatalogueItems.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
     }
 }

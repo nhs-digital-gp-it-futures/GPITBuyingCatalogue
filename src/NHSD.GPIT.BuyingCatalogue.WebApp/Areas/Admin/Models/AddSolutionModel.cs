@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -24,25 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public IDictionary<string, string> Suppliers { get; set; } = new Dictionary<string, string>();
 
         public FrameworkModel FrameworkModel { get; set; }
-    }
 
-    public class FrameworkModel
-    {
-        public bool DfocvcFramework { get; set; }
-
-        public bool FoundationSolutionFramework { get; set; }
-
-        public bool GpitFuturesFramework { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (!DfocvcFramework && !GpitFuturesFramework)
-            {
-                yield return new ValidationResult(
-                    "Select the framework(s) your solution is available from",
-                    new[] { string.Empty }
-                );
-            }
-        }
+        public IEnumerable<SelectListItem> SuppliersSelectList => Suppliers == null || !Suppliers.Any()
+            ? System.Array.Empty<SelectListItem>()
+            : Suppliers.Select(s => new SelectListItem($"{s.Value} ({s.Key})", s.Key));
     }
 }

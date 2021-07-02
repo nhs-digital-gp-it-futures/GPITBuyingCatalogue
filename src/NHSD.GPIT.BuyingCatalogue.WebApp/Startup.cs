@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -80,6 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ServicesStartup.Configure(services);
 
             services.ConfigureAutoMapper();
+
+            services.AddFluentValidation();
 
             services.AddRazorPages();
         }
