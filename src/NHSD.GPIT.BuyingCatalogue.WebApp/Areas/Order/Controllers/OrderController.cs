@@ -122,9 +122,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 },
             };
 
-            return print.Equals("true", StringComparison.InvariantCultureIgnoreCase)
-            ? View("PrintSummary", model)
-            : View(model);
+            return print.Equals("true", StringComparison.OrdinalIgnoreCase)
+                ? View("PrintSummary", model)
+                : View(model);
         }
 
         [HttpPost("summary")]

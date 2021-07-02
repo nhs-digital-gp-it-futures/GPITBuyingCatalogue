@@ -159,13 +159,13 @@
                             @Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value.ToString("N")
                         </nhs-summary-list-row>
                         <nhs-summary-list-row label-text="Total monthly cost(indicitive)">
-                            @(((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value)/ 12).ToString("N"))
+                            @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value/ 12).ToString("N"))
                         </nhs-summary-list-row>
                     </nhs-summary-list>
                     <nhs-summary-list>
                         <nhs-summary-list-row label-text="Total cost of contract (indicative)">
-                            @(((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value)
-                        + ((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)) * 3).Value))
+                            @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value
+                        + (Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)) * 3).Value)
                         .ToString("N"))
                             <p>
                                 This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
