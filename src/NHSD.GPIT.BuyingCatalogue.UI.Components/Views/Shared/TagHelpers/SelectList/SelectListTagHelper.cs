@@ -44,19 +44,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            var formgroup = TagHelperBuilders.GetFormGroupBuilder();
+            var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var errorMessage = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
-            var selectlist = GetSelectListBuilder();
+            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint);
+            var selectList = GetSelectListBuilder();
 
-            formgroup.InnerHtml
+            formGroup.InnerHtml
                 .AppendHtml(label)
                 .AppendHtml(errorMessage)
                 .AppendHtml(hint)
-                .AppendHtml(selectlist);
+                .AppendHtml(selectList);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formgroup, true);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, true);
         }
 
         private TagBuilder GetSelectListBuilder()
