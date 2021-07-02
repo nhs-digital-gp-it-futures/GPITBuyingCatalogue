@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.PublicationStatus;
@@ -18,12 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var actual = new CatalogueSolutionsModel(new List<CatalogueItem>()).AllPublicationStatuses;
 
-            var publicationStatuses = Enum.GetValues<PublicationStatus>();
-            actual.Count.Should().Be(publicationStatuses.Length);
-            foreach (var status in publicationStatuses)
-            {
-                actual.Single(p => p.Id == (int)status).Display.Should().Be(status.AsString(EnumFormat.DisplayName));
-            }
+            actual.Should()
+                .BeEquivalentTo(
+                    new List<NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.PublicationStatus>
+                    {
+                        new() { Id = 1, Display = "Draft" },
+                        new() { Id = 3, Display = "Published" },
+                        new() { Id = 2, Display = "Unpublished" },
+                        new() { Id = 5, Display = "In Remediation" },
+                        new() { Id = 4, Display = "Suspended" },
+                    });
         }
 
         [Theory]
