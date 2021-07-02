@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Checkbox;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -16,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         private const string NhsCheckboxItem = "nhsuk-checkboxes__item";
         private const string NhsCheckboxInput = "nhsuk-checkboxes__input";
         private const string NhsCheckboxLabel = "nhsuk-checkboxes__label";
-        private const string ChildContentContainerClass = "nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -49,7 +47,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             if (!childContent.IsEmptyOrWhiteSpace)
             {
-                ProcessOutputForConditionalContent(output, context, input, childContent);
+                TagHelperFunctions.ProcessOutputForConditionalContent(
+                    output,
+                    context,
+                    input,
+                    childContent,
+                    new(2) { TagHelperConstants.NhsCheckBoxChildConditionalClass, TagHelperConstants.NhsCheckBoxChildConditionalHiddenClass });
             }
 
             output.Content.AppendHtml(input);
@@ -59,14 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 output.Content.AppendHtml(GetHiddenInputBuilder());
 
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
-        }
-
-        private static void TellParentThisHasConditionalChildContent(TagHelperContext context)
-        {
-            if (context.Items.TryGetValue(CheckboxContainerTagHelper.CheckBoxContextName, out object value))
-            {
-                (value as CheckboxContext).ContainsConditionalContent = true;
-            }
         }
 
         private TagBuilder GetCheckboxInputBuilder()
@@ -100,33 +95,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 HiddenFor.Model,
                 false,
                 null);
-        }
-
-        private TagBuilder GetChildContentConditionalBuilder()
-        {
-            var builder = new TagBuilder(TagHelperConstants.Div);
-
-            builder.AddCssClass(ChildContentContainerClass);
-
-            builder.GenerateId($"conditional-{For.Name}", "_");
-
-            return builder;
-        }
-
-        private void ProcessOutputForConditionalContent(TagHelperOutput output, TagHelperContext context, TagBuilder input, TagHelperContent childContent)
-        {
-            var childContainer = GetChildContentConditionalBuilder();
-
-            childContainer.InnerHtml.AppendHtml(childContent);
-
-            output.PostElement.AppendHtml(childContainer);
-
-            childContainer.Attributes.TryGetValue("id", out string containerId);
-
-            input.MergeAttribute(TagHelperConstants.AriaControls, containerId);
-            input.MergeAttribute(TagHelperConstants.AriaExpanded, "false");
-
-            TellParentThisHasConditionalChildContent(context);
         }
     }
 }

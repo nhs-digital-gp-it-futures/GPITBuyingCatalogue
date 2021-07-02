@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -87,6 +88,35 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     }
                 }
             }
+        }
+
+        public static void TellParentThisHasConditionalChildContent(TagHelperContext context)
+        {
+            if (context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
+            {
+                (value as ConditionalContext).ContainsConditionalContent = true;
+            }
+        }
+
+        public static void ProcessOutputForConditionalContent(
+            TagHelperOutput output,
+            TagHelperContext context,
+            TagBuilder input,
+            TagHelperContent childContent,
+            List<string> classes)
+        {
+            var childContainer = TagHelperBuilders.GetChildContentConditionalBuilder(input, classes);
+
+            childContainer.InnerHtml.AppendHtml(childContent);
+
+            output.PostElement.AppendHtml(childContainer);
+
+            childContainer.Attributes.TryGetValue("id", out string containerId);
+
+            input.MergeAttribute(TagHelperConstants.AriaControls, containerId);
+            input.MergeAttribute(TagHelperConstants.AriaExpanded, "false");
+
+            TellParentThisHasConditionalChildContent(context);
         }
     }
 }

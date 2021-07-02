@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Checkbox;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -11,21 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     {
         public const string TagHelperName = "nhs-checkbox-container";
 
-        public const string CheckBoxContextName = "CheckboxContext";
-
-        private const string NhsCheckboxes = "nhsuk-checkboxes";
-        private const string NhsCheckBoxConditionalClass = "nhsuk-checkboxes--conditional";
-        private const string NhsCheckBoxConditionalHiddenClass = "nhsuk-checkboxes__conditional--hidden";
-
-        private CheckboxContext checkboxContext;
+        private ConditionalContext conditionalContext;
 
         public override void Init(TagHelperContext context)
         {
-            if (!context.Items.TryGetValue(CheckBoxContextName, out _))
+            if (!context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out _))
             {
-                checkboxContext = new CheckboxContext();
+                conditionalContext = new ConditionalContext();
 
-                context.Items.Add(CheckBoxContextName, checkboxContext);
+                context.Items.Add(TagHelperConstants.ConditionalContextName, conditionalContext);
             }
         }
 
@@ -47,19 +41,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             var stringBuilder = new StringBuilder();
 
-            stringBuilder.Append(NhsCheckboxes);
+            stringBuilder.Append(TagHelperConstants.NhsCheckboxes);
 
-            if (context.Items.TryGetValue(CheckBoxContextName, out object value))
+            // only apply to self if this is the parent container
+            if (context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
             {
-                if ((value as CheckboxContext).ContainsConditionalContent == true)
+                if ((value as ConditionalContext).ContainsConditionalContent == true)
                 {
-                    stringBuilder.Append(' ');
-                    stringBuilder.Append(NhsCheckBoxConditionalClass);
-
-                    if (checkboxContext is null)
+                    if (conditionalContext is not null)
                     {
                         stringBuilder.Append(' ');
-                        stringBuilder.Append(NhsCheckBoxConditionalHiddenClass);
+                        stringBuilder.Append(TagHelperConstants.NhsCheckBoxParentConditionalClass);
                     }
                 }
             }

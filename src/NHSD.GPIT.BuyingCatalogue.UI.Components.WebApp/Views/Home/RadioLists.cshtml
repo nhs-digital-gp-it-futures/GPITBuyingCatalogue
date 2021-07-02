@@ -8,108 +8,233 @@
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from RadioLists.cshtml using the RadioListModel." />
 
+
+
+
+
 <p>This radio List component is for if you wish to have a user select an option from a list of available objects.</p>
 <p>If you wish to have a user select Yes or No For a single option, see Yes No Radios</p>
 
 <vc:nhs-action-link url="yes-no-radios" text="Click Here To see about Yes No Radios" />
 
-<nhs-fieldset-form-label asp-for="@Model"
-                         label-text="This is a Radio List from a List"
-                         label-hint="And a Hint">
-    <nhs-radio-buttons asp-for="@Model.SelectedItem"
-                       values="@Model.Options"
-                       value-name="Value"
-                       display-name="Name" />
-</nhs-fieldset-form-label>
+<p>There are two types of radio controls, radios generated from a list, and radios generated from list items. The list item version allows conditional content.</p>
 
 <nhs-fieldset-form-container asp-for="@Model"
-                             label-text="Code Example for the above Radio List"
-                             size="Medium">
-    <div class="app-tabs__container js-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
-        <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
-        <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a Radio List from a List"&nbsp;</span><br />
-        <span class="vs-light-theme-purple first-layer">label-hint</span><span class="vs-light-theme-blue">="And a Hint"&nbsp;</span>
-        <span class="vs-light-theme-blue">&gt;</span><br />
+                             label-text="Generated directly from a list"
+                             size="ExtraLarge">
 
-        <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-buttons</span><br />
-        <span class="vs-light-theme-purple second-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model.SelectedItem"&nbsp;</span><br />
-        <span class="vs-light-theme-purple second-layer">values</span><span class="vs-light-theme-blue">="@@Model.Options"&nbsp;</span><br />
-        <span class="vs-light-theme-purple second-layer">value-name</span><span class="vs-light-theme-blue">="Value"&nbsp;</span><br />
-        <span class="vs-light-theme-purple second-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span>
-        <span class="vs-light-theme-blue">/&gt;</span><br />
-
-
-        <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
-        <span class="vs-light-theme-blue">&gt;</span>
-    </div>
-</nhs-fieldset-form-container>
-
-<p>This object requires a fieldset-form-label to work correctly, to see about how to set a fieldset-form-label, please check fieldsets.</p>
-<vc:nhs-action-link url="fieldsets" text="Click here to see about fieldsets" />
-
-
-<nhs-fieldset-form-container asp-for="@Model"
-                             label-text="value-name and display-name">
-    <p>For this component to work, the list of objects that form the list options must have two properties: a Value and a Name</p>
-    <p>This can come from the same property if the names are unique, but if it is a complex object, a unique ID and a seperate Display name are recommended.</p>
-    <p>This is required so that the form post can choose the correct value.</p>
+    <nhs-fieldset-form-label asp-for="@Model"
+                             label-text="This is a Radio List from a List"
+                             label-hint="And a Hint">
+        <nhs-radio-buttons asp-for="SelectedItem"
+                           values="@Model.ListOptions"
+                           value-name="Value"
+                           display-name="Name" />
+    </nhs-fieldset-form-label>
 
     <nhs-fieldset-form-container asp-for="@Model"
-                                 label-text="Example Object"
+                                 label-text="Code Example for the above Radio List"
                                  size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a Radio List from a List"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-hint</span><span class="vs-light-theme-blue">="And a Hint"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
 
-        <span>public sealed Class RadioListOption</span><br />
-        <span>{</span><br />
-        <span>&nbsp; public string Value { get; set; }</span><br />
-        <span>&nbsp; public string Name { get; set; }</span><br />
-        <span>}</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-buttons</span><br />
+            <span class="vs-light-theme-purple second-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedItem"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">values</span><span class="vs-light-theme-blue">="@@Model.ListOptions"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">value-name</span><span class="vs-light-theme-blue">="Value"&nbsp;</span><br />
+            <span class="vs-light-theme-purple second-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+        </div>
     </nhs-fieldset-form-container>
+
+    <p>This object requires a fieldset-form-label to work correctly, to see about how to set a fieldset-form-label, please check fieldsets.</p>
+    <vc:nhs-action-link url="fieldsets" text="Click here to see about fieldsets" />
+
+
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="value-name and display-name">
+        <p>For this component to work, the list of objects that form the list options must have two properties: a Value and a Name</p>
+        <p>This can come from the same property if the names are unique, but if it is a complex object, a unique ID and a seperate Display name are recommended.</p>
+        <p>This is required so that the form post can choose the correct value.</p>
+
+        <nhs-fieldset-form-container asp-for="@Model"
+                                     label-text="Example Object"
+                                     size="Medium">
+
+            <span>public sealed Class RadioListOption</span><br />
+            <span>{</span><br />
+            <span>&nbsp; public string Value { get; set; }</span><br />
+            <span>&nbsp; public string Name { get; set; }</span><br />
+            <span>}</span><br />
+        </nhs-fieldset-form-container>
+    </nhs-fieldset-form-container>
+
+    <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
+        <nhs-table-row-container>
+            <nhs-table-cell>asp-for</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is a reference to the field that the input will load and save the selected value for this list too/from.</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>values</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is the field that contains the list of values. It must be a List&lt;object&gt;, where the object contains a value and name property.</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>value-name</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is the name of the property field from the list of values that contains a unique Id, which will be saved when selecting the options</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>display-name</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is the name of the property field from the list of values that contains the display value for each of the radio selection options.</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
 </nhs-fieldset-form-container>
 
-<nhs-table label-text="Attributes">
-    <nhs-table-column>Attribute</nhs-table-column>
-    <nhs-table-column>Functionality</nhs-table-column>
-    <nhs-table-column>Required</nhs-table-column>
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="Radios Generated From Individual Items For Conditional Content">
+    <p>For most everyday applications, you'll be using the above version for generating a list of radios. but if you wish to have conditional content, this is the format to use.</p>
 
-    <nhs-table-row-container>
-        <nhs-table-cell>asp-for</nhs-table-cell>
-        <nhs-table-cell>
-            <p>This is a reference to the field that the input will load and save the selected value for this list too/from.</p>
-        </nhs-table-cell>
-        <nhs-table-cell>
-            <nhs-tag text="Yes" colour="Red" />
-        </nhs-table-cell>
-    </nhs-table-row-container>
-    <nhs-table-row-container>
-        <nhs-table-cell>values</nhs-table-cell>
-        <nhs-table-cell>
-            <p>This is the field that contains the list of values. It must be a List&lt;object&gt;, where the object contains a value and name property.</p>
-        </nhs-table-cell>
-        <nhs-table-cell>
-            <nhs-tag text="Yes" colour="Red" />
-        </nhs-table-cell>
-    </nhs-table-row-container>
-    <nhs-table-row-container>
-        <nhs-table-cell>value-name</nhs-table-cell>
-        <nhs-table-cell>
-            <p>This is the name of the property field from the list of values that contains a unique Id, which will be saved when selecting the options</p>
-        </nhs-table-cell>
-        <nhs-table-cell>
-            <nhs-tag text="Yes" colour="Red" />
-        </nhs-table-cell>
-    </nhs-table-row-container>
-    <nhs-table-row-container>
-        <nhs-table-cell>display-name</nhs-table-cell>
-        <nhs-table-cell>
-            <p>This is the name of the property field from the list of values that contains the display value for each of the radio selection options.</p>
-        </nhs-table-cell>
-        <nhs-table-cell>
-            <nhs-tag text="Yes" colour="Red" />
-        </nhs-table-cell>
-    </nhs-table-row-container>
-</nhs-table>
+    <nhs-fieldset-form-label asp-for="@Model"
+                             label-text="Radio list with Conditional Options">
+        <nhs-radio-button-container>
+            <nhs-radio-button asp-for="SelectedItem"
+                              value="@Model.ConditionalOptions[0]"
+                              value-name="Value"
+                              display-name="Name">
+                <nhs-input asp-for="SelectedItem"
+                           label-text="Conditional Text Input" />
+            </nhs-radio-button>
+            <nhs-radio-button asp-for="SelectedItem"
+                              value="@Model.ConditionalOptions[1]"
+                              value-name="Value"
+                              display-name="Name">
+                <p>This is some text put inside the conditional area</p>
+            </nhs-radio-button>
+        </nhs-radio-button-container>
+    </nhs-fieldset-form-label>
+    <br/>
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example for the above Conditional Radio List"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a Radio List from a List"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-hint</span><span class="vs-light-theme-blue">="And a Hint"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-button-container</span><span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-button</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedItem"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">value</span><span class="vs-light-theme-blue">="@@Model.ConditionalOptions[0]"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">value-name</span><span class="vs-light-theme-blue">="Value"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue fourth-layer">&lt;</span><span class="vs-light-theme-purple">nhs-input</span><br />
+            <span class="vs-light-theme-purple fifth-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedItem"</span><br />
+            <span class="vs-light-theme-purple fifth-layer">label-text</span><span class="vs-light-theme-blue">="Conditional Text Input"</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-radio-button</span><span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-radio-button</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SelectedItem"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">value</span><span class="vs-light-theme-blue">="@@Model.ConditionalOptions[0]"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">value-name</span><span class="vs-light-theme-blue">="Value"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">display-name</span><span class="vs-light-theme-blue">="Name"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue fourth-layer">&lt;</span><span class="vs-light-theme-purple">p</span><span class="vs-light-theme-blue">&gt;</span>
+            <span>This is some text put inside the conditional area</span>
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">p</span><span class="vs-light-theme-blue">&gt;</span><br/>
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-radio-button</span><span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-radio-button-container</span><span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+        <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
+
+        <nhs-table-row-container>
+            <nhs-table-cell>asp-for</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is a reference to the field that the input will load and save the selected value for this list too/from.</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>values</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is the field that contains a single object. It must be a object, where the object contains a value and name property.</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>value-name</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is the name of the property field from the list of values that contains a unique Id, which will be saved when selecting the options</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+        <nhs-table-row-container>
+            <nhs-table-cell>display-name</nhs-table-cell>
+            <nhs-table-cell>
+                <p>This is the name of the property field from the list of values that contains the display value for each of the radio selection options.</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="Yes" colour="Red" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+
+</nhs-fieldset-form-container>
 
 <nhs-endnote>
-    Page last Updated 14 June 2021
+    Page last Updated 2 July 2021
 </nhs-endnote>

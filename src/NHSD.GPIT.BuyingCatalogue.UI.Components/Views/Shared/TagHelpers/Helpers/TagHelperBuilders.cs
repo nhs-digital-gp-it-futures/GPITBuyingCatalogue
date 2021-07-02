@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -125,74 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return builder;
         }
 
-        public static TagBuilder GetRadioLabelBuilder(
-            ViewContext viewContext,
-            ModelExpression aspFor,
-            IHtmlGenerator htmlGenerator,
-            object item,
-            string displayName,
-            string valueName)
-        {
-            var itemText = GetGenericValueFromName(item, displayName);
-
-            var itemValue = GetGenericValueFromName(item, valueName);
-
-            if (string.IsNullOrWhiteSpace(itemText))
-                return null;
-
-            return GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText, itemValue);
-        }
-
-        public static TagBuilder GetRadioLabelBuilder(
-            ViewContext viewContext,
-            ModelExpression aspFor,
-            IHtmlGenerator htmlGenerator,
-            string display,
-            string value)
-        {
-            return htmlGenerator.GenerateLabel(
-                viewContext,
-                aspFor.ModelExplorer,
-                $"{aspFor.Name}_{value}",
-                display,
-                new { @class = TagHelperConstants.RadioLabelClass });
-        }
-
-        public static TagBuilder GetRadioInputBuilder(
-                ViewContext viewContext,
-                ModelExpression aspFor,
-                IHtmlGenerator htmlGenerator,
-                object item,
-                string valueName)
-        {
-            var itemValue = GetGenericValueFromName(item, valueName);
-
-            if (string.IsNullOrWhiteSpace(itemValue))
-                return null;
-
-            return GetRadioInputBuilder(viewContext, aspFor, htmlGenerator, itemValue, null);
-        }
-
-        public static TagBuilder GetRadioInputBuilder(
-            ViewContext viewContext,
-            ModelExpression aspFor,
-            IHtmlGenerator htmlGenerator,
-            string value,
-            bool? isChecked = null)
-        {
-            var builder = htmlGenerator.GenerateRadioButton(
-                            viewContext,
-                            aspFor.ModelExplorer,
-                            aspFor.Name,
-                            value,
-                            isChecked,
-                            new { @class = TagHelperConstants.RadioItemInputClass });
-
-            builder.Attributes["id"] = TagBuilder.CreateSanitizedId($"{aspFor.Name}_{value}", "_");
-
-            return builder;
-        }
-
         public static TagBuilder GetVisuallHiddenSpanClassBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.Span);
@@ -202,23 +131,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return builder;
         }
 
-        private static string GetGenericValueFromName(object item, string targetName)
+        public static TagBuilder GetChildContentConditionalBuilder(TagBuilder input, List<string> classes)
         {
-            var propertyInfo = item.GetType().GetProperty(targetName);
+            var builder = new TagBuilder(TagHelperConstants.Div);
 
-            if (propertyInfo is not null)
-            {
-                return propertyInfo.GetValue(item).ToString();
-            }
+            classes.ForEach(c => builder.AddCssClass(c));
 
-            var methodInfo = item.GetType().GetExtensionMethod(Assembly.GetAssembly(item.GetType()), targetName);
+            input.Attributes.TryGetValue("id", out string id);
 
-            if (methodInfo is not null)
-            {
-                return methodInfo.Invoke(item, new[] { item }).ToString();
-            }
+            builder.GenerateId($"conditional-{id}", "_");
 
-            return string.Empty;
+            return builder;
         }
     }
 }
