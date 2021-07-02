@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -22,494 +22,41 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
         }
 
-        public virtual DbSet<AdditionalService> AdditionalServices { get; set; }
+        public DbSet<AdditionalService> AdditionalServices { get; set; }
 
-        public virtual DbSet<AssociatedService> AssociatedServices { get; set; }
+        public DbSet<AssociatedService> AssociatedServices { get; set; }
 
-        public virtual DbSet<Capability> Capabilities { get; set; }
+        public DbSet<Capability> Capabilities { get; set; }
 
-        public virtual DbSet<CatalogueItem> CatalogueItems { get; set; }
+        public DbSet<CatalogueItem> CatalogueItems { get; set; }
 
-        public virtual DbSet<CataloguePrice> CataloguePrices { get; set; }
+        public DbSet<CataloguePrice> CataloguePrices { get; set; }
 
         public DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
 
-        public virtual DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
+        public DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
 
-        public virtual DbSet<MarketingContact> MarketingContacts { get; set; }
+        public DbSet<MarketingContact> MarketingContacts { get; set; }
 
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<ServiceRecipient> ServiceRecipients { get; set; }
 
-        public virtual DbSet<Solution> Solutions { get; set; }
+        public DbSet<Solution> Solutions { get; set; }
 
-        public virtual DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
 
-        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public DbSet<AspNetUser> AspNetUsers { get; set; }
 
-        public virtual DbSet<Organisation> Organisations { get; set; }
+        public DbSet<Organisation> Organisations { get; set; }
 
-        public virtual DbSet<RelatedOrganisation> RelatedOrganisations { get; set; }
+        public DbSet<RelatedOrganisation> RelatedOrganisations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.Entity<AdditionalService>(entity =>
-            {
-                entity.HasKey(e => e.CatalogueItemId);
-                entity.ToTable("AdditionalService");
-
-                entity.Property(e => e.CatalogueItemId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.FullDescription).HasMaxLength(3000);
-
-                entity.Property(e => e.SolutionId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.Summary).HasMaxLength(300);
-
-                entity.HasOne(d => d.CatalogueItem)
-                    .WithOne(p => p.AdditionalService)
-                    .HasForeignKey<AdditionalService>(d => d.CatalogueItemId)
-                    .HasConstraintName("FK_AdditionalService_CatalogueItem");
-
-                entity.HasOne(d => d.Solution)
-                    .WithMany(p => p.AdditionalServices)
-                    .HasForeignKey(d => d.SolutionId)
-                    .HasConstraintName("FK_AdditionalService_Solution");
-            });
-
-            modelBuilder.Entity<AssociatedService>(entity =>
-            {
-                entity.ToTable("AssociatedService");
-
-                entity.Property(e => e.AssociatedServiceId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.Description).HasMaxLength(1000);
-                entity.Property(e => e.OrderGuidance).HasMaxLength(1000);
-
-                entity.HasOne(d => d.AssociatedServiceNavigation)
-                    .WithOne(p => p.AssociatedService)
-                    .HasForeignKey<AssociatedService>(d => d.AssociatedServiceId)
-                    .HasConstraintName("FK_SupplierService_CatalogueItem");
-            });
-
-            modelBuilder.Entity<Capability>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .IsClustered(false);
-                entity.ToTable("Capability");
-                entity.HasIndex(e => e.CapabilityRef, "IX_CapabilityCapabilityRef")
-                    .IsClustered();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.CapabilityRef)
-                    .IsRequired()
-                    .HasMaxLength(10);
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(500);
-                entity.Property(e => e.EffectiveDate).HasColumnType("date");
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
-                entity.Property(e => e.PreviousVersion).HasMaxLength(10);
-                entity.Property(e => e.SourceUrl).HasMaxLength(1000);
-                entity.Property(e => e.Status)
-                    .HasConversion<int>()
-                    .HasColumnName("StatusId");
-                entity.Property(e => e.Version)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Capabilities)
-                    .HasForeignKey(d => d.CategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Capability_CapabilityCategory");
-            });
-
-            modelBuilder.Entity<CapabilityCategory>(entity =>
-            {
-                entity.ToTable("CapabilityCategory");
-                entity.HasIndex(e => e.Name, "IX_CapabilityCategoryName")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<CatalogueItem>(entity =>
-            {
-                entity.ToTable("CatalogueItem");
-
-                entity.Property(e => e.CatalogueItemId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.CatalogueItemType)
-                    .HasConversion<int>()
-                    .HasColumnName("CatalogueItemTypeId");
-                entity.Property(e => e.Created).HasDefaultValueSql("(getutcdate())");
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
-                entity.Property(e => e.PublishedStatus)
-                    .HasConversion<int>()
-                    .HasColumnName("PublishedStatusId")
-                    .HasDefaultValue(PublicationStatus.Draft);
-                entity.Property(e => e.SupplierId)
-                    .IsRequired()
-                    .HasMaxLength(6);
-                entity.HasOne(d => d.Supplier)
-                    .WithMany(p => p.CatalogueItems)
-                    .HasForeignKey(d => d.SupplierId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CatalogueItem_Supplier");
-            });
-
-            modelBuilder.Entity<CataloguePrice>(entity =>
-            {
-                entity.ToTable("CataloguePrice");
-
-                entity.Property(e => e.CatalogueItemId)
-                    .IsRequired()
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.CataloguePriceType)
-                    .HasConversion<int>()
-                    .HasColumnName("CataloguePriceTypeId");
-                entity.Property(e => e.CurrencyCode)
-                    .IsRequired()
-                    .HasMaxLength(3);
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 4)");
-                entity.Property(e => e.ProvisioningType)
-                    .HasConversion<int>()
-                    .HasColumnName("ProvisioningTypeId");
-                entity.Property(e => e.TimeUnit)
-                    .HasConversion<int>()
-                    .HasColumnName("TimeUnitId");
-
-                entity.HasOne(d => d.CatalogueItem)
-                    .WithMany(p => p.CataloguePrices)
-                    .HasForeignKey(d => d.CatalogueItemId);
-
-                entity.HasOne(d => d.PricingUnit)
-                    .WithMany()
-                    .HasForeignKey(d => d.PricingUnitId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-            });
-
-            modelBuilder.Entity<CataloguePriceTier>(entity =>
-            {
-                entity.ToTable("CataloguePriceTier");
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 3)");
-
-                entity.HasOne<CataloguePrice>()
-                    .WithMany()
-                    .HasForeignKey(d => d.CataloguePriceId);
-            });
-
-            modelBuilder.Entity<Epic>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .IsClustered(false);
-                entity.ToTable("Epic");
-                entity.Property(e => e.Id).HasMaxLength(10);
-                entity.Property(e => e.CompliancyLevel)
-                    .HasConversion<int>()
-                    .HasColumnName("CompliancyLevelId");
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(150);
-                entity.Property(e => e.Active).IsRequired();
-                entity.Property(e => e.SupplierDefined).IsRequired().HasDefaultValue(false);
-                entity.HasOne<Capability>()
-                    .WithMany(p => p.Epics)
-                    .HasForeignKey(d => d.CapabilityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Epic_Capability");
-            });
-
-            modelBuilder.Entity<Framework>(entity =>
-            {
-                entity.ToTable("Framework");
-                entity.Property(e => e.Id).HasMaxLength(10);
-                entity.Property(e => e.ActiveDate).HasColumnType("date");
-                entity.Property(e => e.ExpiryDate).HasColumnType("date");
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
-                entity.Property(e => e.Owner).HasMaxLength(100);
-                entity.Property(e => e.ShortName).HasMaxLength(25);
-            });
-
-            modelBuilder.Entity<FrameworkCapability>(entity =>
-            {
-                entity.ToTable("FrameworkCapabilities");
-                entity.HasKey(e => new { e.FrameworkId, e.CapabilityId });
-                entity.Property(e => e.FrameworkId).HasMaxLength(10);
-                entity.HasOne(d => d.Capability)
-                    .WithMany()
-                    .HasForeignKey(d => d.CapabilityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FrameworkCapabilities_Capability");
-
-                entity.HasOne(d => d.Framework)
-                    .WithMany()
-                    .HasForeignKey(d => d.FrameworkId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FrameworkCapabilities_Framework");
-            });
-
-            modelBuilder.Entity<FrameworkSolution>(entity =>
-            {
-                entity.ToTable("FrameworkSolutions");
-                entity.HasKey(e => new { e.FrameworkId, e.SolutionId });
-                entity.Property(e => e.FrameworkId).HasMaxLength(10);
-
-                entity.Property(e => e.SolutionId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.HasOne(d => d.Framework)
-                    .WithMany()
-                    .HasForeignKey(d => d.FrameworkId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FrameworkSolutions_Framework");
-
-                entity.HasOne<Solution>()
-                    .WithMany(p => p.FrameworkSolutions)
-                    .HasForeignKey(d => d.SolutionId)
-                    .HasConstraintName("FK_FrameworkSolutions_Solution");
-            });
-
-            modelBuilder.Entity<MarketingContact>(entity =>
-            {
-                entity.HasKey(e => new { e.SolutionId, e.Id });
-                entity.ToTable("MarketingContact");
-
-                entity.Property(e => e.SolutionId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.Department).HasMaxLength(50);
-                entity.Property(e => e.Email).HasMaxLength(255);
-                entity.Property(e => e.FirstName).HasMaxLength(35);
-                entity.Property(e => e.LastName).HasMaxLength(35);
-                entity.Property(e => e.PhoneNumber).HasMaxLength(35);
-                entity.HasOne<Solution>()
-                    .WithMany(p => p.MarketingContacts)
-                    .HasForeignKey(d => d.SolutionId)
-                    .HasConstraintName("FK_MarketingContact_Solution");
-            });
-
-            modelBuilder.Entity<PricingUnit>(entity =>
-            {
-                entity.HasKey(e => e.PricingUnitId)
-                    .IsClustered(false);
-                entity.ToTable("PricingUnit");
-                entity.Property(e => e.PricingUnitId).ValueGeneratedNever();
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(40);
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.TierName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-            });
-
-            modelBuilder.Entity<Solution>(entity =>
-            {
-                entity.ToTable("Solution");
-
-                entity.Property(e => e.Id)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.AboutUrl).HasMaxLength(1000);
-                entity.Property(e => e.FullDescription).HasMaxLength(3000);
-                entity.Property(e => e.ImplementationDetail).HasMaxLength(1100);
-                entity.Property(e => e.IntegrationsUrl).HasMaxLength(1000);
-                entity.Property(e => e.RoadMap).HasMaxLength(1000);
-                entity.Property(e => e.ServiceLevelAgreement).HasMaxLength(1000);
-                entity.Property(e => e.Summary).HasMaxLength(350);
-                entity.Property(e => e.Version).HasMaxLength(10);
-
-                entity.HasOne(d => d.IdNavigation)
-                    .WithOne(p => p.Solution)
-                    .HasForeignKey<Solution>(d => d.Id)
-                    .HasConstraintName("FK_Solution_CatalogueItem");
-            });
-
-            modelBuilder.Entity<SolutionCapability>(entity =>
-            {
-                entity.HasKey(e => new { e.SolutionId, e.CapabilityId });
-                entity.ToTable("SolutionCapability");
-
-                entity.Property(e => e.SolutionId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.HasOne(d => d.Capability)
-                    .WithMany()
-                    .HasForeignKey(d => d.CapabilityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SolutionCapability_Capability");
-                entity.HasOne<Solution>()
-                    .WithMany(p => p.SolutionCapabilities)
-                    .HasForeignKey(d => d.SolutionId)
-                    .HasConstraintName("FK_SolutionCapability_Solution");
-                entity.HasOne(d => d.Status)
-                    .WithMany()
-                    .HasForeignKey(d => d.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SolutionCapability_SolutionCapabilityStatus");
-            });
-
-            modelBuilder.Entity<SolutionCapabilityStatus>(entity =>
-            {
-                entity.ToTable("SolutionCapabilityStatus");
-                entity.HasIndex(e => e.Name, "IX_SolutionCapabilityStatusName")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(16);
-            });
-
-            modelBuilder.Entity<SolutionEpic>(entity =>
-            {
-                entity.HasKey(e => new { e.SolutionId, e.CapabilityId, e.EpicId });
-                entity.ToTable("SolutionEpic");
-
-                entity.Property(e => e.SolutionId)
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.EpicId).HasMaxLength(10);
-
-                entity.HasOne<Capability>()
-                    .WithMany()
-                    .HasForeignKey(d => d.CapabilityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SolutionEpic_Capability");
-
-                entity.HasOne(d => d.Epic)
-                    .WithMany()
-                    .HasForeignKey(d => d.EpicId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SolutionEpic_Epic");
-
-                entity.HasOne<Solution>()
-                    .WithMany(p => p.SolutionEpics)
-                    .HasForeignKey(d => d.SolutionId)
-                    .HasConstraintName("FK_SolutionEpic_Solution");
-
-                entity.HasOne(d => d.Status)
-                    .WithMany()
-                    .HasForeignKey(d => d.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SolutionEpicStatus");
-            });
-
-            modelBuilder.Entity<SolutionEpicStatus>(entity =>
-            {
-                entity.ToTable("SolutionEpicStatus");
-                entity.HasIndex(e => e.Name, "IX_EpicStatusName")
-                    .IsUnique();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(16);
-            });
-
-            modelBuilder.Entity<Supplier>(entity =>
-            {
-                entity.ToTable("Supplier");
-                entity.HasIndex(e => e.Name, "IX_SupplierName");
-                entity.Property(e => e.Id).HasMaxLength(6);
-                entity.Property(e => e.Address)
-                .HasMaxLength(500)
-                .HasConversion(
-                    a => JsonConvert.SerializeObject(a),
-                    a => JsonConvert.DeserializeObject<Address>(a));
-                entity.Property(e => e.LegalName)
-                    .IsRequired()
-                    .HasMaxLength(255);
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
-                entity.Property(e => e.OdsCode).HasMaxLength(8);
-                entity.Property(e => e.Summary).HasMaxLength(1100);
-                entity.Property(e => e.SupplierUrl).HasMaxLength(1000);
-            });
-
-            modelBuilder.Entity<SupplierContact>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .IsClustered(false);
-                entity.ToTable("SupplierContact");
-                entity.HasIndex(e => e.SupplierId, "IX_SupplierContactSupplierId")
-                    .IsClustered();
-                entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(255);
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(35);
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(35);
-                entity.Property(e => e.PhoneNumber).HasMaxLength(35);
-                entity.Property(e => e.SupplierId)
-                    .IsRequired()
-                    .HasMaxLength(6);
-
-                entity.HasOne<Supplier>()
-                    .WithMany(p => p.SupplierContacts)
-                    .HasForeignKey(d => d.SupplierId)
-                    .HasConstraintName("FK_SupplierContact_Supplier");
-            });
-
-            modelBuilder.Entity<SupplierServiceAssociation>(entity =>
-            {
-                entity.HasNoKey();
-                entity.ToTable("SupplierServiceAssociation");
-                entity.Property(e => e.AssociatedServiceId)
-                    .IsRequired()
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.Property(e => e.CatalogueItemId)
-                    .IsRequired()
-                    .HasMaxLength(14)
-                    .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
-
-                entity.HasOne(d => d.AssociatedService)
-                    .WithMany()
-                    .HasForeignKey(d => d.AssociatedServiceId)
-                    .HasConstraintName("FK_SupplierServiceAssociation_AssociatedService");
-
-                entity.HasOne(d => d.CatalogueItem)
-                    .WithMany()
-                    .HasForeignKey(d => d.CatalogueItemId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SupplierServiceAssociation_CatalogueItem");
-            });
+            ApplyCatalogueConfiguration(modelBuilder);
 
             modelBuilder.Entity<AspNetRole>(entity =>
             {
@@ -659,6 +206,31 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             });
 
             OnModelCreatingPartial(modelBuilder);
+        }
+
+        private static void ApplyCatalogueConfiguration(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new AdditionalServiceEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AssociatedServiceEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CapabilityEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CapabilityCategoryEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CatalogueItemEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CataloguePriceEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CataloguePriceTierEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new EpicEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new FrameworkEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new FrameworkCapabilityEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new FrameworkSolutionEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new MarketingContactEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PricingUnitEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SolutionEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SolutionCapabilityEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SolutionCapabilityStatusEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SolutionEpicEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SolutionEpicStatusEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SupplierEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SupplierContactEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SupplierServiceAssociationEntityTypeConfiguration());
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
