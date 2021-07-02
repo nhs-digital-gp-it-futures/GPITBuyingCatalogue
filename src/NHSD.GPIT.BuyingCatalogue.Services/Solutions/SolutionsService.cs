@@ -79,9 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
+        public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
         {
-            return await dbContext.CatalogueItems
+            return dbContext.CatalogueItems
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
