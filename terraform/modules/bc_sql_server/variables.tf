@@ -10,24 +10,24 @@ variable "region" {
 variable "rg_name" {
   type = string
 }
-variable "storage_account_name" {
+variable "sqlsvr_name" {
   type = string
 }
-variable "replication_type" {
+variable "sql_version" {
   type = string
 }
-variable "container_name" {
+variable "sql_admin_username" {
   type = string
 }
-variable "ip_rules" {
-  type = list(string)
-}
-variable "vnet_subnet_id" {
+variable "sql_admin_password" {
   type = string
 }
-variable "kv_id" {
+variable "sqladmins" {
   type = string
 }
-variable "kv_key" {
+variable "bjssvpn" {
+  type = string
+}
+variable "mastekvpn" {
   type = string
 }

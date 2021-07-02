@@ -4,5 +4,6 @@
     (1, 'Draft'),
     (2, 'Unpublished'),
     (3, 'Published'),
-    (4, 'Withdrawn');
+    (4, 'Suspended'),
+    (5, 'InRemediation');
 GO
