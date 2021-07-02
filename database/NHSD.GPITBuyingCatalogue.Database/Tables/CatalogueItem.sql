@@ -9,5 +9,6 @@
     CONSTRAINT PK_CatalogueItem PRIMARY KEY (CatalogueItemId),
     CONSTRAINT FK_CatalogueItem_CatalogueItemType FOREIGN KEY (CatalogueItemTypeId) REFERENCES dbo.CatalogueItemType(CatalogueItemTypeId),
     CONSTRAINT FK_CatalogueItem_Supplier FOREIGN KEY (SupplierId) REFERENCES dbo.Supplier(Id),
-    CONSTRAINT FK_CatalogueItem_PublicationStatus FOREIGN KEY (PublishedStatusId) REFERENCES dbo.PublicationStatus(Id)
+    CONSTRAINT FK_CatalogueItem_PublicationStatus FOREIGN KEY (PublishedStatusId) REFERENCES dbo.PublicationStatus(Id),
+    CONSTRAINT IX_CatalogueItem_Supplier_Name UNIQUE NONCLUSTERED ([SupplierId], [Name])
 );

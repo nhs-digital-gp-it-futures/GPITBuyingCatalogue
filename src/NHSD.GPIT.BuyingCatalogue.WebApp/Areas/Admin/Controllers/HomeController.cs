@@ -51,6 +51,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             });
         }
 
+        [HttpPost("catalogue-solutions/add-solution")]
+        public async Task<IActionResult> AddSolution(AddSolutionModel model)
+        {
+            var suppliers = await solutionsService.GetAllSuppliers();
+            var dictionary = suppliers?.ToDictionary(x => x.Id, x => x.Name);
+
+            if (!ModelState.IsValid)
+            {
+                model.Suppliers = dictionary;
+                return View(model);
+            }
+
+            // Solution name already exists. Enter a different solution name 
+
+            var addSolutionModel = await solutionsService.AddSolution(model);
+
+            return RedirectToAction(nameof(CatalogueSolutions));
+        }
+
+        [Route("catalogue-solutions")]
+        public IActionResult CatalogueSolutions()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             return View();
