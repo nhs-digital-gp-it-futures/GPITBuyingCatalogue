@@ -22,12 +22,11 @@
                                                class="nhsuk-u-margin-left-4">Change organisation</a>
                 </p>
             }
-            <vc:nhs-secondary-button text="Create new order"
+            <vc:nhs-action-link text="Create new order"
                                      url="@Url.Action(
                                          nameof(OrderController.NewOrder),
                                          typeof(OrderController).ControllerName(),
-                                         new { Model.OdsCode })"
-                                     use-primary-colour="true" />
+                                         new { Model.OdsCode })" />            
         </div>
 
         <div class="nhsuk-grid-column-full">

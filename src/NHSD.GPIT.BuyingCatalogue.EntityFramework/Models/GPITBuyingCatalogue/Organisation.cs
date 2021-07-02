@@ -17,8 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public string Name { get; set; }
 
-        // TODO: model properly
-        public string Address { get; set; }
+        public Address Address { get; set; }
 
         public string OdsCode { get; set; }
 

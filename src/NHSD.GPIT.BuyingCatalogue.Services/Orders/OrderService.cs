@@ -42,14 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return dbContext.Orders
                 .Where(o => o.Id == callOffId.Id)
                 .Include(o => o.OrderingParty)
-
-                // TODO: fix address modelling
-                // .ThenInclude(p => p.Address)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
-
-                // TODO: fix address modelling
-                // .ThenInclude(s => s.Address)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.ServiceInstanceItems)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
@@ -128,8 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             order.Complete();
 
-            await dbContext.SaveChangesAsync();
-
             await using var fullOrderStream = new MemoryStream();
             await using var patientOrderStream = new MemoryStream();
 
@@ -164,6 +156,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 attachments);
 
             await emailService.SendEmailAsync(message);
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
