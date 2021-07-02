@@ -67,5 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             CatalogueItemId catalogueItemId,
             CatalogueItemId catalogueItemIdAdditional,
             Guid capabilityId);
+
+        Task AddCatalogueSolution(CreateSolutionModel model);
+
+        Task<bool> SupplierHasSolutionName(string supplierId, string solutionName);
     }
 }

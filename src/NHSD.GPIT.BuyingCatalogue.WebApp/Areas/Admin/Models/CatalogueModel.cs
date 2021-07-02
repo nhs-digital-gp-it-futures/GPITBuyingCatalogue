@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
             CatalogueItemId = catalogueItem.CatalogueItemId.ToString();
             Name = catalogueItem.Name;
-            LastUpdated = catalogueItem.Supplier?.LastUpdated ?? DateTime.MinValue;
+            LastUpdated = catalogueItem.Solution?.LastUpdated ?? DateTime.MinValue;
             PublishedStatus = catalogueItem.PublishedStatus.AsString(EnumFormat.DisplayName);
             PublishedStatusId = (int)catalogueItem.PublishedStatus;
             Supplier = catalogueItem.Supplier?.Name ?? string.Empty;

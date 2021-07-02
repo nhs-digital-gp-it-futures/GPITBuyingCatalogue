@@ -22,17 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
+        private readonly ICatalogueItemRepository catalogueItemRepository;
 
         public SolutionsService(
             BuyingCatalogueDbContext dbContext,
             IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
+            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository,
+            ICatalogueItemRepository catalogueItemRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
+            this.catalogueItemRepository = catalogueItemRepository;
         }
 
         public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
@@ -383,6 +386,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null)
         {
             var query = dbContext.CatalogueItems
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
+                .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .OrderByDescending(i => i.Created)
@@ -397,5 +402,44 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.PublishedStatus == publicationStatus.Value)
                 .ToListAsync();
         }
+
+        public async Task AddCatalogueSolution(CreateSolutionModel model)
+        {
+            model.ValidateNotNull(nameof(CreateSolutionModel));
+
+            var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
+            var catalogueItemId = latestCatalogueItemId.NextSolutionId();
+
+            var nowTime = DateTime.UtcNow;
+            var frameworkSolution = new FrameworkSolution
+            {
+                FrameworkId = model.FrameworkModel.DfocvcFramework ? DfocvcFrameworkId : GpitFuturesFrameworkId,
+                IsFoundation = model.FrameworkModel.FoundationSolutionFramework,
+                LastUpdated = nowTime,
+                LastUpdatedBy = model.UserId,
+            };
+
+            catalogueItemRepository.Add(
+                new CatalogueItem
+                {
+                    CatalogueItemId = catalogueItemId,
+                    CatalogueItemType = CatalogueItemType.Solution,
+                    Solution =
+                        new Solution
+                        {
+                            FrameworkSolutions = new List<FrameworkSolution> { frameworkSolution, },
+                            LastUpdated = nowTime,
+                            LastUpdatedBy = model.UserId,
+                        },
+                    Name = model.Name,
+                    PublishedStatus = PublicationStatus.Draft,
+                    SupplierId = model.SupplierId,
+                });
+
+            await catalogueItemRepository.SaveChangesAsync();
+        }
+
+        public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
+            catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
     }
 }

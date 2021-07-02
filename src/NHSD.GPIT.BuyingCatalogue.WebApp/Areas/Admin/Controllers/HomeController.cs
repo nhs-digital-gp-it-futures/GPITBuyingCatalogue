@@ -28,8 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.solutionsService =
-                solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [Route("buyer-organisations")]
@@ -58,10 +57,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var suppliers = await solutionsService.GetAllSuppliers();
             return View(suppliers);
         }
+        
+        [HttpPost("catalogue-solutions/add-solution")]
+        public async Task<IActionResult> AddSolution(AddSolutionModel model)
+        {
+            var suppliers = await solutionsService.GetAllSuppliers();
+            var dictionary = suppliers?.ToDictionary(x => x.Id, x => x.Name);
+
+            if (!ModelState.IsValid)
+            {
+                model.Suppliers = dictionary;
+                return View(model);
+            }
+
+            // Solution name already exists. Enter a different solution name 
+
+            var addSolutionModel = await solutionsService.AddSolution(model);
+
+            return RedirectToAction(nameof(CatalogueSolutions));
+        }
+
+        [Route("catalogue-solutions")]
+        public IActionResult CatalogueSolutions()
+        {
+            return View();
+        }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        [Route("manage-suppliers")]
+        public async Task<IActionResult> ManageSuppliers()
+        {
+            var suppliers = await solutionsService.GetAllSuppliers();
+            return View(suppliers);
         }
     }
 }
