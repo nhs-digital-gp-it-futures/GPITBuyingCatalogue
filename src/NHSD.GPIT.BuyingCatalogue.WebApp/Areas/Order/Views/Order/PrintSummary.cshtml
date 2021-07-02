@@ -147,7 +147,7 @@
                                             && si.CatalogueItemId == orderItem.CatalogueItemId)?.ServiceInstanceId)
                                     </nhs-table-cell>
                                     <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
-                                    <nhs-table-cell>@($"{recipient.Quantity} {@orderItem.EstimationPeriod?.Description()}")</nhs-table-cell>
+                                    <nhs-table-cell>@($"{recipient.Quantity} {orderItem.EstimationPeriod?.Description()}")</nhs-table-cell>
                                     <nhs-table-cell>@recipient.DeliveryDate?.ToLongDateString()</nhs-table-cell>
                                     <nhs-table-cell>@((recipient.Quantity * orderItem.Price).Value.ToString("N"))</nhs-table-cell>
                                 </nhs-table-row-container>
