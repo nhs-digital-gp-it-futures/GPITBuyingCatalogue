@@ -27,7 +27,7 @@ resource "azurerm_app_service" "webapp" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
     ASPNETCORE_ENVIRONMENT: var.aspnet_environment
 
-    APPINSIGHTS_INSTRUMENTATIONKEY      = "todo"
+    APPINSIGHTS_INSTRUMENTATIONKEY      = var.instrumentation_key
     BC_SMTP_HOST                        = ""
     BC_SMTP_PORT                        = ""
     

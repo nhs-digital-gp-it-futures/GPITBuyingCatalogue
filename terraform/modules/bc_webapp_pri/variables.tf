@@ -70,3 +70,7 @@ variable "sqlserver_name" {
 variable "sqlserver_rg" {
   type = string
 }
+
+variable "instrumentation_key" {
+  type = string
+}

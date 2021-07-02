@@ -28,6 +28,7 @@ module "webapp" {
   aspnet_environment = "Development"
   sqlserver_name = module.sql_server_pri.sql_server_name
   sqlserver_rg = azurerm_resource_group.sql-primary.name
-
+  instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
+  
   depends_on = [module.sql_server_pri]
 }
