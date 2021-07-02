@@ -55,3 +55,18 @@ variable "webapp_cname_url" {
 variable "core_environment" {
   type      = string
 }
+variable "sa_connection_string" {
+  type = string
+  sensitive = true
+}
+
+variable "aspnet_environment" {
+  type = string
+}
+variable "sqlserver_name" {
+  type = string
+}
+
+variable "sqlserver_rg" {
+  type = string
+}
