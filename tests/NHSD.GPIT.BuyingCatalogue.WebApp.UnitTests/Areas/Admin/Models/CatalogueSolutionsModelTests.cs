@@ -30,7 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [InlineData(PublicationStatus.Draft)]
         [InlineData(PublicationStatus.Published)]
         [InlineData(PublicationStatus.Unpublished)]
-        [InlineData(PublicationStatus.Withdrawn)]
+        [InlineData(PublicationStatus.Suspended)]
+        [InlineData(PublicationStatus.InRemediation)]
         public static void HasSelected_StatusSelected_ReturnsTrue(PublicationStatus publicationStatus)
         {
             var model = new CatalogueSolutionsModel(new List<CatalogueItem>());
@@ -45,7 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [InlineData(PublicationStatus.Draft)]
         [InlineData(PublicationStatus.Published)]
         [InlineData(PublicationStatus.Unpublished)]
-        [InlineData(PublicationStatus.Withdrawn)]
+        [InlineData(PublicationStatus.Suspended)]
+        [InlineData(PublicationStatus.InRemediation)]
         public static void SetSelected_StatusInput_SetsCorrespondingItemSelected(PublicationStatus publicationStatus)
         {
             var model = new CatalogueSolutionsModel(new List<CatalogueItem>());

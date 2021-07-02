@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
     public enum PublicationStatus
     {
-        [Display(Name = "Suspended")]
+        [Display(Name = nameof(Draft))]
         Draft = 1,
 
         [Display(Name = nameof(Unpublished))]
@@ -13,7 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
         [Display(Name = nameof(Published))]
         Published = 3,
 
-        [Display(Name = "Deleted")]
-        Withdrawn = 4,
+        [Display(Name = nameof(Suspended))]
+        Suspended = 4,
+
+        [Display(Name = "In Remediation")]
+        InRemediation = 5,
     }
 }
