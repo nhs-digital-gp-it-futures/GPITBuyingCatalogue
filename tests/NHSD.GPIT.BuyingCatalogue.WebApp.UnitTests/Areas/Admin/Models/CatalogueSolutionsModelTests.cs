@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             actual.Should()
                 .BeEquivalentTo(
-                    new List<NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.PublicationStatus>
+                    new List<WebApp.Areas.Admin.Models.PublicationStatus>
                     {
                         new() { Id = 1, Display = "Draft" },
                         new() { Id = 3, Display = "Published" },
