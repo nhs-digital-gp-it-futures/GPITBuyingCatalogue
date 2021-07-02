@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var serviceRecipients = await AddOrUpdateServiceRecipients(model);
 
             var defaultDeliveryDate = order.DefaultDeliveryDates.SingleOrDefault(d => d.CatalogueItemId == catalogueItemId);
-            var estimationPeriod = catalogueItem.CatalogueItemType.InferEstimationPeriod(model.ProvisioningType, model.EstimationPeriod);
+            var estimationPeriod = catalogueItem.CatalogueItemType.InferEstimationPeriod(model.CataloguePrice.ProvisioningType, model.EstimationPeriod);
 
             var item = order.AddOrUpdateOrderItem(new OrderItem
             {
@@ -54,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 DefaultDeliveryDate = defaultDeliveryDate?.DeliveryDate,
                 EstimationPeriod = estimationPeriod,
                 OrderId = order.Id,
-                PriceId = model.PriceId.Value,
-                Price = model.Price,
+                PriceId = model.CataloguePrice.CataloguePriceId,
+                Price = model.AgreedPrice,
             });
 
             item.SetRecipients(model.ServiceRecipients.Select(r => new OrderItemRecipient
@@ -106,18 +106,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<int> DeleteOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
+        public async Task DeleteOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             var order = await orderService.GetOrder(callOffId);
 
             if (order is null)
                 throw new ArgumentNullException(nameof(catalogueItemId));
 
-            var result = order.DeleteOrderItemAndUpdateProgress(catalogueItemId);
+            order.DeleteOrderItemAndUpdateProgress(catalogueItemId);
 
             await dbContext.SaveChangesAsync();
-
-            return result;
         }
 
         private Task<IReadOnlyDictionary<string, ServiceRecipient>> AddOrUpdateServiceRecipients(CreateOrderItemModel model)
