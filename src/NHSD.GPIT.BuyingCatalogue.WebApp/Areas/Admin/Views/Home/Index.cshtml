@@ -1,8 +1,9 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using CatalogueSolutionsController = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.CatalogueSolutionsController
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Admin Landing Page";
+    ViewData["Title"] = "Admin landing page";
 }
 
 <div class="nhsuk-width-container ">
@@ -17,18 +18,18 @@
                 <p>
                     As an administrator for the Buying Catalogue, you can add organisations and users and edit the details of existing accounts. You can also add new solutions and edit ones that are already published.
                 </p>
-
                 <vc:nhs-action-link url="@Url.Action(
                                         nameof(HomeController.BuyerOrganisations),
                                         typeof(HomeController).ControllerName())"
                                     text="Manage buyer organisations and users" />
-
                 <vc:nhs-action-link url="@Url.Action(
                                         nameof(HomeController.ManageSuppliers),
-                                        typeof(HomeController).ControllerName())" text="Manage suppliers organisations" />
-
-                <vc:nhs-action-link url="#" text="Manage Catalogue Solutions" />
-
+                                        typeof(HomeController).ControllerName())"
+                                    text="Manage suppliers organisations" />
+                <vc:nhs-action-link url="@Url.Action(
+                                        nameof(CatalogueSolutionsController.Index),
+                                        typeof(CatalogueSolutionsController).ControllerName())"
+                                    text="Manage Catalogue Solutions" />
             </div>
         </div>
         <br><br>

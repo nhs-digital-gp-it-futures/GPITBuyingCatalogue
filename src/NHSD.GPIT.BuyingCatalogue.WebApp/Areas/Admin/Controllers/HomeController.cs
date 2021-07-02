@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var organisations = await organisationsService.GetAllOrganisations();
 
             return View(mapper.Map<IList<Organisation>, IList<OrganisationModel>>(organisations));
+        }
+
+        [HttpGet("catalogue-solutions/add-solution")]
+        public async Task<IActionResult> AddSolution()
+        {
+            var suppliers = await solutionsService.GetAllSuppliers();
+
+            return View(new AddSolutionModel
+            {
+                Suppliers = suppliers?.ToDictionary(s => s.Id, s => s.Name),
+            });
         }
 
         [Route("manage-suppliers")]
