@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 {
-    public class IdentityServiceStub : IIdentityService
+    public sealed class IdentityServiceStub : IIdentityService
     {
         public (Guid UserId, string UserName) GetUserInfo()
         {

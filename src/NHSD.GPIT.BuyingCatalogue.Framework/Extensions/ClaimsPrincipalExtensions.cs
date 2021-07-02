@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static string[] GetSecondaryOdsCodes(this ClaimsPrincipal user)
         {
-            return user.Claims.Where(x => x.Type.EqualsIgnoreCase(Constants.Claims.SecondaryOrganisationOdsCode)).Select(x => x.Value).ToArray();
+            return user.Claims.Where(c => c.Type.EqualsIgnoreCase(Constants.Claims.SecondaryOrganisationOdsCode)).Select(x => x.Value).ToArray();
         }
 
         public static bool IsAdmin(this ClaimsPrincipal user)
@@ -38,9 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)
         {
-            var claim = user.Claims.FirstOrDefault(x => x.Type.EqualsIgnoreCase(claimType));
+            var claim = user.Claims.FirstOrDefault(c => c.Type.EqualsIgnoreCase(claimType));
 
-            return claim != null ? claim.Value : string.Empty;
+            return claim is not null ? claim.Value : string.Empty;
         }
     }
 }

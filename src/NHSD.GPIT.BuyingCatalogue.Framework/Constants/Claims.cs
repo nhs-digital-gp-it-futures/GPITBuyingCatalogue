@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 {
-    public class Claims
+    public static class Claims
     {
         public const string PrimaryOrganisationName = "primaryOrganisationName";
 

@@ -31,9 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)
         {
-            var claim = user.Claims.FirstOrDefault(x => x.Type.Equals(claimType, StringComparison.InvariantCultureIgnoreCase));
+            var claim = user.Claims.FirstOrDefault(c => c.Type.Equals(claimType, StringComparison.OrdinalIgnoreCase));
 
-            return claim != null ? claim.Value : string.Empty;
+            return claim is not null ? claim.Value : string.Empty;
         }
     }
 }
