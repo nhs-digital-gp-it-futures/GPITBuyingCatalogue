@@ -35,6 +35,8 @@
         internal const string DataModule = "data-module";
         internal const string DataMaxLength = "data-maxlength";
         internal const string AriaDescribedBy = "aria-describedby";
+        internal const string AriaControls = "aria-controls";
+        internal const string AriaExpanded = "aria-expanded";
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
 

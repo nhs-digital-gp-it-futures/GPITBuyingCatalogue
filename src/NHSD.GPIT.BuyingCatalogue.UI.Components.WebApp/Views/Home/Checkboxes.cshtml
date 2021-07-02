@@ -9,10 +9,7 @@
                 additional-advice="This page is rendered from Checkboxes.cshtml using the CheckBoxModel.
                 This model is initialised in the controller." />
 
-
-
 <p>Checkboxes can be initialised in two ways: Via a set of Boolean properties on the model or from properites inside a List of objects inside the model</p>
-
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="From Multiple Boolean Properties in the Model" ,
@@ -217,6 +214,98 @@
     </nhs-table>
 </nhs-fieldset-form-container>
 
+<nhs-fieldset-form-container asp-for="@Model"
+                             label-text="With Conditional Content"
+                             size="ExtraLarge">
+    <p>Checkboxes can also contain conditional content. This means when you click the box, it will show a dropdown with more content inside</p>
+
+    <nhs-fieldset-form-label asp-for="@Model"
+                             label-text="This is a checkbox list with conditional content"
+                             size="Medium">
+        <nhs-checkbox-container>
+            <nhs-checkbox asp-for="SingleCheckBoxProperty" label-text="This has another checkbox inside">
+                <nhs-checkbox-container>
+                    <nhs-checkbox asp-for="EmbeddedCheckBoxProperty" label-text="EmbeddedCheckbox" />
+                </nhs-checkbox-container>
+            </nhs-checkbox>
+            <nhs-checkbox asp-for="AnotherCheckBoxProperty" label-text="This one has a Inset Text and in input inside">
+                <nhs-inset-text>
+                    Here is some inset text
+                </nhs-inset-text>
+                <nhs-input asp-for="ForInput"
+                           label-text="And here is the input" />
+            </nhs-checkbox>
+        </nhs-checkbox-container>
+    </nhs-fieldset-form-label>
+    <br/>
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example for the above Checkbox Property List"
+                                 size="Medium">
+        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
+            <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a checkbox list with conditional content"&nbsp;</span><br />
+            <span class="vs-light-theme-purple first-layer">size</span><span class="vs-light-theme-blue">="Medium"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SingleCheckBoxProperty"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">label-text</span><span class="vs-light-theme-blue">="SingleCheckBoxProperty"&nbsp;</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue fourth-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue fifth-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox</span><br />
+            <span class="vs-light-theme-purple fifth-layer">asp-for</span><span class="vs-light-theme-blue">="EmbeddedCheckboxProperty"&nbsp;</span><br />
+            <span class="vs-light-theme-purple fifth-layer">label-text</span><span class="vs-light-theme-blue">="This one has a Inset Text and in input inside"&nbsp;</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue fourth-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-checkbox</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox</span><br />
+            <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="AnotherCheckBoxProperty"&nbsp;</span><br />
+            <span class="vs-light-theme-purple third-layer">label-text</span><span class="vs-light-theme-blue">="AnotherCheckBoxProperty"&nbsp;</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue fourth-layer">&lt;</span><span class="vs-light-theme-purple">nhs-inset-text</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="fifth-layer">Here is some inset text</span><br />
+
+            <span class="vs-light-theme-blue fourth-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-inset-text</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+            <span class="vs-light-theme-blue fourth-layer">&lt;</span><span class="vs-light-theme-purple">nhs-input</span><br />
+            <span class="vs-light-theme-purple fourth-layer">asp-for</span><span class="vs-light-theme-blue">="ForInput"</span><br />
+            <span class="vs-light-theme-purple fourth-layer">label-text</span><span class="vs-light-theme-blue">="And here is the input"</span>
+            <span class="vs-light-theme-blue">/&gt;</span><br />
+
+            <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-checkbox</span>
+            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue first-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-checkbox-container</span>
+            <span class="vs-light-theme-blue">&gt;</span><br />
+
+
+            <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
+            <span class="vs-light-theme-blue">&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
+
+
+</nhs-fieldset-form-container>
+
+
+
 <nhs-endnote>
-    Page last Updated: 11 june 2021
+    Page last Updated: 1 July 2021
 </nhs-endnote>
