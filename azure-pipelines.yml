@@ -154,7 +154,6 @@ jobs:
 - job: createBuildArtifact
   displayName: Create Build Artifact
   dependsOn: dockerBuildAndPush
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
      
   steps:
   - task: CopyFiles@2
