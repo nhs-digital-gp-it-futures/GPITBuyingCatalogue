@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -8,18 +13,24 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
     public partial class GPITBuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
     {
+        private readonly IIdentityService identityService;
+
         public GPITBuyingCatalogueDbContext()
         {
         }
 
-        public GPITBuyingCatalogueDbContext(DbContextOptions<GPITBuyingCatalogueDbContext> options)
+        public GPITBuyingCatalogueDbContext(DbContextOptions<GPITBuyingCatalogueDbContext> options, IIdentityService identityService)
             : base(options)
         {
+            this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
-        protected GPITBuyingCatalogueDbContext(DbContextOptions options)
+        protected GPITBuyingCatalogueDbContext(
+            DbContextOptions options,
+            IIdentityService identityService)
             : base(options)
         {
+            this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
         public DbSet<AdditionalService> AdditionalServices { get; set; }
@@ -51,6 +62,30 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<Organisation> Organisations { get; set; }
 
         public DbSet<RelatedOrganisation> RelatedOrganisations { get; set; }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                // TODO: Don't like this option of not having an identityService but a lot of tests will require fixing up
+                if (entry.Entity is not IAudited auditedEntity || identityService is null)
+                    continue;
+
+                (Guid userId, string userName) = identityService.GetUserInfo();
+
+                switch (entry.State)
+                {
+                    case EntityState.Detached:
+                    case EntityState.Unchanged:
+                        continue;
+                    default:
+                        auditedEntity.SetLastUpdatedBy(userId, userName);
+                        continue;
+                }
+            }
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -174,6 +209,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
                 entity.HasIndex(e => e.Name, "IX_OrganisationName")
                     .IsClustered();
+
+                entity.Property(s => s.Address)
+                    .HasConversion(
+                        a => JsonSerializer.Serialize(a, null),
+                        a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
 
                 entity.Property(e => e.OrganisationId).ValueGeneratedNever();
 

@@ -1,5 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -15,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             CatalogueAgreementSigned = organisation.CatalogueAgreementSigned;
             BackLink = $"/admin/organisations/{organisation.OrganisationId}";
             Organisation = organisation;
-            OrganisationAddress = organisation.GetAddress();
+            OrganisationAddress = organisation.Address;
         }
 
         public Organisation Organisation { get; set; }
