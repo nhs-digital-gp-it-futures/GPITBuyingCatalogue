@@ -23,10 +23,10 @@
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Over what period did you estimate the quantity?"
                                          label-hint="Select one option.">
-                    <nhs-radio-buttons asp-for="@Model.TimeUnit"
+                    <nhs-radio-buttons asp-for="@Model.EstimationPeriod"
                                        values="@Model.TimeUnits.Cast<object>()"
-                                       value-name="Name"
-                                       display-name="DisplayText" />
+                                       value-name="EnumMemberName"
+                                       display-name="Description" />
                 </nhs-fieldset-form-label>
                 <nhs-details label-text="What period should i enter?">
                     This should be based on how you estimated the quantity you want to order.

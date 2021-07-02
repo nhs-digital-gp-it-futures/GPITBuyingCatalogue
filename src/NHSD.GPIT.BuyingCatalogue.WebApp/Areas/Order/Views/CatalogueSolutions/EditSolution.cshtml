@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions.EditSolutionModel;
 @{
@@ -15,18 +14,17 @@
         </div>
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.BackLinkText" />
+            <input type="hidden" asp-for="@Model.BackLinkText" />   
             <input type="hidden" asp-for="@Model.OdsCode" />
-            <input type="hidden" asp-for="@Model.Title" />
-            <input type="hidden" asp-for="@Model.CurrencySymbol" />
+            <input type="hidden" asp-for="@Model.Title" />                     
             <div class="nhsuk-grid-column-two-thirds">
                 <div class="nhsuk-u-margin-bottom-5">
                     <div>
-                        <nhs-bookended-input asp-for="@Model.OrderItem.Price"
-                                             label-text="What price have you agreed, in pounds?"
+                        <nhs-bookended-input asp-for="@Model.OrderItem.AgreedPrice"
+                                             label-text="What price have you agreed?"
                                              label-hint="You can change the list price if you've agreed a different rate with the supplier."
-                                             Prefix="@Model.CurrencySymbol"
-                                             Suffix="@Model.OrderItem.ItemUnit.Description @Model.OrderItem.TimeUnit?.Description()" />
+                                             Prefix="@Model.OrderItem.CurrencySymbol"
+                                             Suffix="@Model.OrderItem.CataloguePrice.PricingUnit.Description @Model.OrderItem.TimeUnitDescription" />
 
                         <nhs-details label-text="How to fill this form">
                             <p><b>@Model.SecondColumnDetailsTitle</b></p>
@@ -74,14 +72,14 @@
                     <vc:nhs-secondary-button url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.SelectSolutionServiceRecipients),
                                                 typeof(CatalogueSolutionsController).ControllerName(),
-                                                new {Model.OdsCode, Model.CallOffId})"
+                                                new {Model.OdsCode, Model.OrderItem.CallOffId})"
                                              text="Edit Service Recipients"
                                              use-primary-colour="false" /><br />
 
                     <vc:nhs-delete-button url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.DeleteSolution),
                                                 typeof(CatalogueSolutionsController).ControllerName(),
-                                                new { Model.OdsCode, Model.CallOffId, solutionId = @Model.OrderItem.CatalogueItemId, solutionName = @Model.OrderItem.CatalogueItemName})"
+                                                new { Model.OdsCode, Model.OrderItem.CallOffId, Model.OrderItem.CatalogueItemId, Model.OrderItem.CatalogueItemName})"
                                           text="Delete Catalogue Solution" />
                 </div>
             </div>

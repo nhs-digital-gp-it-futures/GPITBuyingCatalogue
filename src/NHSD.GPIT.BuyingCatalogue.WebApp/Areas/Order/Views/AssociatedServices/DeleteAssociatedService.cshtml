@@ -23,9 +23,12 @@
                                      url="@Url.Action(
                                             "EditAssociatedService",
                                             "AssociatedServices",
-                                            new { odsCode = Model.OdsCode,
-                                                          callOffId = Model.CallOffId,
-                                                          id = Model.CatalogueItemId })"/>
+                                            new 
+                                            { 
+                                                odsCode = Model.OdsCode,
+                                                callOffId = Model.CallOffId,
+                                                Model.CatalogueItemId,
+                                            })"/>
                 </nhs-fieldset-form-container>
             </form>
         </div>
