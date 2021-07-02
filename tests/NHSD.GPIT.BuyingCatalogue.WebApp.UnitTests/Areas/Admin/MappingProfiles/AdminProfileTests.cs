@@ -9,10 +9,10 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.MappingProfiles
 {
-    public sealed class AdminProfileTests : IDisposable
+    public sealed class AdminProfileTests
     {
-        private IMapper mapper;
-        private MapperConfiguration mapperConfiguration;
+        private readonly IMapper mapper;
+        private readonly MapperConfiguration mapperConfiguration;
 
         public AdminProfileTests()
         {
@@ -22,13 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.MappingProfiles
             });
             mapper = mapperConfiguration.CreateMapper();
         }
-
-        public void Dispose()
-        {
-            mapperConfiguration = null;
-            mapper = null;
-        }
-
+        
         [Fact]
         public void Mappings_Configuration_Valid()
         {
