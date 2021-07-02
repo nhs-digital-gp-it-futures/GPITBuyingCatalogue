@@ -96,14 +96,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             var model = new SummaryModel(odsCode, order)
             {
                 BackLink = order.OrderStatus == OrderStatus.Complete
-                            ? Url.Action(
-                                nameof(DashboardController.Organisation),
-                                typeof(DashboardController).ControllerName(),
-                                new { odsCode })
-                            : Url.Action(
-                                nameof(OrderController.Order),
-                                typeof(OrderController).ControllerName(),
-                                new { odsCode, callOffId }),
+                    ? Url.Action(
+                        nameof(DashboardController.Organisation),
+                        typeof(DashboardController).ControllerName(),
+                        new { odsCode })
+                    : Url.Action(
+                        nameof(Order),
+                        typeof(OrderController).ControllerName(),
+                        new { odsCode, callOffId }),
 
                 Title = order.OrderStatus switch
                 {
@@ -122,12 +122,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 },
             };
 
-            if (print.Equals("true", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return View("PrintSummary", model);
-            }
-
-            return View(model);
+            return print.Equals("true", StringComparison.InvariantCultureIgnoreCase)
+            ? View("PrintSummary", model)
+            : View(model);
         }
 
         [HttpPost("summary")]

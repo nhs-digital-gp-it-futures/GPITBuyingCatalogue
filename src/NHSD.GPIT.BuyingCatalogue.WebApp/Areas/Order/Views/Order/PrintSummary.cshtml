@@ -5,7 +5,7 @@
 @{
     Layout = "";
     ViewData["Title"] = Model.Title;
-    int itemId = 0;
+    var itemId = 0;
 }
 
 <!DOCTYPE html>
@@ -87,7 +87,7 @@
                         </nhs-summary-list-row>
                     </nhs-summary-list>
 
-                    <div style='page-break-after:always'></div>
+                    <div style="page-break-after:always"></div>
 
                     <h2 class="nhsuk-u-margin-bottom-3">Order items (one-off cost)</h2>
                     <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a one-off cost for the duration of this Call-off Agreement. They're the Associated Services in this order you can use as and when required.</p>
@@ -119,7 +119,7 @@
                         </nhs-summary-list-row>
                     </nhs-summary-list>
 
-                    <div style='page-break-after:always'></div>
+                    <div style="page-break-after:always"></div>
 
                     <h2 class="nhsuk-u-margin-bottom-3">Order items (recurring cost)</h2>
                     <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a recurring annual cost for the duration of this Call-off Agreement. They're the Catalogue Solutions, Additional Services and Associated Services in this order that you'll be charged for at a monthly rate.</p>
@@ -142,9 +142,9 @@
                                         @orderItem.CatalogueItem.Name
                                     </nhs-table-cell>
                                     <nhs-table-cell>
-                                        @(Model.Order.ServiceInstanceItems.Where(
+                                        @(Model.Order.ServiceInstanceItems.FirstOrDefault(
                                             si => si.OdsCode == recipient.Recipient.OdsCode
-                                            && si.CatalogueItemId == orderItem.CatalogueItemId).FirstOrDefault()?.ServiceInstanceId)
+                                            && si.CatalogueItemId == orderItem.CatalogueItemId)?.ServiceInstanceId)
                                     </nhs-table-cell>
                                     <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
                                     <nhs-table-cell>@($"{recipient.Quantity} {@orderItem.EstimationPeriod?.Description()}")</nhs-table-cell>

@@ -24,9 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public List<Organisation> RelatedOrganisations { get; set; }
 
-        public Address OrganisationAddress
-        {
-            get { return Organisation.Address; }
-        }
+        public Address OrganisationAddress => Organisation.Address;
     }
 }

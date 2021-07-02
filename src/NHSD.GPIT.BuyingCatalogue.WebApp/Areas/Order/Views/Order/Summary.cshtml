@@ -6,7 +6,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.SummaryModel;
 @{
     ViewData["Title"] = Model.Title;
-    int itemId = 0;
+    var itemId = 0;
 }
 <style>
     .nhsuk-table-responsive th {
@@ -123,9 +123,9 @@
                                     @orderItem.CatalogueItem.Name
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @(Model.Order.ServiceInstanceItems.Where(
+                                    @(Model.Order.ServiceInstanceItems.FirstOrDefault(
                                             si => si.OdsCode == recipient.Recipient.OdsCode
-                                            && si.CatalogueItemId == orderItem.CatalogueItemId).FirstOrDefault()?.ServiceInstanceId)
+                                            && si.CatalogueItemId == orderItem.CatalogueItemId)?.ServiceInstanceId)
                                 </nhs-table-cell>
                                 <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
                                 <nhs-table-cell>@($"{recipient.Quantity} {@orderItem.EstimationPeriod?.Description()}")</nhs-table-cell>
