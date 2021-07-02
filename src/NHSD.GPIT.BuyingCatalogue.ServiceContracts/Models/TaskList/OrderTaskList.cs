@@ -18,8 +18,6 @@
 
         public TaskListStatuses FundingSourceStatus { get; set; }
 
-        public bool OrderCompletable { get; set; }
-
-        public bool OrderComplete { get; set; }
+        public TaskListStatuses ReviewAndCompleteStatus { get; set; }
     }
 }

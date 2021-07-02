@@ -1,5 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             Title = $"Call-off Ordering Party information for {order.CallOffId}";
             OdsCode = odsCode;
             OrganisationName = organisation.Name;
-            Address = organisation.GetAddress();
+            Address = organisation.Address;
             Contact = new PrimaryContactModel
             {
                 FirstName = order.OrderingPartyContact?.FirstName,

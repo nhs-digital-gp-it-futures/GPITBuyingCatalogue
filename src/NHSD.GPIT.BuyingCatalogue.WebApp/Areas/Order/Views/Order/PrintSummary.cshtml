@@ -1,5 +1,11 @@
-﻿@{
+﻿@using System.Linq
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.SummaryModel;
+@{
     Layout = "";
+    ViewData["Title"] = Model.Title;
+    var itemId = 0;
 }
 
 <!DOCTYPE html>
@@ -31,1309 +37,144 @@
     <meta name="msapplication-square310x310logo" content="~/nhsuk-frontend/assets/favicons/largetile-310x310.png">
     <meta name="robots" content="noindex">
     <meta name="googlebot" content="noindex">
+    <style>
+        .nhsuk-table-responsive th {
+            font-size: 1em;
+            white-space: normal;
+        }
+
+        .nhsuk-table-responsive td {
+            font-size: 1em;
+        }
+    </style>
 </head>
 
 <body onload="window.print();">
     <div class="nhsuk-width-container">
-        <main class="nhsuk-main-wrapper" id="maincontent">
-
-            <div class="summary-page-print" data-test-id="summary-page-print">
-                <div class="nhsuk-grid-row">
-                    <div class="nhsuk-grid-column-two-thirds">
-                        <h1 data-test-id="summary-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Order summary for C010001-01</h1>
-
-                        <h2 data-test-id="order-description-heading" class="nhsuk-u-margin-bottom-3">Order description</h2>
-                        <p data-test-id="order-description" class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">Patient test</p>
-                    </div>
+        <main class="nhsuk-main-wrapper nhsuk-bc-print" id="maincontent">
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
+                    <nhs-validation-summary />
+                    <nhs-page-title title="@Model.Title"
+                                    advice="@Model.AdviceText" />
                 </div>
-
-                <div class="nhsuk-grid-row nhsuk-u-margin-bottom-3">
-                    <div class="nhsuk-grid-column-full">
-                        <div data-test-id="date-summary-created">
-                            <span class="nhsuk-u-font-weight-bold">Date order summary created:</span> 16 June 2021
-                        </div>
-                        <div data-test-id="date-completed">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="nhsuk-grid-row">
-                    <div class="nhsuk-grid-column-full">
-                        <div data-test-id="calloff-and-supplier">
-
-                            <table data-test-id="table" class="" style="page-break-inside:auto">
-
-
-                                <thead data-test-id="table-headings" style="display:table-header-group;">
-
-                                <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 " style="width:50%">
-                                    <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Call-off Ordering Party</div>
-
-
-                                </th>
-
-                                <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 " style="width:50%">
-                                    <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Supplier</div>
-
-
-                                </th>
-
-                                </thead>
-
-
-                                <tbody>
-
-                                    <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-                                            <div data-test-id="call-off-party">
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    asdsd sadsad
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    NHS Hull CCG
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    03F
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    &nbsp;
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    WILBERFORCE COURT
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    ALFRED GELDER STREET
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    HULL
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    HU1 1UY
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    ENGLAND
-
-                                                </div>
-
-                                            </div>
-
-
-
-                                        </td>
-
-
-                                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-                                            <div data-test-id="supplier">
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    sdfdf sdfsdfsdf
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    EMIS Health
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    &nbsp;
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    Rawdon House
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    Green Lane
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    West Yorkshire
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    LS19 7BY
-
-                                                </div>
-
-                                                <div class="dataPoint.multiLine.classes">
-
-                                                    England
-
-                                                </div>
-
-                                            </div>
-
-
-
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="nhsuk-grid-row nhsuk-u-margin-bottom-3">
-                    <div class="nhsuk-grid-column-full">
-                        <div data-test-id="commencement-date">
-                            <span class="nhsuk-u-font-weight-bold">Commencement date of the Call-off Agreement:</span> 1 January 2022
-                        </div>
-                    </div>
-                </div>
-
-                <div style='page-break-after:always'></div>
-
-                <div class="nhsuk-grid-row nhsuk-u-margin-bottom-3">
-                    <div class="nhsuk-grid-column-full">
-                        <div data-test-id="order-items-one-off-costs">
-                            <h2 data-test-id="one-off-cost-heading" class="nhsuk-u-margin-bottom-3">Order items (one-off cost)</h2>
-                            <p data-test-id="one-off-cost-description" class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a one-off cost for the duration of this Call-off Agreement. They&#39;re the Associated Services in this order you can use as and when required</p>
-                            <div data-test-id="one-off-cost-table">
-
-                                <table data-test-id="table" class="" style="page-break-inside:auto">
-
-                                    <caption class="nhsuk-u-visually-hidden">
-                                        Order items (one-off cost)
-                                    </caption>
-
-
-                                    <thead data-test-id="table-headings" style="display:table-header-group;">
-
-                                    <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:22%">
-                                        <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Recipient name (ODS code)</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:10%">
-                                        <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Item ID</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:25%">
-                                        <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Item name</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-3" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:20%">
-                                        <div data-test-id="column-heading-3-data" class="nhsuk-u-font-weight-bold">Price unit of order (£)</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-4" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:10%">
-                                        <div data-test-id="column-heading-4-data" class="nhsuk-u-font-weight-bold">Quantity</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-5" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:10%">
-                                        <div data-test-id="column-heading-5-data" class="nhsuk-u-font-weight-bold">Item cost (£)</div>
-
-
-                                    </th>
-
-                                    </thead>
-
-
-                                    <tbody>
-                                    </tbody>
-
-                                    <tfoot class="summary-footer">
-
-                                        <tr data-test-id="table-row-0">
-
-
-                                            <td colspan="5" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid" data-test-id="column-footer-0">
-                                                <div class="nhsuk-u-margin-bottom-1 nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-19" data-test-id="total-cost-label">
-                                                    Total one-off cost (indicative)
-                                                </div>
-                                            </td>
-
-
-                                            <td colspan="1" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid" data-test-id="column-footer-1">
-                                                <div class="nhsuk-u-margin-bottom-1 nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-19" data-test-id="total-cost-value">
-                                                    0.00
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                    </tfoot>
-
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style='page-break-after:always'></div>
-
-                <div class="nhsuk-grid-row nhsuk-u-margin-bottom-3">
-                    <div class="nhsuk-grid-column-full">
-                        <div data-test-id="order-items-recurring-costs">
-                            <h2 data-test-id="recurring-cost-heading" class="nhsuk-u-margin-bottom-3">Order items (recurring cost)</h2>
-                            <p data-test-id="recurring-cost-description" class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a recurring annual cost for the duration of this Call-off Agreement. They&#39;re the Catalogue Solutions, Additional Services and Associated Services in this order that you&#39;ll be charged for at a monthly rate.</p>
-                            <div data-test-id="recurring-cost-table">
-
-                                <table data-test-id="table" class="" style="page-break-inside:auto">
-
-                                    <caption class="nhsuk-u-visually-hidden">
-                                        Order items (recurring cost)
-                                    </caption>
-
-
-                                    <thead data-test-id="table-headings" style="display:table-header-group;">
-
-                                    <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:15%">
-                                        <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Recipient name (ODS code)</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:10%">
-                                        <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Item ID</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:15%">
-                                        <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Item name</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-3" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:15%">
-                                        <div data-test-id="column-heading-3-data" class="nhsuk-u-font-weight-bold">Service Instance ID</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-4" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:12%">
-                                        <div data-test-id="column-heading-4-data" class="nhsuk-u-font-weight-bold">Price unit of order (£)</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-5" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:5%">
-                                        <div data-test-id="column-heading-5-data" class="nhsuk-u-font-weight-bold">Quantity /period</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-6" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:15%">
-                                        <div data-test-id="column-heading-6-data" class="nhsuk-u-font-weight-bold">Planned delivery date</div>
-
-
-                                    </th>
-
-                                    <th data-test-id="column-heading-7" class="nhsuk-u-padding-bottom-0 nhsuk-u-font-size-14" style="width:9%">
-                                        <div data-test-id="column-heading-7-data" class="nhsuk-u-font-weight-bold">Item cost per year (£)</div>
-
-
-                                    </th>
-
-                                    </thead>
-
-
-                                    <tbody>
-
-                                        <tr data-test-id="table-row-0" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="recipient-name" class="bc-c-data-text nhsuk-u-font-size-14">ASSURA ER LLP HULL DERMATOLOGY (Y03508)</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-id" class="bc-c-data-text nhsuk-u-font-size-14">C010001-01-Y03508-6</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-name" class="bc-c-data-text nhsuk-u-font-size-14">Anywhere Consult</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="service-instance-id" class="bc-c-data-text nhsuk-u-font-size-14">SI2-Y03508</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="price-unit" class="bc-c-data-text nhsuk-u-font-size-14">37.92 per licence per month</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="quantity" class="bc-c-data-text nhsuk-u-font-size-14">6 per year</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="planned-date" class="bc-c-data-text nhsuk-u-font-size-14">1 January 2022</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="costPerYear" class="bc-c-data-text nhsuk-u-font-size-14 nhsuk-table__cell--numeric">2,730.24</div>
-
-
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-1" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="recipient-name" class="bc-c-data-text nhsuk-u-font-size-14">BEVAN LIMITED (Y07021)</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-id" class="bc-c-data-text nhsuk-u-font-size-14">C010001-01-Y07021-7</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-name" class="bc-c-data-text nhsuk-u-font-size-14">Anywhere Consult</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="service-instance-id" class="bc-c-data-text nhsuk-u-font-size-14">SI1-Y07021</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="price-unit" class="bc-c-data-text nhsuk-u-font-size-14">37.92 per licence per month</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="quantity" class="bc-c-data-text nhsuk-u-font-size-14">6 per year</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="planned-date" class="bc-c-data-text nhsuk-u-font-size-14">1 January 2022</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="costPerYear" class="bc-c-data-text nhsuk-u-font-size-14 nhsuk-table__cell--numeric">2,730.24</div>
-
-
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-2" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="recipient-name" class="bc-c-data-text nhsuk-u-font-size-14">ASSURA ER LLP HULL DERMATOLOGY (Y03508)</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-id" class="bc-c-data-text nhsuk-u-font-size-14">C010001-01-Y03508-4</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-name" class="bc-c-data-text nhsuk-u-font-size-14">Automated Arrivals</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="service-instance-id" class="bc-c-data-text nhsuk-u-font-size-14">SI1-Y03508</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="price-unit" class="bc-c-data-text nhsuk-u-font-size-14">35.51 per licence per month</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="quantity" class="bc-c-data-text nhsuk-u-font-size-14">8 per year</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="planned-date" class="bc-c-data-text nhsuk-u-font-size-14">1 January 2022</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="costPerYear" class="bc-c-data-text nhsuk-u-font-size-14 nhsuk-table__cell--numeric">3,408.96</div>
-
-
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-3" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="recipient-name" class="bc-c-data-text nhsuk-u-font-size-14">BEVAN LIMITED (Y07021)</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-id" class="bc-c-data-text nhsuk-u-font-size-14">C010001-01-Y07021-5</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-name" class="bc-c-data-text nhsuk-u-font-size-14">Automated Arrivals</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="price-unit" class="bc-c-data-text nhsuk-u-font-size-14">35.51 per licence per month</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="quantity" class="bc-c-data-text nhsuk-u-font-size-14">8 per year</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="planned-date" class="bc-c-data-text nhsuk-u-font-size-14">1 January 2022</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="costPerYear" class="bc-c-data-text nhsuk-u-font-size-14 nhsuk-table__cell--numeric">3,408.96</div>
-
-
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-4" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="recipient-name" class="bc-c-data-text nhsuk-u-font-size-14">ASSURA ER LLP HULL DERMATOLOGY (Y03508)</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-id" class="bc-c-data-text nhsuk-u-font-size-14">C010001-01-Y03508-3</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-name" class="bc-c-data-text nhsuk-u-font-size-14">Emis Web GP</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="service-instance-id" class="bc-c-data-text nhsuk-u-font-size-14">SI1-Y03508</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="price-unit" class="bc-c-data-text nhsuk-u-font-size-14">1.26 per patient per year</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="quantity" class="bc-c-data-text nhsuk-u-font-size-14">100 per month</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="planned-date" class="bc-c-data-text nhsuk-u-font-size-14">3 January 2022</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="costPerYear" class="bc-c-data-text nhsuk-u-font-size-14 nhsuk-table__cell--numeric">126.00</div>
-
-
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-5" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="recipient-name" class="bc-c-data-text nhsuk-u-font-size-14">BRANSHOLME MIU (Y00427)</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-id" class="bc-c-data-text nhsuk-u-font-size-14">C010001-01-Y00427-2</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-name" class="bc-c-data-text nhsuk-u-font-size-14">Emis Web GP</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="service-instance-id" class="bc-c-data-text nhsuk-u-font-size-14">SI1-Y00427</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="price-unit" class="bc-c-data-text nhsuk-u-font-size-14">1.26 per patient per year</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="quantity" class="bc-c-data-text nhsuk-u-font-size-14">300 per month</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="planned-date" class="bc-c-data-text nhsuk-u-font-size-14">4 January 2022</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="costPerYear" class="bc-c-data-text nhsuk-u-font-size-14 nhsuk-table__cell--numeric">378.00</div>
-
-
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-6" style="page-break-inside:avoid; page-break-after:auto">
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="recipient-name" class="bc-c-data-text nhsuk-u-font-size-14">BURNBRAE MEDICAL PRACTICE (B81085)</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-id" class="bc-c-data-text nhsuk-u-font-size-14">C010001-01-B81085-1</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="item-name" class="bc-c-data-text nhsuk-u-font-size-14">Emis Web GP</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="service-instance-id" class="bc-c-data-text nhsuk-u-font-size-14">SI1-B81085</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="price-unit" class="bc-c-data-text nhsuk-u-font-size-14">1.26 per patient per year</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="quantity" class="bc-c-data-text nhsuk-u-font-size-14">200 per month</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="planned-date" class="bc-c-data-text nhsuk-u-font-size-14">2 January 2022</div>
-
-
-
-
-
-                                            </td>
-
-
-                                            <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-
-
-
-
-
-                                                <div data-test-id="costPerYear" class="bc-c-data-text nhsuk-u-font-size-14 nhsuk-table__cell--numeric">252.00</div>
-
-
-
-
-
-                                            </td>
-
-                                        </tr>
-
-                                    </tbody>
-
-                                    <tfoot class="summary-footer">
-
-                                        <tr data-test-id="table-row-0">
-
-
-                                            <td colspan="7" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: none" data-test-id="column-footer-0">
-                                                <div class="nhsuk-u-margin-bottom-1 nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-19" data-test-id="total-year-cost-label">
-                                                    Total cost for one year (indicative)
-                                                </div>
-                                            </td>
-
-
-                                            <td colspan="1" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: none" data-test-id="column-footer-1">
-                                                <div class="nhsuk-u-margin-bottom-1 nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-19" data-test-id="total-year-cost-value">
-                                                    13,034.40
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-1">
-
-
-                                            <td colspan="7" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid" data-test-id="column-footer-0">
-                                                <div class="nhsuk-u-margin-bottom-1 nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-16" data-test-id="total-monthly-cost-label">
-                                                    Total monthly cost (indicative)
-                                                </div>
-                                            </td>
-
-
-                                            <td colspan="1" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid" data-test-id="column-footer-1">
-                                                <div class="nhsuk-u-margin-bottom-1 nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-16" data-test-id="total-monthly-cost-value">
-                                                    1,086.20
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-2">
-
-
-                                            <td colspan="7" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: none" data-test-id="column-footer-0">
-                                                <div class="nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-22 nhsuk-u-margin-top-5" data-test-id="total-ownership-cost-label">
-                                                    Total cost of contract (indicative)
-                                                </div>
-                                            </td>
-
-
-                                            <td colspan="1" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: none" data-test-id="column-footer-1">
-                                                <div class="nhsuk-u-font-weight-bold nhsuk-table__cell--numeric nhsuk-u-font-size-22 nhsuk-u-margin-top-5" data-test-id="total-ownership-cost-value">
-                                                    39,103.20
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                        <tr data-test-id="table-row-3">
-
-
-                                            <td colspan="7" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: none" data-test-id="column-footer-0">
-                                                <div class="nhsuk-grid-column-two-thirds bc-u-float-right nhsuk-table__cell--numeric nhsuk-u-padding-right-0 nhsuk-u-font-size-14" data-test-id="total-ownership-terms">
-                                                    This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years. The figure is made up of the one-off costs and the estimated yearly cost multiplied by 3.
-                                                </div>
-                                            </td>
-
-
-                                            <td colspan="1" class="nhsuk-u-padding-bottom-0" style="border-bottom-style: none" data-test-id="column-footer-1">
-                                                <div class="" data-test-id="blank-cell">
-
-                                                </div>
-                                            </td>
-
-                                        </tr>
-
-                                    </tfoot>
-
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Date order summary created">
+                            @DateTime.UtcNow.ToLongDateString()
+                        </nhs-summary-list-row>
+                        @if (Model.Order.OrderStatus == OrderStatus.Complete)
+                        {
+                            <nhs-summary-list-row label-text="Date order summary completed">
+                                @Model.Order.Completed.Value.ToLongDateString()
+                            </nhs-summary-list-row>
+                        }
+                        <nhs-summary-list-row label-text="Call-off Ordering Party">
+                            @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName<br />
+                            @Model.Order.OrderingParty.Name<br />
+                            @Model.Order.OrderingParty.OdsCode<br />
+                            <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Supplier">
+                            @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName<br />
+                            @Model.Order.Supplier.Name<br />
+                            <vc:nhs-address address="@Model.Order.Supplier.Address" />
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Commencement date of the Call-off Agreement">
+                            @Model.Order.CommencementDate?.ToLongDateString()
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
 
+                    <div style="page-break-after:always"></div>
+
+                    <h2 class="nhsuk-u-margin-bottom-3">Order items (one-off cost)</h2>
+                    <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a one-off cost for the duration of this Call-off Agreement. They're the Associated Services in this order you can use as and when required.</p>
+                    <nhs-table>
+                        <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
+                        <nhs-table-column>Item ID</nhs-table-column>
+                        <nhs-table-column>Item name</nhs-table-column>
+                        <nhs-table-column>Price unit of order (£)</nhs-table-column>
+                        <nhs-table-column>Quantity</nhs-table-column>
+                        <nhs-table-column>Item cost (£)</nhs-table-column>
+                        @foreach (var orderItem in Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff))
+                        {
+                            @foreach (var recipient in orderItem.OrderItemRecipients)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>@recipient.Recipient.Name</nhs-table-cell>
+                                    <nhs-table-cell>@($"{Model.Order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId++}")</nhs-table-cell>
+                                    <nhs-table-cell>@orderItem.CatalogueItem.Name</nhs-table-cell>
+                                    <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
+                                    <nhs-table-cell>@recipient.Quantity</nhs-table-cell>
+                                    <nhs-table-cell>@((recipient.Quantity * orderItem.Price).Value.ToString("N"))</nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        }
+                    </nhs-table>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Total one off cost (indicative)">
+                            @Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value.ToString("N")
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+
+                    <div style="page-break-after:always"></div>
+
+                    <h2 class="nhsuk-u-margin-bottom-3">Order items (recurring cost)</h2>
+                    <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a recurring annual cost for the duration of this Call-off Agreement. They're the Catalogue Solutions, Additional Services and Associated Services in this order that you'll be charged for at a monthly rate.</p>
+                    <nhs-table>
+                        <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
+                        <nhs-table-column>Item ID/name</nhs-table-column>
+                        <nhs-table-column>Service instance ID</nhs-table-column>
+                        <nhs-table-column>Price unit of order (£)</nhs-table-column>
+                        <nhs-table-column>Quantity/period</nhs-table-column>
+                        <nhs-table-column>Planned delivery date</nhs-table-column>
+                        <nhs-table-column>Item cost per year (£)</nhs-table-column>
+                        @foreach (var orderItem in Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring))
+                        {
+                            @foreach (var recipient in orderItem.OrderItemRecipients)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>@recipient.Recipient.Name</nhs-table-cell>
+                                    <nhs-table-cell>
+                                        @($"{Model.Order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId++}") <br />
+                                        @orderItem.CatalogueItem.Name
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        @(Model.Order.ServiceInstanceItems.FirstOrDefault(
+                                            si => si.OdsCode == recipient.Recipient.OdsCode
+                                            && si.CatalogueItemId == orderItem.CatalogueItemId)?.ServiceInstanceId)
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>@orderItem.Price.Value.ToString("N") @orderItem.CataloguePrice.PricingUnit.Description</nhs-table-cell>
+                                    <nhs-table-cell>@($"{recipient.Quantity} {orderItem.EstimationPeriod?.Description()}")</nhs-table-cell>
+                                    <nhs-table-cell>@recipient.DeliveryDate?.ToLongDateString()</nhs-table-cell>
+                                    <nhs-table-cell>@((recipient.Quantity * orderItem.Price).Value.ToString("N"))</nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        }
+                    </nhs-table>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Total cost for one year (indicative)">
+                            @Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value.ToString("N")
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Total monthly cost(indicitive)">
+                            @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value/ 12).ToString("N"))
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Total cost of contract (indicative)">
+                            @((Model.Order.OrderItems.Where(oi => oi.CostType == CostType.OneOff).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)).Value
+                        + (Model.Order.OrderItems.Where(oi => oi.CostType == CostType.Recurring).Sum(oi => oi.OrderItemRecipients.Sum(r => r.Quantity * oi.Price)) * 3).Value)
+                        .ToString("N"))
+                            <p>
+                                This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                The figure is made up of the one-off costs and the estimated yearly cost multiplied by 3.
+                            </p>
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                </div>
+            </div>
         </main>
     </div>
 </body>
