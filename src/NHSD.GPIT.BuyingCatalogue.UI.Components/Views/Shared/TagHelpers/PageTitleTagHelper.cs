@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             // this tag helper uses the NhsPageTitleViewComponent for all its rendering.
             // this tag helper will be removed when we move to .NET 6.0 which will allow optional parameters for
-            // view components, when we'll move over to using the NhsPageTitle View Component Explicitally
+            // view components, when we'll move over to using the NhsPageTitle View Component Explicitly
             ((IViewContextAware)viewComponentHelper).Contextualize(ViewContext);
 
             var pageTitleFromViewComponent = await viewComponentHelper.InvokeAsync(

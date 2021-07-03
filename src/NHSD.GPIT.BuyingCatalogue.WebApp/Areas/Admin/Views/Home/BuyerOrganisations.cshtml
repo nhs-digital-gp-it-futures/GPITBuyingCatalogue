@@ -47,7 +47,7 @@
                     @foreach (var organisationModel in Model)
                     {
                         <tr role="row" class="nhsuk-table__row">
-                            @foreach (var row in new[] { @organisationModel.Name, @organisationModel.OdsCode, })
+                            @foreach (var row in new[] { organisationModel.Name, organisationModel.OdsCode, })
                             {
                                 <td class="nhsuk-table__cell">
                                     @row

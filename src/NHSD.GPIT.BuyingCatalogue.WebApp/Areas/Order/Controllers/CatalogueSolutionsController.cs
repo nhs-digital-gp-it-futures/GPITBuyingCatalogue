@@ -360,7 +360,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
             // TODO - handle errors
-            var result = await orderItemService.Create(callOffId, state);
+            await orderItemService.Create(callOffId, state);
 
             orderSessionService.ClearSession(callOffId);
 
