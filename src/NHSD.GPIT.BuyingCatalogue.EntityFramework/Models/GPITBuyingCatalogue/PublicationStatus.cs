@@ -18,4 +18,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         [Display(Name = "In Remediation", Order = 4)]
         InRemediation = 5,
-    }}
+    }
+}
