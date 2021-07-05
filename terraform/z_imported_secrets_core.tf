@@ -22,3 +22,8 @@ data "azurerm_key_vault_secret" "sqladmins" {
   name         = "${var.pjtcode}${local.coreEnv}SG-SQLAdmins"
   key_vault_id = data.azurerm_key_vault.keyvault_core.id
 }
+
+data "azurerm_key_vault_secret" "nhsdoffice1" {
+  name         = "${var.pjtcode}${local.coreEnv}nhsdoffice1"
+  key_vault_id = data.azurerm_key_vault.keyvault_core.id
+}

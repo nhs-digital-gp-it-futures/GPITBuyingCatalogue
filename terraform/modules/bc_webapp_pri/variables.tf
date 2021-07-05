@@ -86,3 +86,11 @@ variable "secondary_vpn" {
 variable "tertiary_vpn" {
   type = string
 }
+
+variable "ssl_cert" {
+  type = string
+}
+
+variable "customer_network_range" {
+  type = string
+}

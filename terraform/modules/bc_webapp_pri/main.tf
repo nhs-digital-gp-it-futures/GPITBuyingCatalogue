@@ -55,7 +55,7 @@ resource "azurerm_app_service" "webapp" {
     min_tls_version           = "1.2"
     ip_restriction {
       name       = "NHS_Access"
-      ip_address = data.azurerm_key_vault_secret.nhsdoffice1.value
+      ip_address = var.customer_network_range
       priority   = 200
       headers    = []
     }
