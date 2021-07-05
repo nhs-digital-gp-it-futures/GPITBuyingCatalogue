@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
-        public bool GetFoundationSolution()
+        public bool FoundationSolutionDisplayed()
         {
             var checkbox = Driver.FindElements(Objects.Admin.AddSolutionObjects.SolutionFrameworks)[0];
             checkbox.Click();

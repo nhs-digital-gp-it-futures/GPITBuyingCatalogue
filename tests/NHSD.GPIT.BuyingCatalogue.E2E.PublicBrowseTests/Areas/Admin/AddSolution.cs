@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public void AddSolution_FoundationSolutionDisplayed()
         {
-            AdminPages.AddSolution.GetFoundationSolution().Should().BeTrue();
+            AdminPages.AddSolution.FoundationSolutionDisplayed().Should().BeTrue();
         }
     }
 }
