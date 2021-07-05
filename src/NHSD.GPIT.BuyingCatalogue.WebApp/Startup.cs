@@ -17,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Serilog;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
@@ -43,10 +44,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             });
 
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            });
+            services.AddMvc(
+                    options =>
+                    {
+                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    })
+                .AddFluentValidation(
+                    options =>
+                    {
+                        options.RegisterValidatorsFromAssemblyContaining<AddSolutionModelValidator>();
+                        options.DisableDataAnnotationsValidation = true;
+                    });
 
             services.AddApplicationInsightsTelemetry();
 
@@ -81,8 +89,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             ServicesStartup.Configure(services);
 
             services.ConfigureAutoMapper();
-
-            services.AddFluentValidation();
 
             services.AddRazorPages();
         }

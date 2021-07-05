@@ -7,17 +7,18 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
+using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.PublicationStatus;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions/add-solution")]
-    public sealed class CatalogueSolutionController : Controller
+    public sealed class AddCatalogueSolutionController : Controller
     {
         private readonly ISolutionsService solutionsService;
 
-        public CatalogueSolutionController(ISolutionsService solutionsService)
+        public AddCatalogueSolutionController(ISolutionsService solutionsService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
@@ -27,10 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var suppliers = await solutionsService.GetAllSuppliers();
 
-            return View(new AddSolutionModel
-            {
-                Suppliers = suppliers?.ToDictionary(s => s.Id, s => s.Name),
-            });
+            return View(new AddSolutionModel().WithSuppliers(suppliers));
         }
 
         [HttpPost]
@@ -39,24 +37,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var suppliers = await solutionsService.GetAllSuppliers();
-                var dictionary = suppliers?.ToDictionary(x => x.Id, x => x.Name);
 
-                model.Suppliers = dictionary;
-                return View(model);
+                return View(model.WithSuppliers(suppliers));
             }
 
-            var catalogueItemId = await solutionsService.GetLatestCatalogueItemIdFor(model.SupplierId);
+            var latestCatalogueItemId = await solutionsService.GetLatestCatalogueItemIdFor(model.SupplierId);
 
             await solutionsService.AddCatalogueSolution(new CatalogueItem
             {
-                CatalogueItemId = catalogueItemId.NextSolutionId(),
+                CatalogueItemId = latestCatalogueItemId.NextSolutionId(),
+                CatalogueItemType = CatalogueItemType.Solution,
                 Name = model.SolutionName,
+                PublishedStatus = PublicationStatus.Draft,
                 SupplierId = model.SupplierId,
             });
 
             return RedirectToAction(
-                nameof(HomeController.Index),
-                typeof(HomeController).ControllerName());
+                nameof(CatalogueSolutionsController.Index),
+                typeof(CatalogueSolutionsController).ControllerName());
         }
     }
 }

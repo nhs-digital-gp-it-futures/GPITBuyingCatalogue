@@ -91,10 +91,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId NextSolutionId()
         {
-            if (!int.TryParse(ItemId, out var result))
+            if (!int.TryParse(ItemId, out var itemId))
                 throw new FormatException();
 
-            return new CatalogueItemId(SupplierId, (result + 1).ToString("D3"));
+            return new CatalogueItemId(SupplierId, (itemId + 1).ToString("D3"));
         }
     }
 }

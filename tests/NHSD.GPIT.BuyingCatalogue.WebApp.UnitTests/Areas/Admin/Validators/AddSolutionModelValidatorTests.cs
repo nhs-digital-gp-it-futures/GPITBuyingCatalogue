@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using FluentAssertions;
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -15,48 +14,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_NoFrameworkSelected_SetsModelErrorForFrameworkModel(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+        public static void Validate_FrameworkNotValid_SetsModelErrorForFrameworkModel(
+            AddSolutionModelValidator validator,
+            [Frozen] Mock<FrameworkModel> mockFrameworkModel,
             AddSolutionModel model)
         {
-            model.FrameworkModel = new FrameworkModel();
+            mockFrameworkModel.Setup(f => f.IsValid())
+                .Returns(false);
+            model.FrameworkModel = mockFrameworkModel.Object;
             
-            await new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ValidateAsync(model);
-
-            new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ShouldHaveValidationErrorFor(m => m.FrameworkModel, model)
+            validator.ShouldHaveValidationErrorFor(m => m.FrameworkModel, model)
                 .WithErrorMessage("Select the framework(s) your solution is available from");
+            mockFrameworkModel.Verify(f => f.IsValid());
         }
         
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_DfocvcFrameworkSelected_NoErrorForFrameworkModel(
+        public static void Validate_FrameworkValid_NoErrorForFrameworkModel(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] Mock<FrameworkModel> mockFrameworkModel,
             AddSolutionModel model)
         {
-            model.FrameworkModel = new FrameworkModel { DfocvcFramework = true };
-            
-            await new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ValidateAsync(model);
+            mockFrameworkModel.Setup(f => f.IsValid())
+                .Returns(true);
+            model.FrameworkModel = mockFrameworkModel.Object;
 
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldNotHaveValidationErrorFor(m => m.FrameworkModel, model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Validate_GpitFuturesFrameworkSelected_NoErrorForFrameworkModel(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model)
-        {
-            model.FrameworkModel = new FrameworkModel { GpitFuturesFramework = true };
-            
-            await new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ValidateAsync(model);
-
-            new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ShouldNotHaveValidationErrorFor(m => m.FrameworkModel, model);
+            mockFrameworkModel.Verify(f => f.IsValid());
         }
         
         [Theory]
@@ -91,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldHaveValidationErrorFor(m => m.SupplierId, model)
-                .WithErrorMessage("An integer value is required as Supplier Id");
+                .WithErrorMessage("Supplier Id should be a valid integer");
             mockSolutionsService
                 .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
@@ -107,13 +92,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldNotHaveValidationErrorFor(m => m.SupplierId, model);
-            mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()));
         }
         
         [Theory]
         [CommonAutoData]
-        public static async Task Validate_SolutionNameValidation_ChecksSolutionNameUnique(
+        public static async Task ValidateAsync_SolutionNameValidation_ChecksSolutionNameUnique(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             AddSolutionModel model)
         {
@@ -128,6 +111,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 .Verify(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName));
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_SolutionNameNotValid_SetsModelErrorWithoutServiceCall(
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            AddSolutionModel model)
+        {
+            model.SolutionName = string.Empty;
+
+            new AddSolutionModelValidator(mockSolutionsService.Object)
+                .ShouldHaveValidationErrorFor(m => m.SolutionName, model)
+                .WithErrorMessage("Enter a solution name");
+            mockSolutionsService
+                .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+        
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_SolutionNameTooLong_SetsModelErrorWithoutServiceCall(
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            AddSolutionModel model)
+        {
+            model.SolutionName = new string('Z', 256);
+
+            new AddSolutionModelValidator(mockSolutionsService.Object)
+                .ShouldHaveValidationErrorFor(m => m.SolutionName, model)
+                .WithErrorMessage("Solution name cannot be more than 255 characters");
+            mockSolutionsService
+                .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+        
         [Theory]
         [CommonAutoData]
         public static void Validate_SolutionNameNotUniqueForSupplierId_SetsModelError(

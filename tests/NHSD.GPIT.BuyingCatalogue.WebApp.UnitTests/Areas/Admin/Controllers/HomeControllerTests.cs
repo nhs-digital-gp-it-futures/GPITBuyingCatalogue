@@ -47,19 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ParamName.Should()
                 .Be("mapper");
         }
-
-        [Fact]
-        public static void Constructor_NullSolutionsService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new HomeController(
-                            Mock.Of<IOrganisationsService>(),
-                            Mock.Of<IMapper>()))
-                .ParamName.Should()
-                .Be("solutionsService");
-        }
-
+        
         [Fact]
         public static void Get_BuyerOrganisations_RouteAttribute_ExpectedTemplate()
         {

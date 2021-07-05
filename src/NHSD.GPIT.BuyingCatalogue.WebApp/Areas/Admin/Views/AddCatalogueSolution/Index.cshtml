@@ -17,13 +17,13 @@
         <div class="nhsuk-grid-row">
             <nhs-validation-summary/>
 
-            @* @if (!ViewData.ModelState.IsValid) *@
-            @* { *@
-            @*     foreach (var (key, value) in ViewData.ModelState) *@
-            @*     { *@
-            @*         <p>@key : @value.Errors.FirstOrDefault()?.ErrorMessage</p> *@
-            @*     } *@
-            @* } *@
+            @if (!ViewData.ModelState.IsValid)
+            {
+                foreach (var (key, value) in ViewData.ModelState)
+                {
+                    <p>@key : @value.Errors.FirstOrDefault()?.ErrorMessage</p>
+                }
+            }
 
             <div class="nhsuk-grid-column-two-thirds">
                 <h1>Add a solution</h1>
@@ -54,7 +54,7 @@
                             <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
                                 <div class="nhsuk-checkboxes__item">
                                     <input class="nhsuk-checkboxes__input checkboxError" asp-for="@Model.FrameworkModel.GpitFuturesFramework" type="checkbox" aria-controls="conditional-contact-1" aria-expanded="false">
-                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel.GpitFuturesFramework)">
+                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.GpitFuturesFramework)">
                                         GP IT Futures Framework
                                     </label>
                                 </div>
@@ -65,7 +65,7 @@
                                         <div class="nhsuk-checkboxes">
                                             <div class="nhsuk-checkboxes__item">
                                                 <input class="nhsuk-checkboxes__input " asp-for="@Model.FrameworkModel.FoundationSolutionFramework" type="checkbox">
-                                                <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel.FoundationSolutionFramework)">
+                                                <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.FoundationSolutionFramework)">
                                                     Foundation Solution
                                                 </label>
                                             </div>
@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="nhsuk-checkboxes__item">
                                     <input class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.DfocvcFramework" type="checkbox">
-                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel.DfocvcFramework)">
+                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.DfocvcFramework)">
                                         DFOCVC Framework
                                     </label>
                                 </div>

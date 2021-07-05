@@ -318,13 +318,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<CatalogueItemId> GetLatestCatalogueItemIdFor(string supplierId)
         {
-            var catalogueSolution = await dbContext.CatalogueItems
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
-                .OrderByDescending(i => i.Created)
-                .FirstOrDefaultAsync();
-
             if (!int.TryParse(supplierId, out var result))
                 throw new ArgumentException($"'{supplierId}' is not a valid Supplier Id");
+
+            var catalogueSolution = await dbContext.CatalogueItems
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.SupplierId == supplierId)
+                .OrderByDescending(i => i.Created)
+                .FirstOrDefaultAsync();
 
             return catalogueSolution?.CatalogueItemId ?? new CatalogueItemId(result, "000");
         }
