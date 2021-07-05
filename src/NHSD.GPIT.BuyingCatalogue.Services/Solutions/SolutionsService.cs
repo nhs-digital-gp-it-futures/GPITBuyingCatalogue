@@ -107,9 +107,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
-        public Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
+        public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
         {
-            return dbContext.CatalogueItems
+            var solution = await dbContext.CatalogueItems
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
@@ -120,36 +120,64 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Take(1)).ThenInclude(c => c.AssociatedService)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
+
+            var additionalServices = await dbContext.CatalogueItems
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.AdditionalService != null).Take(1))
+                .ThenInclude(c => c.AdditionalService)
+                .Where(i => i.CatalogueItemId == solutionId)
+                .SingleOrDefaultAsync();
+
+            solution?.Supplier?.CatalogueItems.Add(additionalServices.Supplier?.CatalogueItems?.FirstOrDefault());
+
+            return solution;
         }
 
-        public Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
+        public async Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
         {
-            return dbContext.CatalogueItems
+            var solution = await dbContext.CatalogueItems
+               .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
+               .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
+               .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
+               .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
+               .Include(i => i.CataloguePrices)
+               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.AssociatedService)
+               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+               .Where(i => i.CatalogueItemId == solutionId)
+               .SingleOrDefaultAsync();
+
+            var additionalServices = await dbContext.CatalogueItems
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.AdditionalService != null).Take(1))
+                .ThenInclude(a => a.AdditionalService)
+                .Where(i => i.CatalogueItemId == solutionId)
+                .SingleOrDefaultAsync();
+
+            solution?.Supplier?.CatalogueItems.Add(additionalServices.Supplier?.CatalogueItems?.FirstOrDefault());
+
+            return solution;
+        }
+
+        public async Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId)
+        {
+            var solution = await dbContext.CatalogueItems
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
                 .Include(i => i.CataloguePrices)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AdditionalService)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService || c.CatalogueItemType == CatalogueItemType.AdditionalService)).ThenInclude(c => c.AdditionalService)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService || c.CatalogueItemType == CatalogueItemType.AdditionalService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .SingleOrDefaultAsync();
-        }
 
-        public Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId)
-        {
-            return dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
-                .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
-                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
-                .Include(i => i.CataloguePrices)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AssociatedService)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.AdditionalService)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+            var associatedServices = await dbContext.CatalogueItems
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.AssociatedService != null).Take(1))
+                .ThenInclude(a => a.AssociatedService)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .SingleOrDefaultAsync();
+
+            solution?.Supplier?.CatalogueItems.Add(associatedServices.Supplier?.CatalogueItems?.FirstOrDefault());
+
+            return solution;
         }
 
         public Task<List<CatalogueItem>> GetDFOCVCSolutions()

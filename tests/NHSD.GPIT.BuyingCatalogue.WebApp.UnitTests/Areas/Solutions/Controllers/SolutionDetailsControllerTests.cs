@@ -898,7 +898,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_AdditionalServices_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
         {
-            var mockAdditionalServicesModel = new Mock<AdditionalServicesModel>().Object;
+            var mockAdditionalServicesModel = new AdditionalServicesModel();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
 
             var mockService = new Mock<ISolutionsService>();

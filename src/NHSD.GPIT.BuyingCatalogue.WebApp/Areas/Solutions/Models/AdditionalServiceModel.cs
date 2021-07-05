@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class AdditionalServiceModel
+    public sealed class AdditionalServiceModel
     {
-        public string SolutionId { get; set; }
+        public CatalogueItemId SolutionId { get; set; }
 
         public string Description { get; set; }
 
