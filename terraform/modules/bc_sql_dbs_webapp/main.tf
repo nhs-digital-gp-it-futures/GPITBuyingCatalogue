@@ -1,5 +1,5 @@
 resource "azurerm_sql_database" "sql_main" {
-  name                             = "BuyingCatalogue-${var.db_name}${var.environment}"
+  name                             = "BuyingCatalogue${var.db_name}${var.environment}"
   resource_group_name              = var.rg_name 
   location                         = var.region
   server_name                      = var.sqlsvr_name 
@@ -8,7 +8,8 @@ resource "azurerm_sql_database" "sql_main" {
   requested_service_objective_name = var.sql_size
 
   tags = {
-    environment                    = var.environment
+    environment                    = var.environment,
+    architecture                   = "new"
   }
 
   lifecycle {
@@ -19,7 +20,7 @@ resource "azurerm_sql_database" "sql_main" {
 }
 
 resource "azurerm_sql_database" "sql_user" {
-  name                             = "CatalogueUser-${var.db_name}${var.environment}"
+  name                             = "CatalogueUser${var.db_name}${var.environment}"
   resource_group_name              = var.rg_name 
   location                         = var.region
   server_name                      = var.sqlsvr_name
@@ -28,7 +29,8 @@ resource "azurerm_sql_database" "sql_user" {
   requested_service_objective_name = var.sql_size
 
   tags = {
-    environment                    = var.environment
+    environment                    = var.environment,
+    architecture                   = "new"
   }
 
   lifecycle {
@@ -39,7 +41,7 @@ resource "azurerm_sql_database" "sql_user" {
 }
 
 resource "azurerm_sql_database" "sql_ordering" {
-  name                             = "CatalogueOrdering-${var.db_name}${var.environment}"
+  name                             = "CatalogueOrdering${var.db_name}${var.environment}"
   resource_group_name              = var.rg_name 
   location                         = var.region
   server_name                      = var.sqlsvr_name
@@ -48,7 +50,8 @@ resource "azurerm_sql_database" "sql_ordering" {
   requested_service_objective_name = var.sql_size
 
   tags = {
-    environment                    = var.environment
+    environment                    = var.environment,
+    architecture                   = "new"
   }
 
   lifecycle {

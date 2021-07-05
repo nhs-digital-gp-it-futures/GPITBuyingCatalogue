@@ -42,14 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return dbContext.Orders
                 .Where(o => o.Id == callOffId.Id)
                 .Include(o => o.OrderingParty)
-
-                // TODO: fix address modelling
-                // .ThenInclude(p => p.Address)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
-
-                // TODO: fix address modelling
-                // .ThenInclude(s => s.Address)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.ServiceInstanceItems)
                 .Include(o => o.OrderItems).ThenInclude(i => i.CatalogueItem).ThenInclude(a => a.AdditionalService)
@@ -107,10 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 OrderingParty = orderingParty,
             };
 
-            // TODO: SetLastUpdateBy should be invoked automatically on save by overriding SaveChangesAsync (see ordering API)
-            // It is invoked here to allow an order to be created with the code as is.
-            order.SetLastUpdatedBy(Guid.Empty, "Mr T");
-
             dbContext.Add(order);
             await dbContext.SaveChangesAsync();
 
@@ -131,8 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await GetOrder(callOffId);
 
             order.Complete();
-
-            await dbContext.SaveChangesAsync();
 
             await using var fullOrderStream = new MemoryStream();
             await using var patientOrderStream = new MemoryStream();
@@ -168,6 +156,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 attachments);
 
             await emailService.SendEmailAsync(message);
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

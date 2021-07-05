@@ -22,7 +22,7 @@ variable "container_name" {
 variable "ip_rules" {
   type = list(string)
 }
-variable "aks_subnet_id" {
+variable "vnet_subnet_id" {
   type = string
 }
 variable "kv_id" {

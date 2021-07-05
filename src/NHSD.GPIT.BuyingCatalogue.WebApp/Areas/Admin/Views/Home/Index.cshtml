@@ -1,5 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using CatalogueSolutionsController = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.CatalogueSolutionsController
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Admin landing page";
@@ -26,8 +27,8 @@
                                         typeof(HomeController).ControllerName())"
                                     text="Manage suppliers organisations" />
                 <vc:nhs-action-link url="@Url.Action(
-                                        nameof(HomeController.BuyerOrganisations),
-                                        typeof(HomeController).ControllerName())"
+                                        nameof(CatalogueSolutionsController.Index),
+                                        typeof(CatalogueSolutionsController).ControllerName())"
                                     text="Manage Catalogue Solutions" />
             </div>
         </div>

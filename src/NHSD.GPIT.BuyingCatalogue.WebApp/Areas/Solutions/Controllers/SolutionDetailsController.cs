@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/capabilities")]
         public async Task<IActionResult> Capabilities(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/client-application-types")]
         public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
 
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}")]
         public async Task<IActionResult> Description(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/features")]
         public async Task<IActionResult> Features(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/interoperability")]
         public async Task<IActionResult> Interoperability(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/list-price")]
         public async Task<IActionResult> ListPrice(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/{id}/supplier-details")]
         public async Task<IActionResult> SupplierDetails(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("futures/foundation/{id}")]
         public async Task<IActionResult> FoundationSolutionDetail(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
 
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("dfocvc/{id}")]
         public async Task<IActionResult> DVOCVCSolutionDetail(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
 
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("vaccinations/{id}")]
         public async Task<IActionResult> VaccinationsSolutionDetail(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
 
             return View("SolutionDetail", new SolutionDetailModel(solution));
         }
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("preview/{id}")]
         public async Task<IActionResult> PreviewSolutionDetail(CatalogueItemId id)
         {
-            var solution = await solutionsService.GetSolution(id);
+            var solution = await solutionsService.GetSolutionOverview(id);
 
             var model = new SolutionDetailModel(solution) { BackLink = $"/marketing/supplier/solution/{id}", };
 

@@ -8,39 +8,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static string GetPrimaryOrganisationName(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, "primaryOrganisationName");
+            return GetClaimValue(user, Constants.Claims.PrimaryOrganisationName);
         }
 
         public static string GetUserDisplayName(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, "userDisplayName");
+            return GetClaimValue(user, Constants.Claims.UserDisplayName);
         }
 
         public static string GetPrimaryOdsCode(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, "primaryOrganisationOdsCode");
+            return GetClaimValue(user, Constants.Claims.PrimaryOrganisationOdsCode);
         }
 
         public static string[] GetSecondaryOdsCodes(this ClaimsPrincipal user)
         {
-            return user.Claims.Where(x => x.Type.EqualsIgnoreCase("secondaryOrganisationOdsCode")).Select(x => x.Value).ToArray();
+            return user.Claims.Where(c => c.Type.EqualsIgnoreCase(Constants.Claims.SecondaryOrganisationOdsCode)).Select(x => x.Value).ToArray();
         }
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, "organisationFunction").Equals(OrganisationFunction.Authority.DisplayName);
+            return GetClaimValue(user, Constants.Claims.OrganisationFunction).Equals(OrganisationFunction.Authority.DisplayName);
         }
 
         public static bool IsBuyer(this ClaimsPrincipal user)
         {
-            return GetClaimValue(user, "organisationFunction").Equals(OrganisationFunction.Buyer.DisplayName);
+            return GetClaimValue(user, Constants.Claims.OrganisationFunction).Equals(OrganisationFunction.Buyer.DisplayName);
         }
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)
         {
-            var claim = user.Claims.FirstOrDefault(x => x.Type.EqualsIgnoreCase(claimType));
+            var claim = user.Claims.FirstOrDefault(c => c.Type.EqualsIgnoreCase(claimType));
 
-            return claim != null ? claim.Value : string.Empty;
+            return claim is not null ? claim.Value : string.Empty;
         }
     }
 }

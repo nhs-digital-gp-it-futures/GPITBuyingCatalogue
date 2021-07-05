@@ -71,12 +71,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 _ => TaskListStatuses.CannotStart,
             };
 
-            model.OrderCompletable =
-                (completedSections.HasFlag(TaskListOrderSections.FundingSourceComplete)
-                && completedSections.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete))
-                || completedSections.HasFlag(TaskListOrderSections.AssociatedServicesComplete);
-
-            model.OrderComplete = order.Completed.HasValue;
+            model.ReviewAndCompleteStatus = completedSections switch
+            {
+                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskListStatuses.Incomplete,
+                _ => TaskListStatuses.CannotStart,
+            };
 
             return model;
         }
