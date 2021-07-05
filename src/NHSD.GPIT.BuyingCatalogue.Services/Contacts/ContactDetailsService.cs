@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
+namespace NHSD.GPIT.BuyingCatalogue.Services.Contacts
 {
     public sealed class ContactDetailsService : IContactDetailsService
     {

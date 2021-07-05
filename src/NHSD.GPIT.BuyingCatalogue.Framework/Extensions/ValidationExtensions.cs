@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
         public static void ValidateGuid(this Guid item, string name)
         {
             if (item == Guid.Empty)
-                throw new ArgumentException("Agrgument is empty Guid", name);
+                throw new ArgumentException("Argument is empty Guid", name);
         }
     }
 }
