@@ -56,3 +56,7 @@ variable "nhsd_network_range" {
 variable "kv_access_group" {
   type = string
 }
+
+variable "sql_admin_group" {
+  type = string
+}

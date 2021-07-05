@@ -9,7 +9,7 @@ module "sql_server_pri" {
   sql_version           = "12.0"
   sql_admin_username    = azurerm_key_vault_secret.sqladminusername.value
   sql_admin_password    = azurerm_key_vault_secret.sqladminpassword.value
-  sqladmins             = data.azurerm_key_vault_secret.sqladmins.value
+  sqladmins             = var.sql_admin_group
   bjssvpn               = var.primary_vpn
   mastekvpn             = var.secondary_vpn
 }
