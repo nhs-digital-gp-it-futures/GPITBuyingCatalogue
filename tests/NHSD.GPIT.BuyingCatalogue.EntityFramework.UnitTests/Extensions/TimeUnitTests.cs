@@ -36,5 +36,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
             actualDisplayName.Should().Be(expectedDisplayName);
         }
+
+        [Theory]
+        [InlineData(TimeUnit.PerMonth, "PerMonth")]
+        [InlineData(TimeUnit.PerYear, "PerYear")]
+        public static void EachTimeUnit_HasExpectedEnumMemberName(TimeUnit timeUnit, string expectedEnumMemberName)
+        {
+            var actualDisplayName = timeUnit.EnumMemberName();
+
+            actualDisplayName.Should().Be(expectedEnumMemberName);
+        }
     }
 }

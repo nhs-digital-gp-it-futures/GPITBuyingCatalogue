@@ -1,5 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
 {
+    [ExcludeFromCodeCoverage]
     public sealed class OrderTaskList
     {
         public TaskListStatuses DescriptionStatus { get; set; } = TaskListStatuses.Incomplete;

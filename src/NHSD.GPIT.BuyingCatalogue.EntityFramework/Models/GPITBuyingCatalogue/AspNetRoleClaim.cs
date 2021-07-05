@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
-
-#nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
+    [ExcludeFromCodeCoverage]
     [Table("AspNetRoleClaims")]
     public partial class AspNetRoleClaim : IdentityRoleClaim<string>
     {
