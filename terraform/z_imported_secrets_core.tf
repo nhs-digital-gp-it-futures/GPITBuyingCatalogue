@@ -8,21 +8,6 @@ data "azurerm_key_vault_secret" "ssl_cert" {
   key_vault_id = data.azurerm_key_vault.keyvault_core.id
 }
 
-data "azurerm_key_vault_secret" "bjssvpn" {
-  name         = "${var.pjtcode}${local.coreEnv}bjssvpn"
-  key_vault_id = data.azurerm_key_vault.keyvault_core.id
-}
-
-data "azurerm_key_vault_secret" "mastekvpn1" {
-  name         = "${var.pjtcode}${local.coreEnv}mastekvpn1"
-  key_vault_id = data.azurerm_key_vault.keyvault_core.id
-}
-
-data "azurerm_key_vault_secret" "mastekvpn2" {
-  name         = "${var.pjtcode}${local.coreEnv}mastekvpn2"
-  key_vault_id = data.azurerm_key_vault.keyvault_core.id
-}
-
 data "azurerm_key_vault_secret" "kv_access" {
  name         = "${var.pjtcode}${local.coreEnv}KV-AccessGrp"
  key_vault_id = data.azurerm_key_vault.keyvault_core.id

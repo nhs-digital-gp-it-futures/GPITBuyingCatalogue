@@ -29,6 +29,9 @@ module "webapp" {
   sqlserver_name = module.sql_server_pri.sql_server_name
   sqlserver_rg = azurerm_resource_group.sql-primary.name
   instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
+  primary_vpn = var.primary_vpn
+  secondary_vpn = var.secondary_vpn
+  tertiary_vpn = var.tertiary_vpn
   
   depends_on = [module.sql_server_pri]
 }

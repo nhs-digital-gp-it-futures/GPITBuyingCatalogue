@@ -74,3 +74,15 @@ variable "sqlserver_rg" {
 variable "instrumentation_key" {
   type = string
 }
+
+variable "primary_vpn" {
+  type = string
+}
+
+variable "secondary_vpn" {
+  type = string
+}
+
+variable "tertiary_vpn" {
+  type = string
+}

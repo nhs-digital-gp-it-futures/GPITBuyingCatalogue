@@ -61,13 +61,13 @@ resource "azurerm_app_service" "webapp" {
     }
     ip_restriction {
       name       = "BJSS_VPN"
-      ip_address = "${data.azurerm_key_vault_secret.bjssvpn.value}/32"
+      ip_address = "${var.primary_vpn}/32"
       priority   = 210
       headers    = []
     }
     ip_restriction {
       name       = "Mastek_VPN"
-      ip_address = "${data.azurerm_key_vault_secret.mastekvpn1.value}/32,${data.azurerm_key_vault_secret.mastekvpn2.value}/32"
+      ip_address = "${var.secondary_vpn}/32,${var.tertiary_vpn}/32"
       priority   = 220
       headers    = []
     }
