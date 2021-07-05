@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Text.Json;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
-    public partial class GPITBuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
+    public class GPITBuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
     {
         private readonly IIdentityService identityService;
 
@@ -91,188 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            ApplyCatalogueConfiguration(modelBuilder);
-
-            modelBuilder.Entity<AspNetRole>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
-                    .IsUnique()
-                    .HasFilter("([NormalizedName] IS NOT NULL)");
-
-                entity.Property(e => e.Name).HasMaxLength(256);
-
-                entity.Property(e => e.NormalizedName).HasMaxLength(256);
-            });
-
-            modelBuilder.Entity<AspNetRoleClaim>(entity =>
-            {
-                entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
-
-                entity.Property(e => e.RoleId).IsRequired();
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.AspNetRoleClaims)
-                    .HasForeignKey(d => d.RoleId);
-            });
-
-            modelBuilder.Entity<AspNetUser>(entity =>
-            {
-                entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
-
-                entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
-                    .IsUnique()
-                    .HasFilter("([NormalizedUserName] IS NOT NULL)");
-
-                entity.Property(e => e.Email).HasMaxLength(256);
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-
-                entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-
-                entity.Property(e => e.OrganisationFunction)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.PhoneNumber).HasMaxLength(35);
-
-                entity.Property(e => e.UserName).HasMaxLength(256);
-            });
-
-            modelBuilder.Entity<AspNetUserClaim>(entity =>
-            {
-                entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
-
-                entity.Property(e => e.UserId).IsRequired();
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserClaims)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserLogin>(entity =>
-            {
-                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-                entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
-
-                entity.Property(e => e.LoginProvider).HasMaxLength(128);
-
-                entity.Property(e => e.ProviderKey).HasMaxLength(128);
-
-                entity.Property(e => e.UserId).IsRequired();
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserLogins)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserRole>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.RoleId });
-
-                entity.HasIndex(e => e.RoleId, "IX_AspNetUserRoles_RoleId");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.AspNetUserRoles)
-                    .HasForeignKey(d => d.RoleId);
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserRoles)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserToken>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-                entity.Property(e => e.LoginProvider).HasMaxLength(128);
-
-                entity.Property(e => e.Name).HasMaxLength(128);
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AspNetUserTokens)
-                    .HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<Organisation>(entity =>
-            {
-                entity.HasKey(e => e.OrganisationId)
-                    .IsClustered(false);
-
-                entity.HasIndex(e => e.Name, "IX_OrganisationName")
-                    .IsClustered();
-
-                entity.Property(s => s.Address)
-                    .HasConversion(
-                        a => JsonSerializer.Serialize(a, null),
-                        a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
-
-                entity.Property(e => e.OrganisationId).ValueGeneratedNever();
-
-                entity.Property(e => e.LastUpdated).HasDefaultValueSql("(getutcdate())");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.Property(e => e.OdsCode).HasMaxLength(8);
-
-                entity.Property(e => e.PrimaryRoleId).HasMaxLength(8);
-            });
-
-            modelBuilder.Entity<RelatedOrganisation>(entity =>
-            {
-                entity.HasKey(e => new { e.OrganisationId, e.RelatedOrganisationId });
-
-                entity.HasOne(d => d.Organisation)
-                    .WithMany(p => p.RelatedOrganisationOrganisations)
-                    .HasForeignKey(d => d.OrganisationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RelatedOrganisations_OrganisationId");
-
-                entity.HasOne(d => d.RelatedOrganisationNavigation)
-                    .WithMany(p => p.RelatedOrganisationRelatedOrganisationNavigations)
-                    .HasForeignKey(d => d.RelatedOrganisationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RelatedOrganisations_RelatedOrganisationId");
-            });
-
-            OnModelCreatingPartial(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
-
-        private static void ApplyCatalogueConfiguration(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfiguration(new AdditionalServiceEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new AssociatedServiceEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CapabilityEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CapabilityCategoryEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CatalogueItemEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CataloguePriceEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CataloguePriceTierEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new EpicEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new FrameworkEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new FrameworkCapabilityEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new FrameworkSolutionEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new MarketingContactEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new PricingUnitEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SolutionEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SolutionCapabilityEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SolutionCapabilityStatusEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SolutionEpicEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SolutionEpicStatusEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SupplierEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SupplierContactEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SupplierServiceAssociationEntityTypeConfiguration());
-        }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
