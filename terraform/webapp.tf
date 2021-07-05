@@ -33,7 +33,7 @@ module "webapp" {
   secondary_vpn = var.secondary_vpn
   tertiary_vpn = var.tertiary_vpn
   ssl_cert = data.azurerm_key_vault_secret.ssl_cert.value
-  customer_network_range = data.azurerm_key_vault_secret.nhsdoffice1.value
+  customer_network_range = var.nhsd_network_range
 
   depends_on = [module.sql_server_pri]
 }

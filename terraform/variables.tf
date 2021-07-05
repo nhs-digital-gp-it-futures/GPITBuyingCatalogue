@@ -48,3 +48,7 @@ variable "secondary_vpn" {
 variable "tertiary_vpn" {
   type = string
 }
+
+variable "nhsd_network_range" {
+  type = string
+}
