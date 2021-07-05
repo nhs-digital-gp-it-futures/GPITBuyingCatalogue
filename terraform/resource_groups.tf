@@ -43,3 +43,12 @@ resource "azurerm_resource_group" "app-insights" {
     architecture = "new"
   }
 }
+
+resource "azurerm_resource_group" "virtualnet" {
+  name           = "${var.project}-${var.environment}-rg-virtualnet"
+  location       = var.region
+  tags = {
+    environment  = var.environment,
+    architecture = "new"
+  }
+}

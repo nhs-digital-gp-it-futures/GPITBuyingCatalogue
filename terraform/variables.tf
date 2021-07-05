@@ -32,3 +32,7 @@ variable "coreurl" {
 variable "certname" {
   type = string
 }
+
+variable "vnet_address_space" {
+  type = string
+}

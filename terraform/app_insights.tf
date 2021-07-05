@@ -3,6 +3,11 @@ resource "azurerm_application_insights" "appinsights" {
   location            = var.region
   resource_group_name = azurerm_resource_group.app-insights.name
   application_type    = "web"
+  
+  tags = {
+    environment  = var.environment,
+    architecture = "new"
+  }
 }
 
 output "instrumentation_key" {
