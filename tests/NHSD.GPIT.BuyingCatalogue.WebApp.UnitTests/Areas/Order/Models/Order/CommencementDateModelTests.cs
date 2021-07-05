@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -66,7 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
 
             Assert.Null(error);
             Assert.NotNull(dateTime);
-            dateTime.Should().Be(DateTime.Parse($"{model.Day}/{model.Month}/{model.Year}"));
+
+            dateTime.Should().Be(DateTime.ParseExact($"{model.Day}/{model.Month}/{model.Year}", "d/M/yyyy", CultureInfo.InvariantCulture));
         }
 
         [Fact] public static void ToDateTime_DateMoreThan60DaysInPast_ReturnsError()

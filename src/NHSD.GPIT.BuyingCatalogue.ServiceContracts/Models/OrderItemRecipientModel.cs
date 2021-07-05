@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -65,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         {
             try
             {
-                var date = DateTime.Parse($"{Day}/{Month}/{Year}");
+                var date = DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 if (date.ToUniversalTime() <= DateTime.UtcNow)
                     return (null, "Planned delivery date must be in the future");
