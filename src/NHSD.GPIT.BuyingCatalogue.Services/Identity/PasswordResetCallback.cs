@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
                 context,
                 "ResetPassword",
                 "Account",
-                new { Token = token.Token, Email = token.User.Email, Area = "Identity" },
+                new { token.Token, token.User.Email, Area = "Identity" },
                 "https",
                 hostString);
 

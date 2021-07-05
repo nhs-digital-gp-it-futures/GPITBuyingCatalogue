@@ -67,13 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public static TagBuilder GetLabelHintBuilder(ModelExpression aspFor, string hintText, string formName = null)
         {
-            if ((string.IsNullOrEmpty(aspFor.Name) && string.IsNullOrEmpty(formName))
+            if ((string.IsNullOrEmpty(aspFor?.Name) && string.IsNullOrEmpty(formName))
                 || string.IsNullOrEmpty(hintText))
             {
                 return null;
             }
 
-            var name = !string.IsNullOrEmpty(aspFor.Name) ? aspFor.Name : formName;
+            var name = !string.IsNullOrEmpty(aspFor?.Name) ? aspFor.Name : formName;
 
             var builder = new TagBuilder(TagHelperConstants.Div);
 

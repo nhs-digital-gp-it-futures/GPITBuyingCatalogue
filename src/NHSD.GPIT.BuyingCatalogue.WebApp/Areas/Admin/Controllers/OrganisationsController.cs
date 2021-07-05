@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -165,15 +164,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            // TODO - Check result
             var result = await createBuyerService.Create(organisationId, model.FirstName, model.LastName, model.TelephoneNumber, model.EmailAddress);
 
-            // TODO - Check result
-
-            // TODO - better way of routing
-            return Redirect($"/admin/organisations/{organisationId}/adduser/confirmation?id={result.Value}");
+            return RedirectToAction(
+                nameof(AddUserConfirmation),
+                typeof(OrganisationsController).ControllerName(),
+                new { organisationId, id = result.Value });
         }
 
-        [HttpGet("{organisationId}/adduser/confirmation")]
+        [HttpGet("{organisationId}/adduser/confirmation/{id}")]
         public async Task<IActionResult> AddUserConfirmation(Guid organisationId, string id)
         {
             var user = await userService.GetUser(id);
@@ -190,6 +190,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new UserDetailsModel(organisation, user));
         }
 
+        [HttpPost("{organisationId}/{userId}")]
+        public async Task<IActionResult> UserDetails(Guid organisationId, string userId, UserDetailsModel model)
+        {
+            await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
+
+            if (model.User.Disabled)
+            {
+                return RedirectToAction(
+                    nameof(UserEnabled),
+                    typeof(OrganisationsController).ControllerName(),
+                    new { organisationId, userId = model.User.Id });
+            }
+
+            return RedirectToAction(
+                nameof(UserDisabled),
+                typeof(OrganisationsController).ControllerName(),
+                new { organisationId, userId = model.User.Id });
+        }
+
         [HttpGet("{organisationId}/{userId}/disable")]
         public async Task<IActionResult> UserDisabled(Guid organisationId, string userId)
         {
@@ -199,16 +218,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new UserEnablingModel(organisation, user));
         }
 
-        [HttpPost("{organisationId}/{userId}/disable")]
-        public async Task<IActionResult> UserDisabled(UserDetailsModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
-            return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}/{model.User.Id}/disable");
-        }
-
         [HttpGet("{organisationId}/{userId}/enable")]
         public async Task<IActionResult> UserEnabled(Guid organisationId, string userId)
         {
@@ -216,16 +225,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var user = await userService.GetUser(userId);
 
             return View(new UserEnablingModel(organisation, user));
-        }
-
-        [HttpPost("{organisationId}/{userId}/enable")]
-        public async Task<IActionResult> UserEnabled(UserDetailsModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
-            return Redirect($"/admin/organisations/{model.Organisation.OrganisationId}/{model.User.Id}/enable");
         }
 
         [HttpGet("proxy/{organisationId}")]

@@ -1,4 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel
 @{
     ViewData["Title"] = Model.Title;
@@ -19,80 +20,78 @@
                 <br />
                 <br />
                 <nhs-task-list>
-                    <nhs-task-list-section label-text="Start your order">
+                    <nhs-task-list-section label-text="Prepare order">
                         <nhs-task-list-item label-text="Provide a description of your order"
                                             url="@Model.DescriptionUrl"
                                             status="@Model.SectionStatuses.DescriptionStatus" />
-                    </nhs-task-list-section>
-                    <nhs-task-list-section label-text="Organisation Information">
                         <nhs-task-list-item label-text="Provide Call-off Ordering Party Information"
                                             url="@Url.Action(
                                                 nameof(OrderController.OrderingParty),
-                                                "Order",
+                                                typeof(OrderController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.OrderingPartyStatus" />
                         <nhs-task-list-item label-text="Provide Supplier information"
                                             url="@Url.Action(
                                                 nameof(SupplierController.Supplier),
-                                                "Supplier",
+                                                typeof(SupplierController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.SupplierStatus" />
-                    </nhs-task-list-section>
-                    <nhs-task-list-section label-text="Add services">
                         <nhs-task-list-item label-text="Provide commencement date for this agreement"
                                             url="@Url.Action(
                                                 nameof(OrderController.CommencementDate),
-                                                "Order",
+                                                typeof(OrderController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.CommencementDateStatus" />
+                    </nhs-task-list-section>
+                    <nhs-task-list-section label-text="Add services">
                         <nhs-task-list-item label-text="Add Catalogue Solutions to your order"
                                             url="@Url.Action(
                                                 nameof(CatalogueSolutionsController.Index),
-                                                "CatalogueSolution",
+                                                typeof(CatalogueSolutionsController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.CatalogueSolutionsStatus" />
                         <nhs-task-list-item label-text="Add Additional Services to your order"
                                             url="@Url.Action(
                                                 nameof(AdditionalServicesController.Index),
-                                                "AdditionalServices",
+                                                typeof(AdditionalServicesController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.AdditionalServiceStatus" />
                         <nhs-task-list-item label-text="Add Associated Services to your order"
                                             url="@Url.Action(
                                                 nameof(AssociatedServicesController.Index),
-                                                "AssociatedServices",
+                                                typeof(AssociatedServicesController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.AssociatedServiceStatus" />
                     </nhs-task-list-section>
-                    <nhs-task-list-section label-text="Indicate funding source">
-                        <nhs-task-list-item label-text="Explain how you're paying for this order"
+                    <nhs-task-list-section label-text="Complete order">
+                        <nhs-task-list-item label-text="Indicate funding source"
                                             url="@Url.Action(
                                                     nameof(OrderController.FundingSource),
-                                                    "Order",
+                                                    typeof(OrderController).ControllerName(),
                                                     new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.FundingSourceStatus" />
+                        <nhs-task-list-item label-text="Review and complete order"
+                                            url="@Url.Action(
+                                                    nameof(OrderController.Summary),
+                                                    typeof(OrderController).ControllerName(),
+                                                    new { Model.OdsCode, Model.CallOffId })"
+                                            status="@Model.SectionStatuses.ReviewAndCompleteStatus" />
                     </nhs-task-list-section>
+
                 </nhs-task-list>
             </nhs-fieldset-form-container>
-
-            <vc:nhs-secondary-button text="Complete Order"
-                                     url="@Url.Action(
-                                            nameof(OrderController.CompleteOrder),
-                                            "Order",
-                                            new { Model.OdsCode, Model.CallOffId })"
-                                     use-primary-colour="true"/><br />
 
             <vc:nhs-secondary-button text="Preview order summary"
                                      url="@Url.Action(
                                             nameof(OrderController.Summary),
-                                            "Order",
+                                            typeof(OrderController).ControllerName(),
                                             new { Model.OdsCode, Model.CallOffId })"
                                      use-primary-colour="false"/><br />
 
             <vc:nhs-delete-button text="Delete order"
                                   url="@Url.Action(
                                             nameof(OrderController.DeleteOrder),
-                                            "Order",
+                                            typeof(OrderController).ControllerName(),
                                             new { Model.OdsCode, Model.CallOffId })"/>
         </div>
     </div>

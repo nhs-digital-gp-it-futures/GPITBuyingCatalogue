@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SupplierContactViewModel
     {
