@@ -30,16 +30,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
             var aspNetUser = (AspNetUser)user;
 
-            id.AddClaim(new Claim("userDisplayName", $"{aspNetUser.FirstName} {aspNetUser.LastName}"));
-            id.AddClaim(new Claim("organisationFunction", aspNetUser.OrganisationFunction));
+            id.AddClaim(new Claim(Constants.Claims.UserDisplayName, $"{aspNetUser.FirstName} {aspNetUser.LastName}"));
+            id.AddClaim(new Claim(Constants.Claims.UserId, aspNetUser.Id));
+            id.AddClaim(new Claim(Constants.Claims.OrganisationFunction, aspNetUser.OrganisationFunction));
 
             var organisation = await organisationService.GetOrganisation(aspNetUser.PrimaryOrganisationId);
-            id.AddClaim(new Claim("primaryOrganisationOdsCode", organisation.OdsCode));
+            id.AddClaim(new Claim(Constants.Claims.PrimaryOrganisationOdsCode, organisation.OdsCode));
 
             var relatedOrganisations = await organisationService.GetRelatedOrganisations(aspNetUser.PrimaryOrganisationId);
 
             foreach (var relatedOrganisation in relatedOrganisations)
-                id.AddClaim(new Claim("secondaryOrganisationOdsCode", relatedOrganisation.OdsCode));
+                id.AddClaim(new Claim(Constants.Claims.SecondaryOrganisationOdsCode, relatedOrganisation.OdsCode));
 
             return id;
         }

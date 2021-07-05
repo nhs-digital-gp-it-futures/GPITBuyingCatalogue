@@ -53,6 +53,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
+            if (order.OrderStatus == OrderStatus.Complete)
+            {
+                return RedirectToAction(
+                    nameof(Summary),
+                    typeof(OrderController).ControllerName(),
+                    new { odsCode, callOffId });
+            }
+
             var sectionStatuses = taskListService.GetTaskListStatusModelForOrder(order);
 
             var orderModel = new OrderModel(odsCode, order, sectionStatuses)
@@ -64,55 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             };
 
             return View(orderModel);
-        }
-
-        [HttpGet("complete-order")]
-        public async Task<IActionResult> CompleteOrder(string odsCode, CallOffId callOffId)
-        {
-            var order = await orderService.GetOrder(callOffId);
-
-            var model = new CompleteOrderModel(odsCode, callOffId, order)
-            {
-                BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { odsCode, callOffId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("complete-order")]
-        public async Task<IActionResult> CompleteOrder(string odsCode, CallOffId callOffId, CompleteOrderModel model)
-        {
-            var order = await orderService.GetOrder(callOffId);
-
-            if (!order.CanComplete())
-            {
-                ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
-                return View(model);
-            }
-
-            await orderService.CompleteOrder(callOffId);
-
-            return RedirectToAction(
-                nameof(OrderController.CompletedOrderConfirmation),
-                typeof(OrderController).ControllerName(),
-                new { odsCode, callOffId });
-        }
-
-        [HttpGet("complete-order/order-confirmation")]
-        public IActionResult CompletedOrderConfirmation(string odsCode, CallOffId callOffId)
-        {
-            var model = new CompletedOrderConfirmationModel(odsCode, callOffId)
-            {
-                BackLink = Url.Action(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { odsCode }),
-            };
-
-            return View(model);
         }
 
         [HttpGet("~/order/organisation/{odsCode}/order/neworder")]
@@ -134,14 +93,55 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            if (print.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+            var model = new SummaryModel(odsCode, order)
             {
-                // TODO - The whole summary page needs dynamic content adding, probably best waiting until Additional/Associated services are added
-                return View("PrintSummary");
+                BackLink = order.OrderStatus == OrderStatus.Complete
+                    ? Url.Action(
+                        nameof(DashboardController.Organisation),
+                        typeof(DashboardController).ControllerName(),
+                        new { odsCode })
+                    : Url.Action(
+                        nameof(Order),
+                        typeof(OrderController).ControllerName(),
+                        new { odsCode, callOffId }),
+
+                Title = order.OrderStatus switch
+                {
+                    OrderStatus.Complete => $"Order completed for {callOffId}",
+                    _ => order.CanComplete()
+                        ? $"Review order summary for {callOffId}"
+                        : $"Order summary for {callOffId}",
+                },
+
+                AdviceText = order.OrderStatus switch
+                {
+                    OrderStatus.Complete => "This order is complete and can no longer be changed. You can use the button to get a copy of the order summary.",
+                    _ => order.CanComplete()
+                        ? "Review your order before marking it complete. Once the order is completed, you'll be unable to make changes."
+                        : "This is what's been added to your order so far. You must complete all mandatory steps before you can complete your order.",
+                },
+            };
+
+            return print.Equals("true", StringComparison.OrdinalIgnoreCase)
+                ? View("PrintSummary", model)
+                : View(model);
+        }
+
+        [HttpPost("summary")]
+        public async Task<IActionResult> Summary(string odsCode, CallOffId callOffId)
+        {
+            var order = await orderService.GetOrder(callOffId);
+
+            if (!order.CanComplete())
+            {
+                var model = new SummaryModel(odsCode, order);
+                ModelState.AddModelError("Order", "Your order is incomplete. Please go back to the order and check again");
+                return View(model);
             }
 
-            // TODO - The whole summary page needs dynamic content adding, probably best waiting until Additional/Associated services are added
-            return View(new SummaryModel(odsCode, order));
+            await orderService.CompleteOrder(callOffId);
+
+            return RedirectToAction();
         }
 
         [HttpGet("delete-order")]

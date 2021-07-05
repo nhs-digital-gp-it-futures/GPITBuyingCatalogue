@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
@@ -13,37 +12,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(string odsCode, CallOffId callOffId, CatalogueItemId id, CreateOrderItemModel createOrderItemModel, bool isNewSolution)
+        public EditAssociatedServiceModel(string odsCode, CreateOrderItemModel state)
         {
-            if (isNewSolution)
-            {
-                // TODO - If there is only one price for this service then the back link should go to the select associated service page
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services/select/associated-service/price";
-            }
+            if (state.IsNewSolution)
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service{(!state.SkipPriceSelection ? "/price" : string.Empty)}";
             else
-            {
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/associated-services";
-            }
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services";
 
             BackLinkText = "Go back";
-            Title = $"{createOrderItemModel.CatalogueItemName} associated service information for {callOffId}";
+            Title = $"{state.CatalogueItemName} associated service information for {state.CallOffId}";
             OdsCode = odsCode;
-            CallOffId = callOffId;
-            OrderItem = createOrderItemModel;
-            TimeUnit = createOrderItemModel.TimeUnit;
-
-            // TODO: currency code comes from the catalogue price
-            CurrencySymbol = "£";
+            OrderItem = state;
+            EstimationPeriod = state.EstimationPeriod;
         }
-
-        public CallOffId CallOffId { get; set; }
 
         public CreateOrderItemModel OrderItem { get; set; }
 
-        public string CurrencySymbol { get; set; }
-
-        public TimeUnit? TimeUnit { get; set; }
+        public TimeUnit? EstimationPeriod { get; set; }
 
         public List<TimeUnit> TimeUnits { get; } = Enum.GetValues<TimeUnit>().ToList();
+
+        public void UpdateModel(CreateOrderItemModel state)
+        {
+            OrderItem.CallOffId = state.CallOffId;
+            OrderItem.CataloguePrice = state.CataloguePrice;
+            OrderItem.EstimationPeriod = state.EstimationPeriod;
+            OrderItem.CurrencySymbol = state.CurrencySymbol;
+        }
     }
 }

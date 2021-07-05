@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -38,39 +39,84 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
-        public CreateOrderItemModel GetOrderStateFromSession()
+        public CreateOrderItemModel GetOrderStateFromSession(CallOffId callOffId)
         {
-            return sessionService.GetObject<CreateOrderItemModel>("CatalogueItemState");
+            return sessionService.GetObject<CreateOrderItemModel>(callOffId.ToString());
         }
 
         public void SetOrderStateToSession(CreateOrderItemModel model)
         {
-            sessionService.SetObject("CatalogueItemState", model);
+            sessionService.SetObject(model.CallOffId.ToString(), model);
         }
 
-        public async Task<bool> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueSolutionId)
+        public CreateOrderItemModel InitialiseStateForCreate(
+            Order order,
+            CatalogueItemType catalogueItemType,
+            IEnumerable<CatalogueItemId> solutionIds,
+            OrderItemRecipientModel associatedOrderRecipient)
         {
-            var state = GetOrderStateFromSession();
+            var model = GetOrderStateFromSession(order.CallOffId);
 
-            var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueSolutionId);
+            if (model is not null)
+                return model;
 
-            if (orderItem is null)
+            model = new CreateOrderItemModel
             {
-                foreach (var serviceRecipient in state.ServiceRecipients.Where(sr => sr.Selected))
+                IsNewSolution = true,
+                CallOffId = order.CallOffId,
+                CommencementDate = order.CommencementDate,
+                SupplierId = order.SupplierId,
+                CatalogueItemType = catalogueItemType,
+                SolutionIds = solutionIds,
+            };
+
+            if (associatedOrderRecipient is not null)
+                model.ServiceRecipients = new List<OrderItemRecipientModel> { associatedOrderRecipient };
+
+            SetOrderStateToSession(model);
+
+            return model;
+        }
+
+        public async Task<CreateOrderItemModel> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        {
+            var state = GetOrderStateFromSession(callOffId);
+
+            if (state is not null && state.IsNewSolution)
+                return state;
+
+            var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueItemId);
+
+            if (state is null)
+            {
+                var order = await orderService.GetOrder(callOffId);
+                var solution = await solutionsService.GetSolutionListPrices(orderItem.CatalogueItemId);
+
+                state = new CreateOrderItemModel
                 {
-                    serviceRecipient.Quantity ??= state.Quantity;
-                    serviceRecipient.DeliveryDate ??= state.PlannedDeliveryDate;
+                    CallOffId = callOffId,
+                    IsNewSolution = false,
+                    CommencementDate = order.CommencementDate,
+                    SupplierId = order.SupplierId,
+                    CatalogueItemType = solution.CatalogueItemType,
+                    CatalogueItemId = orderItem.CatalogueItemId,
+                    CatalogueItemName = solution.Name,
+                    AgreedPrice = orderItem.Price,
+                    CataloguePrice = orderItem.CataloguePrice,
+                    CurrencySymbol = CurrencyCodeSigns.Code[orderItem.CataloguePrice.CurrencyCode],
+                    EstimationPeriod = orderItem.EstimationPeriod,
+                };
+
+                if (state.CatalogueItemType == CatalogueItemType.AssociatedService)
+                {
+                    var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
+                    state.ServiceRecipients = new List<OrderItemRecipientModel> { new() { OdsCode = odsCode, Name = organisation.Name } };
                 }
-
-                SetOrderStateToSession(state);
-
-                return true;
-            }
-
-            if (state?.CatalogueItemId is not null)
-            {
-                foreach (var recipient in state.ServiceRecipients.Where(x => !x.DeliveryDate.HasValue))
-                    recipient.DeliveryDate = orderItem.DefaultDeliveryDate;
+                else
+                {
+                    var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
+                    state.ServiceRecipients = recipients.Select(r => new OrderItemRecipientModel(r)).ToList();
+                }
 
                 foreach (var serviceRecipient in state.ServiceRecipients)
                 {
@@ -79,81 +125,44 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                     if (orderRecipient is not null)
                     {
                         serviceRecipient.Selected = true;
-                        serviceRecipient.Quantity = orderRecipient.Quantity;
-                        serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
                     }
                 }
-
-                SetOrderStateToSession(state);
-
-                return false;
             }
 
-            var order = await orderService.GetOrder(callOffId);
-
-            var solution = await solutionsService.GetSolution(orderItem.CatalogueItemId);
-
-            state = new CreateOrderItemModel
+            foreach (var serviceRecipient in state.ServiceRecipients.Where(r => r.Selected))
             {
-                IsNewOrder = false,
-                CommencementDate = order.CommencementDate,
-                SupplierId = order.SupplierId,
-                CatalogueItemType = solution.CatalogueItemType,
-                CatalogueItemId = orderItem.CatalogueItemId,
-                CatalogueItemName = solution.Name,
-                Price = orderItem.Price,
-                ItemUnit = new ItemUnitModel
+                var orderRecipient = orderItem.OrderItemRecipients.FirstOrDefault(r => r.OdsCode.EqualsIgnoreCase(serviceRecipient.OdsCode));
+
+                if (orderRecipient is not null)
                 {
-                    Name = orderItem.CataloguePrice.PricingUnit.Name,
-                    Description = orderItem.CataloguePrice.PricingUnit.Description,
-                },
-                EstimationPeriod = orderItem.EstimationPeriod,
-                PriceId = orderItem.PriceId,
-                ProvisioningType = orderItem.CataloguePrice.ProvisioningType,
-                Type = orderItem.CataloguePrice.CataloguePriceType,
-
-                // TODO: this isn't right – only additional services have a parent catalogue item
-                // CatalogueSolutionId = orderItem.CatalogueItem.ParentCatalogueItemId?.ToString(),
-            };
-
-            if (state.CatalogueItemType == CatalogueItemType.AssociatedService)
-            {
-                var organisation = await organisationService.GetOrganisationByOdsCode(odsCode);
-                state.ServiceRecipients = new List<OrderItemRecipientModel> { new() { OdsCode = odsCode, Name = organisation.Name } };
-            }
-            else
-            {
-                var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recipients.Select(r => new OrderItemRecipientModel(r)).ToList();
-            }
-
-            foreach (var serviceRecipient in state.ServiceRecipients)
-            {
-                var orderRecipient = orderItem.OrderItemRecipients.FirstOrDefault(x => x.OdsCode.EqualsIgnoreCase(serviceRecipient.OdsCode));
-
-                if (orderRecipient != null)
-                {
-                    serviceRecipient.Selected = true;
                     serviceRecipient.Quantity = orderRecipient.Quantity;
                     serviceRecipient.DeliveryDate = orderRecipient.DeliveryDate;
                 }
+
+                serviceRecipient.DeliveryDate ??= orderItem.DefaultDeliveryDate;
             }
 
             SetOrderStateToSession(state);
 
-            return false;
+            return state;
         }
 
-        public void SetPrice(CataloguePrice cataloguePrice)
+        public CreateOrderItemModel SetPrice(CallOffId callOffId, CataloguePrice cataloguePrice)
         {
-            var state = GetOrderStateFromSession();
+            var state = GetOrderStateFromSession(callOffId);
 
-            state.ItemUnit = new ItemUnitModel { Name = cataloguePrice.PricingUnit.Name, Description = cataloguePrice.PricingUnit.Description };
-            state.Price = cataloguePrice.Price;
-            state.PriceId = cataloguePrice.CataloguePriceId;
-            state.ProvisioningType = cataloguePrice.ProvisioningType;
+            state.AgreedPrice = cataloguePrice.Price;
+            state.CataloguePrice = cataloguePrice;
+            state.CurrencySymbol = CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode];
 
             SetOrderStateToSession(state);
+
+            return state;
+        }
+
+        public void ClearSession(CallOffId callOffId)
+        {
+            sessionService.ClearSession(callOffId.ToString());
         }
     }
 }

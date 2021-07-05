@@ -126,6 +126,7 @@ VALUES
     ('644bbe2f-9ce6-4f8f-a53b-e1ea43096f88', 'activeUsers_1k'      , 'active users'                 , 'Up to 1000 active users'),
     ('5a7098f5-db63-4d95-82b1-570035251c18', 'activeUsers_2k'      , 'active users'                 , 'Up to 2000 active users'),
     ('17d62c58-350b-45db-876b-99355002e115', 'patients_1–25k'      , 'patients'                     , 'per patient for 1–24,999 patients'),
+    ('e0801717-2faf-4e0b-844a-d16e0d919993', 'patients_1–50k'      , 'patients'                     , 'per patient for 1–49,999 patients'),
     ('b4193d2a-27d9-4d01-b828-51b495aae05f', 'patients_25–75k'     , 'patients'                     , 'per patient for 25,000–74,999 patients'),
     ('51fbdea2-b593-4a63-a4ae-272b415467dc', 'patients_75–150k'    , 'patients'                     , 'per patient for 75,000–149,999 patients'),
     ('cec18aee-d3aa-40d1-8bfc-3ccb64faea51', 'patients_150–250k'   , 'patients'                     , 'per patient for 150,000–249,999 patients'),
@@ -140,7 +141,10 @@ VALUES
     ('cb2599a7-26fb-4580-9df0-a2ee0087a8b7', 'buildHour'           , 'build hours'                  , 'per hour of bespoke build'),
     ('52b6be1d-67a9-414d-ae49-4f560e7d68c4', 'patients_6'          , 'patients'                     , 'per pt. up to 6 connected care settings'),
     ('e320b074-4596-4697-86a7-2cdf08fab228', 'patients_7–12'       , 'patients'                     , 'per pt. for 7–12 connected care settings'),
-    ('3515df5d-01e0-42bf-bf7d-bb0ee2d6c35f', 'patients_13+'        , 'patients'                     , 'per pt. for 13+ connected care settings');
+    ('3515df5d-01e0-42bf-bf7d-bb0ee2d6c35f', 'patients_13+'        , 'patients'                     , 'per pt. for 13+ connected care settings'),
+    ('5bad234d-84b8-4e75-a77f-9f0e3f234dcf', 'call_1–5k'           , 'calls'                        , 'per call (1–5000 calls per month)'),
+    ('ca45aedd-b6f5-43b9-a12a-f37f2b9cb5f0', 'call_5–10k'          , 'calls'                        , 'per call (5001–10000 calls per month)'),
+    ('038dcc47-a4bd-462f-a8cb-54ce9a9c1a9b', 'call_10k'            , 'calls'                        , 'per call (10,001 plus calls per month)');
 
 MERGE INTO dbo.PricingUnit AS TARGET
 USING #PricingUnit AS SOURCE

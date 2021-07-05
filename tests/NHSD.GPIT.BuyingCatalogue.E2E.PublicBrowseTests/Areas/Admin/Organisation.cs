@@ -26,8 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public async Task Organisation_OrganisationDetailsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var jsonString = (await context.Organisations.SingleAsync(s => s.OrganisationId == Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085"))).Address;
-            var dbAddress = JsonSerializer.Deserialize<Address>(jsonString, JsonOptions());
+            var dbAddress = (await context.Organisations.SingleAsync(s => s.OrganisationId == Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085"))).Address;
 
             var pageAddress = AdminPages.Organisation.GetAddress();
 

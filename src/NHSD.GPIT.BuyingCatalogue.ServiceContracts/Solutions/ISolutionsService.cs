@@ -21,11 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId);
 
+        Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId);
+
         Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId);
 
         Task<List<CatalogueItem>> GetDFOCVCSolutions();
 
         Task<List<Capability>> GetFuturesCapabilities();
+
+        Task<IList<Supplier>> GetAllSuppliers();
 
         Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link);
 
@@ -52,5 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task SaveSupplierContacts(SupplierContactsModel model);
 
         Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId);
+
+        Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
     }
 }

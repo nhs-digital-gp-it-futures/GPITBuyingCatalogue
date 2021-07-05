@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditonalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 {
@@ -30,11 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     && i.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(i => i.Name)
                 .ToListAsync();
-        }
-
-        public Task<AdditionalService> GetAdditionalService(CatalogueItemId catalogueItemId)
-        {
-            return dbContext.AdditionalServices.SingleAsync(a => a.CatalogueItemId == catalogueItemId);
         }
     }
 }

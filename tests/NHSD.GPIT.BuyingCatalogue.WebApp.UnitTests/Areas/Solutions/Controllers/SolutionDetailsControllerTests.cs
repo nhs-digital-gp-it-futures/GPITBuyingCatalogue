@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Capabilities(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Capabilities_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, CapabilitiesViewModel>(mockCatalogueItem))
                 .Returns(mockCapabilitiesViewModel);
@@ -191,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.ClientApplicationTypes(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -199,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_ClientApplicationTypes_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -217,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, ClientApplicationTypesModel>(mockCatalogueItem))
                 .Returns(mockSolutionClientApplicationTypesModel);
@@ -355,7 +355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Description(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -363,7 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Description_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -381,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -400,7 +400,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem))
                 .Returns(mockSolutionDescriptionModel);
@@ -416,7 +416,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Features_ValidId_InvokesGetSolution(CatalogueItemId id)
+        public static async Task Get_Features_ValidId_InvokesGetSolutionOverview(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
@@ -424,7 +424,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Features(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -432,7 +432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Features_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -450,7 +450,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -469,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, SolutionFeaturesModel>(mockCatalogueItem))
                 .Returns(mockSolutionFeaturesModel);
@@ -493,7 +493,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.HostingType(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -501,7 +501,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_HostingType_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -519,7 +519,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -538,7 +538,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, HostingTypesModel>(mockCatalogueItem))
                 .Returns(mockSolutionHostingTypeModel);
@@ -562,7 +562,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Implementation(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -570,7 +570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_ImplementationTimescales_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -588,7 +588,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -607,7 +607,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem))
                 .Returns(mockSolutionImplementationTimescalesModel);
@@ -631,7 +631,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.ListPrice(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -639,7 +639,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_ListPrice_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -657,7 +657,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -676,7 +676,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, ListPriceModel>(mockCatalogueItem))
                 .Returns(mockSolutionListPriceModel);
@@ -700,7 +700,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Interoperability(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -708,7 +708,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Interoperability_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -726,7 +726,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -745,7 +745,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, InteroperabilityModel>(mockCatalogueItem))
                 .Returns(mockSolutionInteroperabilityModel);
@@ -769,7 +769,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.SupplierDetails(id);
 
-            mockService.Verify(s => s.GetSolution(id));
+            mockService.Verify(s => s.GetSolutionOverview(id));
         }
 
         [Theory]
@@ -777,7 +777,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_SupplierDetails_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
                 mockService.Object);
@@ -795,7 +795,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -814,7 +814,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolution(id))
+            mockService.Setup(s => s.GetSolutionOverview(id))
                 .ReturnsAsync(mockCatalogueItem);
             mockMapper.Setup(m => m.Map<CatalogueItem, SolutionSupplierDetailsModel>(mockCatalogueItem))
                 .Returns(mockSolutionDescriptionModel);

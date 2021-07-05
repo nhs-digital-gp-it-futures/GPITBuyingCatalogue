@@ -23,7 +23,7 @@
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Which organisation are you looking for?"
                                          label-hint="Select one option.">
-                    <nhs-radio-buttons asp-for="@Model.TimeUnit"
+                    <nhs-radio-buttons asp-for="@Model.EstimationPeriod"
                                        values="@Model.TimeUnits.Cast<object>()"
                                        value-name="EnumMemberName"
                                        display-name="Description" />

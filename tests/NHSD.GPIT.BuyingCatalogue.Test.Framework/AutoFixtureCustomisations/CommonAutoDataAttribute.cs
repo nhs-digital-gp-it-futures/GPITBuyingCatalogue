@@ -11,13 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 new CompositeCustomization(
                     new AutoMoqCustomization(),                                        
                     new CallOffIdCustomization(),
-                    new CatalogueItemIdCustomization(),
-
-                    // TODO: causes test run initialization slow down
+                    new CatalogueItemIdCustomization(),                    
                     new IgnoreCircularReferenceCustomisation(),
                     new SolutionCustomization()
-                    //new SupplierCustomization()                    
-                    //new CataloguePriceCustomization()
                     )))
         {
         }

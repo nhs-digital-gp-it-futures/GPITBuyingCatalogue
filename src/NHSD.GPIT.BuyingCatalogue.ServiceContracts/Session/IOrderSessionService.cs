@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
@@ -6,12 +8,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session
 {
     public interface IOrderSessionService
     {
-        public CreateOrderItemModel GetOrderStateFromSession();
+        public CreateOrderItemModel GetOrderStateFromSession(CallOffId callOffId);
 
         public void SetOrderStateToSession(CreateOrderItemModel model);
 
-        public Task<bool> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueSolutionId);
+        public CreateOrderItemModel InitialiseStateForCreate(Order order, CatalogueItemType catalogueItemType, IEnumerable<CatalogueItemId> solutionIds, OrderItemRecipientModel associatedOrderRecipient);
 
-        public void SetPrice(EntityFramework.Models.GPITBuyingCatalogue.CataloguePrice cataloguePrice);
+        public Task<CreateOrderItemModel> InitialiseStateForEdit(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId);
+
+        public CreateOrderItemModel SetPrice(CallOffId callOffId, CataloguePrice cataloguePrice);
+
+        public void ClearSession(CallOffId callOffId);
     }
 }

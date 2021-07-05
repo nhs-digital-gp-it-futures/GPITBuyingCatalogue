@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
     internal sealed class EndToEndDbContext : GPITBuyingCatalogueDbContext
     {
         public EndToEndDbContext(DbContextOptions<EndToEndDbContext> options)
-            : base(options)
+            : base(options, new IdentityServiceStub())
         {
         }
 

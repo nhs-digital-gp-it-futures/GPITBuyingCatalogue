@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
-        private readonly ISessionService sessionService;
         private readonly IOdsService odsService;
         private readonly IOrderItemService orderItemService;
         private readonly IDefaultDeliveryDateService defaultDeliveryDateService;
@@ -32,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public CatalogueSolutionsController(
             IOrderService orderService,
             ISolutionsService solutionsService,
-            ISessionService sessionService,
             IOdsService odsService,
             IOrderItemService orderItemService,
             IDefaultDeliveryDateService defaultDeliveryDateService,
@@ -40,7 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.defaultDeliveryDateService = defaultDeliveryDateService ?? throw new ArgumentNullException(nameof(defaultDeliveryDateService));
@@ -49,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
         public async Task<IActionResult> Index(string odsCode, CallOffId callOffId)
         {
-            sessionService.ClearSession();
+            orderSessionService.ClearSession(callOffId);
 
             var order = await orderService.GetOrder(callOffId);
             var orderItems = await orderItemService.GetOrderItems(callOffId, CatalogueItemType.Solution);
@@ -62,25 +59,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var order = await orderService.GetOrder(callOffId);
 
-            var state = new CreateOrderItemModel
-            {
-                IsNewOrder = true,
-                CommencementDate = order.CommencementDate,
-                SupplierId = order.SupplierId,
-                CatalogueItemType = CatalogueItemType.Solution,
-            };
+            var state = orderSessionService.InitialiseStateForCreate(order, CatalogueItemType.Solution, null, null);
 
-            orderSessionService.SetOrderStateToSession(state);
+            var solutions = await solutionsService.GetSupplierSolutions(order.SupplierId);
 
-            var solutions = await solutionsService.GetSupplierSolutions(state.SupplierId);
-
-            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId.GetValueOrDefault()));
+            return View(new SelectSolutionModel(odsCode, callOffId, solutions, state.CatalogueItemId));
         }
 
         [HttpPost("select/solution")]
         public async Task<IActionResult> SelectSolution(string odsCode, CallOffId callOffId, SelectSolutionModel model)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             if (!ModelState.IsValid)
             {
@@ -88,26 +77,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId);
+            var existingOrder = await orderItemService.GetOrderItem(callOffId, model.SelectedSolutionId.GetValueOrDefault());
 
             if (existingOrder is not null)
             {
+                orderSessionService.ClearSession(callOffId);
+
                 return RedirectToAction(
                     nameof(EditSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId, solutionId = existingOrder.CatalogueItemId });
+                    new { odsCode, callOffId, existingOrder.CatalogueItemId });
             }
 
             state.CatalogueItemId = model.SelectedSolutionId;
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId.GetValueOrDefault());
+            var solution = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault());
             state.CatalogueItemName = solution.Name;
             orderSessionService.SetOrderStateToSession(state);
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
+            if (!prices.Any())
+                throw new InvalidOperationException($"Catalogue Solution {state.CatalogueItemId.GetValueOrDefault()} does not have any Flat prices associated");
+
             if (prices.Count == 1)
             {
-                orderSessionService.SetPrice(prices.Single());
+                state = orderSessionService.SetPrice(callOffId, prices.Single());
+
+                state.SkipPriceSelection = true;
+                orderSessionService.SetOrderStateToSession(state);
 
                 return RedirectToAction(
                     nameof(SelectSolutionServiceRecipients),
@@ -124,9 +121,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution/price")]
         public async Task<IActionResult> SelectSolutionPrice(string odsCode, CallOffId callOffId)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId.GetValueOrDefault());
+            var solution = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault());
 
             var prices = solution.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
@@ -136,9 +133,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost("select/solution/price")]
         public async Task<IActionResult> SelectSolutionPrice(string odsCode, CallOffId callOffId, SelectSolutionPriceModel model)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            var solution = await solutionsService.GetSolution(state.CatalogueItemId.GetValueOrDefault());
+            var solution = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault());
 
             if (!ModelState.IsValid)
             {
@@ -148,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var cataloguePrice = solution.CataloguePrices.Single(x => x.CataloguePriceId == model.SelectedPrice);
 
-            orderSessionService.SetPrice(cataloguePrice);
+            orderSessionService.SetPrice(callOffId, cataloguePrice);
 
             return RedirectToAction(
                 nameof(SelectSolutionServiceRecipients),
@@ -159,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution/price/recipients")]
         public async Task<IActionResult> SelectSolutionServiceRecipients(string odsCode, CallOffId callOffId, string selectionMode)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             if (state.ServiceRecipients is null)
             {
@@ -174,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 state.CatalogueItemName,
                 state.ServiceRecipients,
                 selectionMode,
-                state.IsNewOrder,
+                state.IsNewSolution,
                 state.CatalogueItemId.GetValueOrDefault()));
         }
 
@@ -184,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!model.ServiceRecipients.Any(sr => sr.Selected))
                 ModelState.AddModelError("ServiceRecipients[0].Selected", "Select a Service Recipient");
 
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -193,12 +190,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             orderSessionService.SetOrderStateToSession(state);
 
-            if (!state.IsNewOrder)
+            if (!state.IsNewSolution)
             {
                 return RedirectToAction(
                     nameof(EditSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId, solutionId = state.CatalogueItemId });
+                    new { odsCode, callOffId, state.CatalogueItemId });
             }
 
             return RedirectToAction(
@@ -210,17 +207,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select/solution/price/recipients/date")]
         public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
 
-            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, callOffId, state.CatalogueItemName, state.CommencementDate, state.PlannedDeliveryDate, defaultDeliveryDate));
+            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate));
         }
 
         [HttpPost("select/solution/price/recipients/date")]
         public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsDateModel model)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             (DateTime? date, var error) = model.ToDateTime();
 
@@ -236,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             orderSessionService.SetOrderStateToSession(state);
 
-            if (state.ProvisioningType == ProvisioningType.Declarative)
+            if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
             {
                 return RedirectToAction(
                     nameof(SelectFlatDeclarativeQuantity),
@@ -244,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { odsCode, callOffId });
             }
 
-            if (state.ProvisioningType == ProvisioningType.OnDemand)
+            if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
             {
                 return RedirectToAction(
                     nameof(SelectFlatOnDemandQuantity),
@@ -255,13 +252,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(EditSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId, solutionId = state.CatalogueItemId });
+                new { odsCode, callOffId, state.CatalogueItemId });
         }
 
         [HttpGet("select/solution/price/flat/declarative")]
         public IActionResult SelectFlatDeclarativeQuantity(string odsCode, CallOffId callOffId)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             return View(new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity));
         }
@@ -277,7 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             state.Quantity = quantity;
 
@@ -286,15 +283,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             return RedirectToAction(
                 nameof(EditSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId, solutionId = state.CatalogueItemId });
+                new { odsCode, callOffId, state.CatalogueItemId });
         }
 
         [HttpGet("select/solution/price/flat/ondemand")]
         public IActionResult SelectFlatOnDemandQuantity(string odsCode, CallOffId callOffId)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
-            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.TimeUnit));
+            return View(new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod));
         }
 
         [HttpPost("select/solution/price/flat/ondemand")]
@@ -305,39 +302,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (error is not null)
                 ModelState.AddModelError(nameof(model.Quantity), error);
 
-            if (model.TimeUnit is null)
-                ModelState.AddModelError(nameof(model.TimeUnit), "Time Unit is Required");
+            if (model.EstimationPeriod is null)
+                ModelState.AddModelError(nameof(model.EstimationPeriod), "Time Unit is Required");
 
             if (!ModelState.IsValid)
                 return View(model);
 
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             state.Quantity = quantity;
-            state.TimeUnit = model.TimeUnit.Value;
+            state.EstimationPeriod = model.EstimationPeriod.Value;
 
             orderSessionService.SetOrderStateToSession(state);
 
             return RedirectToAction(
                 nameof(EditSolution),
                 typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId, solutionId = state.CatalogueItemId });
+                new { odsCode, callOffId, state.CatalogueItemId });
         }
 
-        [HttpGet("{solutionId}")]
-        public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId)
+        [HttpGet("{catalogueItemId}")]
+        public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var isNewSolution = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, solutionId);
+            var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
 
-            var state = orderSessionService.GetOrderStateFromSession();
-
-            return View(new EditSolutionModel(odsCode, callOffId, state, isNewSolution));
+            return View(new EditSolutionModel(odsCode, callOffId, state));
         }
 
-        [HttpPost("{solutionId}")]
-        public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, EditSolutionModel model)
+        [HttpPost("{catalogueItemId}")]
+        public async Task<IActionResult> EditSolution(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, EditSolutionModel model)
         {
-            var state = orderSessionService.GetOrderStateFromSession();
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
@@ -352,33 +347,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");
             }
 
-            var solutionListPrices = await solutionsService.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault());
-
-            var solutionPrice = solutionListPrices.CataloguePrices.FirstOrDefault(
-                cp => cp.ProvisioningType == state.ProvisioningType
-                    && cp.CataloguePriceType == state.Type
-                    && (cp.TimeUnit is null || cp.TimeUnit == state.TimeUnit));
-
-            if (solutionPrice is not null)
-            {
-                if (model.OrderItem.Price > solutionPrice.Price)
-                    ModelState.AddModelError("OrderItem.Price", "Price cannot be greater than list price");
-            }
+            if (model.OrderItem.AgreedPrice > state.CataloguePrice.Price)
+                ModelState.AddModelError("OrderItem.Price", "Price cannot be greater than list price");
 
             if (!ModelState.IsValid)
             {
-                model.OrderItem.ItemUnit = state.ItemUnit;
-                model.OrderItem.TimeUnit = state.TimeUnit;
+                model.UpdateModel(state);
                 return View(model);
             }
 
-            state.Price = model.OrderItem.Price;
+            state.AgreedPrice = model.OrderItem.AgreedPrice;
             state.ServiceRecipients = model.OrderItem.ServiceRecipients;
 
             // TODO - handle errors
-            var result = await orderItemService.Create(callOffId, state);
+            await orderItemService.Create(callOffId, state);
 
-            sessionService.ClearSession();
+            orderSessionService.ClearSession(callOffId);
 
             return RedirectToAction(
                 nameof(Index),
@@ -386,18 +370,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 new { odsCode, callOffId });
         }
 
-        [HttpGet("delete/{solutionId}/confirmation/{solutionName}")]
-        public async Task<IActionResult> DeleteSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, string solutionName)
+        [HttpGet("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
+        public async Task<IActionResult> DeleteSolution(
+            string odsCode,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string catalogueItemName)
         {
             var order = await orderService.GetOrder(callOffId);
 
-            return View(new DeleteSolutionModel(odsCode, callOffId, solutionId, solutionName, order.Description));
+            return View(new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description));
         }
 
-        [HttpPost("delete/{solutionId}/confirmation/{solutionName}")]
-        public async Task<IActionResult> DeleteSolution(string odsCode, CallOffId callOffId, CatalogueItemId solutionId, string solutionName, DeleteSolutionModel model)
+        [HttpPost("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
+        public async Task<IActionResult> DeleteSolution(
+            string odsCode,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string catalogueItemName,
+            DeleteSolutionModel model)
         {
-            await orderItemService.DeleteOrderItem(callOffId, solutionId);
+            await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
 
             return RedirectToAction(
                 nameof(Index),
