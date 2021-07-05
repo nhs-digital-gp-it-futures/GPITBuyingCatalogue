@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public sealed class FrameworkModel
+    public class FrameworkModel
     {
         public bool DfocvcFramework { get; set; }
 
@@ -17,9 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             {
                 yield return new ValidationResult(
                     "Select the framework(s) your solution is available from",
-                    new[] { string.Empty }
-                );
+                    new[] { string.Empty });
             }
         }
+
+        public virtual bool IsValid() => DfocvcFramework || GpitFuturesFramework;
     }
 }

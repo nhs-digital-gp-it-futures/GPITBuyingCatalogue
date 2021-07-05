@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         public CommonAutoDataAttribute() :
             base(() => new Fixture().Customize(
                 new CompositeCustomization(
+                    new AddSolutionModelCustomization(),
                     new AutoMoqCustomization(),                                        
                     new CallOffIdCustomization(),
                     new CatalogueItemIdCustomization(),                    

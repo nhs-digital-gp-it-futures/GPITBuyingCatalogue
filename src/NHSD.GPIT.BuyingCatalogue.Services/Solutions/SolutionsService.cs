@@ -291,6 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null)
         {
             var query = dbContext.CatalogueItems
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .Include(i => i.Supplier)
                 .OrderByDescending(i => i.Created)
                 .ThenBy(i => i.Name);
@@ -307,5 +308,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
             dbContext.CatalogueItems.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
+
+        public async Task AddCatalogueSolution(CatalogueItem catalogueItem)
+        {
+            dbContext.CatalogueItems.Add(catalogueItem);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<CatalogueItemId> GetLatestCatalogueItemIdFor(string supplierId)
+        {
+            var catalogueSolution = await dbContext.CatalogueItems
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
+                .OrderByDescending(i => i.Created)
+                .FirstOrDefaultAsync();
+
+            if (!int.TryParse(supplierId, out var result))
+                throw new ArgumentException($"'{supplierId}' is not a valid Supplier Id");
+
+            return catalogueSolution?.CatalogueItemId ?? new CatalogueItemId(result, "000");
+        }
     }
 }

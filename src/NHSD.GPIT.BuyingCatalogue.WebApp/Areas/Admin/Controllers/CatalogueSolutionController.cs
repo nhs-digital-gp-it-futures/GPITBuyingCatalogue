@@ -45,11 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model);
             }
 
-            // Solution name already exists. Enter a different solution name 
+            var catalogueItemId = await solutionsService.GetLatestCatalogueItemIdFor(model.SupplierId);
 
             await solutionsService.AddCatalogueSolution(new CatalogueItem
             {
-                // CatalogueItemId = 
+                CatalogueItemId = catalogueItemId.NextSolutionId(),
                 Name = model.SolutionName,
                 SupplierId = model.SupplierId,
             });
