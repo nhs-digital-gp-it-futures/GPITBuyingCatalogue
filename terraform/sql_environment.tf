@@ -10,8 +10,8 @@ module "sql_server_pri" {
   sql_admin_username    = azurerm_key_vault_secret.sqladminusername.value
   sql_admin_password    = azurerm_key_vault_secret.sqladminpassword.value
   sqladmins             = data.azurerm_key_vault_secret.sqladmins.value
-  bjssvpn               = data.azurerm_key_vault_secret.bjssvpn.value
-  mastekvpn             = data.azurerm_key_vault_secret.mastekvpn1.value
+  bjssvpn               = var.primary_vpn
+  mastekvpn             = var.secondary_vpn
 }
 
 # SQL Firewall rule to allow subnet access from aks network 
