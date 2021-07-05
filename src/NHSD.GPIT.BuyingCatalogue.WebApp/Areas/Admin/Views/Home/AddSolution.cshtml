@@ -30,7 +30,7 @@
                                 Select all that apply.
                             </div>
                             <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
-                                <div class="nhsuk-checkboxes__item">
+                                <div data-test-id="framework-names" class="nhsuk-checkboxes__item">
                                     <input class="nhsuk-checkboxes__input" asp-for="@Model.GpitFuturesFramework" type="checkbox" value="gpit" aria-controls="conditional-contact-1" aria-expanded="false">
                                     <label class="nhsuk-label nhsuk-checkboxes__label" for="contact-1">
                                         GP IT Futures Framework
@@ -39,7 +39,7 @@
                                 <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-contact-1">
                                     <div class="nhsuk-form-group">
                                         <div class="nhsuk-checkboxes">
-                                            <div class="nhsuk-checkboxes__item">
+                                            <div data-test-id="foundation-solution" class="nhsuk-checkboxes__item">
                                                 <input class="nhsuk-checkboxes__input" asp-for="@Model.FoundationSolutionFramework" type="checkbox" value="foundation">
                                                 <label class="nhsuk-label nhsuk-checkboxes__label" for="example-1">
                                                     Foundation Solution
@@ -48,7 +48,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="nhsuk-checkboxes__item">
+                                <div data-test-id="framework-names" class="nhsuk-checkboxes__item">
                                     <input class="nhsuk-checkboxes__input" asp-for="@Model.DfocvcFramework" type="checkbox" value="dfocvc">
                                     <label class="nhsuk-label nhsuk-checkboxes__label" for="contact-2">
                                         DFOCVC Framework
