@@ -11,5 +11,7 @@
         internal AddUser AddUser { get; set; }
 
         internal AddRelatedOrganisation AddRelatedOrganisation {get;set;}
+
+        internal AddSolution AddSolution { get; set; }
     }
 }
