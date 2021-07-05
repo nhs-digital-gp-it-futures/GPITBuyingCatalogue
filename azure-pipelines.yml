@@ -153,7 +153,7 @@ jobs:
 #  
 - job: createBuildArtifact
   displayName: Create Build Artifact
-  dependsOn: dockerBuildAndPush
+#  dependsOn: dockerBuildAndPush
      
   steps:
   - task: CopyFiles@2
