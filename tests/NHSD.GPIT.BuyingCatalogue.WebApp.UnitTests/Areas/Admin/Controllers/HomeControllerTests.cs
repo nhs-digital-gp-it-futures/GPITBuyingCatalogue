@@ -95,8 +95,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(mockOrganisations);
             var mockMapper = new Mock<IMapper>();
           
-            var mockSolutionService = new Mock<ISolutionsService>();
-
             var controller = new HomeController(                
                 mockOrganisationService.Object,
                 mockMapper.Object,
@@ -118,7 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockOrganisationModels = new Mock<IList<OrganisationModel>>().Object;
             mockMapper.Setup(m => m.Map<IList<Organisation>, IList<OrganisationModel>>(mockOrganisations))
                 .Returns(mockOrganisationModels);
-            var mockSolutionService = new Mock<ISolutionsService>();
 
           var controller = new HomeController(                
                 mockOrganisationService.Object,
@@ -176,16 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-        }
-
-        [Fact]
-        public static void Get_ManageSuppliers_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(HomeController)
-                .GetMethod(nameof(HomeController.ManageSuppliers))
-                .GetCustomAttribute<RouteAttribute>()
-                .Template.Should()
-                .Be("manage-suppliers");
         }
 
         [Fact]
