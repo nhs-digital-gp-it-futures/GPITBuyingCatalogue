@@ -8,11 +8,6 @@ data "azurerm_key_vault_secret" "ssl_cert" {
   key_vault_id = data.azurerm_key_vault.keyvault_core.id
 }
 
-data "azurerm_key_vault_secret" "kv_access" {
- name         = "${var.pjtcode}${local.coreEnv}KV-AccessGrp"
- key_vault_id = data.azurerm_key_vault.keyvault_core.id
-}
-
 data "azurerm_key_vault_secret" "spn_appid" {
  name         = "${var.pjtcode}${local.coreEnv}spnapplicationid"
  key_vault_id = data.azurerm_key_vault.keyvault_core.id

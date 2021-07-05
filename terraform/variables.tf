@@ -52,3 +52,7 @@ variable "tertiary_vpn" {
 variable "nhsd_network_range" {
   type = string
 }
+
+variable "kv_access_group" {
+  type = string
+}
