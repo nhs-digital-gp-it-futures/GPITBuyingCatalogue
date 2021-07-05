@@ -33,6 +33,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, AssociatedServicesModel>(solution));
         }
 
+        [Route("futures/{id}/additional-services")]
+        public async Task<IActionResult> AdditionalServices(CatalogueItemId id)
+        {
+            var solution = await solutionsService.GetSolutionWithAllAdditionalServices(id);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, AdditionalServicesModel>(solution));
+        }
+
         [Route("futures/{id}/capabilities")]
         public async Task<IActionResult> Capabilities(CatalogueItemId id)
         {
@@ -138,6 +148,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
+        }
+
+        [Route("futures/{id}/check-capability-epic")]
+        public IActionResult CheckCapabilityEpic(string id)
+        {
+            return View();
         }
 
         [Route("futures/{id}/supplier-details")]
