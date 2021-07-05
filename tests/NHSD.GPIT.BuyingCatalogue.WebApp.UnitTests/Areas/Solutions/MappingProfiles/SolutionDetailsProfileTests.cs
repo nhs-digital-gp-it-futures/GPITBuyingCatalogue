@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                         Previous = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.Description),
+                            Action = nameof(SolutionDetailsController.AdditionalServices),
                             Controller = typeof(SolutionDetailsController).ControllerName(),
                             Name = "Additional Services",
                             Show = true,
@@ -234,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
                 Next = new SectionModel
                 {
-                    Action = "Description",
+                    Action = "AdditionalServices",
                     Controller = "SolutionDetails",
                     Name = "Additional Services",
                     Show = true,
@@ -512,6 +512,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 Name = fixture.Create<string>(),
             }));
             return items;
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Map_CatalogueItemToAdditionalServiceModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.CataloguePrices.Add(null);
+
+            var actual = mapper.Map<CatalogueItem, AdditionalServiceModel>(catalogueItem);
+
+            actual.Description.Should().Be(catalogueItem.AdditionalService.FullDescription);
+            actual.Prices.Should()
+                .BeEquivalentTo(
+                    catalogueItem.CataloguePrices.Where(c => c != null)
+                        .Select(src => $"£{src.Price.GetValueOrDefault():F} {src.PricingUnit.Description}"));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Map_CatalogueItemToAdditionalServiceModel_AdditionalServiceNull_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+            catalogueItem.AdditionalService = null;
+
+            var actual = mapper.Map<CatalogueItem, AdditionalServiceModel>(catalogueItem);
+
+            actual.Description.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Map_CatalogueItemToAdditionalServicesModel_ResultAsExpected(
+            CatalogueItem catalogueItem)
+        {
+
+            var actual = mapper.Map<CatalogueItem, AdditionalServicesModel>(catalogueItem);
+
+            configuration.Verify(c => c["SolutionsLastReviewedDate"]);
+            actual.LastReviewed.Should().Be(LastReviewedDate);
+            actual.Services.Should().BeInAscendingOrder(s => s.Name);
+            actual.PaginationFooter.Should()
+                .BeEquivalentTo(
+                    new PaginationFooterModel
+                    {
+                        FullWidth = true,
+                        Next = new SectionModel
+                        {
+                            Action = nameof(SolutionDetailsController.AssociatedServices),
+                            Controller = typeof(SolutionDetailsController).ControllerName(),
+                            Name = "Associated Services",
+                            Show = true,
+                        },
+                        Previous = new SectionModel
+                        {
+                            Action = nameof(SolutionDetailsController.ListPrice),
+                            Controller = typeof(SolutionDetailsController).ControllerName(),
+                            Name = "List price",
+                            Show = true,
+                        },
+                    });
+            actual.Section.Should().Be("Additional Services");
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionName.Should().Be(catalogueItem.Name);
         }
     }
 }
