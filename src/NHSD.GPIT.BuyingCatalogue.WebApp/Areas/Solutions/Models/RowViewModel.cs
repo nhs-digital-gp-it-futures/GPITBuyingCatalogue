@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class RowViewModel
     {
