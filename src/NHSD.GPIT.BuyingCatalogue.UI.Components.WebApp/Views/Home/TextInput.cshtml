@@ -8,32 +8,30 @@
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from TextInput.cshtml using the TextInputModel." />
 
-
 <nhs-input asp-for="TextInput100Character"
            label-text="This is a 100 Character Input"
            label-hint="The Character Length Comes from the Model"
-           character-count="true"/>
+           character-count="true" />
 
 <nhs-input asp-for="TextInputNoLength"
            label-text="This is a Default Character Input"
            label-hint="The Character Length Is the Default Length of 500"
-           character-count="true"/>
+           character-count="true" />
 
 <nhs-input asp-for="TextInputPassword"
            label-text="This is a Password Input"
-           label-hint="The Password Attribute On the Model Sets this"/>
-
+           label-hint="The Password Attribute On the Model Sets this" />
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Code Example for the above 100 Character Input"
                              size="Medium">
     <div class="app-tabs__container  bc-code-snippet">
-        <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">nhs-input</span><br />
+        <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">nhs-input</span><br />
         <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="TextInput100Character"&nbsp;</span><br />
         <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a 100 Character Input" </span><br />
         <span class="vs-light-theme-purple first-layer">label-hint</span><span class="vs-light-theme-blue">="The Character Length Comes from the Model" </span><br />
         <span class="vs-light-theme-purple first-layer">character-count</span><span class="vs-light-theme-blue">="true" </span><br />
-        <span class="vs-light-theme-blue bracket">/&gt;</span>
+        <span class="vs-light-theme-blue ">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
 
@@ -41,9 +39,6 @@
     <nhs-table-column>Attribute</nhs-table-column>
     <nhs-table-column>Functionality</nhs-table-column>
     <nhs-table-column>Required</nhs-table-column>
-
-
-
     <nhs-table-row-container>
         <nhs-table-cell>asp-for</nhs-table-cell>
         <nhs-table-cell>

@@ -6,7 +6,7 @@
 <nhs-page-title title="Buttons"
                 advice="Use buttons to help users carry out an action on a page like starting an application or saving their progress."
                 caption="View Components"
-                additional-advice="This page is rendered from Buttons.cshtml using the ButtonsModel"/>
+                additional-advice="This page is rendered from Buttons.cshtml using the ButtonsModel" />
 
 <p>Buttons in the UI Package come in three flavours :</p>
 
@@ -14,66 +14,69 @@
                              label-text="Submit Button"
                              size="ExtraLarge">
     <nhs-submit-button />
-        <p>This button is used as the main Submit button on a form</p>
-        <p>it can be used in conjunction with the secondary and delete buttons but there should only be one of these per form</p>
-        <p>This button has a default text value of "Save and Return"</p>
+    <p>This button is used as the main Submit button on a form</p>
+    <p>it can be used in conjunction with the secondary and delete buttons but there should only be one of these per form</p>
+    <p>This button has a default text value of "Save and Return"</p>
 
 
-        <nhs-fieldset-form-container asp-for="@Model"
-                                     label-text="Code Example for the above button"
-                                     size="Medium">
-            <div class="app-tabs__container  bc-code-snippet">
-                <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">nhs-submit-button</span>
-                <span class="vs-light-theme-blue bracket">/&gt;</span>
-            </div>
-        </nhs-fieldset-form-container>
+    <nhs-fieldset-form-container asp-for="@Model"
+                                 label-text="Code Example for the above button"
+                                 size="Medium">
+        <div class="app-tabs__container  bc-code-snippet">
+            <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-submit-button</span>
+            <span class="vs-light-theme-blue">/&gt;</span>
+        </div>
+    </nhs-fieldset-form-container>
 
 
-        <nhs-table label-text="Attributes">
-            <nhs-table-column>Attribute</nhs-table-column>
-            <nhs-table-column>Functionality</nhs-table-column>
-            <nhs-table-column>Required</nhs-table-column>
+    <nhs-table label-text="Attributes">
+        <nhs-table-column>Attribute</nhs-table-column>
+        <nhs-table-column>Functionality</nhs-table-column>
+        <nhs-table-column>Required</nhs-table-column>
 
-            <nhs-table-row-container>
-                <nhs-table-cell>text</nhs-table-cell>
-                <nhs-table-cell>
-                    <p>When the text attritbute is supplied, then the label text will be overriden with the input text</p>
-                </nhs-table-cell>
-                <nhs-table-cell>
-                    <nhs-tag text="No" colour="Green" />
-                </nhs-table-cell>
-            </nhs-table-row-container>
-        </nhs-table>
+        <nhs-table-row-container>
+            <nhs-table-cell>text</nhs-table-cell>
+            <nhs-table-cell>
+                <p>When the text attritbute is supplied, then the label text will be overriden with the input text</p>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-tag text="No" colour="Green" />
+            </nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
     <br />
     <br />
-   <nhs-fieldset-form-container asp-for="@Model"
+    <nhs-fieldset-form-container asp-for="@Model"
                                  size="Medium"
                                  label-text="An Example of a Submit Button with an Overriden Text Label">
         <nhs-submit-button text="This text has been overriden" />
 
         <div class="app-tabs__container  bc-code-snippet">
-            <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">nhs-submit-button text</span><span class="vs-light-theme-blue">="This text has been overridden"</span>
-            <span class="vs-light-theme-blue bracket">/&gt;</span>
+            <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">nhs-submit-button text</span><span class="vs-light-theme-blue">="This text has been overridden"</span>
+            <span class="vs-light-theme-blue ">/&gt;</span>
         </div>
 
-    </nhs-fieldset-form-container> 
+    </nhs-fieldset-form-container>
 
     <nhs-warning-callout label-text="Changes for .Net 6">
-        <p>Due to the fact that View Components do not allow optional attributes, this tag uses a tag helper for handing the optional inputs<br />
-        while a View Component does the rendering.</p>
+        <p>
+            Due to the fact that View Components do not allow optional attributes, this tag uses a tag helper for handing the optional inputs<br />
+            while a View Component does the rendering.
+        </p>
         <p>This has been fixed for .Net 6.</p>
-        <p>So in .Net 6, the Tag Helper version will be deleted and all tags will be changed to gain the &lt;vc:nhs-sumbit-button /&gt; tag.<br/>
-        This shouldn't will not break any other functionality.</p>
+        <p>
+            So in .Net 6, the Tag Helper version will be deleted and all tags will be changed to gain the &lt;vc:nhs-sumbit-button /&gt; tag.<br />
+            This shouldn't will not break any other functionality.
+        </p>
 
     </nhs-warning-callout>
-
 </nhs-fieldset-form-container>
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Secondary Button"
                              size="ExtraLarge">
 
-    <vc:nhs-secondary-button url="buttons" text="Secondary Button" use-primary-colour="false"/>
+    <vc:nhs-secondary-button url="buttons" text="Secondary Button" use-primary-colour="false" />
 
     <p>This button is used when you want to redirect a user to another page or do an action that doesn't involve submitting the form</p>
     <p>Multiple Secondary Buttons can be used per page</p>
@@ -82,9 +85,9 @@
                                  label-text="Code Example for the above button"
                                  size="Medium">
         <div class="app-tabs__container  bc-code-snippet">
-            <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-secondary-button url</span><span class="vs-light-theme-blue">="buttons"&nbsp;</span>
+            <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">vc:nhs-secondary-button url</span><span class="vs-light-theme-blue">="buttons"&nbsp;</span>
             <span class="vs-light-theme-purple">text</span><span class="vs-light-theme-blue">="Secondary Button" </span>
-            <span class="vs-light-theme-blue bracket">/&gt;</span>
+            <span class="vs-light-theme-blue ">/&gt;</span>
         </div>
     </nhs-fieldset-form-container>
     <br />
@@ -131,9 +134,9 @@
                                  label-text="Code Example for the above button"
                                  size="Medium">
         <div class="app-tabs__container  bc-code-snippet">
-            <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-delete-button url</span><span class="vs-light-theme-blue">="buttons"&nbsp;</span>
+            <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">vc:nhs-delete-button url</span><span class="vs-light-theme-blue">="buttons"&nbsp;</span>
             <span class="vs-light-theme-purple">text</span><span class="vs-light-theme-blue">="Delete Button" </span>
-            <span class="vs-light-theme-blue bracket">/&gt;</span>
+            <span class="vs-light-theme-blue ">/&gt;</span>
         </div>
     </nhs-fieldset-form-container>
     <br />
@@ -167,5 +170,3 @@
 <nhs-endnote>
     Page last Updated: 10 June 2021
 </nhs-endnote>
-
-
