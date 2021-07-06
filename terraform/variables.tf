@@ -60,3 +60,11 @@ variable "kv_access_group" {
 variable "sql_admin_group" {
   type = string
 }
+
+variable "smtp_server_host" {
+  type = string
+}
+
+variable "smtp_server_port" {
+  type = string
+}

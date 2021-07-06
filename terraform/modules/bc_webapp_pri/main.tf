@@ -28,8 +28,8 @@ resource "azurerm_app_service" "webapp" {
     ASPNETCORE_ENVIRONMENT: var.aspnet_environment
 
     APPINSIGHTS_INSTRUMENTATIONKEY      = var.instrumentation_key
-    BC_SMTP_HOST                        = ""
-    BC_SMTP_PORT                        = ""
+    BC_SMTP_HOST                        = var.smtp_server_host
+    BC_SMTP_PORT                        = var.smtp_server_port
     
     # Settings for Container Registy  
     DOCKER_REGISTRY_SERVER_URL          = "https://${data.azurerm_container_registry.acr.login_server}"

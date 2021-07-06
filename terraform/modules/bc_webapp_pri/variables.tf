@@ -91,3 +91,11 @@ variable "ssl_cert" {
 variable "customer_network_range" {
   type = string
 }
+
+variable "smtp_server_host" {
+  type = string
+}
+
+variable "smtp_server_port" {
+  type = string
+}
