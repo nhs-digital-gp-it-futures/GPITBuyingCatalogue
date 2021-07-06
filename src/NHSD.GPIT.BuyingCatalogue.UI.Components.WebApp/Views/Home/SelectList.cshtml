@@ -16,7 +16,7 @@
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Code Example for the above Select List"
                              size="Medium">
-    <div class="app-tabs__container  bc-code-snippet">
+    <div class="app-tabs__container bc-code-snippet">
         <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-select</span><br />
         <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model.SelectListItem"&nbsp;</span><br />
         <span class="vs-light-theme-purple first-layer">asp-items</span><span class="vs-light-theme-blue">="@@(new SelectList(@@Model.SelectListItems, "Value", "Text"))" </span><br />
