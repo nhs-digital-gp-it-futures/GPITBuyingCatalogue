@@ -89,8 +89,8 @@
   <ItemGroup>
     <Build Include="Tables\SolutionCapabilityStatus.sql" />
     <Build Include="Tables\SolutionCapability.sql" />
-    <Build Include="Tables\SolutionEpicStatus.sql" />
-    <Build Include="Tables\SolutionEpic.sql" />
+    <Build Include="Tables\CatalogueItemEpicStatus.sql" />
+    <Build Include="Tables\CatalogueItemEpic.sql" />
     <Build Include="Tables\CompliancyLevel.sql" />
     <Build Include="Tables\CapabilityCategory.sql" />
     <Build Include="Tables\CapabilityStatus.sql" />
