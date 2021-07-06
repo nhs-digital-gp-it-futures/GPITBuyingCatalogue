@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(OrderController).Should().BeDecoratedWith<AuthorizeAttribute>();
-            typeof(OrderController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Order");
+            typeof(OrderController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Order");
         }
 
         [Fact]
