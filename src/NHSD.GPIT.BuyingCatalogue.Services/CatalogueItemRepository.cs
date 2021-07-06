@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
-    public class CatalogueItemRepository : DbRepository<CatalogueItem, GPITBuyingCatalogueDbContext>, ICatalogueItemRepository
+    public sealed class CatalogueItemRepository : DbRepository<CatalogueItem, GPITBuyingCatalogueDbContext>, ICatalogueItemRepository
     {
         public CatalogueItemRepository(GPITBuyingCatalogueDbContext dbContext)
             : base(dbContext)
