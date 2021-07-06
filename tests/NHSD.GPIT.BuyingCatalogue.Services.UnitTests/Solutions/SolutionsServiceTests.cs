@@ -472,24 +472,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockCatalogueItemRepository.Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
                 .ReturnsAsync(catalogueItemId);
             
-            var frameworkSolution = new FrameworkSolution
-            {
-                FrameworkId = model.FrameworkModel.DfocvcFramework ? "DFOCVC001" : "NHSDGP001",
-                IsFoundation = model.FrameworkModel.FoundationSolutionFramework,
-                LastUpdated = DateTime.UtcNow,
-                LastUpdatedBy = model.UserId,
-            };
-            var expected = new CatalogueItem
-            {
-                CatalogueItemId = catalogueItemId.NextSolutionId(),
-                CatalogueItemType = CatalogueItemType.Solution,
-                Solution =
-                    new Solution { FrameworkSolutions = new List<FrameworkSolution> { frameworkSolution, }, },
-                Name = model.Name,
-                PublishedStatus = PublicationStatus.Draft,
-                SupplierId = model.SupplierId,
-            };
-            
             var service = new SolutionsService(
                 Mock.Of<GPITBuyingCatalogueDbContext>(),
                 Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
@@ -505,14 +487,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         c =>
                             c.CatalogueItemId == catalogueItemId.NextSolutionId() &&
                             c.CatalogueItemType == CatalogueItemType.Solution &&
-                            c.Solution.FrameworkSolutions.Single().FrameworkId
-                            == (model.FrameworkModel.DfocvcFramework ? "DFOCVC001" : "NHSDGP001") &&
                             c.Solution.LastUpdated > DateTime.UtcNow.AddMinutes(-2) &&
                             c.Solution.LastUpdatedBy == model.UserId &&
-                            c.Solution.FrameworkSolutions.Single().IsFoundation
-                            == model.FrameworkModel.FoundationSolutionFramework &&
-                            c.Solution.FrameworkSolutions.Single().LastUpdated > DateTime.UtcNow.AddMinutes(-2) &&
-                            c.Solution.FrameworkSolutions.Single().LastUpdatedBy == model.UserId &&
                             c.Name == model.Name &&
                             c.PublishedStatus == PublicationStatus.Draft &&
                             c.SupplierId == model.SupplierId)));
