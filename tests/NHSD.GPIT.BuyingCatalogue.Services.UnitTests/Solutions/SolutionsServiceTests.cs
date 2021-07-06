@@ -438,7 +438,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             (await Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCatalogueSolution(null)))
                 .ParamName.Should().Be(nameof(CreateSolutionModel));
+        }
 
+        [Fact]
+        public static async Task AddCatalogueSolution_NullFrameworkModel_ThrowsException()
+        {
+            var service = new SolutionsService(
+                Mock.Of<GPITBuyingCatalogueDbContext>(),
+                Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
+                Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(),
+                Mock.Of<IDbRepository<Supplier,GPITBuyingCatalogueDbContext>>(),
+                Mock.Of<ICatalogueItemRepository>());
+
+            (await Assert.ThrowsAsync<ArgumentNullException>(
+                    () => service.AddCatalogueSolution(new CreateSolutionModel())))
+                .ParamName.Should()
+                .Be(nameof(FrameworkModel));
         }
 
         [Theory]
