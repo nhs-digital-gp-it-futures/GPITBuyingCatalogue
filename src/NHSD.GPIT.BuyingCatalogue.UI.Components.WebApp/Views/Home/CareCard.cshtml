@@ -11,7 +11,6 @@
 
 <p>There are Three Types of CareCard: non-urgent, urgent and immediate</p>
 
-
 <vc:nhs-care-card title="This is the Non-Urgent Test Care Card Title"
                   list-options="@Model.Options"
                   footer="This is the Non-Urgent Footer"
@@ -31,12 +30,12 @@
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Code Example for a non-urgent CareCard"
                              size="Medium">
-    <div class="app-tabs__container js-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-care-card <br />title</span><span class="vs-light-theme-blue">="This is the Non-Urgent Test Care Card"&nbsp;</span><br />
+    <div class="app-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">vc:nhs-care-card <br />title</span><span class="vs-light-theme-blue">="This is the Non-Urgent Test Care Card"&nbsp;</span><br />
         <span class="vs-light-theme-purple">list-options</span><span class="vs-light-theme-blue">="@@Model.Options"&nbsp;</span><br />
         <span class="vs-light-theme-purple">footer</span><span class="vs-light-theme-blue">="This is the Non-Urgent Footer"&nbsp;</span><br />
         <span class="vs-light-theme-purple">display-type</span><span class="vs-light-theme-blue">="NonUrgent"&nbsp;</span>
-        <span class="vs-light-theme-blue bracket">/&gt;</span>
+        <span class="vs-light-theme-blue ">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
 
@@ -104,13 +103,13 @@
 
     <span>var model = new CareCardModel()</span><br />
     <span>{</span><br />
-    <span>&nbsp;  Options = new List&lt;string&gt;</span><br/>
-    <span>&nbsp;{</span><br/>
-    <span>&nbsp;&nbsp;"This is the first option",</span><br/>
-    <span>&nbsp;&nbsp;"This is the second option",</span><br/>
-    <span>&nbsp;&nbsp;"This is the third option",</span><br/>
-    <span>&nbsp;},</span><br/>
-    <span> };</span><br/>
+    <span>&nbsp;  Options = new List&lt;string&gt;</span><br />
+    <span>&nbsp;{</span><br />
+    <span>&nbsp;&nbsp;"This is the first option",</span><br />
+    <span>&nbsp;&nbsp;"This is the second option",</span><br />
+    <span>&nbsp;&nbsp;"This is the third option",</span><br />
+    <span>&nbsp;},</span><br />
+    <span> };</span><br />
 
 </nhs-fieldset-form-container>
 
@@ -126,12 +125,12 @@
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Code Example for the Above Care Card"
                              size="Medium">
-    <div class="app-tabs__container js-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-care-card <br />title</span><span class="vs-light-theme-blue">=""&nbsp;</span><br />
+    <div class="app-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">vc:nhs-care-card<br />title</span><span class="vs-light-theme-blue">=""&nbsp;</span><br />
         <span class="vs-light-theme-purple">list-options</span><span class="vs-light-theme-blue">="@@Model.Options"&nbsp;</span><br />
         <span class="vs-light-theme-purple">footer</span><span class="vs-light-theme-blue">=""&nbsp;</span><br />
         <span class="vs-light-theme-purple">display-type</span><span class="vs-light-theme-blue">="NonUrgent"&nbsp;</span>
-        <span class="vs-light-theme-blue bracket">/&gt;</span>
+        <span class="vs-light-theme-blue">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
 
@@ -145,9 +144,6 @@
     </p>
 </nhs-warning-callout>
 
-
 <nhs-endnote>
     Page last Updated 10 June 2021
 </nhs-endnote>
-
-

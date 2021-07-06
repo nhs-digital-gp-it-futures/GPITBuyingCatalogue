@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -87,6 +89,57 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     }
                 }
             }
+        }
+
+        public static void TellParentThisHasConditionalChildContent(TagHelperContext context)
+        {
+            if (context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
+            {
+                (value as ConditionalContext).ContainsConditionalContent = true;
+            }
+        }
+
+        public static void ProcessOutputForConditionalContent(
+            TagHelperOutput output,
+            TagHelperContext context,
+            TagBuilder input,
+            TagHelperContent childContent,
+            IEnumerable<string> classes)
+        {
+            var childContainer = TagHelperBuilders.GetChildContentConditionalBuilder(input, classes);
+
+            childContainer.InnerHtml.AppendHtml(childContent);
+
+            output.PostElement.AppendHtml(childContainer);
+
+            childContainer.Attributes.TryGetValue("id", out string containerId);
+
+            input.MergeAttribute(TagHelperConstants.AriaControls, containerId);
+            input.MergeAttribute(TagHelperConstants.AriaExpanded, "false");
+
+            TellParentThisHasConditionalChildContent(context);
+        }
+
+        public static string BuildCssClassForConditionalContentOutput(TagHelperContext context, ConditionalContext conditionalContext, string baseClass, string additionalClass)
+        {
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.Append(baseClass);
+
+            // only apply to self if this is the parent container
+            if (!context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
+                return stringBuilder.ToString();
+
+            if (!((ConditionalContext)value).ContainsConditionalContent)
+                return stringBuilder.ToString();
+
+            if (conditionalContext is null)
+                return stringBuilder.ToString();
+
+            stringBuilder.Append(' ');
+            stringBuilder.Append(additionalClass);
+
+            return stringBuilder.ToString();
         }
     }
 }
