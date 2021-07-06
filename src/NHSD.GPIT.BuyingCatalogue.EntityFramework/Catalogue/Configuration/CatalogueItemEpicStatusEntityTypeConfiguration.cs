@@ -4,11 +4,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
-    internal sealed class SolutionEpicStatusEntityTypeConfiguration : IEntityTypeConfiguration<SolutionEpicStatus>
+    internal sealed class CatalogueItemEpicStatusEntityTypeConfiguration : IEntityTypeConfiguration<CatalogueItemEpicStatus>
     {
-        public void Configure(EntityTypeBuilder<SolutionEpicStatus> builder)
+        public void Configure(EntityTypeBuilder<CatalogueItemEpicStatus> builder)
         {
-            builder.ToTable("SolutionEpicStatus");
+            builder.ToTable("CatalogueItemEpicStatus");
 
             builder.Property(s => s.Id).ValueGeneratedNever();
             builder.Property(s => s.Name)
