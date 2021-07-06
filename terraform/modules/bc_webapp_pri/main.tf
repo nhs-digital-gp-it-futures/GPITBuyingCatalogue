@@ -90,7 +90,7 @@ resource "azurerm_app_service" "webapp" {
 
   lifecycle {
     ignore_changes = [
-      app_settings,
+      # app_settings,
       site_config[0].ip_restriction[0]
     ]
   }
