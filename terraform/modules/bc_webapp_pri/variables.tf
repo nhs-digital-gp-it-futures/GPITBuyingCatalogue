@@ -52,9 +52,6 @@ variable "cert_name" {
 variable "webapp_cname_url" {
   type      = string
 }
-variable "core_environment" {
-  type      = string
-}
 variable "sa_connection_string" {
   type = string
   sensitive = true
@@ -68,5 +65,37 @@ variable "sqlserver_name" {
 }
 
 variable "sqlserver_rg" {
+  type = string
+}
+
+variable "instrumentation_key" {
+  type = string
+}
+
+variable "primary_vpn" {
+  type = string
+}
+
+variable "secondary_vpn" {
+  type = string
+}
+
+variable "tertiary_vpn" {
+  type = string
+}
+
+variable "ssl_cert" {
+  type = string
+}
+
+variable "customer_network_range" {
+  type = string
+}
+
+variable "smtp_server_host" {
+  type = string
+}
+
+variable "smtp_server_port" {
   type = string
 }
