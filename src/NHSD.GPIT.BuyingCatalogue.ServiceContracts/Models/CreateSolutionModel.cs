@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
-    public class CreateSolutionModel
+    public sealed class CreateSolutionModel
     {
         public FrameworkModel FrameworkModel { get; set; }
 
