@@ -406,18 +406,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task AddCatalogueSolution(CreateSolutionModel model)
         {
             model.ValidateNotNull(nameof(CreateSolutionModel));
+            model.FrameworkModel.ValidateNotNull(nameof(CreateSolutionModel.FrameworkModel));
 
             var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
             var catalogueItemId = latestCatalogueItemId.NextSolutionId();
 
             var nowTime = DateTime.UtcNow;
-            var frameworkSolution = new FrameworkSolution
+
+            var frameworkSolutions = new List<FrameworkSolution>();
+            if (model.FrameworkModel.DfocvcFramework)
             {
-                FrameworkId = model.FrameworkModel.DfocvcFramework ? DfocvcFrameworkId : GpitFuturesFrameworkId,
-                IsFoundation = model.FrameworkModel.FoundationSolutionFramework,
-                LastUpdated = nowTime,
-                LastUpdatedBy = model.UserId,
-            };
+                frameworkSolutions.Add(new FrameworkSolution
+                {
+                    FrameworkId = DfocvcFrameworkId,
+                    LastUpdated = nowTime,
+                    LastUpdatedBy = model.UserId,
+                });
+            }
+
+            if (model.FrameworkModel.GpitFuturesFramework)
+            {
+                frameworkSolutions.Add(new FrameworkSolution
+                {
+                    FrameworkId = GpitFuturesFrameworkId,
+                    IsFoundation = model.FrameworkModel.FoundationSolutionFramework,
+                    LastUpdated = nowTime,
+                    LastUpdatedBy = model.UserId,
+                });
+            }
 
             catalogueItemRepository.Add(
                 new CatalogueItem
@@ -427,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     Solution =
                         new Solution
                         {
-                            FrameworkSolutions = new List<FrameworkSolution> { frameworkSolution, },
+                            FrameworkSolutions = frameworkSolutions,
                             LastUpdated = nowTime,
                             LastUpdatedBy = model.UserId,
                         },
