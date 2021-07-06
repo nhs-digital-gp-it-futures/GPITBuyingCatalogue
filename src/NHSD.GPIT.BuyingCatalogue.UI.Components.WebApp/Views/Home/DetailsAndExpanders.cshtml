@@ -8,7 +8,6 @@
                 advice="Make a complex topic easier to digest by letting users reveal more detailed information only if they need it."
                 additional-advice="This page is rendered from DetailsAndExpanders.cshtml using the BlankModel." />
 
-
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Details Dropdown"
                              size="ExtraLarge">
@@ -28,7 +27,6 @@
             <p>That contains some more text.</p>
         </nhs-details>
     </nhs-details>
-
 
     <p>Details are a "wrapper tag". This means that this tag can wrap around any arbitrary mixture of raw Html and View Components to generate the content it encapsulates.</p>
     <p>They are nestable to an arbitrary depth on a techincal level, but to keep a decent design, it's recommended to only do one level of encapulation.</p>
@@ -67,7 +65,7 @@
     <nhs-fieldset-form-container asp-for="@Model"
                                  label-text="Code Example of the details with a Paragraph inside"
                                  size="Medium">
-        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <div class="app-tabs__container bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-details label-text</span>
             <span class="vs-light-theme-blue">="This is a Details Dropdown With Some &lt;p&gt; text"</span>
             <span class="vs-light-theme-blue">&gt;</span>
@@ -142,7 +140,7 @@
     <nhs-fieldset-form-container asp-for="@Model"
                                  label-text="Code Example of the expander with a Paragraph inside"
                                  size="Medium">
-        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <div class="app-tabs__container bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-expander label-text</span><span class="vs-light-theme-blue">="This is a Details Dropdown With Some &lt;p&gt; text"</span>
             <span class="vs-light-theme-blue">&gt;</span>
 

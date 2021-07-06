@@ -1,5 +1,4 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models
 {
