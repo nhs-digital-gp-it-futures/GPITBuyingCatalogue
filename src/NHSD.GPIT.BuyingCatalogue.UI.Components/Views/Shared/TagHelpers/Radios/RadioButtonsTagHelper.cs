@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -10,9 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     public sealed class RadioButtonsTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-radio-buttons";
-        public const string ValuesName = "values";
-        public const string ValueNameName = "value-name";
-        public const string DisplayNameName = "display-name";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -25,13 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.For)]
         public ModelExpression For { get; set; }
 
-        [HtmlAttributeName(ValuesName)]
+        [HtmlAttributeName(TagHelperConstants.Values)]
         public IEnumerable<object> Values { get; set; }
 
-        [HtmlAttributeName(ValueNameName)]
+        [HtmlAttributeName(TagHelperConstants.ValueName)]
         public string ValueName { get; set; }
 
-        [HtmlAttributeName(DisplayNameName)]
+        [HtmlAttributeName(TagHelperConstants.DisplayName)]
         public string DisplayName { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -42,37 +40,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 return;
             }
 
-            output.TagName = TagHelperConstants.Div;
-            output.TagMode = TagMode.StartTagAndEndTag;
+            RadioButtonBuilders.UpdateRadioContainerOutput(output, context);
 
-            List<TagBuilder> radioItems = BuildRadiosFromValueList();
+            IEnumerable<TagBuilder> radioItems = BuildRadiosFromValueList();
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsRadios));
-
-            radioItems.ForEach(ri => output.Content.AppendHtml(ri));
+            foreach (var item in radioItems)
+                output.Content.AppendHtml(item);
 
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
         }
 
-        private List<TagBuilder> BuildRadiosFromValueList()
-        {
-            return (from item in Values
-                    select BuildRadioItem(item)).ToList();
-        }
-
-        private TagBuilder BuildRadioItem(object item)
-        {
-            var builder = new TagBuilder(TagHelperConstants.Div);
-
-            builder.AddCssClass(TagHelperConstants.RadioItemClass);
-
-            var input = TagHelperBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, item, ValueName);
-            var label = TagHelperBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, item, DisplayName, ValueName);
-
-            builder.InnerHtml.AppendHtml(input);
-            builder.InnerHtml.AppendHtml(label);
-
-            return builder;
-        }
+        private IEnumerable<TagBuilder> BuildRadiosFromValueList() =>
+            Values.Select(value => RadioButtonBuilders.BuildRadioItem(ViewContext, For, htmlGenerator, value, ValueName, DisplayName));
     }
 }

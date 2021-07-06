@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
@@ -42,6 +42,18 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var label = GetCheckboxLabelBuilder();
             var input = GetCheckboxInputBuilder();
+
+            var childContent = await output.GetChildContentAsync();
+
+            if (!childContent.IsEmptyOrWhiteSpace)
+            {
+                TagHelperFunctions.ProcessOutputForConditionalContent(
+                    output,
+                    context,
+                    input,
+                    childContent,
+                    new[] { TagHelperConstants.NhsCheckBoxChildConditionalClass, TagHelperConstants.NhsCheckBoxChildConditionalHiddenClass });
+            }
 
             output.Content.AppendHtml(input);
             output.Content.AppendHtml(label);
