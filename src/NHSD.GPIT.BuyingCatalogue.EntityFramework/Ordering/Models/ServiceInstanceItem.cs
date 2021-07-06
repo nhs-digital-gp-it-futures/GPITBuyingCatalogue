@@ -1,5 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class ServiceInstanceItem
     {
         public int OrderId { get; set; }

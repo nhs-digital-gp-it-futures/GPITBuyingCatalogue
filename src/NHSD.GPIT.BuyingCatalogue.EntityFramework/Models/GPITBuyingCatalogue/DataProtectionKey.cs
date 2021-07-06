@@ -1,8 +1,9 @@
-﻿#nullable disable
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public partial class DataProtectionKey
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
+    public sealed class DataProtectionKey
     {
         public int Id { get; set; }
 
