@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     context,
                     input,
                     childContent,
-                    new(2) { TagHelperConstants.NhsCheckBoxChildConditionalClass, TagHelperConstants.NhsCheckBoxChildConditionalHiddenClass });
+                    new[] { TagHelperConstants.NhsCheckBoxChildConditionalClass, TagHelperConstants.NhsCheckBoxChildConditionalHiddenClass });
             }
 
             output.Content.AppendHtml(input);

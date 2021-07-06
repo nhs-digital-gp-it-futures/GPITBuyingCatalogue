@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -103,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TagHelperContext context,
             TagBuilder input,
             TagHelperContent childContent,
-            List<string> classes)
+            IEnumerable<string> classes)
         {
             var childContainer = TagHelperBuilders.GetChildContentConditionalBuilder(input, classes);
 
@@ -117,6 +118,28 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             input.MergeAttribute(TagHelperConstants.AriaExpanded, "false");
 
             TellParentThisHasConditionalChildContent(context);
+        }
+
+        public static string BuildCssClassForConditionalContentOutput(TagHelperContext context, ConditionalContext conditionalContext, string baseClass, string additionalClass)
+        {
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.Append(baseClass);
+
+            // only apply to self if this is the parent container
+            if (!context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
+                return stringBuilder.ToString();
+
+            if (!((ConditionalContext)value).ContainsConditionalContent)
+                return stringBuilder.ToString();
+
+            if (conditionalContext is null)
+                return stringBuilder.ToString();
+
+            stringBuilder.Append(' ');
+            stringBuilder.Append(additionalClass);
+
+            return stringBuilder.ToString();
         }
     }
 }

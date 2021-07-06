@@ -42,17 +42,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             RadioButtonBuilders.UpdateRadioContainerOutput(output, context);
 
-            List<TagBuilder> radioItems = BuildRadiosFromValueList();
+            IEnumerable<TagBuilder> radioItems = BuildRadiosFromValueList();
 
-            radioItems.ForEach(ri => output.Content.AppendHtml(ri));
+            foreach (var item in radioItems)
+                output.Content.AppendHtml(item);
 
             TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
         }
 
-        private List<TagBuilder> BuildRadiosFromValueList()
-        {
-            return (from item in Values
-                    select RadioButtonBuilders.BuildRadioItem(ViewContext, For, htmlGenerator, item, ValueName, DisplayName)).ToList();
-        }
+        private IEnumerable<TagBuilder> BuildRadiosFromValueList() =>
+            Values.Select(value => RadioButtonBuilders.BuildRadioItem(ViewContext, For, htmlGenerator, value, ValueName, DisplayName));
     }
 }

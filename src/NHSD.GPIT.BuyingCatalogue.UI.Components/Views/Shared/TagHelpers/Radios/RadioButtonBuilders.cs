@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -15,7 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, BuildCssClassForOutput(context, conditionalContext)));
+            output.Attributes.Add(new TagHelperAttribute(
+                TagHelperConstants.Class,
+                TagHelperFunctions.BuildCssClassForConditionalContentOutput(
+                    context,
+                    conditionalContext,
+                    TagHelperConstants.NhsRadios,
+                    TagHelperConstants.NhsRadiosParentContainerConditional)));
         }
 
         public static TagBuilder BuildRadioItem(
@@ -51,10 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
             var itemValue = GetGenericValueFromName(item, valueName);
 
-            if (string.IsNullOrWhiteSpace(itemText))
-                return null;
-
-            return GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText, itemValue);
+            return string.IsNullOrWhiteSpace(itemText)
+                ? null
+                : GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText, itemValue);
         }
 
         public static TagBuilder GetRadioLabelBuilder(
@@ -81,10 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         {
             var itemValue = GetGenericValueFromName(item, valueName);
 
-            if (string.IsNullOrWhiteSpace(itemValue))
-                return null;
-
-            return GetRadioInputBuilder(viewContext, aspFor, htmlGenerator, itemValue, null);
+            return string.IsNullOrWhiteSpace(itemValue)
+                ? null
+                : GetRadioInputBuilder(viewContext, aspFor, htmlGenerator, itemValue);
         }
 
         public static TagBuilder GetRadioInputBuilder(
@@ -112,40 +115,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             var propertyInfo = item.GetType().GetProperty(targetName);
 
             if (propertyInfo is not null)
-            {
-                return propertyInfo.GetValue(item).ToString();
-            }
+                return propertyInfo.GetValue(item)?.ToString();
 
             var methodInfo = item.GetType().GetExtensionMethod(Assembly.GetAssembly(item.GetType()), targetName);
 
-            if (methodInfo is not null)
-            {
-                return methodInfo.Invoke(item, new[] { item }).ToString();
-            }
-
-            return string.Empty;
-        }
-
-        private static string BuildCssClassForOutput(TagHelperContext context, ConditionalContext conditionalContext)
-        {
-            var stringBuilder = new StringBuilder();
-
-            stringBuilder.Append(TagHelperConstants.NhsRadios);
-
-            // only apply to self if this is the parent container
-            if (context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
-            {
-                if ((value as ConditionalContext).ContainsConditionalContent == true)
-                {
-                    if (conditionalContext is not null)
-                    {
-                        stringBuilder.Append(' ');
-                        stringBuilder.Append(TagHelperConstants.NhsRadiosParentContainerConditional);
-                    }
-                }
-            }
-
-            return stringBuilder.ToString();
+            return methodInfo is not null
+                ? methodInfo.Invoke(item, new[] { item })?.ToString()
+                : string.Empty;
         }
     }
 }

@@ -14,12 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
         public override void Init(TagHelperContext context)
         {
-            if (!context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out _))
-            {
-                conditionalContext = new ConditionalContext();
+            if (context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out _))
+                return;
 
-                context.Items.Add(TagHelperConstants.ConditionalContextName, conditionalContext);
-            }
+            conditionalContext = new ConditionalContext();
+
+            context.Items.Add(TagHelperConstants.ConditionalContextName, conditionalContext);
         }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)

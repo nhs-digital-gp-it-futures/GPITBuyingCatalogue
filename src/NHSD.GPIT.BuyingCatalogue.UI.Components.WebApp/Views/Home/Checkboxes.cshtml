@@ -9,7 +9,7 @@
                 additional-advice="This page is rendered from Checkboxes.cshtml using the CheckBoxModel.
                 This model is initialised in the controller." />
 
-<p>Checkboxes can be initialised in two ways: Via a set of Boolean properties on the model or from properites inside a List of objects inside the model</p>
+<p>Checkboxes can be initialised in two ways: Via a set of Boolean properties on the model or from properties inside a List of objects inside the model.</p>
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="From Multiple Boolean Properties in the Model" ,
@@ -30,7 +30,7 @@
     <nhs-fieldset-form-container asp-for="@Model"
                                  label-text="Code Example for the above Checkbox Property List"
                                  size="Medium">
-        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <div class="app-tabs__container  bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
             <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
             <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a checkbox list from multiple bool properties each with a label"&nbsp;</span><br />
@@ -39,12 +39,12 @@
 
 
             <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox-container</span>
-            <span class="vs-light-theme-blue bracket">&gt;</span><br />
+            <span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox</span><br />
             <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="SingleCheckBoxProperty"&nbsp;</span><br />
             <span class="vs-light-theme-purple third-layer">label-text</span><span class="vs-light-theme-blue">="SingleCheckBoxProperty"&nbsp;</span>
-            <span class="vs-light-theme-blue bracket">/&gt;</span><br />
+            <span class="vs-light-theme-blue">/&gt;</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-checkbox</span><br />
             <span class="vs-light-theme-purple third-layer">asp-for</span><span class="vs-light-theme-blue">="AnotherCheckBoxProperty"&nbsp;</span><br />
@@ -134,7 +134,7 @@
     <nhs-fieldset-form-container asp-for="@Model"
                                  label-text="Code Example for the above Checkbox From Object List"
                                  size="Medium">
-        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <div class="app-tabs__container  bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
             <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
             <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a Checkbox list from a list of objects that contain a display value and a bool checked property"&nbsp;</span><br />
@@ -241,7 +241,7 @@
     <nhs-fieldset-form-container asp-for="@Model"
                                  label-text="Code Example for the above Checkbox Property List"
                                  size="Medium">
-        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <div class="app-tabs__container  bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
             <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
             <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a checkbox list with conditional content"&nbsp;</span><br />

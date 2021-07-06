@@ -131,11 +131,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return builder;
         }
 
-        public static TagBuilder GetChildContentConditionalBuilder(TagBuilder input, List<string> classes)
+        public static TagBuilder GetChildContentConditionalBuilder(TagBuilder input, IEnumerable<string> classes)
         {
             var builder = new TagBuilder(TagHelperConstants.Div);
 
-            classes.ForEach(c => builder.AddCssClass(c));
+            foreach (var cssClass in classes)
+                builder.AddCssClass(cssClass);
 
             input.Attributes.TryGetValue("id", out string id);
 

@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                     context,
                     input,
                     childContent,
-                    new(2) { TagHelperConstants.NhsRadiosChildConditional, TagHelperConstants.NhsRadiosChildConditionalHidden });
+                    new[] { TagHelperConstants.NhsRadiosChildConditional, TagHelperConstants.NhsRadiosChildConditionalHidden });
             }
 
             output.Content
