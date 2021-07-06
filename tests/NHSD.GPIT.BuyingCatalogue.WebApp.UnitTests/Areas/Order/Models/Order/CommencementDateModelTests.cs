@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             {
                 Day = day,
                 Month = month,
-                Year = year
+                Year = year,
             };
 
             var (_, error) = model.ToDateTime();
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             {
                 Day = day,
                 Month = month,
-                Year = year
+                Year = year,
             };
 
             (DateTime? dateTime, string error) = model.ToDateTime();
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             {
                 Day = oldDate.Day.ToString(),
                 Month = oldDate.Month.ToString(),
-                Year = oldDate.Year.ToString()
+                Year = oldDate.Year.ToString(),
             };
 
             var (_, error) = model.ToDateTime();
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             {
                 Day = oldDate.Day.ToString(),
                 Month = oldDate.Month.ToString(),
-                Year = oldDate.Year.ToString()
+                Year = oldDate.Year.ToString(),
             };
 
             (DateTime? dateTime, string error) = model.ToDateTime();

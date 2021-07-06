@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     [Table("AspNetUserLogins")]
     public partial class AspNetUserLogin : IdentityUserLogin<string>
     {

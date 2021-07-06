@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.AssociatedServices
 {
-    public static class SelectAdditionalServicePriceModelTests
+    public static class SelectAssociatedServicePriceModelTests
     {
         [Theory]
         [CommonAutoData]

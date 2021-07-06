@@ -43,11 +43,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         }
 
         [Theory]
-        [InlineData(ProvisioningType.Declarative)]
-        [InlineData(ProvisioningType.OnDemand)]
-        [InlineData(ProvisioningType.Patient)]
+        [InlineData(ProvisioningType.Declarative, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/declarative")]
+        [InlineData(ProvisioningType.OnDemand, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/flat/ondemand")]
+        [InlineData(ProvisioningType.Patient, "/order/organisation/{0}/order/{1}/catalogue-solutions/select/solution/price/recipients/date")]
         public static void WhenEditingNewSolution_BackLinkCorrectlySet(
-            ProvisioningType provisioningType)
+            ProvisioningType provisioningType,
+            string expectedBackLink)
         {
             Fixture fixture = new Fixture();
 
@@ -64,13 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
 
             var model = new EditSolutionModel(odsCode, callOffId, state);
 
-            if (provisioningType == ProvisioningType.Declarative)
-                model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/declarative");
-            else if (provisioningType == ProvisioningType.OnDemand)
-                model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/ondemand");
-            else
-                model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date");
+            model.BackLink.Should().Be(string.Format(expectedBackLink, odsCode, callOffId));
         }
-
     }
 }

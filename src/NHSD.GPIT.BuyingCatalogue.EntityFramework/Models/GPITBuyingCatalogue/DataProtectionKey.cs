@@ -2,8 +2,8 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    [ExcludeFromCodeCoverage]
-    public class DataProtectionKey
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
+    public sealed class DataProtectionKey
     {
         public int Id { get; set; }
 

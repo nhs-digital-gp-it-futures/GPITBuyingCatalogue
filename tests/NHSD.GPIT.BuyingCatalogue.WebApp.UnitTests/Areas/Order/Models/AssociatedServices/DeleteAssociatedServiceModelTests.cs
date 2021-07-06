@@ -6,7 +6,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.AssociatedServices
 {
-    public static class DeleteAdditionalServiceModelTests
+    public static class DeleteAssociatedServiceModelTests
     {
         [Theory]
         [CommonAutoData]

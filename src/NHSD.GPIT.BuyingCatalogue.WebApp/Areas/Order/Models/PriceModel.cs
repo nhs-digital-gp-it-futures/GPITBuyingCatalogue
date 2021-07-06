@@ -2,8 +2,8 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models
 {
-    [ExcludeFromCodeCoverage]
-    public class PriceModel
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
+    public sealed class PriceModel
     {
         public int CataloguePriceId { get; set; }
 

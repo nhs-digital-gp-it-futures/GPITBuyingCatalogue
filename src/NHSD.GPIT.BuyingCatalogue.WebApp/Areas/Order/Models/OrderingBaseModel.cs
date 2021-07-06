@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models
 {
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public class OrderingBaseModel : NavBaseModel
     {
         public string Title { get; set; }

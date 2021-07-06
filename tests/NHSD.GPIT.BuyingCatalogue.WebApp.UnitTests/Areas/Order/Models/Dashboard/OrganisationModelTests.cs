@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboard
 {
-    public static class CatalogueSolutionsModelTests
+    public static class OrganisationModelTests
     {
         [Theory]
         [CommonAutoData]
