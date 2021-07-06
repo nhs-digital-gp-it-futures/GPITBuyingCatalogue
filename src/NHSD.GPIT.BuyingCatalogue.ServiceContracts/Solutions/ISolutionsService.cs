@@ -59,10 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
 
+        Task AddCatalogueSolution(CreateSolutionModel model);
+
         Task<bool> SupplierHasSolutionName(string supplierId, string solutionName);
-
-        Task AddCatalogueSolution(CatalogueItem catalogueItem);
-
-        Task<CatalogueItemId> GetLatestCatalogueItemIdFor(string supplierId);
     }
 }

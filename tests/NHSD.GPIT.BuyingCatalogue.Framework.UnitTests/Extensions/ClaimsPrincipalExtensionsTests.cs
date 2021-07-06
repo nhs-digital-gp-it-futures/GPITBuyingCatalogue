@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using Xunit;
 
@@ -81,6 +83,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var user = CreatePrincipal("UnrelatedClaim", "True");
 
             Assert.False(user.IsBuyer());
+        }
+        
+        [Fact]
+        public static void UserId_ValidValueSet_ReturnsValidValue()
+        {
+            var expected = Guid.NewGuid();
+            var user = CreatePrincipal("userId", expected.ToString());
+
+            user.UserId().Should().Be(expected);
+        }
+        
+        [Theory]
+        [InlineData("invalid")]
+        [InlineData("")]
+        [InlineData("   ")]
+        public static void UserId_InvalidValue_ReturnsEmptyGuid(string invalid)
+        {
+            var user = CreatePrincipal("userId", invalid);
+
+            user.UserId().Should().Be(Guid.Empty);
         }
 
         private static ClaimsPrincipal CreatePrincipal(string claim, string value)

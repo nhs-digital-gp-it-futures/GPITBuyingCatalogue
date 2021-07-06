@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
     public class FrameworkModel
     {

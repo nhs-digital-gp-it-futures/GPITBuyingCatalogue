@@ -53,8 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     options =>
                     {
                         options.RegisterValidatorsFromAssemblyContaining<AddSolutionModelValidator>();
-                        options.DisableDataAnnotationsValidation = true;
-                    });
+                    })
+                ;
 
             services.AddApplicationInsightsTelemetry();
 

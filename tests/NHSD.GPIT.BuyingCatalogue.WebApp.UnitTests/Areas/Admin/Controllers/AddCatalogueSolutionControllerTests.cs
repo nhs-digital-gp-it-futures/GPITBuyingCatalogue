@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -59,58 +63,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.As<AddSolutionModel>()
-                .Suppliers.Should()
-                .BeEquivalentTo(suppliers?.ToDictionary(s => s.Id, s => s.Name));
+                .SuppliersSelectList.Should()
+                .BeEquivalentTo(suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id)));
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_Index_ModelStateValid_GetsLatestCatalogueItemId(
-            AddSolutionModel model,
-            Mock<ISolutionsService> mockService)
-        {
-            mockService.Setup(s => s.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(new CatalogueItemId(int.Parse(model.SupplierId), "012"));
-            var controller = new AddCatalogueSolutionController(mockService.Object);
-
-            await controller.Index(model);
-
-            mockService.Verify(s => s.GetLatestCatalogueItemIdFor(model.SupplierId));
-        }
-
+        
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_AddsExpectedCatalogueItem(
             AddSolutionModel model,
-            Mock<ISolutionsService> mockService)
+            Mock<FrameworkModel> mockFrameworkModel,
+            Mock<ISolutionsService> mockService,
+            Guid userId)
         {
-            var catalogueItemId = new CatalogueItemId(int.Parse(model.SupplierId), "012");
-            mockService.Setup(s => s.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(catalogueItemId);
-            var controller = new AddCatalogueSolutionController(mockService.Object);
+            model.FrameworkModel = mockFrameworkModel.Object;
+            var controller = GetController(mockService, userId);
 
             await controller.Index(model);
 
             mockService.Verify(
                 s => s.AddCatalogueSolution(
-                    It.Is<CatalogueItem>(
-                        c => c.CatalogueItemId == catalogueItemId.NextSolutionId()
-                            && c.CatalogueItemType == CatalogueItemType.Solution
+                    It.Is<CreateSolutionModel>(
+                        c => c.FrameworkModel == mockFrameworkModel.Object
                             && c.Name == model.SolutionName
-                            && c.PublishedStatus == PublicationStatus.Draft
-                            && c.SupplierId == model.SupplierId)));
+                            && c.SupplierId == model.SupplierId
+                            && c.UserId == userId)));
         }
-
+        
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_RedirectsToCatalogueSolutions(
             AddSolutionModel model,
             Mock<ISolutionsService> mockService)
         {
-            var catalogueItemId = new CatalogueItemId(int.Parse(model.SupplierId), "012");
-            mockService.Setup(s => s.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(catalogueItemId);
-            var controller = new AddCatalogueSolutionController(mockService.Object);
+            var controller = GetController(mockService, Guid.NewGuid());
 
             var actual = (await controller.Index(model)).As<RedirectToActionResult>();
 
@@ -136,7 +121,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Verify(s => s.GetAllSuppliers());
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(model.WithSuppliers(suppliers));
+            actual.Model.Should().BeEquivalentTo(model.WithSelectListItems(suppliers));
+        }
+
+        private static AddCatalogueSolutionController GetController(
+            IMock<ISolutionsService> mockService,
+            Guid userId)
+        {
+            return new(mockService.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = new ClaimsPrincipal(
+                            new ClaimsIdentity(
+                                new Claim[] { new(Framework.Constants.Claims.UserId, userId.ToString()) }))
+                    },
+                },
+            };
         }
     }
 }

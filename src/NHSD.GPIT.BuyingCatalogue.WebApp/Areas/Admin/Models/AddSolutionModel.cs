@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -20,17 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string SupplierName { get; set; }
 
-        public IDictionary<string, string> Suppliers { get; set; } = new Dictionary<string, string>();
-
         public FrameworkModel FrameworkModel { get; set; }
 
-        public IEnumerable<SelectListItem> SuppliersSelectList => Suppliers == null || !Suppliers.Any()
-            ? System.Array.Empty<SelectListItem>()
-            : Suppliers.Select(s => new SelectListItem($"{s.Value} ({s.Key})", s.Key));
+        public IEnumerable<SelectListItem> SuppliersSelectList { get; set; } = new List<SelectListItem>();
 
-        public AddSolutionModel WithSuppliers(IList<Supplier> suppliers)
+        public AddSolutionModel WithSelectListItems(IList<Supplier> suppliers)
         {
-            Suppliers = suppliers?.ToDictionary(x => x.Id, x => x.Name);
+            SuppliersSelectList = suppliers == null || !suppliers.Any()
+            ? System.Array.Empty<SelectListItem>()
+            : suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id));
 
             return this;
         }

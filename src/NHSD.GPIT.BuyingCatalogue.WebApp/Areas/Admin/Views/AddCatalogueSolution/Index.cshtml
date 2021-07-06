@@ -1,29 +1,15 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddSolutionModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Add a Solution page";
 }
-<style type="text/css">
-    .checkboxError {
-        -webkit-box-shadow: 0px 0px 0px 1px rgba(255,0,0,1) !important;
-        -moz-box-shadow: 0px 0px 0px 1px rgba(255,0,0,1) !important;
-        box-shadow: 0px 0px 0px 1px rgba(255,0,0,1) !important;
-    }
-</style>
 <div class="nhsuk-width-container ">
-    <main class="nhsuk-main-wrapper " id="maincontent" role="main">
+    <main id="maincontent" role="main">
         <partial name="Partials/_BackLink" model="Model"/>
         <div class="nhsuk-grid-row">
             <nhs-validation-summary/>
-
-            @if (!ViewData.ModelState.IsValid)
-            {
-                foreach (var (key, value) in ViewData.ModelState)
-                {
-                    <p>@key : @value.Errors.FirstOrDefault()?.ErrorMessage</p>
-                }
-            }
 
             <div class="nhsuk-grid-column-two-thirds">
                 <h1>Add a solution</h1>
@@ -53,7 +39,7 @@
                             @Html.ValidationMessageFor(s => s.FrameworkModel, "" , new { @class = "nhsuk-error-message"})
                             <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
                                 <div class="nhsuk-checkboxes__item">
-                                    <input class="nhsuk-checkboxes__input checkboxError" asp-for="@Model.FrameworkModel.GpitFuturesFramework" type="checkbox" aria-controls="conditional-contact-1" aria-expanded="false">
+                                    <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.GpitFuturesFramework" type="checkbox" aria-controls="conditional-contact-1" aria-expanded="false">
                                     <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.GpitFuturesFramework)">
                                         GP IT Futures Framework
                                     </label>
@@ -64,7 +50,7 @@
                                     <div class="nhsuk-form-group">
                                         <div class="nhsuk-checkboxes">
                                             <div class="nhsuk-checkboxes__item">
-                                                <input class="nhsuk-checkboxes__input " asp-for="@Model.FrameworkModel.FoundationSolutionFramework" type="checkbox">
+                                                <input data-test-id="foundation-solution" class="nhsuk-checkboxes__input " asp-for="@Model.FrameworkModel.FoundationSolutionFramework" type="checkbox">
                                                 <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.FoundationSolutionFramework)">
                                                     Foundation Solution
                                                 </label>
@@ -73,7 +59,7 @@
                                     </div>
                                 </div>
                                 <div class="nhsuk-checkboxes__item">
-                                    <input class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.DfocvcFramework" type="checkbox">
+                                    <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.DfocvcFramework" type="checkbox">
                                     <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.DfocvcFramework)">
                                         DFOCVC Framework
                                     </label>

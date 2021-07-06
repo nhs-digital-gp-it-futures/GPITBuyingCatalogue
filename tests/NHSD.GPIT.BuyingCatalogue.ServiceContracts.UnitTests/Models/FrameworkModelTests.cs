@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
 {
     public static class FrameworkModelTests
     {

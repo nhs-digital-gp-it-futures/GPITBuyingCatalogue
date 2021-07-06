@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
-using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.PublicationStatus;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -28,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var suppliers = await solutionsService.GetAllSuppliers();
 
-            return View(new AddSolutionModel().WithSuppliers(suppliers));
+            return View(new AddSolutionModel().WithSelectListItems(suppliers));
         }
 
         [HttpPost]
@@ -38,18 +36,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 var suppliers = await solutionsService.GetAllSuppliers();
 
-                return View(model.WithSuppliers(suppliers));
+                return View(model.WithSelectListItems(suppliers));
             }
 
-            var latestCatalogueItemId = await solutionsService.GetLatestCatalogueItemIdFor(model.SupplierId);
-
-            await solutionsService.AddCatalogueSolution(new CatalogueItem
+            await solutionsService.AddCatalogueSolution(new CreateSolutionModel
             {
-                CatalogueItemId = latestCatalogueItemId.NextSolutionId(),
-                CatalogueItemType = CatalogueItemType.Solution,
+                FrameworkModel = model.FrameworkModel,
                 Name = model.SolutionName,
-                PublishedStatus = PublicationStatus.Draft,
                 SupplierId = model.SupplierId,
+                UserId = User.UserId(),
             });
 
             return RedirectToAction(

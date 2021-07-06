@@ -22,17 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private readonly IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository;
+        private readonly ICatalogueItemRepository catalogueItemRepository;
 
         public SolutionsService(
             GPITBuyingCatalogueDbContext dbContext,
             IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository)
+            IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository,
+            ICatalogueItemRepository catalogueItemRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
+            this.catalogueItemRepository = catalogueItemRepository;
         }
 
         public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
@@ -336,6 +339,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var query = dbContext.CatalogueItems
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
+                .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .OrderByDescending(i => i.Created)
                 .ThenBy(i => i.Name);
@@ -350,27 +354,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public async Task AddCatalogueSolution(CreateSolutionModel model)
+        {
+            model.ValidateNotNull(nameof(CreateSolutionModel));
+
+            var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
+            var catalogueItemId = latestCatalogueItemId.NextSolutionId();
+
+            var nowTime = DateTime.UtcNow;
+            var frameworkSolution = new FrameworkSolution
+            {
+                FrameworkId = model.FrameworkModel.DfocvcFramework ? DfocvcFrameworkId : GpitFuturesFrameworkId,
+                IsFoundation = model.FrameworkModel.FoundationSolutionFramework,
+                LastUpdated = nowTime,
+                LastUpdatedBy = model.UserId,
+            };
+
+            catalogueItemRepository.Add(
+                new CatalogueItem
+                {
+                    CatalogueItemId = catalogueItemId,
+                    CatalogueItemType = CatalogueItemType.Solution,
+                    Solution =
+                        new Solution
+                        {
+                            FrameworkSolutions = new List<FrameworkSolution> { frameworkSolution, },
+                            LastUpdated = nowTime,
+                            LastUpdatedBy = model.UserId,
+                        },
+                    Name = model.Name,
+                    PublishedStatus = PublicationStatus.Draft,
+                    SupplierId = model.SupplierId,
+                });
+
+            await catalogueItemRepository.SaveChangesAsync();
+        }
+
         public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
-            dbContext.CatalogueItems.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
-
-        public async Task AddCatalogueSolution(CatalogueItem catalogueItem)
-        {
-            dbContext.CatalogueItems.Add(catalogueItem);
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<CatalogueItemId> GetLatestCatalogueItemIdFor(string supplierId)
-        {
-            if (!int.TryParse(supplierId, out var result))
-                throw new ArgumentException($"'{supplierId}' is not a valid Supplier Id");
-
-            var catalogueSolution = await dbContext.CatalogueItems
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.SupplierId == supplierId)
-                .OrderByDescending(i => i.Created)
-                .FirstOrDefaultAsync();
-
-            return catalogueSolution?.CatalogueItemId ?? new CatalogueItemId(result, "000");
-        }
+            catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
     }
 }
