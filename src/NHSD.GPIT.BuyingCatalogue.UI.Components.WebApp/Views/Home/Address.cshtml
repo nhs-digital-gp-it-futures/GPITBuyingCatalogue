@@ -9,13 +9,11 @@
                 additional-advice="This page is rendered from address.cshtml using an NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.Address Model.
                 This model has been initialised in the controller." />
 
-
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="The Output from The Adress View Component">
 
     <vc:nhs-address address="@Model" />
 </nhs-fieldset-form-container>
-
 
 <p>This view component is intended for when you wish to display the contents of the address object as an output.</p>
 <p>It does this by displaying the contents on the adress model in order, and ignoring any blank lines.</p>
@@ -23,23 +21,22 @@
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Example Code">
-    <div class="app-tabs__container js-tabs__container bc-code-snippet"><span class="vs-light-theme-blue bracket">&lt;</span><span class="vs-light-theme-purple">vc:nhs-address address</span><span class="vs-light-theme-blue">="@@Model.Address"</span>
-        <span class="vs-light-theme-blue bracket">/&gt;</span>
+    <div class="app-tabs__container bc-code-snippet">
+        <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">vc:nhs-address address</span><span class="vs-light-theme-blue">="@@Model.Address"</span>
+        <span class="vs-light-theme-blue">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Example Output of the Above Model">
-    Our House&lt;br /&gt;<br/>
-    In The Middle&lt;br /&gt;<br/>
-    OfOurStreet&lt;br /&gt;<br/>
-    In a Town&lt;br /&gt;<br/>
-    P05T CD3&lt;br /&gt;<br/>
-    In a Country&lt;br /&gt;<br/>
+    Our House&lt;br /&gt;<br />
+    In The Middle&lt;br /&gt;<br />
+    OfOurStreet&lt;br /&gt;<br />
+    In a Town&lt;br /&gt;<br />
+    P05T CD3&lt;br /&gt;<br />
+    In a Country&lt;br /&gt;<br />
 </nhs-fieldset-form-container>
 
 <nhs-endnote>
     Page last Updated: 10 June 2021
 </nhs-endnote>
-
-

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldSet.FieldSetTagHelperBuilders;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
@@ -11,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         CheckboxContainerTagHelper.TagHelperName,
         RadioButtonsTagHelper.TagHelperName,
         YesNoRadioButtonTagHelper.TagHelperName,
-        NhsDateInputTagHelper.TagHelperName)]
+        NhsDateInputTagHelper.TagHelperName,
+        RadioButtonContainerTagHelper.TagHelperName)]
     public sealed class FieldSetFormLabelTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-fieldset-form-label";
