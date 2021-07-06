@@ -23,7 +23,6 @@ module "webapp" {
   auth_pwd         = azurerm_key_vault_secret.sqladminpassword.value
   cert_name        = var.certname
   webapp_cname_url = local.gw_webappURL
-  core_environment = local.coreEnv
   sa_connection_string = module.storage_account.primary_connection_string
   aspnet_environment = "Development"
   sqlserver_name = module.sql_server_pri.sql_server_name

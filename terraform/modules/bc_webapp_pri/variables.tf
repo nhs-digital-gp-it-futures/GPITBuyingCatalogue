@@ -52,9 +52,6 @@ variable "cert_name" {
 variable "webapp_cname_url" {
   type      = string
 }
-variable "core_environment" {
-  type      = string
-}
 variable "sa_connection_string" {
   type = string
   sensitive = true
