@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture.Idioms" Version="4.17.0" />
     <PackageReference Include="AutoFixture.xUnit2" Version="4.17.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Bogus" Version="33.0.2" />

@@ -1,7 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
+    [ExcludeFromCodeCoverage]
     public sealed class SupplierServiceAssociation
     {
         public CatalogueItemId AssociatedServiceId { get; set; }

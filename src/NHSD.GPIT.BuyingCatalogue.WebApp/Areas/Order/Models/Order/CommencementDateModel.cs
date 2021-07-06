@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
         {
             try
             {
-                var date = DateTime.Parse($"{Day}/{Month}/{Year}");
+                var date = DateTime.ParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 if (date.ToUniversalTime() <= DateTime.UtcNow.AddDays(-60))
                     return (null, "Commencement date must be in the future or within the last 60 days");
