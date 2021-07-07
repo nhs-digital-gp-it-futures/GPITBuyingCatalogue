@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class SolutionCapabilitiesModel
     {
-        public SolutionCapabilitiesModel(SolutionCapability solutionCapability, Solution solution)
+        public SolutionCapabilitiesModel(CatalogueItemCapability solutionCapability, Solution solution)
         {
             if (solutionCapability is null)
                 throw new ArgumentNullException(nameof(solutionCapability));

@@ -256,13 +256,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var mockSolutionCheckEpicsModel = new Mock<SolutionCheckEpicsModel>().Object;
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockSolutionCapability = new Mock<SolutionCapability>().Object;
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
                 .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<SolutionCapability, SolutionCheckEpicsModel>(mockSolutionCapability))
+            mockMapper.Setup(m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(new CatalogueItemCapability()))
                 .Returns(mockSolutionCheckEpicsModel);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
@@ -295,20 +294,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var mockSolutionCheckEpicsModel = new Mock<SolutionCheckEpicsModel>().Object;
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockSolutionCapability = new Mock<SolutionCapability>().Object;
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
                 .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<SolutionCapability, SolutionCheckEpicsModel>(mockSolutionCapability))
+            mockMapper.Setup(m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(new CatalogueItemCapability()))
                 .Returns(mockSolutionCheckEpicsModel);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);
 
             await controller.CheckEpics(catalogueItemId, capabilityId);
 
-            mockMapper.Verify(m => m.Map<SolutionCapability, SolutionCheckEpicsModel>(It.IsAny<SolutionCapability>()));
+            mockMapper.Verify(m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(It.IsAny<CatalogueItemCapability>()));
         }
 
         [Theory]
@@ -317,13 +315,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var mockSolutionCheckEpicsModel = new Mock<SolutionCheckEpicsModel>().Object;
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockSolutionCapability = new Mock<SolutionCapability>().Object;
 
             var mockService = new Mock<ISolutionsService>();
             var mockMapper = new Mock<IMapper>();
             mockService.Setup(s => s.GetSolutionCapability(catalogueItemId, capabilityId))
                 .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<SolutionCapability, SolutionCheckEpicsModel>(It.IsAny<SolutionCapability>()))
+            mockMapper.Setup(m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(It.IsAny<CatalogueItemCapability>()))
                 .Returns(mockSolutionCheckEpicsModel);
             var controller = new SolutionDetailsController(mockMapper.Object,
                 mockService.Object);

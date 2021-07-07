@@ -14,7 +14,7 @@ GO
 GRANT INSERT ON dbo.Solution TO Importer;
 GO
 
-GRANT DELETE, INSERT ON dbo.SolutionCapability TO Importer;
+GRANT DELETE, INSERT ON dbo.CatalogueItemCapability TO Importer;
 GO
 
 GRANT EXEC ON SCHEMA::import TO Importer;
