@@ -6,7 +6,6 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Ordering.Models
 {
-
     public static class OrderItemRecipientTests
     {
         [Theory]
