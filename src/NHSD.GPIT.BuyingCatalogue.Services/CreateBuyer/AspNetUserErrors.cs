@@ -1,5 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Errors;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer

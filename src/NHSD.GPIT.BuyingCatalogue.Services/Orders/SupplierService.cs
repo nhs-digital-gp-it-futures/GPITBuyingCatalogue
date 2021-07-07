@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -14,11 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class SupplierService : ISupplierService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext;
         private readonly IOrderService orderService;
 
         public SupplierService(
-            GPITBuyingCatalogueDbContext dbContext,
+            BuyingCatalogueDbContext dbContext,
             IOrderService orderService)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -14,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 {
     public sealed class CreateBuyerService : ICreateBuyerService
     {
-        private readonly IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository;
+        private readonly IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
         private readonly IEmailService emailService;
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
         private readonly IAspNetUserValidator aspNetUserValidator;
 
         public CreateBuyerService(
-            IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository,
+            IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
             IEmailService emailService,

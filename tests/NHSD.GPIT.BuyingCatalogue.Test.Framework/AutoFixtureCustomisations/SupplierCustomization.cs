@@ -2,7 +2,6 @@
 using System.Linq;
 using AutoFixture;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
