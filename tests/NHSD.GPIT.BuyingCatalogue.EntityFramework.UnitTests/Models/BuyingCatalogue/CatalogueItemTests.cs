@@ -280,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void HasCapabilities_SolutionCapabilitiesEmpty_ReturnsFalse(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.SolutionCapabilities = new List<SolutionCapability>();
+            catalogueItem.Solution.SolutionCapabilities = new List<CatalogueItemCapability>();
 
             var actual = catalogueItem.HasCapabilities();
 
