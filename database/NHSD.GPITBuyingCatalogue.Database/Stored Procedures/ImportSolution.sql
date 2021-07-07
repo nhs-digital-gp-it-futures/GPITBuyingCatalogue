@@ -65,11 +65,11 @@ AS
                INNER JOIN @items AS i ON i.Id = f.SolutionId
          WHERE f.FrameworkId = i.FrameworkId;
 
-        DELETE FROM s
-               FROM dbo.SolutionCapability AS s
-                    INNER JOIN @items AS i ON i.Id = s.SolutionId;
+        DELETE FROM c
+               FROM dbo.CatalogueItemCapability AS c
+                    INNER JOIN @items AS i ON i.Id = c.CatalogueItemId;
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT SolutionId, c.Id, @passedFull, @now, @emptyGuid
                FROM @Capabilities AS cap
                     INNER JOIN dbo.Capability AS c

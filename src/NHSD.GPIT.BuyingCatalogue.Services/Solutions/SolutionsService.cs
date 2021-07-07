@@ -341,6 +341,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .OrderByDescending(i => i.Created)
                 .ThenBy(i => i.Name);
 

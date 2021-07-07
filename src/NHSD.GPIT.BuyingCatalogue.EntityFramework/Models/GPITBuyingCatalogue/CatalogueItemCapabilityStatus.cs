@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public sealed class SolutionCapabilityStatus
+    public sealed class CatalogueItemCapabilityStatus
     {
         public int Id { get; set; }
 

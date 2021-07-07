@@ -62,9 +62,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var solutionCapability = solution.Solution != null ?
                 solution.Solution.SolutionCapabilities.FirstOrDefault(sc => sc.Capability.Id == capabilityId)
-                ?? new SolutionCapability() : new SolutionCapability();
+                ?? new CatalogueItemCapability() : new CatalogueItemCapability();
 
-            var model = mapper.Map<SolutionCapability, SolutionCheckEpicsModel>(solutionCapability);
+            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(solutionCapability);
 
             if (solution.Name != null)
             {

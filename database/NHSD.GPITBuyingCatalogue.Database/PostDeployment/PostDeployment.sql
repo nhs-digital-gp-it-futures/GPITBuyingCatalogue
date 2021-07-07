@@ -34,7 +34,7 @@
 :r ./ProdLikeData/MergeAdditionalServices.sql
 :r ./ProdLikeData/MergeAssociatedServices.sql
 :r ./ProdLikeData/MergeMarketingContacts.sql
-:r ./ProdLikeData/MergeSolutionEpics.sql
-:r ./ProdLikeData/MergeSolutionCapabilities.sql
+:r ./ProdLikeData/MergeCatalogueItemEpics.sql
+:r ./ProdLikeData/MergeCatalogueItemCapabilities.sql
 :r ./ProdLikeData/MergeFrameworkSolutions.sql
 :r ./ProdLikeData/MergeCataloguePrices.sql
