@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
