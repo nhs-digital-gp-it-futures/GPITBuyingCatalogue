@@ -3,12 +3,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public class ManageCatalogueSolutions : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ManageCatalogueSolutions : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public ManageCatalogueSolutions(LocalWebApplicationFactory factory) : base(factory, "admin")
         {
@@ -25,14 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public void ManageCatalogueSolutions_SolutionTableDisplayed()
         {
             AdminPages.AddSolution.CatalogueSolutionTableDisplayed().Should().BeTrue();
-
         }
 
         [Fact]
         public void ManageCatalogueSolutions_FilterRadioButtonsDisplayed()
         {
             AdminPages.AddSolution.NumberOfFilterRadioButtonsDisplayed().Should().Be(5);
-
         }
 
         [Theory]

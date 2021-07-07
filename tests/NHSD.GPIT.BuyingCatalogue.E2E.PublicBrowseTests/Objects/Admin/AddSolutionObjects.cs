@@ -19,15 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By CatalogueSolutionLink => By.LinkText("Manage Catalogue Solutions");
 
-        internal static By CatalogueSolutionRowHead => By.ClassName("nhsuk-table__head");
-
         internal static By CatalogueSolutionTable => CustomBy.DataTestId("manage-catalogue-solution-list");
 
         internal static By CatalogueSolutionFilter => By.Id("nhsuk-details0");
 
         internal static By FilterRadioButton => By.ClassName("nhsuk-radios__item");
-
-        internal static By FilterRadioButtonLabel => By.CssSelector("div.nhsuk-radios__item label.nhsuk-radios__label");
-
     }
 }
