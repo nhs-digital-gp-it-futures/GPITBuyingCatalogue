@@ -226,9 +226,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt => opt.MapFrom(src => src.Solution == null ? null : src.Solution.ImplementationDetail))
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
-            CreateMap<SolutionCapability, SolutionCheckEpicsModel>()
+            CreateMap<CatalogueItemCapability, SolutionCheckEpicsModel>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
-                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.SolutionId.ToString()))
+                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId.ToString()))
                 .ForMember(dest => dest.SolutionName, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.NhsDefined,
@@ -317,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         : $"£{src.Price.Value:F} {(src.PricingUnit != null ? src.PricingUnit.Description : null)}"
                             .Trim());
 
-            CreateMap<SolutionCapability, RowViewModel>()
+            CreateMap<CatalogueItemCapability, RowViewModel>()
                 .ForMember(
                     dest => dest.Heading,
                     opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))

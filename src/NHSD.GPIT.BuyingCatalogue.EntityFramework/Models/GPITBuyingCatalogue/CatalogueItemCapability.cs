@@ -3,9 +3,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public class SolutionCapability
+    public sealed class CatalogueItemCapability
     {
-        public CatalogueItemId SolutionId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public Guid CapabilityId { get; set; }
 
@@ -15,8 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Guid LastUpdatedBy { get; set; }
 
-        public virtual Capability Capability { get; set; }
+        public Capability Capability { get; set; }
 
-        public virtual SolutionCapabilityStatus Status { get; set; }
+        public CatalogueItemCapabilityStatus Status { get; set; }
     }
 }
