@@ -6,27 +6,27 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
-    public class GPITBuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
+    public class BuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
     {
         private readonly IIdentityService identityService;
 
-        public GPITBuyingCatalogueDbContext()
+        public BuyingCatalogueDbContext()
         {
         }
 
-        public GPITBuyingCatalogueDbContext(DbContextOptions<GPITBuyingCatalogueDbContext> options, IIdentityService identityService)
+        public BuyingCatalogueDbContext(DbContextOptions<BuyingCatalogueDbContext> options, IIdentityService identityService)
             : base(options)
         {
             this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
-        protected GPITBuyingCatalogueDbContext(
+        protected BuyingCatalogueDbContext(
             DbContextOptions options,
             IIdentityService identityService)
             : base(options)

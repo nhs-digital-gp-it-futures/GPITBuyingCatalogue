@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models
 {
     public sealed class Address
     {

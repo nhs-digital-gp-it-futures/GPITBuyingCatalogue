@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 {
     public sealed class Organisation
     {

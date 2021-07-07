@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class CommencementDateService : ICommencementDateService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext;
 
         public CommencementDateService(
-            GPITBuyingCatalogueDbContext dbContext)
+            BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

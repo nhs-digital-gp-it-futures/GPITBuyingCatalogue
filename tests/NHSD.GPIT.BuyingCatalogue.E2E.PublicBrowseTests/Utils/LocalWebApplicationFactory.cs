@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(GPITBuyingCatalogueDbContext));
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(BuyingCatalogueDbContext));
                 if (descriptor is not null)
                 {
                     services.Remove(descriptor);
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 {
                     options.UseInMemoryDatabase(BcDbName);
                 });
-                services.AddDbContext<GPITBuyingCatalogueDbContext, EndToEndDbContext>();
+                services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>();
 
                 var sp = services.BuildServiceProvider();
 
