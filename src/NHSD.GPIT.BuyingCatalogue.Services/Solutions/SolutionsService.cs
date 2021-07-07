@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -18,16 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const string GpitFuturesFrameworkId = "NHSDGP001";
         private const string DfocvcFrameworkId = "DFOCVC001";
 
-        private readonly GPITBuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository;
-        private readonly IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository;
-        private readonly IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository;
+        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
+        private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
+        private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
 
         public SolutionsService(
-            GPITBuyingCatalogueDbContext dbContext,
-            IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository,
-            IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository)
+            BuyingCatalogueDbContext dbContext,
+            IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
+            IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
+            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
@@ -336,6 +336,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var query = dbContext.CatalogueItems
                 .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .OrderByDescending(i => i.Created)
                 .ThenBy(i => i.Name);
 

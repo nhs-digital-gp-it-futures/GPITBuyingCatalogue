@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;

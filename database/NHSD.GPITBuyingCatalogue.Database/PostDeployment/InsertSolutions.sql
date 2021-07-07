@@ -60,7 +60,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Pat', 'Butcher', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef = 'C1';
@@ -93,7 +93,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef IN ('C1', 'C5');
@@ -126,7 +126,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Victoria', 'Sponge', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef = 'C6';
@@ -156,7 +156,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Richard', 'Burton', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef IN ('C7', 'C15');
@@ -186,7 +186,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Harry', 'Houdini', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef = 'C8';
@@ -219,7 +219,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Agent', 'M', '01234 567891', 'm@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef IN ('C9', 'C19', 'C41');
@@ -249,7 +249,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES ('100006-001', 'Timothy', 'Teabag', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT '100006-001', Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef IN ('C9', 'C17');
@@ -279,7 +279,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Betty', 'Banjo', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef = 'C30';
@@ -308,7 +308,7 @@ BEGIN
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Boston', 'Rocks', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef = 'C30';
@@ -371,7 +371,7 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Eduardo', 'Eggbert', 'eddie@eggs.test', '01234 567891', 'Internal Sales Team', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
         (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @emptyGuid),
         (@solutionId, @resourceManagementCapabilityId, 1, @now, @emptyGuid),
@@ -390,7 +390,7 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
         INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated ,LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionEpic (SolutionId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemEpic (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
         (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E1', 1, @now, @emptyGuid),
         (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E2', 1, @now, @emptyGuid),
@@ -539,7 +539,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
         (@solutionId, @presciptionOrderingCapabilityId, 1, @now, @emptyGuid),
         (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @emptyGuid),
@@ -586,7 +586,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef IN ('C43');
@@ -619,7 +619,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
         INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
                FROM dbo.Capability
               WHERE CapabilityRef IN ('C44');

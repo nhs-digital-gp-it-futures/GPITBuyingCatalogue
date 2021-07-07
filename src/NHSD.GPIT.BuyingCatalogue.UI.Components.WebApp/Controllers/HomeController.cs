@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel;
 

@@ -5,19 +5,19 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
     public sealed class OrganisationsService : IOrganisationsService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<Organisation, GPITBuyingCatalogueDbContext> organisationRepository;
+        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly IDbRepository<Organisation, BuyingCatalogueDbContext> organisationRepository;
 
         public OrganisationsService(
-            GPITBuyingCatalogueDbContext dbContext,
-            IDbRepository<Organisation, GPITBuyingCatalogueDbContext> organisationRepository)
+            BuyingCatalogueDbContext dbContext,
+            IDbRepository<Organisation, BuyingCatalogueDbContext> organisationRepository)
         {
             this.organisationRepository = organisationRepository ?? throw new ArgumentNullException(nameof(organisationRepository));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

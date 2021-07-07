@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 
@@ -12,9 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 {
     public sealed class AdditionalServicesService : IAdditionalServicesService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext;
 
-        public AdditionalServicesService(GPITBuyingCatalogueDbContext dbContext)
+        public AdditionalServicesService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

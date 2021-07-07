@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EnumsNET;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
     public sealed class CatalogueSolutionsModel
     {
         private readonly List<PublicationStatus> publicationStatusModels =
-            Enums.GetValues<EntityFramework.Models.GPITBuyingCatalogue.PublicationStatus>(
+            Enums.GetValues<EntityFramework.Catalogue.Models.PublicationStatus>(
                     EnumMemberSelection.DisplayOrder)
                 .Select(s => new PublicationStatus { Id = (int)s, Display = s.AsString(EnumFormat.DisplayName) })
                 .ToList();
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public bool HasSelected => publicationStatusModels.Any(p => p.Checked);
 
-        public void SetSelected(EntityFramework.Models.GPITBuyingCatalogue.PublicationStatus publicationStatus)
+        public void SetSelected(EntityFramework.Catalogue.Models.PublicationStatus publicationStatus)
         {
             if (publicationStatusModels.SingleOrDefault(p => p.Id == (int)publicationStatus) is
                 { } publicationStatusModel)
