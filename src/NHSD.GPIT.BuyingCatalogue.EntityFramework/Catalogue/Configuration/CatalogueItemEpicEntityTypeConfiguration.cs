@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("CatalogueItemEpic");
 
-            builder.HasKey(se => new { SolutionId = se.CatalogueItemId, se.CapabilityId, se.EpicId });
+            builder.HasKey(se => new { se.CatalogueItemId, se.CapabilityId, se.EpicId });
 
             builder.Property(se => se.CatalogueItemId)
                 .HasMaxLength(14)

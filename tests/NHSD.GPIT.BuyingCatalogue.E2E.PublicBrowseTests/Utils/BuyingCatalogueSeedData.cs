@@ -106,8 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability> {
+                            new CatalogueItemCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -287,8 +287,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability> {
+                            new CatalogueItemCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -399,8 +399,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability> {
+                            new CatalogueItemCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -1116,11 +1116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.AddRange(publicationStatuses);
 
             // SolutionCapabilityStatus
-            List<SolutionCapabilityStatus> solutionCapabilityStatuses = new()
+            List<CatalogueItemCapabilityStatus> solutionCapabilityStatuses = new()
             {
-                new SolutionCapabilityStatus { Id = 1, Pass = true, Name = "Passed – Full" },
-                new SolutionCapabilityStatus { Id = 2, Pass = true, Name = "Passed – Partial" },
-                new SolutionCapabilityStatus { Id = 3, Pass = false, Name = "Failed" },
+                new CatalogueItemCapabilityStatus { Id = 1, Pass = true, Name = "Passed – Full" },
+                new CatalogueItemCapabilityStatus { Id = 2, Pass = true, Name = "Passed – Partial" },
+                new CatalogueItemCapabilityStatus { Id = 3, Pass = false, Name = "Failed" },
             };
             context.AddRange(solutionCapabilityStatuses);
 

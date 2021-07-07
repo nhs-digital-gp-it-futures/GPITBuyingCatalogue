@@ -5,15 +5,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
-    internal sealed class SolutionCapabilityEntityTypeConfiguration : IEntityTypeConfiguration<SolutionCapability>
+    internal sealed class CatalogueItemCapabilityEntityTypeConfiguration : IEntityTypeConfiguration<CatalogueItemCapability>
     {
-        public void Configure(EntityTypeBuilder<SolutionCapability> builder)
+        public void Configure(EntityTypeBuilder<CatalogueItemCapability> builder)
         {
-            builder.HasKey(sc => new { sc.SolutionId, sc.CapabilityId });
+            builder.HasKey(sc => new { sc.CatalogueItemId, sc.CapabilityId });
 
-            builder.ToTable("SolutionCapability");
+            builder.ToTable("CatalogueItemCapability");
 
-            builder.Property(sc => sc.SolutionId)
+            builder.Property(sc => sc.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasOne<Solution>()
                 .WithMany(s => s.SolutionCapabilities)
-                .HasForeignKey(sc => sc.SolutionId)
+                .HasForeignKey(sc => sc.CatalogueItemId)
                 .HasConstraintName("FK_SolutionCapability_Solution");
 
             builder.HasOne(sc => sc.Status)
