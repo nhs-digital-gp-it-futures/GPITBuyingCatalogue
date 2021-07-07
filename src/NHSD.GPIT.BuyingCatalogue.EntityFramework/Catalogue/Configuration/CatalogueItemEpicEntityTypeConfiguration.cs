@@ -5,15 +5,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
-    internal sealed class SolutionEpicEntityTypeConfiguration : IEntityTypeConfiguration<SolutionEpic>
+    internal sealed class CatalogueItemEpicEntityTypeConfiguration : IEntityTypeConfiguration<CatalogueItemEpic>
     {
-        public void Configure(EntityTypeBuilder<SolutionEpic> builder)
+        public void Configure(EntityTypeBuilder<CatalogueItemEpic> builder)
         {
-            builder.ToTable("SolutionEpic");
+            builder.ToTable("CatalogueItemEpic");
 
-            builder.HasKey(se => new { se.SolutionId, se.CapabilityId, se.EpicId });
+            builder.HasKey(se => new { SolutionId = se.CatalogueItemId, se.CapabilityId, se.EpicId });
 
-            builder.Property(se => se.SolutionId)
+            builder.Property(se => se.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
@@ -32,14 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasOne<Solution>()
                 .WithMany(s => s.SolutionEpics)
-                .HasForeignKey(se => se.SolutionId)
+                .HasForeignKey(se => se.CatalogueItemId)
                 .HasConstraintName("FK_SolutionEpic_Solution");
 
             builder.HasOne(se => se.Status)
                 .WithMany()
                 .HasForeignKey(se => se.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SolutionEpicStatus");
+                .HasConstraintName("FK_SolutionEpic_Status");
         }
     }
 }
