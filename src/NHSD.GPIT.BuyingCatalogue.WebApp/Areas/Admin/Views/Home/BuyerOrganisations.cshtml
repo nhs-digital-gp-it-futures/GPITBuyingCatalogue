@@ -5,18 +5,16 @@
     Layout = "_Layout";
     ViewData["Title"] = "Manage Buyer Organisations and Users";
 }
-
 <div class="nhsuk-width-container" data-test-id="organisations">
     <nhs-page-title title="Manage buyer organisations and users"
-                    advice="Manage existing account information or add new users to an organisation." />
+                    advice="Add a new buyer organisation or edit the details and user accounts for one that's already been created." />
 
     <div data-test-id="add-org-button">
         <vc:nhs-action-link url="@Url.Action(
-        nameof(OrganisationsController.Find),
-        typeof(OrganisationsController).ControllerName())"
-                            text="Add an organisation"/>
+            nameof(OrganisationsController.Find),
+            typeof(OrganisationsController).ControllerName())"
+            text="Add an organisation"/>
     </div>
-
     <nhs-table data-test-id="org-table">
         <nhs-table-column>Organisation name</nhs-table-column>
         <nhs-table-column class="nhsuk-u-nowrap">ODS code</nhs-table-column>
