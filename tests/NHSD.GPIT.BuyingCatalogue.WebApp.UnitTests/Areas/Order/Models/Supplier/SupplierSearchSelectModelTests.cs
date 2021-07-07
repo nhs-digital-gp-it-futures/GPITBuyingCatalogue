@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         public static void WithValidArguments_PropertiesCorrectlySet(
             string odsCode, 
             CallOffId callOffId, 
-            List<EntityFramework.Models.GPITBuyingCatalogue.Supplier> suppliers)
+            List<EntityFramework.Catalogue.Models.Supplier> suppliers)
         {
             var model = new SupplierSearchSelectModel(odsCode, callOffId, suppliers);
 

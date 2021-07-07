@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -29,7 +30,7 @@
                         </nhs-details>
                     </div>
 
-                    @if (Model.OrderItem.CataloguePrice.ProvisioningType == NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue.ProvisioningType.OnDemand)
+                    @if (Model.OrderItem.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
                     {
                         <div class="nhsuk-u-margin-bottom-5">
                             <div id="selectEstimationPeriod" data-test-id="question-selectEstimationPeriod">
