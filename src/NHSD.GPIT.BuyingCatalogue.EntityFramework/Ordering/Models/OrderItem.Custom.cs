@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     public sealed partial class OrderItem
     {
         private readonly List<OrderItemRecipient> recipients = new();
-        private DateTime lastUpdated = DateTime.UtcNow;
 
         public CostType CostType =>
             CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService &&
@@ -21,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             recipients.Clear();
             recipients.AddRange(itemRecipients);
-            Updated();
+            LastUpdated = DateTime.UtcNow;
         }
 
         public decimal CalculateTotalCostPerYear()
@@ -56,7 +55,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
             CatalogueItem.CatalogueItemType.MarkOrderSectionAsViewed(order);
         }
-
-        private void Updated() => lastUpdated = DateTime.UtcNow;
     }
 }

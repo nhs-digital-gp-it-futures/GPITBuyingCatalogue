@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class Order
     {
-        private readonly List<DefaultDeliveryDate> defaultDeliveryDates = new();
         private readonly List<OrderItem> orderItems = new();
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
