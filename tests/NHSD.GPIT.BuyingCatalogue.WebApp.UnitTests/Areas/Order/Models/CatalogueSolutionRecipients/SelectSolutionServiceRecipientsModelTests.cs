@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionRecipients;
@@ -12,44 +10,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
     {
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments__NewOrder_PropertiesCorrectlySet(
+        public static void WithValidArguments_NewOrder_PropertiesCorrectlySet(
             string odsCode,
-            CallOffId callOffId,
-            string solutionName,
-            IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
+            CreateOrderItemModel state
             )
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, true, catalogueSolutionId);
+            state.IsNewSolution = true;
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution");
+            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
+
+            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution");
             model.BackLinkText.Should().Be("Go back");
-            model.Title.Should().Be($"Service Recipients for {solutionName} for {callOffId}");
+            model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
-            model.CallOffId.Should().Be(callOffId);
+            model.CallOffId.Should().Be(state.CallOffId);
 
             // TODO: ServiceRecipients
         }
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments__ExistingOrder_PropertiesCorrectlySet(
+        public static void WithValidArguments_ExistingOrder_PropertiesCorrectlySet(
             string odsCode,
-            CallOffId callOffId,
-            string solutionName,
-            IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
+            CreateOrderItemModel state
         )
         {
-            var model = new SelectSolutionServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, false, catalogueSolutionId);
+            state.IsNewSolution = false;
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/{catalogueSolutionId}");
+            var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
+
+            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/{state.CatalogueItemId}");
             model.BackLinkText.Should().Be("Go back");
-            model.Title.Should().Be($"Service Recipients for {solutionName} for {callOffId}");
+            model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
-            model.CallOffId.Should().Be(callOffId);
+            model.CallOffId.Should().Be(state.CallOffId);
 
             // TODO: ServiceRecipients
         }

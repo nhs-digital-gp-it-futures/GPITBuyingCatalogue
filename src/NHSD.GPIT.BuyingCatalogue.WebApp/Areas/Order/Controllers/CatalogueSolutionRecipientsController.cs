@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionRecipients;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 {
@@ -37,18 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             if (state.ServiceRecipients is null)
             {
                 var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
+                state.ServiceRecipients = recipients.Select(sr => new OrderItemRecipientModel(sr)).ToList();
                 orderSessionService.SetOrderStateToSession(state);
             }
 
-            return View(new SelectSolutionServiceRecipientsModel(
-                odsCode,
-                callOffId,
-                state.CatalogueItemName,
-                state.ServiceRecipients,
-                selectionMode,
-                state.IsNewSolution,
-                state.CatalogueItemId.GetValueOrDefault()));
+            return View(new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode));
         }
 
         [HttpPost]

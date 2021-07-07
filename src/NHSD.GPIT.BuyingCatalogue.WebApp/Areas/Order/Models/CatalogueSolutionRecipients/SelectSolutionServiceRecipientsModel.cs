@@ -13,22 +13,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionR
 
         public SelectSolutionServiceRecipientsModel(
             string odsCode,
-            CallOffId callOffId,
-            string solutionName,
-            IEnumerable<OrderItemRecipientModel> serviceRecipients,
-            string selectionMode,
-            bool isNewOrder,
-            CatalogueItemId catalogueSolutionId)
+            CreateOrderItemModel state,
+            string selectionMode)
         {
-            BackLink = isNewOrder
-                ? $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution"
-                : $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/{catalogueSolutionId}";
+            BackLink = state.IsNewSolution
+                ? $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution"
+                : $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/{state.CatalogueItemId}";
 
             BackLinkText = "Go back";
-            Title = $"Service Recipients for {solutionName} for {callOffId}";
+            Title = $"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}";
             OdsCode = odsCode;
-            CallOffId = callOffId;
-            ServiceRecipients = serviceRecipients.ToList();
+            CallOffId = state.CallOffId;
+            ServiceRecipients = state.ServiceRecipients;
 
             if (selectionMode is null)
                 return;
