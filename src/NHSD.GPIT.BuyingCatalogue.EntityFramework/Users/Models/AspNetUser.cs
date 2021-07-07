@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 #nullable disable
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
     [Table("AspNetUsers")]
     public partial class AspNetUser : IdentityUser<string>

@@ -2,12 +2,14 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
-    [Table("AspNetRoleClaims")]
-    public partial class AspNetRoleClaim : IdentityRoleClaim<string>
+    [Table("AspNetUserRoles")]
+    public partial class AspNetUserRole : IdentityUserRole<string>
     {
         public virtual AspNetRole Role { get; set; }
+
+        public virtual AspNetUser User { get; set; }
     }
 }
