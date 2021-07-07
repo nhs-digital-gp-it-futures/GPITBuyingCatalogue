@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.OrderingParty
 {
     public static class OrderingPartyModelTests
     {

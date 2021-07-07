@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
 {
     public sealed class OrderDescriptionModel : OrderingBaseModel
     {

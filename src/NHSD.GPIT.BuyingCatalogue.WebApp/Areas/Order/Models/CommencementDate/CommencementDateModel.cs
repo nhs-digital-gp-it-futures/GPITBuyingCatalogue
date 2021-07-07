@@ -2,7 +2,7 @@
 using System.Globalization;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
 {
     public sealed class CommencementDateModel : OrderingBaseModel
     {

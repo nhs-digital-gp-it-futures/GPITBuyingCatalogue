@@ -26,8 +26,8 @@
                                             status="@Model.SectionStatuses.DescriptionStatus" />
                         <nhs-task-list-item label-text="Provide Call-off Ordering Party Information"
                                             url="@Url.Action(
-                                                nameof(OrderController.OrderingParty),
-                                                typeof(OrderController).ControllerName(),
+                                                nameof(OrderingPartyController.OrderingParty),
+                                                typeof(OrderingPartyController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.OrderingPartyStatus" />
                         <nhs-task-list-item label-text="Provide Supplier information"
@@ -38,8 +38,8 @@
                                             status="@Model.SectionStatuses.SupplierStatus" />
                         <nhs-task-list-item label-text="Provide commencement date for this agreement"
                                             url="@Url.Action(
-                                                nameof(OrderController.CommencementDate),
-                                                typeof(OrderController).ControllerName(),
+                                                nameof(CommencementDateController.CommencementDate),
+                                                typeof(CommencementDateController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.CommencementDateStatus" />
                     </nhs-task-list-section>
@@ -66,8 +66,8 @@
                     <nhs-task-list-section label-text="Complete order">
                         <nhs-task-list-item label-text="Indicate funding source"
                                             url="@Url.Action(
-                                                    nameof(OrderController.FundingSource),
-                                                    typeof(OrderController).ControllerName(),
+                                                    nameof(FundingSourceController.FundingSource),
+                                                    typeof(FundingSourceController).ControllerName(),
                                                     new { Model.OdsCode, Model.CallOffId})"
                                             status="@Model.SectionStatuses.FundingSourceStatus" />
                         <nhs-task-list-item label-text="Review and complete order"
@@ -90,8 +90,8 @@
 
             <vc:nhs-delete-button text="Delete order"
                                   url="@Url.Action(
-                                            nameof(OrderController.DeleteOrder),
-                                            typeof(OrderController).ControllerName(),
+                                            nameof(DeleteOrderController.DeleteOrder),
+                                            typeof(DeleteOrderController).ControllerName(),
                                             new { Model.OdsCode, Model.CallOffId })"/>
         </div>
     </div>

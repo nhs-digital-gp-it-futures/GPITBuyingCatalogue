@@ -1,7 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty
 {
     public sealed class OrderingPartyModel : OrderingBaseModel
     {

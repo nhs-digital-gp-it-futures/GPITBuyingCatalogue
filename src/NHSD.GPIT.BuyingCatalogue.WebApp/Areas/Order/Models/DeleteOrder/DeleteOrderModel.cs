@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
 {
     public sealed class DeleteOrderModel : OrderingBaseModel
     {

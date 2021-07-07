@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 /* ==========================================================================
    GENERIC / #BOX-SIZING
    ========================================================================== */
@@ -3667,66 +3667,6 @@ b {
     .nhsuk-header__search {
       float: left;
       margin-left: 8px; } }
-
-.app-search__contents {
-    border-radius: 5px;
-    position: relative;
-    z-index: 11;
-    display: flex;
-    margin-bottom: 1em;
-}
-.app-search__contents .app-search__submit .icon__search {
-    fill: #ffffff;
-    height: 38px;
-    width: 38px;
-}
-
-.app-search__contents .app-search__input {
-    -webkit-appearance: listbox;
-    background-color: #fff !important;
-    border-bottom: 1px solid #aeb7bd;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 0;
-    border-left: 1px solid #aeb7bd;
-    border-right: 0;
-    border-top: 1px solid #aeb7bd;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 0;
-    flex-grow: 2;
-    font-size: inherit;
-    height: 52px;
-    margin: 0;
-    outline: 0;
-    padding: 0 10px;
-    width: 100%;
-}
-
-.app-search__contents .app-search__submit {
-    background-color: #007f3b;
-    border: 0;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 4px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 4px;
-    float: right;
-    font-size: inherit;
-    height: 52px;
-    line-height: inherit;
-    margin: 0;
-    outline: 0;
-    padding: 7px 7px 0;
-}
-
-.app-search__contents .visually-hidden {
-    border: 0;
-    clip: rect(0, 0, 0, 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-}
 
 .nhsuk-header__search-toggle {
   background-color: transparent;
@@ -11208,3 +11148,69 @@ body {
 .govuk-input__prefix,
 .govuk-input__suffix {
   border-color: #4c6272 !important; }
+
+@media print {
+  @page {
+    size: auto;
+    margin: 2em; }
+  .bc-print-header {
+    display: block !important; }
+  .nhsuk-bc-print {
+    background: white;
+    zoom: 0.8; }
+    .nhsuk-bc-print header {
+      display: none; }
+    .nhsuk-bc-print footer {
+      display: none; }
+    .nhsuk-bc-print .nhsuk-back-link {
+      display: none; }
+    .nhsuk-bc-print .bc-print-button {
+      display: none; }
+    .nhsuk-bc-print .nhsuk-width-container {
+      margin: 0 16px;
+      max-width: 100%; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__key {
+      width: 30%; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__value {
+      width: 50%; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__row {
+      display: table-row; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__key,
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__value,
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__actions {
+      border-bottom: 1px solid #dddee0;
+      display: table-cell;
+      padding-bottom: 8px;
+      padding-right: 2px;
+      padding-top: 8px; }
+    .nhsuk-bc-print .bc-print-tables {
+      page-break-before: always; }
+      .nhsuk-bc-print .bc-print-tables h2 {
+        margin-bottom: 1em;
+        margin-top: 2em; }
+    .nhsuk-bc-print .nhsuk-grid-columns-full > p {
+      margin-bottom: 2em; }
+    .nhsuk-bc-print .nhsuk-table-responsive thead {
+      clip-path: none;
+      border: 0;
+      clip: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      padding: 0;
+      position: relative;
+      white-space: normal;
+      width: auto; }
+      .nhsuk-bc-print .nhsuk-table-responsive thead th {
+        text-align: left; }
+    .nhsuk-bc-print .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table-responsive__heading {
+      display: none; }
+    .nhsuk-bc-print .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row {
+      display: table-row !important;
+      margin-bottom: 24px; }
+      .nhsuk-bc-print .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row td {
+        display: table-cell !important;
+        justify-content: space-between;
+        min-width: 1px;
+        padding: 1em 0;
+        text-align: left; } }

@@ -3,10 +3,10 @@ using System.Globalization;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.CommencementDate
 {
     public static class CommencementDateModelTests
     {
