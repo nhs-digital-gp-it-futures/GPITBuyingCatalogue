@@ -2,12 +2,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
-#nullable disable
-
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
     [Table("AspNetRoles")]
-    public partial class AspNetRole : IdentityRole<string>
+    public class AspNetRole : IdentityRole<string>
     {
         public AspNetRole()
         {

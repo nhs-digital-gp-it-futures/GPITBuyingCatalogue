@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         public static void Get_Index_ReturnsDefaultView()
         {
             var controller = new HomeController();
+            
+            var result = controller.Index() as ViewResult;
 
-            var result = controller.Index();
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+        }
 
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
+        [Fact]
+        public static void Get_PrivacyPolicy_ReturnsDefaultView()
+        {
+            var controller = new HomeController();
+
+            var result = controller.PrivacyPolicy() as ViewResult;
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
         }
 
         [Fact]

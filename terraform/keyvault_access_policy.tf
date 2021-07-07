@@ -64,7 +64,7 @@ resource "azurerm_key_vault_access_policy" "keyvault_access" {
 
   key_vault_id = azurerm_key_vault.keyvault.id
   tenant_id    = var.tenant_id
-  object_id    = data.azurerm_key_vault_secret.kv_access.value
+  object_id    = var.kv_access_group
 
   key_permissions = [
 

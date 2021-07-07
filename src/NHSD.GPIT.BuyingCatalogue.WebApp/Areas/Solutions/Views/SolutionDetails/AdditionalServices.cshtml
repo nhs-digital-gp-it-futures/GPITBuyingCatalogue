@@ -1,0 +1,75 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.AdditionalServicesModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Solution Additional Services";
+}
+
+<div>
+    <p>
+        <b>
+            These are the Additional Services offered with this Catalogue Solution:
+        </b>
+    </p>
+
+    <nhs-details label-text="What are Additional Services?">
+        <p> Additional Services are add-ons that provide additional functionality to a Catalogue Solution for an extra cost. For example, enabling a Catalogue Solution to be used on a mobile device. </p>
+    </nhs-details>
+
+    <h4>Additional Services available</h4>
+    <nhs-table>
+        <nhs-table-column> Additional Service </nhs-table-column>
+        <nhs-table-column> Price </nhs-table-column>
+        @for (int i = 0; i < Model.Services.Count; i++)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>
+                    @{ var id = $"#addit{i + 1}"; }
+                    <a href="@id">@Model.Services[i].Name</a>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    @for (int j = 0; j < Model.Services[i].Prices.Count; j++)
+                    {
+                        <span style="white-space: nowrap;">
+                            @Model.Services[i].Prices[j]
+                        </span>
+                        @if (j < Model.Services[i].Prices.Count - 1)
+                        {
+                            <br />
+                        }
+                    }
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+
+    @for (int i = 0; i < Model.Services.Count; i++)
+    {
+        var id = $"addit{i + 1}";
+        <hr style="border-width: 4px;">
+        <a id="@id"></a>
+        <h3>@Model.Services[i].Name</h3>
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Description">
+                <p>
+                    @Model.Services[i].Description
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Capabilities and Epics">
+                <a asp-action="CheckCapabilityEpic" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" class="nhsuk-breadcrumb__link">
+                    Check Capabilities and Epics
+                </a>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Price">
+                @for (var index = 0; index < Model.Services[i].Prices.Count; index++)
+                {
+                    <span style="white-space: nowrap;">@Model.Services[i].Prices[index]</span>
+                    @if (index < Model.Services[i].Prices.Count - 1)
+                    {
+                        <br />
+                    }
+                }
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+        <partial name="_BackToTop" />
+    }
+</div>

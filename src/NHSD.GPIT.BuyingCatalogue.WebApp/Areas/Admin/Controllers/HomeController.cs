@@ -51,6 +51,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             });
         }
 
+        [Route("manage-suppliers")]
+        public async Task<IActionResult> ManageSuppliers()
+        {
+            var suppliers = await solutionsService.GetAllSuppliers();
+            return View(suppliers);
+        }
+
         public IActionResult Index()
         {
             return View();

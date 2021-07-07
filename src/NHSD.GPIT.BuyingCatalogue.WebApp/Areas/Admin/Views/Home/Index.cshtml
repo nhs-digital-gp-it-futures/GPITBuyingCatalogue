@@ -10,10 +10,10 @@
     <main class="nhsuk-main-wrapper " id="maincontent" role="main">
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
-                <h1>Buying Catalogue admin</h1>
-                <p class="nhsuk-lede-text">
-                    Manage organisations, user accounts and solutions on the Buying Catalogue.
-                </p>
+
+                <nhs-page-title title="Buying Catalogue admin"
+                                advice="Manage organisations, user accounts and solutions on the Buying Catalogue."/>
+
                 <hr>
                 <p>
                     As an administrator for the Buying Catalogue, you can add organisations and users and edit the details of existing accounts. You can also add new solutions and edit ones that are already published.
@@ -21,10 +21,9 @@
                 <vc:nhs-action-link url="@Url.Action(
                                         nameof(HomeController.BuyerOrganisations),
                                         typeof(HomeController).ControllerName())"
-                                        text="Manage buyer organisations and users" />
-
-                    <vc:nhs-action-link url="@Url.Action(
-                                        nameof(HomeController.BuyerOrganisations),
+                                    text="Manage buyer organisations and users" />
+                <vc:nhs-action-link url="@Url.Action(
+                                        nameof(HomeController.ManageSuppliers),
                                         typeof(HomeController).ControllerName())"
                                         text="Manage suppliers organisations" />
                 

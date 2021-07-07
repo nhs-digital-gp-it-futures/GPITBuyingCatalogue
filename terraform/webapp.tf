@@ -23,11 +23,18 @@ module "webapp" {
   auth_pwd         = azurerm_key_vault_secret.sqladminpassword.value
   cert_name        = var.certname
   webapp_cname_url = local.gw_webappURL
-  core_environment = local.coreEnv
   sa_connection_string = module.storage_account.primary_connection_string
   aspnet_environment = "Development"
   sqlserver_name = module.sql_server_pri.sql_server_name
   sqlserver_rg = azurerm_resource_group.sql-primary.name
-
+  instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
+  primary_vpn = var.primary_vpn
+  secondary_vpn = var.secondary_vpn
+  tertiary_vpn = var.tertiary_vpn
+  ssl_cert = data.azurerm_key_vault_secret.ssl_cert.value
+  customer_network_range = var.nhsd_network_range
+  smtp_server_host = var.smtp_server_host
+  smtp_server_port = var.smtp_server_port
+  
   depends_on = [module.sql_server_pri]
 }

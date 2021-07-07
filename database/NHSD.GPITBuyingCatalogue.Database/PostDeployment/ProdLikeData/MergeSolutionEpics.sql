@@ -4,9 +4,9 @@ BEGIN
     /* SolutionEpic */
     /*********************************************************************************************************************************************/
 
-    CREATE TABLE #SolutionEpic
+    CREATE TABLE #CatalogueItemEpic
     (
-        SolutionId nvarchar(14) NOT NULL,
+        CatalogueItemId nvarchar(14) NOT NULL,
         CapabilityId uniqueidentifier NOT NULL,
         EpicId nvarchar(10) NOT NULL,
         StatusId int NOT NULL,
@@ -14,7 +14,7 @@ BEGIN
         LastUpdatedBy uniqueidentifier NOT NULL
     );
 
-    INSERT INTO #SolutionEpic (SolutionId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy) 
+    INSERT INTO #CatalogueItemEpic (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy) 
          VALUES (N'10000-001', N'efd93d25-447b-4ca3-9d78-108d42afeae0', N'C5E1',   1, CAST(N'2020-03-31T10:44:23.3733333' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
                 (N'10000-001', N'efd93d25-447b-4ca3-9d78-108d42afeae0', N'C5E2',   1, CAST(N'2020-03-31T10:44:23.3700000' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
                 (N'10000-001', N'efd93d25-447b-4ca3-9d78-108d42afeae0', N'C5E3',   1, CAST(N'2020-03-31T10:44:23.3700000' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
@@ -330,15 +330,15 @@ BEGIN
                 (N'10059-001', N'a71f2be1-6395-4db7-828c-d4733b42b5b5', N'C6E3',   1, CAST(N'2020-03-30T16:08:55.3166667' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
                 (N'10059-001', N'a71f2be1-6395-4db7-828c-d4733b42b5b5', N'C6E4',   2, CAST(N'2020-03-30T16:08:55.3166667' AS datetime2), N'00000000-0000-0000-0000-000000000000');
 
-    MERGE INTO dbo.SolutionEpic AS TARGET
-    USING #SolutionEpic AS SOURCE
-    ON TARGET.SolutionId = SOURCE.SolutionId AND TARGET.CapabilityId = SOURCE.CapabilityId AND TARGET.EpicId = SOURCE.EpicId 
+    MERGE INTO dbo.CatalogueItemEpic AS TARGET
+    USING #CatalogueItemEpic AS SOURCE
+    ON TARGET.CatalogueItemId = SOURCE.CatalogueItemId AND TARGET.CapabilityId = SOURCE.CapabilityId AND TARGET.EpicId = SOURCE.EpicId 
     WHEN MATCHED THEN
            UPDATE SET TARGET.StatusId = SOURCE.StatusId,
                       TARGET.LastUpdated = SOURCE.LastUpdated,
                       TARGET.LastUpdatedBy = SOURCE.LastUpdatedBy
     WHEN NOT MATCHED BY TARGET THEN
-        INSERT (SolutionId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
-        VALUES (SOURCE.SolutionId, SOURCE.CapabilityId, SOURCE.EpicId, SOURCE.StatusId, SOURCE.LastUpdated, SOURCE.LastUpdatedBy);
+        INSERT (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
+        VALUES (SOURCE.CatalogueItemId, SOURCE.CapabilityId, SOURCE.EpicId, SOURCE.StatusId, SOURCE.LastUpdated, SOURCE.LastUpdatedBy);
 END;
 GO

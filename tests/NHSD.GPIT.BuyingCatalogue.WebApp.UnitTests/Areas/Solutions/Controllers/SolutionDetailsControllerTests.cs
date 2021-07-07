@@ -827,5 +827,94 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockSolutionDescriptionModel);
         }
+
+        [Fact]
+        public static void Get_SupplierDetails_RouteAttribute_ExpectedTemplate()
+        {
+            typeof(SolutionDetailsController)
+                .GetMethod(nameof(SolutionDetailsController.SupplierDetails))
+                .GetCustomAttribute<RouteAttribute>()
+                .Template.Should()
+                .Be("futures/{id}/supplier-details");
+        }
+
+        [Fact]
+        public static void Get_AdditionalServices_RouteAttribute_ExpectedTemplate()
+        {
+            typeof(SolutionDetailsController)
+                .GetMethod(nameof(SolutionDetailsController.AdditionalServices))
+                .GetCustomAttribute<RouteAttribute>()
+                .Template.Should()
+                .Be("futures/{id}/additional-services");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AdditionalServices_ValidId_InvokesGetSolution(CatalogueItemId id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            await controller.AdditionalServices(id);
+
+            mockService.Verify(s => s.GetSolutionWithAllAdditionalServices(id));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AdditionalServices_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
+        {
+            var mockService = new Mock<ISolutionsService>();
+            mockService.Setup(s => s.GetSolutionWithAllAdditionalServices(id))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new SolutionDetailsController(Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.AdditionalServices(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AdditionalServices_ValidSolutionForId_MapsToModel(CatalogueItemId id)
+        {
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolutionWithAllAdditionalServices(id))
+                .ReturnsAsync(mockCatalogueItem);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            await controller.AdditionalServices(id);
+
+            mockMapper.Verify(m => m.Map<CatalogueItem, AdditionalServicesModel>(mockCatalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AdditionalServices_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
+        {
+            var mockAdditionalServicesModel = new AdditionalServicesModel();
+            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
+
+            var mockService = new Mock<ISolutionsService>();
+            var mockMapper = new Mock<IMapper>();
+            mockService.Setup(s => s.GetSolutionWithAllAdditionalServices(id))
+                .ReturnsAsync(mockCatalogueItem);
+            mockMapper.Setup(m => m.Map<CatalogueItem, AdditionalServicesModel>(mockCatalogueItem))
+                .Returns(mockAdditionalServicesModel);
+            var controller = new SolutionDetailsController(mockMapper.Object,
+                mockService.Object);
+
+            var actual = (await controller.AdditionalServices(id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().Be(mockAdditionalServicesModel);
+        }
     }
 }

@@ -3,9 +3,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 {
-    public sealed class SolutionEpic
+    public sealed class CatalogueItemEpic
     {
-        public CatalogueItemId SolutionId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public Guid CapabilityId { get; set; }
 
@@ -19,6 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
 
         public Epic Epic { get; set; }
 
-        public SolutionEpicStatus Status { get; set; }
+        public CatalogueItemEpicStatus Status { get; set; }
     }
 }

@@ -1,24 +1,42 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
     [RestrictChildren(CheckboxTagHelper.TagHelperName)]
-    public class CheckboxContainerTagHelper : TagHelper
+    public sealed class CheckboxContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-checkbox-container";
 
-        private const string NhsCheckboxes = "nhsuk-checkboxes";
+        private ConditionalContext conditionalContext;
+
+        public override void Init(TagHelperContext context)
+        {
+            if (context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out _))
+                return;
+
+            conditionalContext = new ConditionalContext();
+
+            context.Items.Add(TagHelperConstants.ConditionalContextName, conditionalContext);
+        }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, NhsCheckboxes));
-
             var content = await output.GetChildContentAsync();
+
+            output.Attributes.Add(
+                new TagHelperAttribute(
+                    TagHelperConstants.Class,
+                    TagHelperFunctions.BuildCssClassForConditionalContentOutput(
+                        context,
+                        conditionalContext,
+                        TagHelperConstants.NhsCheckboxes,
+                        TagHelperConstants.NhsCheckBoxParentConditionalClass)));
 
             output.Content.AppendHtml(content);
         }
