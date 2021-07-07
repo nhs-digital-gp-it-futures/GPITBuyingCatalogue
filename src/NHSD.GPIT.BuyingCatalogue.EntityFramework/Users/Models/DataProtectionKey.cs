@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class DataProtectionKey

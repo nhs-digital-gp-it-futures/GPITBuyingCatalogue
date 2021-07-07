@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     [Table("AspNetUserTokens")]
