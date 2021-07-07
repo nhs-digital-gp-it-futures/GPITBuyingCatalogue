@@ -1,4 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.EditAssociatedServiceModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -77,9 +79,9 @@
                 { 
                     <vc:nhs-delete-button text="Delete Associated Service"
                                           url="@Url.Action(
-                                          "DeleteAssociatedService",
-                                          "AssociatedServices",
-                                          new { Model.OdsCode,
+                                                nameof(DeleteAssociatedServiceController.DeleteAssociatedService), 
+                                                typeof(DeleteAssociatedServiceController).ControllerName(), 
+                                                new { Model.OdsCode,
                                                 Model.OrderItem.CallOffId,
                                                 Model.OrderItem.CatalogueItemId,
                                                 Model.OrderItem.CatalogueItemName})" />

@@ -14,20 +14,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         [CommonAutoData]
         public static void WithValidArguments__NewOrder_PropertiesCorrectlySet(
             string odsCode,
-            CallOffId callOffId,
-            string solutionName,
-            IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
+            CreateOrderItemModel state
             )
         {
-            var model = new SelectAdditionalServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, true, catalogueSolutionId);
+            state.IsNewSolution = true;
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service");
+            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode);
+
+            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service");
             model.BackLinkText.Should().Be("Go back");
-            model.Title.Should().Be($"Service Recipients for {solutionName} for {callOffId}");
+            model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
-            model.CallOffId.Should().Be(callOffId);
+            model.CallOffId.Should().Be(state.CallOffId);
 
             // TODO: ServiceRecipients
         }
@@ -36,20 +35,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         [CommonAutoData]
         public static void WithValidArguments__ExistingOrder_PropertiesCorrectlySet(
             string odsCode,
-            CallOffId callOffId,
-            string solutionName,
-            IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
+            CreateOrderItemModel state
         )
         {
-            var model = new SelectAdditionalServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, false, catalogueSolutionId);
+            state.IsNewSolution = false;
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/additional-services/{catalogueSolutionId}");
+            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode);
+
+            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/{state.CatalogueItemId}");
             model.BackLinkText.Should().Be("Go back");
-            model.Title.Should().Be($"Service Recipients for {solutionName} for {callOffId}");
+            model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
-            model.CallOffId.Should().Be(callOffId);
+            model.CallOffId.Should().Be(state.CallOffId);
 
             // TODO: ServiceRecipients
         }

@@ -36,7 +36,7 @@
                 <nhs-table-column>Last updated by</nhs-table-column>
                 <nhs-table-column>Last updated</nhs-table-column>
                 <nhs-table-column>Date created</nhs-table-column>
-                @for (int i = 0; i < Model.InCompleteOrders.Count(); i++)
+                @for (int i = 0; i < Model.InCompleteOrders.Count; i++)
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>
@@ -60,7 +60,7 @@
                 <nhs-table-column>Date Completed</nhs-table-column>
                 <nhs-table-column>Date created</nhs-table-column>
                 <nhs-table-column>Payment centrally processed</nhs-table-column>
-                @for (int i = 0; i < Model.CompleteOrders.Count(); i++)
+                @for (int i = 0; i < Model.CompleteOrders.Count; i++)
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>

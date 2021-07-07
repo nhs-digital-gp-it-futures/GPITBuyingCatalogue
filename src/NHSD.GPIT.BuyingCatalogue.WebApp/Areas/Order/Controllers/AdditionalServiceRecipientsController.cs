@@ -40,14 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 orderSessionService.SetOrderStateToSession(state);
             }
 
-            return View(new SelectAdditionalServiceRecipientsModel(
-                odsCode,
-                callOffId,
-                state.CatalogueItemName,
-                state.ServiceRecipients,
-                selectionMode,
-                state.IsNewSolution,
-                state.CatalogueItemId.GetValueOrDefault()));
+            return View(new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode));
         }
 
         [HttpPost]

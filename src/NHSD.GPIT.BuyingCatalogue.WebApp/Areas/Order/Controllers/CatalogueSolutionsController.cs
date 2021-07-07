@@ -225,12 +225,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
-                (DateTime? date, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
+                (_, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
 
                 if (error is not null)
-                {
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Day", error);
-                }
 
                 if (model.OrderItem.ServiceRecipients[i].Quantity is null or 0)
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");

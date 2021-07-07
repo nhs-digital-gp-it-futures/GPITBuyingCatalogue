@@ -13,23 +13,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceR
 
         public SelectAdditionalServiceRecipientsModel(
             string odsCode,
-            CallOffId callOffId,
-            string solutionName,
-            IEnumerable<OrderItemRecipientModel> serviceRecipients,
-            string selectionMode,
-            bool isNewOrder,
-            CatalogueItemId additionalServiceId)
+            CreateOrderItemModel state,
+            string selectionMode)
         {
-            if (isNewOrder)
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service";
-            else
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/{additionalServiceId}";
+            BackLink = state.IsNewSolution
+                ? $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service"
+                : $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/{state.CatalogueItemId}";
 
             BackLinkText = "Go back";
-            Title = $"Service Recipients for {solutionName} for {callOffId}";
+            Title = $"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}";
             OdsCode = odsCode;
-            CallOffId = callOffId;
-            ServiceRecipients = serviceRecipients.ToList();
+            CallOffId = state.CallOffId;
+            ServiceRecipients = state.ServiceRecipients;
 
             if (selectionMode is null)
                 return;

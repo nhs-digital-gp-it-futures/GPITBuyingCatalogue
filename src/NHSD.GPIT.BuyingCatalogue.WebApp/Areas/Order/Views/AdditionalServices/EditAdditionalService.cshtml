@@ -77,15 +77,21 @@
                                                 typeof(AdditionalServiceRecipientsController).ControllerName(),
                                                 new {Model.OdsCode, Model.OrderItem.CallOffId})"
                                              text="Edit Service Recipients"
-                                             use-primary-colour="false" /><br/>
+                                             use-primary-colour="false" /><br />
 
-                    <vc:nhs-delete-button url="@Url.Action(
-                                                nameof(DeleteAdditionalServiceController.DeleteAdditionalService),
-                                                 typeof(DeleteAdditionalServiceController).ControllerName(),
-                                                new {Model.OdsCode, Model.OrderItem.CallOffId, Model.OrderItem.CatalogueItemId, Model.OrderItem.CatalogueItemName})"
-                                          text="Delete Additional Service" />
+                    @if (!Model.OrderItem.IsNewSolution)
+                    {
+                        <vc:nhs-delete-button url="@Url.Action(
+                                               nameof(DeleteAdditionalServiceController.DeleteAdditionalService), 
+                                               typeof(DeleteAdditionalServiceController).ControllerName(), 
+                                               new { Model.OdsCode, 
+                                                   Model.OrderItem.CallOffId, 
+                                                   Model.OrderItem.CatalogueItemId, 
+                                                   Model.OrderItem.CatalogueItemName })"
+                                              text="Delete Additional Service"/>
+                    }
 
-                </div>
+                    </div>
             </div>
         </form>
     </div>
