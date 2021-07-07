@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public partial class FrameworkCapability
     {
