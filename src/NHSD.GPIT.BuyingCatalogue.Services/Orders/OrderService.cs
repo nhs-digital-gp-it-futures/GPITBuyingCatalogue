@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
@@ -18,14 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderService : IOrderService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext;
         private readonly IOrganisationsService organisationService;
         private readonly ICsvService csvService;
         private readonly IEmailService emailService;
         private readonly OrderMessageSettings orderMessageSettings;
 
         public OrderService(
-            GPITBuyingCatalogueDbContext dbContext,
+            BuyingCatalogueDbContext dbContext,
             IOrganisationsService organisationService,
             ICsvService csvService,
             IEmailService emailService,

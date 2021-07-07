@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class FundingSourceService : IFundingSourceService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext;
 
         public FundingSourceService(
-            GPITBuyingCatalogueDbContext dbContext)
+            BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

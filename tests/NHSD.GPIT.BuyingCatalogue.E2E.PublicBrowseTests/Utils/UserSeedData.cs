@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
@@ -13,13 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
     {
         private static readonly string TestPassword = "Th1sIsP4ssword!";
 
-        internal static void Initialize(GPITBuyingCatalogueDbContext context)
+        internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddDefaultData(context);
             context.SaveChanges();
         }
 
-        private static void AddDefaultData(GPITBuyingCatalogueDbContext context)
+        private static void AddDefaultData(BuyingCatalogueDbContext context)
         {
             // organisations
             List<Organisation> organisations = new()
