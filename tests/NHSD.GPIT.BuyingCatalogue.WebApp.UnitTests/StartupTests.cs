@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
 
         [Theory]
         [InlineData(typeof(DisabledErrorMessageSettings))]
-        [InlineData(typeof(GPITBuyingCatalogueDbContext))]
+        [InlineData(typeof(BuyingCatalogueDbContext))]
         [InlineData(typeof(DataProtectorTokenProvider<AspNetUser>))]
         [InlineData(typeof(SmtpSettings))]
         public void ContainsTheExpectedServiceInstances_A(Type expectedType)

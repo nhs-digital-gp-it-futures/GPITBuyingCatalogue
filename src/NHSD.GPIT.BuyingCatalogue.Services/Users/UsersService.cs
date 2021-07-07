@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -12,10 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
     public sealed class UsersService : IUsersService
     {
-        private readonly IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository;
+        private readonly IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository;
 
         public UsersService(
-            IDbRepository<AspNetUser, GPITBuyingCatalogueDbContext> userRepository)
+            IDbRepository<AspNetUser, BuyingCatalogueDbContext> userRepository)
         {
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }

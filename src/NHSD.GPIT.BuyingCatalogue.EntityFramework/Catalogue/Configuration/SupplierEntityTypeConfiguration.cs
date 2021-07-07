@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {

@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
@@ -111,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             if (string.IsNullOrWhiteSpace(catalogueOrderingConnectionString))
                 throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
-            services.AddDbContext<GPITBuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
+            services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
         }
 
         public static void ConfigureSession(this IServiceCollection services)
@@ -199,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                     o.Lockout.MaxFailedAccessAttempts = 6;
                 })
-                .AddEntityFrameworkStores<GPITBuyingCatalogueDbContext>()
+                .AddEntityFrameworkStores<BuyingCatalogueDbContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
                 .AddPasswordValidator<PasswordValidator>();
         }
