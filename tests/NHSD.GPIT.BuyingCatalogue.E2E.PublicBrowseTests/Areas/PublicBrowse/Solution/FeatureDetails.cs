@@ -10,7 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
     public sealed class FeatureDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public FeatureDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001/features")
+        public FeatureDetails(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/99999-001/features")
         {
         }
 

@@ -14,28 +14,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
     public abstract class TestBase
     {
-        internal static string DefaultPassword = "Th1sIsP4ssword!";
-        protected readonly LocalWebApplicationFactory factory;
-        protected readonly IWebDriver driver;
+        public static readonly string DefaultPassword = "Th1sIsP4ssword!";
+
         private readonly Uri uri;
 
         public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
-            this.factory = factory;
+            Factory = factory;
 
-            driver = this.factory.Driver;
-            PublicBrowsePages = new PublicBrowsePages(driver).PageActions;
-            MarketingPages = new MarketingPageActions(driver).PageActions;
-            AuthorizationPages = new AuthorizationPages(driver).PageActions;
-            AdminPages = new AdminPages(driver).PageActions;
-            CommonActions = new Actions.Common.CommonActions(driver);
+            Driver = Factory.Driver;
+            PublicBrowsePages = new PublicBrowsePages(Driver).PageActions;
+            MarketingPages = new MarketingPageActions(Driver).PageActions;
+            AuthorizationPages = new AuthorizationPages(Driver).PageActions;
+            AdminPages = new AdminPages(Driver).PageActions;
+            CommonActions = new Actions.Common.CommonActions(Driver);
 
-            TextGenerators = new TextGenerators(driver);
+            TextGenerators = new TextGenerators(Driver);
 
             uri = new Uri(factory.RootUri);
             var combinedUri = new Uri(uri, urlArea);
-            driver.Navigate().GoToUrl(combinedUri);
+            Driver.Navigate().GoToUrl(combinedUri);
         }
+
+        public LocalWebApplicationFactory Factory { get; protected set; }
+
+        public IWebDriver Driver { get; protected set; }
 
         internal Actions.Common.CommonActions CommonActions { get; }
 
@@ -52,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         internal EndToEndDbContext GetEndToEndDbContext()
         {
             var options = new DbContextOptionsBuilder<EndToEndDbContext>()
-                .UseInMemoryDatabase(factory.BcDbName)
+                .UseInMemoryDatabase(Factory.BcDbName)
                 .Options;
 
             return new(options);
@@ -61,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         internal EndToEndDbContext GetUsersContext()
         {
             var options = new DbContextOptionsBuilder<EndToEndDbContext>()
-                .UseInMemoryDatabase(factory.BcDbName)
+                .UseInMemoryDatabase(Factory.BcDbName)
                 .Options;
 
             return new(options);

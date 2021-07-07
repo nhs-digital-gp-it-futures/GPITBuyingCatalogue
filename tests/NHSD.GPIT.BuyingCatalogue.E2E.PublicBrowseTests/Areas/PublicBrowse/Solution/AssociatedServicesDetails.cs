@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
     public class AssociatedServicesDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public AssociatedServicesDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001/associated-services")
+        public AssociatedServicesDetails(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/99999-001/associated-services")
         {
         }
 
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task AssociatedServicesDetails_AssociatedServicesNameDisplayedAsync()
         {
             await using var context = GetEndToEndDbContext();
-            var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999,"001"))).Name;
+            var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).Name;
             PublicBrowsePages.SolutionAction.ImplementationNameDisplayed().Should().BeEquivalentTo($"associated services - {pageTitle}");
         }
 
@@ -51,10 +51,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var associatedServicesOnPage = PublicBrowsePages.SolutionAction.GetAssociatedServicesInfo();
 
-            associatedServicesOnPage.Should().BeEquivalentTo(associatedServicesInDb.Select(s => s.AssociatedService),
+            associatedServicesOnPage.Should().BeEquivalentTo(
+                associatedServicesInDb.Select(s => s.AssociatedService),
                 options =>
                     options.Including(s => s.Description)
                     .Including(s => s.OrderGuidance));
         }
-    }  
+    }
 }

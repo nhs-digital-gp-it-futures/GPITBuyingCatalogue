@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 {
     public sealed class PlugInsOrExtensions : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public PlugInsOrExtensions(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/plug-ins-or-extensions")
+        public PlugInsOrExtensions(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/plug-ins-or-extensions")
         {
         }
 

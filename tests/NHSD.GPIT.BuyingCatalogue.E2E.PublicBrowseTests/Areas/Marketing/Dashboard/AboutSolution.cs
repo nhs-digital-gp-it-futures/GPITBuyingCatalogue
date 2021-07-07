@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class AboutSolution : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public AboutSolution(LocalWebApplicationFactory factory) : base(factory, "/marketing/supplier/solution/99999-99/section/solution-description")
+        public AboutSolution(LocalWebApplicationFactory factory)
+            : base(factory, "/marketing/supplier/solution/99999-99/section/solution-description")
         {
         }
 
@@ -68,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             solution.Summary = string.Empty;
 
             await context.SaveChangesAsync();
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             CommonActions.ClickSave();
 

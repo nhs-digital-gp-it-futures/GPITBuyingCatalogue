@@ -17,7 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
     {
         private readonly SimpleSmtpServer smtp;
 
-        public Organisation(LocalWebApplicationFactory factory) : base(factory, "admin/organisations/b7ee5261-43e7-4589-907b-5eef5e98c085")
+        public Organisation(LocalWebApplicationFactory factory)
+            : base(factory, "admin/organisations/b7ee5261-43e7-4589-907b-5eef5e98c085")
         {
             Login();
             smtp = SimpleSmtpServer.Start(9999);
@@ -170,12 +171,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             selectedRelationships.Select(s => s.RelatedOrganisationId).Should().NotContain(relatedOrgId);
         }
 
-        private static JsonSerializerOptions JsonOptions()
+        public void Dispose()
         {
-            return new()
-            {
-                PropertyNameCaseInsensitive = true,
-            };
+            smtp.Dispose();
         }
 
         private async Task<Guid> AddRelatedOrganisation(Guid currentOrgId)
@@ -192,25 +190,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             context.RelatedOrganisations.Add(relatedOrganisation);
             await context.SaveChangesAsync();
 
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             return relatedOrganisation.RelatedOrganisationId;
         }
 
-        private async Task<AspNetUser> AddUser(Guid currentOrgId, bool IsEnabled = true)
+        private async Task<AspNetUser> AddUser(Guid currentOrgId, bool isEnabled = true)
         {
-            var user = GenerateUser.GenerateAspNetUser(currentOrgId, DefaultPassword, IsEnabled);
+            var user = GenerateUser.GenerateAspNetUser(currentOrgId, DefaultPassword, isEnabled);
             await using var context = GetEndToEndDbContext();
             context.Add(user);
             await context.SaveChangesAsync();
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             return user;
-        }
-
-        public void Dispose()
-        {
-            smtp.Dispose();
         }
     }
 }
