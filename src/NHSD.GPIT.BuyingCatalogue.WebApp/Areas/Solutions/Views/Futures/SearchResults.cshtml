@@ -41,48 +41,48 @@
     @foreach (var solution in Model.CatalogueItems)
     {
 
-    <div class="nhsuk-u-padding-bottom-5 nhsuk-u-padding-top-7 bc-t-border-top--blue" data-test-id="solution-card">
-        <div class="nhsuk-grid-row">
-            <div class="nhsuk-grid-column-two-thirds">
+        <div class="nhsuk-u-padding-bottom-5 nhsuk-u-padding-top-7 bc-t-border-top--blue" data-test-id="solution-card">
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
 
-                <div data-test-id="solution-card-foundation" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Foundation Solution Set</div>
+                    <div data-test-id="solution-card-foundation" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Foundation Solution Set</div>
 
-                <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                    <a href="~/solutions/futures/@solution.CatalogueItemId">
-                        @solution.Name
-                    </a>
-                </h3>
+                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
+                        <a href="~/solutions/futures/@solution.CatalogueItemId">
+                            @solution.Name
+                        </a>
+                    </h3>
 
-                <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
-                    @solution.Supplier.Name
-                </h4>
+                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
+                        @solution.Supplier.Name
+                    </h4>
 
-                <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
-                    @solution.Solution.Summary
-                </p>
+                    <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
+                        @solution.Solution.Summary
+                    </p>
 
-                <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                    <a href="~/solutions/futures/@solution.CatalogueItemId">View this solution<span class="nhsuk-u-visually-hidden"> for Emis Web GP</span></a>
+                    <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
+                        <a href="~/solutions/futures/@solution.CatalogueItemId">View this solution<span class="nhsuk-u-visually-hidden"> for Emis Web GP</span></a>
+                    </div>
                 </div>
-            </div>
 
-            <div class="nhsuk-grid-column-one-third" data-test-id="solution-card-capability-list">
+                <div class="nhsuk-grid-column-one-third" data-test-id="solution-card-capability-list">
 
-                <div data-test-id="capability-list">
-                    <h5 class="nhsuk-u-font-size-22">Capabilities met</h5>
-                    <ul>
+                    <div data-test-id="capability-list">
+                        <h5 class="nhsuk-u-font-size-22">Capabilities met</h5>
+                        <ul>
 
-                        @foreach (var capability in solution.Solution.SolutionCapabilities)
-                        {
-                            <li data-test-id="capability-list-item" class="nhsuk-u-font-size-16">
-                                @capability.Capability.Name
-                            </li>
-                        }
-                    </ul>
+                            @foreach (var capability in solution.Solution.SolutionCapabilities)
+                            {
+                                <li data-test-id="capability-list-item" class="nhsuk-u-font-size-16">
+                                    @capability.Capability.Name
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
     }
 
