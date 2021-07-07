@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var dbSolutions = await context.CatalogueItems
                                             .Where(c => c.SupplierId == "99999")
                                             .Where(c => c.PublishedStatus == publicationStatus)
-                                            // .Where(c => c.CatalogueItemType == CatalogueItemType.Solution) ***awaiting bug fix***
+                                            .Where(c => c.CatalogueItemType == CatalogueItemType.Solution) 
                                             .ToListAsync();
 
             AdminPages.AddSolution.GetNumberOfItemsInTable().Should().Be(dbSolutions.Count);
