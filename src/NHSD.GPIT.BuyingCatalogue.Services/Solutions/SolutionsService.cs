@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             catalogueItemId.ValidateNotNull(nameof(catalogueItemId));
             if (capabilityId == Guid.Empty)
-                throw new ArgumentException(nameof(capabilityId));
+                throw new ArgumentException($"{nameof(capabilityId)} is empty");
 
             return await dbContext.CatalogueItems
                 .Include(c => c.Solution)
