@@ -23,6 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By SupplierOrgRow => CustomBy.DataTestId("manage-suppliers-table");
 
-        internal static By SupplierEditLink => By.LinkText("Edit");
+        internal static By SupplierEditLink => CustomBy.DataTestId("edit-link");
     }
 }

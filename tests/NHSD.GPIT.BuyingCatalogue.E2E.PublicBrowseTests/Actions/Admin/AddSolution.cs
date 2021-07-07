@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using OpenQA.Selenium;
@@ -67,12 +66,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 
         public bool AddSuppliersOrgLinkDisplayed()
         {
-            var suppliersLink = Driver.FindElement(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink);
-            suppliersLink.Click();
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink).Click();
             try
             {
-                Wait.Until(s => ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSuppliersOrgLink));
-                return true;
+                return ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSuppliersOrgLink);
             }
             catch
             {
@@ -101,18 +98,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         public int GetNumberOfSuppliersInTable()
         {
             ClickManageSuppliersOrgLink();
-            int numberOfItems = 0;
-            try
-            {
-                numberOfItems = Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow)
+
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow)
                    .FindElements(By.CssSelector("tbody tr")).Count();
-            }
-          
-            catch
-            {
-                throw new WebDriverException();
-            }
-            return numberOfItems;
         }
 
         private bool ElementDisplayed(By by)

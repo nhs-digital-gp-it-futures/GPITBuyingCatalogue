@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using Xunit;
 
-
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public class ManageSuppliers : TestBase, IClassFixture<LocalWebApplicationFactory>
@@ -14,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         {
             Login();
         }
-
 
         [Fact]
         public void ManageSuppliers_ManageSuppliersOrgLinkDisplayed()
@@ -39,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         {
             AdminPages.AddSolution.SuppliersEditLinkDisplayed().Should().BeTrue();
         }
-
 
         [Fact]
         public async Task ManageSuppliers_NumberOfSuppliersOrgsInTableAsync()
