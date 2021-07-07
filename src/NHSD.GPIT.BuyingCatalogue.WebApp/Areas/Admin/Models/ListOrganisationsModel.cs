@@ -6,12 +6,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
     public class ListOrganisationsModel : NavBaseModel
     {
-        public ListOrganisationsModel(IList<Organisation> organisations)
+        public ListOrganisationsModel(IList<OrganisationModel> organisations)
         {
             Organisations = organisations;
-            BackLink = "/";
         }
 
-        public IList<Organisation> Organisations { get; private set; }
+        public IList<OrganisationModel> Organisations { get; private set; }
+
+        public Dictionary<string, string> BreadCrumb()
+        {
+            return new Dictionary<string, string>
+            {
+                { "Home", "/admin" },
+            };
+        }
     }
 }
