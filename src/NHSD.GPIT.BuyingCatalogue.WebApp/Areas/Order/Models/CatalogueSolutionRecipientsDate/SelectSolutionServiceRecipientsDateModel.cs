@@ -2,7 +2,7 @@
 using System.Globalization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionRecipientsDate
 {
     public sealed class SelectSolutionServiceRecipientsDateModel : OrderingBaseModel
     {

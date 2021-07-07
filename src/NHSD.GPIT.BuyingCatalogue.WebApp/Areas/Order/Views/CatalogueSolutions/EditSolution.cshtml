@@ -70,15 +70,15 @@
                     <nhs-submit-button text="Save" /><br />
 
                     <vc:nhs-secondary-button url="@Url.Action(
-                                                nameof(CatalogueSolutionsController.SelectSolutionServiceRecipients),
-                                                typeof(CatalogueSolutionsController).ControllerName(),
+                                                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
+                                                typeof(CatalogueSolutionRecipientsController).ControllerName(),
                                                 new {Model.OdsCode, Model.OrderItem.CallOffId})"
                                              text="Edit Service Recipients"
                                              use-primary-colour="false" /><br />
 
                     <vc:nhs-delete-button url="@Url.Action(
-                                                nameof(CatalogueSolutionsController.DeleteSolution),
-                                                typeof(CatalogueSolutionsController).ControllerName(),
+                                                nameof(DeleteCatalogueSolutionController.DeleteSolution),
+                                                typeof(DeleteCatalogueSolutionController).ControllerName(),
                                                 new { Model.OdsCode, Model.OrderItem.CallOffId, Model.OrderItem.CatalogueItemId, Model.OrderItem.CatalogueItemName})"
                                           text="Delete Catalogue Solution" />
                 </div>
