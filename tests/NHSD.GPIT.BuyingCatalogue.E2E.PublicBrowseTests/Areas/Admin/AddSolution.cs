@@ -1,13 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public class AddSolution : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AddSolution : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public AddSolution(LocalWebApplicationFactory factory) : base(factory, "admin/catalogue-solutions/add-solution")
         {
@@ -25,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public void AddSolution_FrameworksDisplayed()
         {
-            AdminPages.AddSolution.FrameworkNamesDisplayed().Should().BeTrue();     
+            AdminPages.AddSolution.FrameworkNamesDisplayed().Should().BeTrue();
         }
 
         [Fact]

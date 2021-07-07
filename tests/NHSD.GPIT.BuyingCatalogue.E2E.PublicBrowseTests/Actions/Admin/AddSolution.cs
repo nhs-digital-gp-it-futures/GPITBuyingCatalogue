@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
@@ -55,6 +53,79 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return ElementDisplayed(Objects.Admin.AddSolutionObjects.SaveSolutionButton);
         }
 
+        public void ManageCatalogueSolution()
+        {
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionLink).Click();
+        }
+
+        public void ClickFilterCatalogueSolutionsButton()
+        {
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionFilter).Click();
+        }
+
+        public void ClickApplyFilterButton()
+        {
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.SaveSolutionButton).Click();
+        }
+
+        public int NumberOfFilterRadioButtonsDisplayed()
+        {
+            ManageCatalogueSolution();
+            ClickFilterCatalogueSolutionsButton();
+            return Driver.FindElements(Objects.Admin.AddSolutionObjects.FilterRadioButton).Count;
+        }
+
+        public PublicationStatus SelectFilterRadioButton(int index = 0)
+        {
+            NumberOfFilterRadioButtonsDisplayed();
+            var element = Driver.FindElements(Objects.Admin.AddSolutionObjects.FilterRadioButton)[index].FindElement(By.TagName("input"));
+            element.Click();
+            var id = element.GetAttribute("id");
+            int value = int.Parse(id);
+            return (PublicationStatus)value;
+        }
+
+        public PublicationStatus FilterCatalogueSolutions(int index = 0)
+        {
+            var publicationStatus = SelectFilterRadioButton(index);
+            ClickApplyFilterButton();
+            return publicationStatus;
+        }
+
+        public bool AddSolutionLinkDisplayed()
+        {
+            ManageCatalogueSolution();
+            try
+            {
+               ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSolutionLink);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal bool CatalogueSolutionTableDisplayed()
+        {
+            ManageCatalogueSolution();
+            try
+            {
+                Wait.Until(d => d.FindElements(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int GetNumberOfItemsInTable()
+        {
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable)
+                    .FindElements(By.CssSelector("tbody tr")).Count;        
+        }
+
         private bool ElementDisplayed(By by)
         {
             try
@@ -66,6 +137,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             {
                 return false;
             }
-        }
+        }  
     }
 }
