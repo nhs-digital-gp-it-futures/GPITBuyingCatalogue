@@ -7,7 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 {
     internal sealed class FeaturesActions : ActionBase
     {
-        public FeaturesActions(IWebDriver driver) : base(driver)
+        public FeaturesActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

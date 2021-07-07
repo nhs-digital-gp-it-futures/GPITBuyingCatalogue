@@ -7,7 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.PublicBrowse.Areas.Solutions
 {
     public sealed class GPITFoundationTests : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public GPITFoundationTests(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/foundation")
+        public GPITFoundationTests(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/foundation")
         {
         }
 

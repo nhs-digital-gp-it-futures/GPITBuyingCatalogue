@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 {
     public sealed class ThirdPartyComponents : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public ThirdPartyComponents(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/third-party")
+        public ThirdPartyComponents(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/third-party")
         {
         }
 

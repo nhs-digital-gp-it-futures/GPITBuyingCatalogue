@@ -6,18 +6,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
     internal sealed class AddSolution : ActionBase
     {
-        public AddSolution(IWebDriver driver) : base(driver)
+        public AddSolution(IWebDriver driver)
+            : base(driver)
         {
-        }
-
-        internal bool SolutionNameFieldDisplayed()
-        {
-            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SolutionName);
-        }
-
-        internal bool SupplierNameFieldDisplayed()
-        {
-            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierName);
         }
 
         public bool FrameworkNamesDisplayed()
@@ -46,6 +37,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             {
                 return false;
             }
+        }
+
+        internal bool SolutionNameFieldDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SolutionName);
+        }
+
+        internal bool SupplierNameFieldDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierName);
         }
 
         internal bool SaveSolutionButtonDisplayed()

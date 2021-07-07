@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 {
     public sealed class AdditionalInformation : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public AdditionalInformation(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/additional-information")
+        public AdditionalInformation(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/additional-information")
         {
         }
 

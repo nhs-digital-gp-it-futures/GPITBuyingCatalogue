@@ -13,7 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class SupplierDetails : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public SupplierDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/about-supplier")
+        public SupplierDetails(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/about-supplier")
         {
             using var context = GetEndToEndDbContext();
             var catalogueItem = context.CatalogueItems.Include(c => c.Supplier).Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "99"));
