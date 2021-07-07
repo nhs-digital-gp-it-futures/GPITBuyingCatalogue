@@ -1,6 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectAdditionalServiceRecipientsModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipients.SelectAdditionalServiceRecipientsModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -17,8 +17,8 @@
         <div class="nhsuk-grid-column-full">
 
             <vc:nhs-secondary-button url="@Url.Action(
-                                                nameof(AdditionalServicesController.SelectAdditionalServiceRecipients),
-                                                typeof(AdditionalServicesController).ControllerName(),
+                                                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
+                                                typeof(AdditionalServiceRecipientsController).ControllerName(),
                                                 new { Model.OdsCode, Model.CallOffId, selectionMode = Model.SelectionParameter})"
                                      text="@Model.SelectionPrompt"
                                      use-primary-colour="false" />

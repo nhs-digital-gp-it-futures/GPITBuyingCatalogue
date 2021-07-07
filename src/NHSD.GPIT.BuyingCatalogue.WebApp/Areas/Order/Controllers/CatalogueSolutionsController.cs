@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IOrderItemService orderItemService;
         private readonly IOrderSessionService orderSessionService;
 
-        // TODO: too many dependencies, i.e. too many responsibilities
         public CatalogueSolutionsController(
             IOrderService orderService,
             ISolutionsService solutionsService,

@@ -7,9 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices;
@@ -24,27 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         private readonly IOrderService orderService;
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsService solutionsService;
-        private readonly IOdsService odsService;
         private readonly IOrderItemService orderItemService;
-        private readonly IDefaultDeliveryDateService defaultDeliveryDateService;
         private readonly IOrderSessionService orderSessionService;
 
-        // TODO: too many dependencies, i.e. too many responsibilities
         public AdditionalServicesController(
             IOrderService orderService,
             IAdditionalServicesService additionalServicesService,
             ISolutionsService solutionsService,
-            IOdsService odsService,
             IOrderItemService orderItemService,
-            IDefaultDeliveryDateService defaultDeliveryDateService,
             IOrderSessionService orderSessionService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
-            this.defaultDeliveryDateService = defaultDeliveryDateService ?? throw new ArgumentNullException(nameof(defaultDeliveryDateService));
             this.orderSessionService = orderSessionService ?? throw new ArgumentNullException(nameof(orderSessionService));
         }
 
@@ -119,8 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 orderSessionService.SetOrderStateToSession(state);
 
                 return RedirectToAction(
-                    nameof(SelectAdditionalServiceRecipients),
-                    typeof(AdditionalServicesController).ControllerName(),
+                    nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
+                    typeof(AdditionalServiceRecipientsController).ControllerName(),
                     new { odsCode, callOffId });
             }
 
@@ -160,111 +151,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             orderSessionService.SetPrice(callOffId, cataloguePrice);
 
             return RedirectToAction(
-                nameof(SelectAdditionalServiceRecipients),
-                typeof(AdditionalServicesController).ControllerName(),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
+                typeof(AdditionalServiceRecipientsController).ControllerName(),
                 new { odsCode, callOffId });
-        }
-
-        [HttpGet("select/additional-service/price/recipients")]
-        public async Task<IActionResult> SelectAdditionalServiceRecipients(string odsCode, CallOffId callOffId, string selectionMode)
-        {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            if (state.ServiceRecipients is null)
-            {
-                var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recipients.Select(r => new OrderItemRecipientModel(r)).ToList();
-                orderSessionService.SetOrderStateToSession(state);
-            }
-
-            return View(new SelectAdditionalServiceRecipientsModel(
-                odsCode,
-                callOffId,
-                state.CatalogueItemName,
-                state.ServiceRecipients,
-                selectionMode,
-                state.IsNewSolution,
-                state.CatalogueItemId.GetValueOrDefault()));
-        }
-
-        [HttpPost("select/additional-service/price/recipients")]
-        public IActionResult SelectAdditionalServiceRecipients(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsModel model)
-        {
-            if (!model.ServiceRecipients.Any(sr => sr.Selected))
-                ModelState.AddModelError("ServiceRecipients[0].Selected", "Select a Service Recipient");
-
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            state.ServiceRecipients = model.ServiceRecipients;
-
-            orderSessionService.SetOrderStateToSession(state);
-
-            if (!state.IsNewSolution)
-            {
-                return RedirectToAction(
-                    nameof(EditAdditionalService),
-                    typeof(AdditionalServicesController).ControllerName(),
-                    new { odsCode, callOffId, state.CatalogueItemId });
-            }
-
-            return RedirectToAction(
-                nameof(SelectAdditionalServiceRecipientsDate),
-                typeof(AdditionalServicesController).ControllerName(),
-                new { odsCode, callOffId });
-        }
-
-        [HttpGet("select/additional-service/price/recipients/date")]
-        public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, CallOffId callOffId)
-        {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
-
-            return View(new SelectAdditionalServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate));
-        }
-
-        [HttpPost("select/additional-service/price/recipients/date")]
-        public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsDateModel model)
-        {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            (DateTime? date, var error) = model.ToDateTime();
-
-            if (error != null)
-                ModelState.AddModelError("Day", error);
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            state.PlannedDeliveryDate = date;
-
-            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), date.Value);
-
-            orderSessionService.SetOrderStateToSession(state);
-
-            if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
-            {
-                return RedirectToAction(
-                    nameof(SelectFlatDeclarativeQuantity),
-                    typeof(AdditionalServicesController).ControllerName(),
-                    new { odsCode, callOffId });
-            }
-
-            if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
-            {
-                return RedirectToAction(
-                    nameof(SelectFlatOnDemandQuantity),
-                    typeof(AdditionalServicesController).ControllerName(),
-                    new { odsCode, callOffId });
-            }
-
-            return RedirectToAction(
-                nameof(EditAdditionalService),
-                typeof(AdditionalServicesController).ControllerName(),
-                new { odsCode, callOffId, state.CatalogueItemId });
         }
 
         [HttpGet("select/additional-service/price/flat/declarative")]
@@ -376,25 +265,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderItemService.Create(callOffId, state);
 
             orderSessionService.ClearSession(callOffId);
-
-            return RedirectToAction(
-                nameof(Index),
-                typeof(AdditionalServicesController).ControllerName(),
-                new { odsCode, callOffId });
-        }
-
-        [HttpGet("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName)
-        {
-            var order = await orderService.GetOrder(callOffId);
-
-            return View(new DeleteAdditionalServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description));
-        }
-
-        [HttpPost("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteAdditionalService(string odsCode, CallOffId callOffId, CatalogueItemId catalogueItemId, string catalogueItemName, DeleteAdditionalServiceModel model)
-        {
-            await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
 
             return RedirectToAction(
                 nameof(Index),

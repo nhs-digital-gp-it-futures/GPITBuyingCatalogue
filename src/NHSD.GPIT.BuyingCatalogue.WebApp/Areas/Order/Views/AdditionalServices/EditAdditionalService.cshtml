@@ -73,15 +73,15 @@
                     <nhs-submit-button text="Save" /><br />
 
                     <vc:nhs-secondary-button url="@Url.Action(
-                                                nameof(AdditionalServicesController.SelectAdditionalServiceRecipients),
-                                                typeof(AdditionalServicesController).ControllerName(),
+                                                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
+                                                typeof(AdditionalServiceRecipientsController).ControllerName(),
                                                 new {Model.OdsCode, Model.OrderItem.CallOffId})"
                                              text="Edit Service Recipients"
                                              use-primary-colour="false" /><br/>
 
                     <vc:nhs-delete-button url="@Url.Action(
-                                                nameof(AdditionalServicesController.DeleteAdditionalService),
-                                                 typeof(AdditionalServicesController).ControllerName(),
+                                                nameof(DeleteAdditionalServiceController.DeleteAdditionalService),
+                                                 typeof(DeleteAdditionalServiceController).ControllerName(),
                                                 new {Model.OdsCode, Model.OrderItem.CallOffId, Model.OrderItem.CatalogueItemId, Model.OrderItem.CatalogueItemName})"
                                           text="Delete Additional Service" />
 

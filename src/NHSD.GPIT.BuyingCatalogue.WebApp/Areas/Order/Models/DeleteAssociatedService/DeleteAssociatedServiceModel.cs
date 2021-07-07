@@ -1,6 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteAssociatedService
 {
     public sealed class DeleteAssociatedServiceModel : OrderingBaseModel
     {

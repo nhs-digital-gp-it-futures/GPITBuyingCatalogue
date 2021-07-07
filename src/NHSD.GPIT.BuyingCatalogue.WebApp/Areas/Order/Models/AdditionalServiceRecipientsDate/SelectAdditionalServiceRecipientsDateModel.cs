@@ -2,7 +2,7 @@
 using System.Globalization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipientsDate
 {
     public sealed class SelectAdditionalServiceRecipientsDateModel : OrderingBaseModel
     {
