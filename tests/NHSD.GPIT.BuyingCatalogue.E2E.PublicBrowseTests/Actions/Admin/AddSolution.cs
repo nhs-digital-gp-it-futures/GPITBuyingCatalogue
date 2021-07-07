@@ -55,6 +55,66 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return ElementDisplayed(Objects.Admin.AddSolutionObjects.SaveSolutionButton);
         }
 
+        internal bool ManageSuppliersLinkDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink);
+        }
+
+        public void ClickManageSuppliersOrgLink()
+        {
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink).Click();
+        }
+
+        public bool AddSuppliersOrgLinkDisplayed()
+        {
+            var suppliersLink = Driver.FindElement(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink);
+            suppliersLink.Click();
+            try
+            {
+                Wait.Until(s => ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSuppliersOrgLink));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal bool SuppliersOrgTableDisplayed()
+        {
+            ClickManageSuppliersOrgLink();
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierOrgsTable);
+        }
+
+        internal bool SuppliersEditLinkDisplayed()
+        {
+            ClickManageSuppliersOrgLink();
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierEditLink);
+        }
+
+        internal IEnumerable<string> GetSuppliersOrgsInfoFromTable()
+        {
+            SuppliersOrgTableDisplayed();
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow).FindElements(By.CssSelector("tbody tr")).Select(s => s.Text);
+        }
+
+        public int GetNumberOfSuppliersInTable()
+        {
+            ClickManageSuppliersOrgLink();
+            int numberOfItems = 0;
+            try
+            {
+                numberOfItems = Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow)
+                   .FindElements(By.CssSelector("tbody tr")).Count();
+            }
+          
+            catch
+            {
+                throw new WebDriverException();
+            }
+            return numberOfItems;
+        }
+
         private bool ElementDisplayed(By by)
         {
             try
