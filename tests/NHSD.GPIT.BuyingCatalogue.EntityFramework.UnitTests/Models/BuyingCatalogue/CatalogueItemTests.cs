@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
@@ -280,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void HasCapabilities_SolutionCapabilitiesEmpty_ReturnsFalse(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.SolutionCapabilities = new List<SolutionCapability>();
+            catalogueItem.Solution.SolutionCapabilities = new List<CatalogueItemCapability>();
 
             var actual = catalogueItem.HasCapabilities();
 

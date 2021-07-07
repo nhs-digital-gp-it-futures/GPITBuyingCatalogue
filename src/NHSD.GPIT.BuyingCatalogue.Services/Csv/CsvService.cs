@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;

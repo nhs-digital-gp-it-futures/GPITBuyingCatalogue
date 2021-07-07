@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -336,6 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var query = dbContext.CatalogueItems
                 .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .OrderByDescending(i => i.Created)
                 .ThenBy(i => i.Name);
 

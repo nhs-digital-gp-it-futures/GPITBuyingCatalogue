@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -62,9 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var solutionCapability = solution.Solution != null ?
                 solution.Solution.SolutionCapabilities.FirstOrDefault(sc => sc.Capability.Id == capabilityId)
-                ?? new SolutionCapability() : new SolutionCapability();
+                ?? new CatalogueItemCapability() : new CatalogueItemCapability();
 
-            var model = mapper.Map<SolutionCapability, SolutionCheckEpicsModel>(solutionCapability);
+            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(solutionCapability);
 
             if (solution.Name != null)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -106,8 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability> {
+                            new CatalogueItemCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -287,8 +288,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability> {
+                            new CatalogueItemCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -399,8 +400,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability> {
+                            new CatalogueItemCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -534,10 +535,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             };
 
             // Frameworks
-            List<EntityFramework.Models.GPITBuyingCatalogue.Framework> frameworks = new()
+            List<EntityFramework.Catalogue.Models.Framework> frameworks = new()
             {
-                new EntityFramework.Models.GPITBuyingCatalogue.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital" },
-                new EntityFramework.Models.GPITBuyingCatalogue.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England" },
+                new EntityFramework.Catalogue.Models.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital" },
+                new EntityFramework.Catalogue.Models.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England" },
             };
             context.AddRange(frameworks);
 
@@ -1116,11 +1117,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.AddRange(publicationStatuses);
 
             // SolutionCapabilityStatus
-            List<SolutionCapabilityStatus> solutionCapabilityStatuses = new()
+            List<CatalogueItemCapabilityStatus> solutionCapabilityStatuses = new()
             {
-                new SolutionCapabilityStatus { Id = 1, Pass = true, Name = "Passed – Full" },
-                new SolutionCapabilityStatus { Id = 2, Pass = true, Name = "Passed – Partial" },
-                new SolutionCapabilityStatus { Id = 3, Pass = false, Name = "Failed" },
+                new CatalogueItemCapabilityStatus { Id = 1, Pass = true, Name = "Passed – Full" },
+                new CatalogueItemCapabilityStatus { Id = 2, Pass = true, Name = "Passed – Partial" },
+                new CatalogueItemCapabilityStatus { Id = 3, Pass = false, Name = "Failed" },
             };
             context.AddRange(solutionCapabilityStatuses);
 

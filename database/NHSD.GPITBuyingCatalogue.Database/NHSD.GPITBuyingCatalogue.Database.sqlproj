@@ -87,8 +87,8 @@
     <Folder Include="Ordering\Views" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\SolutionCapabilityStatus.sql" />
-    <Build Include="Tables\SolutionCapability.sql" />
+    <Build Include="Tables\CatalogueItemCapabilityStatus.sql" />
+    <Build Include="Tables\CatalogueItemCapability.sql" />
     <Build Include="Tables\CatalogueItemEpicStatus.sql" />
     <Build Include="Tables\CatalogueItemEpic.sql" />
     <Build Include="Tables\CompliancyLevel.sql" />
@@ -237,8 +237,8 @@
     <None Include="PostDeployment\ProdLikeData\MergeAdditionalServices.sql" />
     <None Include="PostDeployment\ProdLikeData\MergeAssociatedServices.sql" />
     <None Include="PostDeployment\ProdLikeData\MergeMarketingContacts.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeSolutionEpics.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeSolutionCapabilities.sql" />
+    <None Include="PostDeployment\ProdLikeData\MergeCatalogueItemEpics.sql" />
+    <None Include="PostDeployment\ProdLikeData\MergeCatalogueItemCapabilities.sql" />
     <None Include="PostDeployment\ProdLikeData\MergeFrameworkSolutions.sql" />
     <None Include="PostDeployment\ProdLikeData\MergeCataloguePrices.sql" />
     <None Include="PostDeployment\InsertAssociatedServices.sql" />
