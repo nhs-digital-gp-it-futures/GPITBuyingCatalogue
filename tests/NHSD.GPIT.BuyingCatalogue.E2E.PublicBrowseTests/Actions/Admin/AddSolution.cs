@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         public int GetNumberOfItemsInTable()
         {
             return Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable)
-                    .FindElements(By.CssSelector("tbody tr")).Count();        
+                    .FindElements(By.CssSelector("tbody tr")).Count;        
         }
 
         private bool ElementDisplayed(By by)
