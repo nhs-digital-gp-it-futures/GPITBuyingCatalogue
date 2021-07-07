@@ -8,17 +8,16 @@
                 caption="Tag Helpers"
                 additional-advice="This page is rendered from YesNoRadios.cshtml using the RadioListModel." />
 
-
 <nhs-fieldset-form-label asp-for="@Model"
                          label-text="This is a Yes No Radio List"
                          label-hint="And a Hint">
-<nhs-yesno-radio-buttons asp-for="RadioItemYesNo" />
+    <nhs-yesno-radio-buttons asp-for="RadioItemYesNo" />
 </nhs-fieldset-form-label>
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Code Example for the above Radio List"
                              size="Medium">
-    <div class="app-tabs__container js-tabs__container bc-code-snippet">
+    <div class="app-tabs__container bc-code-snippet">
         <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span><br />
         <span class="vs-light-theme-purple first-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model"&nbsp;</span><br />
         <span class="vs-light-theme-purple first-layer">label-text</span><span class="vs-light-theme-blue">="This is a Yes No Radio List"&nbsp;</span><br />
@@ -28,7 +27,6 @@
         <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-yesno-radio-buttons</span><br />
         <span class="vs-light-theme-purple second-layer">asp-for</span><span class="vs-light-theme-blue">="@@Model.RadioItemYesNo"&nbsp;</span><br />
         <span class="vs-light-theme-blue">/&gt;</span><br />
-
 
         <span class="vs-light-theme-blue">&lt;/</span><span class="vs-light-theme-purple">nhs-fieldset-form-label</span>
         <span class="vs-light-theme-blue">&gt;</span>

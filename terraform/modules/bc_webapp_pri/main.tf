@@ -27,9 +27,9 @@ resource "azurerm_app_service" "webapp" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
     ASPNETCORE_ENVIRONMENT: var.aspnet_environment
 
-    APPINSIGHTS_INSTRUMENTATIONKEY      = "todo"
-    BC_SMTP_HOST                        = ""
-    BC_SMTP_PORT                        = ""
+    APPINSIGHTS_INSTRUMENTATIONKEY      = var.instrumentation_key
+    BC_SMTP_HOST                        = var.smtp_server_host
+    BC_SMTP_PORT                        = var.smtp_server_port
     
     # Settings for Container Registy  
     DOCKER_REGISTRY_SERVER_URL          = "https://${data.azurerm_container_registry.acr.login_server}"
@@ -55,19 +55,19 @@ resource "azurerm_app_service" "webapp" {
     min_tls_version           = "1.2"
     ip_restriction {
       name       = "NHS_Access"
-      ip_address = data.azurerm_key_vault_secret.nhsdoffice1.value
+      ip_address = var.customer_network_range
       priority   = 200
       headers    = []
     }
     ip_restriction {
       name       = "BJSS_VPN"
-      ip_address = "${data.azurerm_key_vault_secret.bjssvpn.value}/32"
+      ip_address = "${var.primary_vpn}/32"
       priority   = 210
       headers    = []
     }
     ip_restriction {
       name       = "Mastek_VPN"
-      ip_address = "${data.azurerm_key_vault_secret.mastekvpn1.value}/32,${data.azurerm_key_vault_secret.mastekvpn2.value}/32"
+      ip_address = "${var.secondary_vpn}/32,${var.tertiary_vpn}/32"
       priority   = 220
       headers    = []
     }

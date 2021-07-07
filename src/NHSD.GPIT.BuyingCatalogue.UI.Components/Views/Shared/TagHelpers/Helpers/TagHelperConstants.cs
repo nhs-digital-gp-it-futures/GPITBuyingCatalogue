@@ -35,6 +35,8 @@
         internal const string DataModule = "data-module";
         internal const string DataMaxLength = "data-maxlength";
         internal const string AriaDescribedBy = "aria-describedby";
+        internal const string AriaControls = "aria-controls";
+        internal const string AriaExpanded = "aria-expanded";
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
 
@@ -45,6 +47,11 @@
         internal const string CheckBoxOptions = "checkbox-options";
         internal const string RadioOptions = "radiobutton-options";
         internal const string ComboboxOptions = "combobox-options";
+        internal const string ValueName = "value-name";
+        internal const string DisplayName = "display-name";
+        internal const string Values = "values";
+        internal const string Value = "value";
+        internal const string ConditionalContextName = "ConditionalContext";
 
         // Classes
         internal const string NhsErrorMessage = "nhsuk-error-message";
@@ -71,9 +78,16 @@
         internal const string RadioItemInputClass = "nhsuk-radios__input";
         internal const string RadioLabelClass = "nhsuk-radios__label";
         internal const string NhsRadios = "nhsuk-radios";
+        internal const string NhsRadiosParentContainerConditional = "nhsuk-radios--conditional";
+        internal const string NhsRadiosChildConditional = "nhsuk-radios__conditional";
+        internal const string NhsRadiosChildConditionalHidden = "nhsuk-radios__conditional--hidden";
         internal const string NhsLedeText = "nhsuk-lede-text";
         internal const string NhsVisuallyHidden = "nhsuk-u-visually-hidden";
         internal const string NhsVisuallyHiddenSpanContent = "Information: ";
+        internal const string NhsCheckboxes = "nhsuk-checkboxes";
+        internal const string NhsCheckBoxParentConditionalClass = "nhsuk-checkboxes--conditional";
+        internal const string NhsCheckBoxChildConditionalClass = "nhsuk-checkboxes__conditional";
+        internal const string NhsCheckBoxChildConditionalHiddenClass = "nhsuk-checkboxes__conditional--hidden";
 
         // Messages
         internal const string CharacterCountMessage = "Maximum character length {0}";

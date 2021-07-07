@@ -53,8 +53,7 @@
         }
     </nhs-table>
 
-    <p style="margin-bottom:30px;"/>
-
+    <p style="margin-bottom:30px;" />
 
     <p>The above table was produced by looping through a list of an object called TableRow. It contains 7 Properties called FirstColumn through to SeventhColumn.</p>
     <p>On The Second Row, the value for Third Column has been set to an empty string and the same for the Seventh Column on the Third Row. This in Intentional.</p>
@@ -62,7 +61,7 @@
     <nhs-fieldset-form-container asp-for="@Model"
                                  label-text=" Code Example of the Above Table"
                                  size="Medium">
-        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <div class="app-tabs__container bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-table</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
@@ -87,10 +86,9 @@
             Seventh Column
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-
             <span class="vs-light-theme-blue">@@foreach (var item in Model.Rows)</span><br /><span class="vs-light-theme-blue">{</span><br />
 
-            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue bracket">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue ">&gt;</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
@@ -134,7 +132,6 @@
 
             <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-
             <span class="vs-light-theme-blue first-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue">}</span><br />
@@ -144,11 +141,8 @@
     </nhs-fieldset-form-container>
 
     <p>nhs-table-cell is a "Wrapper Tag" that can contain any amount of raw Html and Components split by columns.</p>
-
     <p>This means that the looping structure above doesn't have to just display values, but can also be used to set the inputs on other Components</p>
     <p>For example, each cell could contain a text input where the referenced field is the asp-for for the input. It is completly flexable.</p>
-
-
     <p>The Structure of a Loop based table Must Follow this tag order:</p>
     <p>
         <ul>
@@ -218,7 +212,7 @@
                                  label-text=" Code Example of the Above Table"
                                  size="Medium">
 
-        <div class="app-tabs__container js-tabs__container bc-code-snippet">
+        <div class="app-tabs__container bc-code-snippet">
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">nhs-table</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span>
@@ -231,14 +225,13 @@
             Contains a Random Tag
             <span class="vs-light-theme-blue">&lt;</span><span class="vs-light-theme-purple">/nhs-table-column</span><span class="vs-light-theme-blue">&gt;</span><br />
 
-
-            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue bracket">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue ">&gt;</span><br />
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
             <span class="vs-light-theme-blue third-layer">This Column Contains Some Text</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
-            
+
             <span class="vs-light-theme-blue third-layer">&lt;</span><span class="vs-light-theme-purple">nhs-inset-text</span><span class="vs-light-theme-blue">&gt;</span><br />
             <span class="vs-light-theme-blue third-layer">Here is some text inside an inset</span><br />
             <span class="vs-light-theme-blue third-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-inset-text</span><span class="vs-light-theme-blue">&gt;</span><br />
@@ -251,7 +244,7 @@
             <span class="vs-light-theme-blue second-layer">&lt;/</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
             <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue">/&gt;</span><br />
-            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue bracket">&gt;</span><br />
+            <span class="vs-light-theme-blue first-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-row-container</span><span class="vs-light-theme-blue ">&gt;</span><br />
 
             <span class="vs-light-theme-blue second-layer">&lt;</span><span class="vs-light-theme-purple">nhs-table-cell</span><span class="vs-light-theme-blue">&gt;</span><br />
 
@@ -290,7 +283,6 @@
     <p>While it is techincally possible to define column-names on any of the rows, any duplicate name in the same ordinal position will be ignored.</p>
     <p>E.g if on the first row in the first cell you called a column name "Hello", and on the second row in the first cell also called a column name "Hello", the second repition would be ignored.</p>
 
-
     <nhs-warning-callout label-text="Column Name Ordinality Issues">
         <p>Because any cell can define a column name, Rendering order should be taken into account if you wish for multiple rows to define columns</p>
         <p>Given the two row, three column example above, the rendering order would be this.</p>
@@ -302,7 +294,6 @@
             <li>Second Row - Second Cell</li>
             <li>Second Row - Third Cell</li>
         </ul>
-
         <p>
             This means if you have a column title on all three cells of the first row, and the first cell of the second row, if both first cell column names are different, the second rows first cell
             column name would come after all the first row column names and in this case, creating a blank column.

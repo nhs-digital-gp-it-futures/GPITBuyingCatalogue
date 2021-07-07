@@ -390,7 +390,7 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
         INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated ,LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionEpic (SolutionId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO dbo.CatalogueItemEpic (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
         (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E1', 1, @now, @emptyGuid),
         (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E2', 1, @now, @emptyGuid),

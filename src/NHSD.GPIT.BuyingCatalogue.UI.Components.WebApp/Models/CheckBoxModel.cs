@@ -8,6 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models
 
         public bool AnotherCheckBoxProperty { get; set; }
 
+        public bool EmbeddedCheckBoxProperty { get; set; }
+
+        public string ForInput { get; set; }
+
         public List<CheckBoxListObject> ListOfObjects { get; set; }
 
         public class CheckBoxListObject
