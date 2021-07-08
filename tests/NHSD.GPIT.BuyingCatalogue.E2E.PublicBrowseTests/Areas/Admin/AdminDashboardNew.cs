@@ -6,7 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public sealed class AdminDashboardNew : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public AdminDashboardNew(LocalWebApplicationFactory factory) : base(factory, "admin")
+        public AdminDashboardNew(LocalWebApplicationFactory factory)
+            : base(factory, "admin")
         {
             Login();
         }

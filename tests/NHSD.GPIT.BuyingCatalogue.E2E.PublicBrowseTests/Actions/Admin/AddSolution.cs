@@ -51,12 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return ElementDisplayed(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink);
         }
 
-        public void ClickManageSuppliersOrgLink()
+        internal void ClickManageSuppliersOrgLink()
         {
             Driver.FindElement(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink).Click();
         }
 
-        public bool AddSuppliersOrgLinkDisplayed()
+        internal bool AddSuppliersOrgLinkDisplayed()
         {
             return ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSuppliersOrgLink);
         }
@@ -76,34 +76,34 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow).FindElements(By.CssSelector("tbody tr")).Select(s => s.Text);
         }
 
-        public int GetNumberOfSuppliersInTable()
+        internal int GetNumberOfSuppliersInTable()
         {
-           return Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow)
-                   .FindElements(By.CssSelector("tbody tr")).Count;
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow)
+                    .FindElements(By.CssSelector("tbody tr")).Count;
         }
 
-        public void ManageCatalogueSolution()
+        internal void ManageCatalogueSolution()
         {
             Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionLink).Click();
         }
 
-        public void ClickFilterCatalogueSolutionsButton()
+        internal void ClickFilterCatalogueSolutionsButton()
         {
             Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionFilter).Click();
         }
 
-        public void ClickApplyFilterButton()
+        internal void ClickApplyFilterButton()
         {
             Driver.FindElement(Objects.Admin.AddSolutionObjects.SaveSolutionButton).Click();
         }
 
-        public int NumberOfFilterRadioButtonsDisplayed()
+        internal int NumberOfFilterRadioButtonsDisplayed()
         {
             ClickFilterCatalogueSolutionsButton();
             return Driver.FindElements(Objects.Admin.AddSolutionObjects.FilterRadioButton).Count;
         }
 
-        public PublicationStatus SelectFilterRadioButton(int index = 0)
+        internal PublicationStatus SelectFilterRadioButton(int index = 0)
         {
             NumberOfFilterRadioButtonsDisplayed();
             var element = Driver.FindElements(Objects.Admin.AddSolutionObjects.FilterRadioButton)[index].FindElement(By.TagName("input"));
@@ -113,14 +113,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return (PublicationStatus)value;
         }
 
-        public PublicationStatus FilterCatalogueSolutions(int index = 0)
+        internal PublicationStatus FilterCatalogueSolutions(int index = 0)
         {
             var publicationStatus = SelectFilterRadioButton(index);
             ClickApplyFilterButton();
             return publicationStatus;
         }
 
-        public bool AddSolutionLinkDisplayed()
+        internal bool AddSolutionLinkDisplayed()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
-        public int GetNumberOfItemsInTable()
+        internal int GetNumberOfItemsInTable()
         {
             return Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable)
                     .FindElements(By.CssSelector("tbody tr")).Count;
@@ -147,11 +147,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         internal bool SupplierNameFieldDisplayed()
         {
             return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierName);
-        }
-
-        internal bool SaveSolutionButtonDisplayed()
-        {
-            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SaveSolutionButton);
         }
 
         internal bool CatalogueSolutionTableDisplayed()

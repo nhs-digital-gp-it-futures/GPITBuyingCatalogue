@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -9,7 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public class ManageSuppliers : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public ManageSuppliers(LocalWebApplicationFactory factory) : base(factory, "admin/manage-suppliers")
+        public ManageSuppliers(LocalWebApplicationFactory factory)
+            : base(factory, "admin/manage-suppliers")
         {
             Login();
         }
