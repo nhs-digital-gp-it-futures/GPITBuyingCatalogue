@@ -24,5 +24,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
         internal static By SupplierOrgRow => CustomBy.DataTestId("manage-suppliers-table");
 
         internal static By SupplierEditLink => CustomBy.DataTestId("edit-link");
+
+        internal static By AddSolutionLink => By.LinkText("Add a solution");
+
+        internal static By CatalogueSolutionLink => By.LinkText("Manage Catalogue Solutions");
+
+        internal static By CatalogueSolutionTable => CustomBy.DataTestId("manage-catalogue-solution-list");
+
+        internal static By CatalogueSolutionFilter => By.Id("nhsuk-details0");
+
+        internal static By FilterRadioButton => By.ClassName("nhsuk-radios__item");
     }
 }

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public class AddSolution : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AddSolution : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public AddSolution(LocalWebApplicationFactory factory) : base(factory, "admin/catalogue-solutions/add-solution")
         {
