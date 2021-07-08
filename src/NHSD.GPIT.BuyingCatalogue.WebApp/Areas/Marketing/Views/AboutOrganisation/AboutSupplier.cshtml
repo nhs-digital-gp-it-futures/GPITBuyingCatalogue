@@ -16,12 +16,12 @@
             <input type="hidden" asp-for="@Model.SupplierId" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-textarea asp-for="Description"
-                                     label-text="Description (optional)"
-                                     label-hint="Provide information about your organisation, for example its ethos, experience and plans for the future."
-                                     number-of-rows="10" />
+                          label-text="Description (optional)"
+                          label-hint="Provide information about your organisation, for example its ethos, experience and plans for the future."
+                          number-of-rows="10" />
             <nhs-input asp-for="Link"
-                                  label-text="Link to more information (optional)"
-                                  label-hint="Provide a URL to a page that gives buyers further information about your organisation." />
+                       label-text="Link to more information (optional)"
+                       label-hint="Provide a URL to a page that gives buyers further information about your organisation." />
             <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
                 <p class="nhsuk-u-font-size-14">If provided, this will be the default ‘supplier description’ on any listing pages for Catalogue Solutions supplied by your organisation. Any changes made will be visible across all your listing pages.</p>

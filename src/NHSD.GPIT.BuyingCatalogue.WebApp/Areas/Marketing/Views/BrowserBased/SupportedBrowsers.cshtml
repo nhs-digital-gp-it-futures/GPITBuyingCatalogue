@@ -9,15 +9,14 @@
     </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title
-            title="Browser-based application – supported browsers"
-            advice="Let buyers know which types of browser will work with your Catalogue Solution." />
+        <nhs-page-title title="Browser-based application – supported browsers"
+                        advice="Let buyers know which types of browser will work with your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-fieldset-form-label asp-for="@Model"
-                               label-text="Supported browser types"
-                               label-hint="Select all the types of browser that are supported by your Catalogue Solution.">
+                                     label-text="Supported browser types"
+                                     label-hint="Select all the types of browser that are supported by your Catalogue Solution.">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.Browsers.Length; i++)
                     {
@@ -26,9 +25,9 @@
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
             <nhs-fieldset-form-label asp-for="@Model"
-                               label-text="Mobile responsive"
-                               label-hint="Does the design of your Catalogue Solution adapt for use on mobile or tablet devices?">
-            <nhs-yesno-radio-buttons asp-for="MobileResponsive" />
+                                     label-text="Mobile responsive"
+                                     label-hint="Does the design of your Catalogue Solution adapt for use on mobile or tablet devices?">
+                <nhs-yesno-radio-buttons asp-for="MobileResponsive" />
             </nhs-fieldset-form-label>
             <nhs-submit-button />
         </form>

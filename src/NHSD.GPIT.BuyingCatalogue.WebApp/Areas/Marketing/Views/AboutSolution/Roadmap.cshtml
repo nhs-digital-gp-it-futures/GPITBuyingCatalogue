@@ -9,15 +9,14 @@
     </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title
-            title="Catalogue Solution roadmap"
-            advice="Let buyers know about any future development plans for your Catalogue Solution." />
+        <nhs-page-title title="Catalogue Solution roadmap"
+                        advice="Let buyers know about any future development plans for your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-textarea asp-for="Summary"
-                                     label-text="Summary (optional)"
-                                     label-hint="Provide information on how and when you plan to enhance your Catalogue Solution." />
+                          label-text="Summary (optional)"
+                          label-hint="Provide information on how and when you plan to enhance your Catalogue Solution." />
             <div data-test-id="section-warning-advice" class="nhsuk-inset-text nhsuk-u-padding-top-2 nhsuk-u-padding-right-4 nhsuk-u-padding-bottom-2 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
                 <p class="nhsuk-u-font-size-14">This information will be published on the Buying Catalogue and therefore available to anyone. You should not include anything you consider commercially sensitive.</p>

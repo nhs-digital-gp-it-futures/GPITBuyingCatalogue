@@ -15,12 +15,12 @@
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-select asp-for="SelectedMemorySize"
-                                   asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
-                                   label-text="Memory size"
-                                   label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
+                        asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
+                        label-text="Memory size"
+                        label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
             <nhs-textarea asp-for="Description"
-                                     label-text="Storage space"
-                                     label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution." />
+                          label-text="Storage space"
+                          label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution." />
             <nhs-submit-button />
         </form>
     </div>

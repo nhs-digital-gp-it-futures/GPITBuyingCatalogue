@@ -9,16 +9,15 @@
     </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title
-            title="Catalogue Solution implementation"
-            advice="Describe the typical processes and timescales to implement your Catalogue Solution. Include typical timescales that maybe required to transition from an existing solution if applicable." />
+        <nhs-page-title title="Catalogue Solution implementation"
+                        advice="Describe the typical processes and timescales to implement your Catalogue Solution. Include typical timescales that maybe required to transition from an existing solution if applicable." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-textarea asp-for="Description"
-                                     label-text="Implementation (optional) - HTML required"
-                                     label-hint="Detail the minimum, average and maximum number of working days required to implement your Catalogue Solution. Provide any information that could influence the timescales and any responsibilities expected of a buyer."
-                                     number-of-rows="5" />
+                          label-text="Implementation (optional) - HTML required"
+                          label-hint="Detail the minimum, average and maximum number of working days required to implement your Catalogue Solution. Provide any information that could influence the timescales and any responsibilities expected of a buyer."
+                          number-of-rows="5" />
             <div data-test-id="section-expandable-advice">
                 <div data-test-id="" class="bc-c-expandable__text--border-left-blue">
                     <details class="nhsuk-details">
