@@ -3,14 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
-    public sealed class CatalogueItemRepository : DbRepository<CatalogueItem, GPITBuyingCatalogueDbContext>, ICatalogueItemRepository
+    public sealed class CatalogueItemRepository : DbRepository<CatalogueItem, BuyingCatalogueDbContext>, ICatalogueItemRepository
     {
-        public CatalogueItemRepository(GPITBuyingCatalogueDbContext dbContext)
+        public CatalogueItemRepository(BuyingCatalogueDbContext dbContext)
             : base(dbContext)
         {
         }
