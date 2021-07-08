@@ -1,5 +1,5 @@
-﻿IF NOT EXISTS (SELECT * FROM dbo.CompliancyLevel)
-    INSERT INTO dbo.CompliancyLevel(Id, [Name])
+﻿IF NOT EXISTS (SELECT * FROM catalogue.CompliancyLevels)
+    INSERT INTO catalogue.CompliancyLevels(Id, [Name])
     VALUES
     (1, 'MUST'),
     (2, 'SHOULD'),

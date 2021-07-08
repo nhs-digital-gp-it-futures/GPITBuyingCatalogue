@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<Capability> builder)
         {
-            builder.ToTable("Capability");
+            builder.ToTable("Capabilities", Schemas.Catalogue);
 
             builder.HasKey(c => c.Id)
                 .IsClustered(false);

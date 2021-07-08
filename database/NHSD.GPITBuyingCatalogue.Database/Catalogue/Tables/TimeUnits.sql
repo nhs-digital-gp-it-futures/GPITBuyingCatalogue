@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.TimeUnit
+﻿CREATE TABLE catalogue.TimeUnits
 (
     TimeUnitId int NOT NULL,
     [Name] nvarchar(20) NOT NULL,

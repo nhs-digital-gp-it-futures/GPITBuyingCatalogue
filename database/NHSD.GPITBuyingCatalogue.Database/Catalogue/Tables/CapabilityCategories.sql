@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.CapabilityCategory
+﻿CREATE TABLE catalogue.CapabilityCategories
 (
      Id int NOT NULL,
      [Name] nvarchar(50) NOT NULL,

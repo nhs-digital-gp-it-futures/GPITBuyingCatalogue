@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<CatalogueItemCapabilityStatus> builder)
         {
-            builder.ToTable("CatalogueItemCapabilityStatus");
+            builder.ToTable("CatalogueItemCapabilityStatus", Schemas.Catalogue);
 
             builder.Property(s => s.Id).ValueGeneratedNever();
             builder.Property(s => s.Name)

@@ -6,9 +6,9 @@ AS
     BEGIN TRANSACTION;
 
     BEGIN TRY
-        DECLARE @publishedStatus AS int = (SELECT Id FROM dbo.PublicationStatus WHERE [Name] = 'Published');
+        DECLARE @publishedStatus AS int = (SELECT Id FROM catalogue.PublicationStatus WHERE [Name] = 'Published');
 
-        UPDATE dbo.CatalogueItem
+        UPDATE catalogue.CatalogueItems
            SET PublishedStatusId = @publishedStatus
          WHERE CatalogueItemId = @CatalogueItemId;
 

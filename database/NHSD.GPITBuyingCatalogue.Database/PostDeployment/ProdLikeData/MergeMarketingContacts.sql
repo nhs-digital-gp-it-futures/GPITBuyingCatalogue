@@ -50,9 +50,9 @@ BEGIN
                 (1027, N'10073-009', N'Bob', N'Smith', N'bob.smith@anon.net', N'01234 5678901', N'Internal Sales Team', CAST(N'2020-04-01T13:56:52.4200000' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
                 (1028, N'10073-009', N'Bob', N'Smith', N'bob.smith@anon.net', N'01234 5678901', N'Internal Sales Team', CAST(N'2020-04-01T13:56:52.4200000' AS datetime2), N'00000000-0000-0000-0000-000000000000');
 
-    SET IDENTITY_INSERT dbo.MarketingContact ON; 
+    SET IDENTITY_INSERT catalogue.MarketingContacts ON; 
 
-    MERGE INTO dbo.MarketingContact AS TARGET
+    MERGE INTO catalogue.MarketingContacts AS TARGET
     USING #MarketingContact AS SOURCE
     ON TARGET.Id = SOURCE.Id 
     WHEN MATCHED THEN  
@@ -68,6 +68,6 @@ BEGIN
         INSERT (Id, SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy) 
         VALUES (SOURCE.Id, SOURCE.SolutionId, SOURCE.FirstName, SOURCE.LastName, SOURCE.Email, SOURCE.PhoneNumber, SOURCE.Department, SOURCE.LastUpdated, SOURCE.LastUpdatedBy);
 
-    SET IDENTITY_INSERT dbo.MarketingContact OFF; 
+    SET IDENTITY_INSERT catalogue.MarketingContacts OFF; 
 END;
 GO
