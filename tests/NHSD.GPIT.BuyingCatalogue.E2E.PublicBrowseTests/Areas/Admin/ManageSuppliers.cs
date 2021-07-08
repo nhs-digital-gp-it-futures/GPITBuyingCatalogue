@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             Login();
         }
 
-        [Fact(Skip = "Data test id not displaying on vc:nhs-action-link")]
+        [Fact]
         public void ManageSuppliers_AddSuppliersOrgLinkDisplayed()
         {
             AdminPages.AddSolution.AddSuppliersOrgLinkDisplayed().Should().BeTrue();

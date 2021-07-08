@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By ManageSuppliersOrgsLink => By.LinkText("Manage suppliers organisations");
 
-        internal static By AddSuppliersOrgLink => CustomBy.DataTestId("add-supplier");
+        internal static By AddSuppliersOrgLink => By.CssSelector(".nhsuk-action-link a");
 
         internal static By SupplierOrgsTable => CustomBy.DataTestId("manage-suppliers-table");
 
