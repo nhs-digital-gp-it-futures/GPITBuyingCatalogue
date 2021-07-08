@@ -25,19 +25,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public async Task AdminDashboard_AllOrgsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var organisationNames = await context.Organisations.Select(s => s.Name).ToListAsync();
-            var organisationIds = await context.Organisations.Select(s => s.OrganisationId).ToListAsync();
-            var otherProgramList = organisationIds.Select(x => x.ToString()).ToList();
-            var organisationOdsCodes = await context.Organisations.Select(s => s.OdsCode).ToListAsync();
+            var organisations = await context.Organisations.Select(o => new
+                {
+                    Name = o.Name,
+                    OrganisationId = o.OrganisationId,
+                    OdsCode = o.OdsCode,
+                })
+                .ToListAsync();
 
-            var orgNames = AdminPages.Dashboard.GetOrgNamesOnPage();
-            var orgCodes = AdminPages.Dashboard.GetOrgOdsCodesOnPage();
-            var orgLinkIds = AdminPages.Dashboard.GetOrgLinkIdsOnPage();
+            var expectedOrganisationNames = organisations.Select(o => o.Name).ToList();
+            var expectedOrganisationIds = organisations.Select(o => o.OrganisationId.ToString()).ToList();
+            var expectedOrganisationOdsCodes = organisations.Select(o => o.OdsCode).ToList();
 
-            orgNames.Should().HaveCount(organisationNames.Count());
-            orgLinkIds.Should().BeEquivalentTo(otherProgramList);
-            orgCodes.Should().BeEquivalentTo(organisationOdsCodes);
-            orgNames.Should().BeEquivalentTo(organisationNames);
+            var actualOrganisationNames = AdminPages.Dashboard.GetOrganisationNamesOnPage();
+            var actualOrganisationCodes = AdminPages.Dashboard.GetOrganisationOdsCodesOnPage();
+            var actualOrganisationIdLinks = AdminPages.Dashboard.GetOrganisationLinkIdsOnPage();
+
+            actualOrganisationNames.Should().HaveCount(expectedOrganisationNames.Count());
+            actualOrganisationCodes.Should().BeEquivalentTo(expectedOrganisationOdsCodes);
+            actualOrganisationNames.Should().BeEquivalentTo(expectedOrganisationNames);
+            actualOrganisationIdLinks.Should().BeEquivalentTo(expectedOrganisationIds);
         }
     }
 }

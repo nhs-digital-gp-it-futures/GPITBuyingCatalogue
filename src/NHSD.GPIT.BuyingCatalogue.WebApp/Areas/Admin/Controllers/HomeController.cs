@@ -23,12 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISolutionsService solutionsService;
 
         public HomeController(
-            ILogWrapper<HomeController> logger,
             IOrganisationsService organisationsService,
             IMapper mapper,
             ISolutionsService solutionsService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.solutionsService =
@@ -38,8 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [Route("buyer-organisations")]
         public async Task<IActionResult> BuyerOrganisations()
         {
-            logger.LogInformation($"Taking user to Admin {nameof(HomeController)}.{nameof(Index)}");
-
             var organisations = await organisationsService.GetAllOrganisations();
             var organisationModel = mapper.Map<IList<Organisation>, IList<OrganisationModel>>(organisations);
 

@@ -25,17 +25,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
-        internal IEnumerable<string> GetOrgNamesOnPage()
+        internal IEnumerable<string> GetOrganisationNamesOnPage()
         {
             return Driver.FindElements(Objects.Admin.DashboardObjects.OrganisationNames).Select(s => s.Text);
         }
 
-        internal IEnumerable<string> GetOrgOdsCodesOnPage()
+        internal IEnumerable<string> GetOrganisationOdsCodesOnPage()
         {
             return Driver.FindElements(Objects.Admin.DashboardObjects.OrganisationOdsCodes).Select(s => s.Text);
         }
 
-        internal IEnumerable<string> GetOrgLinkIdsOnPage()
+        internal IEnumerable<string> GetOrganisationLinkIdsOnPage()
         {
             return Driver.FindElements(Objects.Admin.DashboardObjects.OrganisationLinks).Select(s => s.GetAttribute("data-org-id"));
         }
