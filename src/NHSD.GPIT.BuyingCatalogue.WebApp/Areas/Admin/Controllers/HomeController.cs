@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin")]
     public sealed class HomeController : Controller
     {
-        private readonly ILogWrapper<HomeController> logger;
         private readonly IOrganisationsService organisationsService;
         private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
