@@ -444,10 +444,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task AddCatalogueSolution_NullFrameworkModel_ThrowsException()
         {
             var service = new SolutionsService(
-                Mock.Of<GPITBuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, GPITBuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier,GPITBuyingCatalogueDbContext>>(),
+                Mock.Of<BuyingCatalogueDbContext>(),
+                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
+                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
+                Mock.Of<IDbRepository<Supplier,BuyingCatalogueDbContext>>(),
                 Mock.Of<ICatalogueItemRepository>());
 
             (await Assert.ThrowsAsync<ArgumentNullException>(

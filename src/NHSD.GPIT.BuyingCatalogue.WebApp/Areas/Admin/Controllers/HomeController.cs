@@ -40,59 +40,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new ListOrganisationsModel(organisationModel));
         }
 
-        [HttpGet("catalogue-solutions/add-solution")]
-        public async Task<IActionResult> AddSolution()
-        {
-            var suppliers = await solutionsService.GetAllSuppliers();
-
-            return View(new AddSolutionModel
-            {
-                Suppliers = suppliers?.ToDictionary(s => s.Id, s => s.Name),
-            });
-        }
-
         [Route("manage-suppliers")]
         public async Task<IActionResult> ManageSuppliers()
         {
             var suppliers = await solutionsService.GetAllSuppliers();
             return View(suppliers);
-        }
-        
-        [HttpPost("catalogue-solutions/add-solution")]
-        public async Task<IActionResult> AddSolution(AddSolutionModel model)
-        {
-            var suppliers = await solutionsService.GetAllSuppliers();
-            var dictionary = suppliers?.ToDictionary(x => x.Id, x => x.Name);
-
-            if (!ModelState.IsValid)
-            {
-                model.Suppliers = dictionary;
-                return View(model);
-            }
-
-            // Solution name already exists. Enter a different solution name 
-
-            var addSolutionModel = await solutionsService.AddSolution(model);
-
-            return RedirectToAction(nameof(CatalogueSolutions));
-        }
-
-        [Route("catalogue-solutions")]
-        public IActionResult CatalogueSolutions()
-        {
-            return View();
         }
 
         public IActionResult Index()
         {
             return View();
-        }
-
-        [Route("manage-suppliers")]
-        public async Task<IActionResult> ManageSuppliers()
-        {
-            var suppliers = await solutionsService.GetAllSuppliers();
-            return View(suppliers);
         }
     }
 }
