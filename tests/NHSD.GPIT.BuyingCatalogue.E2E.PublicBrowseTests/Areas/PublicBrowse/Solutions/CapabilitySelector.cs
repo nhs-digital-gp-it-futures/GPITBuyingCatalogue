@@ -9,7 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
 {
     public sealed class CapabilitySelector : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public CapabilitySelector(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/capabilitiesselector")
+        public CapabilitySelector(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/capabilitiesselector")
         {
         }
 

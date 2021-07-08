@@ -7,7 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 {
     internal class ContactDetailsActions : ActionBase
     {
-        public ContactDetailsActions(IWebDriver driver) : base(driver)
+        public ContactDetailsActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

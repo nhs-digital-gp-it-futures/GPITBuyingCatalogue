@@ -11,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class ContactDetails : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public ContactDetails(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/contact-details")
+        public ContactDetails(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/contact-details")
         {
             using var context = GetEndToEndDbContext();
             var contacts = context.MarketingContacts.Where(s => s.SolutionId == new CatalogueItemId(99999, "99"));
@@ -22,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task ContactDetails_AddFirstContactOnly()
         {
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             var contact = Utils.RandomData.ContactDetails.CreateMarketingContact();
 
@@ -41,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task ContactDetails_AddBothContacts()
         {
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             var firstContact = Utils.RandomData.ContactDetails.CreateMarketingContact();
             var secondContact = Utils.RandomData.ContactDetails.CreateMarketingContact();
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void ContactDetails_SectionMarkedComplete()
         {
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             var contact = Utils.RandomData.ContactDetails.CreateMarketingContact();
 
@@ -80,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void ContactDetails_SectionMarkedIncomplete()
         {
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             CommonActions.ClickGoBackLink();
 

@@ -8,7 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 {
     internal class PreviewActions : ActionBase
     {
-        public PreviewActions(IWebDriver driver) : base(driver)
+        public PreviewActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

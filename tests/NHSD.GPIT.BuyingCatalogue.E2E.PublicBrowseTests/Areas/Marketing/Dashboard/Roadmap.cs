@@ -13,7 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class Roadmap : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public Roadmap(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/roadmap")
+        public Roadmap(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/roadmap")
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "99"));

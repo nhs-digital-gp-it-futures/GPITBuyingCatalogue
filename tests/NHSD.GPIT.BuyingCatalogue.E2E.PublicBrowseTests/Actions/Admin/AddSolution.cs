@@ -8,18 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
     internal sealed class AddSolution : ActionBase
     {
-        public AddSolution(IWebDriver driver) : base(driver)
+        public AddSolution(IWebDriver driver)
+            : base(driver)
         {
-        }
-
-        internal bool SolutionNameFieldDisplayed()
-        {
-            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SolutionName);
-        }
-
-        internal bool SupplierNameFieldDisplayed()
-        {
-            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierName);
         }
 
         public bool FrameworkNamesDisplayed()
@@ -133,13 +124,34 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
             try
             {
-               ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSolutionLink);
+                ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSolutionLink);
                 return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        public int GetNumberOfItemsInTable()
+        {
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable)
+                    .FindElements(By.CssSelector("tbody tr")).Count;
+        }
+
+        internal bool SolutionNameFieldDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SolutionName);
+        }
+
+        internal bool SupplierNameFieldDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierName);
+        }
+
+        internal bool SaveSolutionButtonDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SaveSolutionButton);
         }
 
         internal bool CatalogueSolutionTableDisplayed()
@@ -155,12 +167,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
-        public int GetNumberOfItemsInTable()
-        {
-            return Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable)
-                    .FindElements(By.CssSelector("tbody tr")).Count;        
-        }
-
         private bool ElementDisplayed(By by)
         {
             try
@@ -172,6 +178,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             {
                 return false;
             }
-        }  
+        }
     }
 }
