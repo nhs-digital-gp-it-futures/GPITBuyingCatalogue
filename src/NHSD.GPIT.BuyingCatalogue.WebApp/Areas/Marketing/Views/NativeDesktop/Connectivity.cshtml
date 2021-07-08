@@ -15,9 +15,9 @@
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-select asp-for="SelectedConnectionSpeed"
-                                   asp-items="@(new SelectList(Model.ConnectionSpeeds, "Value", "Text"))"
-                                   label-text="Connection speed"
-                                   label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
+                        asp-items="@(new SelectList(Model.ConnectionSpeeds, "Value", "Text"))"
+                        label-text="Connection speed"
+                        label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
             <nhs-submit-button />
         </form>
     </div>

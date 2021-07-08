@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                         }
 
                         break;
+
                     case Guid:
                         if (argument.Value is not null && (Guid)argument.Value == Guid.Empty)
                         {
@@ -42,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                         }
 
                         break;
+
                     default:
                         if (argument.Value == null)
                         {
