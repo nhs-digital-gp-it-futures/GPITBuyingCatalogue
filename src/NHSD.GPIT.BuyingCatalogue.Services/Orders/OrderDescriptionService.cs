@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderDescriptionService : IOrderDescriptionService
     {
-        private readonly IDbRepository<Order, GPITBuyingCatalogueDbContext> orderRepository;
+        private readonly IDbRepository<Order, BuyingCatalogueDbContext> orderRepository;
 
         public OrderDescriptionService(
-            IDbRepository<Order, GPITBuyingCatalogueDbContext> orderRepository)
+            IDbRepository<Order, BuyingCatalogueDbContext> orderRepository)
         {
             this.orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
         }

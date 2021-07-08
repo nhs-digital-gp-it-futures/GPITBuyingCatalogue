@@ -12,9 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class DefaultDeliveryDateService : IDefaultDeliveryDateService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext;
 
-        public DefaultDeliveryDateService(GPITBuyingCatalogueDbContext dbContext)
+        public DefaultDeliveryDateService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
