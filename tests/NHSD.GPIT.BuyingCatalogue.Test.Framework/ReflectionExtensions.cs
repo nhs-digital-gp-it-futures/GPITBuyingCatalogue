@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -6,13 +6,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework
 {
     public static class ReflectionExtensions
     {
-        public static T CopyObjectToNew<T>(this T input) where T : new()
+        public static T CopyObjectToNew<T>(this T input)
+            where T : new()
         {
             var copy = new T();
             foreach (var item in input.GetType().GetProperties())
             {
-                copy.GetType().GetProperty(item.Name).SetValue(copy,
-                    item.GetValue(input, null), null);
+                copy.GetType().GetProperty(item.Name).SetValue(
+                    copy,
+                    item.GetValue(input, null),
+                    null);
             }
 
             return copy;

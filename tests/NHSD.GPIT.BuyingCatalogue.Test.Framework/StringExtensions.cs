@@ -17,11 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework
             foreach (var item in input.Skip(1))
             {
                 if (char.IsUpper(item))
-                    chars.Add(('-'));
+                    chars.Add('-');
                 chars.Add(item);
             }
 
-            return string.Join("", chars).ToLower();
+            return string.Join(string.Empty, chars).ToLower();
         }
     }
 }
