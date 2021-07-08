@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
     {
         public void Configure(EntityTypeBuilder<Organisation> builder)
         {
+            builder.ToTable("Organisations", Schemas.Organisations);
+
             builder.HasKey(o => o.OrganisationId)
                 .IsClustered(false);
 

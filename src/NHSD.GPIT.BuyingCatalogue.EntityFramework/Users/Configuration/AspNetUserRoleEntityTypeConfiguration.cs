@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
     {
         public void Configure(EntityTypeBuilder<AspNetUserRole> builder)
         {
+            builder.ToTable("AspNetUserRoles", Schemas.Users);
+
             builder.HasKey(ur => new { ur.UserId, ur.RoleId });
 
             builder.HasIndex(ur => ur.RoleId, "IX_AspNetUserRoles_RoleId");

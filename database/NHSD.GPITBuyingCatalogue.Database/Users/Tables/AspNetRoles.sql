@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.AspNetRoles
+﻿CREATE TABLE users.AspNetRoles
 (
      Id nvarchar(450) NOT NULL,
      [Name] nvarchar(256) NULL,
