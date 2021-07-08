@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<AdditionalService> builder)
         {
-            builder.ToTable("AdditionalService");
+            builder.ToTable("AdditionalServices", Schemas.Catalogue);
 
             builder.HasKey(a => a.CatalogueItemId);
 

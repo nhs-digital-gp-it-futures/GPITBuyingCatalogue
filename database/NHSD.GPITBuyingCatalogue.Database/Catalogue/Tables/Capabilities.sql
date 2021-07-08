@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.Capability
+﻿CREATE TABLE catalogue.Capabilities
 (
      Id uniqueidentifier NOT NULL,
      CapabilityRef nvarchar(10) NOT NULL,
@@ -11,7 +11,7 @@
      EffectiveDate date NOT NULL,
      CategoryId int NOT NULL,
      CONSTRAINT PK_Capability PRIMARY KEY NONCLUSTERED (Id),
-     CONSTRAINT FK_Capability_CapabilityCategory FOREIGN KEY (CategoryId) REFERENCES dbo.CapabilityCategory(Id),
-     CONSTRAINT FK_Capability_CapabilityStatus FOREIGN KEY (StatusId) REFERENCES dbo.CapabilityStatus(Id),
+     CONSTRAINT FK_Capability_CapabilityCategory FOREIGN KEY (CategoryId) REFERENCES catalogue.CapabilityCategories(Id),
+     CONSTRAINT FK_Capability_CapabilityStatus FOREIGN KEY (StatusId) REFERENCES catalogue.CapabilityStatus(Id),
      INDEX IX_CapabilityCapabilityRef CLUSTERED (CapabilityRef)
 );

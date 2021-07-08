@@ -11,7 +11,7 @@ VALUES
 ('NHSDGP001', 'NHS Digital GP IT Futures Framework 1', 'GP IT Futures', 'NHS Digital'),
 ('DFOCVC001', 'Digital First Online Consultation and Video Consultation Framework 1', 'DFOCVC', 'NHS England');
 
-MERGE INTO dbo.Framework AS TARGET
+MERGE INTO catalogue.Frameworks AS TARGET
      USING @frameworks AS SOURCE ON TARGET.Id = SOURCE.Id
       WHEN MATCHED THEN
            UPDATE SET TARGET.[Name] = SOURCE.[Name]

@@ -26,7 +26,7 @@ AS
     INSERT INTO @missingSolutions (Id)
          SELECT DISTINCT i.SolutionId
            FROM @items AS i
-          WHERE NOT EXISTS (SELECT * FROM dbo.Solution AS s WHERE s.Id = i.SolutionId);
+          WHERE NOT EXISTS (SELECT * FROM catalogue.Solutions AS s WHERE s.Id = i.SolutionId);
 
     IF EXISTS (SELECT * FROM @missingSolutions)
     BEGIN;
@@ -43,15 +43,15 @@ AS
     BEGIN TRANSACTION;
 
     BEGIN TRY
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
              SELECT i.Id, i.[Name], @additionalServiceCatalogueItemType, i.SupplierId
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM dbo.CatalogueItem AS c WHERE c.CatalogueItemId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.CatalogueItems AS c WHERE c.CatalogueItemId = i.Id);
 
-        INSERT INTO dbo.AdditionalService(CatalogueItemId, SolutionId, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.AdditionalServices(CatalogueItemId, SolutionId, Summary, FullDescription, LastUpdated, LastUpdatedBy)
             SELECT i.Id, i.SolutionId, i.Summary, i.[Description], @now, @emptyGuid
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM dbo.AdditionalService AS a WHERE a.CatalogueItemId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.AdditionalServices AS a WHERE a.CatalogueItemId = i.Id);
 
         COMMIT TRANSACTION;
     END TRY

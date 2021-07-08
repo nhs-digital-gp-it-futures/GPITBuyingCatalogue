@@ -26,7 +26,7 @@ AS
     INSERT INTO @missingSuppliers (SupplierId)
          SELECT DISTINCT i.SupplierId
            FROM @items AS i
-          WHERE NOT EXISTS (SELECT * FROM dbo.Supplier AS s WHERE s.Id = i.SupplierId);
+          WHERE NOT EXISTS (SELECT * FROM catalogue.Suppliers AS s WHERE s.Id = i.SupplierId);
 
     IF EXISTS (SELECT * FROM @missingSuppliers)
     BEGIN;
@@ -43,22 +43,22 @@ AS
     BEGIN TRANSACTION;
 
     BEGIN TRY
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
              SELECT i.Id, i.[Name], @associatedServiceCatalogueItemType, i.SupplierId
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM dbo.AssociatedService AS a WHERE a.AssociatedServiceId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.AssociatedServiceId = i.Id);
 
-        INSERT INTO dbo.AssociatedService(AssociatedServiceId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.AssociatedServices(AssociatedServiceId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
              SELECT i.Id, i.[Description], i.OrderGuidance, @now, @emptyGuid
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM dbo.AssociatedService AS a WHERE a.AssociatedServiceId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.AssociatedServiceId = i.Id);
 
-        INSERT INTO dbo.SupplierServiceAssociation(AssociatedServiceId, CatalogueItemId)
+        INSERT INTO catalogue.SupplierServiceAssociations(AssociatedServiceId, CatalogueItemId)
              SELECT AssociatedServiceId, AssociatedCatalogueItemId
                FROM @AssociatedCatalogueItems AS a
               WHERE NOT EXISTS (
                     SELECT *
-                      FROM dbo.SupplierServiceAssociation AS s
+                      FROM catalogue.SupplierServiceAssociations AS s
                      WHERE s.AssociatedServiceId = a.AssociatedServiceId
                        AND s.CatalogueItemId = a.AssociatedCatalogueItemId
                     );

@@ -43,7 +43,7 @@ BEGIN
                 (N'NHSDGP001', N'10072-006', 0, CAST(N'2020-06-25T14:31:15.0200000' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
                 (N'NHSDGP001', N'10073-009', 0, CAST(N'2020-04-01T12:49:33.9433333' AS datetime2), N'00000000-0000-0000-0000-000000000000');
 
-    MERGE INTO dbo.FrameworkSolutions AS TARGET
+    MERGE INTO catalogue.FrameworkSolutions AS TARGET
     USING #FrameworkSolutions AS SOURCE
     ON TARGET.FrameworkId = SOURCE.FrameworkId AND TARGET.SolutionId = SOURCE.SolutionId 
     WHEN MATCHED THEN

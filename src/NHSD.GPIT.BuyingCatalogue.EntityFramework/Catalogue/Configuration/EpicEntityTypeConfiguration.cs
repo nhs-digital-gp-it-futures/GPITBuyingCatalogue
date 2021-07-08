@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<Epic> builder)
         {
-            builder.ToTable("Epic");
+            builder.ToTable("Epics", Schemas.Catalogue);
 
             builder.HasKey(e => e.Id)
                 .IsClustered(false);

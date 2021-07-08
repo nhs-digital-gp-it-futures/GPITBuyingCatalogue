@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.PublicationStatus
+﻿CREATE TABLE catalogue.PublicationStatus
 (
      Id int NOT NULL,
      [Name] nvarchar(16) NOT NULL,

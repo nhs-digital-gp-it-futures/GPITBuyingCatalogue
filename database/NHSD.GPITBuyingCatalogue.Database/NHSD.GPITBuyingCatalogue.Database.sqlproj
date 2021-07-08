@@ -85,28 +85,12 @@
     <Folder Include="Ordering" />
     <Folder Include="Ordering\Tables" />
     <Folder Include="Ordering\Views" />
+    <Folder Include="Catalogue" />
+    <Folder Include="Catalogue\Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\CatalogueItemCapabilityStatus.sql" />
-    <Build Include="Tables\CatalogueItemCapability.sql" />
-    <Build Include="Tables\CatalogueItemEpicStatus.sql" />
-    <Build Include="Tables\CatalogueItemEpic.sql" />
-    <Build Include="Tables\CompliancyLevel.sql" />
-    <Build Include="Tables\CapabilityCategory.sql" />
-    <Build Include="Tables\CapabilityStatus.sql" />
-    <Build Include="Tables\Capability.sql" />
-    <Build Include="Tables\Epic.sql" />
-    <Build Include="Tables\MarketingContact.sql" />
-    <Build Include="Tables\FrameworkSolutions.sql" />
-    <Build Include="Tables\Framework.sql" />
-    <Build Include="Tables\FrameworkCapabilities.sql" />
-    <Build Include="Tables\Supplier.sql" />
-    <Build Include="Tables\SupplierContact.sql" />
-    <Build Include="Tables\PublicationStatus.sql" />
-    <Build Include="Tables\Solution.sql" />
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
-    <Build Include="Security\Roles\Api.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />
@@ -120,22 +104,12 @@
     <Build Include="Security\Schemas\publish.sql" />
     <Build Include="Security\Roles\Importer.sql" />
     <Build Include="Security\Roles\Publisher.sql" />
-    <Build Include="Tables\CatalogueItemType.sql" />
-    <Build Include="Tables\CatalogueItem.sql" />
-    <Build Include="Tables\AdditionalService.sql" />
-    <Build Include="Tables\AssociatedService.sql" />
-    <Build Include="Tables\SupplierServiceAssociation.sql" />
+    <Build Include="Security\Roles\Api.sql" />
     <None Include="PostDeployment\InsertCapabilityStatuses.sql" />
-    <Build Include="Tables\CataloguePrice.sql" />
-    <Build Include="Tables\TimeUnit.sql" />
-    <Build Include="Tables\ProvisioningType.sql" />
-    <Build Include="Tables\PricingUnit.sql" />
     <None Include="PostDeployment\InsertProvisioningTypes.sql" />
     <None Include="PostDeployment\InsertTimeUnits.sql" />
-    <Build Include="Tables\CataloguePriceType.sql" />
     <None Include="PostDeployment\InsertCataloguePriceTypes.sql" />
     <None Include="PostDeployment\InsertPricingUnits.sql" />
-    <Build Include="Tables\CataloguePriceTier.sql" />
     <None Include="PostDeployment\InsertAdditionalServices.sql" />
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
     <Build Include="Stored Procedures\ImportAssociatedService.sql" />
@@ -174,6 +148,34 @@
     <Build Include="Ordering\Tables\ServiceRecipients.sql" />
     <Build Include="Ordering\Views\ServiceInstanceItems.sql" />
     <None Include="PostDeployment\InsertOrderStatuses.sql" />
+    <Build Include="Catalogue\Tables\AdditionalServices.sql" />
+    <Build Include="Catalogue\Tables\AssociatedServices.sql" />
+    <Build Include="Catalogue\Tables\Capabilities.sql" />
+    <Build Include="Catalogue\Tables\CapabilityCategories.sql" />
+    <Build Include="Catalogue\Tables\CapabilityStatus.sql" />
+    <Build Include="Catalogue\Tables\CatalogueItems.sql" />
+    <Build Include="Catalogue\Tables\CatalogueItemCapabilities.sql" />
+    <Build Include="Catalogue\Tables\CatalogueItemCapabilityStatus.sql" />
+    <Build Include="Catalogue\Tables\CatalogueItemEpics.sql" />
+    <Build Include="Catalogue\Tables\CatalogueItemEpicStatus.sql" />
+    <Build Include="Catalogue\Tables\CatalogueItemTypes.sql" />
+    <Build Include="Catalogue\Tables\CataloguePrices.sql" />
+    <Build Include="Catalogue\Tables\CataloguePriceTiers.sql" />
+    <Build Include="Catalogue\Tables\CataloguePriceTypes.sql" />
+    <Build Include="Catalogue\Tables\CompliancyLevels.sql" />
+    <Build Include="Catalogue\Tables\Epics.sql" />
+    <Build Include="Catalogue\Tables\Frameworks.sql" />
+    <Build Include="Catalogue\Tables\FrameworkCapabilities.sql" />
+    <Build Include="Catalogue\Tables\FrameworkSolutions.sql" />
+    <Build Include="Catalogue\Tables\MarketingContacts.sql" />
+    <Build Include="Catalogue\Tables\PricingUnits.sql" />
+    <Build Include="Catalogue\Tables\ProvisioningTypes.sql" />
+    <Build Include="Catalogue\Tables\PublicationStatus.sql" />
+    <Build Include="Catalogue\Tables\Solutions.sql" />
+    <Build Include="Catalogue\Tables\Suppliers.sql" />
+    <Build Include="Catalogue\Tables\SupplierContacts.sql" />
+    <Build Include="Catalogue\Tables\SupplierServiceAssociations.sql" />
+    <Build Include="Catalogue\Tables\TimeUnits.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
@@ -242,6 +244,7 @@
     <None Include="PostDeployment\ProdLikeData\MergeFrameworkSolutions.sql" />
     <None Include="PostDeployment\ProdLikeData\MergeCataloguePrices.sql" />
     <None Include="PostDeployment\InsertAssociatedServices.sql" />
+    <Build Include="Security\Schemas\catalogue.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />

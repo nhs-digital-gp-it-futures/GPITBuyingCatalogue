@@ -330,7 +330,7 @@ BEGIN
                 (N'10059-001', N'a71f2be1-6395-4db7-828c-d4733b42b5b5', N'C6E3',   1, CAST(N'2020-03-30T16:08:55.3166667' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
                 (N'10059-001', N'a71f2be1-6395-4db7-828c-d4733b42b5b5', N'C6E4',   2, CAST(N'2020-03-30T16:08:55.3166667' AS datetime2), N'00000000-0000-0000-0000-000000000000');
 
-    MERGE INTO dbo.CatalogueItemEpic AS TARGET
+    MERGE INTO catalogue.CatalogueItemEpics AS TARGET
     USING #CatalogueItemEpic AS SOURCE
     ON TARGET.CatalogueItemId = SOURCE.CatalogueItemId AND TARGET.CapabilityId = SOURCE.CapabilityId AND TARGET.EpicId = SOURCE.EpicId 
     WHEN MATCHED THEN
