@@ -27,9 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             await using var context = GetEndToEndDbContext();
             var organisations = await context.Organisations.Select(o => new
                 {
-                    Name = o.Name,
-                    OrganisationId = o.OrganisationId,
-                    OdsCode = o.OdsCode,
+                    o.Name,
+                    o.OrganisationId,
+                    o.OdsCode,
                 })
                 .ToListAsync();
 
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var actualOrganisationCodes = AdminPages.Dashboard.GetOrganisationOdsCodesOnPage();
             var actualOrganisationIdLinks = AdminPages.Dashboard.GetOrganisationLinkIdsOnPage();
 
-            actualOrganisationNames.Should().HaveCount(expectedOrganisationNames.Count());
+            actualOrganisationNames.Should().HaveCount(expectedOrganisationNames.Count);
             actualOrganisationCodes.Should().BeEquivalentTo(expectedOrganisationOdsCodes);
             actualOrganisationNames.Should().BeEquivalentTo(expectedOrganisationNames);
             actualOrganisationIdLinks.Should().BeEquivalentTo(expectedOrganisationIds);
