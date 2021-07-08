@@ -14,9 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             Organisation organisation,
-            ClaimsPrincipal user, 
-            IList<EntityFramework.Ordering.Models.Order> allOrders
-            )
+            ClaimsPrincipal user,
+            IList<EntityFramework.Ordering.Models.Order> allOrders)
         {
             var model = new OrganisationModel(organisation, user, allOrders);
 

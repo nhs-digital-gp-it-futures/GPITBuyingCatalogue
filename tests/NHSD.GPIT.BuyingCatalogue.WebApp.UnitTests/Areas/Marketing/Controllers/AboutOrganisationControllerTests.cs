@@ -36,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutOrganisationController( null,
+                _ = new AboutOrganisationController(
+                    null,
                     Mock.Of<ISolutionsService>()));
         }
 
@@ -166,8 +167,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             await controller.AboutSupplier(id, model);
 
-            mockService.Verify(x => x.SaveSupplierDescriptionAndLink(model.SupplierId,
-                model.Description, model.Link));
+            mockService.Verify(x => x.SaveSupplierDescriptionAndLink(
+                model.SupplierId,
+                model.Description,
+                model.Link));
         }
 
         [Theory]

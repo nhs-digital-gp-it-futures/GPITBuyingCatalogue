@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 catalogueItem.Supplier.CatalogueItems.Count(
                     c => c.CatalogueItemType == CatalogueItemType.AssociatedService);
             expected.Should().BeGreaterThan(0);
-            
+
             var actual = mapper.Map<CatalogueItem, AssociatedServicesModel>(catalogueItem);
 
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public void Map_CatalogueItemToCapabilitiesViewModel_ResultAsExpected(
@@ -489,7 +489,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             actual.Should().BeNull();
         }
-        
+
         private IList<CatalogueItem> GetAllCatalogueItems()
         {
             var fixture = new Fixture();
@@ -503,12 +503,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 .ToList();
             items.AddRange(Enumerable.Range(1, 3).ToList().Select(_ => new CatalogueItem
             {
-                CatalogueItemType =  CatalogueItemType.Solution,
+                CatalogueItemType = CatalogueItemType.Solution,
                 Name = fixture.Create<string>(),
             }));
             items.AddRange(Enumerable.Range(1, 8).ToList().Select(_ => new CatalogueItem
             {
-                CatalogueItemType =  CatalogueItemType.AdditionalService,
+                CatalogueItemType = CatalogueItemType.AdditionalService,
                 Name = fixture.Create<string>(),
             }));
             return items;
@@ -547,7 +547,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         public void Map_CatalogueItemToAdditionalServicesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-
             var actual = mapper.Map<CatalogueItem, AdditionalServicesModel>(catalogueItem);
 
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);

@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemId = new CatalogueItemId(1, "123"),
-                Solution = new Solution { Summary = "", FullDescription = "A full description", AboutUrl = "A Url" },
+                Solution = new Solution { Summary = string.Empty, FullDescription = "A full description", AboutUrl = "A Url" },
             };
 
             var model = new SolutionDescriptionModel(catalogueItem);

@@ -27,62 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 httpContextMock,
                 Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
                 Mock.Of<ActionDescriptor>(),
-                modelState
-            );
+                modelState);
 
             var actionExecutingContext = new ActionExecutingContext(
                 actionContext,
                 new List<IFilterMetadata>(),
                 new Dictionary<string, object>(),
-                Mock.Of<Controller>()
-            )
-            {
-                Result = new OkResult(), // It will return ok unless during code execution you change this when by condition
-            };
-
-            var ListOfLogStrings = new List<string>();
-
-            var mockLogger = new Mock<ILogWrapper<ActionArgumentNullFilter>>();
-
-            mockLogger
-                .Setup(l => l.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()))
-                .Callback<string, object[]>((l, _) => ListOfLogStrings.Add(l));
-
-            actionExecutingContext.ActionArguments.Add("AStringValue", "Hello,World");
-            actionExecutingContext.ActionArguments.Add("AGuidValue", Guid.Parse("54a18b28-8491-467c-bf0f-90f29660bd16"));
-            actionExecutingContext.ActionArguments.Add("AnObjectValue", new object());
-
-            var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
-
-            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
-
-            await actionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(context));
-
-            actionExecutingContext.Result.Should().BeOfType<OkResult>();
-            ListOfLogStrings.Count.Should().Be(0);
-        }
-
-        [Theory]
-        [MemberData(nameof(FailingCaseData.TestData), MemberType = typeof(FailingCaseData))]
-        public static async Task ArgumentNullActionFilter_ParamsNullOrEmpty_ExpectBadRequest(string AStringValue, Guid AGuidValue, object AnObjectValue)
-        {
-            var modelState = new ModelStateDictionary();
-
-            var httpContextMock = new DefaultHttpContext();
-
-            var actionContext = new ActionContext(
-                httpContextMock,
-                Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
-                Mock.Of<ActionDescriptor>(),
-                modelState
-            );
-
-            var actionExecutingContext = new ActionExecutingContext(
-                actionContext,
-                new List<IFilterMetadata>(),
-                new Dictionary<string, object>(),
-                Mock.Of<Controller>()
-            )
+                Mock.Of<Controller>())
             {
                 Result = new OkResult(), // It will return ok unless during code execution you change this when by condition
             };
@@ -95,9 +46,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 .Setup(l => l.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()))
                 .Callback<string, object[]>((l, _) => listOfLogStrings.Add(l));
 
-            actionExecutingContext.ActionArguments.Add("AStringValue", AStringValue);
-            actionExecutingContext.ActionArguments.Add("AGuidValue", AGuidValue);
-            actionExecutingContext.ActionArguments.Add("AnObjectValue", AnObjectValue);
+            actionExecutingContext.ActionArguments.Add("AStringValue", "Hello,World");
+            actionExecutingContext.ActionArguments.Add("AGuidValue", Guid.Parse("54a18b28-8491-467c-bf0f-90f29660bd16"));
+            actionExecutingContext.ActionArguments.Add("AnObjectValue", new object());
+
+            var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
+
+            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
+
+            await actionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(context));
+
+            actionExecutingContext.Result.Should().BeOfType<OkResult>();
+            listOfLogStrings.Count.Should().Be(0);
+        }
+
+        [Theory]
+        [MemberData(nameof(FailingCaseData.TestData), MemberType = typeof(FailingCaseData))]
+        public static async Task ArgumentNullActionFilter_ParamsNullOrEmpty_ExpectBadRequest(string aStringValue, Guid aGuidValue, object anObjectValue)
+        {
+            var modelState = new ModelStateDictionary();
+
+            var httpContextMock = new DefaultHttpContext();
+
+            var actionContext = new ActionContext(
+                httpContextMock,
+                Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
+                Mock.Of<ActionDescriptor>(),
+                modelState);
+
+            var actionExecutingContext = new ActionExecutingContext(
+                actionContext,
+                new List<IFilterMetadata>(),
+                new Dictionary<string, object>(),
+                Mock.Of<Controller>())
+            {
+                Result = new OkResult(), // It will return ok unless during code execution you change this when by condition
+            };
+
+            var listOfLogStrings = new List<string>();
+
+            var mockLogger = new Mock<ILogWrapper<ActionArgumentNullFilter>>();
+
+            mockLogger
+                .Setup(l => l.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()))
+                .Callback<string, object[]>((l, _) => listOfLogStrings.Add(l));
+
+            actionExecutingContext.ActionArguments.Add("AStringValue", aStringValue);
+            actionExecutingContext.ActionArguments.Add("AGuidValue", aGuidValue);
+            actionExecutingContext.ActionArguments.Add("AnObjectValue", anObjectValue);
 
             var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
 

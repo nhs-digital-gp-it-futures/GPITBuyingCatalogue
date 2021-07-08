@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            List<Organisation> organisations
-            )
+            List<Organisation> organisations)
         {
             var currentOdsCode = organisations.First().OdsCode;
 

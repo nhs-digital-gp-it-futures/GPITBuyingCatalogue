@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         public static void Get_Index_ReturnsDefaultView()
         {
             var controller = new HomeController();
-            
+
             var result = controller.Index() as ViewResult;
 
             result.Should().NotBeNull();
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             controller.ControllerContext = new ControllerContext()
             {
-                HttpContext = new DefaultHttpContext(features)
+                HttpContext = new DefaultHttpContext(features),
             };
 
             var result = controller.Error(404);

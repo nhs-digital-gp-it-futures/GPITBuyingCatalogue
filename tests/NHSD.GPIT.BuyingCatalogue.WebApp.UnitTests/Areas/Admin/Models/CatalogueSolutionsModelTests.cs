@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var model = new CatalogueSolutionsModel(new List<CatalogueItem>());
             model.HasSelected.Should().BeFalse();
-            
+
             model.SetSelected(publicationStatus);
 
             model.HasSelected.Should().BeTrue();
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         public static void SetSelected_StatusInput_SetsCorrespondingItemSelected(PublicationStatus publicationStatus)
         {
             var model = new CatalogueSolutionsModel(new List<CatalogueItem>());
-            
+
             model.SetSelected(publicationStatus);
 
             model.AllPublicationStatuses.Single(p => p.Checked).Id.Should().Be((int)publicationStatus);

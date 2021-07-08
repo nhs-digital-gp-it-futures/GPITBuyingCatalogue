@@ -14,7 +14,6 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
 {
     public sealed class IntegrationModelResolverTests : IDisposable
-
     {
         private static IMapper mapper;
 
@@ -101,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         [CommonAutoData]
         public void Map_IntegrationsToIntegrationModels_InvalidIntegrations_ReturnsEmptyList(CatalogueItem catalogueItem)
         {
-            new List<string> { null, "", "    " }
+            new List<string> { null, string.Empty, "    " }
                 .ForEach(
                     invalid =>
                     {

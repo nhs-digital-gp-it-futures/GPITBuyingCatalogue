@@ -36,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                    _ = new NativeMobileController( null,
+                    _ = new NativeMobileController(
+                        null,
                         Mock.Of<ISolutionsService>()))
                 .ParamName.Should().Be("mapper");
         }
@@ -45,7 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new NativeMobileController( Mock.Of<IMapper>(),
+                _ = new NativeMobileController(
+                    Mock.Of<IMapper>(),
                     null))
                 .ParamName.Should().Be("solutionsService");
         }

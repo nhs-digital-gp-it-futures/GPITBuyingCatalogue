@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Fact]
         public static void Get_Index_ReturnsDefaultView()
-        {            
+        {
             var controller = new FuturesController(
                 Mock.Of<ISolutionsService>(), Mock.Of<IDocumentService>());
 
@@ -56,10 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var solutions = new List<Capability>
             {
-                new() { Name = "Item 1"},
-                new() { Name = "Item 2"},
-                new() { Name = "Item 3"},
-                new() { Name = "Item 4"},
+                new() { Name = "Item 1" },
+                new() { Name = "Item 2" },
+                new() { Name = "Item 3" },
+                new() { Name = "Item 4" },
             };
 
             var mockSolutionsService = new Mock<ISolutionsService>();
@@ -85,8 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var solutions = new List<CatalogueItem>
             {
-                new() { Name = "Item 1"},
-                new() { Name = "Item 2"}
+                new() { Name = "Item 1" },
+                new() { Name = "Item 2" },
             };
 
             var mockSolutionsService = new Mock<ISolutionsService>();

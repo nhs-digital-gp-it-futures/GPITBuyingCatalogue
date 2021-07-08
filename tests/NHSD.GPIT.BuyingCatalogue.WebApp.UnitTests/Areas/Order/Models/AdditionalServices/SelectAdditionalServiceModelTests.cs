@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         public static void WithValidArguments_PropertiesCorrectlySet(
             string odsCode,
             CallOffId callOffId,
-            List<CatalogueItem> solutions, 
+            List<CatalogueItem> solutions,
             CatalogueItemId? selectedSolutionId)
         {
             var model = new SelectAdditionalServiceModel(odsCode, callOffId, solutions, selectedSolutionId);

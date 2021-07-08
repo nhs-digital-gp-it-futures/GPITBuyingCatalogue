@@ -35,8 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new ClientApplicationTypeController( null,
-                    Mock.Of<ISolutionsService>()));
+                _ = new ClientApplicationTypeController(
+                        null,
+                        Mock.Of<ISolutionsService>()));
         }
 
         [Fact]
@@ -80,8 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new ClientApplicationTypeController(
-                
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(),
+                mockService.Object);
 
             var actual = (await controller.BrowserBased(id)).As<BadRequestObjectResult>();
 
@@ -161,8 +162,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new ClientApplicationTypeController(
-                
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(),
+                mockService.Object);
 
             var actual = (await controller.NativeDesktop(id)).As<BadRequestObjectResult>();
 
@@ -242,8 +243,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(x => x.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new ClientApplicationTypeController(
-                
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(),
+                mockService.Object);
 
             var actual = (await controller.NativeMobile(id)).As<BadRequestObjectResult>();
 
