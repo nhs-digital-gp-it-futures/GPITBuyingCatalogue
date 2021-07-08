@@ -8,21 +8,21 @@
     SupplierDefined bit DEFAULT 0 NOT NULL
 );
 
-DECLARE @capabilityId AS uniqueidentifier = (SELECT Id FROM Capability WHERE CapabilityRef = 'C1');
+DECLARE @capabilityId AS uniqueidentifier = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C1');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C1E1', 'Manage Appointments', @capabilityId, 1, 1),
 ('C1E2', 'Manage Appointments by Proxy', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C2');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C2');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C2E1', 'Manage communications – Patient', @capabilityId, 1, 1),
 ('C2E2', 'Manage communications – Proxy', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C3');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C3');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -37,14 +37,14 @@ VALUES
 ('C3E9', 'Manage Acute Medications as a Proxy', @capabilityId, 3, 1),
 ('C3E10', 'View medication information as a Proxy', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C4');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C4');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C4E1', 'View Patient Record – Patient', @capabilityId, 1, 1),
 ('C4E2', 'View Patient Record – Proxy', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C5');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C5');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -56,7 +56,7 @@ VALUES
 ('C5E6', 'View Appointment reports', @capabilityId, 1, 1),
 ('C5E7', 'Access Patient Record', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C6');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C6');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -65,7 +65,7 @@ VALUES
 ('C6E3', 'View Clinical Decision Support reports', @capabilityId, 1, 1),
 ('C6E4', 'Configuration for custom Clinical Decision Support', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C7');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C7');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -80,7 +80,7 @@ VALUES
 ('C7E9', 'Manage communication preferences for a Proxy', @capabilityId, 3, 1),
 ('C7E10', 'Manage incoming communications', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C8');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C8');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -89,7 +89,7 @@ VALUES
 ('C8E3', 'Create a Request for Investigation for multiple Patients', @capabilityId, 3, 1),
 ('C8E4', 'Receive external Request for Investigation information', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C9');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C9');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -111,21 +111,21 @@ VALUES
 ('C9E16', 'Access Patient Record', @capabilityId, 1, 1),
 ('C9E17', 'Search for documents using document content', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C10');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C10');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C10E1', 'View GPES payment extract reports', @capabilityId, 1, 1),
 ('C10E2', 'View national GPES non-payment extract reports', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C11');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C11');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C11E1', 'Manage Referrals', @capabilityId, 1, 1),
 ('C11E2', 'View Referral reports', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C12');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C12');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -137,7 +137,7 @@ VALUES
 ('C12E6', 'Manage Related Organisation Staff Members', @capabilityId, 1, 1),
 ('C12E7', 'Manage Non-human Resources', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C13');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C13');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -163,7 +163,7 @@ VALUES
 ('C13E20', 'Manage Proxy Communications', @capabilityId, 3, 1),
 ('C13E21', 'Manage Proxys for Citizen Services', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C14');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C14');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -184,7 +184,7 @@ VALUES
 ('C14E15', 'Configure warnings for prescribable items', @capabilityId, 3, 1),
 ('C14E16', 'Medications are linked to diagnoses', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C15');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C15');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -197,20 +197,20 @@ VALUES
 ('C15E7', 'Use supplier implemented national Consultation form templates', @capabilityId, 1, 1),
 ('C15E8', 'Extract Female Genital Mutilation data', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C16');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C16');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C16E1', 'Report data from other Capabilities', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C17');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C17');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C17E1', 'Scan documents', @capabilityId, 1, 1),
 ('C17E2', 'Image enhancement', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C18');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C18');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -219,7 +219,7 @@ VALUES
 ('C18E3', 'Configure Telehealth for the Patient', @capabilityId, 1, 1),
 ('C18E4', 'Manage incoming Telehealth data', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C19');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C19');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -227,7 +227,7 @@ VALUES
 ('C19E2', 'Manage Document Classification rules', @capabilityId, 1, 1),
 ('C19E3', 'Document and Patient matching', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C20');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C20');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -245,7 +245,7 @@ VALUES
 ('C20E12', 'Share Task List configuration', @capabilityId, 3, 1),
 ('C20E13', 'Share Workflow List configuration', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C21');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C21');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -258,7 +258,7 @@ VALUES
 ('C21E7', 'Manage Tasks', @capabilityId, 3, 1),
 ('C21E8', 'Reporting', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C22');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C22');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -272,7 +272,7 @@ VALUES
 ('C22E8', 'Reporting', @capabilityId, 3, 1),
 ('C22E9', 'Care Pathway templates', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C23');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C23');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -286,7 +286,7 @@ VALUES
 ('C23E8', 'Report on usage of Cross-Organisation Appointments', @capabilityId, 3, 1),
 ('C23E9', 'Manage Cross-Organisation Appointment Booking templates', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C24');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C24');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -298,7 +298,7 @@ VALUES
 ('C24E6', 'Manage ad-hoc notifications', @capabilityId, 3, 1),
 ('C24E7', 'Report on Cross-organisational Workflows', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C25');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C25');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -306,7 +306,7 @@ VALUES
 ('C25E2', 'Share service schedule', @capabilityId, 1, 1),
 ('C25E3', 'Workforce management reporting', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C26');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C26');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -321,7 +321,7 @@ VALUES
 ('C26E9', 'Forecasting', @capabilityId, 3, 1),
 ('C26E10', 'Enable reporting at different levels', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C27');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C27');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -335,7 +335,7 @@ VALUES
 ('C27E8', 'Reports', @capabilityId, 3, 1),
 ('C27E9', 'Nominated individuals to view Domiciliary Care schedule', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C29');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C29');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -346,7 +346,7 @@ VALUES
 ('C29E5', 'Link Consultation to Patient/Service User''s Record', @capabilityId, 3, 1),
 ('C29E6', 'Reports', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C30');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C30');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -365,7 +365,7 @@ VALUES
 ('C30E13', 'Configure notifications for required Medicines Reviews', @capabilityId, 3, 1),
 ('C30E14', 'Receive notification for required medicines reviews', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C32');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C32');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -385,7 +385,7 @@ VALUES
 ('C32E14', 'Management Information', @capabilityId, 3, 1),
 ('C32E15', 'Identify candidates for Personal Health Budgets', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C33');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C33');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -394,7 +394,7 @@ VALUES
 ('C33E3', 'Manage access to Personal Health Record', @capabilityId, 3, 1),
 ('C33E4', 'Manage data coming into Personal Health Record', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C34');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C34');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -405,13 +405,13 @@ VALUES
 ('C34E5', 'Outcomes', @capabilityId, 1, 1),
 ('C34E6', 'Dashboard', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C35');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C35');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
 ('C35E1', 'Run Risk Stratification algorithms', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C36');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C36');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -428,7 +428,7 @@ VALUES
 ('C36E11', 'Manage Shared Care Plan templates', @capabilityId, 3, 1),
 ('C36E12', 'Manage care schedules', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C37');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C37');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -449,7 +449,7 @@ VALUES
 ('C37E15', 'View service feedback', @capabilityId, 3, 1),
 ('C37E16', 'Obtain Management Information (MI) on Social Prescribing', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C38');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C38');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -465,7 +465,7 @@ VALUES
 ('C38E10', 'Manual testing of Telecare device', @capabilityId, 3, 1),
 ('C38E11', 'Sustainability of Telecare device', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C39');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C39');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -473,7 +473,7 @@ VALUES
 ('C39E2', 'Patient/Service User views the Unified Care Record', @capabilityId, 3, 1),
 ('C39E3', 'Default Views', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C40');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C40');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -481,7 +481,7 @@ VALUES
 ('C40E2', 'Decommission Medicinal Products', @capabilityId, 1, 1),
 ('C40E3', 'Record the integrity of Anti-tampering Devices', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C42');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C42');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -494,7 +494,7 @@ VALUES
 ('C42E7', 'Manage Supplier Accounts', @capabilityId, 1, 1),
 ('C42E8', 'View Stock reports', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C45');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C45');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -508,7 +508,7 @@ VALUES
 ('C45E8', 'Automatically record which Patients have had COVID-19 vaccination invites created', @capabilityId, 3, 1),
 ('C45E9', 'View whether Patients have had a COVID-19 vaccination invite communication created', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C46');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C46');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -546,7 +546,7 @@ VALUES
 ('C46E32', 'Automatically create appointment cancellation notifications to Patients as letters for COVID-19 appointments', @capabilityId, 3, 1),
 ('C46E33', 'Automatically send appointment cancellation notifications to Patients via email for COVID-19 appointments', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C47');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C47');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -571,7 +571,7 @@ VALUES
 ('C47E19', 'Extract COVID-19 Extended Attributes data for NHS Digital Extended Attributes Extract', @capabilityId, 1, 1),
 ('C47E20', 'View reports on COVID-19 vaccination data', @capabilityId, 1, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C43');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C43');
 
 INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
 VALUES
@@ -631,7 +631,7 @@ VALUES
 ('E00090', 'Health or Care Professional initiates an Online Consultations request', @capabilityId, 3, 1),
 ('E00091', 'Proxy Verification', @capabilityId, 3, 1);
 
-SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C44');
+SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C44');
 
 IF '$(INSERT_TEST_DATA)' = 'False'
 BEGIN
@@ -670,14 +670,14 @@ END;
 
 IF '$(INSERT_TEST_DATA)' = 'True'
 BEGIN
-    SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C43');
+    SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C43');
 
     INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
     VALUES
     ('S020X01E01', 'Supplier-defined epic 1', @capabilityId, 3, 1, 1),
     ('S020X01E02', 'Supplier-defined epic 2', @capabilityId, 3, 1, 1);
 
-    SET @capabilityId = (SELECT Id FROM Capability WHERE CapabilityRef = 'C44');
+    SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C44');
 
     INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
     VALUES
@@ -685,7 +685,7 @@ BEGIN
     ('S020X01E04', 'Supplier-defined epic 4', @capabilityId, 3, 1, 1);
 END;
 
-MERGE INTO dbo.Epic AS TARGET
+MERGE INTO catalogue.Epics AS TARGET
 USING #Epics AS SOURCE
 ON TARGET.Id = SOURCE.Id
 WHEN MATCHED THEN

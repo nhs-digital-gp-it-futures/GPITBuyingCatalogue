@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.Framework
+﻿CREATE TABLE catalogue.Frameworks
 (
      Id nvarchar(10) NOT NULL,
      [Name] nvarchar(100) NOT NULL,

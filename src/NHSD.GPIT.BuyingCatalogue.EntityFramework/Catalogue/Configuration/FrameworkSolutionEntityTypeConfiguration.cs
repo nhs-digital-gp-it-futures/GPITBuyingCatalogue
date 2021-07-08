@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<FrameworkSolution> builder)
         {
-            builder.ToTable("FrameworkSolutions");
+            builder.ToTable("FrameworkSolutions", Schemas.Catalogue);
 
             builder.HasKey(f => new { f.FrameworkId, f.SolutionId });
 

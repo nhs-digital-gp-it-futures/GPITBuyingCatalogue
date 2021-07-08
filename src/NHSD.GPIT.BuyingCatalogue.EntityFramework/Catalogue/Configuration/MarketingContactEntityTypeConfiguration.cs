@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<MarketingContact> builder)
         {
-            builder.ToTable("MarketingContact");
+            builder.ToTable("MarketingContacts", Schemas.Catalogue);
 
             builder.HasKey(m => new { m.SolutionId, m.Id });
 

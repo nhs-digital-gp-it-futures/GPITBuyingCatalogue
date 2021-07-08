@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.CompliancyLevel
+﻿CREATE TABLE catalogue.CompliancyLevels
 (
      Id int NOT NULL,
      [Name] nvarchar(16) NOT NULL,

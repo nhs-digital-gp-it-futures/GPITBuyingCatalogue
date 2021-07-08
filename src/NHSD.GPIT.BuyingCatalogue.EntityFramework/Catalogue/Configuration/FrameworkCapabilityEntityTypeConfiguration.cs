@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<FrameworkCapability> builder)
         {
-            builder.ToTable("FrameworkCapabilities");
+            builder.ToTable("FrameworkCapabilities", Schemas.Catalogue);
 
             builder.HasKey(f => new { f.FrameworkId, f.CapabilityId });
 

@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.Supplier
+﻿CREATE TABLE catalogue.Suppliers
 (
      Id nvarchar(6) NOT NULL,
      [Name] nvarchar(255) NOT NULL,

@@ -26,7 +26,7 @@ AS
     INSERT INTO @missingSuppliers (SupplierId)
          SELECT DISTINCT i.SupplierId
            FROM @items AS i
-          WHERE NOT EXISTS (SELECT * FROM dbo.Supplier AS s WHERE s.Id = i.SupplierId);
+          WHERE NOT EXISTS (SELECT * FROM catalogue.Suppliers AS s WHERE s.Id = i.SupplierId);
 
     IF EXISTS (SELECT * FROM @missingSuppliers)
     BEGIN;
@@ -44,35 +44,35 @@ AS
     BEGIN TRANSACTION;
 
     BEGIN TRY
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
              SELECT i.Id, i.[Name], @solutionCatalogueItemType, i.SupplierId
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM dbo.CatalogueItem AS c WHERE c.CatalogueItemId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.CatalogueItems AS c WHERE c.CatalogueItemId = i.Id);
 
-        INSERT INTO dbo.Solution(Id, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, LastUpdated, LastUpdatedBy)
              SELECT i.Id, @now, @emptyGuid
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM dbo.Solution AS s WHERE s.Id = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.Solutions AS s WHERE s.Id = i.Id);
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
              SELECT i.FrameworkId, i.Id, 0, @now, @emptyGuid
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM dbo.FrameworkSolutions AS f WHERE f.SolutionId = i.Id AND f.FrameworkId = i.FrameworkId);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.FrameworkSolutions AS f WHERE f.SolutionId = i.Id AND f.FrameworkId = i.FrameworkId);
 
         UPDATE f
            SET f.IsFoundation = i.IsFoundation
-          FROM dbo.FrameworkSolutions AS f
+          FROM catalogue.FrameworkSolutions AS f
                INNER JOIN @items AS i ON i.Id = f.SolutionId
          WHERE f.FrameworkId = i.FrameworkId;
 
         DELETE FROM c
-               FROM dbo.CatalogueItemCapability AS c
+               FROM catalogue.CatalogueItemCapabilities AS c
                     INNER JOIN @items AS i ON i.Id = c.CatalogueItemId;
 
-        INSERT INTO dbo.CatalogueItemCapability(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT SolutionId, c.Id, @passedFull, @now, @emptyGuid
                FROM @Capabilities AS cap
-                    INNER JOIN dbo.Capability AS c
+                    INNER JOIN catalogue.Capabilities AS c
                     ON c.CapabilityRef = cap.CapabilityRef;
 
         COMMIT TRANSACTION;
