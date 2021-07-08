@@ -33,7 +33,7 @@
         "OPERATING_MODE": "Private",
         "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
         "CO_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueOrdering;User=SA;password=Abc123Abc123;Integrated Security=false",
-        "APPINSIGHTS_INSTRUMENTATIONKEY": "ca1b863b-eb9a-4a81-8a23-182df28d1a0f",
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "BC_BLOB_CONNECTION": "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;",
         "BC_BLOB_CONTAINER": "buyingcatalogue-documents",
         "BC_SMTP_HOST": "localhost",
@@ -52,12 +52,12 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
         "OPERATING_MODE": "Private",
-        "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
-        "CO_DB_CONNECTION": "Server=localhost,1432;Database=CatalogueOrdering;User=SA;password=Abc123Abc123;Integrated Security=false",
-        "APPINSIGHTS_INSTRUMENTATIONKEY": "ca1b863b-eb9a-4a81-8a23-182df28d1a0f",
-        "BC_BLOB_CONNECTION": "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;",
+        "BC_DB_CONNECTION": "Server=host.docker.internal,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "CO_DB_CONNECTION": "Server=host.docker.internal,1432;Database=CatalogueOrdering;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+        "BC_BLOB_CONNECTION": "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://host.docker.internal:10100/devstoreaccount1;QueueEndpoint=http://host.docker.internal:10101/devstoreaccount1;TableEndpoint=http://host.docker.internal:10102/devstoreaccount1;",
         "BC_BLOB_CONTAINER": "buyingcatalogue-documents",
-        "BC_SMTP_HOST": "localhost",
+        "BC_SMTP_HOST": "host.docker.internal",
         "BC_SMTP_PORT": "1081"
       }
     }
