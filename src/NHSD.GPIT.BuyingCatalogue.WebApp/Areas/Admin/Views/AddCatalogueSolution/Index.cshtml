@@ -12,67 +12,65 @@
             <nhs-validation-summary/>
 
             <div class="nhsuk-grid-column-two-thirds">
-                <h1>Add a solution</h1>
-                <p class="nhsuk-lede-text">Provide the following information about your Catalogue Solution.</p>
+                <nhs-page-title title="Add a solution"
+                    advice="Provide the following information about your Catalogue Solution." />
+
                 <h2>Solution details</h2>
                 <form method="post">
 
-                    <div data-test-id="SolutionName">
-                        <nhs-input asp-for="SolutionName"
-                                   label-text="Solution name" />
-                    </div>
+                    <nhs-input asp-for="SolutionName"
+                        label-text="Solution name" />
 
-                    <div data-test-id="SupplierId">
-                        <nhs-select asp-for="SupplierId"
-                                    asp-items="@(new SelectList(Model.SuppliersSelectList, "Value", "Text"))"
-                                    label-text="Supplier name" />
-                    </div>
+                    <nhs-select asp-for="SupplierId"
+                        asp-items="@(new SelectList(Model.SuppliersSelectList, "Value", "Text"))"
+                        label-text="Supplier name" />
 
-                        @{ var cssClass = ViewData.ModelState.ContainsKey(nameof(AddSolutionModel.FrameworkModel)) ? "nhsuk-form-group--error" : ""; }
 
-                        <div class="nhsuk-form-group @cssClass">
-                            <fieldset id="@nameof(AddSolutionModel.FrameworkModel)" class="nhsuk-fieldset" aria-describedby="contact-hint">
-                                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
-                                    <h1 class="nhsuk-fieldset__heading">
-                                        Framework(s)
-                                    </h1>
-                                </legend>
-                                <div class="nhsuk-hint" id="contact-hint">
-                                    Select all that apply.
-                                </div>
-                                @Html.ValidationMessageFor(s => s.FrameworkModel, "", new { @class = "nhsuk-error-message" })
-                                <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.GpitFuturesFramework" type="checkbox" aria-controls="conditional-contact-1" aria-expanded="false">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.GpitFuturesFramework)">
-                                            GP IT Futures Framework
-                                        </label>
-                                    </div>
-                                    <div>
-                                    </div>
-                                    <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-contact-1">
-                                        <div class="nhsuk-form-group">
-                                            <div class="nhsuk-checkboxes">
-                                                <div class="nhsuk-checkboxes__item">
-                                                    <input data-test-id="foundation-solution" class="nhsuk-checkboxes__input " asp-for="@Model.FrameworkModel.FoundationSolutionFramework" type="checkbox">
-                                                    <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.FoundationSolutionFramework)">
-                                                        Foundation Solution
-                                                    </label>
-                                                </div>
-                                            </div>
+                    @{ var cssClass = ViewData.ModelState.ContainsKey(nameof(AddSolutionModel.FrameworkModel)) ? "nhsuk-form-group--error" : ""; }
+
+                    <div class="nhsuk-form-group @cssClass">
+                        <fieldset id="@nameof(AddSolutionModel.FrameworkModel)" class="nhsuk-fieldset" aria-describedby="contact-hint">
+                            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+                                <h1 class="nhsuk-fieldset__heading">
+                                    Framework(s)
+                                </h1>
+                            </legend>
+                            <div class="nhsuk-hint" id="contact-hint">
+                                Select all that apply.
+                            </div>
+                            @Html.ValidationMessageFor(s => s.FrameworkModel, "", new { @class = "nhsuk-error-message" })
+                        <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
+                            <div class="nhsuk-checkboxes__item">
+                                <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.GpitFuturesFramework" type="checkbox" aria-controls="conditional-contact-1" aria-expanded="false">
+                                <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.GpitFuturesFramework)">
+                                    GP IT Futures Framework
+                                </label>
+                            </div>
+                            <div>
+                            </div>
+                            <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-contact-1">
+                                <div class="nhsuk-form-group">
+                                    <div class="nhsuk-checkboxes">
+                                        <div class="nhsuk-checkboxes__item">
+                                            <input data-test-id="foundation-solution" class="nhsuk-checkboxes__input " asp-for="@Model.FrameworkModel.FoundationSolutionFramework" type="checkbox">
+                                            <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.FoundationSolutionFramework)">
+                                                Foundation Solution
+                                            </label>
                                         </div>
                                     </div>
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.DfocvcFramework" type="checkbox">
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.DfocvcFramework)">
-                                            DFOCVC Framework
-                                        </label>
-                                    </div>
                                 </div>
-                            </fieldset>
+                            </div>
+                            <div class="nhsuk-checkboxes__item">
+                                <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.DfocvcFramework" type="checkbox">
+                                <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.DfocvcFramework)">
+                                    DFOCVC Framework
+                                </label>
+                            </div>
                         </div>
-                        <br>
-                        <nhs-submit-button text="Save and continue" />
+                        </fieldset>
+                    </div>
+                    <br>
+                    <nhs-submit-button text="Save and continue" />
                 </form>
             </div>
         </div>
