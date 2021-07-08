@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Fact]
         public static void Constructor_NullRepository_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(                
+            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(
                 null));
         }
 
