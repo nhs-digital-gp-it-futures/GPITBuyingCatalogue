@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.CatalogueItemType
+﻿CREATE TABLE catalogue.CatalogueItemTypes
 (
     CatalogueItemTypeId int NOT NULL,
     [Name] nvarchar(20) NOT NULL,

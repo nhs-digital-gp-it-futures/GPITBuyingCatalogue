@@ -20,7 +20,7 @@
     CONSTRAINT PK_OrderId PRIMARY KEY (Id),
     CONSTRAINT FK_Order_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES dbo.Organisations (OrganisationId),
     CONSTRAINT FK_Order_OrderingPartyContact FOREIGN KEY (OrderingPartyContactId) REFERENCES ordering.Contacts (Id),
-    CONSTRAINT FK_Order_Supplier FOREIGN KEY (SupplierId) REFERENCES dbo.Supplier (Id),
+    CONSTRAINT FK_Order_Supplier FOREIGN KEY (SupplierId) REFERENCES catalogue.Suppliers (Id),
     CONSTRAINT FK_Order_SupplierContact FOREIGN KEY (SupplierContactId) REFERENCES ordering.Contacts (Id),
     CONSTRAINT FK_Order_OrderStatus FOREIGN KEY (OrderStatusId) REFERENCES ordering.OrderStatus (Id),
     INDEX IX_Order_IsDeleted NONCLUSTERED (IsDeleted),

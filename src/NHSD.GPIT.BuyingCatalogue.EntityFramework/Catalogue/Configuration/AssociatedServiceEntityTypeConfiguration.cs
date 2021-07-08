@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<AssociatedService> builder)
         {
-            builder.ToTable("AssociatedService");
+            builder.ToTable("AssociatedServices", Schemas.Catalogue);
 
             builder.Property(a => a.AssociatedServiceId)
                 .HasMaxLength(14)

@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.CatalogueItemEpicStatus
+﻿CREATE TABLE catalogue.CatalogueItemEpicStatus
 (
      Id int NOT NULL,
      [Name] nvarchar(16) NOT NULL,

@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.PricingUnit
+﻿CREATE TABLE catalogue.PricingUnits
 (
     PricingUnitId uniqueidentifier NOT NULL,
     [Name] nvarchar(20) NOT NULL,
