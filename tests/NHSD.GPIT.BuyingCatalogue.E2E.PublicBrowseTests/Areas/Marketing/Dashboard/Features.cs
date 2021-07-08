@@ -11,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public Features(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/features")
+        public Features(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/features")
         {
         }
 

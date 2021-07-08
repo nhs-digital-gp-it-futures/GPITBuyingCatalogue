@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public class ApplicationTypeDetails: TestBase, IClassFixture<LocalWebApplicationFactory>
+    public class ApplicationTypeDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public ApplicationTypeDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001/client-application-types")
+        public ApplicationTypeDetails(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/99999-001/client-application-types")
         {
         }
 

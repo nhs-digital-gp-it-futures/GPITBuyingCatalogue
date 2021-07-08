@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 {
     public sealed class OnPremise : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public OnPremise(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-on-premise")
+        public OnPremise(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-on-premise")
         {
         }
 

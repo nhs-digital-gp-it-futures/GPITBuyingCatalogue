@@ -7,7 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
     internal sealed class Dashboard : ActionBase
     {
-        public Dashboard(IWebDriver driver) : base(driver)
+        public Dashboard(IWebDriver driver)
+            : base(driver)
         {
         }
 
