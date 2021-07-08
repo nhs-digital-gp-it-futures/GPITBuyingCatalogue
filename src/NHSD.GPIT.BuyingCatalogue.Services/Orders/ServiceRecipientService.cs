@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
@@ -13,9 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class ServiceRecipientService : IServiceRecipientService
     {
-        private readonly GPITBuyingCatalogueDbContext context;
+        private readonly BuyingCatalogueDbContext context;
 
-        public ServiceRecipientService(GPITBuyingCatalogueDbContext context) =>
+        public ServiceRecipientService(BuyingCatalogueDbContext context) =>
             this.context = context ?? throw new ArgumentNullException(nameof(context));
 
         public async Task<List<ServiceRecipient>> GetAllOrderItemRecipients(CallOffId callOffId)

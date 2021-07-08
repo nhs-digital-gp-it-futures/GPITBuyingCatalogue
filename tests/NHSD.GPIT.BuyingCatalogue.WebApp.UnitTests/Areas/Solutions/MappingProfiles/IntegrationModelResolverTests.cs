@@ -6,7 +6,6 @@ using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;

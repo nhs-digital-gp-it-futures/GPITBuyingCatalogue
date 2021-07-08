@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -17,13 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderItemService : IOrderItemService
     {
-        private readonly GPITBuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICreateOrderItemValidator orderItemValidator;
         private readonly IServiceRecipientService serviceRecipientService;
         private readonly IOrderService orderService;
 
         public OrderItemService(
-            GPITBuyingCatalogueDbContext dbContext,
+            BuyingCatalogueDbContext dbContext,
             ICreateOrderItemValidator orderItemValidator,
             IServiceRecipientService serviceRecipientService,
             IOrderService orderService)

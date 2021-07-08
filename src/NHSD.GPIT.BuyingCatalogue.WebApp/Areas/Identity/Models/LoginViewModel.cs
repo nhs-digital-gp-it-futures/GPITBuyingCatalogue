@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 
         [Required(ErrorMessage = ErrorMessages.PasswordRequired)]
         [DataType(DataType.Password)]
-
         [Password]
         public string Password { get; set; }
 

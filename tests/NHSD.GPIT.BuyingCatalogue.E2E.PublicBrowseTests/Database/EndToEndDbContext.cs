@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 {
-    internal sealed class EndToEndDbContext : GPITBuyingCatalogueDbContext
+    internal sealed class EndToEndDbContext : BuyingCatalogueDbContext
     {
         public EndToEndDbContext(DbContextOptions<EndToEndDbContext> options)
             : base(options, new IdentityServiceStub())

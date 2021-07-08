@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services
 {
-    public interface ICatalogueItemRepository : IDbRepository<CatalogueItem, GPITBuyingCatalogueDbContext>
+    public interface ICatalogueItemRepository : IDbRepository<CatalogueItem, BuyingCatalogueDbContext>
     {
         Task<CatalogueItemId> GetLatestCatalogueItemIdFor(string supplierId);
 

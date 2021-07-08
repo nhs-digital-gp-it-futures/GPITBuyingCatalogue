@@ -17,9 +17,9 @@
                     asp-for="@Model"
                     label-text="Which organisation are you looking for?"
                     label-hint="Select one option.">
-                    <nhs-radio-buttons asp-for="@Model.SelectedOrganisation" 
+                    <nhs-radio-buttons asp-for="@Model.SelectedOrganisation"
                                        values="@Model.AvailableOrganisations"
-                                       value-name="OrganisationId" 
+                                       value-name="OrganisationId"
                                        display-name="Name" />
                 </nhs-fieldset-form-label>
                 <nhs-submit-button text="Confirm" />

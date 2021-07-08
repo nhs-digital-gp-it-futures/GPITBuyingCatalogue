@@ -23,14 +23,10 @@
             </a>
         </div>
 
-        <details
-            class="nhsuk-details nhsuk-expander"
-            id="nhsuk-details0"
-            nhsuk-polyfilled="true"
-            @if (Model.HasSelected)
-            {
-                <text>open=""</text>
-            }>
+        <details class="nhsuk-details nhsuk-expander"
+                 id="nhsuk-details0"
+                 nhsuk-polyfilled="true"
+                 @if (Model.HasSelected) { <text> open="" </text>  }>
             <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
                 <span class="nhsuk-details__summary-text">
                     Filter Catalogue Solutions
@@ -51,7 +47,7 @@
                                            class="nhsuk-radios__input"
                                            id="@status.Id"
                                            type="radio"
-                                           value="@status.Id"/>
+                                           value="@status.Id" />
                                     <label class="nhsuk-label nhsuk-radios__label" for="@status.Id">
                                         @status.Display
                                     </label>
@@ -68,9 +64,9 @@
             </div>
         </details>
 
-        <nhs-table>
+        <nhs-table data-test-id="manage-catalogue-solution-list">
             @foreach (var heading in new[]
-            {
+           {
                 "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty,
             })
             {
@@ -81,7 +77,7 @@
             {
                 <nhs-table-row-container>
                     @foreach (var cell in new[]
-                    {
+                   {
                         item.CatalogueItemId,
                         item.Name,
                         item.Supplier,
@@ -109,7 +105,7 @@
                                     break;
                             }
                         }
-                        <nhs-tag text="@item.PublishedStatus" colour="@colour"/>
+                        <nhs-tag text="@item.PublishedStatus" colour="@colour" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a href="#" style="white-space: nowrap;">
@@ -119,6 +115,5 @@
                 </nhs-table-row-container>
             }
         </nhs-table>
-
     </div>
 </div>
