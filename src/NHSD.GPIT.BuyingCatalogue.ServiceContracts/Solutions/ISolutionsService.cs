@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId);
 
         Task<List<CatalogueItem>> GetDFOCVCSolutions();
 

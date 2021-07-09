@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
 {
     public sealed class OrderTaskList
     {

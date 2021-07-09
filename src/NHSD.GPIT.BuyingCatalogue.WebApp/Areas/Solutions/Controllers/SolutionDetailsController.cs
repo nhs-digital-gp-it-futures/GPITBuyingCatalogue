@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -33,6 +33,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, AssociatedServicesModel>(solution));
         }
 
+        [Route("futures/{id}/additional-services")]
+        public async Task<IActionResult> AdditionalServices(CatalogueItemId id)
+        {
+            var solution = await solutionsService.GetSolutionWithAllAdditionalServices(id);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            return View(mapper.Map<CatalogueItem, AdditionalServicesModel>(solution));
+        }
+
         [Route("futures/{id}/capabilities")]
         public async Task<IActionResult> Capabilities(CatalogueItemId id)
         {
@@ -52,9 +62,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var solutionCapability = solution.Solution != null ?
                 solution.Solution.SolutionCapabilities.FirstOrDefault(sc => sc.Capability.Id == capabilityId)
-                ?? new SolutionCapability() : new SolutionCapability();
+                ?? new CatalogueItemCapability() : new CatalogueItemCapability();
 
-            var model = mapper.Map<SolutionCapability, SolutionCheckEpicsModel>(solutionCapability);
+            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(solutionCapability);
 
             if (solution.Name != null)
             {
@@ -138,6 +148,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
+        }
+
+        [Route("futures/{id}/check-capability-epic")]
+        public IActionResult CheckCapabilityEpic(string id)
+        {
+            return View();
         }
 
         [Route("futures/{id}/supplier-details")]

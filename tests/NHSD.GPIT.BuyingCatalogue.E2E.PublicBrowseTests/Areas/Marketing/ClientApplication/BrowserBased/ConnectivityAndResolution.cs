@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 {
     public sealed class ConnectivityAndResolution : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public ConnectivityAndResolution(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/connectivity-and-resolution")
+        public ConnectivityAndResolution(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/connectivity-and-resolution")
         {
         }
 

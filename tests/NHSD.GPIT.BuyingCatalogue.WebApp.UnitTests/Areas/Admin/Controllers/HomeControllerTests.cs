@@ -7,7 +7,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -94,6 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationService.Setup(o => o.GetAllOrganisations())
                 .ReturnsAsync(mockOrganisations);
             var mockMapper = new Mock<IMapper>();
+          
             var controller = new HomeController(                
                 mockOrganisationService.Object,
                 mockMapper.Object,
@@ -115,7 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockOrganisationModels = new Mock<IList<OrganisationModel>>().Object;
             mockMapper.Setup(m => m.Map<IList<Organisation>, IList<OrganisationModel>>(mockOrganisations))
                 .Returns(mockOrganisationModels);
-            var controller = new HomeController(                
+
+          var controller = new HomeController(                
                 mockOrganisationService.Object,
                 mockMapper.Object,
                 Mock.Of<ISolutionsService>());
@@ -171,6 +174,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
+        }
+
+        [Fact]
+        public static async Task Get_ManageSuppliers_GetsAllSuppliers()
+        {
+            var mockSolutionService = new Mock<ISolutionsService>();
+            var controller = new HomeController(
+                Mock.Of<IOrganisationsService>(),
+                Mock.Of<IMapper>(),
+                mockSolutionService.Object);
+
+            await controller.ManageSuppliers();
+
+            mockSolutionService.Verify(o => o.GetAllSuppliers());
+        }
+
+        [Fact]
+        public static async Task Get_ManageSuppliers_ReturnsViewWithExpectedViewModel()
+        {
+            var mockOrganisationService = new Mock<IOrganisationsService>();
+            var mockSuppliers = new Mock<IList<Supplier>>().Object;
+            var mockMapper = new Mock<IMapper>();
+            var mockSolutionService = new Mock<ISolutionsService>();
+
+            mockSolutionService.Setup(o => o.GetAllSuppliers()).ReturnsAsync(mockSuppliers);
+
+            var controller = new HomeController(
+                mockOrganisationService.Object,
+                mockMapper.Object,
+                mockSolutionService.Object);
+
+            var actual = (await controller.ManageSuppliers()).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            Assert.Same(mockSuppliers, actual.Model);
         }
     }
 }

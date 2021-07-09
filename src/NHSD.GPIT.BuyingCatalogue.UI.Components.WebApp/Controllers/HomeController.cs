@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel;
 
@@ -169,11 +171,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         {
             var model = new RadioListModel
             {
-                Options = new List<RadioListOptions>
+                ListOptions = new List<RadioListOptions>(3)
                 {
                     new() { Name = "First Option", Value = "1" },
                     new() { Name = "Second Option", Value = "2" },
                     new() { Name = "Third Option", Value = "3" },
+                },
+                ConditionalOptions = new List<RadioListOptions>(2)
+                {
+                    new() { Name = "This Option Contains a Text Input", Value = "1" },
+                    new() { Name = "This Option Contains some Text", Value = "2" },
                 },
             };
 

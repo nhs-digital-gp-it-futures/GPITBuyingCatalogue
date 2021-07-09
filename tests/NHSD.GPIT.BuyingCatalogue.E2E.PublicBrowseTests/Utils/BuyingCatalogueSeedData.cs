@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
@@ -106,67 +107,68 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
-                        },
-                        SolutionEpics = new List<SolutionEpic>
+                        SolutionCapabilities = new List<CatalogueItemCapability>
                         {
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00001", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00002", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00003", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00004", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00005", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00006", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00007", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00008", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00009", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00010", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00011", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00012", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00013", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00014", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00015", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00016", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00017", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00018", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00019", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00020", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00021", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00022", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00023", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00024", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00025", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00026", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00027", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00028", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00029", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00030", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00031", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00032", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00033", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00034", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00035", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00037", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00038", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00056", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00057", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00058", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00075", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00076", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00077", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00078", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00079", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00080", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00081", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00082", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00083", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00084", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00085", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00086", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00089", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00090", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00091", StatusId = 1 },
-                            new SolutionEpic {CapabilityId  = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00099", StatusId = 1 }
+                            new CatalogueItemCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 },
+                        },
+                        SolutionEpics = new List<CatalogueItemEpic>
+                        {
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00001", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00002", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00003", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00004", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00005", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00006", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00007", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00008", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00009", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00010", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00011", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00012", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00013", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00014", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00015", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00016", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00017", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00018", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00019", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00020", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00021", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00022", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00023", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00024", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00025", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00026", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00027", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00028", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00029", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00030", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00031", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00032", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00033", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00034", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00035", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00037", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00038", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00056", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00057", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00058", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00075", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00076", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00077", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00078", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00079", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00080", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00081", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00082", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00083", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00084", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00085", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00086", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00089", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00090", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00091", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00099", StatusId = 1 },
                         },
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -180,8 +182,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                                 Department = "Fruit controller",
                                 LastUpdated = DateTime.UtcNow,
                                 LastUpdatedBy = Guid.Empty,
-                            }
-                        }
+                            },
+                        },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
@@ -200,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
-                    }
+                    },
                 },
                 new CatalogueItem
                 {
@@ -287,13 +289,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
-                        },
-                        SolutionEpics = new List<SolutionEpic>
+                        SolutionCapabilities = new List<CatalogueItemCapability>
                         {
-                            new SolutionEpic { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), EpicId = "C1E1", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), EpicId = "C1E2", StatusId = 2 },
+                            new CatalogueItemCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 },
+                        },
+                        SolutionEpics = new List<CatalogueItemEpic>
+                        {
+                            new() { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), EpicId = "C1E1", StatusId = 1 },
+                            new() { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), EpicId = "C1E2", StatusId = 2 },
                         },
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -307,8 +310,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                                 Department = "Fruit wrangler",
                                 LastUpdated = DateTime.UtcNow,
                                 LastUpdatedBy = Guid.Empty,
-                            }
-                        }
+                            },
+                        },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
@@ -399,13 +402,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
-                        SolutionCapabilities = new List<SolutionCapability> {
-                            new SolutionCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
-                        },
-                        SolutionEpics = new List<SolutionEpic>
+                        SolutionCapabilities = new List<CatalogueItemCapability>
                         {
-                            new SolutionEpic { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), EpicId = "C2E1", StatusId = 1 },
-                            new SolutionEpic { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), EpicId = "C2E2", StatusId = 2 },
+                            new CatalogueItemCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 },
+                        },
+                        SolutionEpics = new List<CatalogueItemEpic>
+                        {
+                            new() { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), EpicId = "C2E1", StatusId = 1 },
+                            new() { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), EpicId = "C2E2", StatusId = 2 },
                         },
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -419,8 +423,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                                 Department = "Fruit wrangler",
                                 LastUpdated = DateTime.UtcNow,
                                 LastUpdatedBy = Guid.Empty,
-                            }
-                        }
+                            },
+                        },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
@@ -486,7 +490,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         PricingUnitId = Guid.NewGuid(),
                         TierName = "thing",
                         Name = "thing",
-                        Description = "per thing"
+                        Description = "per thing",
                     },
                     CurrencyCode = "GBP",
                     Price = 0.01M,
@@ -534,10 +538,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             };
 
             // Frameworks
-            List<EntityFramework.Models.GPITBuyingCatalogue.Framework> frameworks = new()
+            List<EntityFramework.Catalogue.Models.Framework> frameworks = new()
             {
-                new EntityFramework.Models.GPITBuyingCatalogue.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital" },
-                new EntityFramework.Models.GPITBuyingCatalogue.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England" },
+                new EntityFramework.Catalogue.Models.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", Owner = "NHS Digital" },
+                new EntityFramework.Catalogue.Models.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", Owner = "NHS England" },
             };
             context.AddRange(frameworks);
 
@@ -1116,20 +1120,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.AddRange(publicationStatuses);
 
             // SolutionCapabilityStatus
-            List<SolutionCapabilityStatus> solutionCapabilityStatuses = new()
+            List<CatalogueItemCapabilityStatus> solutionCapabilityStatuses = new()
             {
-                new SolutionCapabilityStatus { Id = 1, Pass = true, Name = "Passed – Full" },
-                new SolutionCapabilityStatus { Id = 2, Pass = true, Name = "Passed – Partial" },
-                new SolutionCapabilityStatus { Id = 3, Pass = false, Name = "Failed" },
+                new CatalogueItemCapabilityStatus { Id = 1, Pass = true, Name = "Passed – Full" },
+                new CatalogueItemCapabilityStatus { Id = 2, Pass = true, Name = "Passed – Partial" },
+                new CatalogueItemCapabilityStatus { Id = 3, Pass = false, Name = "Failed" },
             };
             context.AddRange(solutionCapabilityStatuses);
 
             // SolutionEpicStatus
-            List<SolutionEpicStatus> solutionEpicStatuses = new()
+            List<CatalogueItemEpicStatus> solutionEpicStatuses = new()
             {
-                new SolutionEpicStatus { Id = 1, IsMet = true, Name = "Passed" },
-                new SolutionEpicStatus { Id = 2, IsMet = false, Name = "Not Evidenced" },
-                new SolutionEpicStatus { Id = 3, IsMet = false, Name = "Failed" },
+                new CatalogueItemEpicStatus { Id = 1, IsMet = true, Name = "Passed" },
+                new CatalogueItemEpicStatus { Id = 2, IsMet = false, Name = "Not Evidenced" },
+                new CatalogueItemEpicStatus { Id = 3, IsMet = false, Name = "Failed" },
             };
             context.AddRange(solutionEpicStatuses);
 
@@ -1147,7 +1151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     Address = JsonConvert.DeserializeObject<Address>(@"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}"),
                     Summary = "About this supplier",
                     SupplierUrl = "https://www.e2etest.com",
-                }
+                },
             };
             context.AddRange(suppliers);
 
@@ -1163,7 +1167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = Guid.Empty,
                     PhoneNumber = "00987654321",
-                    SupplierId = "99999"
+                    SupplierId = "99999",
                 },
             };
 

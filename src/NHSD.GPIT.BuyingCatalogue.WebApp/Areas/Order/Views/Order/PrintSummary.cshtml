@@ -48,10 +48,14 @@
         }
     </style>
 </head>
-
-<body onload="window.print();">
+<body onload="window.print();" class="nhsuk-bc-print">
     <div class="nhsuk-width-container">
-        <main class="nhsuk-main-wrapper nhsuk-bc-print" id="maincontent">
+        <main class="nhsuk-main-wrapper" id="maincontent">
+            <div class="bc-print-header">
+                <h1 style="margin-bottom: 0.5em;">GP IT Futures Framework Agreement</h1>
+                <h2>Call Off Order Form</h2>
+                <br />
+            </div>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-two-thirds">
                     <nhs-validation-summary />
@@ -89,8 +93,8 @@
 
                     <div style="page-break-after:always"></div>
 
-                    <h2 class="nhsuk-u-margin-bottom-3">Order items (one-off cost)</h2>
-                    <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a one-off cost for the duration of this Call-off Agreement. They're the Associated Services in this order you can use as and when required.</p>
+                    <h2>Order items (one-off cost)</h2>
+                    <p>The following items carry a one-off cost for the duration of this Call-off Agreement. They're the Associated Services in this order you can use as and when required.</p>
                     <nhs-table>
                         <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
                         <nhs-table-column>Item ID</nhs-table-column>
@@ -121,8 +125,8 @@
 
                     <div style="page-break-after:always"></div>
 
-                    <h2 class="nhsuk-u-margin-bottom-3">Order items (recurring cost)</h2>
-                    <p class="nhsuk-u-font-size-19 nhsuk-u-font-weight-normal">The following items carry a recurring annual cost for the duration of this Call-off Agreement. They're the Catalogue Solutions, Additional Services and Associated Services in this order that you'll be charged for at a monthly rate.</p>
+                    <h2>Order items (recurring cost)</h2>
+                    <p>The following items carry a recurring annual cost for the duration of this Call-off Agreement. They're the Catalogue Solutions, Additional Services and Associated Services in this order that you'll be charged for at a monthly rate.</p>
                     <nhs-table>
                         <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
                         <nhs-table-column>Item ID/name</nhs-table-column>

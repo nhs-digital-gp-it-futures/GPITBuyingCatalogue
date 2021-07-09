@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class SolutionCapabilitiesModel
     {
-        public SolutionCapabilitiesModel(SolutionCapability solutionCapability, Solution solution)
+        public SolutionCapabilitiesModel(CatalogueItemCapability solutionCapability, Solution solution)
         {
             if (solutionCapability is null)
                 throw new ArgumentNullException(nameof(solutionCapability));

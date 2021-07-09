@@ -35,16 +35,16 @@ DECLARE @version1 AS nvarchar(10) = '1.0.0';
 DECLARE @purchaseModelId AS uniqueIdentifier;
 DECLARE @solutionId AS nvarchar(14);
 
-IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM dbo.Solution)
+IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM catalogue.Solutions)
 BEGIN
     SET @solutionId = '100000-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Write on Time', '100000', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, Integrations, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, Integrations, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -57,15 +57,15 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Pat', 'Butcher', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C1';
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
     END;
 
@@ -73,12 +73,12 @@ BEGIN
 
     SET @solutionId = '100001-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Appointment Gateway', '100001', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -90,15 +90,15 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C1', 'C5');
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId, 1, @now, @emptyGuid);
     END;
 
@@ -106,12 +106,12 @@ BEGIN
 
     SET @solutionId = '100002-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Zen Guidance', '100002', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -123,12 +123,12 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Victoria', 'Sponge', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C6';
     END;
 
@@ -136,12 +136,12 @@ BEGIN
 
     SET @solutionId = '100003-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Intellidoc Comms', '100003', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -153,12 +153,12 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Richard', 'Burton', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C7', 'C15');
     END;
 
@@ -166,12 +166,12 @@ BEGIN
 
     SET @solutionId = '100004-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Diagnostics XYZ', '100004', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -183,15 +183,15 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Harry', 'Houdini', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C8';
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
     END;
 
@@ -199,12 +199,12 @@ BEGIN
 
     SET @solutionId = '100005-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Document Wizard', '100005', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -216,12 +216,12 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Agent', 'M', '01234 567891', 'm@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C9', 'C19', 'C41');
     END;
 
@@ -229,12 +229,12 @@ BEGIN
 
     SET @solutionId = '100006-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Paperlite', '100006', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -246,12 +246,12 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES ('100006-001', 'Timothy', 'Teabag', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT '100006-001', Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C9', 'C17');
     END;
 
@@ -259,12 +259,12 @@ BEGIN
 
     SET @solutionId = '100007-001';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Medsort', '100007', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -276,24 +276,24 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Betty', 'Banjo', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C30';
     END;
 
     /*************************************************************************************************************************************************************/
 
     SET @solutionId = '100007-002';
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'BostonDynamics', '100007', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -305,12 +305,12 @@ BEGIN
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Boston', 'Rocks', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C30';
     END;
 
@@ -318,12 +318,12 @@ BEGIN
 
     SET @solutionId = '99999-89';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'NotEmis Web GP', '99999', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version],
+        INSERT INTO catalogue.Solutions(Id, [Version],
                     Features, ClientApplication, Hosting, ImplementationDetail, RoadMap,
                     IntegrationsUrl, Summary, FullDescription,
                     LastUpdated, LastUpdatedBy)
@@ -368,10 +368,10 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Eduardo', 'Eggbert', 'eddie@eggs.test', '01234 567891', 'Internal Sales Team', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
         (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @emptyGuid),
         (@solutionId, @resourceManagementCapabilityId, 1, @now, @emptyGuid),
@@ -387,10 +387,10 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
         (@solutionId, @clinicalDecisionSupportCapabilityId, 1, @now, @emptyGuid),
         (@solutionId, @workflowCapabilityId, 1, @now, @emptyGuid);
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated ,LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated ,LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionEpic (SolutionId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemEpics (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
         (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E1', 1, @now, @emptyGuid),
         (@solutionId, @gpAppointmentManagementCapabilityId, 'C5E2', 1, @now, @emptyGuid),
@@ -499,12 +499,12 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
 
     SET @solutionId = '99998-98';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'NotSystmOne', '99998', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version],
+        INSERT INTO catalogue.Solutions(Id, [Version],
                     Features, ClientApplication, Hosting, ImplementationDetail,
                     IntegrationsUrl, AboutUrl, Summary, FullDescription,
                     LastUpdated, LastUpdatedBy)
@@ -539,7 +539,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability (SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
         (@solutionId, @presciptionOrderingCapabilityId, 1, @now, @emptyGuid),
         (@solutionId, @gpAppointmentManagementCapabilityId, 1, @now, @emptyGuid),
@@ -558,7 +558,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
         (@solutionId, @productivityCapabilityId, 1, @now, @emptyGuid),
         (@solutionId, @citizenViewRecordCapabilityId, 1, @now, @emptyGuid);
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId , 1, @now, @emptyGuid);
     END;
 
@@ -566,12 +566,12 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
 
     SET @solutionId = '99999-01';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'DFOCVC Online Consultation', '99999', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -583,15 +583,15 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C43');
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
              VALUES (@dfocvcframeworkId, @solutionId, 0, @now, @emptyGuid);
     END;
 
@@ -599,12 +599,12 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
 
     SET @solutionId = '99999-02';
 
-    IF NOT EXISTS (SELECT * FROM dbo.CatalogueItem WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
     BEGIN
-        INSERT INTO dbo.CatalogueItem(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'GPIT DFOCVC Online Consultation', '99999', @publishedStatus, @now);
 
-        INSERT INTO dbo.Solution(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
         VALUES (
             @solutionId,
             @version1,
@@ -616,15 +616,15 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             @now,
             @emptyGuid);
 
-        INSERT INTO dbo.MarketingContact(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
              VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @emptyGuid);
 
-        INSERT INTO dbo.SolutionCapability(SolutionId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @emptyGuid
-               FROM dbo.Capability
+               FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C44');
 
-        INSERT INTO dbo.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
              VALUES (@gpitframeworkId, @solutionId, 1, @now, @emptyGuid),
                     (@dfocvcframeworkId, @solutionId, 0, @now, @emptyGuid);
     END;
@@ -640,9 +640,9 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     DECLARE @yearTimeUnit AS int = 2;
 
     /* Insert prices */
-    IF NOT EXISTS (SELECT * FROM dbo.CataloguePrice)
+    IF NOT EXISTS (SELECT * FROM catalogue.CataloguePrices)
     BEGIN
-     INSERT INTO dbo.CataloguePrice(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
+     INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
           VALUES ('100000-001', @patientProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, 99.99),
                  ('100000-001', @patientProvisioningType, @tieredPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, NULL),
                  ('100000-001', @onDemandProvisioningType, @flatPriceType, '774E5A1D-D15C-4A37-9990-81861BEAE42B', NULL, 'GBP', @now, 1001.010),
@@ -663,13 +663,13 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
                  ('99999-89', @patientProvisioningType, @tieredPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, NULL);
 
           -- Tiered price IDs
-          DECLARE @priceId1000001 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '100000-001' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId1000021 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '100002-001' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId1000072 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '100007-002' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId9999898 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '99998-98' AND CataloguePriceTypeId = @tieredPriceType);
-          DECLARE @priceId9999989 AS int = (SELECT CataloguePriceId from dbo.CataloguePrice WHERE CatalogueItemId = '99999-89' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId1000001 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '100000-001' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId1000021 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '100002-001' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId1000072 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '100007-002' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId9999898 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '99998-98' AND CataloguePriceTypeId = @tieredPriceType);
+          DECLARE @priceId9999989 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '99999-89' AND CataloguePriceTypeId = @tieredPriceType);
 
-          INSERT INTO dbo.CataloguePriceTier(CataloguePriceId, BandStart, BandEnd, Price)
+          INSERT INTO catalogue.CataloguePriceTiers(CataloguePriceId, BandStart, BandEnd, Price)
                VALUES (@priceId1000001, 1, 999, 123.45),
                       (@priceId1000001, 1000, 1999, 49.99),
                       (@priceId1000001, 2000, NULL, 19.99),

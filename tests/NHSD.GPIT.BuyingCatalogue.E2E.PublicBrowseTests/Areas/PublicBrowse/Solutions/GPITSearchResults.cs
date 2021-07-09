@@ -9,7 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
 {
     public sealed class GPITSearchResults : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public GPITSearchResults(LocalWebApplicationFactory factory) : base(factory, "/Solutions/Futures/SearchResults")
+        public GPITSearchResults(LocalWebApplicationFactory factory)
+            : base(factory, "/Solutions/Futures/SearchResults")
         {
         }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Comparers
 {

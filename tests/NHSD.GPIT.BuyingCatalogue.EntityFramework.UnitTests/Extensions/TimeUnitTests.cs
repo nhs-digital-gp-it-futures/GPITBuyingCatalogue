@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
@@ -35,6 +35,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             var actualDisplayName = timeUnit.Name();
 
             actualDisplayName.Should().Be(expectedDisplayName);
+        }
+
+        [Theory]
+        [InlineData(TimeUnit.PerMonth, "PerMonth")]
+        [InlineData(TimeUnit.PerYear, "PerYear")]
+        public static void EachTimeUnit_HasExpectedEnumMemberName(TimeUnit timeUnit, string expectedEnumMemberName)
+        {
+            var actualDisplayName = timeUnit.EnumMemberName();
+
+            actualDisplayName.Should().Be(expectedEnumMemberName);
         }
     }
 }

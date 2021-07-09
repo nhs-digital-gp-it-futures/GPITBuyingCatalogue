@@ -4,7 +4,7 @@ DECLARE @email AS nvarchar(256) = '$(EA_USER_EMAIL)';
 IF UPPER(@createUser) = 'TRUE'
 AND NOT EXISTS (
     SELECT *
-      FROM dbo.AspNetUsers
+      FROM users.AspNetUsers
       WHERE UserName = @email)
 BEGIN
     DECLARE @firstName AS nvarchar(50) = '$(EA_USER_FIRST_NAME)';
@@ -14,9 +14,9 @@ BEGIN
     DECLARE @phoneNumber AS nvarchar(max) = '$(EA_USER_PHONE)';
 
     DECLARE @executiveAgencyRoleId AS nchar(5) = 'RO116';
-    DECLARE @organisationId AS uniqueidentifier = (SELECT OrganisationId FROM dbo.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
+    DECLARE @organisationId AS uniqueidentifier = (SELECT OrganisationId FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
 
-    INSERT INTO dbo.AspNetUsers
+    INSERT INTO users.AspNetUsers
     (
         Id, UserName, NormalizedUserName, PasswordHash, 
         FirstName, LastName, Email, NormalizedEmail, EmailConfirmed, PhoneNumber, PhoneNumberConfirmed,

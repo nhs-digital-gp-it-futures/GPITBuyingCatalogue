@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -28,11 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
         }
 
-        public CatalogueItem CatalogueItem { get; private set; }
+        public CatalogueItem CatalogueItem { get; }
 
         public string Frameworks { get; private set; }
 
-        public string[] Features { get; private set; }
+        public string[] Features { get; }
 
         public ClientApplicationTypeModel BrowserBased { get; set; }
 

@@ -47,27 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             return new RemoteWebDriver(new Uri(hubURL), options);
         }
 
-        private IWebDriver GetBrowser(string browser)
-        {
-            IWebDriver driver;
-
-            if (Debugger.IsAttached || !GridRunning)
-            {
-                driver = GetLocalChromeDriver();
-            }
-            else
-            {
-                driver = browser.ToLower() switch
-                {
-                    "chrome" or "googlechrome" => GetChromeDriver(DefaultHubUrl),
-                    "firefox" or "ff" or "mozilla" => GetFirefoxDriver(DefaultHubUrl),
-                    _ => GetLocalChromeDriver(),
-                };
-            }
-
-            return driver;
-        }
-
         private static bool GetGridStatus()
         {
             var requestUri = new Uri("http://localhost:4444/grid/console");
@@ -77,8 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();
-                // do something with response.Headers to find out information about the request
 
+                // do something with response.Headers to find out information about the request
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     return true;
@@ -108,6 +87,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
 
             return options;
+        }
+
+        private IWebDriver GetBrowser(string browser)
+        {
+            IWebDriver driver;
+
+            if (Debugger.IsAttached || !GridRunning)
+            {
+                driver = GetLocalChromeDriver();
+            }
+            else
+            {
+                driver = browser.ToLower() switch
+                {
+                    "chrome" or "googlechrome" => GetChromeDriver(DefaultHubUrl),
+                    "firefox" or "ff" or "mozilla" => GetFirefoxDriver(DefaultHubUrl),
+                    _ => GetLocalChromeDriver(),
+                };
+            }
+
+            return driver;
         }
     }
 }

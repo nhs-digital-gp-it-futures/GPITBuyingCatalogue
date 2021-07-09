@@ -1,4 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions

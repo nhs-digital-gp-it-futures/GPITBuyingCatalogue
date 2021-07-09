@@ -1,16 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
     internal class SolutionAction : ActionBase
     {
-        public SolutionAction(IWebDriver driver) : base(driver)
+        public SolutionAction(IWebDriver driver)
+            : base(driver)
         {
+        }
+
+        public void ClickEpics()
+        {
+            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
         }
 
         internal bool SolutionNameDisplayed()
@@ -64,11 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CapabilitiesContent).Select(s => s.Text);
         }
 
-        public void ClickEpics()
-        {
-            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
-        }
-
         internal IEnumerable<string> GetNhsSolutionEpics()
         {
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.NhsSolutionEpics).Select(s => s.Text);
@@ -95,13 +95,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
             var associatedServicesOnPage = Driver.FindElement(Objects.PublicBrowse.SolutionObjects.AssociatedServicesInformation).FindElements(By.TagName("dl"));
 
-            foreach(var assocServ in associatedServicesOnPage)
+            foreach (var assocServ in associatedServicesOnPage)
             {
                 associatedServices.Add(
                     new()
                     {
                         Description = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.Description).Text,
-                        OrderGuidance = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.OrderGuidance).Text
+                        OrderGuidance = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.OrderGuidance).Text,
                     });
             }
 

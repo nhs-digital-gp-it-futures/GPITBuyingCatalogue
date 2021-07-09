@@ -179,7 +179,7 @@ iPLATO is the digital bridge between any of the principal GP IT systems used by 
 
 More than 25 million patients in the UK already receive messages from their GP or Healthcare provider through iPLATO Patient Care Messaging for Primary Care system.', N'', N'{"line1":"1 King Street","town":"London","county":"Greater London","postcode":"W6 9HR","country":"England"}', NULL, NULL, 0, CAST(N'2020-04-01T13:48:54.1466667' AS datetime2), N'00000000-0000-0000-0000-000000000000');
 
-MERGE INTO dbo.Supplier AS TARGET
+MERGE INTO catalogue.Suppliers AS TARGET
 USING #Supplier AS SOURCE
 ON TARGET.Id = SOURCE.Id 
 WHEN MATCHED THEN  

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -18,16 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const string GpitFuturesFrameworkId = "NHSDGP001";
         private const string DfocvcFrameworkId = "DFOCVC001";
 
-        private readonly GPITBuyingCatalogueDbContext dbContext;
-        private readonly IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository;
-        private readonly IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository;
-        private readonly IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository;
+        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
+        private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
+        private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
 
         public SolutionsService(
-            GPITBuyingCatalogueDbContext dbContext,
-            IDbRepository<MarketingContact, GPITBuyingCatalogueDbContext> marketingContactRepository,
-            IDbRepository<Solution, GPITBuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, GPITBuyingCatalogueDbContext> supplierRepository)
+            BuyingCatalogueDbContext dbContext,
+            IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
+            IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
+            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
@@ -107,9 +107,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
-        public Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
+        public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
         {
-            return dbContext.CatalogueItems
+            var solution = await dbContext.CatalogueItems
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
@@ -120,20 +120,64 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Take(1)).ThenInclude(c => c.AssociatedService)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
+
+            var additionalServices = await dbContext.CatalogueItems
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.AdditionalService != null).Take(1))
+                .ThenInclude(c => c.AdditionalService)
+                .Where(i => i.CatalogueItemId == solutionId)
+                .SingleOrDefaultAsync();
+
+            solution?.Supplier?.CatalogueItems.Add(additionalServices.Supplier?.CatalogueItems?.FirstOrDefault());
+
+            return solution;
         }
 
-        public Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
+        public async Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
         {
-            return dbContext.CatalogueItems
+            var solution = await dbContext.CatalogueItems
+               .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
+               .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
+               .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
+               .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
+               .Include(i => i.CataloguePrices)
+               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.AssociatedService)
+               .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+               .Where(i => i.CatalogueItemId == solutionId)
+               .SingleOrDefaultAsync();
+
+            var additionalServices = await dbContext.CatalogueItems
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.AdditionalService != null).Take(1))
+                .ThenInclude(a => a.AdditionalService)
+                .Where(i => i.CatalogueItemId == solutionId)
+                .SingleOrDefaultAsync();
+
+            solution?.Supplier?.CatalogueItems.Add(additionalServices.Supplier?.CatalogueItems?.FirstOrDefault());
+
+            return solution;
+        }
+
+        public async Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId)
+        {
+            var solution = await dbContext.CatalogueItems
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
                 .Include(i => i.CataloguePrices)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.AssociatedService)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService || c.CatalogueItemType == CatalogueItemType.AdditionalService)).ThenInclude(c => c.AdditionalService)
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService || c.CatalogueItemType == CatalogueItemType.AdditionalService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .SingleOrDefaultAsync();
+
+            var associatedServices = await dbContext.CatalogueItems
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.AssociatedService != null).Take(1))
+                .ThenInclude(a => a.AssociatedService)
+                .Where(i => i.CatalogueItemId == solutionId)
+                .SingleOrDefaultAsync();
+
+            solution?.Supplier?.CatalogueItems.Add(associatedServices.Supplier?.CatalogueItems?.FirstOrDefault());
+
+            return solution;
         }
 
         public Task<List<CatalogueItem>> GetDFOCVCSolutions()
@@ -292,6 +336,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var query = dbContext.CatalogueItems
                 .Include(i => i.Supplier)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .OrderByDescending(i => i.Created)
                 .ThenBy(i => i.Name);
 
