@@ -52,5 +52,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .Any(s => s.Contains(description, StringComparison.CurrentCultureIgnoreCase))
                 .Should().BeTrue();
         }
+
+        [Fact]
+        public void SolutionDetails_Breadcrumbs_BreadcrumbBannerDisplayed()
+        {
+            PublicBrowsePages.SolutionAction.BreadcrumbBannerDisplayed().Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("Home")]
+        [InlineData("Catalogue Solutions")]
+        public void SolutionDetails_Breadcrumbs_BreadcrumbItemsDisplayed(string breadcrumbItem)
+        {
+            PublicBrowsePages.SolutionAction.GetBreadcrumbNames(breadcrumbItem).Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public void SolutionDetails_Breadcrumbs_CatalogueSolutionPageDisplayed()
+        {
+            PublicBrowsePages.SolutionAction.CatalogueSolutionPageDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        public void SolutionDetails_Breadcrumbs_HomePageDisplayed()
+        {
+            PublicBrowsePages.SolutionAction.HomePageDisplayed().Should().BeTrue();
+        }
     }
 }
