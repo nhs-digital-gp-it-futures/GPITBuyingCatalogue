@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationService.Setup(o => o.GetAllOrganisations())
                 .ReturnsAsync(mockOrganisations);
             var mockMapper = new Mock<IMapper>();
-          
+
             var controller = new HomeController(
                 mockOrganisationService.Object,
                 mockMapper.Object,
