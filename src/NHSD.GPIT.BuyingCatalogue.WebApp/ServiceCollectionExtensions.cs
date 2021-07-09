@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     public static class ServiceCollectionExtensions
     {
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
-        private const string CatalogueOrderingDbConnectionEnvironmentVariable = "CO_DB_CONNECTION";
         private const string BuyingCatalogueBlobConnectionEnvironmentVariable = "BC_BLOB_CONNECTION";
         private const string BuyingCatalogueBlobContainerEnvironmentVariable = "BC_BLOB_CONTAINER";
         private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
@@ -104,11 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
-
-            var catalogueOrderingConnectionString = Environment.GetEnvironmentVariable(CatalogueOrderingDbConnectionEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(catalogueOrderingConnectionString))
-                throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
             services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -20,6 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 {
     public static class BrowserBasedControllerTests
     {
+        [Fact]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(BrowserBasedController).Should()
+                .BeDecoratedWith<AuthorizeAttribute>(p => p.Policy == "AdminOnly");
+
+            typeof(BrowserBasedController).Should()
+                .BeDecoratedWith<AreaAttribute>(r => r.RouteValue == "Marketing");
+        }
+
         [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {

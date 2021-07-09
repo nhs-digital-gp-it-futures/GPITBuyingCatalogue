@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         public MobileFirst(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/mobile-first-approach")
         {
+            Login();
         }
 
         [Theory]

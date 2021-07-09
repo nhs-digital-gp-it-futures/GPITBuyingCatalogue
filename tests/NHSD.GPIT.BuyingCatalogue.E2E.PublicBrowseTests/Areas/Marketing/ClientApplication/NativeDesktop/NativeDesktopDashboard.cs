@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
             var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "99"));
             solution.ClientApplication = null;
             context.SaveChanges();
+
+            Login();
         }
 
         [Theory]
