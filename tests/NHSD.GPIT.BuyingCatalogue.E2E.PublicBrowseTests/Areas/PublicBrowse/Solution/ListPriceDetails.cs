@@ -10,7 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
     public sealed class ListPriceDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public ListPriceDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001/list-price")
+        public ListPriceDetails(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/99999-001/list-price")
         {
         }
 

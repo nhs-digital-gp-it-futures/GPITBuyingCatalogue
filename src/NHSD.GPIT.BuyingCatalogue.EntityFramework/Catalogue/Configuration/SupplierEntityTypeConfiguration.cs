@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 {
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<Supplier> builder)
         {
-            builder.ToTable("Supplier");
+            builder.ToTable("Suppliers", Schemas.Catalogue);
 
             builder.Property(s => s.Id).HasMaxLength(6);
             builder.Property(s => s.Address)

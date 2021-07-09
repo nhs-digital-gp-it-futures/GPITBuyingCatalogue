@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<CatalogueItem> builder)
         {
-            builder.ToTable("CatalogueItem");
+            builder.ToTable("CatalogueItems", Schemas.Catalogue);
 
             builder.Property(i => i.CatalogueItemId)
                 .HasMaxLength(14)

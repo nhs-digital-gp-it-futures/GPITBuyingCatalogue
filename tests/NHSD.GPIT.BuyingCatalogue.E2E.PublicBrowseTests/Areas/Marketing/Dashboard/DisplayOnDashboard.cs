@@ -8,8 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class DisplayOnDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public DisplayOnDashboard(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/")
+        public DisplayOnDashboard(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/")
         {
+            Login();
         }
 
         [Theory]

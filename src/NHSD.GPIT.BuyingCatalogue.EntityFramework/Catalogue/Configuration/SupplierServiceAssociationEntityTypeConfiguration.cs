@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<SupplierServiceAssociation> builder)
         {
-            builder.ToTable("SupplierServiceAssociation");
+            builder.ToTable("SupplierServiceAssociations", Schemas.Catalogue);
 
             builder.HasNoKey();
 

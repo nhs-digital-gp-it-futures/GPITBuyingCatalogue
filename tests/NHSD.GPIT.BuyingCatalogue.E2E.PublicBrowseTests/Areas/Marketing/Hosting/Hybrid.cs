@@ -13,8 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 {
     public sealed class Hybrid : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public Hybrid(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-hybrid")
+        public Hybrid(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-hybrid")
         {
+            Login();
         }
 
         [Fact]

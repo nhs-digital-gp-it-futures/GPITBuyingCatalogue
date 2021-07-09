@@ -11,7 +11,7 @@ VALUES
 (2, 'Covid-19 Vaccination'),
 (3, 'DFOCVC');
 
-MERGE INTO dbo.CapabilityCategory AS TARGET
+MERGE INTO catalogue.CapabilityCategories AS TARGET
      USING @capabilityCategories AS SOURCE
         ON TARGET.Id = SOURCE.Id
       WHEN MATCHED THEN

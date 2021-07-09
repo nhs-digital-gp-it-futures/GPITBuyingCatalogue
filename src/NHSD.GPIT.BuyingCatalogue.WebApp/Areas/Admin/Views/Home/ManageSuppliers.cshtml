@@ -9,13 +9,13 @@
         <div class="nhsuk-grid-row govuk-!-margin-0">
 
             <nhs-page-title title="Manage supplier organisations"
-                advice="Add a new supplier organisation or edit the details for one that's already been created." />
+                            advice="Add a new supplier organisation or edit the details for one that's already been created." />
 
-            <vc:nhs-action-link url="admin-add-supplier" text="Add a supplier" />
+            <vc:nhs-action-link url="admin-add-supplier" text="Add a supplier" data-test-id="add-supplier"/>
 
             @if (Model?.Count > 0)
             {
-                <nhs-table>
+                <nhs-table data-test-id="manage-suppliers-table">
                     <nhs-table-column> Supplier name </nhs-table-column>
                     <nhs-table-column> Supplier ID </nhs-table-column>
                     <nhs-table-column></nhs-table-column>
@@ -29,7 +29,7 @@
                                 @supplierModel.Id
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <a href="#">Edit</a>
+                                <a href="#" data-test-id="edit-link">Edit</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }

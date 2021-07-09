@@ -21,23 +21,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
     {
         private const string LocalhostBaseAddress = "https://127.0.0.1";
 
-        private readonly IWebHost host;
-        internal readonly string BcDbName;
-
-        internal IWebDriver Driver { get; }
-
         // Need to find a better way of doing this
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-        private const string CO_DB_CONNECTION = "Server=localhost,1450;Database=CatalogueOrdering;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
-        private const string OPERATING_MODE = "private";
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_BLOB_CONNECTION = "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;";
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_BLOB_CONTAINER = "buyingcatalogue-documents";
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_SMTP_HOST = "localhost";
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_SMTP_PORT = "9999";
 
-        public int SmtpPort => int.Parse(BC_SMTP_PORT);
-
         private const string Browser = "chrome";
+        private readonly IWebHost host;
 
         public LocalWebApplicationFactory()
         {
@@ -68,8 +69,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
+        public static int SmtpPort => int.Parse(BC_SMTP_PORT);
+
+        public string BcDbName { get; private set; }
+
         public string RootUri { get; }
-        
+
+        internal IWebDriver Driver { get; }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -113,13 +119,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             return builder;
         }
 
+        [ExcludeFromCodeCoverage]
+        protected override void Dispose(bool disposing)
+        {
+            Driver?.Quit();
+            base.Dispose(disposing);
+            if (disposing)
+            {
+                host?.Dispose();
+            }
+        }
+
         private static void SetEnvVariables()
         {
             SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
-
-            SetEnvironmentVariable(nameof(CO_DB_CONNECTION), CO_DB_CONNECTION);
-
-            SetEnvironmentVariable(nameof(OPERATING_MODE), OPERATING_MODE);
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
 
@@ -139,17 +152,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
             {
                 Environment.SetEnvironmentVariable(name, value);
-            }
-        }
-
-        [ExcludeFromCodeCoverage]
-        protected override void Dispose(bool disposing)
-        {
-            Driver?.Quit();
-            base.Dispose(disposing);
-            if (disposing)
-            {
-                host?.Dispose();
             }
         }
     }

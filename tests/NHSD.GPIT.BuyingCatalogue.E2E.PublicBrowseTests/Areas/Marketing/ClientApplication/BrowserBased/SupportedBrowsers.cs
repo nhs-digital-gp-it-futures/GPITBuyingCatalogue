@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -12,8 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 {
     public sealed class SupportedBrowsers : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public SupportedBrowsers(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/supported-browsers")
+        public SupportedBrowsers(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/supported-browsers")
         {
+            Login();
         }
 
         [Fact]
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
             await using var context = GetEndToEndDbContext();
             var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
-            clientApplication.Should().ContainEquivalentOf(@$"MobileResponsive"":{ labelConvert }");
+            clientApplication.Should().ContainEquivalentOf(@$"MobileResponsive"":{labelConvert}");
         }
 
         public void Dispose()

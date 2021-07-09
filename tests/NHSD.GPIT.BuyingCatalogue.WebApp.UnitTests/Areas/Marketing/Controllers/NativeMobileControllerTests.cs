@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -24,7 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(NativeMobileController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+            typeof(NativeMobileController).Should()
+                .BeDecoratedWith<AuthorizeAttribute>(p => p.Policy == "AdminOnly");
+
+            typeof(NativeMobileController).Should()
+                .BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
         }
 
         [Fact]

@@ -6,7 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Preview
 {
     public sealed class AppearOnPreview : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public AppearOnPreview(LocalWebApplicationFactory factory) : base(factory, "solutions/preview/99999-001")
+        public AppearOnPreview(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/preview/99999-001")
         {
         }
 
