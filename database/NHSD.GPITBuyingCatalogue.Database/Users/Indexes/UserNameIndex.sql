@@ -1,3 +1,3 @@
 ﻿CREATE UNIQUE NONCLUSTERED INDEX UserNameIndex
-ON dbo.AspNetUsers (NormalizedUserName)
+ON users.AspNetUsers (NormalizedUserName)
 WHERE NormalizedUserName IS NOT NULL;

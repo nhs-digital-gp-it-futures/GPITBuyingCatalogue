@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
     {
         public void Configure(EntityTypeBuilder<RelatedOrganisation> builder)
         {
+            builder.ToTable("RelatedOrganisations", Schemas.Organisations);
+
             builder.HasKey(ro => new { ro.OrganisationId, ro.RelatedOrganisationId });
 
             builder.HasOne(ro => ro.Organisation)

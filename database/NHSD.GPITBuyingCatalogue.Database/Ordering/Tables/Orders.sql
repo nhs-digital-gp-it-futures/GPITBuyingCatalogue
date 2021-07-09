@@ -18,7 +18,7 @@
     OrderStatusId int NOT NULL,
     IsDeleted bit CONSTRAINT DF_Order_IsDeleted DEFAULT 0 NOT NULL,
     CONSTRAINT PK_OrderId PRIMARY KEY (Id),
-    CONSTRAINT FK_Order_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES dbo.Organisations (OrganisationId),
+    CONSTRAINT FK_Order_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES organisations.Organisations (OrganisationId),
     CONSTRAINT FK_Order_OrderingPartyContact FOREIGN KEY (OrderingPartyContactId) REFERENCES ordering.Contacts (Id),
     CONSTRAINT FK_Order_Supplier FOREIGN KEY (SupplierId) REFERENCES catalogue.Suppliers (Id),
     CONSTRAINT FK_Order_SupplierContact FOREIGN KEY (SupplierContactId) REFERENCES ordering.Contacts (Id),
