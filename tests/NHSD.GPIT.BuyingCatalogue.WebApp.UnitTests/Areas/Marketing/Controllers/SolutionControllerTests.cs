@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -21,7 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(SolutionController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+            typeof(SolutionController).Should()
+                .BeDecoratedWith<AuthorizeAttribute>(p => p.Policy == "AdminOnly");
+
+            typeof(SolutionController).Should()
+                .BeDecoratedWith<AreaAttribute>(r => r.RouteValue == "Marketing");
         }
 
         [Fact]
