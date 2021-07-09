@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -235,6 +236,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(settings);
 
             services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
+        }
+
+        public static void ConfigureDataProtection(this IServiceCollection services, IConfiguration configuration)
+        {
+            var dataProtectionAppName = configuration.GetValue<string>("dataProtection:applicationName");
+
+            services.AddDataProtection()
+                .SetApplicationName(dataProtectionAppName)
+                .PersistKeysToDbContext<BuyingCatalogueDbContext>();
         }
     }
 }
