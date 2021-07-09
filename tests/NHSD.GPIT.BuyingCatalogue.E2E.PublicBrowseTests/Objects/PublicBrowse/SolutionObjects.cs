@@ -32,5 +32,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By Description => CustomBy.DataTestId("description");
 
         internal static By OrderGuidance => CustomBy.DataTestId("order-guidance");
+
+        internal static By AdditionalServicesTable => CustomBy.DataTestId("additional-services-table");
+
+        internal static By AdditionalServicesInformation => CustomBy.DataTestId("additional-services-details");
+
+        internal static By FullDescription => CustomBy.DataTestId("full-description");
     }
 }

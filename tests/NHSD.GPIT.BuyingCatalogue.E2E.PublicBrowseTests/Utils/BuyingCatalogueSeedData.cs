@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
@@ -451,6 +449,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 },
             };
             context.AddRange(associatedServices);
+
+            List<CatalogueItem> additionalServices = new()
+            {
+                new CatalogueItem
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    Name = "Additional service",
+                    CatalogueItemType = CatalogueItemType.AdditionalService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = "99999",
+                    AdditionalService = new()
+                    {
+                        Summary = "This is the summary of the Additional Service",
+                        FullDescription = "This is the description of the Additional Service",
+                        LastUpdated = DateTime.UtcNow,
+                        LastUpdatedBy = Guid.Empty,
+                        Solution = dfocvcSolutions.Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")).Solution,
+                    },
+                },
+            };
+
+            context.AddRange(additionalServices);
 
             List<FrameworkSolution> frameworkSolutions = new()
             {

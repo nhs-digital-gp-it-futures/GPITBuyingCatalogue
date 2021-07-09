@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -95,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
             var associatedServicesOnPage = Driver.FindElement(Objects.PublicBrowse.SolutionObjects.AssociatedServicesInformation).FindElements(By.TagName("dl"));
 
-            foreach(var assocServ in associatedServicesOnPage)
+            foreach (var assocServ in associatedServicesOnPage)
             {
                 associatedServices.Add(
                     new()
@@ -106,6 +105,35 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             }
 
             return associatedServices;
+        }
+
+        internal string AdditionalServicesNameDisplayed()
+        {
+            return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.ImplementationName).Text;
+        }
+
+        internal bool AdditionalServicesTableDisplayed()
+        {
+            return ElementDisplayed(Objects.PublicBrowse.SolutionObjects.AdditionalServicesTable);
+        }
+
+        internal IEnumerable<string> GetAdditionalServicesNamesFromTable()
+        {
+            return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.AdditionalServicesTable).FindElements(By.TagName("a")).Select(s => s.Text);
+        }
+
+        internal IEnumerable<string> GetAdditionalServicesDescription()
+        {
+            var additionalServices = new List<string>();
+
+            var additionalServicesOnPage = Driver.FindElements(Objects.PublicBrowse.SolutionObjects.FullDescription);
+
+            foreach (var addServ in additionalServicesOnPage)
+            {
+                additionalServices.Add(addServ.FindElement(By.TagName("dd")).Text);
+            }
+
+            return additionalServices;
         }
 
         private bool ElementDisplayed(By by)
