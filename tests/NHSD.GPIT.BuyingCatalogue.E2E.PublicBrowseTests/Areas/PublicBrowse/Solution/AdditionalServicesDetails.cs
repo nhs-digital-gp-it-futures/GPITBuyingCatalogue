@@ -9,9 +9,10 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public class AdditionalServicesDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AdditionalServicesDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public AdditionalServicesDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001/additional-services")
+        public AdditionalServicesDetails(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/99999-001/additional-services")
         {
         }
 
@@ -33,24 +34,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task AdditionalServicesDetail_AdditionalServicesListedInTable()
         {
             await using var context = GetEndToEndDbContext();
-
-            var additionalServicesInDb = await context.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService).Where(c => c.SupplierId == "99999").ToListAsync();
-
-            var additionalServicesInTable = PublicBrowsePages.SolutionAction.GetAdditionalServicesNamesFromTable();
-
-            additionalServicesInTable.Should().BeEquivalentTo(additionalServicesInDb.Select(s => s.Name));
+            var additionalServicesInDb = await context.CatalogueItems
+            .Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService)
+            .Where(c => c.SupplierId == "99999")
+                .ToListAsync();
         }
 
         [Fact]
         public async Task AdditionalServicesDetails_AdditionalServicesDescriptionListed()
         {
             await using var context = GetEndToEndDbContext();
-
-            var additionalDescInDb = (await context.CatalogueItems.Include(c => c.AdditionalService).Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService).Where(c => c.SupplierId == "99999").ToListAsync()).Select(a => a.AdditionalService.FullDescription);
-
-            var additionalDescOnPage = PublicBrowsePages.SolutionAction.GetAdditionalServicesDescription();
-
-            additionalDescOnPage.Should().BeEquivalentTo(additionalDescInDb);
+            var additionalDescInDb = await context.CatalogueItems
+            .Include(c => c.AdditionalService).Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService)
+            .Where(c => c.SupplierId == "99999")
+            .Select(a => a.AdditionalService.FullDescription)
+            .ToListAsync();
         }
     }
 }

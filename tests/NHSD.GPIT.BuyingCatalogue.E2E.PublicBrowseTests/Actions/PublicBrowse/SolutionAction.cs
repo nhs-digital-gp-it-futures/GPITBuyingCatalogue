@@ -124,16 +124,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         internal IEnumerable<string> GetAdditionalServicesDescription()
         {
-            var additionalServices = new List<string>();
-
             var additionalServicesOnPage = Driver.FindElements(Objects.PublicBrowse.SolutionObjects.FullDescription);
-
-            foreach (var addServ in additionalServicesOnPage)
-            {
-                additionalServices.Add(addServ.FindElement(By.TagName("dd")).Text);
-            }
-
-            return additionalServices;
+            return additionalServicesOnPage.Select(e => e.FindElement(By.TagName("dd")).Text).ToList();
         }
 
         private bool ElementDisplayed(By by)

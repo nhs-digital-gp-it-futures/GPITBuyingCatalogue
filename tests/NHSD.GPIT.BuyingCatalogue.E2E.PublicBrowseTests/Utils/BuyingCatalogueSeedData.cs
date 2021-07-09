@@ -460,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     Created = DateTime.UtcNow,
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
-                    AdditionalService = new()
+                    AdditionalService = new AdditionalService
                     {
                         Summary = "This is the summary of the Additional Service",
                         FullDescription = "This is the description of the Additional Service",
