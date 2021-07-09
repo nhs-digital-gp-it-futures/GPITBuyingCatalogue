@@ -1,4 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using OpenQA.Selenium;
 
@@ -6,18 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
     internal sealed class AddSolution : ActionBase
     {
-        public AddSolution(IWebDriver driver) : base(driver)
+        public AddSolution(IWebDriver driver)
+            : base(driver)
         {
-        }
-
-        internal bool SolutionNameFieldDisplayed()
-        {
-            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SolutionName);
-        }
-
-        internal bool SupplierNameFieldDisplayed()
-        {
-            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierName);
         }
 
         public bool FrameworkNamesDisplayed()
@@ -53,29 +46,64 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return ElementDisplayed(Objects.Admin.AddSolutionObjects.SaveSolutionButton);
         }
 
-        public void ManageCatalogueSolution()
+        internal bool ManageSuppliersLinkDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink);
+        }
+
+        internal void ClickManageSuppliersOrgLink()
+        {
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.ManageSuppliersOrgsLink).Click();
+        }
+
+        internal bool AddSuppliersOrgLinkDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSuppliersOrgLink);
+        }
+
+        internal bool SuppliersOrgTableDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierOrgsTable);
+        }
+
+        internal bool SuppliersEditLinkDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierEditLink);
+        }
+
+        internal IEnumerable<string> GetSuppliersOrgsInfoFromTable()
+        {
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow).FindElements(By.CssSelector("tbody tr")).Select(s => s.Text);
+        }
+
+        internal int GetNumberOfSuppliersInTable()
+        {
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierOrgRow)
+                    .FindElements(By.CssSelector("tbody tr")).Count;
+        }
+
+        internal void ManageCatalogueSolution()
         {
             Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionLink).Click();
         }
 
-        public void ClickFilterCatalogueSolutionsButton()
+        internal void ClickFilterCatalogueSolutionsButton()
         {
             Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionFilter).Click();
         }
 
-        public void ClickApplyFilterButton()
+        internal void ClickApplyFilterButton()
         {
             Driver.FindElement(Objects.Admin.AddSolutionObjects.SaveSolutionButton).Click();
         }
 
-        public int NumberOfFilterRadioButtonsDisplayed()
+        internal int NumberOfFilterRadioButtonsDisplayed()
         {
-            ManageCatalogueSolution();
             ClickFilterCatalogueSolutionsButton();
             return Driver.FindElements(Objects.Admin.AddSolutionObjects.FilterRadioButton).Count;
         }
 
-        public PublicationStatus SelectFilterRadioButton(int index = 0)
+        internal PublicationStatus SelectFilterRadioButton(int index = 0)
         {
             NumberOfFilterRadioButtonsDisplayed();
             var element = Driver.FindElements(Objects.Admin.AddSolutionObjects.FilterRadioButton)[index].FindElement(By.TagName("input"));
@@ -85,19 +113,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return (PublicationStatus)value;
         }
 
-        public PublicationStatus FilterCatalogueSolutions(int index = 0)
+        internal PublicationStatus FilterCatalogueSolutions(int index = 0)
         {
             var publicationStatus = SelectFilterRadioButton(index);
             ClickApplyFilterButton();
             return publicationStatus;
         }
 
-        public bool AddSolutionLinkDisplayed()
+        internal bool AddSolutionLinkDisplayed()
         {
-            ManageCatalogueSolution();
             try
             {
-               ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSolutionLink);
+                ElementDisplayed(Objects.Admin.AddSolutionObjects.AddSolutionLink);
                 return true;
             }
             catch
@@ -106,9 +133,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
+        internal int GetNumberOfItemsInTable()
+        {
+            return Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable)
+                    .FindElements(By.CssSelector("tbody tr")).Count;
+        }
+
+        internal bool SolutionNameFieldDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SolutionName);
+        }
+
+        internal bool SupplierNameFieldDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.AddSolutionObjects.SupplierName);
+        }
+
         internal bool CatalogueSolutionTableDisplayed()
         {
-            ManageCatalogueSolution();
             try
             {
                 Wait.Until(d => d.FindElements(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable));
@@ -118,12 +160,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             {
                 return false;
             }
-        }
-
-        public int GetNumberOfItemsInTable()
-        {
-            return Driver.FindElement(Objects.Admin.AddSolutionObjects.CatalogueSolutionTable)
-                    .FindElements(By.CssSelector("tbody tr")).Count;        
         }
 
         private bool ElementDisplayed(By by)
@@ -137,6 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             {
                 return false;
             }
-        }  
+        }
     }
 }

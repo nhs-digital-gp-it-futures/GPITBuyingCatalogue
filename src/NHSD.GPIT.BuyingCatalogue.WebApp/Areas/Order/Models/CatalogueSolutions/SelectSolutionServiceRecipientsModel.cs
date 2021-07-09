@@ -35,21 +35,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
             if (selectionMode.Equals("all", System.StringComparison.InvariantCultureIgnoreCase))
             {
-                ServiceRecipients.All(c =>
-                {
-                    c.Selected = true;
-                    return true;
-                });
+                foreach (var recipient in ServiceRecipients)
+                    recipient.Selected = true;
+
                 SelectionPrompt = "Deselect all";
                 SelectionParameter = "none";
             }
             else if (selectionMode.Equals("none", System.StringComparison.InvariantCultureIgnoreCase))
             {
-                ServiceRecipients.All(c =>
-                {
-                    c.Selected = false;
-                    return true;
-                });
+                foreach (var recipient in ServiceRecipients)
+                    recipient.Selected = false;
+
                 SelectionPrompt = "Deselect all";
                 SelectionParameter = "none";
             }

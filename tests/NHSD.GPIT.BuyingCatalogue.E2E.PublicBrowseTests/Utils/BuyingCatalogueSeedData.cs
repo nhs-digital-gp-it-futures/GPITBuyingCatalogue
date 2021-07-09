@@ -107,8 +107,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
-                        SolutionCapabilities = new List<CatalogueItemCapability> {
-                            new CatalogueItemCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability>
+                        {
+                            new CatalogueItemCapability { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 },
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -167,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                             new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00089", StatusId = 1 },
                             new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00090", StatusId = 1 },
                             new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00091", StatusId = 1 },
-                            new() { CapabilityId  = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00099", StatusId = 1 },
+                            new() { CapabilityId = new Guid("EE71409B-F570-4581-B082-2B13DAC6CE6D"), EpicId = "E00099", StatusId = 1 },
                         },
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -181,8 +182,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                                 Department = "Fruit controller",
                                 LastUpdated = DateTime.UtcNow,
                                 LastUpdatedBy = Guid.Empty,
-                            }
-                        }
+                            },
+                        },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
@@ -201,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
-                    }
+                    },
                 },
                 new CatalogueItem
                 {
@@ -288,8 +289,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
-                        SolutionCapabilities = new List<CatalogueItemCapability> {
-                            new CatalogueItemCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability>
+                        {
+                            new CatalogueItemCapability { CapabilityId = new Guid("21AE013D-42A4-4748-B435-73D5887944C2"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 },
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -308,8 +310,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                                 Department = "Fruit wrangler",
                                 LastUpdated = DateTime.UtcNow,
                                 LastUpdatedBy = Guid.Empty,
-                            }
-                        }
+                            },
+                        },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
@@ -400,8 +402,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
-                        SolutionCapabilities = new List<CatalogueItemCapability> {
-                            new CatalogueItemCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 }
+                        SolutionCapabilities = new List<CatalogueItemCapability>
+                        {
+                            new CatalogueItemCapability { CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"), LastUpdated = DateTime.UtcNow, LastUpdatedBy = Guid.Empty, StatusId = 1 },
                         },
                         SolutionEpics = new List<CatalogueItemEpic>
                         {
@@ -420,8 +423,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                                 Department = "Fruit wrangler",
                                 LastUpdated = DateTime.UtcNow,
                                 LastUpdatedBy = Guid.Empty,
-                            }
-                        }
+                            },
+                        },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
@@ -510,7 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                         PricingUnitId = Guid.NewGuid(),
                         TierName = "thing",
                         Name = "thing",
-                        Description = "per thing"
+                        Description = "per thing",
                     },
                     CurrencyCode = "GBP",
                     Price = 0.01M,
@@ -1171,7 +1174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     Address = JsonConvert.DeserializeObject<Address>(@"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}"),
                     Summary = "About this supplier",
                     SupplierUrl = "https://www.e2etest.com",
-                }
+                },
             };
             context.AddRange(suppliers);
 
@@ -1187,7 +1190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = Guid.Empty,
                     PhoneNumber = "00987654321",
-                    SupplierId = "99999"
+                    SupplierId = "99999",
                 },
             };
 

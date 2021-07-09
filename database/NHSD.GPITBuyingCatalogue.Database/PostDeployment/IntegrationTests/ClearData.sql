@@ -1,12 +1,12 @@
 ﻿CREATE PROCEDURE test.ClearData AS
     SET NOCOUNT ON;
 
-    TRUNCATE TABLE dbo.FrameworkCapabilities;
+    TRUNCATE TABLE catalogue.FrameworkCapabilities;
     
-    DELETE FROM dbo.CatalogueItem;
-    DELETE FROM dbo.Epic;
-    DELETE FROM dbo.Capability;
-    DELETE FROM dbo.Supplier;
+    DELETE FROM catalogue.CatalogueItems;
+    DELETE FROM catalogue.Epics;
+    DELETE FROM catalogue.Capabilities;
+    DELETE FROM catalogue.Suppliers;
 
     ALTER ROLE Api
     ADD MEMBER [NHSD-BAPI];

@@ -8,8 +8,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
     internal class SolutionAction : ActionBase
     {
-        public SolutionAction(IWebDriver driver) : base(driver)
+        public SolutionAction(IWebDriver driver)
+            : base(driver)
         {
+        }
+
+        public void ClickEpics()
+        {
+            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
         }
 
         internal bool SolutionNameDisplayed()
@@ -63,11 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CapabilitiesContent).Select(s => s.Text);
         }
 
-        public void ClickEpics()
-        {
-            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
-        }
-
         internal IEnumerable<string> GetNhsSolutionEpics()
         {
             return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.NhsSolutionEpics).Select(s => s.Text);
@@ -100,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
                     new()
                     {
                         Description = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.Description).Text,
-                        OrderGuidance = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.OrderGuidance).Text
+                        OrderGuidance = assocServ.FindElement(Objects.PublicBrowse.SolutionObjects.OrderGuidance).Text,
                     });
             }
 

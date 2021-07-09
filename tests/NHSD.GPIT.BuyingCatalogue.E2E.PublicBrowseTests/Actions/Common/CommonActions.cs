@@ -7,11 +7,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 {
     internal sealed class CommonActions : ActionBase
     {
-        public CommonActions(IWebDriver driver) : base(driver)
+        public CommonActions(IWebDriver driver)
+            : base(driver)
         {
         }
 
-        //Click Actions
+        // Click Actions
         public void ClickGoBackLink()
         {
             Driver.FindElement(CommonSelectors.GoBackLink).Click();
@@ -54,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             radioButtonItems.Single(r => r.FindElement(By.TagName("label")).Text == label).FindElement(By.TagName("input")).Click();
         }
 
-        //testing
+        // testing
         public bool ErrorSummaryDisplayed()
         {
             try

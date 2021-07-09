@@ -10,8 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 {
     public sealed class MobileFirstApproach : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public MobileFirstApproach(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/mobile-first-approach")
+        public MobileFirstApproach(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/mobile-first-approach")
         {
+            Login();
         }
 
         [Theory]
@@ -27,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
             await using var context = GetEndToEndDbContext();
             var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
-            clientApplication.Should().ContainEquivalentOf(@$"MobileFirstDesign"":{ labelConvert }");
+            clientApplication.Should().ContainEquivalentOf(@$"MobileFirstDesign"":{labelConvert}");
         }
 
         [Fact]

@@ -9,7 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
     internal sealed class Organisation : ActionBase
     {
-        public Organisation(IWebDriver driver) : base(driver)
+        public Organisation(IWebDriver driver)
+            : base(driver)
         {
         }
 
@@ -53,26 +54,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             Driver.FindElement(Objects.Admin.OrganisationObjects.AddRelatedOrgButton).Click();
         }
 
-        private bool ElementDisplayed(By by)
-        {
-            try
-            {
-                Driver.FindElement(by);
-                return true;
-            }
-            catch 
-            {
-                return false;
-            }
-        }
-
         internal RelatedOrg GetRelatedOrganisation(Guid orgId)
         {
             var relatedOrg = new RelatedOrg()
             {
                 OrganisationId = orgId,
                 OrganisationName = Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrgTableOrgName(orgId)).Text,
-                OdsCode = Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrgTableOdsCode(orgId)).Text
+                OdsCode = Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrgTableOdsCode(orgId)).Text,
             };
 
             return relatedOrg;
@@ -88,6 +76,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         internal void ViewUserDetails(string id)
         {
             Driver.FindElement(Objects.Admin.OrganisationObjects.UserName(id)).Click();
+        }
+
+        private bool ElementDisplayed(By by)
+        {
+            try
+            {
+                Driver.FindElement(by);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

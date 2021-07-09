@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class OrganisationModel
+    public sealed class OrganisationModel
     {
         public Guid Id { get; set; }
 

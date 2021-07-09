@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     public static class ServiceCollectionExtensions
     {
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
-        private const string CatalogueOrderingDbConnectionEnvironmentVariable = "CO_DB_CONNECTION";
         private const string BuyingCatalogueBlobConnectionEnvironmentVariable = "BC_BLOB_CONNECTION";
         private const string BuyingCatalogueBlobContainerEnvironmentVariable = "BC_BLOB_CONTAINER";
         private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
@@ -105,11 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
-            var catalogueOrderingConnectionString = Environment.GetEnvironmentVariable(CatalogueOrderingDbConnectionEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(catalogueOrderingConnectionString))
-                throw new InvalidOperationException($"Environment variable '{CatalogueOrderingDbConnectionEnvironmentVariable}' must be set for the database connection string");
-
             services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
         }
 
@@ -123,8 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddDistributedSqlServerCache(options =>
             {
                 options.ConnectionString = buyingCatalogueConnectionString;
-                options.SchemaName = "dbo";
-                options.TableName = "SQLSessions";
+                options.SchemaName = "cache";
+                options.TableName = "SessionData";
             });
 
             services.AddSession(options =>
@@ -241,6 +236,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(settings);
 
             services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
+        }
+
+        public static void ConfigureDataProtection(this IServiceCollection services, IConfiguration configuration)
+        {
+            var dataProtectionAppName = configuration.GetValue<string>("dataProtection:applicationName");
+
+            services.AddDataProtection()
+                .SetApplicationName(dataProtectionAppName)
+                .PersistKeysToDbContext<BuyingCatalogueDbContext>();
         }
     }
 }

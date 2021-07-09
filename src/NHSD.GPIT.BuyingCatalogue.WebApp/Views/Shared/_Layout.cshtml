@@ -1,4 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Settings 
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Settings
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
 @inject CookieExpirationSettings CookieExpirationSettings
 
@@ -11,7 +11,7 @@
     <a class="nhsuk-skip-link" href="#maincontent">Skip to main content</a>
     @if ((bool?)Context.Items[Cookies.ShowConsentCookie] == true)
     {
-        <partial name="Partials/_CookieConsentPartial"/>
+        <partial name="Partials/_CookieConsentPartial" />
     }
     <div data-test-id="beta-banner">
         <section class="bc-flex-container bc-align-items-center nhsuk-width-container nhsuk-u-padding-bottom-3 nhsuk-u-padding-top-3" aria-labelledby="beta-tag" role="banner">
@@ -23,7 +23,7 @@
     </div>
 
 <header data-test-id="header-banner" class="bc-c-header nhsuk-header nhsuk-header--organisation nhsuk-header--white nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-2" role="banner">
-    <partial name="_Header"/>
+    <partial name="_Header" />
 </header>
 
     <section class="bc-c-global-alert" data-test-id="covid19-global-alert" aria-labelledby="covid-alert-heading" role="banner">

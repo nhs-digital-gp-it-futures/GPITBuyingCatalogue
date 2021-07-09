@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -13,12 +12,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 {
     public sealed class Integrations : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public Integrations(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/integrations")
+        public Integrations(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/integrations")
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "99"));
             solution.IntegrationsUrl = string.Empty;
             context.SaveChanges();
+
+            Login();
         }
 
         [Fact]
@@ -36,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void Integrations_SectionMarkedAsComplete()
         {
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
             CommonActions.ClickSave();
@@ -47,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public void Integrations_SectionMarkedAsIncomplete()
         {
-            driver.Navigate().Refresh();
+            Driver.Navigate().Refresh();
 
             CommonActions.ClickSave();
 

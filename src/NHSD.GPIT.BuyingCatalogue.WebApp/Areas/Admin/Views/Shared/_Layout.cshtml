@@ -8,13 +8,11 @@
 
     <partial name="_AdminHeader" />
 
-<div class="nhsuk-width-container">
-    <main class="nhsuk-main-wrapper " id="maincontent" role="main">
+    @await RenderSectionAsync("Breadcrumbs", false)
 
+    <main class="nhsuk-main-wrapper" id="maincontent" role="main">
         @RenderBody()
-    
     </main>
-</div>
 
     <partial name="_Footer" />
 

@@ -8,7 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
     public sealed class SupplierDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public SupplierDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001/supplier-details")
+        public SupplierDetails(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/99999-001/supplier-details")
         {
         }
 

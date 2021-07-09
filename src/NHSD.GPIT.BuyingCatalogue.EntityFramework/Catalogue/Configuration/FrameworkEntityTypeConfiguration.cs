@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<Framework> builder)
         {
-            builder.ToTable("Framework");
+            builder.ToTable("Frameworks", Schemas.Catalogue);
 
             builder.Property(f => f.Id).HasMaxLength(10);
             builder.Property(f => f.ActiveDate).HasColumnType("date");

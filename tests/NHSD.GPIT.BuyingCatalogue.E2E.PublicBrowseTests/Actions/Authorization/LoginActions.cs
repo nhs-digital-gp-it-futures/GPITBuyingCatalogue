@@ -1,13 +1,13 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Authorization;
 using OpenQA.Selenium;
-using System;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization
 {
     internal sealed class LoginActions : ActionBase
     {
-        public LoginActions(IWebDriver driver) : base(driver)
+        public LoginActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

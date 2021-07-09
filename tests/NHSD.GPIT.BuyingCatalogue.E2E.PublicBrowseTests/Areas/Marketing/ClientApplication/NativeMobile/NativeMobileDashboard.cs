@@ -9,12 +9,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 {
     public sealed class NativeMobileDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public NativeMobileDashboard(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile")
+        public NativeMobileDashboard(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile")
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "99"));
             solution.ClientApplication = null;
             context.SaveChanges();
+
+            Login();
         }
 
         [Theory]

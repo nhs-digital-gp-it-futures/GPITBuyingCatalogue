@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
     {
         public void Configure(EntityTypeBuilder<AspNetUserToken> builder)
         {
+            builder.ToTable("AspNetUserTokens", Schemas.Users);
+
             builder.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
 
             builder.Property(t => t.LoginProvider).HasMaxLength(128);

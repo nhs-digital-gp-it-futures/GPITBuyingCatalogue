@@ -8,8 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
 {
     public sealed class SelectClientApplication : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public SelectClientApplication(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/client-application-types")
+        public SelectClientApplication(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/client-application-types")
         {
+            Login();
         }
 
         [Theory]

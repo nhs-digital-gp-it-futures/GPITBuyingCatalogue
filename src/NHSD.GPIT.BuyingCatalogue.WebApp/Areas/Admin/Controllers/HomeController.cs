@@ -36,8 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> BuyerOrganisations()
         {
             var organisations = await organisationsService.GetAllOrganisations();
+            var organisationModel = mapper.Map<IList<Organisation>, IList<OrganisationModel>>(organisations);
 
-            return View(mapper.Map<IList<Organisation>, IList<OrganisationModel>>(organisations));
+            return View(new ListOrganisationsModel(organisationModel));
         }
 
         [HttpGet("catalogue-solutions/add-solution")]

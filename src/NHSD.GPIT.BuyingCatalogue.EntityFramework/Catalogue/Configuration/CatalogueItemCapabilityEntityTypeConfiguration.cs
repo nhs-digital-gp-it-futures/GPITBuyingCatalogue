@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.HasKey(sc => new { sc.CatalogueItemId, sc.CapabilityId });
 
-            builder.ToTable("CatalogueItemCapability");
+            builder.ToTable("CatalogueItemCapabilities", Schemas.Catalogue);
 
             builder.Property(sc => sc.CatalogueItemId)
                 .HasMaxLength(14)
