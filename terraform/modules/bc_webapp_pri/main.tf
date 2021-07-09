@@ -38,13 +38,10 @@ resource "azurerm_app_service" "webapp" {
 
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
-    CO_DB_CONNECTION                    = "todo"
     BC_BLOB_CONNECTION                  = var.sa_connection_string
     BC_BLOB_CONTAINER                   = "documents"
     
     WEBSITE_HTTPLOGGING_RETENTION_DAYS  = "2"
-    
-    OPERATING_MODE                      = "Private"
   }
   
   # Configure Docker Image to load on start
@@ -54,29 +51,12 @@ resource "azurerm_app_service" "webapp" {
     always_on                 = var.always_on
     min_tls_version           = "1.2"
     ip_restriction {
-      name       = "NHS_Access"
-      ip_address = var.customer_network_range
+      name       = "APP_GATEWAY_ACCESS"
+      ip_address = "${var.tertiary_vpn}/32"
       priority   = 200
       headers    = []
     }
-    ip_restriction {
-      name       = "BJSS_VPN"
-      ip_address = "${var.primary_vpn}/32"
-      priority   = 210
-      headers    = []
-    }
-    ip_restriction {
-      name       = "Mastek_VPN"
-      ip_address = "${var.secondary_vpn}/32,${var.tertiary_vpn}/32"
-      priority   = 220
-      headers    = []
-    }
-    ip_restriction {
-      name       = "Devops"
-      ip_address = "51.104.26.0/24"
-      priority   = 230
-      headers    = []
-    }
+
     scm_use_main_ip_restriction = false
   }
   identity {
@@ -90,8 +70,8 @@ resource "azurerm_app_service" "webapp" {
 
   lifecycle {
     ignore_changes = [
-      app_settings,
-      site_config[0].ip_restriction[0]
+      app_settings
+      #,site_config[0].ip_restriction[0]
     ]
   }
 }
