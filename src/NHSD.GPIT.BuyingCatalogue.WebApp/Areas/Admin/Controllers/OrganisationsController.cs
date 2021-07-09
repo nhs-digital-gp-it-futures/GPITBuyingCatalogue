@@ -32,13 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var organisations = await organisationsService.GetAllOrganisations();
-
-            return View(new ListOrganisationsModel(organisations));
-        }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(Guid id)
         {
