@@ -20,30 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         public bool CatalogueSolutionPageDisplayed()
         {
-            ClickCatalogueSolutionBreadcrumb();
-            try
-            {
-                Wait.Until(s => ElementDisplayed(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionPage));
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public bool HomePageDisplayed()
-        {
-            ClickHomeBreadcrumb();
-            try
-            {
-                Wait.Until(s => ElementDisplayed(Objects.PublicBrowse.SolutionObjects.HomePage));
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+             Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionPage);
+             return true;
         }
 
         internal bool SolutionNameDisplayed()
@@ -165,16 +143,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         internal string GetBreadcrumbNames(string breadcrumbItem)
         {
             var rows = Driver.FindElements(Objects.PublicBrowse.SolutionObjects.BreadcrumbsBanner);
-            var row = rows.Single(s => s.FindElement(By.TagName("a")).Text.Contains(breadcrumbItem, System.StringComparison.OrdinalIgnoreCase));
+            var row = rows.Single(r => r.FindElement(By.TagName("a")).Text.Contains(breadcrumbItem, System.StringComparison.OrdinalIgnoreCase));
             return row.FindElement(By.TagName("a")).Text;
         }
 
         internal void ClickCatalogueSolutionBreadcrumb()
-        {
-            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionCrumb).Click();
-        }
-
-        internal void ClickHomeBreadcrumb()
         {
             Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionCrumb).Click();
         }

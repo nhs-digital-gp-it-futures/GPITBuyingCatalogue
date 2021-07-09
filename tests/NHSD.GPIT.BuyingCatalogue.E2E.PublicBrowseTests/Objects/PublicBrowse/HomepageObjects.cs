@@ -12,5 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By GpitFrameworkTile => CustomBy.DataTestId("browse-promo", "a");
 
         internal static By OrderingTile => CustomBy.DataTestId("order-form-promo", "a");
+
+        internal static By HomePage => By.Id("maincontent");
+
+        internal static By HomePageCrumb => CustomBy.DataTestId("home-crumb");
     }
 }
