@@ -70,13 +70,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void SolutionDetails_Breadcrumbs_CatalogueSolutionPageDisplayed()
         {
+            PublicBrowsePages.SolutionAction.ClickCatalogueSolutionBreadcrumb();
             PublicBrowsePages.SolutionAction.CatalogueSolutionPageDisplayed().Should().BeTrue();
         }
 
         [Fact]
         public void SolutionDetails_Breadcrumbs_HomePageDisplayed()
         {
-            PublicBrowsePages.SolutionAction.HomePageDisplayed().Should().BeTrue();
+            PublicBrowsePages.HomePageActions.ClickHomeBreadcrumb();
+            PublicBrowsePages.HomePageActions.HomePageDisplayed().Should().BeTrue();
         }
     }
 }
