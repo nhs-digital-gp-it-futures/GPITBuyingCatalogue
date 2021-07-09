@@ -10,15 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public sealed class ManageCatalogueSolutions : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public ManageCatalogueSolutions(LocalWebApplicationFactory factory) : base(factory, "admin")
+        public ManageCatalogueSolutions(LocalWebApplicationFactory factory)
+            : base(factory, "admin/catalogue-solutions")
         {
             Login();
-        }
-
-        [Fact]
-        public void ManageCatalogueSolutions_AddSolutionLinkDisplayed()
-        {
-            AdminPages.AddSolution.AddSolutionLinkDisplayed().Should().BeTrue();
         }
 
         [Fact]
@@ -47,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var dbSolutions = await context.CatalogueItems
                                             .Where(c => c.SupplierId == "99999")
                                             .Where(c => c.PublishedStatus == publicationStatus)
-                                            .Where(c => c.CatalogueItemType == CatalogueItemType.Solution) 
+                                            .Where(c => c.CatalogueItemType == CatalogueItemType.Solution)
                                             .ToListAsync();
 
             AdminPages.AddSolution.GetNumberOfItemsInTable().Should().Be(dbSolutions.Count);

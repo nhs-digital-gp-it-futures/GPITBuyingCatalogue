@@ -1,5 +1,5 @@
-﻿IF NOT EXISTS (SELECT * FROM dbo.CataloguePriceType)
-    INSERT INTO dbo.CataloguePriceType(CataloguePriceTypeId, [Name])
+﻿IF NOT EXISTS (SELECT * FROM catalogue.CataloguePriceTypes)
+    INSERT INTO catalogue.CataloguePriceTypes(CataloguePriceTypeId, [Name])
     VALUES
     (1, 'Flat'),
     (2, 'Tiered');

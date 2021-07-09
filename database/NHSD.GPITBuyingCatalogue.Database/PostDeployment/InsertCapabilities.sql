@@ -72,7 +72,7 @@ VALUES
 
 -- The code below should not need to be changed
 
-MERGE INTO dbo.Capability AS TARGET
+MERGE INTO catalogue.Capabilities AS TARGET
      USING @capabilities AS SOURCE
         ON TARGET.Id = SOURCE.Id
       WHEN MATCHED THEN
@@ -86,7 +86,7 @@ UPDATE SET TARGET.[Version] = SOURCE.[Version],
     INSERT (Id, CapabilityRef, [Version], StatusId, [Name], [Description], SourceUrl, EffectiveDate, CategoryId)
     VALUES (SOURCE.Id, SOURCE.CapabilityRef, SOURCE.[Version], 1, SOURCE.[Name], SOURCE.[Description], SOURCE.SourceUrl, SOURCE.EffectiveDate, SOURCE.CategoryId);
 
-MERGE INTO dbo.FrameworkCapabilities AS TARGET
+MERGE INTO catalogue.FrameworkCapabilities AS TARGET
      USING @capabilities AS SOURCE
         ON TARGET.CapabilityId = SOURCE.Id
       WHEN MATCHED THEN

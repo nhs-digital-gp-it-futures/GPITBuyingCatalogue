@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<PricingUnit> builder)
         {
-            builder.ToTable("PricingUnit");
+            builder.ToTable("PricingUnits", Schemas.Catalogue);
 
             builder.HasKey(u => u.PricingUnitId)
                 .IsClustered(false);

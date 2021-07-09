@@ -6,7 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 {
     internal class HostingTypeActions : ActionBase
     {
-        public HostingTypeActions(IWebDriver driver) : base(driver)
+        public HostingTypeActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

@@ -134,7 +134,7 @@ BEGIN
                 (N'10030-S-001',  N'SMS Messaging',                                                                      3, N'10030', 3, GETUTCDATE()),
                 (N'10073-S-022',  N'Training',                                                                      3, N'10030', 3, GETUTCDATE());
 
-    MERGE INTO dbo.CatalogueItem AS TARGET
+    MERGE INTO catalogue.CatalogueItems AS TARGET
     USING #CatalogueItem AS SOURCE
     ON TARGET.CatalogueItemId = SOURCE.CatalogueItemId  
     WHEN MATCHED THEN  

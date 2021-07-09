@@ -404,7 +404,7 @@ BEGIN
                 N'00000000-0000-0000-0000-000000000000'),
                 (N'10000-S-141', N'Online and Video Consult – Implementation DESCRIPTION', N'', GETUTCDATE(), N'00000000-0000-0000-0000-000000000000');
 
-    MERGE INTO dbo.AssociatedService AS TARGET
+    MERGE INTO catalogue.AssociatedServices AS TARGET
     USING #AssociatedService AS SOURCE
     ON TARGET.AssociatedServiceId = SOURCE.CatalogueItemId 
     WHEN MATCHED THEN

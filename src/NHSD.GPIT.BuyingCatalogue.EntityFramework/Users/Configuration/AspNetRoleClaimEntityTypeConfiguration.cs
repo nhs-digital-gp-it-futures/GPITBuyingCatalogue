@@ -8,13 +8,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
     {
         public void Configure(EntityTypeBuilder<AspNetRoleClaim> builder)
         {
-            builder.HasIndex(rc => rc.RoleId, "IX_AspNetRoleClaims_RoleId");
+            builder.ToTable("AspNetRoleClaims", Schemas.Users);
 
             builder.Property(rc => rc.RoleId).IsRequired();
 
             builder.HasOne(rc => rc.Role)
                 .WithMany(r => r.AspNetRoleClaims)
                 .HasForeignKey(rc => rc.RoleId);
+
+            builder.HasIndex(rc => rc.RoleId, "IX_AspNetRoleClaims_RoleId");
         }
     }
 }

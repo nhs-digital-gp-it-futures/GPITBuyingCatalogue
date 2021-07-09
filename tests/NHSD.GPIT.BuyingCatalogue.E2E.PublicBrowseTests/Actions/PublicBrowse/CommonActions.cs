@@ -6,7 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
     internal sealed class CommonActions : ActionBase
     {
-        public CommonActions(IWebDriver driver) : base(driver)
+        public CommonActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

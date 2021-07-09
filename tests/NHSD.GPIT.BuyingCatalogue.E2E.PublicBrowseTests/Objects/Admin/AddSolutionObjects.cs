@@ -15,6 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By FoundationSolution => CustomBy.DataTestId("foundation-solution");
 
+        internal static By ManageSuppliersOrgsLink => By.LinkText("Manage suppliers organisations");
+
+        internal static By AddSuppliersOrgLink => By.CssSelector(".nhsuk-action-link a");
+
+        internal static By SupplierOrgsTable => CustomBy.DataTestId("manage-suppliers-table");
+
+        internal static By SupplierOrgRow => CustomBy.DataTestId("manage-suppliers-table");
+
+        internal static By SupplierEditLink => CustomBy.DataTestId("edit-link");
+
         internal static By AddSolutionLink => By.LinkText("Add a solution");
 
         internal static By CatalogueSolutionLink => By.LinkText("Manage Catalogue Solutions");

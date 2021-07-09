@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 {
     public sealed class MemoryAndStorage : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public MemoryAndStorage(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/memory-and-storage")
+        public MemoryAndStorage(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/memory-and-storage")
         {
         }
 

@@ -5,16 +5,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 {
     internal sealed class TextGenerators : ActionBase
     {
-        public TextGenerators(IWebDriver driver) : base(driver)
+        public TextGenerators(IWebDriver driver)
+            : base(driver)
         {
         }
 
         /// <summary>
-        /// Generates Random Text for TextArea's and TextInputs to the Target Length
+        /// Generates Random Text for TextArea's and TextInputs to the Target Length.
         /// </summary>
-        /// <param name="targetField"></param>
-        /// <param name="numChars"></param>
-        /// <returns></returns>
+        /// <param name="targetField">the field which to add the random string.</param>
+        /// <param name="numChars">number of character in random string.</param>
+        /// <returns> random string.</returns>
         public string TextInputAddText(By targetField, int numChars)
         {
             Driver.FindElement(targetField).Clear();
@@ -24,11 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         }
 
         /// <summary>
-        /// Generates a Valid random URL for TextArea's or TextInputs to the Target Length
+        /// Generates a Valid random URL for TextArea's or TextInputs to the Target Length.
         /// </summary>
-        /// <param name="targetField"></param>
-        /// <param name="numChars"></param>
-        /// <returns></returns>
+        /// <param name="targetField">the which which to add the random URL.</param>
+        /// <param name="numChars">number of characters in random URL.</param>
+        /// <returns>random URL string.</returns>
         public string UrlInputAddText(By targetField, int numChars)
         {
             Driver.FindElement(targetField).Clear();

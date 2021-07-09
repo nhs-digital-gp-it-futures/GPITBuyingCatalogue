@@ -116,7 +116,7 @@ BEGIN
         N'00000000-0000-0000-0000-000000000000', 
         N'10052-002');
 
-    MERGE INTO dbo.AdditionalService AS TARGET
+    MERGE INTO catalogue.AdditionalServices AS TARGET
     USING #AdditionalService AS SOURCE
     ON TARGET.CatalogueItemId = SOURCE.CatalogueItemId 
     WHEN MATCHED THEN  

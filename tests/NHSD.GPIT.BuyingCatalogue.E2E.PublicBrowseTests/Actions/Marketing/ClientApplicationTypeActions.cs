@@ -7,7 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing
 {
     internal class ClientApplicationTypeActions : ActionBase
     {
-        public ClientApplicationTypeActions(IWebDriver driver) : base(driver)
+        public ClientApplicationTypeActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

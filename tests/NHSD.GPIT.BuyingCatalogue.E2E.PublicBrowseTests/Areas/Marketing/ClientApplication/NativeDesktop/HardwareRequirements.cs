@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 {
     public sealed class HardwareRequirements : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public HardwareRequirements(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/hardware-requirements")
+        public HardwareRequirements(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/hardware-requirements")
         {
         }
 

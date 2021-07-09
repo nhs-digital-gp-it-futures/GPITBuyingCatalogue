@@ -6,7 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public sealed class AddSolution : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public AddSolution(LocalWebApplicationFactory factory) : base(factory, "admin/catalogue-solutions/add-solution")
+        public AddSolution(LocalWebApplicationFactory factory)
+            : base(factory, "admin/catalogue-solutions/add-solution")
         {
             Login();
         }

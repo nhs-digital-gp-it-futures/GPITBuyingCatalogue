@@ -146,7 +146,7 @@ VALUES
     ('ca45aedd-b6f5-43b9-a12a-f37f2b9cb5f0', 'call_5–10k'          , 'calls'                        , 'per call (5001–10000 calls per month)'),
     ('038dcc47-a4bd-462f-a8cb-54ce9a9c1a9b', 'call_10k'            , 'calls'                        , 'per call (10,001 plus calls per month)');
 
-MERGE INTO dbo.PricingUnit AS TARGET
+MERGE INTO catalogue.PricingUnits AS TARGET
 USING #PricingUnit AS SOURCE
 ON TARGET.PricingUnitId = SOURCE.PricingUnitId
 WHEN MATCHED THEN

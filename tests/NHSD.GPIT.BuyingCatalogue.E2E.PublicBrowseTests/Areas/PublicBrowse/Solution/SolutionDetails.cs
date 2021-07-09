@@ -11,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
     public sealed class SolutionDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        public SolutionDetails(LocalWebApplicationFactory factory) : base(factory, "solutions/futures/99999-001")
+        public SolutionDetails(LocalWebApplicationFactory factory)
+            : base(factory, "solutions/futures/99999-001")
         {
         }
 

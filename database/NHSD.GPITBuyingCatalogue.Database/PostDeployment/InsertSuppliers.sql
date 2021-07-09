@@ -1,9 +1,9 @@
 ﻿DECLARE @emptyGuid AS uniqueidentifier = '00000000-0000-0000-0000-000000000000';
 DECLARE @now AS datetime = GETUTCDATE();
 
-IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM dbo.Supplier)
+IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM catalogue.Suppliers)
 BEGIN
-    INSERT INTO dbo.Supplier(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy)
     VALUES (
         '100000',
         'Really Kool Corporation',
@@ -13,7 +13,7 @@ BEGIN
         @now,
         @emptyGuid);
 
-    INSERT INTO dbo.Supplier(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy)
     VALUES
     ('100001', 'Remedical Software', 'Remedical Limited', 'The Remedical Software', '{"line1": "Remedical Software Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}',@now, @emptyGuid),
     ('100002', 'CareShare', 'CareShare Limited', 'The CareShare', '{"line1": "CareShare Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}',@now, @emptyGuid),
@@ -36,7 +36,7 @@ BEGIN
     ('100019', 'Sunhealth Nanosystems', 'Sunhealth Nanosystems', 'Sunhealth Nanosystems', '{"line1": "Sunhealth Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}',@now, @emptyGuid),
     ('100020', 'Oakwood', 'Oakwood Ltd', 'Oakwood', '{"line1": "Oakwood Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}',@now, @emptyGuid);
 
-    INSERT INTO dbo.Supplier(Id, [Name], LegalName, Summary, SupplierUrl, [Address], LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, SupplierUrl, [Address], LastUpdated, LastUpdatedBy)
     VALUES
     (
         '99999',
@@ -66,7 +66,7 @@ BEGIN
         @emptyGuid);
 
 
-    INSERT INTO dbo.SupplierContact (Id, SupplierId, FirstName, LastName, Email, PhoneNumber, LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.SupplierContacts (Id, SupplierId, FirstName, LastName, Email, PhoneNumber, LastUpdated, LastUpdatedBy)
     VALUES
     (NEWID(),'100000', 'Tim',      'Teabag',    'timtea@test.test',       '01234 567891',     @now, @emptyGuid),
     (NEWID(),'100001', 'Kim',      'Samosa',    'kimsam@test.test',       '01234 567891',     @now, @emptyGuid),

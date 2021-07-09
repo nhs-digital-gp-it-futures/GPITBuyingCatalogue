@@ -73,7 +73,7 @@ BEGIN
                 (N'10072-004', N'6e77147d-d2af-46bd-a2f2-bb4f235daf3a', 1, CAST(N'2020-06-25T14:31:34.0466667' AS datetime2), N'00000000-0000-0000-0000-000000000000'),
                 (N'10073-009', N'6e77147d-d2af-46bd-a2f2-bb4f235daf3a', 1, CAST(N'2020-04-01T12:49:33.9433333' AS datetime2), N'00000000-0000-0000-0000-000000000000');
     
-    MERGE INTO dbo.CatalogueItemCapability AS TARGET
+    MERGE INTO catalogue.CatalogueItemCapabilities AS TARGET
     USING #CatalogueItemCapability AS SOURCE
     ON TARGET.CatalogueItemId = SOURCE.CatalogueItemId AND TARGET.CapabilityId = SOURCE.CapabilityId 
     WHEN MATCHED THEN
