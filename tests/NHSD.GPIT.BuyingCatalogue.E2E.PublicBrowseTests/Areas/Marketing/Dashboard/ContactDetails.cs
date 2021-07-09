@@ -18,6 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             var contacts = context.MarketingContacts.Where(s => s.SolutionId == new CatalogueItemId(99999, "99"));
             context.MarketingContacts.RemoveRange(contacts);
             context.SaveChanges();
+
+            Login();
         }
 
         [Fact]

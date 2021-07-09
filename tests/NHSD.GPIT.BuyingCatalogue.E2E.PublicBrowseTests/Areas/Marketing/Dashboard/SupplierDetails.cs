@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -21,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             catalogueItem.Supplier.Summary = string.Empty;
             catalogueItem.Supplier.SupplierUrl = string.Empty;
             context.SaveChanges();
+
+            Login();
         }
 
         [Fact]
