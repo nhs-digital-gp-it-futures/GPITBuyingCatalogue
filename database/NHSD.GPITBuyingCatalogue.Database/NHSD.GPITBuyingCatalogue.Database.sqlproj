@@ -181,6 +181,7 @@
     <Build Include="Security\Schemas\organisations.sql" />
     <Build Include="Security\Schemas\cache.sql" />
     <Build Include="Cache\SessionData.sql" />
+    <Build Include="Users\Tables\DataProtectionKeys.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">

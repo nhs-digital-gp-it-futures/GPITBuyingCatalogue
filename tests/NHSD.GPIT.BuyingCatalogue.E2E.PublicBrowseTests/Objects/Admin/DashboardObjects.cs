@@ -7,6 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
     {
         internal static By AddOrgButton => CustomBy.DataTestId("add-org-button");
 
-        internal static By OrganisationNameLinks => CustomBy.DataTestId("org-table", "a");
+        internal static By OrganisationOdsCodes => CustomBy.DataTestId("org-ods-code");
+
+        internal static By OrganisationNames => CustomBy.DataTestId("org-name");
+
+        internal static By OrganisationLinks => CustomBy.DataTestId("org-link");
     }
 }
