@@ -1,3 +1,3 @@
 ﻿CREATE UNIQUE NONCLUSTERED INDEX RoleNameIndex
-ON dbo.AspNetRoles (NormalizedName)
+ON users.AspNetRoles (NormalizedName)
 WHERE NormalizedName IS NOT NULL;

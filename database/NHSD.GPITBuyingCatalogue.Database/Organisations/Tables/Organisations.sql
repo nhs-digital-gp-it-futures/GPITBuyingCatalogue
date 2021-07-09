@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.Organisations
+﻿CREATE TABLE organisations.Organisations
 (
 	OrganisationId uniqueidentifier NOT NULL,
     [Name] nvarchar(255) NOT NULL,

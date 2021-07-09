@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
     {
         public void Configure(EntityTypeBuilder<AspNetUser> builder)
         {
+            builder.ToTable("AspNetUsers", Schemas.Users);
+
             builder.Property(u => u.Email).HasMaxLength(256);
             builder.Property(u => u.FirstName)
                 .IsRequired()
