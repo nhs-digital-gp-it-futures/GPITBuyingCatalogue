@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<CataloguePrice> builder)
         {
-            builder.ToTable("CataloguePrice");
+            builder.ToTable("CataloguePrices", Schemas.Catalogue);
 
             builder.Property(p => p.CatalogueItemId)
                 .IsRequired()

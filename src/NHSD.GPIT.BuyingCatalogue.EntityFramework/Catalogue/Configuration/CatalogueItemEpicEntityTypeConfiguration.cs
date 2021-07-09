@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<CatalogueItemEpic> builder)
         {
-            builder.ToTable("CatalogueItemEpic");
+            builder.ToTable("CatalogueItemEpics", Schemas.Catalogue);
 
             builder.HasKey(se => new { se.CatalogueItemId, se.CapabilityId, se.EpicId });
 

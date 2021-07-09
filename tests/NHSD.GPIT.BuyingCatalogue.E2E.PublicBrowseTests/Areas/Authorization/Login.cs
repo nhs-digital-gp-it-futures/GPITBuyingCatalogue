@@ -1,15 +1,16 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using Xunit;
-using FluentAssertions;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
     public sealed class Login : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public Login(LocalWebApplicationFactory factory) : base(factory)
+        public Login(LocalWebApplicationFactory factory)
+            : base(factory)
         {
         }
 
@@ -57,12 +58,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.LoginButtonDisplayed().Should().BeTrue();
         }
-        
 
         public void Dispose()
         {
             // Force logout at end of test
-            driver.Manage().Cookies.DeleteAllCookies();
+            Driver.Manage().Cookies.DeleteAllCookies();
         }
     }
 }

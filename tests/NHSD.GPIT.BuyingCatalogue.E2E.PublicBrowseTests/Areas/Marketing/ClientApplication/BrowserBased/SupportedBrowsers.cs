@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 {
     public sealed class SupportedBrowsers : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public SupportedBrowsers(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/supported-browsers")
+        public SupportedBrowsers(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/supported-browsers")
         {
         }
 
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
             await using var context = GetEndToEndDbContext();
             var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
-            clientApplication.Should().ContainEquivalentOf(@$"MobileResponsive"":{ labelConvert }");
+            clientApplication.Should().ContainEquivalentOf(@$"MobileResponsive"":{labelConvert}");
         }
 
         public void Dispose()

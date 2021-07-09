@@ -8,7 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
     internal sealed class AddRelatedOrganisation : ActionBase
     {
-        public AddRelatedOrganisation(IWebDriver driver) : base(driver)
+        public AddRelatedOrganisation(IWebDriver driver)
+            : base(driver)
         {
         }
 
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 
             if (!string.IsNullOrEmpty(excludeOrg))
             {
-                orgs = orgs.Where(s => s.GetAttribute("value") != excludeOrg);  
+                orgs = orgs.Where(s => s.GetAttribute("value") != excludeOrg);
             }
 
             var selectedOrg = orgs.First();

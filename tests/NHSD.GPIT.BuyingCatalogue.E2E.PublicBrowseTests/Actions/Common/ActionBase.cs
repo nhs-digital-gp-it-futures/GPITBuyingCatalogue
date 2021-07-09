@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
         }
 
-        protected IWebDriver Driver;
-        protected readonly WebDriverWait Wait;
+        public WebDriverWait Wait { get; protected set; }
+
+        public IWebDriver Driver { get; protected set; }
     }
 }

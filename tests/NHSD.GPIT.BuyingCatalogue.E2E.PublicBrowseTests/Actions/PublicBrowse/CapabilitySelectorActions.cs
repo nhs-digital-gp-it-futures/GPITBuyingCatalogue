@@ -8,7 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 {
     internal class CapabilitySelectorActions : ActionBase
     {
-        public CapabilitySelectorActions(IWebDriver driver) : base(driver)
+        public CapabilitySelectorActions(IWebDriver driver)
+            : base(driver)
         {
         }
 

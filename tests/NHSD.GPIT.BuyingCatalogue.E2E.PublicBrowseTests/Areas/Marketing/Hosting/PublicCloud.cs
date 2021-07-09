@@ -13,7 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 {
     public sealed class PublicCloud : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public PublicCloud(LocalWebApplicationFactory factory) : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-public-cloud")
+        public PublicCloud(LocalWebApplicationFactory factory)
+            : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-public-cloud")
         {
         }
 

@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.Solution
+﻿CREATE TABLE catalogue.Solutions
 (
      Id nvarchar(14) NOT NULL,
      [Version] nvarchar(10) NULL,
@@ -17,5 +17,5 @@
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy uniqueidentifier NOT NULL,
      CONSTRAINT PK_Solution PRIMARY KEY CLUSTERED (Id),
-     CONSTRAINT FK_Solution_CatalogueItem FOREIGN KEY (Id) REFERENCES dbo.CatalogueItem(CatalogueItemId) ON DELETE CASCADE
+     CONSTRAINT FK_Solution_CatalogueItem FOREIGN KEY (Id) REFERENCES catalogue.CatalogueItems(CatalogueItemId) ON DELETE CASCADE
 );

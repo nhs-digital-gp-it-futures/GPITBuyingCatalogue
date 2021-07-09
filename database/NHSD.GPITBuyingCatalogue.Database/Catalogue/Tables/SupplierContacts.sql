@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.SupplierContact
+﻿CREATE TABLE catalogue.SupplierContacts
 (
      Id uniqueidentifier NOT NULL,
      SupplierId nvarchar(6) NOT NULL,
@@ -9,6 +9,6 @@
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy uniqueidentifier NOT NULL,
      CONSTRAINT PK_SupplierContact PRIMARY KEY NONCLUSTERED (Id),
-     CONSTRAINT FK_SupplierContact_Supplier FOREIGN KEY (SupplierId) REFERENCES dbo.Supplier(Id) ON DELETE CASCADE,
+     CONSTRAINT FK_SupplierContact_Supplier FOREIGN KEY (SupplierId) REFERENCES catalogue.Suppliers(Id) ON DELETE CASCADE,
      INDEX IX_SupplierContactSupplierId CLUSTERED (SupplierId)
 );

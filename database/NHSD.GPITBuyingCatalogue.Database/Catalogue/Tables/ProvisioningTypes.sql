@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.ProvisioningType
+﻿CREATE TABLE catalogue.ProvisioningTypes
 (
     ProvisioningTypeId int NOT NULL,
     [Name] nvarchar(35) NOT NULL,
