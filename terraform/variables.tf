@@ -68,3 +68,7 @@ variable "smtp_server_host" {
 variable "smtp_server_port" {
   type = string
 }
+
+variable "cicd_range" {
+  type = string
+}

@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         [Display(Name = nameof(Suspended), Order = 5)]
         Suspended = 4,
 
-        [Display(Name = "In Remediation", Order = 4)]
+        [Display(Name = "In remediation", Order = 4)]
         InRemediation = 5,
     }
 }

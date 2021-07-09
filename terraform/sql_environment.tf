@@ -14,18 +14,16 @@ module "sql_server_pri" {
   mastekvpn             = var.secondary_vpn
 }
 
-# SQL Firewall rule to allow subnet access from aks network 
-# Note cannot be in module due to conditional syntax on creation
-# resource "azurerm_sql_virtual_network_rule" "sql_aks_net" {
-#  name                = "${var.project}-${var.environment}-aks-subnet-rule"
-#  resource_group_name = azurerm_resource_group.sql-pri.name
-#  subnet_id           = azurerm_subnet.aks.id
-#  server_name         = "${var.project}-${var.environment}-sql-pri"
-#
-#  depends_on = [
-#      module.sql_server_pri
-#  ]
-#}
+resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
+  name                = "${var.project}-${var.environment}-subnet-rule"
+  resource_group_name = azurerm_resource_group.sql-primary.name
+  server_name         = "${var.project}-${var.environment}-sql-primary"
+  subnet_id           = azurerm_subnet.gateway.id
+
+  depends_on = [
+    module.sql_server_pri
+  ]
+}
 
 # module "sql_server_sec" {
 #  source                = "./modules/bc_sql_server"
