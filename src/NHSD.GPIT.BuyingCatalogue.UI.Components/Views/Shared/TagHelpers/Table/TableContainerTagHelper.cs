@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
             ColumnNames = new List<TagHelperContent>();
 
-            context.Items.Add("ColumnNames", ColumnNames);
+            context.Items.Add(TagHelperConstants.ColumnNameContextName, ColumnNames);
         }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             if (DisableHeader)
                 return null;
 
-            if (!context.Items.TryGetValue("ColumnNames", out object columnNames))
+            if (!context.Items.TryGetValue(TagHelperConstants.ColumnNameContextName, out object columnNames))
                 return null;
 
             var columnNamesConverted = (List<TagHelperContent>)columnNames;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 {
@@ -15,9 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
             var childContent = await output.GetChildContentAsync();
 
-            var columnNames = context.Items["ColumnNames"] as List<TagHelperContent>;
-
-            if (columnNames is null)
+            if (context.Items[TagHelperConstants.ColumnNameContextName] is not List<TagHelperContent> columnNames)
                 return;
 
             columnNames.Add(childContent);
