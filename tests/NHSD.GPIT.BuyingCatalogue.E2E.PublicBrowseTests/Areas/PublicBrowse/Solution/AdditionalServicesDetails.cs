@@ -38,6 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             .Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService)
             .Where(c => c.SupplierId == "99999")
                 .ToListAsync();
+
+            var additionalServicesInTable = PublicBrowsePages.SolutionAction.GetAdditionalServicesNamesFromTable();
+            additionalServicesInTable.Should().BeEquivalentTo(additionalServicesInDb.Select(s => s.Name));
         }
 
         [Fact]
@@ -49,6 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             .Where(c => c.SupplierId == "99999")
             .Select(a => a.AdditionalService.FullDescription)
             .ToListAsync();
+
+            var additionalDescOnPage = PublicBrowsePages.SolutionAction.GetAdditionalServicesDescription();
+            additionalDescOnPage.Should().BeEquivalentTo(additionalDescInDb);
         }
     }
 }
