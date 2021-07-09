@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.AspNetUsers
+﻿CREATE TABLE users.AspNetUsers
 (
      Id nvarchar(450) NOT NULL,
      UserName nvarchar(256) NULL,

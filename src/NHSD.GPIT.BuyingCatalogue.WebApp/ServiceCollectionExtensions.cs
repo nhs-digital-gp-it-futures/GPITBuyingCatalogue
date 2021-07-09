@@ -123,8 +123,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddDistributedSqlServerCache(options =>
             {
                 options.ConnectionString = buyingCatalogueConnectionString;
-                options.SchemaName = "dbo";
-                options.TableName = "SQLSessions";
+                options.SchemaName = "cache";
+                options.TableName = "SessionData";
             });
 
             services.AddSession(options =>

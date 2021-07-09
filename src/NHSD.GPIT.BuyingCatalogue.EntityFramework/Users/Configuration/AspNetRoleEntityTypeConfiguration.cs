@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
     {
         public void Configure(EntityTypeBuilder<AspNetRole> builder)
         {
+            builder.ToTable("AspNetRoles", Schemas.Users);
+
             builder.Property(r => r.Name).HasMaxLength(256);
             builder.Property(r => r.NormalizedName).HasMaxLength(256);
 

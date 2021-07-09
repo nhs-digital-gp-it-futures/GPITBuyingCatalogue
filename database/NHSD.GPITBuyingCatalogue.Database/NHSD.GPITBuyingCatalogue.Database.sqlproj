@@ -68,7 +68,6 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Tables\" />
     <Folder Include="Security\" />
     <Folder Include="Security\Users" />
     <Folder Include="Security\Logins" />
@@ -81,12 +80,17 @@
     <Folder Include="PostDeployment\ProdLikeData" />
     <Folder Include="PreDeployment" />
     <Folder Include="Functions" />
-    <Folder Include="Indexes" />
     <Folder Include="Ordering" />
     <Folder Include="Ordering\Tables" />
     <Folder Include="Ordering\Views" />
     <Folder Include="Catalogue" />
     <Folder Include="Catalogue\Tables" />
+    <Folder Include="Users" />
+    <Folder Include="Users\Tables" />
+    <Folder Include="Users\Indexes" />
+    <Folder Include="Organisations" />
+    <Folder Include="Organisations\Tables" />
+    <Folder Include="Cache" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -118,25 +122,11 @@
     <Build Include="Types\Solutions.sql" />
     <Build Include="Types\AdditionalServices.sql" />
     <Build Include="Types\AssociatedServices.sql" />
-    <Build Include="Tables\AspNetRoleClaims.sql" />
-    <Build Include="Tables\AspNetRoles.sql" />
-    <Build Include="Tables\AspNetUserClaims.sql" />
-    <Build Include="Tables\AspNetUserLogins.sql" />
-    <Build Include="Tables\AspNetUserRoles.sql" />
-    <Build Include="Tables\AspNetUsers.sql" />
-    <Build Include="Tables\AspNetUserTokens.sql" />
-    <Build Include="Tables\DataProtectionKeys.sql" />
-    <Build Include="Tables\Organisations.sql" />
-    <Build Include="Tables\RelatedOrganisations.sql" />
-    <Build Include="Indexes\RoleNameIndex.sql" />
-    <Build Include="Indexes\UserNameIndex.sql" />
     <None Include="PostDeployment\CreateTestUsers.sql" />
     <None Include="PostDeployment\CreateClinicalCommissioningGroups.sql" />
     <None Include="PostDeployment\CreateCommissioningSupportUnits.sql" />
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
-    <None Include="PostDeployment\CreateTables.sql" />
-    <Build Include="Tables\SQLSessions.sql" />
     <Build Include="Security\Schemas\ordering.sql" />
     <Build Include="Ordering\Tables\Contacts.sql" />
     <Build Include="Ordering\Tables\DefaultDeliveryDates.sql" />
@@ -176,6 +166,21 @@
     <Build Include="Catalogue\Tables\SupplierContacts.sql" />
     <Build Include="Catalogue\Tables\SupplierServiceAssociations.sql" />
     <Build Include="Catalogue\Tables\TimeUnits.sql" />
+    <Build Include="Users\Tables\AspNetRoleClaims.sql" />
+    <Build Include="Users\Tables\AspNetRoles.sql" />
+    <Build Include="Users\Tables\AspNetUserClaims.sql" />
+    <Build Include="Users\Tables\AspNetUserLogins.sql" />
+    <Build Include="Users\Tables\AspNetUserRoles.sql" />
+    <Build Include="Users\Tables\AspNetUsers.sql" />
+    <Build Include="Users\Tables\AspNetUserTokens.sql" />
+    <Build Include="Security\Schemas\users.sql" />
+    <Build Include="Users\Indexes\RoleNameIndex.sql" />
+    <Build Include="Users\Indexes\UserNameIndex.sql" />
+    <Build Include="Organisations\Tables\Organisations.sql" />
+    <Build Include="Organisations\Tables\RelatedOrganisations.sql" />
+    <Build Include="Security\Schemas\organisations.sql" />
+    <Build Include="Security\Schemas\cache.sql" />
+    <Build Include="Cache\SessionData.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
