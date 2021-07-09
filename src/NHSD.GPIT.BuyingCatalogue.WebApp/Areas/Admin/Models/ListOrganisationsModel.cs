@@ -1,17 +1,23 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class ListOrganisationsModel : NavBaseModel
+    public sealed class ListOrganisationsModel : NavBaseModel
     {
-        public ListOrganisationsModel(IList<Organisation> organisations)
+        public ListOrganisationsModel(IList<OrganisationModel> organisations)
         {
             Organisations = organisations;
-            BackLink = "/";
         }
 
-        public IList<Organisation> Organisations { get; private set; }
+        public IList<OrganisationModel> Organisations { get; }
+
+        public Dictionary<string, string> BreadCrumb()
+        {
+            return new()
+            {
+                { "Home", "/admin" },
+            };
+        }
     }
 }

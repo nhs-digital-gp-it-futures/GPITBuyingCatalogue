@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             Assert.Throws<ArgumentNullException>(
                     () =>
-                        _ = new HomeController(null, Mock.Of<IMapper>(), null))
+                        _ = new HomeController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
                 .ParamName.Should()
                 .Be("organisationsService");
         }
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_BuyerOrganisations_GetsAllOrganisations()
         {
             var mockOrganisationService = new Mock<IOrganisationsService>();
-            var controller = new HomeController(                
+            var controller = new HomeController(
                 mockOrganisationService.Object,
                 Mock.Of<IMapper>(),
                 Mock.Of<ISolutionsService>());
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(mockOrganisations);
             var mockMapper = new Mock<IMapper>();
           
-            var controller = new HomeController(                
+            var controller = new HomeController(
                 mockOrganisationService.Object,
                 mockMapper.Object,
                 Mock.Of<ISolutionsService>());
@@ -117,8 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockOrganisationModels = new Mock<IList<OrganisationModel>>().Object;
             mockMapper.Setup(m => m.Map<IList<Organisation>, IList<OrganisationModel>>(mockOrganisations))
                 .Returns(mockOrganisationModels);
-
-          var controller = new HomeController(                
+            var controller = new HomeController(
                 mockOrganisationService.Object,
                 mockMapper.Object,
                 Mock.Of<ISolutionsService>());
@@ -127,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            Assert.Same(mockOrganisationModels, actual.Model);
+            Assert.Same(mockOrganisationModels, actual.Model.As<ListOrganisationsModel>().Organisations);
         }
 
         [Fact]
