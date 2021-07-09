@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
                         new() { Id = 1, Display = "Draft" },
                         new() { Id = 3, Display = "Published" },
                         new() { Id = 2, Display = "Unpublished" },
-                        new() { Id = 5, Display = "In Remediation" },
+                        new() { Id = 5, Display = "In remediation" },
                         new() { Id = 4, Display = "Suspended" },
                     });
         }
