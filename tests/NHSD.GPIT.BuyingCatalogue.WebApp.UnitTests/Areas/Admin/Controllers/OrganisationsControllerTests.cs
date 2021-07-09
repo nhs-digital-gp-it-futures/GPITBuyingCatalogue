@@ -27,32 +27,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void Constructor_NullOrganisationService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController( null, Mock.Of<IOdsService>(),
-                Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>()));
+                _ = new OrganisationsController(
+                        null,
+                        Mock.Of<IOdsService>(),
+                        Mock.Of<ICreateBuyerService>(),
+                        Mock.Of<IUsersService>()));
         }
 
         [Fact]
         public static void Constructor_NullOdsServiceService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController( Mock.Of<IOrganisationsService>(), null,
-                Mock.Of<ICreateBuyerService>(), Mock.Of<IUsersService>()));
+                _ = new OrganisationsController(
+                        Mock.Of<IOrganisationsService>(),
+                        null,
+                        Mock.Of<ICreateBuyerService>(),
+                        Mock.Of<IUsersService>()));
         }
 
         [Fact]
         public static void Constructor_NullCreateBuyerServiceService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController( Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
-                null, Mock.Of<IUsersService>()));
+                _ = new OrganisationsController(
+                        Mock.Of<IOrganisationsService>(),
+                        Mock.Of<IOdsService>(),
+                        null,
+                        Mock.Of<IUsersService>()));
         }
 
         [Fact]
         public static void Constructor_NullUsersServiceService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new OrganisationsController( Mock.Of<IOrganisationsService>(), Mock.Of<IOdsService>(),
-                Mock.Of<ICreateBuyerService>(), null));
+                _ = new OrganisationsController(
+                        Mock.Of<IOrganisationsService>(),
+                        Mock.Of<IOdsService>(),
+                        Mock.Of<ICreateBuyerService>(),
+                        null));
         }
     }
 }

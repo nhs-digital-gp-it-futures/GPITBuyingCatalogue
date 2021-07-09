@@ -35,7 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new BrowserBasedController( null,
+                _ = new BrowserBasedController(
+                    null,
                     Mock.Of<ISolutionsService>()));
         }
 
@@ -43,7 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new BrowserBasedController( Mock.Of<IMapper>(),
+                _ = new BrowserBasedController(
+                    Mock.Of<IMapper>(),
                     null));
         }
 

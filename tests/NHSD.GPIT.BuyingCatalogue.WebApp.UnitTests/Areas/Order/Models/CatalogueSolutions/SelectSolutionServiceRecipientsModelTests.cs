@@ -18,8 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             string solutionName,
             IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
-            )
+            CatalogueItemId catalogueSolutionId)
         {
             var model = new SelectSolutionServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, true, catalogueSolutionId);
 
@@ -40,8 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             string solutionName,
             IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
-        )
+            CatalogueItemId catalogueSolutionId)
         {
             var model = new SelectSolutionServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, false, catalogueSolutionId);
 

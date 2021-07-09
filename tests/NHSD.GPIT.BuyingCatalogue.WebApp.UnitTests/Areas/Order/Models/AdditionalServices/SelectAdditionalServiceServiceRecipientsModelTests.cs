@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.AdditionalServices
 {
-    public static class SelectAdditionalServiceRecipientsModelTests
+    public static class SelectAdditionalServiceServiceRecipientsModelTests
     {
         [Theory]
         [CommonAutoData]
@@ -18,8 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             string solutionName,
             IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
-            )
+            CatalogueItemId catalogueSolutionId)
         {
             var model = new SelectAdditionalServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, true, catalogueSolutionId);
 
@@ -40,8 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             string solutionName,
             IEnumerable<OrderItemRecipientModel> serviceRecipients,
             string selectionMode,
-            CatalogueItemId catalogueSolutionId
-        )
+            CatalogueItemId catalogueSolutionId)
         {
             var model = new SelectAdditionalServiceRecipientsModel(odsCode, callOffId, solutionName, serviceRecipients, selectionMode, false, catalogueSolutionId);
 

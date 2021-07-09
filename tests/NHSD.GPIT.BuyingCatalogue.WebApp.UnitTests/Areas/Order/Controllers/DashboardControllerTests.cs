@@ -25,14 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Constructor_NullOrganisationService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new DashboardController( null, Mock.Of<IOrderService>()));
+                _ = new DashboardController(null, Mock.Of<IOrderService>()));
         }
 
         [Fact]
         public static void Constructor_NullOrderService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new DashboardController( Mock.Of<IOrganisationsService>(), null));
+                _ = new DashboardController(Mock.Of<IOrganisationsService>(), null));
         }
 
         [Fact]
@@ -42,12 +42,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim[] { new("organisationFunction", "Authority") },
                 "mock"));
 
-            var controller = new DashboardController( Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>())
+            var controller = new DashboardController(Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>())
             {
                 ControllerContext = new ControllerContext
                 {
                     HttpContext = new DefaultHttpContext { User = user },
-                }
+                },
             };
 
             var result = controller.Index();

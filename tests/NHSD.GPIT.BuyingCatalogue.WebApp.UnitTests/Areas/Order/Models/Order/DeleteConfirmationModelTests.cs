@@ -10,9 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode, 
-            EntityFramework.Ordering.Models.Order order
-            )
+            string odsCode,
+            EntityFramework.Ordering.Models.Order order)
         {
             var model = new DeleteConfirmationModel(odsCode, order);
 

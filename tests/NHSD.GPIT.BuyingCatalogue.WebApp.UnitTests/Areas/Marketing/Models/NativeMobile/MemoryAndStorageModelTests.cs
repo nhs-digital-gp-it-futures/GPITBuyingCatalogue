@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 {
                     MinimumMemoryRequirement = "1GB",
                     Description = "Storage requirements",
-                }
+                },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 {
                     MinimumMemoryRequirement = memorySize,
                     Description = description,
-                }
+                },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
@@ -103,13 +103,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             return new List<SelectListItem>
             {
-                new() { Text = "256MB", Value = "256MB"},
-                new() { Text = "512MB", Value = "512MB"},
-                new() { Text = "1GB", Value = "1GB"},
-                new() { Text = "2GB", Value = "2GB"},
-                new() { Text = "4GB", Value = "4GB"},
-                new() { Text = "8GB", Value = "8GB"},
-                new() { Text = "16GB or higher", Value = "16GB or higher"},
+                new() { Text = "256MB", Value = "256MB" },
+                new() { Text = "512MB", Value = "512MB" },
+                new() { Text = "1GB", Value = "1GB" },
+                new() { Text = "2GB", Value = "2GB" },
+                new() { Text = "4GB", Value = "4GB" },
+                new() { Text = "8GB", Value = "8GB" },
+                new() { Text = "16GB or higher", Value = "16GB or higher" },
             };
         }
     }

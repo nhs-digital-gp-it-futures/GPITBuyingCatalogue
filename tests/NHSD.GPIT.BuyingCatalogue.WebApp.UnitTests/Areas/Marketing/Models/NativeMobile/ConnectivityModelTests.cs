@@ -14,11 +14,11 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeMobile
 {
-    public sealed class ConnectivityModelModelTests : IDisposable
+    public sealed class ConnectivityModelTests : IDisposable
     {
         private IMapper mapper;
 
-        public ConnectivityModelModelTests()
+        public ConnectivityModelTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                     MinimumConnectionSpeed = "15Mbs",
                     ConnectionType = new HashSet<string> { "3G", "4G" },
                     Description = "A description",
-                }
+                },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                     MinimumConnectionSpeed = minimumConnectionSpeed,
                     ConnectionType = new HashSet<string>(),
                     Description = description,
-                }
+                },
             };
 
             if (hasConnectionType)

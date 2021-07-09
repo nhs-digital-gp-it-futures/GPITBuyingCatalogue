@@ -35,16 +35,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutSolutionController( null,
-                    Mock.Of<ISolutionsService>()));
+                _ = new AboutSolutionController(
+                        null,
+                        Mock.Of<ISolutionsService>()));
         }
 
         [Fact]
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutSolutionController( Mock.Of<IMapper>(),
-                    null));
+                _ = new AboutSolutionController(
+                        Mock.Of<IMapper>(),
+                        null));
         }
 
         [Fact]

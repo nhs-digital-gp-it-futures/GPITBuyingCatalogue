@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Associat
             string odsCode,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
-            string solutionName, 
+            string solutionName,
             string orderDescription)
         {
             var model = new DeleteAssociatedServiceModel(odsCode, callOffId, catalogueItemId, solutionName, orderDescription);

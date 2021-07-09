@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 {
                     OperatingSystems = new HashSet<string> { "Android", "Other" },
                     OperatingSystemsDescription = "A description",
-                }
+                },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                 {
                     OperatingSystems = operatingSystems,
                     OperatingSystemsDescription = description,
-                }
+                },
             };
 
             var json = JsonConvert.SerializeObject(clientApplication);
