@@ -75,16 +75,6 @@ jobs:
   - task: DockerInstaller@0
     inputs:
       dockerVersion: $(dockerVersion)
-    
-  # - script: docker-compose up --build -d
-  #   displayName: 'Docker up'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Run integration tests'
-    inputs:
-      command: test
-      projects: '**/*IntegrationTests.csproj'
-      arguments: '-v n --no-build'
 
   - task: DotNetCoreCLI@2
     displayName: 'Run E2E Tests'
@@ -92,13 +82,6 @@ jobs:
       command: test
       projects: '**/*E2ETests.csproj'
       arguments: '-v n --no-build'
-  
-  - script: docker-compose logs
-    displayName: 'Docker logs'
-    condition: failed()
-
-  - script: docker-compose down -v
-    displayName: 'Docker down'
 
   - task: Docker@2
     displayName: 'Docker: Build and Push'
