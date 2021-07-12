@@ -39,5 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
             return Driver.FindElements(Objects.Admin.DashboardObjects.OrganisationLinks).Select(s => s.GetAttribute("data-org-id"));
         }
+
+        internal void ClickBuyerOrgLink()
+        {
+            Driver.FindElement(Objects.Admin.DashboardObjects.BuyerOrgLink).Click();
+        }
     }
 }
