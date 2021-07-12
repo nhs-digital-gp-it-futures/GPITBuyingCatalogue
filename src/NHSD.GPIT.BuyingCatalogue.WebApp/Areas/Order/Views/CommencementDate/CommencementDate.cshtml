@@ -1,0 +1,31 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate.CommencementDateModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@Model.Title"
+                            advice="Enter the date that this Call-off Agreement will begin." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+
+                <nhs-fieldset-form-label asp-for="@Model"
+                                   label-text="Commencement date"
+                                   label-hint="For example 14 01 2020">
+                    <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
+                </nhs-fieldset-form-label>
+
+                <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
+
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>

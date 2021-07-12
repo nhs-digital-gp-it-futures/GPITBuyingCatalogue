@@ -203,33 +203,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 typeof(AssociatedServicesController).ControllerName(),
                 new { odsCode, callOffId });
         }
-
-        [HttpGet("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteAssociatedService(
-            string odsCode,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            string catalogueItemName)
-        {
-            var order = await orderService.GetOrder(callOffId);
-
-            return View(new DeleteAssociatedServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description));
-        }
-
-        [HttpPost("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteAssociatedService(
-            string odsCode,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            string catalogueItemName,
-            DeleteAssociatedServiceModel model)
-        {
-            await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
-
-            return RedirectToAction(
-                nameof(Index),
-                typeof(AssociatedServicesController).ControllerName(),
-                new { odsCode, callOffId });
-        }
     }
 }

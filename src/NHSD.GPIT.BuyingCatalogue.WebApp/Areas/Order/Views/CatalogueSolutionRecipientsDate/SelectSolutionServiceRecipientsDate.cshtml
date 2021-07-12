@@ -1,0 +1,40 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionRecipientsDate.SelectSolutionServiceRecipientsDateModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="planned-delivery-date-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@Model.Title"
+                            advice="The date entered will be applied to all the organisations you’ll be ordering for. We’ve included the commencement date for this Call-off Agreement, but if your planned delivery date is different, you can change it here."
+                            additional-advice="You'll be able to alter the planned delivery date for individual organisations later if required." />
+        </div>
+        <div class="nhsuk-grid-column-full">
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <input type="hidden" asp-for="@Model.CommencementDate" />
+
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Planned delivery date"
+                                         label-hint="For example 14 01 2020">
+                    <nhs-date-input asp-for="@Model"
+                                    day="@Model.Day"
+                                    month="@Model.Month"
+                                    year="@Model.Year" />
+                </nhs-fieldset-form-label>
+                <nhs-details label-text="What date should I enter?">
+                    <p>Enter the planned delivery date you've agreed with the supplier. This is the day that each of the listed Service Recipients will start using this Catalogue Solution.</p>
+                    <p>We've included the commencement date for this Call-off Agreement, but you can change it if you’ve agreed a different delivery date.</p>
+                </nhs-details>
+
+                <nhs-submit-button text="Continue" />
+            </form>
+        </div>
+    </div>
+</div>

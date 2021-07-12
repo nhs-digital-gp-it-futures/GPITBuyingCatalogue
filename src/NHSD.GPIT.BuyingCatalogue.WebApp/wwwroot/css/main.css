@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 /* ==========================================================================
    GENERIC / #BOX-SIZING
    ========================================================================== */
@@ -11148,3 +11148,69 @@ body {
 .govuk-input__prefix,
 .govuk-input__suffix {
   border-color: #4c6272 !important; }
+
+@media print {
+  @page {
+    size: auto;
+    margin: 2em; }
+  .bc-print-header {
+    display: block !important; }
+  .nhsuk-bc-print {
+    background: white;
+    zoom: 0.8; }
+    .nhsuk-bc-print header {
+      display: none; }
+    .nhsuk-bc-print footer {
+      display: none; }
+    .nhsuk-bc-print .nhsuk-back-link {
+      display: none; }
+    .nhsuk-bc-print .bc-print-button {
+      display: none; }
+    .nhsuk-bc-print .nhsuk-width-container {
+      margin: 0 16px;
+      max-width: 100%; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__key {
+      width: 30%; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__value {
+      width: 50%; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__row {
+      display: table-row; }
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__key,
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__value,
+    .nhsuk-bc-print .nhsuk-summary-list .nhsuk-summary-list__actions {
+      border-bottom: 1px solid #dddee0;
+      display: table-cell;
+      padding-bottom: 8px;
+      padding-right: 2px;
+      padding-top: 8px; }
+    .nhsuk-bc-print .bc-print-tables {
+      page-break-before: always; }
+      .nhsuk-bc-print .bc-print-tables h2 {
+        margin-bottom: 1em;
+        margin-top: 2em; }
+    .nhsuk-bc-print .nhsuk-grid-columns-full > p {
+      margin-bottom: 2em; }
+    .nhsuk-bc-print .nhsuk-table-responsive thead {
+      clip-path: none;
+      border: 0;
+      clip: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      padding: 0;
+      position: relative;
+      white-space: normal;
+      width: auto; }
+      .nhsuk-bc-print .nhsuk-table-responsive thead th {
+        text-align: left; }
+    .nhsuk-bc-print .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table-responsive__heading {
+      display: none; }
+    .nhsuk-bc-print .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row {
+      display: table-row !important;
+      margin-bottom: 24px; }
+      .nhsuk-bc-print .nhsuk-table-responsive .nhsuk-table__body .nhsuk-table__row td {
+        display: table-cell !important;
+        justify-content: space-between;
+        min-width: 1px;
+        padding: 1em 0;
+        text-align: left; } }

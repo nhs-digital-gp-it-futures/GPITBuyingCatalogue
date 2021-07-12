@@ -1,5 +1,7 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,17 +24,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullOrganisationService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new DashboardController(null, Mock.Of<IOrderService>()));
-        }
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(DashboardController).GetConstructors();
 
-        [Fact]
-        public static void Constructor_NullOrderService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new DashboardController(Mock.Of<IOrganisationsService>(), null));
+            assertion.Verify(constructors);
         }
 
         [Fact]
