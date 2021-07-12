@@ -33,8 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var solutions = new List<CatalogueItem>
             {
-                new() { Name = "Item 1"},
-                new() { Name = "Item 2"}
+                new() { Name = "Item 1" },
+                new() { Name = "Item 2" },
             };
 
             var mockSolutionsService = new Mock<ISolutionsService>();

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             {
                 Summary = "A summary",
                 Link = "A link",
-                RequiresHscn = "Requires Hscn"
+                RequiresHscn = "Requires Hscn",
             };
 
             var model = new HostingTypeModel(publicCloud);
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 Summary = "A summary",
                 Link = "A link",
                 RequiresHscn = "Requires Hscn",
-                HostingModel = "Hosting Model"
+                HostingModel = "Hosting Model",
             };
 
             var model = new HostingTypeModel(privateCloud);
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 Summary = "A summary",
                 Link = "A link",
                 RequiresHscn = "Requires Hscn",
-                HostingModel = "Hosting Model"
+                HostingModel = "Hosting Model",
             };
 
             var model = new HostingTypeModel(hybridHostingType);
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 Summary = summary,
                 Link = link,
                 RequiresHscn = requiresHscn,
-                HostingModel = hostingModel
+                HostingModel = hostingModel,
             };
 
             var model = new HostingTypeModel(privateCloud);
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var privateCloud = new PrivateCloud
             {
                 Summary = summary,
-                Link = link
+                Link = link,
             };
 
             var model = new HostingTypeModel(privateCloud);
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var privateCloud = new PrivateCloud
             {
-                Summary = summary
+                Summary = summary,
             };
 
             var model = new HostingTypeModel(privateCloud);
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var privateCloud = new PrivateCloud
             {
-                Link = link
+                Link = link,
             };
 
             var model = new HostingTypeModel(privateCloud);
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var privateCloud = new PrivateCloud
             {
-                HostingModel = hostingModel
+                HostingModel = hostingModel,
             };
 
             var model = new HostingTypeModel(privateCloud);
@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var privateCloud = new PrivateCloud
             {
-                RequiresHscn = requiresHscn
+                RequiresHscn = requiresHscn,
             };
 
             var model = new HostingTypeModel(privateCloud);

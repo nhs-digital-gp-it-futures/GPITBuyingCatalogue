@@ -23,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        private const string OperatingModeEnvironmentVariable = "OPERATING_MODE";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -131,12 +129,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
             app.UseHttpsRedirection();
-
-            var operatingMode = Environment.GetEnvironmentVariable(OperatingModeEnvironmentVariable);
-
-            // Disable the marketing pages when deployed publicly
-            if (string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
-                app.UseMiddleware<DisableMarketingMiddleware>();
 
             app.UseMiddleware<Framework.Middleware.CookieConsent.CookieConsentMiddleware>();
 

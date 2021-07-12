@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
                 LastName = lastName,
                 Department = department,
                 PhoneNumber = phone,
-                Email = email
+                Email = email,
             };
 
             var result = contact.IsEmpty();

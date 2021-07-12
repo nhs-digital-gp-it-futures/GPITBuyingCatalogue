@@ -10,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.NativeDesktop
-
 {
     public static class AdditionalInformationModelTests
     {
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemId = new CatalogueItemId(1, "123"),
-                Solution = new Solution { ClientApplication = json }
+                Solution = new Solution { ClientApplication = json },
             };
 
             var model = new AdditionalInformationModel(catalogueItem);

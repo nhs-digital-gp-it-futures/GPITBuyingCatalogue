@@ -4,7 +4,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationT
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.ClientApplicationType
-
 {
     public static class BrowserBasedModelTests
     {
@@ -82,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             {
                 ClientApplication = new ClientApplication
                 {
-                    Plugins = new Plugins { Required = true }
+                    Plugins = new Plugins { Required = true },
                 },
             };
 
@@ -103,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             {
                 ClientApplication = new ClientApplication
                 {
-                    MinimumConnectionSpeed = "15Mbs"
+                    MinimumConnectionSpeed = "15Mbs",
                 },
             };
 
@@ -124,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             {
                 ClientApplication = new ClientApplication
                 {
-                    HardwareRequirements = "Some hardware requirements"
+                    HardwareRequirements = "Some hardware requirements",
                 },
             };
 
@@ -145,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             {
                 ClientApplication = new ClientApplication
                 {
-                    AdditionalInformation = "Some additional information"
+                    AdditionalInformation = "Some additional information",
                 },
             };
 
@@ -170,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                     MobileResponsive = true,
                     MobileFirstDesign = true,
                     Plugins = new Plugins { Required = true },
-                    MinimumConnectionSpeed = "15Mbs"
+                    MinimumConnectionSpeed = "15Mbs",
                 },
             };
 
@@ -193,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                 {
                     MobileFirstDesign = true,
                     Plugins = new Plugins { Required = true },
-                    MinimumConnectionSpeed = "15Mbs"
+                    MinimumConnectionSpeed = "15Mbs",
                 },
             };
 
@@ -217,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                     BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
                     MobileResponsive = true,
                     Plugins = new Plugins { Required = true },
-                    MinimumConnectionSpeed = "15Mbs"
+                    MinimumConnectionSpeed = "15Mbs",
                 },
             };
 
@@ -241,8 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                     BrowsersSupported = new HashSet<string> { "Microsoft Edge" },
                     MobileResponsive = true,
                     MobileFirstDesign = true,
-                    //Plugins = new Plugins { Required = true },
-                    MinimumConnectionSpeed = "15Mbs"
+                    MinimumConnectionSpeed = "15Mbs",
                 },
             };
 
@@ -267,7 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                     MobileResponsive = true,
                     MobileFirstDesign = true,
                     Plugins = new Plugins { Required = true },
-                }
+                },
             };
 
             Assert.False(model.IsComplete);

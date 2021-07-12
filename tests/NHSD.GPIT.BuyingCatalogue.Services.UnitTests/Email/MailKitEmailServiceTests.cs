@@ -306,14 +306,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
                 mockLogger.Object);
 
             Assert.ThrowsAsync<SmtpFailedRecipientException>(() => service.SendEmailAsync(message));
-            mockLogger.Verify(l => l.LogError(
-                exception,
-                formatErrorMessage,
-                settings.Host,
-                settings.Port,
-                settings.Authentication.IsRequired,
-                settings.Authentication.UserName,
-                message), Times.Once);
+            mockLogger.Verify(
+                l => l.LogError(
+                    exception,
+                    formatErrorMessage,
+                    settings.Host,
+                    settings.Port,
+                    settings.Authentication.IsRequired,
+                    settings.Authentication.UserName,
+                    message),
+                Times.Once);
         }
     }
 }

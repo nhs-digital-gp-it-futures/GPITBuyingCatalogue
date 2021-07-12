@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteCa
             string odsCode,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
-            string solutionName, 
+            string solutionName,
             string orderDescription)
         {
             var model = new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, solutionName, orderDescription);

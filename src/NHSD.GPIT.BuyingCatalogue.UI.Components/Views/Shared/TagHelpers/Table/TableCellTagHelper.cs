@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         private static TagBuilder GetHeadingBuilder(TagHelperContext context)
         {
-            if (!context.Items.TryGetValue("CellColumnNames", out object columnNames))
+            if (!context.Items.TryGetValue(TagHelperConstants.CellColumnContextName, out object columnNames))
                 return null;
 
             var columnNamesConverted = (Queue<TagHelperContent>)columnNames;

@@ -30,8 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 CreateDefaultMockUserManager(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings()
-            );
+                new DisabledErrorMessageSettings());
         }
 
         [Fact]
@@ -43,8 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 CreateDefaultMockUserManager(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings()
-                ));
+                new DisabledErrorMessageSettings()));
         }
 
         [Fact]
@@ -52,13 +50,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new AccountController(
-                    
-                    CreateDefaultMockSignInManager(),
-                    null,
-                    Mock.Of<IPasswordService>(),
-                    Mock.Of<IPasswordResetCallback>(),
-                    new DisabledErrorMessageSettings()
-                ));
+                        CreateDefaultMockSignInManager(),
+                        null,
+                        Mock.Of<IPasswordService>(),
+                        Mock.Of<IPasswordResetCallback>(),
+                        new DisabledErrorMessageSettings()));
         }
 
         [Fact]
@@ -66,13 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new AccountController(
-                    
-                    CreateDefaultMockSignInManager(),
-                    CreateDefaultMockUserManager(),
-                    null,
-                    Mock.Of<IPasswordResetCallback>(),
-                    new DisabledErrorMessageSettings()
-                ));
+                        CreateDefaultMockSignInManager(),
+                        CreateDefaultMockUserManager(),
+                        null,
+                        Mock.Of<IPasswordResetCallback>(),
+                        new DisabledErrorMessageSettings()));
         }
 
         [Fact]
@@ -80,13 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new AccountController(
-                    
-                    CreateDefaultMockSignInManager(),
-                    CreateDefaultMockUserManager(),
-                    Mock.Of<IPasswordService>(),
-                    null,
-                    new DisabledErrorMessageSettings()
-                ));
+                        CreateDefaultMockSignInManager(),
+                        CreateDefaultMockUserManager(),
+                        Mock.Of<IPasswordService>(),
+                        null,
+                        new DisabledErrorMessageSettings()));
         }
 
         [Fact]
@@ -94,13 +86,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             Assert.Throws<ArgumentNullException>(() =>
                 _ = new AccountController(
-                    
                     CreateDefaultMockSignInManager(),
                     CreateDefaultMockUserManager(),
                     Mock.Of<IPasswordService>(),
                     Mock.Of<IPasswordResetCallback>(),
-                    null
-                ));
+                    null));
         }
 
         [Fact]
@@ -224,13 +214,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         private static AccountController CreateValidController()
         {
             return new(
-                
                 CreateDefaultMockSignInManager(),
                 CreateDefaultMockUserManager(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings()
-            );
+                new DisabledErrorMessageSettings());
         }
 
         private static UserManager<AspNetUser> CreateDefaultMockUserManager()

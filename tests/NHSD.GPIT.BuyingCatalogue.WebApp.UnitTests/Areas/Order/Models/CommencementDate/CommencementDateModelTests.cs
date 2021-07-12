@@ -13,10 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode, 
-            CallOffId callOffId, 
-            DateTime commencementDate
-            )
+            string odsCode,
+            CallOffId callOffId,
+            DateTime commencementDate)
         {
             var model = new CommencementDateModel(odsCode, callOffId, commencementDate);
 
@@ -30,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         }
 
         [Theory]
-        [InlineData("","","")]
+        [InlineData("", "", "")]
         [InlineData("Invalid", "1", "2022")]
         [InlineData("1", "Invalid", "2022")]
         [InlineData("1", "1", "Invalid")]
@@ -71,7 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
             dateTime.Should().Be(DateTime.ParseExact($"{model.Day}/{model.Month}/{model.Year}", "d/M/yyyy", CultureInfo.InvariantCulture));
         }
 
-        [Fact] public static void ToDateTime_DateMoreThan60DaysInPast_ReturnsError()
+        [Fact]
+        public static void ToDateTime_DateMoreThan60DaysInPast_ReturnsError()
         {
             var oldDate = DateTime.UtcNow.AddDays(-60);
 

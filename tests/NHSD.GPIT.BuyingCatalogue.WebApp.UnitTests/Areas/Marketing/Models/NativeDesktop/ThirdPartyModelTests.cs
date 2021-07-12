@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             var clientApplication = new ClientApplication
             {
-                NativeDesktopThirdParty = new NativeDesktopThirdParty { ThirdPartyComponents = "Third party components", DeviceCapabilities = "Device capabilities" }
+                NativeDesktopThirdParty = new NativeDesktopThirdParty { ThirdPartyComponents = "Third party components", DeviceCapabilities = "Device capabilities" },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             var clientApplication = new ClientApplication
             {
-                NativeDesktopThirdParty = new NativeDesktopThirdParty { ThirdPartyComponents = thirdParty, DeviceCapabilities = deviceCapabilities }
+                NativeDesktopThirdParty = new NativeDesktopThirdParty { ThirdPartyComponents = thirdParty, DeviceCapabilities = deviceCapabilities },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };

@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsCar
                 CareCardType.NonUrgent => NhsCareCardNonUrgent,
                 CareCardType.Urgent => NhsCareCardUrgent,
                 CareCardType.Immediate => NhsCareCardImmediate,
-                _ => throw new ArgumentException(),
+                _ => throw new ArgumentException($"{nameof(model.CareCardClass)} has an incorrect value of {model.CareCardClass}"),
             };
 
             return await Task.FromResult(View("NhsCareCard", model));
