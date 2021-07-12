@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipients;
@@ -15,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         public static void WithValidArguments__NewOrder_PropertiesCorrectlySet(
             string odsCode,
             string selectionMode,
-            CreateOrderItemModel state
-            )
+            CreateOrderItemModel state)
         {
             state.IsNewSolution = true;
 
@@ -36,8 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         public static void WithValidArguments__ExistingOrder_PropertiesCorrectlySet(
             string odsCode,
             string selectionMode,
-            CreateOrderItemModel state
-        )
+            CreateOrderItemModel state)
         {
             state.IsNewSolution = false;
 

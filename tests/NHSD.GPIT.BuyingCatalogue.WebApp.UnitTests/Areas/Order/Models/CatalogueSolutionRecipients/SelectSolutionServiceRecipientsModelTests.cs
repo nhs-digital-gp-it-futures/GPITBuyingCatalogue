@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         public static void WithValidArguments_NewOrder_PropertiesCorrectlySet(
             string odsCode,
             string selectionMode,
-            CreateOrderItemModel state
-            )
+            CreateOrderItemModel state)
         {
             state.IsNewSolution = true;
 
@@ -34,8 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
         public static void WithValidArguments_ExistingOrder_PropertiesCorrectlySet(
             string odsCode,
             string selectionMode,
-            CreateOrderItemModel state
-        )
+            CreateOrderItemModel state)
         {
             state.IsNewSolution = false;
 

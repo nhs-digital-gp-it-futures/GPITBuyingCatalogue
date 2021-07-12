@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -41,12 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 new Claim[] { new("organisationFunction", "Authority") },
                 "mock"));
 
-            var controller = new DashboardController( Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>())
+            var controller = new DashboardController(Mock.Of<IOrganisationsService>(), Mock.Of<IOrderService>())
             {
                 ControllerContext = new ControllerContext
                 {
                     HttpContext = new DefaultHttpContext { User = user },
-                }
+                },
             };
 
             var result = controller.Index();

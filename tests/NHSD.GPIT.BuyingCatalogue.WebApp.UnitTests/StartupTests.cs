@@ -28,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             Environment.SetEnvironmentVariable(
                 "BC_DB_CONNECTION",
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=BC_Catalog;Trusted_Connection=True;");
-            Environment.SetEnvironmentVariable("BC_BLOB_CONNECTION",
+            Environment.SetEnvironmentVariable(
+                "BC_BLOB_CONNECTION",
                 "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;");
             Environment.SetEnvironmentVariable("BC_BLOB_CONTAINER", "buyingcatalogue-documents");
             Environment.SetEnvironmentVariable("BC_SMTP_HOST", "localhost");

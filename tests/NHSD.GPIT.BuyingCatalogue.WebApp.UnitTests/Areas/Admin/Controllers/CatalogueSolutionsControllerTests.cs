@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetAllSolutions(status))
                 .ReturnsAsync(solutions);
-            var controller = new CatalogueSolutionsController(mockService.Object,Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
             var actual = (await controller.Index(status)).As<ViewResult>();
 
@@ -100,7 +100,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 },
                 Name = "Fake Solution",
             };
-
 
             var mockSolutionService = new Mock<ISolutionsService>();
             mockSolutionService.Setup(s => s.GetSolution(It.IsAny<EntityFramework.Ordering.Models.CatalogueItemId>()))
