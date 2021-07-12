@@ -9,6 +9,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -135,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             CreateOrderItemModel updatedState = null;
 
             orderSessionServiceMock.Setup(s => s.SetOrderStateToSession(It.IsAny<CreateOrderItemModel>()))
-                .Callback<CreateOrderItemModel>(x => updatedState = x);
+                .Callback<CreateOrderItemModel>(s => updatedState = s);
 
             var model = new SelectAdditionalServiceRecipientsModel
             {
@@ -170,9 +171,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var actualResult = controller.SelectAdditionalServiceRecipients(odsCode, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
-
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(AdditionalServiceRecipientsDateController).ControllerName());
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
         }
 
         [Theory]
@@ -198,9 +199,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var actualResult = controller.SelectAdditionalServiceRecipients(odsCode, callOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
-
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AdditionalServicesController.EditAdditionalService));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(AdditionalServicesController).ControllerName());
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId }, { "CatalogueItemId", state.CatalogueItemId } });
         }
     }
 }
