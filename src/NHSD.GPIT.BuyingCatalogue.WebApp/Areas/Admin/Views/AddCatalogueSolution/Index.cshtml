@@ -1,6 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddSolutionModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddSolutionModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Add a Solution page";
@@ -25,49 +23,36 @@
                                 asp-items="@(new SelectList(Model.SuppliersSelectList, "Value", "Text"))"
                                 label-text="Supplier name"/>
 
-                    @{ var cssClass = ViewData.ModelState.ContainsKey(nameof(AddSolutionModel.FrameworkModel)) ? "nhsuk-form-group--error" : ""; }
-
-                    <div class="nhsuk-form-group @cssClass">
-                        <fieldset id="@nameof(AddSolutionModel.FrameworkModel)" class="nhsuk-fieldset" aria-describedby="contact-hint">
-                            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
-                                <h1 class="nhsuk-fieldset__heading">
-                                    Framework(s)
-                                </h1>
-                            </legend>
-                            <div class="nhsuk-hint" id="contact-hint">
-                                Select all that apply.
-                            </div>
-                            @Html.ValidationMessageFor(s => s.FrameworkModel, "", new { @class = "nhsuk-error-message" })
-                        <div class="nhsuk-checkboxes nhsuk-checkboxes--conditional">
-                            <div class="nhsuk-checkboxes__item">
-                                <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.GpitFuturesFramework" type="checkbox" aria-controls="conditional-contact-1" aria-expanded="false">
-                                <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.GpitFuturesFramework)">
-                                    GP IT Futures Framework
-                                </label>
-                            </div>
-                            <div>
-                            </div>
-                            <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-contact-1">
-                                <div class="nhsuk-form-group">
-                                    <div class="nhsuk-checkboxes">
-                                        <div class="nhsuk-checkboxes__item">
-                                            <input data-test-id="foundation-solution" class="nhsuk-checkboxes__input " asp-for="@Model.FrameworkModel.FoundationSolutionFramework" type="checkbox">
-                                            <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.FoundationSolutionFramework)">
-                                                Foundation Solution
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="nhsuk-checkboxes__item">
-                                <input data-test-id="framework-names" class="nhsuk-checkboxes__input" asp-for="@Model.FrameworkModel.DfocvcFramework" type="checkbox">
-                                <label class="nhsuk-label nhsuk-checkboxes__label" for="@nameof(FrameworkModel)_@nameof(FrameworkModel.DfocvcFramework)">
-                                    DFOCVC Framework
-                                </label>
-                            </div>
-                        </div>
-                        </fieldset>
-                    </div>
+                    <nhs-fieldset-form-label asp-for="@Model"
+                                             label-text="Frameworks"
+                                             label-hint="Select all the apply.">
+                        <nhs-checkbox-container>
+                            @for (var i = 0; i < Model.Frameworks.Count; i++)
+                            {
+                                @if (Model.Frameworks[i].Name == "GP IT Futures Framework")
+                                {
+                                    <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
+                                                  label-text="@Model.Frameworks[i].Name"
+                                                  hidden-input="@Model.Frameworks[i].FrameworkId"
+                                                  data-test-id="framework-names">
+                                        <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="@Model.Frameworks[i].IsFoundation"
+                                                          label-text="Foundation Solution"
+                                                          hidden-input="@Model.Frameworks[i].FrameworkId"
+                                                          data-test-id="foundation-solution"/>
+                                        </nhs-checkbox-container>
+                                    </nhs-checkbox>
+                                }
+                                else
+                                {
+                                    <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
+                                                  label-text="@Model.Frameworks[i].Name"
+                                                  hidden-input="@Model.Frameworks[i].FrameworkId"
+                                                  data-test-id="framework-names" />
+                                }
+                            }
+                        </nhs-checkbox-container>
+                    </nhs-fieldset-form-label>
                     <br>
                     <nhs-submit-button text="Save and continue" />
                 </form>

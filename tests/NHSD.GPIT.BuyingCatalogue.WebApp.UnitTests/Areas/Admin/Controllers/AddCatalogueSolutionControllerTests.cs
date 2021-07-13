@@ -27,9 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             typeof(AddCatalogueSolutionController).Should()
                 .BeDecoratedWith<AuthorizeAttribute>(x => x.Policy == "AdminOnly");
-            
+
             typeof(AddCatalogueSolutionController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Admin");
-            
+
             typeof(AddCatalogueSolutionController).Should()
                 .BeDecoratedWith<RouteAttribute>(x => x.Template == "admin/catalogue-solutions/add-solution");
         }
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ParamName.Should()
                 .Be("solutionsService");
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_SuppliersInDatabase_ReturnsViewWithExpectedModel(
@@ -63,16 +63,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .SuppliersSelectList.Should()
                 .BeEquivalentTo(suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id)));
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_AddsExpectedCatalogueItem(
             AddSolutionModel model,
-            Mock<FrameworkModel> mockFrameworkModel,
             Mock<ISolutionsService> mockService,
             Guid userId)
         {
-            model.FrameworkModel = mockFrameworkModel.Object;
+            var frameworks = new List<FrameworkModel> { new FrameworkModel { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
+
+            model.Frameworks = frameworks;
             var controller = GetController(mockService, userId);
 
             await controller.Index(model);
@@ -80,12 +81,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Verify(
                 s => s.AddCatalogueSolution(
                     It.Is<CreateSolutionModel>(
-                        c => c.FrameworkModel == mockFrameworkModel.Object
+                        c => c.Frameworks == frameworks
                             && c.Name == model.SolutionName
                             && c.SupplierId == model.SupplierId
                             && c.UserId == userId)));
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_RedirectsToCatalogueSolutions(
@@ -133,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     {
                         User = new ClaimsPrincipal(
                             new ClaimsIdentity(
-                                new Claim[] { new(Framework.Constants.Claims.UserId, userId.ToString()) }))
+                                new Claim[] { new(Framework.Constants.Claims.UserId, userId.ToString()) })),
                     },
                 },
             };

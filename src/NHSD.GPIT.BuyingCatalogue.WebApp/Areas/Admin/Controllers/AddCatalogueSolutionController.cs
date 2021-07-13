@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var suppliers = await solutionsService.GetAllSuppliers();
 
-            return View(new AddSolutionModel().WithSelectListItems(suppliers));
+            var model = new AddSolutionModel().WithSelectListItems(suppliers);
+
+            model.Frameworks = (await solutionsService.GetAllFrameworks())
+                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id }).ToList();
+
+            return View(model);
         }
 
         [HttpPost]
@@ -41,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             await solutionsService.AddCatalogueSolution(new CreateSolutionModel
             {
-                FrameworkModel = model.FrameworkModel,
+                Frameworks = model.Frameworks,
                 Name = model.SolutionName,
                 SupplierId = model.SupplierId,
                 UserId = User.UserId(),

@@ -51,6 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<FrameworkCapability> FrameworkCapabilities { get; set; }
 
+        public DbSet<Framework> Frameworks { get; set; }
+
         public DbSet<MarketingContact> MarketingContacts { get; set; }
 
         public DbSet<Order> Orders { get; set; }

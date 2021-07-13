@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         public static void Constructor_SolutionIsNull_SetMinValueAsLastUpdated(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution = null;
-            
+
             var actual = new CatalogueModel(catalogueItem);
 
             actual.LastUpdated.Should().Be(DateTime.MinValue);

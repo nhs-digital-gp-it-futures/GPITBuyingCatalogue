@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
@@ -17,34 +18,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [CommonAutoData]
         public static void Validate_FrameworkNotValid_SetsModelErrorForFrameworkModel(
             AddSolutionModelValidator validator,
-            [Frozen] Mock<FrameworkModel> mockFrameworkModel,
             AddSolutionModel model)
         {
-            mockFrameworkModel.Setup(f => f.IsValid())
-                .Returns(false);
-            model.FrameworkModel = mockFrameworkModel.Object;
-            
-            validator.ShouldHaveValidationErrorFor(m => m.FrameworkModel, model)
+            model.Frameworks = new List<FrameworkModel> { new FrameworkModel() };
+
+            validator.ShouldHaveValidationErrorFor(m => m.Frameworks, model)
                 .WithErrorMessage("Select the framework(s) your solution is available from");
-            mockFrameworkModel.Verify(f => f.IsValid());
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static void Validate_FrameworkValid_NoErrorForFrameworkModel(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            [Frozen] Mock<FrameworkModel> mockFrameworkModel,
             AddSolutionModel model)
         {
-            mockFrameworkModel.Setup(f => f.IsValid())
-                .Returns(true);
-            model.FrameworkModel = mockFrameworkModel.Object;
+            model.Frameworks = new List<FrameworkModel> { new FrameworkModel { Selected = true } };
 
             new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ShouldNotHaveValidationErrorFor(m => m.FrameworkModel, model);
-            mockFrameworkModel.Verify(f => f.IsValid());
+                .ShouldNotHaveValidationErrorFor(m => m.Frameworks, model);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static async Task Validate_EmptySupplierId_SetsModelErrorForSupplierId(
@@ -55,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             await new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ValidateAsync(model);
-            
+
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldHaveValidationErrorFor(m => m.SupplierId, model)
                 .WithErrorMessage("Select a supplier name");
@@ -74,14 +67,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             await new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ValidateAsync(model);
-            
+
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldHaveValidationErrorFor(m => m.SupplierId, model)
                 .WithErrorMessage("Supplier Id should be a valid integer");
             mockSolutionsService
                 .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static async Task Validate_ValidSupplierId_NoModelErrorForSupplierId(
@@ -90,11 +83,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             await new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ValidateAsync(model);
-            
+
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldNotHaveValidationErrorFor(m => m.SupplierId, model);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static async Task ValidateAsync_SolutionNameValidation_ChecksSolutionNameUnique(
@@ -104,10 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             mockSolutionsService
                 .Setup(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName))
                 .ReturnsAsync(false);
-            
+
             await new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ValidateAsync(model);
-            
+
             mockSolutionsService
                 .Verify(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName));
         }
@@ -126,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             mockSolutionsService
                 .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static void Validate_SolutionNameTooLong_SetsModelErrorWithoutServiceCall(
@@ -141,13 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             mockSolutionsService
                 .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static void Validate_SolutionNameNotUniqueForSupplierId_SetsModelError(
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             AddSolutionModel model)
-        { 
+        {
             mockSolutionsService
                 .Setup(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName))
                 .ReturnsAsync(true);
@@ -156,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 .ShouldHaveValidationErrorFor(m => m.SolutionName, model)
                 .WithErrorMessage("Solution name already exists. Enter a different solution name");
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static void Validate_SolutionNameUniqueForSupplierId_NoErrorForSupplierName(
@@ -166,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             mockSolutionsService
                 .Setup(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName))
                 .ReturnsAsync(false);
-            
+
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldNotHaveValidationErrorFor(m => m.SolutionName, model);
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             actual.ParamName.Should().Be("model");
         }
-        
+
         // TODO: fix
         [Fact(Skip = "Broken")]
         public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel()
@@ -441,19 +440,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Fact]
-        public static async Task AddCatalogueSolution_NullFrameworkModel_ThrowsException()
+        public static async Task AddCatalogueSolution_NullListOfFrameWorkModels_ThrowsException()
         {
             var service = new SolutionsService(
                 Mock.Of<BuyingCatalogueDbContext>(),
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier,BuyingCatalogueDbContext>>(),
+                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
                 Mock.Of<ICatalogueItemRepository>());
 
             (await Assert.ThrowsAsync<ArgumentNullException>(
                     () => service.AddCatalogueSolution(new CreateSolutionModel())))
                 .ParamName.Should()
-                .Be(nameof(FrameworkModel));
+                .Be(nameof(CreateSolutionModel.Frameworks));
         }
 
         [Theory]
@@ -464,7 +463,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var mockCatalogueItemRepository = new Mock<ICatalogueItemRepository>();
             mockCatalogueItemRepository.Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
                 .ReturnsAsync(new CatalogueItemId(int.Parse(model.SupplierId), "045"));
-            
+
             var service = new SolutionsService(
                 Mock.Of<BuyingCatalogueDbContext>(),
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
@@ -476,7 +475,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             mockCatalogueItemRepository.Verify(c => c.GetLatestCatalogueItemIdFor(model.SupplierId));
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToRepository(
@@ -486,7 +485,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var mockCatalogueItemRepository = new Mock<ICatalogueItemRepository>();
             mockCatalogueItemRepository.Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
                 .ReturnsAsync(catalogueItemId);
-            
+
             var service = new SolutionsService(
                 Mock.Of<BuyingCatalogueDbContext>(),
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
@@ -508,7 +507,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                             c.PublishedStatus == PublicationStatus.Draft &&
                             c.SupplierId == model.SupplierId)));
         }
-        
+
         [Theory]
         [AutoData]
         public static async Task SupplierHasSolutionName_Returns_FromRepository(

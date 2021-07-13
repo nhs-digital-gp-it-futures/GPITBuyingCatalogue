@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string SupplierName { get; set; }
 
-        public FrameworkModel FrameworkModel { get; set; }
+        public IList<FrameworkModel> Frameworks { get; set; }
 
         public IEnumerable<SelectListItem> SuppliersSelectList { get; set; } = new List<SelectListItem>();
 
