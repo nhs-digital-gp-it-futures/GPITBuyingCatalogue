@@ -166,6 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(
                     s => s.CatalogueItems.Where(
                         c => c.CatalogueItemId == additionalId))
+                .ThenInclude(s => s.AdditionalService)
                 .Where(i => i.CatalogueItemId == id)
                 .SingleAsync();
 

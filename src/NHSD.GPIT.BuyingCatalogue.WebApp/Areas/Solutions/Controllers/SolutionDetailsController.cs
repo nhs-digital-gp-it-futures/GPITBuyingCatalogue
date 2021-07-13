@@ -68,6 +68,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             viewModel.CapabilitiesHeading = null;
             viewModel.Name = solution.CatalogueItemName(additionalId);
 
+            viewModel.Description = solution.AdditionalServiceDescription(additionalId);
+
             return View(viewModel);
         }
 
