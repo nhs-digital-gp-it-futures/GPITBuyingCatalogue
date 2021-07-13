@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             CallOffId callOffId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
-            [Frozen] Mock<IDefaultDeliveryDateService> defaultDeliveryDateService,
+            [Frozen] Mock<IDefaultDeliveryDateService> defaultDeliveryDateServiceMock,
             AdditionalServiceRecipientsDateController controller)
         {
             var model = new SelectAdditionalServiceRecipientsDateModel
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             updatedState.PlannedDeliveryDate.Should().Be(DateTime.UtcNow.AddDays(1).Date);
 
-            defaultDeliveryDateService.Verify(c => c.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), DateTime.UtcNow.AddDays(1).Date), Times.Once());
+            defaultDeliveryDateServiceMock.Verify(c => c.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), DateTime.UtcNow.AddDays(1).Date), Times.Once());
         }
     }
 }

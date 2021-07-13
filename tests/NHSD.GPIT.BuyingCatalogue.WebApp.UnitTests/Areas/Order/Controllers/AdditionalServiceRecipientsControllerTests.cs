@@ -92,8 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void Post_SelectAdditionalServiceRecipients_NoRecipientsSelected_ReturnsErrorResult(
             string odsCode,
             CallOffId callOffId,
-            AdditionalServiceRecipientsController controller,
-            List<OrderItemRecipientModel> serviceRecipients)
+            List<OrderItemRecipientModel> serviceRecipients,
+            AdditionalServiceRecipientsController controller)
         {
             serviceRecipients.ForEach(r => r.Selected = false);
 
@@ -125,9 +125,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string odsCode,
             CallOffId callOffId,
             CreateOrderItemModel state,
+            List<OrderItemRecipientModel> serviceRecipients,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
-            AdditionalServiceRecipientsController controller,
-            List<OrderItemRecipientModel> serviceRecipients)
+            AdditionalServiceRecipientsController controller)
         {
             serviceRecipients.First().Selected = true;
 
@@ -154,9 +154,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string odsCode,
             CallOffId callOffId,
             CreateOrderItemModel state,
+            List<OrderItemRecipientModel> serviceRecipients,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
-            AdditionalServiceRecipientsController controller,
-            List<OrderItemRecipientModel> serviceRecipients)
+            AdditionalServiceRecipientsController controller)
         {
             serviceRecipients.First().Selected = true;
             state.IsNewSolution = true;
@@ -182,9 +182,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string odsCode,
             CallOffId callOffId,
             CreateOrderItemModel state,
+            List<OrderItemRecipientModel> serviceRecipients,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
-            AdditionalServiceRecipientsController controller,
-            List<OrderItemRecipientModel> serviceRecipients)
+            AdditionalServiceRecipientsController controller)
         {
             serviceRecipients.First().Selected = true;
             state.IsNewSolution = false;
