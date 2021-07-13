@@ -10,19 +10,17 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProfiles
 {
-    // TODO: build action set to none to ignore tests as they will fail until rewritten without the setup method
     public static class StringToNullableBoolResolverTests
     {
-        private static IMapper _mapper;
+        private static readonly IMapper Mapper;
 
-        // TODO: no setup methods in xUnit
-        public static void SetUp()
+        static StringToNullableBoolResolverTests()
         {
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(x =>
                     x.GetService(typeof(IMemberValueResolver<object, object, string, bool?>)))
                 .Returns(new StringToNullableBoolResolver());
-            _mapper = new MapperConfiguration(cfg =>
+            Mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BrowserBasedProfile>();
                 cfg.AddProfile<OrganisationProfile>();
@@ -38,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 MobileResponsive = invalid,
             };
 
-            var actual = _mapper.Map<SupportedBrowsersModel, ClientApplication>(model);
+            var actual = Mapper.Map<SupportedBrowsersModel, ClientApplication>(model);
 
             actual.MobileResponsive.Should().BeNull();
         }
@@ -54,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 MobileResponsive = input,
             };
 
-            var actual = _mapper.Map<SupportedBrowsersModel, ClientApplication>(model);
+            var actual = Mapper.Map<SupportedBrowsersModel, ClientApplication>(model);
 
             actual.MobileResponsive.Should().BeTrue();
         }
@@ -71,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 MobileResponsive = input,
             };
 
-            var actual = _mapper.Map<SupportedBrowsersModel, ClientApplication>(model);
+            var actual = Mapper.Map<SupportedBrowsersModel, ClientApplication>(model);
 
             actual.MobileResponsive.Should().BeFalse();
         }

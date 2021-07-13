@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -126,6 +127,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var actual = model.GetSections();
 
             actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [InlineData("Description", false)]
+        [InlineData("description", false)]
+        [InlineData("DESCRIPTION", false)]
+        [InlineData("Implementation", true)]
+        [InlineData("Hosting", true)]
+        public static void NotFirstSection_Returns_ExpectedResponse(string section, bool expected)
+        {
+            var model = new Mock<SolutionDisplayBaseModel> { CallBase = true };
+            model.SetupGet(m => m.Section)
+                .Returns(section);
+
+            var actual = model.Object.NotFirstSection();
+
+            model.VerifyGet(m => m.Section);
+            actual.Should().Be(expected);
         }
     }
 }

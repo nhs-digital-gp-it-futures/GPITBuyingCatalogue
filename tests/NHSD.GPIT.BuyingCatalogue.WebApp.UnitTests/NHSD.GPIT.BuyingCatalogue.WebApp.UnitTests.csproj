@@ -7,18 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Areas\Marketing\MappingProfiles\NativeDesktopProfileTests.cs" />
-    <Compile Remove="Areas\Marketing\MappingProfiles\StringToNullableBoolResolverTests.cs" />
-    <Compile Remove="Areas\Solutions\MappingProfiles\SolutionDetailsProfileTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Areas\Marketing\MappingProfiles\NativeDesktopProfileTests.cs" />
-    <None Include="Areas\Marketing\MappingProfiles\StringToNullableBoolResolverTests.cs" />
-    <None Include="Areas\Solutions\MappingProfiles\SolutionDetailsProfileTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoFixture.Idioms" Version="4.17.0" />
     <PackageReference Include="AutoFixture.xUnit2" Version="4.17.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
