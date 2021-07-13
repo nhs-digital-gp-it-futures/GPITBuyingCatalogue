@@ -48,4 +48,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Ordering\" />
+    <Folder Include="Objects\Ordering\" />
+  </ItemGroup>
+
 </Project>
