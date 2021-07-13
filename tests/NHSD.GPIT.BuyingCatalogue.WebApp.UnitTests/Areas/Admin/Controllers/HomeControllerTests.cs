@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ParamName.Should()
                 .Be("mapper");
         }
-        
+
         [Fact]
         public static void Constructor_NullSolutionsService_ThrowsException()
         {
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ParamName.Should()
                 .Be("solutionsService");
         }
-        
+
         [Fact]
         public static void Get_BuyerOrganisations_RouteAttribute_ExpectedTemplate()
         {
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
         }
-        
+
         [Fact]
         public static async Task Get_ManageSuppliers_GetsAllSuppliers()
         {

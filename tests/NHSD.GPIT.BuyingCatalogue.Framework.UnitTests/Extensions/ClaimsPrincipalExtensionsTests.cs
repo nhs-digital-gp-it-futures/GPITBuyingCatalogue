@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
             Assert.False(user.IsBuyer());
         }
-        
+
         [Fact]
         public static void UserId_ValidValueSet_ReturnsValidValue()
         {
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 
             user.UserId().Should().Be(expected);
         }
-        
+
         [Theory]
         [InlineData("invalid")]
         [InlineData("")]

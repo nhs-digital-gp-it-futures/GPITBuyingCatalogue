@@ -48,13 +48,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     options =>
                     {
                         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                    })
-                .AddFluentValidation(
+                    });
+
+            services.AddFluentValidation(
                     options =>
                     {
                         options.RegisterValidatorsFromAssemblyContaining<AddSolutionModelValidator>();
-                    })
-                ;
+                    });
 
             services.AddApplicationInsightsTelemetry();
 

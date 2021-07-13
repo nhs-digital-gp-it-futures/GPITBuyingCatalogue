@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
     public sealed class CreateSolutionModel
     {
-        public FrameworkModel FrameworkModel { get; set; }
+        public IList<FrameworkModel> Frameworks { get; set; }
 
         public string Name { get; set; }
 

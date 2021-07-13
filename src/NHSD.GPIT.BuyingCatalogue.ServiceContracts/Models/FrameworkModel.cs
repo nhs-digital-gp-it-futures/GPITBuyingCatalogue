@@ -2,12 +2,12 @@
 {
     public class FrameworkModel
     {
-        public bool DfocvcFramework { get; set; }
+        public string Name { get; set; }
 
-        public bool FoundationSolutionFramework { get; set; }
+        public bool IsFoundation { get; set; }
 
-        public bool GpitFuturesFramework { get; set; }
+        public string FrameworkId { get; set; }
 
-        public virtual bool IsValid() => DfocvcFramework || GpitFuturesFramework;
+        public bool Selected { get; set; }
     }
 }

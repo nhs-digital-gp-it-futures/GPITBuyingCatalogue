@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -15,8 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             this.solutionsService = solutionsService;
 
-            RuleFor(s => s.FrameworkModel)
-                .Must(HaveValidFramework)
+            RuleFor(s => s.Frameworks)
+                .Must(HaveASelectedFramework)
                 .WithMessage("Select the framework(s) your solution is available from");
 
             RuleFor(s => s.SupplierId)
@@ -43,8 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 });
         }
 
-        private static bool HaveValidFramework(FrameworkModel frameworkModel) =>
-            frameworkModel?.IsValid() == true;
+        private static bool HaveASelectedFramework(IList<FrameworkModel> frameworks) =>
+            frameworks.Any(f => f.Selected);
 
         private async Task<bool> NotExistForSupplier(
             AddSolutionModel model,

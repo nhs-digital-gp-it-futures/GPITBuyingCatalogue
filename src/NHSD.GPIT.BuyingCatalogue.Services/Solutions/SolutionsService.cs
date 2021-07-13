@@ -15,9 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsService : ISolutionsService
     {
-        private const string GpitFuturesFrameworkId = "NHSDGP001";
-        private const string DfocvcFrameworkId = "DFOCVC001";
-
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
@@ -46,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
                     && i.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "GP IT Futures"))
                 .ToListAsync();
         }
 
@@ -57,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "GP IT Futures"))
                 .ToListAsync();
 
             // TODO - Refactor this. Should be possible to include in the above expression
@@ -238,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == DfocvcFrameworkId))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "DFOCVC"))
                 .ToListAsync();
         }
 
@@ -386,7 +383,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null)
         {
             var query = dbContext.CatalogueItems
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
@@ -406,31 +402,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task AddCatalogueSolution(CreateSolutionModel model)
         {
             model.ValidateNotNull(nameof(CreateSolutionModel));
-            model.FrameworkModel.ValidateNotNull(nameof(CreateSolutionModel.FrameworkModel));
+            model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
 
             var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
             var catalogueItemId = latestCatalogueItemId.NextSolutionId();
 
-            var nowTime = DateTime.UtcNow;
+            var dateTimeNow = DateTime.UtcNow;
 
             var frameworkSolutions = new List<FrameworkSolution>();
-            if (model.FrameworkModel.DfocvcFramework)
-            {
-                frameworkSolutions.Add(new FrameworkSolution
-                {
-                    FrameworkId = DfocvcFrameworkId,
-                    LastUpdated = nowTime,
-                    LastUpdatedBy = model.UserId,
-                });
-            }
 
-            if (model.FrameworkModel.GpitFuturesFramework)
+            foreach (var framework in model.Frameworks.Where(f => f.Selected))
             {
                 frameworkSolutions.Add(new FrameworkSolution
                 {
-                    FrameworkId = GpitFuturesFrameworkId,
-                    IsFoundation = model.FrameworkModel.FoundationSolutionFramework,
-                    LastUpdated = nowTime,
+                    FrameworkId = framework.FrameworkId,
+                    IsFoundation = framework.IsFoundation,
+                    LastUpdated = dateTimeNow,
                     LastUpdatedBy = model.UserId,
                 });
             }
@@ -444,7 +431,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         new Solution
                         {
                             FrameworkSolutions = frameworkSolutions,
-                            LastUpdated = nowTime,
+                            LastUpdated = dateTimeNow,
                             LastUpdatedBy = model.UserId,
                         },
                     Name = model.Name,
@@ -453,6 +440,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 });
 
             await catalogueItemRepository.SaveChangesAsync();
+        }
+
+        public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetAllFrameworks()
+        {
+            return await dbContext.Frameworks.ToListAsync();
         }
 
         public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>

@@ -27,9 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
+        // TODO : Fix so that this doesn't rely on Framework loading order (SUPER FRAGILE)
         public bool FoundationSolutionDisplayed()
         {
-            var checkbox = Driver.FindElements(Objects.Admin.AddSolutionObjects.SolutionFrameworks)[0];
+            var checkbox = Driver.FindElements(Objects.Admin.AddSolutionObjects.SolutionFrameworks)[1];
             checkbox.Click();
             try
             {
