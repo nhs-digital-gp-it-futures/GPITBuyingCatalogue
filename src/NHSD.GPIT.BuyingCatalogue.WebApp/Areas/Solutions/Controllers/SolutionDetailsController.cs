@@ -181,12 +181,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
         }
 
-        [Route("futures/{id}/check-capability-epic")]
-        public IActionResult CheckCapabilityEpic(string id)
-        {
-            return View();
-        }
-
         [Route("futures/{id}/supplier-details")]
         public async Task<IActionResult> SupplierDetails(CatalogueItemId id)
         {

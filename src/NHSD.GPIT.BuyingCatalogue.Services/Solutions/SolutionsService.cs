@@ -172,7 +172,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var capabilities = await dbContext.CatalogueItemCapabilities
                 .Include(c => c.Capability)
                 .ThenInclude(c => c.Epics)
-                .Where(c => c.CatalogueItemId == additionalId)
+                .Where(c => c.CatalogueItemId == additionalId
+                        && c.Status.Id == 1)
                 .ToListAsync();
 
             solution.Solution.SolutionCapabilities = capabilities;
