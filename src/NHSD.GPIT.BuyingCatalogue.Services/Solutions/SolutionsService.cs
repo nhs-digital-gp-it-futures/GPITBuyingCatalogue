@@ -156,6 +156,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution;
         }
 
+        public async Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(
+            CatalogueItemId id,
+            CatalogueItemId additionalId)
+        {
+            var solution = await dbContext.CatalogueItems
+                .Include(i => i.Solution)
+                .Include(i => i.Supplier)
+                .ThenInclude(
+                    s => s.CatalogueItems.Where(
+                        c => c.CatalogueItemId == additionalId))
+                .Where(i => i.CatalogueItemId == id)
+                .SingleAsync();
+
+            var capabilities = await dbContext.CatalogueItemCapabilities
+                .Include(c => c.Capability)
+                .ThenInclude(c => c.Epics)
+                .Where(c => c.CatalogueItemId == additionalId)
+                .ToListAsync();
+
+            solution.Solution.SolutionCapabilities = capabilities;
+
+            return solution;
+        }
+
+        public async Task<CatalogueItem> GetAdditionalServiceCapability(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId catalogueItemIdAdditional,
+            Guid capabilityId)
+        {
+            var solution = await dbContext.CatalogueItems
+                .Include(i => i.Solution)
+                .Where(i => i.CatalogueItemId == catalogueItemId)
+                .SingleAsync();
+
+            var capability = await dbContext.CatalogueItemCapabilities
+                .Include(c => c.Capability)
+                .ThenInclude(c => c.Epics)
+                .Where(c => c.CatalogueItemId == catalogueItemIdAdditional
+                    && c.CapabilityId == capabilityId)
+                .SingleOrDefaultAsync();
+
+            solution.Solution.SolutionCapabilities = capability == null
+                ? new List<CatalogueItemCapability>()
+                : new List<CatalogueItemCapability> { capability, };
+
+            return solution;
+        }
+
         public async Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId)
         {
             var solution = await dbContext.CatalogueItems

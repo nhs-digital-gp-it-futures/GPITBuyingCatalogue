@@ -1,6 +1,11 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel;
 @{
-    Layout = "_Layout";
+    Layout = "_LayoutNoNav";
+}
+
+@section BackLink
+{
+    <vc:nhs-backlink text="Go back" url="@Url.Action("AdditionalServices", "SolutionDetails", new { id = Model.SolutionId })"></vc:nhs-backlink>
 }
 
 <div class="nhsuk-width-container">
@@ -8,15 +13,7 @@
         <article>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <p>
-                        <b>
-                            This Catalogue Solution has demonstrated that it can help meet the following business
-                            needs:
-                        </b>
-                    </p>
-
                     <partial name="_CapabilitiesList" model="Model"/>
-
                 </div>
             </div>
         </article>
