@@ -1,0 +1,34 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.EditDescriptionModel;
+@{
+    ViewData["Title"] = "Catalogue Solution description";
+}
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="Description"
+                            caption="@Model.SolutionName"
+                            advice="Give buyers as much detail as possible about your Catalogue Solution." />
+
+            <form method="post">
+                <input type="hidden" asp-for="@Model.SolutionId" />
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <nhs-textarea asp-for="Summary"
+                              label-text="Summary"
+                              label-hint="Provide a brief overview of your Catalogue Solution."
+                              number-of-rows="5" />
+                <nhs-textarea asp-for="Description"
+                              label-text="Full Description (optional)"
+                              label-hint="Provide a more detailed description of your Catalogue Solution, for example how it can be used and how it benefits users." />
+                <nhs-input asp-for="Link"
+                           label-text="Link to more information (optional)"
+                           label-hint="Provide a URL to a page that gives buyers further information about your Catalogue Solution."
+                           character-count="true" />
+                <nhs-submit-button text="Save and continue" />
+            </form>
+        </div>
+    </div>
+</div>

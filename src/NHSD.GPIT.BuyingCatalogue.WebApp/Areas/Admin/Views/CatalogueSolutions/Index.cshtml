@@ -3,7 +3,17 @@
 @{
     ViewData["Title"] = "Manage Catalogue Solutions";
 }
-
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="Index" asp-controller="Home" class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
 <div class="nhsuk-width-container">
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
@@ -25,7 +35,7 @@
             <details class="nhsuk-details nhsuk-expander"
                      id="nhsuk-details0"
                      nhsuk-polyfilled="true"
-                     @if (Model.HasSelected) { <text> open="" </text>  }>
+                     @if (Model.HasSelected) { <text> open="" </text> }>
                 <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
                     <span class="nhsuk-details__summary-text">
                         Filter Catalogue Solutions
@@ -65,7 +75,7 @@
 
             <nhs-table data-test-id="manage-catalogue-solution-list">
                 @foreach (var heading in new[]
-               {
+              {
                 "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty,
             })
                 {
@@ -76,7 +86,7 @@
                 {
                     <nhs-table-row-container>
                         @foreach (var cell in new[]
-                       {
+                      {
                         item.CatalogueItemId,
                         item.Name,
                         item.Supplier,
