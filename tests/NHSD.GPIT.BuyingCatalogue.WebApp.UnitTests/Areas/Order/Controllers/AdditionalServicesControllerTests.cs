@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -10,12 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices;
 using Xunit;
 
@@ -64,6 +66,150 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
             orderSessionServiceMock.Verify(v => v.ClearSession(callOffId), Times.Once);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectAdditionalService_NoServices_ReturnsExpectedResult(
+            string odsCode,
+            CallOffId callOffId,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesServiceMock,
+            AdditionalServicesController controller)
+        {
+            var expectedViewData = new NoAdditionalServicesFoundModel(odsCode, callOffId);
+
+            additionalServicesServiceMock
+                .Setup(s => s.GetAdditionalServicesBySolutionIds(It.IsAny<IEnumerable<CatalogueItemId>>()))
+                .ReturnsAsync(new List<CatalogueItem>());
+
+            var actualResult = await controller.SelectAdditionalService(odsCode, callOffId);
+
+            actualResult.Should().BeOfType<ViewResult>();
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectAdditionalService_AvailableServices_ReturnsExpectedResult(
+            string odsCode,
+            CallOffId callOffId,
+            List<CatalogueItem> additionalServices,
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderItem> orderItems,
+            CreateOrderItemModel state,
+            [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IOrderItemService> orderItemServiceMock,
+            [Frozen] Mock<IAdditionalServicesService> additionalServicesServiceMock,
+            AdditionalServicesController controller)
+        {
+            var expectedViewData = new SelectAdditionalServiceModel(odsCode, callOffId, additionalServices, state.CatalogueItemId);
+
+            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+
+            orderItemServiceMock.Setup(s => s.GetOrderItems(callOffId, CatalogueItemType.Solution))
+                .ReturnsAsync(orderItems);
+
+            var solutionIds = orderItems.Select(i => i.CatalogueItemId).ToList();
+
+            orderSessionServiceMock.Setup(s => s.InitialiseStateForCreate(order, CatalogueItemType.AdditionalService, solutionIds, null)).Returns(state);
+
+            additionalServicesServiceMock
+                .Setup(s => s.GetAdditionalServicesBySolutionIds(It.IsAny<IEnumerable<CatalogueItemId>>()))
+                .ReturnsAsync(additionalServices);
+
+            var actualResult = await controller.SelectAdditionalService(odsCode, callOffId);
+
+            actualResult.Should().BeOfType<ViewResult>();
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SelectAdditionalServicePrice_ReturnsExpectedResult(
+            string odsCode,
+            CallOffId callOffId,
+            CreateOrderItemModel state,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            AdditionalServicesController controller)
+        {
+            foreach (CataloguePrice catalogueItemCataloguePrice in catalogueItem.CataloguePrices)
+            {
+                catalogueItemCataloguePrice.CataloguePriceType = CataloguePriceType.Flat;
+                catalogueItemCataloguePrice.CurrencyCode = "GBP";
+            }
+
+            var prices = catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
+
+            var expectedViewData = new SelectAdditionalServicePriceModel(odsCode, callOffId, state.CatalogueItemName, prices);
+
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+
+            solutionsServiceMock.Setup(s => s.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault())).ReturnsAsync(catalogueItem);
+
+            var actualResult = await controller.SelectAdditionalServicePrice(odsCode, callOffId);
+
+            actualResult.Should().BeOfType<ViewResult>();
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_SelectFlatDeclarativeQuantity_ReturnsExpectedResult(
+          string odsCode,
+          CallOffId callOffId,
+          CreateOrderItemModel state,
+          [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
+          AdditionalServicesController controller)
+        {
+            var expectedViewData = new SelectFlatDeclarativeQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity);
+
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+
+            var actualResult = controller.SelectFlatDeclarativeQuantity(odsCode, callOffId);
+
+            actualResult.Should().BeOfType<ViewResult>();
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_SelectFlatOnDemandQuantity_ReturnsExpectedResult(
+          string odsCode,
+          CallOffId callOffId,
+          CreateOrderItemModel state,
+          [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
+          AdditionalServicesController controller)
+        {
+            var expectedViewData = new SelectFlatOnDemandQuantityModel(odsCode, callOffId, state.CatalogueItemName, state.Quantity, state.EstimationPeriod);
+
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+
+            var actualResult = controller.SelectFlatOnDemandQuantity(odsCode, callOffId);
+
+            actualResult.Should().BeOfType<ViewResult>();
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditAdditionalService_ReturnsExpectedResult(
+          string odsCode,
+          CallOffId callOffId,
+          CreateOrderItemModel state,
+          [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
+          AdditionalServicesController controller)
+        {
+            var expectedViewData = new EditAdditionalServiceModel(odsCode, state);
+
+            orderSessionServiceMock.Setup(s => s.InitialiseStateForEdit(odsCode, callOffId, state.CatalogueItemId.GetValueOrDefault())).ReturnsAsync(state);
+
+            var actualResult = await controller.EditAdditionalService(odsCode, callOffId, state.CatalogueItemId.GetValueOrDefault());
+
+            actualResult.Should().BeOfType<ViewResult>();
+            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
         }
     }
 }

@@ -11,35 +11,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices
         {
         }
 
-        public EditAdditionalServiceModel(string odsCode, CallOffId callOffId, CreateOrderItemModel createOrderItemModel)
+        public EditAdditionalServiceModel(string odsCode, CreateOrderItemModel state)
         {
-            if (!createOrderItemModel.IsNewSolution)
+            if (!state.IsNewSolution)
             {
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services";
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services";
             }
             else
             {
-                if (createOrderItemModel.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/flat/declarative";
-                else if (createOrderItemModel.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/flat/ondemand";
+                if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price/flat/declarative";
+                else if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price/flat/ondemand";
                 else
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/additional-services/select/additional-service/price/recipients/date";
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price/recipients/date";
             }
 
             BackLinkText = "Go back";
-            Title = $"{createOrderItemModel.CatalogueItemName} information for {callOffId}";
+            Title = $"{state.CatalogueItemName} information for {state.CallOffId}";
             OdsCode = odsCode;
-            OrderItem = createOrderItemModel;
+            OrderItem = state;
 
             // TODO: Legacy appears to order based on recipient name, unless some recipients have info missing in which case they appear at the top
             OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(m => m.Selected).ToList();
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.Quantity is null))
-                recipient.Quantity = createOrderItemModel.Quantity;
+                recipient.Quantity = state.Quantity;
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.DeliveryDate is null))
-                recipient.DeliveryDate = createOrderItemModel.PlannedDeliveryDate;
+                recipient.DeliveryDate = state.PlannedDeliveryDate;
         }
 
         public CreateOrderItemModel OrderItem { get; set; }
