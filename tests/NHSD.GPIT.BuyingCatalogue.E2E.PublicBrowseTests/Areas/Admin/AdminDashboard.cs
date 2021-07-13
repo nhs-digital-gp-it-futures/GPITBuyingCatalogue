@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using Xunit;
 
@@ -16,44 +13,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         }
 
         [Fact]
-        public void AdminDashboard_ManageBuyerOrgsAndUsers_AddOrgLinkDisplayed()
+        public void ManageSuppliers_ManageSuppliersOrgLinkDisplayed()
         {
-            AdminPages.Dashboard.ClickBuyerOrgLink();
-            AdminPages.Dashboard.AddOrgButtonDisplayed().Should().BeTrue();
+            AdminPages.AddSolution.ManageSuppliersLinkDisplayed().Should().BeTrue();
         }
 
         [Fact]
-        public void AdminDashboard_ManageBuyerOrgsAndUsers_OrganisationTableListDisplayed()
+        public void ManageCatalogueSolutions_AddSolutionLinkDisplayed()
         {
-            AdminPages.Dashboard.ClickBuyerOrgLink();
-            AdminPages.Organisation.BuyerOrgsTableDisplayed().Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task AdminDashboard_ManageBuyerOrgsAndUsers_AllOrgsDisplayed()
-        {
-            AdminPages.Dashboard.ClickBuyerOrgLink();
-            var actualOrganisationNames = AdminPages.Dashboard.GetOrganisationNamesOnPage();
-            var actualOrganisationCodes = AdminPages.Dashboard.GetOrganisationOdsCodesOnPage();
-            var actualOrganisationIdLinks = AdminPages.Dashboard.GetOrganisationLinkIdsOnPage();
-
-            await using var context = GetEndToEndDbContext();
-            var organisations = await context.Organisations.Select(o => new
-            {
-                o.Name,
-                o.OdsCode,
-                o.OrganisationId,
-            })
-                .ToListAsync();
-
-            var expectedOrganisationNames = organisations.Select(o => o.Name).ToList();
-            var expectedOrganisationOdsCodes = organisations.Select(o => o.OdsCode).ToList();
-            var expectedOrganisationIds = organisations.Select(o => o.OrganisationId.ToString()).ToList();
-
-            actualOrganisationNames.Should().HaveCount(expectedOrganisationNames.Count);
-            actualOrganisationCodes.Should().BeEquivalentTo(expectedOrganisationOdsCodes);
-            actualOrganisationNames.Should().BeEquivalentTo(expectedOrganisationNames);
-            actualOrganisationIdLinks.Should().BeEquivalentTo(expectedOrganisationIds);
+            AdminPages.AddSolution.AddSolutionLinkDisplayed().Should().BeTrue();
         }
     }
 }
