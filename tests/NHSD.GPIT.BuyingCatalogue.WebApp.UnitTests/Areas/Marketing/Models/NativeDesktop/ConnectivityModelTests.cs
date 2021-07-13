@@ -86,18 +86,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             return new List<SelectListItem>
             {
-                new() { Text = "0.5Mbps", Value="0.5Mbps"},
-                new() { Text = "1Mbps", Value="1Mbps"},
-                new() { Text = "1.5Mbps", Value="1.5Mbps"},
-                new() { Text = "2Mbps", Value="2Mbps"},
-                new() { Text = "3Mbps", Value="3Mbps"},
-                new() { Text = "5Mbps", Value="5Mbps"},
-                new() { Text = "8Mbps", Value="8Mbps"},
-                new() { Text = "10Mbps", Value="10Mbps"},
-                new() { Text = "15Mbps", Value="15Mbps"},
-                new() { Text = "20Mbps", Value="20Mbps"},
-                new() { Text = "30Mbps", Value="30Mbps"},
-                new() { Text = "Higher than 30Mbps", Value="Higher than 30Mbps"},
+                new() { Text = "0.5Mbps", Value = "0.5Mbps" },
+                new() { Text = "1Mbps", Value = "1Mbps" },
+                new() { Text = "1.5Mbps", Value = "1.5Mbps" },
+                new() { Text = "2Mbps", Value = "2Mbps" },
+                new() { Text = "3Mbps", Value = "3Mbps" },
+                new() { Text = "5Mbps", Value = "5Mbps" },
+                new() { Text = "8Mbps", Value = "8Mbps" },
+                new() { Text = "10Mbps", Value = "10Mbps" },
+                new() { Text = "15Mbps", Value = "15Mbps" },
+                new() { Text = "20Mbps", Value = "20Mbps" },
+                new() { Text = "30Mbps", Value = "30Mbps" },
+                new() { Text = "Higher than 30Mbps", Value = "Higher than 30Mbps" },
             };
         }
     }

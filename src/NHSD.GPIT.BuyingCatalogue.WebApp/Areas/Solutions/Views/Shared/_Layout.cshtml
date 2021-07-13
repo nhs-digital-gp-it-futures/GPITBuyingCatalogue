@@ -62,7 +62,7 @@
                 <li class="nhsuk-breadcrumb__item">
                     <a class="nhsuk-breadcrumb__link" asp-action="SearchResults" asp-controller="Futures">Catalogue Solutions</a>
                 </li>
-                @if (@Model.Section != "Description")
+                @if (Model.NotFirstSection())
                 {
                     <li class="nhsuk-breadcrumb__item">
                         <a asp-action="Description" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" class="nhsuk-breadcrumb__link">

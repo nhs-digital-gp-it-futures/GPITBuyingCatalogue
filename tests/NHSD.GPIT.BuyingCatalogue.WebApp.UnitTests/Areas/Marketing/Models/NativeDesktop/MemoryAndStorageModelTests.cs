@@ -17,6 +17,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
     {
         private IMapper mapper;
 
+        public MemoryAndStorageModelTests()
+        {
+            mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<NativeDesktopProfile>();
+                cfg.AddProfile<OrganisationProfile>();
+            }).CreateMapper();
+        }
+
         [Fact]
         public static void WithoutCatalogueItem_PropertiesAreDefaulted()
         {
@@ -27,15 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             Assert.Null(model.SelectedMemorySize);
             Assert.Null(model.StorageDescription);
             Assert.Null(model.SelectedScreenResolution);
-        }
-
-        public MemoryAndStorageModelTests()
-        {
-            mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<NativeDesktopProfile>();
-                cfg.AddProfile<OrganisationProfile>();
-            }).CreateMapper();
         }
 
         public void Dispose()
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                     StorageRequirementsDescription = "Storage requirements",
                     MinimumCpu = "Xeon",
                     RecommendedResolution = "4:3 - 1024 x 768",
-                }
+                },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
                     StorageRequirementsDescription = description,
                     MinimumCpu = minimumCpu,
                     RecommendedResolution = resolution,
-                }
+                },
             };
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem { Solution = new Solution { ClientApplication = json } };
@@ -117,13 +117,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
         {
             return new List<SelectListItem>
             {
-                new() { Text = "256MB", Value = "256MB"},
-                new() { Text = "512MB", Value = "512MB"},
-                new() { Text = "1GB", Value = "1GB"},
-                new() { Text = "2GB", Value = "2GB"},
-                new() { Text = "4GB", Value = "4GB"},
-                new() { Text = "8GB", Value = "8GB"},
-                new() { Text = "16GB or higher", Value = "16GB or higher"},
+                new() { Text = "256MB", Value = "256MB" },
+                new() { Text = "512MB", Value = "512MB" },
+                new() { Text = "1GB", Value = "1GB" },
+                new() { Text = "2GB", Value = "2GB" },
+                new() { Text = "4GB", Value = "4GB" },
+                new() { Text = "8GB", Value = "8GB" },
+                new() { Text = "16GB or higher", Value = "16GB or higher" },
             };
         }
 

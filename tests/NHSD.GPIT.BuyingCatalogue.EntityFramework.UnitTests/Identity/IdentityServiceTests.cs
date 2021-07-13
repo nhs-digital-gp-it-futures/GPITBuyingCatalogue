@@ -45,11 +45,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
         {
             var testUserId = Guid.NewGuid();
 
-            var identity = new ClaimsIdentity(new Claim[]
-            {
-            new(IdentityService.UserDisplayName, "Bill Smith"),
-            new(IdentityService.UserId, testUserId.ToString())
-            }, "mock");
+            var identity = new ClaimsIdentity(
+                new Claim[]
+                {
+                    new(IdentityService.UserDisplayName, "Bill Smith"),
+                    new(IdentityService.UserId, testUserId.ToString()),
+                },
+                "mock");
 
             mockContext.Setup(c => c.User).Returns(new ClaimsPrincipal(identity));
             mockAccessor.Setup(a => a.HttpContext).Returns(mockContext.Object);

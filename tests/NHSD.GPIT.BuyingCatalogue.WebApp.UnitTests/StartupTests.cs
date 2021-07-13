@@ -5,7 +5,6 @@ using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -26,11 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
     {
         public StartupTests()
         {
-            Environment.SetEnvironmentVariable("BC_DB_CONNECTION",
+            Environment.SetEnvironmentVariable(
+                "BC_DB_CONNECTION",
                 "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=BC_Catalog;Trusted_Connection=True;");
-            Environment.SetEnvironmentVariable("CO_DB_CONNECTION",
-                "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=ID_Catalog;Trusted_Connection=True;");
-            Environment.SetEnvironmentVariable("BC_BLOB_CONNECTION",
+            Environment.SetEnvironmentVariable(
+                "BC_BLOB_CONNECTION",
                 "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;");
             Environment.SetEnvironmentVariable("BC_BLOB_CONTAINER", "buyingcatalogue-documents");
             Environment.SetEnvironmentVariable("BC_SMTP_HOST", "localhost");
@@ -67,14 +66,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             var webHost = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder().UseStartup<StartupTest>().Build();
 
             webHost.Services.GetRequiredService(requiredInterface).Should().BeOfType(expectedType);
-        }
-    }
-
-    public sealed class StartupTest : Startup
-    {
-        public StartupTest(IConfiguration configuration)
-            : base(configuration)
-        {
         }
     }
 }

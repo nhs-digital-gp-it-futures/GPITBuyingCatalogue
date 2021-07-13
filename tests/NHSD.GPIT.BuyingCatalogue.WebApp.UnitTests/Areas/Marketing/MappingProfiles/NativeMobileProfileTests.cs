@@ -73,28 +73,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(new List<SelectListItem>
             {
-                new() {Text = "0.5Mbps", Value = "0.5Mbps"},
-                new() {Text = "1Mbps", Value = "1Mbps"},
-                new() {Text = "1.5Mbps", Value = "1.5Mbps"},
-                new() {Text = "2Mbps", Value = "2Mbps"},
-                new() {Text = "3Mbps", Value = "3Mbps"},
-                new() {Text = "5Mbps", Value = "5Mbps"},
-                new() {Text = "8Mbps", Value = "8Mbps"},
-                new() {Text = "10Mbps", Value = "10Mbps"},
-                new() {Text = "15Mbps", Value = "15Mbps"},
-                new() {Text = "20Mbps", Value = "20Mbps"},
-                new() {Text = "30Mbps", Value = "30Mbps"},
-                new() {Text = "Higher than 30Mbps", Value = "Higher than 30Mbps"}
+                new() { Text = "0.5Mbps", Value = "0.5Mbps" },
+                new() { Text = "1Mbps", Value = "1Mbps" },
+                new() { Text = "1.5Mbps", Value = "1.5Mbps" },
+                new() { Text = "2Mbps", Value = "2Mbps" },
+                new() { Text = "3Mbps", Value = "3Mbps" },
+                new() { Text = "5Mbps", Value = "5Mbps" },
+                new() { Text = "8Mbps", Value = "8Mbps" },
+                new() { Text = "10Mbps", Value = "10Mbps" },
+                new() { Text = "15Mbps", Value = "15Mbps" },
+                new() { Text = "20Mbps", Value = "20Mbps" },
+                new() { Text = "30Mbps", Value = "30Mbps" },
+                new() { Text = "Higher than 30Mbps", Value = "Higher than 30Mbps" },
             });
             actual.ConnectionTypes.Should().BeEquivalentTo(new ConnectionTypeModel[]
             {
-                new() {ConnectionType = "GPRS", Checked = true},
-                new() {ConnectionType = "3G"},
-                new() {ConnectionType = "LTE", Checked = true},
-                new() {ConnectionType = "4G"},
-                new() {ConnectionType = "5G", Checked = true},
-                new() {ConnectionType = "Bluetooth"},
-                new() {ConnectionType = "Wifi", Checked = true}
+                new() { ConnectionType = "GPRS", Checked = true },
+                new() { ConnectionType = "3G" },
+                new() { ConnectionType = "LTE", Checked = true },
+                new() { ConnectionType = "4G" },
+                new() { ConnectionType = "5G", Checked = true },
+                new() { ConnectionType = "Bluetooth" },
+                new() { ConnectionType = "Wifi", Checked = true },
             });
             actual.Description.Should().Be(clientApplication.MobileConnectionDetails.Description);
             actual.SelectedConnectionSpeed.Should()
@@ -147,13 +147,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Description.Should().Be(clientApplication.MobileMemoryAndStorage.Description);
             actual.MemorySizes.Should().BeEquivalentTo(new List<SelectListItem>
             {
-                new() { Text = "256MB", Value = "256MB"},
-                new() { Text = "512MB", Value = "512MB"},
-                new() { Text = "1GB", Value = "1GB"},
-                new() { Text = "2GB", Value = "2GB"},
-                new() { Text = "4GB", Value = "4GB"},
-                new() { Text = "8GB", Value = "8GB"},
-                new() { Text = "16GB or higher", Value = "16GB or higher"}
+                new() { Text = "256MB", Value = "256MB" },
+                new() { Text = "512MB", Value = "512MB" },
+                new() { Text = "1GB", Value = "1GB" },
+                new() { Text = "2GB", Value = "2GB" },
+                new() { Text = "4GB", Value = "4GB" },
+                new() { Text = "8GB", Value = "8GB" },
+                new() { Text = "16GB or higher", Value = "16GB or higher" },
             });
             actual.SelectedMemorySize.Should()
                 .Be(clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement);
@@ -205,9 +205,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Description.Should().Be(clientApplication.MobileOperatingSystems.OperatingSystemsDescription);
             actual.OperatingSystems.Should().BeEquivalentTo(new SupportedOperatingSystemModel[]
             {
-                new() {OperatingSystemName = "Apple IOS", Checked = true},
-                new() {OperatingSystemName = "Android", Checked = true},
-                new() {OperatingSystemName = "Other"}
+                new() { OperatingSystemName = "Apple IOS", Checked = true },
+                new() { OperatingSystemName = "Android", Checked = true },
+                new() { OperatingSystemName = "Other" },
             });
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);

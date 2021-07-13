@@ -30,7 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             var orgService = new Mock<IOrganisationsService>();
             orgService.Setup(m => m.GetOrganisation(It.IsAny<Guid>())).ReturnsAsync(new Organisation { OdsCode = "123" });
 
-            orgService.Setup(m => m.GetRelatedOrganisations(It.IsAny<Guid>())).ReturnsAsync(new List<Organisation> {
+            orgService.Setup(m => m.GetRelatedOrganisations(It.IsAny<Guid>())).ReturnsAsync(new List<Organisation>
+            {
                 new() { OdsCode = "ABC" },
                 new() { OdsCode = "DEF" },
                 new() { OdsCode = "GHI" },
@@ -44,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             var factory = new UserClaimsPrincipalFactoryEx<AspNetUser>(
                 userManager.Object,
-                options.Object,                
+                options.Object,
                 orgService.Object);
 
             var principal = await factory.CreateAsync(user);
@@ -59,7 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             Assert.Contains(GetClaimValues(principal, "secondaryOrganisationOdsCode"), s => s.EqualsIgnoreCase("GHI"));
         }
 
-        public static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
+        public static Mock<UserManager<TUser>> MockUserManager<TUser>()
+            where TUser : class
         {
             var store = new Mock<IUserStore<TUser>>();
             var mgr = new Mock<UserManager<TUser>>(store.Object, null, null, null, null, null, null, null, null);

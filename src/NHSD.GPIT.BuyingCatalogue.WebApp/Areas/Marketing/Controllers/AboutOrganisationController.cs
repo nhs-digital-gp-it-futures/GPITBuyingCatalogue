@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -11,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     [Area("Marketing")]
     [Route("marketing/supplier/solution/{solutionId}/section")]
     public sealed class AboutOrganisationController : Controller

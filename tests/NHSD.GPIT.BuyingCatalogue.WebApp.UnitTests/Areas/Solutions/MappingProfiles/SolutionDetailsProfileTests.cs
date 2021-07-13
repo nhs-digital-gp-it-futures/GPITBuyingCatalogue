@@ -8,8 +8,8 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Models.GPITBuyingCatalogue;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -22,8 +22,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
 {
-    // TODO: build action set to none to ignore tests as they will fail until rewritten without the setup method
-    public sealed class SolutionDetailsProfileTests : IDisposable
+    public sealed class SolutionDetailsProfileTests
     {
         private const string LastReviewedDate = "26 Aug 2025";
 
@@ -31,8 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         private Mock<IConfiguration> configuration;
         private MapperConfiguration mapperConfiguration;
 
-        // TODO: no setup methods in xUnit
-        public void SetUp()
+        public SolutionDetailsProfileTests()
         {
             configuration = new Mock<IConfiguration>();
             configuration.Setup(c => c["SolutionsLastReviewedDate"])
@@ -54,17 +52,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mapper = mapperConfiguration.CreateMapper(serviceProvider.Object.GetService);
         }
 
-        public void Dispose()
-        {
-            configuration = null;
-            mapperConfiguration = null;
-            mapper = null;
-        }
-
         [Fact]
         public void Mapper_Configuration_Valid()
         {
             mapperConfiguration.AssertConfigurationIsValid();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Map_CatalogueItemCapabilityToSolutionCheckEpicsModel_ResultAsExpected(
+            CatalogueItemCapability catalogueItemCapability)
+        {
+            var actual = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(catalogueItemCapability);
+
+            actual.CatalogueItemIdAdditional.SupplierId.Should().Be(0);
+            actual.Description.Should().Be(catalogueItemCapability.Capability?.Description);
+            actual.Name.Should().Be(catalogueItemCapability.Capability?.Name);
+            actual.NhsDefined.Should()
+                .BeEquivalentTo(
+                    catalogueItemCapability.Capability?.Epics?.Where(e => e.Active && !e.SupplierDefined)
+                        .Select(epic => epic.Name)
+                        .ToList());
+            actual.SupplierDefined.Should()
+                .BeEquivalentTo(
+                    catalogueItemCapability.Capability?.Epics?.Where(e => e.Active && e.SupplierDefined)
+                        .Select(epic => epic.Name)
+                        .ToList());
+            actual.SolutionId.Should().Be(catalogueItemCapability.CatalogueItemId);
+            actual.SolutionName.Should().BeNullOrEmpty();
+            actual.LastReviewed.Should().Be(LastReviewedDate);
         }
 
         [Theory]
@@ -108,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 catalogueItem.Supplier.CatalogueItems.Count(
                     c => c.CatalogueItemType == CatalogueItemType.AssociatedService);
             expected.Should().BeGreaterThan(0);
-            
+
             var actual = mapper.Map<CatalogueItem, AssociatedServicesModel>(catalogueItem);
 
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);
@@ -139,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public void Map_CatalogueItemToCapabilitiesViewModel_ResultAsExpected(
@@ -249,6 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         [CommonAutoData]
         public void Map_CataloguePriceToPriceViewModel_ResultAsExpected(CataloguePrice cataloguePrice)
         {
+            cataloguePrice.CurrencyCode = "USD";
             var expected = $"{cataloguePrice.PricingUnit.Description} {cataloguePrice.TimeUnit?.Description()}";
 
             var actual = mapper.Map<CataloguePrice, PriceViewModel>(cataloguePrice);
@@ -489,30 +506,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             actual.Should().BeNull();
         }
-        
-        private IList<CatalogueItem> GetAllCatalogueItems()
-        {
-            var fixture = new Fixture();
-            var items = Enumerable.Range(1, 5)
-                .ToList()
-                .Select(_ => new CatalogueItem
-                {
-                    CatalogueItemType = CatalogueItemType.AssociatedService,
-                    Name = fixture.Create<string>(),
-                })
-                .ToList();
-            items.AddRange(Enumerable.Range(1, 3).ToList().Select(_ => new CatalogueItem
-            {
-                CatalogueItemType =  CatalogueItemType.Solution,
-                Name = fixture.Create<string>(),
-            }));
-            items.AddRange(Enumerable.Range(1, 8).ToList().Select(_ => new CatalogueItem
-            {
-                CatalogueItemType =  CatalogueItemType.AdditionalService,
-                Name = fixture.Create<string>(),
-            }));
-            return items;
-        }
 
         [Theory]
         [CommonAutoData]
@@ -528,6 +521,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 .BeEquivalentTo(
                     catalogueItem.CataloguePrices.Where(c => c != null)
                         .Select(src => $"£{src.Price.GetValueOrDefault():F} {src.PricingUnit.Description}"));
+            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
         }
 
         [Theory]
@@ -547,7 +541,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         public void Map_CatalogueItemToAdditionalServicesModel_ResultAsExpected(
             CatalogueItem catalogueItem)
         {
-
             var actual = mapper.Map<CatalogueItem, AdditionalServicesModel>(catalogueItem);
 
             configuration.Verify(c => c["SolutionsLastReviewedDate"]);
@@ -576,6 +569,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.Section.Should().Be("Additional Services");
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
+        }
+        
+        private IList<CatalogueItem> GetAllCatalogueItems()
+        {
+            var fixture = new Fixture();
+            var items = Enumerable.Range(1, 5)
+                .ToList()
+                .Select(_ => new CatalogueItem
+                {
+                    CatalogueItemType = CatalogueItemType.AssociatedService,
+                    Name = fixture.Create<string>(),
+                })
+                .ToList();
+            items.AddRange(Enumerable.Range(1, 3).ToList().Select(_ => new CatalogueItem
+            {
+                CatalogueItemType = CatalogueItemType.Solution,
+                Name = fixture.Create<string>(),
+            }));
+            items.AddRange(Enumerable.Range(1, 8).ToList().Select(_ => new CatalogueItem
+            {
+                CatalogueItemType = CatalogueItemType.AdditionalService,
+                Name = fixture.Create<string>(),
+            }));
+            return items;
         }
     }
 }

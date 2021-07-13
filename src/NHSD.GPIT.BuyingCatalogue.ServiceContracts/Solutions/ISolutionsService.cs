@@ -58,5 +58,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId);
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
+
+        Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(
+            CatalogueItemId id,
+            CatalogueItemId additionalId);
+
+        Task<CatalogueItem> GetAdditionalServiceCapability(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId catalogueItemIdAdditional,
+            Guid capabilityId);
     }
 }

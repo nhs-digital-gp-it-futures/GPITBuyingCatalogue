@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -12,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
-    public class BuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>
+    public class BuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, string, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>, IDataProtectionKeyContext
     {
         private readonly IIdentityService identityService;
 
@@ -42,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CatalogueItem> CatalogueItems { get; set; }
 
+        public DbSet<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
+
         public DbSet<CataloguePrice> CataloguePrices { get; set; }
 
         public DbSet<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
@@ -59,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<Supplier> Suppliers { get; set; }
 
         public DbSet<AspNetUser> AspNetUsers { get; set; }
+
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
         public DbSet<Organisation> Organisations { get; set; }
 

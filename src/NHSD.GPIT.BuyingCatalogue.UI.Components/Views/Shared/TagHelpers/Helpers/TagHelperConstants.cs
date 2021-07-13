@@ -20,7 +20,7 @@
         internal const string Button = "button";
         internal const string Input = "input";
 
-        // Attributes
+        /* Attributes*/
         internal const string For = "asp-for";
         internal const string Id = "id";
         internal const string LabelledBy = "aria-labelledy";
@@ -40,7 +40,7 @@
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
 
-        // Attribute Values
+        /* Attribute Values */
         internal const string AriaLivePolite = "polite";
         internal const string TextFieldInput = "text-field-input";
         internal const string TextAreaField = "textarea-field";
@@ -52,8 +52,10 @@
         internal const string Values = "values";
         internal const string Value = "value";
         internal const string ConditionalContextName = "ConditionalContext";
+        internal const string ColumnNameContextName = "ColumnNamesContext";
+        internal const string CellColumnContextName = "CellColumnContext";
 
-        // Classes
+        /* Classes */
         internal const string NhsErrorMessage = "nhsuk-error-message";
         internal const string NhsFormGroup = "nhsuk-form-group";
         internal const string NhsFormGroupError = "nhsuk-form-group--error";
@@ -89,10 +91,10 @@
         internal const string NhsCheckBoxChildConditionalClass = "nhsuk-checkboxes__conditional";
         internal const string NhsCheckBoxChildConditionalHiddenClass = "nhsuk-checkboxes__conditional--hidden";
 
-        // Messages
+        /* Messages */
         internal const string CharacterCountMessage = "Maximum character length {0}";
 
-        // Html Attributes
+        /* Html Attributes */
         internal const string LabelTextName = "label-text";
         internal const string LabelHintName = "label-hint";
         internal const string CharacterCountName = "character-count";

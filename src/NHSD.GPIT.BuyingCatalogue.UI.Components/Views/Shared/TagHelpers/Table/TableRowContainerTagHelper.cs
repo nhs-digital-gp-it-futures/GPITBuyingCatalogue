@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         public override void Init(TagHelperContext context)
         {
-            if (!context.Items.TryGetValue("ColumnNames", out object columnNames))
+            if (!context.Items.TryGetValue(TagHelperConstants.ColumnNameContextName, out object columnNames))
                 return;
 
             var columnNamesConverted = (List<TagHelperContent>)columnNames;
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
             CellColumnNames = new Queue<TagHelperContent>(columnNamesConverted);
 
-            context.Items.Add("CellColumnNames", CellColumnNames);
+            context.Items.Add(TagHelperConstants.CellColumnContextName, CellColumnNames);
         }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)

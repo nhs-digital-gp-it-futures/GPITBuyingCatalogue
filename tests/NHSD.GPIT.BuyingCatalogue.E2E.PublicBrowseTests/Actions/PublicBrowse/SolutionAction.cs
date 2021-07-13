@@ -108,6 +108,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             return associatedServices;
         }
 
+        internal string AdditionalServicesNameDisplayed()
+        {
+            return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.ImplementationName).Text;
+        }
+
+        internal bool AdditionalServicesTableDisplayed()
+        {
+            return ElementDisplayed(Objects.PublicBrowse.SolutionObjects.AdditionalServicesTable);
+        }
+
+        internal IEnumerable<string> GetAdditionalServicesNamesFromTable()
+        {
+            return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.AdditionalServicesTable).FindElements(By.TagName("a")).Select(s => s.Text);
+        }
+
+        internal IEnumerable<string> GetAdditionalServicesDescription()
+        {
+            var additionalServicesOnPage = Driver.FindElements(Objects.PublicBrowse.SolutionObjects.FullDescription);
+            return additionalServicesOnPage.Select(e => e.FindElement(By.TagName("dd")).Text).ToList();
+        }
+
         private bool ElementDisplayed(By by)
         {
             try
