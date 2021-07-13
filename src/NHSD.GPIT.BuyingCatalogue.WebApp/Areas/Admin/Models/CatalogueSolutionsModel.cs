@@ -1,34 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
     public sealed class CatalogueSolutionsModel
     {
-        private readonly List<PublicationStatus> publicationStatusModels =
-            Enums.GetValues<EntityFramework.Catalogue.Models.PublicationStatus>(
-                    EnumMemberSelection.DisplayOrder)
-                .Select(s => new PublicationStatus { Id = (int)s, Display = s.AsString(EnumFormat.DisplayName) })
-                .ToList();
+        public CatalogueSolutionsModel()
+        {
+        }
 
         public CatalogueSolutionsModel(IEnumerable<CatalogueItem> solutions)
         {
-            Solutions = solutions?.Select(s => new CatalogueModel(s)).ToList();
+            SetSolutions(solutions);
         }
 
-        public IList<PublicationStatus> AllPublicationStatuses => publicationStatusModels;
+        public IList<PublicationStatus> PublicationStatuses { get; } = Enum.GetValues<PublicationStatus>().ToList().AsReadOnly();
 
-        public List<CatalogueModel> Solutions { get; set; }
+        public IList<CatalogueModel> Solutions { get; } = new List<CatalogueModel>();
 
-        public bool HasSelected => publicationStatusModels.Any(p => p.Checked);
+        public string SelectedPublicationStatus { get; set; }
 
-        public void SetSelected(EntityFramework.Catalogue.Models.PublicationStatus publicationStatus)
+        public void SetSolutions(IEnumerable<CatalogueItem> solutions)
         {
-            if (publicationStatusModels.SingleOrDefault(p => p.Id == (int)publicationStatus) is
-                { } publicationStatusModel)
-                publicationStatusModel.Checked = true;
+            if (solutions is null)
+                return;
+
+            Solutions.Clear();
+
+            foreach (var item in solutions.Select(s => new CatalogueModel(s)).ToList())
+                Solutions.Add(item);
         }
     }
 }

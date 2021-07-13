@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -108,9 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             NumberOfFilterRadioButtonsDisplayed();
             var element = Driver.FindElements(Objects.Admin.AddSolutionObjects.FilterRadioButton)[index].FindElement(By.TagName("input"));
             element.Click();
-            var id = element.GetAttribute("id");
-            int value = int.Parse(id);
-            return (PublicationStatus)value;
+            var value = element.GetAttribute("value");
+            return Enum.Parse<PublicationStatus>(value);
         }
 
         internal PublicationStatus FilterCatalogueSolutions(int index = 0)

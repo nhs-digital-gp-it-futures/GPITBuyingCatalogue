@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().BeNull();
             var model = actual.Model.As<CatalogueSolutionsModel>();
             model.Solutions.Should().BeEquivalentTo(expected);
-            model.HasSelected.Should().BeFalse();
+            model.SelectedPublicationStatus.Should().BeNullOrWhiteSpace();
         }
 
         [Theory]
@@ -66,21 +66,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Index_StatusInput_SetsSelectedOnModel_ReturnsViewWithModel(
             List<CatalogueItem> solutions)
         {
+            var model = new CatalogueSolutionsModel();
             var status = Enums.GetValues<PublicationStatus>()[new Random().Next(0, Enums.GetMemberCount<PublicationStatus>())];
+            model.SelectedPublicationStatus = status.ToString();
             var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetAllSolutions(status))
                 .ReturnsAsync(solutions);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
-            var actual = (await controller.Index(status)).As<ViewResult>();
+            var actual = (await controller.Index(model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
-            var model = actual.Model.As<CatalogueSolutionsModel>();
+            actual.Model.As<CatalogueSolutionsModel>();
             model.Solutions.Should().BeEquivalentTo(expected);
-            model.HasSelected.Should().BeTrue();
-            model.AllPublicationStatuses.Single(p => p.Checked).Id.Should().Be((int)status);
         }
 
         [Fact]
