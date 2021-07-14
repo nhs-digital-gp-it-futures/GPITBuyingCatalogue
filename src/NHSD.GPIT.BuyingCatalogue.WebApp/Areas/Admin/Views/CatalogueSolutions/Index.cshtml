@@ -1,14 +1,24 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models 
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModel
 @{
     ViewData["Title"] = "Manage Catalogue Solutions";
 
     ViewBag.HeadingTitles = new[] { "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty, };
 }
-
+@section Breadcrumbs {
+<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+    <div class="nhsuk-width-container">
+        <ol class="nhsuk-breadcrumb__list">
+            <li class="nhsuk-breadcrumb__item">
+                <a asp-action="Index" asp-controller="Home" class="nhsuk-breadcrumb__link">Home</a>
+            </li>
+        </ol>
+    </div>
+</nav>
+}
 <div class="nhsuk-width-container">
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
@@ -21,48 +31,48 @@
                                 typeof(AddCatalogueSolutionController).ControllerName(),
                                 null)" />
             <form method="post">
-            <nhs-expander label-text="Filter Catalogue Solutions">
-                <nhs-fieldset-form-label asp-for="@Model"
-                                         label-hint="Select one option.">
-                    <nhs-radio-buttons asp-for="SelectedPublicationStatus"
-                                       values="@Model.PublicationStatuses.Cast<object>()"
-                                       value-name="EnumMemberName"
-                                       display-name="Name" />
-                </nhs-fieldset-form-label>
-                <nhs-submit-button text="Apply filter" />
-                <br/>
-                <a asp-action="@nameof(AddCatalogueSolutionController.Index)"
-                   asp-controller="@typeof(AddCatalogueSolutionController).ControllerName()">
-                Clear filter
-                </a>
-            </nhs-expander>
+                <nhs-expander label-text="Filter Catalogue Solutions">
+                    <nhs-fieldset-form-label asp-for="@Model"
+                                             label-hint="Select one option.">
+                        <nhs-radio-buttons asp-for="SelectedPublicationStatus"
+                                           values="@Model.PublicationStatuses.Cast<object>()"
+                                           value-name="EnumMemberName"
+                                           display-name="Name" />
+                    </nhs-fieldset-form-label>
+                    <nhs-submit-button text="Apply filter" />
+                    <br />
+                    <a asp-action="@nameof(AddCatalogueSolutionController.Index)"
+                       asp-controller="@typeof(AddCatalogueSolutionController).ControllerName()">
+                        Clear filter
+                    </a>
+                </nhs-expander>
             </form>
 
             <nhs-table data-test-id="manage-catalogue-solution-list">
                 @foreach (var heading in ViewBag.HeadingTitles)
                 {
-                    <nhs-table-column>@heading</nhs-table-column>
+                <nhs-table-column>@heading</nhs-table-column>
                 }
 
                 @foreach (var item in Model.Solutions)
                 {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@item.CatalogueItemId</nhs-table-cell>
-                        <nhs-table-cell>@item.Name</nhs-table-cell>
-                        <nhs-table-cell>@item.Supplier</nhs-table-cell>
-                        <nhs-table-cell>@(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"))</nhs-table-cell>
-                        <nhs-table-cell>
-                            <nhs-tag text="@item.PublishedStatus" colour="@GetTagColour(item)" />
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="@nameof(CatalogueSolutionsController.ManageCatalogueSolution)"
-                               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                               asp-route-solutionId="@item.CatalogueItemId"
-                               style="white-space: nowrap;">
-                                Edit
-                            </a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>@item.CatalogueItemId</nhs-table-cell>
+                    <nhs-table-cell>@item.Name</nhs-table-cell>
+                    <nhs-table-cell>@item.Supplier</nhs-table-cell>
+                    <nhs-table-cell>@(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"))</nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag text="@item.PublishedStatus" colour="@GetTagColour(item)" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="@nameof(CatalogueSolutionsController.ManageCatalogueSolution)"
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                           asp-route-solutionId="@item.CatalogueItemId"
+                           style="white-space: nowrap;">
+                            Edit
+                        </a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
                 }
             </nhs-table>
         </div>
