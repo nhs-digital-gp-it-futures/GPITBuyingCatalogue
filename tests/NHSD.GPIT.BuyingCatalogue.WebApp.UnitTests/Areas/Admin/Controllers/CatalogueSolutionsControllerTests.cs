@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EnumsNET;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -43,6 +44,102 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_Features_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(new CatalogueItem());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.Features(catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Features_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new FeaturesModel().FromCatalogueItem(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Features_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Features(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Features_CallsSavesSolutionFeatures(
+            CatalogueItemId catalogueItemId,
+            FeaturesModel model,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.Features(catalogueItemId, model);
+
+            mockService.Verify(s => s.SaveSolutionFeatures(catalogueItemId, model.AllFeatures));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Features_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            FeaturesModel model,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Features(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Features_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new FeaturesModel().FromCatalogueItem(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_Index_SolutionsInDatabase_ReturnsViewWithExpectedModel(
             List<CatalogueItem> solutions)
         {
@@ -64,13 +161,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_Index_StatusInput_SetsSelectedOnModel_ReturnsViewWithModel(
-            List<CatalogueItem> solutions)
+            List<CatalogueItem> solutions,
+            [Frozen]Mock<ISolutionsService> mockService,
+            PublicationStatus status)
         {
-            var model = new CatalogueSolutionsModel();
-            var status = Enums.GetValues<PublicationStatus>()[new Random().Next(0, Enums.GetMemberCount<PublicationStatus>())];
-            model.SelectedPublicationStatus = status.ToString();
-            var expected = solutions.Select(s => new CatalogueModel(s)).ToList();
-            var mockService = new Mock<ISolutionsService>();
+            var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString() };
             mockService.Setup(s => s.GetAllSolutions(status))
                 .ReturnsAsync(solutions);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
@@ -79,44 +174,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
-            actual.Model.As<CatalogueSolutionsModel>();
-            model.Solutions.Should().BeEquivalentTo(expected);
+            model.SetSolutions(solutions);
+            actual.Model.As<CatalogueSolutionsModel>().Should().BeEquivalentTo(model);
         }
 
-        [Fact]
-        public static async Task Get_ManageSolution_ReturnsViewWithExpectedModel()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ManageSolution_ReturnsViewWithExpectedModel(
+            CatalogueItem expected,
+            AspNetUser aspNetUser,
+            Guid userId)
         {
-            var expected = new CatalogueItem
-            {
-                CatalogueItemId = new EntityFramework.Ordering.Models.CatalogueItemId(999999, "999"),
-                Solution = new Solution
-                {
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = new Guid("00000000-BBBB-CCCC-DDDD-AAAAAAAAAAAA"),
-                },
-                Supplier = new Supplier
-                {
-                    Name = "Fake Supplier",
-                },
-                Name = "Fake Solution",
-            };
-
+            expected.Solution.LastUpdatedBy = userId;
+            aspNetUser.Id = userId.ToString();
             var mockSolutionService = new Mock<ISolutionsService>();
-            mockSolutionService.Setup(s => s.GetSolution(It.IsAny<EntityFramework.Ordering.Models.CatalogueItemId>()))
+            mockSolutionService.Setup(s => s.GetSolution(expected.CatalogueItemId))
                 .ReturnsAsync(expected);
 
             var mockUsersService = new Mock<IUsersService>();
-            mockUsersService.Setup(u => u.GetUser(It.IsAny<string>()))
-                .ReturnsAsync(new AspNetUser { FirstName = "Bob", LastName = "Smith" });
+            mockUsersService.Setup(u => u.GetUser(aspNetUser.Id))
+                .ReturnsAsync(aspNetUser);
             var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUsersService.Object);
 
             var actual = (await controller.ManageCatalogueSolution(expected.CatalogueItemId)).As<ViewResult>();
 
+            mockSolutionService.Verify(s => s.GetSolution(expected.CatalogueItemId));
+            mockUsersService.Verify(u => u.GetUser(aspNetUser.Id));
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             var model = actual.Model.As<ManageCatalogueSolutionModel>();
             model.Solution.Should().BeEquivalentTo(expected);
-            model.LastUpdatedByName.Should().BeEquivalentTo("Bob Smith");
+            model.LastUpdatedByName.Should().BeEquivalentTo($"{aspNetUser.FirstName} {aspNetUser.LastName}");
         }
     }
 }
