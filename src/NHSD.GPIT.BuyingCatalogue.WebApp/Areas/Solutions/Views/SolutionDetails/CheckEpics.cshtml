@@ -1,6 +1,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionCheckEpicsModel;
 @{
-    Layout = "_LayoutNoNav";
+    Layout = "~/Views/Shared/Layouts/_SolutionsLayoutNoNav.cshtml";
     ViewData["Title"] = $"{Model.Name} capabilites";
 }
 
@@ -18,7 +18,7 @@
 
 <p>@Model.Description</p>
 
-<hr/>
+<hr />
 
 @if (Model.HasNoEpics())
 {
