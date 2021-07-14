@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public void BuyerOrganisations_ManageBuyerOrgsAndUsers_AddOrgLinkDisplayed()
         {
-            AdminPages.Dashboard.AddOrgButtonDisplayed().Should().BeTrue();
+            AdminPages.Dashboard.AddOrgLinkDisplayed().Should().BeTrue();
         }
 
         [Fact]
