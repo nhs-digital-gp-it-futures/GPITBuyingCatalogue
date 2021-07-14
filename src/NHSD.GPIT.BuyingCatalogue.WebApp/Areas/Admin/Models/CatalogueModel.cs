@@ -1,6 +1,6 @@
 ﻿using System;
-using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -13,9 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
             CatalogueItemId = catalogueItem.CatalogueItemId.ToString();
             Name = catalogueItem.Name;
-            LastUpdated = catalogueItem.Supplier?.LastUpdated ?? DateTime.MinValue;
-            PublishedStatus = catalogueItem.PublishedStatus.AsString(EnumFormat.DisplayName);
-            PublishedStatusId = (int)catalogueItem.PublishedStatus;
+            LastUpdated = catalogueItem.Solution?.LastUpdated ?? DateTime.MinValue;
+            PublishedStatus = catalogueItem.PublishedStatus.Name();
+            PublishedStatusId = catalogueItem.PublishedStatus;
             Supplier = catalogueItem.Supplier?.Name ?? string.Empty;
         }
 
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string PublishedStatus { get; set; }
 
-        public int PublishedStatusId { get; set; }
+        public PublicationStatus PublishedStatusId { get; set; }
 
         public string Supplier { get; set; }
     }

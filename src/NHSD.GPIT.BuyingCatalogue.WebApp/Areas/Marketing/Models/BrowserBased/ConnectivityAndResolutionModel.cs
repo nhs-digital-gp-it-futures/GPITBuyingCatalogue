@@ -20,12 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
 
             BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
 
-            SelectedConnectionSpeed = ClientApplication.MinimumConnectionSpeed;
+            SelectedConnectionSpeed = ClientApplication?.MinimumConnectionSpeed;
 
-            SelectedScreenResolution = ClientApplication.MinimumDesktopResolution;
+            SelectedScreenResolution = ClientApplication?.MinimumDesktopResolution;
         }
 
-        public override bool? IsComplete => !string.IsNullOrWhiteSpace(ClientApplication.MinimumConnectionSpeed);
+        public override bool? IsComplete => !string.IsNullOrWhiteSpace(ClientApplication?.MinimumConnectionSpeed);
 
         public string SelectedConnectionSpeed { get; set; }
 

@@ -78,6 +78,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             Driver.FindElement(Objects.Admin.OrganisationObjects.UserName(id)).Click();
         }
 
+        internal bool BuyerOrgsTableDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.DashboardObjects.AddOrgLink);
+        }
+
+        internal bool AddOrgLinkDisplayed()
+        {
+            return ElementDisplayed(Objects.Admin.DashboardObjects.BuyerOrgsTable);
+        }
+
         private bool ElementDisplayed(By by)
         {
             try
