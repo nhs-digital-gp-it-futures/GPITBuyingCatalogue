@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public override int Index => 2;
 
         public string Name { get; set; }
+
+        public string Description { get; set; }
 
         public IList<RowViewModel> RowViewModels { get; set; } = new List<RowViewModel>();
     }
