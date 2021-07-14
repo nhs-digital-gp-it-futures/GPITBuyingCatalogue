@@ -1,129 +1,91 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModel
 @{
     ViewData["Title"] = "Manage Catalogue Solutions";
+
+    ViewBag.HeadingTitles = new[] { "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty, };
 }
 @section Breadcrumbs {
-    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-        <div class="nhsuk-width-container">
-            <ol class="nhsuk-breadcrumb__list">
-                <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="Index" asp-controller="Home" class="nhsuk-breadcrumb__link">Home</a>
-                </li>
-            </ol>
-        </div>
-    </nav>
+<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+    <div class="nhsuk-width-container">
+        <ol class="nhsuk-breadcrumb__list">
+            <li class="nhsuk-breadcrumb__item">
+                <a asp-action="Index" asp-controller="Home" class="nhsuk-breadcrumb__link">Home</a>
+            </li>
+        </ol>
+    </div>
+</nav>
 }
 <div class="nhsuk-width-container">
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
-            <h1>Manage Catalogue Solutions</h1>
-            <p class="nhsuk-lede-text">
-                Add a new solution or edit one that's already been published.
-            </p>
+            <nhs-page-title title="Manage Catalogue Solutions"
+                            advice="Add a new solution or edit one that's already been published." />
 
-            <div class="nhsuk-action-link">
-                <a class="nhsuk-action-link__link" href="#">
-                    <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-                    </svg>
-                    <span class="nhsuk-action-link__text">Add a solution</span>
-                </a>
-            </div>
-
-            <details class="nhsuk-details nhsuk-expander"
-                     id="nhsuk-details0"
-                     nhsuk-polyfilled="true"
-                     @if (Model.HasSelected) { <text> open="" </text> }>
-                <summary class="nhsuk-details__summary" role="button" aria-controls="nhsuk-details__text0" tabindex="0" aria-expanded="false">
-                    <span class="nhsuk-details__summary-text">
-                        Filter Catalogue Solutions
-                    </span>
-                </summary>
-                <div class="nhsuk-details__text" id="nhsuk-details__text0" aria-hidden="true">
-                    <form method="post">
-                        <p class="nhsuk-hint">
-                            Select one option.
-                        </p>
-                        <div class="nhsuk-form-group">
-                            <div class="nhsuk-radios">
-                                @foreach (var status in Model.AllPublicationStatuses)
-                                {
-                                    <div class="nhsuk-radios__item">
-                                        <input name="publicationStatus"
-                                               checked="@status.Checked"
-                                               class="nhsuk-radios__input"
-                                               id="@status.Id"
-                                               type="radio"
-                                               value="@status.Id" />
-                                        <label class="nhsuk-label nhsuk-radios__label" for="@status.Id">
-                                            @status.Display
-                                        </label>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        <hr style="margin: 0; margin-bottom: 1em;">
-                        <button id="Submit" class="nhsuk-button" type="submit">
-                            Apply filter
-                        </button>
-                    </form>
-                    <a asp-action="Index" asp-controller="CatalogueSolutions">Clear filter</a>
-                </div>
-            </details>
+            <vc:nhs-action-link text="Add a solution"
+                                url="@Url.Action(
+                                nameof(AddCatalogueSolutionController.Index),
+                                typeof(AddCatalogueSolutionController).ControllerName(),
+                                null)" />
+            <form method="post">
+                <nhs-expander label-text="Filter Catalogue Solutions">
+                    <nhs-fieldset-form-label asp-for="@Model"
+                                             label-hint="Select one option.">
+                        <nhs-radio-buttons asp-for="SelectedPublicationStatus"
+                                           values="@Model.PublicationStatuses.Cast<object>()"
+                                           value-name="EnumMemberName"
+                                           display-name="Name" />
+                    </nhs-fieldset-form-label>
+                    <nhs-submit-button text="Apply filter" />
+                    <br />
+                    <a asp-action="@nameof(AddCatalogueSolutionController.Index)"
+                       asp-controller="@typeof(AddCatalogueSolutionController).ControllerName()">
+                        Clear filter
+                    </a>
+                </nhs-expander>
+            </form>
 
             <nhs-table data-test-id="manage-catalogue-solution-list">
-                @foreach (var heading in new[]
-              {
-                "Solution ID", "Solution name", "Supplier", "Last updated", "Status", string.Empty,
-            })
+                @foreach (var heading in ViewBag.HeadingTitles)
                 {
-                    <nhs-table-column>@heading</nhs-table-column>
+                <nhs-table-column>@heading</nhs-table-column>
                 }
 
                 @foreach (var item in Model.Solutions)
                 {
-                    <nhs-table-row-container>
-                        @foreach (var cell in new[]
-                      {
-                        item.CatalogueItemId,
-                        item.Name,
-                        item.Supplier,
-                        item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"),
-                    })
-                        {
-                            <nhs-table-cell>@cell</nhs-table-cell>
-                        }
-
-                        <nhs-table-cell>
-                            @{
-                                NhsTagsTagHelper.TagColour colour = NhsTagsTagHelper.TagColour.White;
-                                switch (item.PublishedStatusId)
-                                {
-                                    case 1:
-                                        colour = NhsTagsTagHelper.TagColour.Red;
-                                        break;
-                                    case 2:
-                                        break;
-                                    case 3:
-                                        colour = NhsTagsTagHelper.TagColour.Green;
-                                        break;
-                                    case 4:
-                                        colour = NhsTagsTagHelper.TagColour.Yellow;
-                                        break;
-                                }
-                            }
-                            <nhs-tag text="@item.PublishedStatus" colour="@colour" />
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="ManageCatalogueSolution" asp-controller="CatalogueSolutions" asp-route-solutionId="@item.CatalogueItemId" style="white-space: nowrap;">
-                                Edit
-                            </a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>@item.CatalogueItemId</nhs-table-cell>
+                    <nhs-table-cell>@item.Name</nhs-table-cell>
+                    <nhs-table-cell>@item.Supplier</nhs-table-cell>
+                    <nhs-table-cell>@(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"))</nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag text="@item.PublishedStatus" colour="@GetTagColour(item)" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="@nameof(CatalogueSolutionsController.ManageCatalogueSolution)"
+                           asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                           asp-route-solutionId="@item.CatalogueItemId"
+                           style="white-space: nowrap;">
+                            Edit
+                        </a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
                 }
             </nhs-table>
         </div>
     </div>
 </div>
+
+@{
+    NhsTagsTagHelper.TagColour GetTagColour(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueModel item) =>
+        item.PublishedStatusId switch
+        {
+            PublicationStatus.Draft => NhsTagsTagHelper.TagColour.Red,
+            PublicationStatus.Published => NhsTagsTagHelper.TagColour.Green,
+            PublicationStatus.Suspended => NhsTagsTagHelper.TagColour.Yellow,
+            PublicationStatus.Unpublished or _ => NhsTagsTagHelper.TagColour.DarkBlue,
+        };
+}

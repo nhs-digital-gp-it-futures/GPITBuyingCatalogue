@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -27,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             MarketingPages = new MarketingPageActions(Driver).PageActions;
             AuthorizationPages = new AuthorizationPages(Driver).PageActions;
             AdminPages = new AdminPages(Driver).PageActions;
+            OrderingPages = new OrderingPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
 
             TextGenerators = new TextGenerators(Driver);
@@ -49,6 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         internal Actions.Authorization.ActionCollection AuthorizationPages { get; }
 
         internal Actions.Admin.ActionCollection AdminPages { get; }
+
+        internal Actions.Ordering.ActionCollection OrderingPages { get; }
 
         internal TextGenerators TextGenerators { get; }
 

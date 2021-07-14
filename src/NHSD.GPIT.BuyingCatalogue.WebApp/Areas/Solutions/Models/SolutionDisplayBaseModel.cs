@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public abstract class SolutionDisplayBaseModel
     {
+        private const string KeyDescription = "Description";
         private static readonly string ControllerName = typeof(SolutionDetailsController).ControllerName();
 
         private readonly IList<SectionModel> sections = new List<SectionModel>
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             {
                 Action = nameof(SolutionDetailsController.Description),
                 Controller = ControllerName,
-                Name = "Description",
+                Name = KeyDescription,
             },
             new()
             {
@@ -101,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public PaginationFooterModel PaginationFooter { get; set; } = new();
 
-        public string Section => sections[Index].Name;
+        public virtual string Section => sections[Index].Name;
 
         public CatalogueItemId SolutionId { get; set; }
 
@@ -119,6 +120,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             return sectionsToShow;
         }
+
+        public bool NotFirstSection() => !Section.EqualsIgnoreCase(KeyDescription);
 
         public void SetPaginationFooter()
         {
