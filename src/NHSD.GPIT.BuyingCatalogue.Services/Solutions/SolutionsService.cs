@@ -401,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task AddCatalogueSolution(CreateSolutionModel model)
+        public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)
         {
             model.ValidateNotNull(nameof(CreateSolutionModel));
             model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
@@ -424,24 +424,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 });
             }
 
-            catalogueItemRepository.Add(
-                new CatalogueItem
-                {
-                    CatalogueItemId = catalogueItemId,
-                    CatalogueItemType = CatalogueItemType.Solution,
-                    Solution =
+            catalogueItemRepository.Add(new CatalogueItem
+            {
+                CatalogueItemId = catalogueItemId,
+                CatalogueItemType = CatalogueItemType.Solution,
+                Solution =
                         new Solution
                         {
                             FrameworkSolutions = frameworkSolutions,
                             LastUpdated = dateTimeNow,
                             LastUpdatedBy = model.UserId,
                         },
-                    Name = model.Name,
-                    PublishedStatus = PublicationStatus.Draft,
-                    SupplierId = model.SupplierId,
-                });
+                Name = model.Name,
+                PublishedStatus = PublicationStatus.Draft,
+                SupplierId = model.SupplierId,
+            });
 
             await catalogueItemRepository.SaveChangesAsync();
+
+            return catalogueItemId;
         }
 
         public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetAllFrameworks()

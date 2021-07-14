@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model.WithSelectListItems(suppliers));
             }
 
-            await solutionsService.AddCatalogueSolution(new CreateSolutionModel
+            var catalogueItemId = await solutionsService.AddCatalogueSolution(new CreateSolutionModel
             {
                 Frameworks = model.Frameworks,
                 Name = model.SolutionName,
@@ -54,8 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             });
 
             return RedirectToAction(
-                nameof(CatalogueSolutionsController.Index),
-                typeof(CatalogueSolutionsController).ControllerName());
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                typeof(CatalogueSolutionsController).ControllerName(),
+                new { solutionId = catalogueItemId });
         }
     }
 }
