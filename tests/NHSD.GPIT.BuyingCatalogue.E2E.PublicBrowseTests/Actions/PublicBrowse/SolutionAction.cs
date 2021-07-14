@@ -18,6 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
         }
 
+        public bool CatalogueSolutionPageDisplayed()
+        {
+             Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionPage);
+             return true;
+        }
+
         internal bool SolutionNameDisplayed()
         {
             return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionName).Displayed;
@@ -127,6 +133,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
             var additionalServicesOnPage = Driver.FindElements(Objects.PublicBrowse.SolutionObjects.FullDescription);
             return additionalServicesOnPage.Select(e => e.FindElement(By.TagName("dd")).Text).ToList();
+        }
+        
+        internal bool BreadcrumbBannerDisplayed()
+        {
+            return ElementDisplayed(Objects.PublicBrowse.SolutionObjects.BreadcrumbsBanner);
+        }
+
+        internal string GetBreadcrumbNames(string breadcrumbItem)
+        {
+            var rows = Driver.FindElements(Objects.PublicBrowse.SolutionObjects.BreadcrumbsBanner);
+            var row = rows.Single(r => r.FindElement(By.TagName("a")).Text.Contains(breadcrumbItem, System.StringComparison.OrdinalIgnoreCase));
+            return row.FindElement(By.TagName("a")).Text;
+        }
+
+        internal void ClickCatalogueSolutionBreadcrumb()
+        {
+            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionCrumb).Click();
         }
 
         private bool ElementDisplayed(By by)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,14 +38,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(PublicationStatus publicationStatus)
+        public async Task<IActionResult> Index(CatalogueSolutionsModel model)
         {
-            var solutions = await solutionsService.GetAllSolutions(publicationStatus);
+            model.SetSolutions(
+                 await solutionsService.GetAllSolutions(string.IsNullOrWhiteSpace(model.SelectedPublicationStatus)
+                     ? null
+                     : Enum.Parse<PublicationStatus>(model.SelectedPublicationStatus, true)));
 
-            var solutionModel = new CatalogueSolutionsModel(solutions);
-            solutionModel.SetSelected(publicationStatus);
-
-            return View(solutionModel);
+            return View(model);
         }
 
         [HttpGet("manage/{solutionId}")]

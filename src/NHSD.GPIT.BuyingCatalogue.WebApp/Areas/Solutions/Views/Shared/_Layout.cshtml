@@ -57,12 +57,12 @@
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link" asp-action="Index" asp-controller="Home">Home</a>
+                    <a class="nhsuk-breadcrumb__link" data-test-id="home-crumb" asp-action="Index" asp-controller="Home">Home</a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link" asp-action="SearchResults" asp-controller="Futures">Catalogue Solutions</a>
+                    <a class="nhsuk-breadcrumb__link" data-test-id="catalogue-solutions-crumb" asp-action="SearchResults" asp-controller="Futures">Catalogue Solutions</a>
                 </li>
-                @if (@Model.Section != "Description")
+                @if (Model.NotFirstSection())
                 {
                     <li class="nhsuk-breadcrumb__item">
                         <a asp-action="Description" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" class="nhsuk-breadcrumb__link">

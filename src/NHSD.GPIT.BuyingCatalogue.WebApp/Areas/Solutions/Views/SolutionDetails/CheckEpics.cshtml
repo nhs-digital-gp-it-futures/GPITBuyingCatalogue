@@ -4,36 +4,57 @@
     ViewData["Title"] = $"{Model.Name} capabilites";
 }
 
-<p>Supports the administration, scheduling, resourcing and reporting of appointments.</p>
-
-<hr />
-
-@if (Model.HasNhsDefined())
+@section BackLink
 {
-    <h2>NHS defined Epics</h2>
-
-    <p>
-        <a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134029/Appointments+Management+-+GP">
-            View more details including acceptance criteria for Epics defined by the NHS
-        </a>
-    </p>
-
-    <ul data-test-id="nhs-defined-epics">
-        @foreach (string epic in Model.NhsDefined)
-        {
-            <li>@epic</li>
-        }
-    </ul>
+    @if (Model.CatalogueItemIdAdditional.ItemId != null)
+    {
+        <vc:nhs-backlink text="Go back" url="@Url.Action("CapabilitiesAdditionalServices", "SolutionDetails", new { id = Model.SolutionId, additionalId = Model.CatalogueItemIdAdditional })"></vc:nhs-backlink>
+    }
+    else
+    {
+        <vc:nhs-backlink text="Go back" url="@Url.Action("Capabilities", "SolutionDetails", new { id = Model.SolutionId })"></vc:nhs-backlink>
+    }
 }
 
-@if (Model.HasSupplierDefined())
-{
-    <h2>Supplier defined Epics</h2>
+<p>@Model.Description</p>
 
-    <ul data-test-id="supplier-defined-epics">
-        @foreach (string epic in Model.SupplierDefined)
-        {
-            <li>@epic</li>
-        }
-    </ul>
+<hr/>
+
+@if (Model.HasNoEpics())
+{
+    <p>
+        <b>No Epics</b>
+    </p>
+}
+else
+{
+    @if (Model.HasNhsDefined())
+    {
+        <h2>NHS defined Epics</h2>
+
+        <p>
+            <a target="_blank" href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134029/Appointments+Management+-+GP">
+                View more details including acceptance criteria for Epics defined by the NHS (opens in a new tab)
+            </a>
+        </p>
+
+        <ul data-test-id="nhs-defined-epics">
+            @foreach (string epic in Model.NhsDefined)
+            {
+                <li>@epic</li>
+            }
+        </ul>
+    }
+
+    @if (Model.HasSupplierDefined())
+    {
+        <h2>Supplier defined Epics</h2>
+
+        <ul data-test-id="supplier-defined-epics">
+            @foreach (string epic in Model.SupplierDefined)
+            {
+                <li>@epic</li>
+            }
+        </ul>
+    }
 }

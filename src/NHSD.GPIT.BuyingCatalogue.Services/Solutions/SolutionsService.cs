@@ -15,24 +15,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsService : ISolutionsService
     {
-        private const string GpitFuturesFrameworkId = "NHSDGP001";
-        private const string DfocvcFrameworkId = "DFOCVC001";
-
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
+        private readonly ICatalogueItemRepository catalogueItemRepository;
 
         public SolutionsService(
             BuyingCatalogueDbContext dbContext,
             IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
-            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository)
+            IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository,
+            ICatalogueItemRepository catalogueItemRepository)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
+            this.catalogueItemRepository = catalogueItemRepository;
         }
 
         public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
                     && i.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "GP IT Futures"))
                 .ToListAsync();
         }
 
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == GpitFuturesFrameworkId))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "GP IT Futures"))
                 .ToListAsync();
 
             // TODO - Refactor this. Should be possible to include in the above expression
@@ -156,6 +156,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution;
         }
 
+        public async Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(
+            CatalogueItemId id,
+            CatalogueItemId additionalId)
+        {
+            var solution = await dbContext.CatalogueItems
+                .Include(i => i.Solution)
+                .Include(i => i.Supplier)
+                .ThenInclude(
+                    s => s.CatalogueItems.Where(
+                        c => c.CatalogueItemId == additionalId))
+                .Where(i => i.CatalogueItemId == id)
+                .SingleAsync();
+
+            var capabilities = await dbContext.CatalogueItemCapabilities
+                .Include(c => c.Capability)
+                .ThenInclude(c => c.Epics)
+                .Where(c => c.CatalogueItemId == additionalId)
+                .ToListAsync();
+
+            solution.Solution.SolutionCapabilities = capabilities;
+
+            return solution;
+        }
+
+        public async Task<CatalogueItem> GetAdditionalServiceCapability(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId catalogueItemIdAdditional,
+            Guid capabilityId)
+        {
+            var solution = await dbContext.CatalogueItems
+                .Include(i => i.Solution)
+                .Where(i => i.CatalogueItemId == catalogueItemId)
+                .SingleAsync();
+
+            var capability = await dbContext.CatalogueItemCapabilities
+                .Include(c => c.Capability)
+                .ThenInclude(c => c.Epics)
+                .Where(c => c.CatalogueItemId == catalogueItemIdAdditional
+                    && c.CapabilityId == capabilityId)
+                .SingleOrDefaultAsync();
+
+            solution.Solution.SolutionCapabilities = capability == null
+                ? new List<CatalogueItemCapability>()
+                : new List<CatalogueItemCapability> { capability, };
+
+            return solution;
+        }
+
         public async Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId)
         {
             var solution = await dbContext.CatalogueItems
@@ -187,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == DfocvcFrameworkId))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "DFOCVC"))
                 .ToListAsync();
         }
 
@@ -335,6 +383,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null)
         {
             var query = dbContext.CatalogueItems
+                .Include(i => i.Solution)
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
                 .OrderByDescending(i => i.Created)
@@ -349,5 +398,56 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.PublishedStatus == publicationStatus.Value)
                 .ToListAsync();
         }
+
+        public async Task AddCatalogueSolution(CreateSolutionModel model)
+        {
+            model.ValidateNotNull(nameof(CreateSolutionModel));
+            model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
+
+            var latestCatalogueItemId = await catalogueItemRepository.GetLatestCatalogueItemIdFor(model.SupplierId);
+            var catalogueItemId = latestCatalogueItemId.NextSolutionId();
+
+            var dateTimeNow = DateTime.UtcNow;
+
+            var frameworkSolutions = new List<FrameworkSolution>();
+
+            foreach (var framework in model.Frameworks.Where(f => f.Selected))
+            {
+                frameworkSolutions.Add(new FrameworkSolution
+                {
+                    FrameworkId = framework.FrameworkId,
+                    IsFoundation = framework.IsFoundation,
+                    LastUpdated = dateTimeNow,
+                    LastUpdatedBy = model.UserId,
+                });
+            }
+
+            catalogueItemRepository.Add(
+                new CatalogueItem
+                {
+                    CatalogueItemId = catalogueItemId,
+                    CatalogueItemType = CatalogueItemType.Solution,
+                    Solution =
+                        new Solution
+                        {
+                            FrameworkSolutions = frameworkSolutions,
+                            LastUpdated = dateTimeNow,
+                            LastUpdatedBy = model.UserId,
+                        },
+                    Name = model.Name,
+                    PublishedStatus = PublicationStatus.Draft,
+                    SupplierId = model.SupplierId,
+                });
+
+            await catalogueItemRepository.SaveChangesAsync();
+        }
+
+        public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetAllFrameworks()
+        {
+            return await dbContext.Frameworks.ToListAsync();
+        }
+
+        public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
+            catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
     }
 }

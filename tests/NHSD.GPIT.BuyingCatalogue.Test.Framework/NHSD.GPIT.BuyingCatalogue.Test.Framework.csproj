@@ -10,10 +10,6 @@
     <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
     <PackageReference Include="AutoFixture.xUnit2" Version="4.17.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.7" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
@@ -26,7 +22,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="3.0.2">
+    <PackageReference Include="coverlet.collector" Version="3.0.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -34,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.ServiceContracts\NHSD.GPIT.BuyingCatalogue.ServiceContracts.csproj" />
+    <ProjectReference Include="..\..\src\NHSD.GPIT.BuyingCatalogue.WebApp\NHSD.GPIT.BuyingCatalogue.WebApp.csproj" />
   </ItemGroup>
 
 </Project>
