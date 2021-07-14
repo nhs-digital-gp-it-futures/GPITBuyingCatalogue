@@ -4,12 +4,13 @@ using AutoFixture;
 using AutoFixture.Kernel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
-    internal sealed class ControllerBaseCustomization : ICustomization
+    public sealed class ControllerBaseCustomization : ICustomization
     {
         public void Customize(IFixture fixture)
         {
@@ -45,6 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                             User = CreateClaimsPrincipal(GetOrganisationId(context)),
                         },
                     };
+
+                    // TODO: Investigate better way of doing this to test Url.Action in controllers
+                    var urlHelperMock = new Mock<IUrlHelper>();
+                    controller.Url = urlHelperMock.Object;
+                    urlHelperMock.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
+                        .Returns("testUrl");
                 }
                 else
                 {
