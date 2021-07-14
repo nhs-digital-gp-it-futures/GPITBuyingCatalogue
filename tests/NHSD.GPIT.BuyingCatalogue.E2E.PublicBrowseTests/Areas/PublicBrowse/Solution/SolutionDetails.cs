@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void SolutionDetails_Breadcrumbs_BreadcrumbBannerDisplayed()
         {
-            PublicBrowsePages.SolutionAction.BreadcrumbBannerDisplayed().Should().BeTrue();
+            PublicBrowsePages.CommonActions.BreadcrumbBannerDisplayed().Should().BeTrue();
         }
 
         [Theory]
@@ -64,20 +64,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [InlineData("Catalogue Solutions")]
         public void SolutionDetails_Breadcrumbs_BreadcrumbItemsDisplayed(string breadcrumbItem)
         {
-            PublicBrowsePages.SolutionAction.GetBreadcrumbNames(breadcrumbItem).Should().NotBeNullOrEmpty();
+            PublicBrowsePages.CommonActions.GetBreadcrumbNames(breadcrumbItem).Should().NotBeNullOrEmpty();
         }
 
         [Fact]
         public void SolutionDetails_Breadcrumbs_CatalogueSolutionPageDisplayed()
         {
-            PublicBrowsePages.SolutionAction.ClickCatalogueSolutionBreadcrumb();
+            PublicBrowsePages.CommonActions.ClickCatalogueSolutionBreadcrumb();
             PublicBrowsePages.SolutionAction.CatalogueSolutionPageDisplayed().Should().BeTrue();
         }
 
         [Fact]
         public void SolutionDetails_Breadcrumbs_HomePageDisplayed()
         {
-            PublicBrowsePages.HomePageActions.ClickHomeBreadcrumb();
+            PublicBrowsePages.CommonActions.ClickHomeBreadcrumb();
             PublicBrowsePages.HomePageActions.HomePageDisplayed().Should().BeTrue();
         }
     }
