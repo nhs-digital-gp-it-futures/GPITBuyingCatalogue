@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
             var additionalServicesOnPage = Driver.FindElements(Objects.PublicBrowse.SolutionObjects.FullDescription);
             return additionalServicesOnPage.Select(e => e.FindElement(By.TagName("dd")).Text).ToList();
         }
-        
+
         internal bool BreadcrumbBannerDisplayed()
         {
             return ElementDisplayed(Objects.PublicBrowse.SolutionObjects.BreadcrumbsBanner);

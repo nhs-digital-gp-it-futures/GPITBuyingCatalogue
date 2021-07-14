@@ -4,6 +4,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
 {
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
         }
 
-        public bool FrameworkNamesDisplayed()
+        internal bool FrameworkNamesDisplayed()
         {
             try
             {
@@ -28,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         }
 
         // TODO : Fix so that this doesn't rely on Framework loading order (SUPER FRAGILE)
-        public bool FoundationSolutionDisplayed()
+        internal bool FoundationSolutionDisplayed()
         {
             var checkbox = Driver.FindElements(Objects.Admin.AddSolutionObjects.SolutionFrameworks)[1];
             checkbox.Click();
@@ -43,9 +44,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             }
         }
 
+        internal void CheckFrameworkByIndex(int index)
+        {
+            Driver.FindElements(Objects.Admin.AddSolutionObjects.SolutionFrameworks)[index].FindElement(By.TagName("input")).Click();
+        }
+
+        internal void SelectSupplier(string value)
+        {
+            new SelectElement(Driver.FindElement(Objects.Admin.AddSolutionObjects.SupplierName)).SelectByValue(value);
+        }
+
         internal bool SaveSolutionButtonDisplayed()
         {
             return ElementDisplayed(Objects.Admin.AddSolutionObjects.SaveSolutionButton);
+        }
+
+        internal void ClickSaveButton()
+        {
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.SaveSolutionButton).Click();
+        }
+
+        internal void EnterSolutionName(string name)
+        {
+            Driver.FindElement(Objects.Admin.AddSolutionObjects.SolutionName).SendKeys(name);
         }
 
         internal bool ManageSuppliersLinkDisplayed()

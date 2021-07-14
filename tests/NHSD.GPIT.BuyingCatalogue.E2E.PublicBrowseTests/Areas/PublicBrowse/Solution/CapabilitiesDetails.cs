@@ -35,19 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             }
         }
 
-        // TODO: Jon to look at this
-        [Fact(Skip = "Seems to be duplicate of below?")]
-        public async Task CapabilitiesDetails_CheckEpics_NhsDefinedSolutionEpics_ForJon()
-        {
-            await using var context = GetEndToEndDbContext();
-            var nhsEpicsInfo = (await context.Solutions.Include(s => s.SolutionEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionEpics.Select(s => s.Epic);
-            var nhsEpicsList = PublicBrowsePages.SolutionAction.GetNhsSolutionEpics().ToArray();
-
-            var nhsSolutionEpics = nhsEpicsInfo.Where(e => !e.SupplierDefined).Select(c => c.Name);
-
-            nhsEpicsList.Should().BeEquivalentTo(nhsSolutionEpics);
-        }
-
         [Fact]
         public async Task CapabilitiesDetails_CheckEpics_NhsDefinedSolutionEpics()
         {
