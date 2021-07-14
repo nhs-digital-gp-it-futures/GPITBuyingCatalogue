@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By AdditionalServicesTable => CustomBy.DataTestId("additional-services-table");
 
         internal static By FullDescription => CustomBy.DataTestId("full-description");
-        
+
         internal static By BreadcrumbsBanner => By.ClassName("nhsuk-breadcrumb__item");
 
         internal static By CatalogueSolutionCrumb => CustomBy.DataTestId("catalogue-solutions-crumb");
