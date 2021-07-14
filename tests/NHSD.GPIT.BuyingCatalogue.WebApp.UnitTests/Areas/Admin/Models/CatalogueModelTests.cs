@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void Constructor_ValidSupplierLastUpdated_SetAsLastUpdated(CatalogueItem catalogueItem)
         {
-            var expected = catalogueItem.Supplier.LastUpdated;
+            var expected = catalogueItem.Solution.LastUpdated;
             expected.Should().BeAfter(DateTime.MinValue);
 
             var actual = new CatalogueModel(catalogueItem);
@@ -48,9 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void Constructor_SupplierIsNull_SetMinValueAsLastUpdated(CatalogueItem catalogueItem)
+        public static void Constructor_SolutionIsNull_SetMinValueAsLastUpdated(CatalogueItem catalogueItem)
         {
-            catalogueItem.Supplier = null;
+            catalogueItem.Solution = null;
 
             var actual = new CatalogueModel(catalogueItem);
 

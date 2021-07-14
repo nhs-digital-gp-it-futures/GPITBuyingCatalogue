@@ -1,61 +1,56 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
-using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
     public static class CatalogueSolutionsModelTests
     {
         [Fact]
-        public static void AllPublicationStatuses_StandardCall_ResultAsExpected()
+        public static void NewCatalogueSolutionsModelWithSolution_StandardCall_ResultAsExpected()
         {
-            var actual = new CatalogueSolutionsModel(new List<CatalogueItem>()).AllPublicationStatuses;
+            var solutions = new List<CatalogueItem>()
+            {
+                new CatalogueItem() { Name = "Test 1" },
+                new CatalogueItem() { Name = "Test 2" },
+            };
 
-            actual.Should()
-                .BeEquivalentTo(
-                    new List<WebApp.Areas.Admin.Models.PublicationStatus>
-                    {
-                        new() { Id = 1, Display = "Draft" },
-                        new() { Id = 3, Display = "Published" },
-                        new() { Id = 2, Display = "Unpublished" },
-                        new() { Id = 5, Display = "In remediation" },
-                        new() { Id = 4, Display = "Suspended" },
-                    });
+            var actual = new CatalogueSolutionsModel(solutions);
+
+            actual.Solutions.Should().NotBeNullOrEmpty();
+            actual.Solutions[0].Name.Should().Be(solutions[0].Name);
+            actual.Solutions[1].Name.Should().Be(solutions[1].Name);
         }
 
-        [Theory]
-        [InlineData(PublicationStatus.Draft)]
-        [InlineData(PublicationStatus.Published)]
-        [InlineData(PublicationStatus.Unpublished)]
-        [InlineData(PublicationStatus.Suspended)]
-        [InlineData(PublicationStatus.InRemediation)]
-        public static void HasSelected_StatusSelected_ReturnsTrue(PublicationStatus publicationStatus)
+        [Fact]
+        public static void NewCatalogueSolutionsModel_SetSolutionFunctionCall_ResultAsExpected()
         {
-            var model = new CatalogueSolutionsModel(new List<CatalogueItem>());
-            model.HasSelected.Should().BeFalse();
+            var solutions = new List<CatalogueItem>()
+            {
+                new CatalogueItem() { Name = "Test 1" },
+                new CatalogueItem() { Name = "Test 2" },
+            };
 
-            model.SetSelected(publicationStatus);
+            var actual = new CatalogueSolutionsModel();
 
-            model.HasSelected.Should().BeTrue();
+            actual.SetSolutions(solutions);
+
+            actual.Solutions.Should().NotBeNullOrEmpty();
+            actual.Solutions[0].Name.Should().Be(solutions[0].Name);
+            actual.Solutions[1].Name.Should().Be(solutions[1].Name);
         }
 
-        [Theory]
-        [InlineData(PublicationStatus.Draft)]
-        [InlineData(PublicationStatus.Published)]
-        [InlineData(PublicationStatus.Unpublished)]
-        [InlineData(PublicationStatus.Suspended)]
-        [InlineData(PublicationStatus.InRemediation)]
-        public static void SetSelected_StatusInput_SetsCorrespondingItemSelected(PublicationStatus publicationStatus)
+        [Fact]
+        public static void NewCatalogueSolutionsModel_SetSolutionWithNull_ResultAsExpected()
         {
-            var model = new CatalogueSolutionsModel(new List<CatalogueItem>());
+            var actual = new CatalogueSolutionsModel();
 
-            model.SetSelected(publicationStatus);
+            actual.SetSolutions(null);
 
-            model.AllPublicationStatuses.Single(p => p.Checked).Id.Should().Be((int)publicationStatus);
+            actual.Solutions.Should().NotBeNull();
+            actual.Solutions.Should().BeEmpty();
         }
     }
 }

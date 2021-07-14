@@ -12,11 +12,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
         }
 
-        internal bool AddOrgButtonDisplayed()
+        internal bool AddOrgLinkDisplayed()
         {
             try
             {
-                Driver.FindElement(Objects.Admin.DashboardObjects.AddOrgButton);
+                Driver.FindElement(Objects.Admin.DashboardObjects.AddOrgLink);
                 return true;
             }
             catch
@@ -38,6 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         internal IEnumerable<string> GetOrganisationLinkIdsOnPage()
         {
             return Driver.FindElements(Objects.Admin.DashboardObjects.OrganisationLinks).Select(s => s.GetAttribute("data-org-id"));
+        }
+
+        internal void ClickBuyerOrgLink()
+        {
+            Driver.FindElement(Objects.Admin.DashboardObjects.BuyerOrgLink).Click();
         }
     }
 }
