@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using EnumsNET;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,8 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(new CatalogueItem());
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
-            await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>()).Features(
-                catalogueItemId);
+            await controller.Features(catalogueItemId);
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
         }
