@@ -48,7 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_Index_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<OrderItem> orderItems,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
@@ -58,23 +57,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expectedViewData = new AssociatedServiceModel(odsCode, order, orderItems);
 
-            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
 
-            orderItemServiceMock.Setup(s => s.GetOrderItems(callOffId, CatalogueItemType.AssociatedService))
+            orderItemServiceMock.Setup(s => s.GetOrderItems(order.CallOffId, CatalogueItemType.AssociatedService))
                 .ReturnsAsync(orderItems);
 
-            var actualResult = await controller.Index(odsCode, callOffId);
+            var actualResult = await controller.Index(odsCode, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
-            orderSessionServiceMock.Verify(v => v.ClearSession(callOffId), Times.Once);
+            orderSessionServiceMock.Verify(v => v.ClearSession(order.CallOffId), Times.Once);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_SelectAssociatedService_NoServices_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             Organisation organisation,
             [Frozen] Mock<IOrderService> orderServiceMock,
@@ -82,9 +80,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrganisationsService> organisationServiceMock,
             AssociatedServicesController controller)
         {
-            var expectedViewData = new NoAssociatedServicesFoundModel(odsCode, callOffId);
+            var expectedViewData = new NoAssociatedServicesFoundModel(odsCode, order.CallOffId);
 
-            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
 
             organisationServiceMock.Setup(s => s.GetOrganisationByOdsCode(It.IsAny<string>()))
                 .ReturnsAsync(organisation);
@@ -93,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .Setup(s => s.GetAssociatedServicesForSupplier(It.IsAny<string>()))
                 .ReturnsAsync(new List<CatalogueItem>());
 
-            var actualResult = await controller.SelectAssociatedService(odsCode, callOffId);
+            var actualResult = await controller.SelectAssociatedService(odsCode, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -103,7 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_SelectAssociatedService_AvailableServices_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             List<CatalogueItem> associatedServices,
             EntityFramework.Ordering.Models.Order order,
             Organisation organisation,
@@ -114,9 +111,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] Mock<IOrganisationsService> organisationServiceMock,
             AssociatedServicesController controller)
         {
-            var expectedViewData = new SelectAssociatedServiceModel(odsCode, callOffId, associatedServices, state.CatalogueItemId);
+            var expectedViewData = new SelectAssociatedServiceModel(odsCode, state.CallOffId, associatedServices, state.CatalogueItemId);
 
-            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrder(state.CallOffId)).ReturnsAsync(order);
 
             organisationServiceMock.Setup(s => s.GetOrganisationByOdsCode(It.IsAny<string>()))
                 .ReturnsAsync(organisation);
@@ -128,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .Setup(s => s.GetAssociatedServicesForSupplier(It.IsAny<string>()))
                 .ReturnsAsync(associatedServices);
 
-            var actualResult = await controller.SelectAssociatedService(odsCode, callOffId);
+            var actualResult = await controller.SelectAssociatedService(odsCode, state.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -138,7 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_SelectAssociatedServicePrice_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             CatalogueItem catalogueItem,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
@@ -153,13 +149,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             var prices = catalogueItem.CataloguePrices.Where(p => p.CataloguePriceType == CataloguePriceType.Flat).ToList();
 
-            var expectedViewData = new SelectAssociatedServicePriceModel(odsCode, callOffId, state.CatalogueItemName, prices);
+            var expectedViewData = new SelectAssociatedServicePriceModel(odsCode, state.CallOffId, state.CatalogueItemName, prices);
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
             solutionsServiceMock.Setup(s => s.GetSolutionListPrices(state.CatalogueItemId.GetValueOrDefault())).ReturnsAsync(catalogueItem);
 
-            var actualResult = await controller.SelectAssociatedServicePrice(odsCode, callOffId);
+            var actualResult = await controller.SelectAssociatedServicePrice(odsCode, state.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -169,16 +165,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_EditAssociatedService_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             AssociatedServicesController controller)
         {
             var expectedViewData = new EditAssociatedServiceModel(odsCode, state);
 
-            orderSessionServiceMock.Setup(s => s.InitialiseStateForEdit(odsCode, callOffId, state.CatalogueItemId.GetValueOrDefault())).ReturnsAsync(state);
+            orderSessionServiceMock.Setup(s => s.InitialiseStateForEdit(odsCode, state.CallOffId, state.CatalogueItemId.GetValueOrDefault())).ReturnsAsync(state);
 
-            var actualResult = await controller.EditAssociatedService(odsCode, callOffId, state.CatalogueItemId.GetValueOrDefault());
+            var actualResult = await controller.EditAssociatedService(odsCode, state.CallOffId, state.CatalogueItemId.GetValueOrDefault());
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);

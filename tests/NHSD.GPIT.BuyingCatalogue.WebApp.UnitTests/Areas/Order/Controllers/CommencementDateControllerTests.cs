@@ -46,16 +46,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_CommencementDate_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             CommencementDateController controller)
         {
-            var expectedViewData = new CommencementDateModel(odsCode, callOffId, order.CommencementDate);
+            var expectedViewData = new CommencementDateModel(odsCode, order.CallOffId, order.CommencementDate);
 
-            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
 
-            var actualResult = await controller.CommencementDate(odsCode, callOffId);
+            var actualResult = await controller.CommencementDate(odsCode, order.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -91,7 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Post_CommencementDate_SetsDate_CorrectlyRedirects(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             [Frozen] Mock<ICommencementDateService> commencementDateServiceMock,
@@ -104,16 +102,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 Year = DateTime.UtcNow.AddDays(1).Year.ToString(),
             };
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
-            var actualResult = await controller.CommencementDate(odsCode, callOffId, model);
+            var actualResult = await controller.CommencementDate(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId } });
 
-            commencementDateServiceMock.Verify(c => c.SetCommencementDate(callOffId, DateTime.UtcNow.AddDays(1).Date), Times.Once);
+            commencementDateServiceMock.Verify(c => c.SetCommencementDate(state.CallOffId, DateTime.UtcNow.AddDays(1).Date), Times.Once);
         }
     }
 }

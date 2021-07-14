@@ -41,18 +41,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_DeleteSolution_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId catalogueItemId,
             string catalogueItemName,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteCatalogueSolutionController controller)
         {
-            var expectedViewData = new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description);
+            var expectedViewData = new DeleteSolutionModel(odsCode, order.CallOffId, catalogueItemId, catalogueItemName, order.Description);
 
-            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
 
-            var actualResult = await controller.DeleteSolution(odsCode, callOffId, catalogueItemId, catalogueItemName);
+            var actualResult = await controller.DeleteSolution(odsCode, order.CallOffId, catalogueItemId, catalogueItemName);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);

@@ -41,18 +41,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_DeleteAdditionalService_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId catalogueItemId,
             string catalogueItemName,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteAdditionalServiceController controller)
         {
-            var expectedViewData = new DeleteAdditionalServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description);
+            var expectedViewData = new DeleteAdditionalServiceModel(odsCode, order.CallOffId, catalogueItemId, catalogueItemName, order.Description);
 
-            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
 
-            var actualResult = await controller.DeleteAdditionalService(odsCode, callOffId, catalogueItemId, catalogueItemName);
+            var actualResult = await controller.DeleteAdditionalService(odsCode, order.CallOffId, catalogueItemId, catalogueItemName);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);

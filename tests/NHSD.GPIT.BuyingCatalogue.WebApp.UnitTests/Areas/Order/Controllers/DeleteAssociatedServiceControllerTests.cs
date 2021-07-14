@@ -13,7 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteAdditionalService;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteAssociatedService;
 using Xunit;
 
@@ -42,18 +41,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_DeleteAssociatedService_ReturnsExpectedResult(
                 string odsCode,
-                CallOffId callOffId,
                 EntityFramework.Ordering.Models.Order order,
                 CatalogueItemId catalogueItemId,
                 string catalogueItemName,
                 [Frozen] Mock<IOrderService> orderServiceMock,
                 DeleteAssociatedServiceController controller)
         {
-            var expectedViewData = new DeleteAssociatedServiceModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description);
+            var expectedViewData = new DeleteAssociatedServiceModel(odsCode, order.CallOffId, catalogueItemId, catalogueItemName, order.Description);
 
-            orderServiceMock.Setup(s => s.GetOrder(callOffId)).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
 
-            var actualResult = await controller.DeleteAssociatedService(odsCode, callOffId, catalogueItemId, catalogueItemName);
+            var actualResult = await controller.DeleteAssociatedService(odsCode, order.CallOffId, catalogueItemId, catalogueItemName);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);

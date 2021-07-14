@@ -47,16 +47,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_SelectSolutionServiceRecipientsDate_ReturnsExpectedResult(
             string odsCode,
-            CallOffId callOffId,
             DateTime? defaultDeliveryDate,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             CatalogueSolutionRecipientsDateController controller)
         {
             var expectedViewData = new SelectSolutionServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate);
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
-            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, callOffId);
+            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId);
 
             actualResult.Should().BeOfType<ViewResult>();
             actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
@@ -92,7 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Post_SelectSolutionServiceRecipientsDate_Declarative_CorrectlyRedirects(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             CatalogueSolutionRecipientsDateController controller)
@@ -106,21 +104,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             state.CataloguePrice.ProvisioningType = ProvisioningType.Declarative;
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
-            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, callOffId, model);
+            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.SelectFlatDeclarativeQuantity));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId } });
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_SelectSolutionServiceRecipientsDate_OnDemand_CorrectlyRedirects(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             CatalogueSolutionRecipientsDateController controller)
@@ -134,21 +131,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             state.CataloguePrice.ProvisioningType = ProvisioningType.OnDemand;
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
-            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, callOffId, model);
+            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.SelectFlatOnDemandQuantity));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId } });
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_SelectSolutionServiceRecipientsDate_Patient_CorrectlyRedirects(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             CatalogueSolutionRecipientsDateController controller)
@@ -162,21 +158,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             state.CataloguePrice.ProvisioningType = ProvisioningType.Patient;
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
-            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, callOffId, model);
+            var actualResult = await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.EditSolution));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId }, { "CatalogueItemId", state.CatalogueItemId } });
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId }, { "CatalogueItemId", state.CatalogueItemId } });
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_SelectSolutionServiceRecipientsDate_SetsDatesAndSession(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state,
             [Frozen] Mock<IOrderSessionService> orderSessionServiceMock,
             [Frozen] Mock<IDefaultDeliveryDateService> defaultDeliveryDateServiceMock,
@@ -189,18 +184,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 Year = DateTime.UtcNow.AddDays(1).Year.ToString(),
             };
 
-            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(callOffId)).Returns(state);
+            orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
             CreateOrderItemModel updatedState = null;
 
             orderSessionServiceMock.Setup(s => s.SetOrderStateToSession(It.IsAny<CreateOrderItemModel>()))
                 .Callback<CreateOrderItemModel>(s => updatedState = s);
 
-            await controller.SelectSolutionServiceRecipientsDate(odsCode, callOffId, model);
+            await controller.SelectSolutionServiceRecipientsDate(odsCode, state.CallOffId, model);
 
             updatedState.PlannedDeliveryDate.Should().Be(DateTime.UtcNow.AddDays(1).Date);
 
-            defaultDeliveryDateServiceMock.Verify(c => c.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), DateTime.UtcNow.AddDays(1).Date), Times.Once());
+            defaultDeliveryDateServiceMock.Verify(c => c.SetDefaultDeliveryDate(state.CallOffId, state.CatalogueItemId.GetValueOrDefault(), DateTime.UtcNow.AddDays(1).Date), Times.Once());
         }
     }
 }
