@@ -97,6 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
             CreateMap<CatalogueItem, CapabilitiesViewModel>()
                 .ForMember(dest => dest.CapabilitiesHeading, opt => opt.MapFrom(src => "Capabilities met"))
                 .ForMember(dest => dest.Name, opt => opt.Ignore())
+                .ForMember(dest => dest.Description, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.RowViewModels,
                     opt =>

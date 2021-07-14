@@ -16,7 +16,14 @@
 
 <nhs-table label-text="@Model.CapabilitiesHeading">
     <nhs-table-column>Capability</nhs-table-column>
-    <nhs-table-column>Details</nhs-table-column>
+    @if (!string.IsNullOrWhiteSpace(Model.CapabilitiesHeading))
+    {
+        <nhs-table-column>Details</nhs-table-column>
+    }
+    else
+    {
+        <nhs-table-column></nhs-table-column>
+    }
 
     @foreach (var capability in Model.RowViewModels)
     {

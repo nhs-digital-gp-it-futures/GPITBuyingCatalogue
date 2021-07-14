@@ -59,5 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public string CatalogueItemName(CatalogueItemId catalogueItemId) => Supplier?.CatalogueItems
             .FirstOrDefault(c => c.CatalogueItemId == catalogueItemId)
             ?.Name;
+
+        public string AdditionalServiceDescription(CatalogueItemId catalogueItemId) => Supplier?.CatalogueItems
+            .FirstOrDefault(c => c.CatalogueItemId == catalogueItemId)
+            ?.AdditionalService?.FullDescription;
     }
 }

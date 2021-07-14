@@ -68,6 +68,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             viewModel.CapabilitiesHeading = null;
             viewModel.Name = solution.CatalogueItemName(additionalId);
 
+            viewModel.Description = solution.AdditionalServiceDescription(additionalId);
+
             return View(viewModel);
         }
 
@@ -179,12 +181,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
-        }
-
-        [Route("futures/{id}/check-capability-epic")]
-        public IActionResult CheckCapabilityEpic(string id)
-        {
-            return View();
         }
 
         [Route("futures/{id}/supplier-details")]
