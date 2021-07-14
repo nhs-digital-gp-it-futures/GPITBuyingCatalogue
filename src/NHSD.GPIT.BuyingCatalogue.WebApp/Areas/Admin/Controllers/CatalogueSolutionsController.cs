@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +24,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
+        }
+
+        [HttpGet("manage/{solutionId}/features")]
+        public async Task<IActionResult> Features(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution == null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new FeaturesModel().FromCatalogueItem(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/features")]
+        public async Task<IActionResult> Features(CatalogueItemId solutionId, FeaturesModel model)
+        {
+            await solutionsService.SaveSolutionFeatures(solutionId, model.AllFeatures);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
 
         [HttpGet]
@@ -53,15 +70,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            var lastUpdatedBy = await usersService.GetUser(solution.Solution.LastUpdatedBy.ToString());
+            var model = new ManageCatalogueSolutionModel { Solution = solution };
 
-            var model = new ManageCatalogueSolutionModel
+            if (solution.Solution.LastUpdatedBy is { } guid && guid != Guid.Empty
+                && await usersService.GetUser(guid.ToString()) is { } lastUpdatedBy)
             {
-                Solution = solution,
-            };
-
-            if (lastUpdatedBy is not null)
                 model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
+            }
 
             return View(model);
         }
