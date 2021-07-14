@@ -20,7 +20,8 @@
             <nhs-page-title title="@Model.Solution.Name"
                             caption="@Model.Solution.Supplier.Name"
                             advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
-
+            @if (!string.IsNullOrWhiteSpace(Model.LastUpdatedByName))
+            {
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Last updated by">
                     @Model.LastUpdatedByName  
@@ -29,6 +30,7 @@
                     @Model.Solution.Solution.LastUpdated.ToLongDateString()
                 </nhs-summary-list-row>
             </nhs-summary-list>
+            }
 
             <nhs-fieldset-form-container asp-for="@Model"
                                          label-text="Sections"
