@@ -16,13 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     {
         [Theory]
         [CommonAutoData]
-        public static void Validate_FrameworkNotValid_SetsModelErrorForFrameworkModel(
+        public static void Validate_FrameworkNotValid_SetsModelErrorForListFrameworkModel(
             AddSolutionModelValidator validator,
             AddSolutionModel model)
         {
             model.Frameworks = new List<FrameworkModel> { new FrameworkModel() };
 
-            validator.ShouldHaveValidationErrorFor(m => m.Frameworks, model)
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor($"{nameof(AddSolutionModel.Frameworks)}[0].Selected")
                 .WithErrorMessage("Select the framework(s) your solution is available from");
         }
 
