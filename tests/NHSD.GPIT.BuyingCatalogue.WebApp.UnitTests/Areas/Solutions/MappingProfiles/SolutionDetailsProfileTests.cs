@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
-        //TODO: fix
+        // TODO: fix
         [Theory(Skip = "Broken")]
         [CommonAutoData]
         public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
@@ -448,7 +448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                             Show = true,
                         },
 
-                        //TODO: Update Next to Capabilities once Capabilities page implemented
+                        // TODO: Update Next to Capabilities once Capabilities page implemented
                         Next = new SectionModel
                         {
                             Action = "Capabilities",
@@ -570,7 +570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
-        
+
         private IList<CatalogueItem> GetAllCatalogueItems()
         {
             var fixture = new Fixture();

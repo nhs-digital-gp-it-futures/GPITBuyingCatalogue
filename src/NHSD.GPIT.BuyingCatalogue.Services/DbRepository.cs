@@ -11,30 +11,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
         where T : class
         where TDbContext : DbContext
     {
-        private readonly DbSet<T> dbSet;
-
         public DbRepository(TDbContext dbContext)
             : base(dbContext)
         {
-            dbSet = dbContext.Set<T>();
+            DbSet = dbContext.Set<T>();
         }
 
-        public override void Add(T item) => dbSet.Add(item);
+        protected DbSet<T> DbSet { get; }
+
+        public override void Add(T item) => DbSet.Add(item);
 
         public override void AddAll(IList<T> items)
         {
             foreach (var item in items)
             {
-                dbSet.Add(item);
+                DbSet.Add(item);
             }
         }
 
         public override async Task<T[]> GetAllAsync(Expression<Func<T, bool>> predicate) =>
-            await dbSet.Where(predicate).ToArrayAsync();
+            await DbSet.Where(predicate).ToArrayAsync();
 
         public override async Task<T> SingleAsync(Expression<Func<T, bool>> predicate) =>
-            await dbSet.SingleAsync(predicate);
+            await DbSet.SingleAsync(predicate);
 
-        public override void Remove(T item) => dbSet.Remove(item);
+        public override void Remove(T item) => DbSet.Remove(item);
     }
 }
