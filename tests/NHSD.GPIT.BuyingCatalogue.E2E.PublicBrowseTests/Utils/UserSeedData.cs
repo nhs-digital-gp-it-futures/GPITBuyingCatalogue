@@ -331,7 +331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             // Users
             var adminUser = new AspNetUser
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = "c78ca505-b820-48a4-a0cb-e4b04a6f455c",
                 Email = "BobSmith@email.com",
                 NormalizedEmail = "BOBSMITH@EMAIL.COM",
                 UserName = "BobSmith@email.com",

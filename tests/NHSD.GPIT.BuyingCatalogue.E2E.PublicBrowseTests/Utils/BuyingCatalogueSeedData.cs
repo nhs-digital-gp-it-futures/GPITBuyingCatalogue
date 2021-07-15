@@ -316,7 +316,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
-
                 new CatalogueItem
                 {
                     CatalogueItemId = new CatalogueItemId(99999, "003"),
@@ -428,6 +427,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     },
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
+                },
+                new CatalogueItem
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "888"),
+                    PublishedStatus = PublicationStatus.Draft,
+                    SupplierId = "99999",
+                    Name = "Editable Solution",
+                    Created = DateTime.UtcNow,
+                    Solution = new Solution
+                    {
+                        Id = new CatalogueItemId(99999, "888"),
+                        LastUpdatedBy = Guid.Parse("c78ca505-b820-48a4-a0cb-e4b04a6f455c"),
+                        LastUpdated = DateTime.UtcNow,
+                    },
                 },
             };
             context.AddRange(dfocvcSolutions);
