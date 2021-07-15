@@ -24,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.CallOffId.Should().Be(state.CallOffId);
-
-            // TODO: ServiceRecipients
         }
 
         [Theory]
@@ -44,8 +42,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.CallOffId.Should().Be(state.CallOffId);
+        }
 
-            // TODO: ServiceRecipients
+        [Theory]
+        [CommonAutoData]
+        public static void WithNoSelectionMode_PropertiesCorrectlySet(
+           string odsCode,
+           CreateOrderItemModel state)
+        {
+            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, null);
+
+            model.SelectionPrompt.Should().Be("Select all");
+            model.SelectionParameter.Should().Be("all");
+            model.ServiceRecipients.Should().BeEquivalentTo(state.ServiceRecipients);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithAllSelectionMode_PropertiesCorrectlySet(
+            string odsCode,
+            CreateOrderItemModel state)
+        {
+            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, "all");
+
+            model.SelectionPrompt.Should().Be("Deselect all");
+            model.SelectionParameter.Should().Be("none");
+            model.ServiceRecipients.ForEach(x => x.Selected.Should().Be(true));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithNoneSelectionMode_PropertiesCorrectlySet(
+            string odsCode,
+            CreateOrderItemModel state)
+        {
+            var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, "none");
+
+            model.SelectionPrompt.Should().Be("Select all");
+            model.SelectionParameter.Should().Be("all");
+            model.ServiceRecipients.ForEach(x => x.Selected.Should().Be(false));
         }
     }
 }

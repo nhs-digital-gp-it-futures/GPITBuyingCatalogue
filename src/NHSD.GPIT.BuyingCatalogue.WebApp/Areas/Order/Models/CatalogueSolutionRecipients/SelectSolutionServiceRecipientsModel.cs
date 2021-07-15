@@ -42,8 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionR
                 foreach (var recipient in ServiceRecipients)
                     recipient.Selected = false;
 
-                SelectionPrompt = "Deselect all";
-                SelectionParameter = "none";
+                SelectionPrompt = "Select all";
+                SelectionParameter = "all";
             }
         }
 
