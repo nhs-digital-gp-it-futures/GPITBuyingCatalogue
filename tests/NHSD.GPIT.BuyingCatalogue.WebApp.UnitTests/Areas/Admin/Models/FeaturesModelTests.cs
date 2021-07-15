@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
 
@@ -50,14 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [InlineData("Feature08")]
         [InlineData("Feature09")]
         [InlineData("Feature10")]
-        public static void FeatureProperties_StringLength_SetTo100(string property)
+        public static void FeatureProperties_StringLengthAttribute_SetTo100(string property)
         {
             typeof(FeaturesModel)
                 .GetProperty(property, BindingFlags.Instance | BindingFlags.Public)
-                .GetCustomAttribute<StringLengthAttribute>()
-                .MaximumLength
                 .Should()
-                .Be(100);
+                .BeDecoratedWith<StringLengthAttribute>(s => s.MaximumLength == 100);
         }
 
         [Theory]
@@ -85,44 +84,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [AutoData]
-        public static void StatusFeatures_OneFeatureAdded_ReturnsCompleted(string feature)
+        public static void Status_OneFeatureAdded_ReturnsCompleted(string feature)
         {
             var model = new FeaturesModel { Feature01 = feature };
 
-            var actual = model.StatusFeatures();
+            var actual = model.Status();
 
-            actual.Should().Be("Completed");
+            actual.Should().Be(FeatureCompletionStatus.Completed);
         }
 
         [Fact]
-        public static void StatusFeatures_NoFeatureAdded_ReturnsNotStarted()
+        public static void Status_NoFeatureAdded_ReturnsNotStarted()
         {
             var model = new FeaturesModel { Feature01 = null, Feature05 = string.Empty, Feature10 = "    " };
 
-            var actual = model.StatusFeatures();
+            var actual = model.Status();
 
-            actual.Should().Be("Not started");
-        }
-
-        [Theory]
-        [AutoData]
-        public static void StatusFeaturesColor_OneFeatureAdded_ReturnsCompleted(string feature)
-        {
-            var model = new FeaturesModel { Feature01 = feature };
-
-            var actual = model.StatusFeaturesColor();
-
-            actual.Should().Be(TagColour.Green);
-        }
-
-        [Fact]
-        public static void StatusFeaturesColor_NoFeatureAdded_ReturnsNotStarted()
-        {
-            var model = new FeaturesModel { Feature01 = null, Feature05 = string.Empty, Feature10 = "    " };
-
-            var actual = model.StatusFeaturesColor();
-
-            actual.Should().Be(TagColour.Grey);
+            actual.Should().Be(FeatureCompletionStatus.NotStarted);
         }
     }
 }

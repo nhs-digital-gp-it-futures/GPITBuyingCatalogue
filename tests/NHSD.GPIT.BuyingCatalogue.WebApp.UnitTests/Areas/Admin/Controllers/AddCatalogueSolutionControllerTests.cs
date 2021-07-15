@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Mock<ISolutionsService> mockService,
             Guid userId)
         {
-            var frameworks = new List<FrameworkModel> { new FrameworkModel { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
+            var frameworks = new List<FrameworkModel> { new() { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
 
             model.Frameworks = frameworks;
             var controller = GetController(mockService, userId);

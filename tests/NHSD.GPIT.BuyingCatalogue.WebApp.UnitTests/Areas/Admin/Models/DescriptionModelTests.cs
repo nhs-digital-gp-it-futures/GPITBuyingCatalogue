@@ -4,6 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
 
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             var actual = model.StatusDescription();
 
-            actual.Should().Be("Completed");
+            actual.Should().Be(FeatureCompletionStatus.Completed);
         }
 
         [Fact]
@@ -56,28 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             var actual = model.StatusDescription();
 
-            actual.Should().Be("Not started");
-        }
-
-        [Theory]
-        [AutoData]
-        public static void StatusDescriptionColor_DescriptionAdded_ReturnsCompletedStatusColor(string summary)
-        {
-            var model = new DescriptionModel { Summary = summary };
-
-            var actual = model.StatusDescriptionColor();
-
-            actual.Should().Be(TagColour.Green);
-        }
-
-        [Fact]
-        public static void StatusDescriptionColor_NoDescriptionAdded_ReturnsNotStarted()
-        {
-            var model = new DescriptionModel { Summary = null };
-
-            var actual = model.StatusDescriptionColor();
-
-            actual.Should().Be(TagColour.Grey);
+            actual.Should().Be(FeatureCompletionStatus.NotStarted);
         }
     }
 }
