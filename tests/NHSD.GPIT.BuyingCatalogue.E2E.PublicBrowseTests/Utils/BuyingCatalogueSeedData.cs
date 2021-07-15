@@ -473,8 +473,46 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     },
                 },
             };
-
             context.AddRange(additionalServices);
+
+            List<CatalogueItemCapability> additionalServiceCapabilities = new()
+            {
+                new CatalogueItemCapability
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    LastUpdated = DateTime.UtcNow,
+                    LastUpdatedBy = Guid.Empty,
+                    StatusId = 1,
+                },
+            };
+            context.AddRange(additionalServiceCapabilities);
+
+            List<CatalogueItemEpic> additionalServiceEpics = new()
+            {
+                new CatalogueItemEpic
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    EpicId = "C2E1",
+                    StatusId = 1,
+                },
+                new CatalogueItemEpic
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    EpicId = "C2E2",
+                    StatusId = 1,
+                },
+                new CatalogueItemEpic
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    EpicId = "E123456",
+                    StatusId = 1,
+                },
+            };
+            context.AddRange(additionalServiceEpics);
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
@@ -1072,6 +1110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new Epic { Id = "E00087", Name = "Retain attachments (file and images) received during Video Consultation in the Patient Record", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, Active = true },
                 new Epic { Id = "E00088", Name = "SNOMED code Video Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, Active = true },
                 new Epic { Id = "E00099", Name = "User Friendly", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, Active = true, SupplierDefined = true },
+                new Epic { Id = "E123456", Name = "SupplierDefinedEpic 123", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C2").Id, CompliancyLevel = CompliancyLevel.May, Active = true, SupplierDefined = true },
             };
             context.AddRange(epics);
 
