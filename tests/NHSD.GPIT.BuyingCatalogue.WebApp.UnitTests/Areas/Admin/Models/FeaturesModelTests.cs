@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
+using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
@@ -101,6 +102,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             var actual = model.StatusFeatures();
 
             actual.Should().Be("Not started");
+        }
+
+        [Theory]
+        [AutoData]
+        public static void StatusFeaturesColor_OneFeatureAdded_ReturnsCompleted(string feature)
+        {
+            var model = new FeaturesModel { Feature01 = feature };
+
+            var actual = model.StatusFeaturesColor();
+
+            actual.Should().Be(TagColour.Green);
+        }
+
+        [Fact]
+        public static void StatusFeaturesColor_NoFeatureAdded_ReturnsNotStarted()
+        {
+            var model = new FeaturesModel { Feature01 = null, Feature05 = string.Empty, Feature10 = "    " };
+
+            var actual = model.StatusFeaturesColor();
+
+            actual.Should().Be(TagColour.Grey);
         }
     }
 }
