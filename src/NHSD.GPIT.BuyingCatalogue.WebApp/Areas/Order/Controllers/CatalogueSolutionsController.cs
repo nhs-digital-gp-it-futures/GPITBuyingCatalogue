@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
 
-            return View(new EditSolutionModel(odsCode, callOffId, state));
+            return View(new EditSolutionModel(odsCode, state));
         }
 
         [HttpPost("{catalogueItemId}")]
