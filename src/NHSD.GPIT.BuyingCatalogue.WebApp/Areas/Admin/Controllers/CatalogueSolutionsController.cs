@@ -72,10 +72,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new ManageCatalogueSolutionModel { Solution = solution };
 
-            if (solution.Solution.LastUpdatedBy is { } guid && guid != Guid.Empty
-                && await usersService.GetUser(guid.ToString()) is { } lastUpdatedBy)
+            if (solution.Solution.LastUpdatedBy != Guid.Empty)
             {
-                model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
+                var lastUpdatedBy = await usersService.GetUser(solution.Solution.LastUpdatedBy.ToString());
+
+                if (lastUpdatedBy is not null)
+                    model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";
             }
 
             return View(model);
