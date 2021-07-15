@@ -20,22 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void StatusFeatures_Returns_FromFeaturesModel(CatalogueItem catalogueItem)
         {
-            var expected = new FeaturesModel().FromCatalogueItem(catalogueItem).StatusFeatures();
+            var expected = new FeaturesModel().FromCatalogueItem(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
             var actual = model.StatusFeatures();
-
-            actual.Should().Be(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void StatusFeaturesColor_Returns_FromFeaturesModel(CatalogueItem catalogueItem)
-        {
-            var expected = new FeaturesModel().FromCatalogueItem(catalogueItem).StatusFeaturesColor();
-            var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
-
-            var actual = model.StatusFeaturesColor();
 
             actual.Should().Be(expected);
         }
@@ -54,18 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusDescriptionColor_Returns_FromDescriptionModel(CatalogueItem catalogueItem)
-        {
-            var expected = new DescriptionModel(catalogueItem).StatusDescriptionColor();
-            var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
-
-            var actual = model.StatusDescriptionColor();
-
-            actual.Should().Be(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void StatusImplementation_Returns_FromImplementationTimescaleModel(CatalogueItem catalogueItem)
         {
             var expected = new ImplementationTimescaleModel(catalogueItem).StatusImplementation();
@@ -78,12 +54,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusImplementationColor_Returns_FromImplementationTimescaleModel(CatalogueItem catalogueItem)
+        public static void StatusRoadmap_Returns_FromRoadmapModel(CatalogueItem catalogueItem)
         {
-            var expected = new ImplementationTimescaleModel(catalogueItem).StatusImplementationColor();
+            var expected = new RoadmapModel().FromCatalogueItem(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
-            var actual = model.StatusImplementationColor();
+            var actual = model.StatusRoadmap();
 
             actual.Should().Be(expected);
         }

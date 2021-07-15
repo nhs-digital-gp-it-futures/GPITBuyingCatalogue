@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
-using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
@@ -21,8 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
             Summary = catalogueItem.Solution?.Summary;
             Description = catalogueItem.Solution?.FullDescription;
-            Link = catalogueItem.Solution.AboutUrl;
-            SolutionName = catalogueItem?.Name;
+            Link = catalogueItem.Solution?.AboutUrl;
+            SolutionName = catalogueItem.Name;
         }
 
         public string SolutionName { get; set; }
@@ -40,14 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         [Url]
         public string Link { get; set; }
 
-        public string StatusDescription() =>
+        public FeatureCompletionStatus StatusDescription() =>
             IsComplete == true
-                ? "Completed"
-                : "Not started";
-
-        public TagColour StatusDescriptionColor() =>
-            IsComplete == true
-                ? TagColour.Green
-                : TagColour.Grey;
+                ? FeatureCompletionStatus.Completed
+                : FeatureCompletionStatus.NotStarted;
     }
 }

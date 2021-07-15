@@ -411,5 +411,101 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new ImplementationTimescaleModel(catalogueItem));
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Roadmap_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(new CatalogueItem());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.Roadmap(catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Roadmap_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new RoadmapModel().FromCatalogueItem(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Roadmap_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Roadmap(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Roadmap_CallsSavesSolutionRoadmap(
+            CatalogueItemId catalogueItemId,
+            RoadmapModel model,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.Roadmap(catalogueItemId, model);
+
+            mockService.Verify(s => s.SaveRoadMap(catalogueItemId, model.Link));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Roadmap_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            RoadmapModel model,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Roadmap(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Roadmap_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen]Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new RoadmapModel().FromCatalogueItem(catalogueItem));
+        }
     }
 }
