@@ -49,13 +49,17 @@
                     <nhs-table-row-container>
                         <nhs-table-cell>Description</nhs-table-cell>
                         <nhs-table-cell>Yes</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a asp-action="EditDescription" asp-controller="SolutionSections" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a></nhs-table-cell>
+                        <nhs-table-cell><nhs-tag colour="@Model.StatusDescriptionColor()" text="@Model.StatusDescription()"/></nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="Description" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                        </nhs-table-cell>
                     </nhs-table-row-container>
                     <nhs-table-row-container>
                         <nhs-table-cell>Features</nhs-table-cell>
                         <nhs-table-cell>No</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="@Model.StatusFeatures()" /></nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag colour="@Model.StatusFeaturesColor()" text="@Model.StatusFeatures()" />
+                        </nhs-table-cell>
                         <nhs-table-cell>
                             <a asp-action="Features" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
                         </nhs-table-cell>
@@ -93,8 +97,10 @@
                     <nhs-table-row-container>
                         <nhs-table-cell>Implementation</nhs-table-cell>
                         <nhs-table-cell>No</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                        <nhs-table-cell><nhs-tag colour="@Model.StatusImplementationColor()" text="@Model.StatusImplementation()" /></nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="Implementation" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                        </nhs-table-cell>
                     </nhs-table-row-container>
                     <nhs-table-row-container>
                         <nhs-table-cell>Client Application Type</nhs-table-cell>

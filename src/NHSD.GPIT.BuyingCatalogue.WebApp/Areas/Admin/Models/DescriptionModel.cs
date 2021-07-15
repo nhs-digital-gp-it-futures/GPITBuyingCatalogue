@@ -2,25 +2,25 @@
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
+using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class EditDescriptionModel : MarketingBaseModel
+    public class DescriptionModel : MarketingBaseModel
     {
-        public EditDescriptionModel()
+        public DescriptionModel()
             : base(null)
         {
         }
 
-        public EditDescriptionModel(CatalogueItem catalogueItem)
+        public DescriptionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLinkText = "Go back";
-            Summary = catalogueItem.Solution.Summary;
-            Description = catalogueItem.Solution.FullDescription;
+            Summary = catalogueItem.Solution?.Summary;
+            Description = catalogueItem.Solution?.FullDescription;
             Link = catalogueItem.Solution.AboutUrl;
             SolutionName = catalogueItem?.Name;
         }
@@ -39,5 +39,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         [StringLength(1000)]
         [Url]
         public string Link { get; set; }
+
+        public string StatusDescription() =>
+            IsComplete == true
+                ? "Completed"
+                : "Not started";
+
+        public TagColour StatusDescriptionColor() =>
+            IsComplete == true
+                ? TagColour.Green
+                : TagColour.Grey;
     }
 }

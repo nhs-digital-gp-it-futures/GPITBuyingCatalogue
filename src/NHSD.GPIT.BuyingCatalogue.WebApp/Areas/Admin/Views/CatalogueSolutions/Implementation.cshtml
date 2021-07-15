@@ -1,0 +1,50 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ImplementationTimescaleModel;
+@{
+    ViewData["Title"] = "Catalogue Solution implementation";
+}
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="Implementation" caption="@Model.SolutionName"
+                            advice="Describe the typical processes and timescales to implement your Catalogue Solution." />
+
+            <form method="post">
+                <input type="hidden" asp-for="@Model.SolutionId" />
+                <input type="hidden" asp-for="@Model.BackLink" />
+
+                <nhs-details label-text="How do I describe an implementation?">
+                    <p>
+                        The following is an example of a good answer:<br /><br />
+                        Implementations without transition from another Catalogue
+                        Solution typically take 3-5 working days, the average is 4. The
+                        extent of your configuration requirements will have the greatest
+                        impact on these timescales. Your main responsibility will be
+                        configuration planning and approval.<br /><br />
+
+                        Implementations with transition from another Catalogue Solution
+                        typically take 6-10 working days, the average is 7. The data
+                        structures and format will have the greatest impact on these
+                        timescales, as will the extent of local configuration.<br /><br />
+
+                        If we have previously completed a transition from your outgoing
+                        supplier for another service recipient, the timescales are more
+                        likely to be shorter. We will expect you to cleanse your data
+                        before migration and to participate in testing.
+
+                    </p>
+                </nhs-details>
+
+                <nhs-textarea asp-for="Description"
+                              label-text="Implementation details (optional)"
+                              label-hint="Include the average number of working days, situations that could affect these timescales and any responsibilities expected of a buyer."
+                              number-of-rows="10" />
+
+                <nhs-submit-button text="Save and continue" />
+            </form>
+        </div>
+    </div>
+</div>

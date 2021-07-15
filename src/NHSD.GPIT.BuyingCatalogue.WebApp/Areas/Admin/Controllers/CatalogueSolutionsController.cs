@@ -80,5 +80,63 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return View(model);
         }
+
+        [HttpGet("manage/{solutionId}/description")]
+        public async Task<IActionResult> Description(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution == null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var solutionDescription = new DescriptionModel(solution);
+
+            return View(solutionDescription);
+        }
+
+        [HttpPost("manage/{solutionId}/description")]
+        public async Task<IActionResult> Description(CatalogueItemId solutionId, DescriptionModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await solutionsService.SaveSolutionDescription(
+                solutionId,
+                model.Summary,
+                model.Description,
+                model.Link);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/implementation")]
+        public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution == null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var implementationTimescale = new ImplementationTimescaleModel(solution);
+
+            return View(implementationTimescale);
+        }
+
+        [HttpPost("manage/{solutionId}/implementation")]
+        public async Task<IActionResult> Implementation(CatalogueItemId solutionId, ImplementationTimescaleModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await solutionsService.SaveImplementationDetail(
+                solutionId,
+                model.Description);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
     }
 }
