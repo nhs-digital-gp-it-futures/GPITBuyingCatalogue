@@ -348,6 +348,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             adminUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(adminUser, TestPassword);
 
             context.Add(adminUser);
+
+            var buyUser = new AspNetUser
+            {
+                Id = "747ca19f-103b-4244-bd3b-203824ce0cc6",
+                Email = "SueSmith@email.com",
+                NormalizedEmail = "SUESMITH@EMAIL.COM",
+                UserName = "SueSmith@email.com",
+                NormalizedUserName = "SUESMITH@EMAIL.COM",
+                Disabled = false,
+                FirstName = "Sue",
+                LastName = "Smith",
+                EmailConfirmed = true,
+                CatalogueAgreementSigned = true,
+                OrganisationFunction = "Buyer",
+                PrimaryOrganisationId = organisations.Single(o => o.OdsCode == "03F").OrganisationId,
+                SecurityStamp = Guid.NewGuid().ToString(),
+            };
+            buyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyUser, TestPassword);
+
+            context.Add(buyUser);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public ManageSuppliers(LocalWebApplicationFactory factory)
             : base(factory, "admin/manage-suppliers")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

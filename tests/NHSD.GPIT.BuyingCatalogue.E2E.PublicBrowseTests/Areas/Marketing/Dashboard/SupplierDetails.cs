@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             catalogueItem.Supplier.SupplierUrl = string.Empty;
             context.SaveChanges();
 
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

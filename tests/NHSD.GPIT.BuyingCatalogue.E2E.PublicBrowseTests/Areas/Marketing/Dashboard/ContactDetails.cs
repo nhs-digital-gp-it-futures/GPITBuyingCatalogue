@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             context.MarketingContacts.RemoveRange(contacts);
             context.SaveChanges();
 
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

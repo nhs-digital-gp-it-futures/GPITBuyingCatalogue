@@ -106,12 +106,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.SaveChanges();
         }
 
-        internal void Login()
+        internal void AuthorityLogin()
         {
             if (AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
             {
                 using var context = GetEndToEndDbContext();
                 var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").Email;
+                AuthorizationPages.LoginActions.Login(user, DefaultPassword);
+            }
+        }
+
+        internal void BuyerLogin()
+        {
+            if (AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+            {
+                using var context = GetEndToEndDbContext();
+                var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").Email;
                 AuthorizationPages.LoginActions.Login(user, DefaultPassword);
             }
         }

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public ManageCatalogueSolutions(LocalWebApplicationFactory factory)
             : base(factory, "admin/catalogue-solutions")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

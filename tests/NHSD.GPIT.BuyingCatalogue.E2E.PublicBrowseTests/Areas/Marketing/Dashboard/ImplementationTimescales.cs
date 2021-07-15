@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             solution.ImplementationDetail = string.Empty;
             context.SaveChanges();
 
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

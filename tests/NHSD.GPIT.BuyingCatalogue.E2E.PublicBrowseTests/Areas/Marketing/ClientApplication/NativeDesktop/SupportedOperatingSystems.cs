@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         public SupportedOperatingSystems(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/operating-systems")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]
