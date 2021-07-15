@@ -89,9 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution == null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var solutionDescription = new DescriptionModel(solution);
-
-            return View(solutionDescription);
+            return View(new DescriptionModel(solution));
         }
 
         [HttpPost("manage/{solutionId}/description")]
@@ -119,9 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution == null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var implementationTimescale = new ImplementationTimescaleModel(solution);
-
-            return View(implementationTimescale);
+            return View(new ImplementationTimescaleModel(solution));
         }
 
         [HttpPost("manage/{solutionId}/implementation")]

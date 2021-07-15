@@ -212,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expected = new CatalogueItem
             {
-                CatalogueItemId = new EntityFramework.Ordering.Models.CatalogueItemId(999999, "999"),
+                CatalogueItemId = new CatalogueItemId(999999, "999"),
                 Solution = new Solution
                 {
                     Summary = "XYZ Summary",
@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var mockSolutionService = new Mock<ISolutionsService>();
             var mockUserService = new Mock<IUsersService>();
-            mockSolutionService.Setup(s => s.GetSolution(It.IsAny<EntityFramework.Ordering.Models.CatalogueItemId>()))
+            mockSolutionService.Setup(s => s.GetSolution(It.IsAny<CatalogueItemId>()))
                 .ReturnsAsync(expected);
 
             var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object);
