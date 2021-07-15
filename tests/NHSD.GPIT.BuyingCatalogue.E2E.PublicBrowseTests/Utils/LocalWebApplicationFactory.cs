@@ -108,6 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 {
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
+                    OrderSeedData.Initialize(bcDb);
                 }
                 catch
                 {

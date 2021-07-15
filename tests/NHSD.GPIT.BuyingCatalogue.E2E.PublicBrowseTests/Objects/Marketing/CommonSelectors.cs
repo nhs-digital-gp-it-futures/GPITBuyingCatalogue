@@ -49,5 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
         internal static By MinimumCpuTextArea => By.Id("MinimumCpu");
 
         internal static By Header3 => By.TagName("h3");
+
+        internal static By Header1 => By.TagName("h1");
     }
 }

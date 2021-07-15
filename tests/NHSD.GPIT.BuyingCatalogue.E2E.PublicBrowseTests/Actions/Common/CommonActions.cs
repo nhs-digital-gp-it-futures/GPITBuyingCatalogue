@@ -18,9 +18,35 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver.FindElement(CommonSelectors.GoBackLink).Click();
         }
 
+        public bool GoBackLinkDisplayed()
+        {
+            try
+            {
+                Wait.Until(d => d.FindElement(CommonSelectors.GoBackLink));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void ClickSave()
         {
             Driver.FindElement(CommonSelectors.SaveAndReturn).Click();
+        }
+
+        public bool SaveButtonDisplayed()
+        {
+            try
+            {
+                Wait.Until(d => d.FindElement(CommonSelectors.SaveAndReturn));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public void ClickFirstCheckbox() => Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
@@ -67,6 +93,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             {
                 return false;
             }
+        }
+
+        internal string PageTitle()
+        {
+            return Driver.FindElement(CommonSelectors.Header1).Text;
         }
     }
 }
