@@ -1,0 +1,43 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Settings
+@using NHSD.GPIT.BuyingCatalogue.Framework.Constants
+@inject CookieExpirationSettings CookieExpirationSettings
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.INoNavModel
+@{
+    ViewBag.Title = $"Solution {Model.Name}";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="Partials/_HeadIncludes" />
+</head>
+<body>
+    @if ((bool?)Context.Items[Cookies.ShowConsentCookie] == true)
+    {
+        <partial name="Partials/_CookieConsentPartial" />
+    }
+    <partial name="Partials/_BetaBanner" />
+    <partial name="Headers/_Header" model="@("_Navigation")" />
+
+    <div class="nhsuk-width-container">
+        <main role="main" class="nhsuk-main-wrapper nhsuk-u-padding-top-0" id="maincontent">
+            <div class="nhsuk-u-padding-top-5">
+                @await RenderSectionAsync("BackLink", true)
+            </div>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
+                    <nhs-page-title title="@Model.Name"
+                                    caption="@Model.SolutionName" />
+                </div>
+            </div>
+
+            @RenderBody()
+
+            <nhs-endnote>
+                Solution information last reviewed: @Model.LastReviewed
+            </nhs-endnote>
+        </main>
+    </div>
+    <partial name="Footers/_Footer" />
+    <partial name="Partials/_JsAssetIncludes" />
+</body>
+</html>

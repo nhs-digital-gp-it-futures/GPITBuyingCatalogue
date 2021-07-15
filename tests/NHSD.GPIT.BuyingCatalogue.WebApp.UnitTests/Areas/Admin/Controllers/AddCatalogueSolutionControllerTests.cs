@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Index_ModelStateValid_RedirectsToCatalogueSolutions(
+        public static async Task Post_Index_ModelStateValid_RedirectsToManageCatalogueSolutions(
             AddSolutionModel model,
             Mock<ISolutionsService> mockService)
         {
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.Index(model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
-            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.Index));
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
         }
 

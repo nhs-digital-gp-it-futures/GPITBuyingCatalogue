@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
@@ -17,9 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             this.solutionsService = solutionsService;
 
-            RuleFor(s => s.Frameworks)
-                .Must(HaveASelectedFramework)
-                .WithMessage("Select the framework(s) your solution is available from");
+            RuleFor(s => s.SolutionName)
+                .NotEmpty()
+                .WithMessage("Enter a solution name");
 
             RuleFor(s => s.SupplierId)
                 .Cascade(CascadeMode.Stop)
@@ -28,9 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .Must(s => int.TryParse(s, out _))
                 .WithMessage("Supplier Id should be a valid integer");
 
-            RuleFor(s => s.SolutionName)
-                .NotEmpty()
-                .WithMessage("Enter a solution name");
+            RuleFor(s => s.Frameworks)
+                .Must(frameworks => frameworks.Any(f => f.Selected))
+                .OverridePropertyName($"{nameof(AddSolutionModel.Frameworks)}[0].Selected")
+                .WithMessage("Select the framework(s) your solution is available from");
 
             When(
                 s => int.TryParse(s.SupplierId, out _) && !string.IsNullOrWhiteSpace(s.SolutionName),
@@ -44,9 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                         .WithMessage("Solution name already exists. Enter a different solution name");
                 });
         }
-
-        private static bool HaveASelectedFramework(IList<FrameworkModel> frameworks) =>
-            frameworks.Any(f => f.Selected);
 
         private async Task<bool> NotExistForSupplier(
             AddSolutionModel model,
