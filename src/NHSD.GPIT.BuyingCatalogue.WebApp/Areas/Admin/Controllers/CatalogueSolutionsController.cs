@@ -136,5 +136,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
+
+        [HttpGet("manage/{solutionId}/development-plans")]
+        public async Task<IActionResult> Roadmap(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+            if (solution == null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new RoadmapModel().FromCatalogueItem(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/development-plans")]
+        public async Task<IActionResult> Roadmap(CatalogueItemId solutionId, RoadmapModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var solution = await solutionsService.GetSolution(solutionId);
+                return View(model.FromCatalogueItem(solution));
+            }
+
+            await solutionsService.SaveRoadMap(solutionId, model.Link);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
@@ -108,14 +108,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             return this;
         }
 
-        public string StatusFeatures() =>
+        public FeatureCompletionStatus Status() =>
             AllFeatures.Any()
-                ? "Completed"
-                : "Not started";
-
-        public TagColour StatusFeaturesColor() =>
-            AllFeatures.Any()
-                ? TagColour.Green
-                : TagColour.Grey;
+                ? FeatureCompletionStatus.Completed
+                : FeatureCompletionStatus.NotStarted;
     }
 }
