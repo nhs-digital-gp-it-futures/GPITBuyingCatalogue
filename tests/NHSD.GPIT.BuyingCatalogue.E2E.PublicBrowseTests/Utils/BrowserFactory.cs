@@ -33,10 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private static IWebDriver GetChromeDriver(string hubURL)
         {
-            var options = new ChromeOptions();
-            options.AddArguments("headless", "window-size=1920,1080", "no-sandbox", "ignore-certificate-errors");
-
-            return new RemoteWebDriver(new Uri(hubURL), options);
+            return new RemoteWebDriver(new Uri(hubURL), GetChromeOptions(true));
         }
 
         private static IWebDriver GetFirefoxDriver(string hubURL)
@@ -79,11 +76,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
             if (headless)
             {
-                options.AddArguments("headless", "window-size=1920,1080", "no-sandbox", "ignore-certificate-errors");
+                options.AddArguments("headless", "window-size=1920,1080", "no-sandbox", "ignore-certificate-errors", "log-level=3");
             }
             else
             {
-                options.AddArguments("start-maximized", "no-sandbox", "auto-open-devtools-for-tabs", "ignore-certificate-errors");
+                options.AddArguments("start-maximized", "no-sandbox", "auto-open-devtools-for-tabs", "ignore-certificate-errors", "log-level=3");
             }
 
             return options;
