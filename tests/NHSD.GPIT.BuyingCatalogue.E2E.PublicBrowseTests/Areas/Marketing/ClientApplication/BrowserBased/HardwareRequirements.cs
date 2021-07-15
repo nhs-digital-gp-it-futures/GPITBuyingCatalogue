@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         public HardwareRequirements(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/hardware-requirements")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

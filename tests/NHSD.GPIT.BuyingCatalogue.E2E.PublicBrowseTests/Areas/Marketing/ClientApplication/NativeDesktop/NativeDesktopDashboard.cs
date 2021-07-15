@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
             solution.ClientApplication = null;
             context.SaveChanges();
 
-            Login();
+            AuthorityLogin();
         }
 
         [Theory]

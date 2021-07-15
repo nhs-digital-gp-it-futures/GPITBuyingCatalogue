@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         public Hybrid(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-hybrid")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

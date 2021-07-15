@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         public PlugInsOrExtensions(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/plug-ins-or-extensions")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Theory]

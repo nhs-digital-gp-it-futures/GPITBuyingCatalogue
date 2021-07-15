@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public BuyerOrganisations(LocalWebApplicationFactory factory)
             : base(factory, "admin/buyer-organisations")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

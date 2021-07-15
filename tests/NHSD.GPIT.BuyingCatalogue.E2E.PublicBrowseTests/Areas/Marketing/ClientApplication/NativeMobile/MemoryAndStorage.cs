@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         public MemoryAndStorage(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/memory-and-storage")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public Organisation(LocalWebApplicationFactory factory)
             : base(factory, "admin/organisations/b7ee5261-43e7-4589-907b-5eef5e98c085")
         {
-            Login();
+            AuthorityLogin();
             smtp = SimpleSmtpServer.Start(9999);
         }
 

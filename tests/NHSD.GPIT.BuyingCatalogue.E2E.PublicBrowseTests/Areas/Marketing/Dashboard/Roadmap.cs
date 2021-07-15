@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             solution.RoadMap = null;
             context.SaveChanges();
 
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]

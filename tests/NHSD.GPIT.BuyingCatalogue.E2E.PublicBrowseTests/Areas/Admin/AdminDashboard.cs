@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public AdminDashboard(LocalWebApplicationFactory factory)
             : base(factory, "admin")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]
