@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await fundingSourceService.SetFundingSource(callOffId, onlyGms);
 
             return RedirectToAction(
-                nameof(Order),
+                nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
                 new { odsCode, callOffId });
         }

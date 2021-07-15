@@ -40,8 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> SelectAdditionalServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectAdditionalServiceRecipientsDateModel model)
         {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
             (DateTime? date, var error) = model.ToDateTime();
 
             if (error != null)
@@ -49,6 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             if (!ModelState.IsValid)
                 return View(model);
+
+            var state = orderSessionService.GetOrderStateFromSession(callOffId);
 
             state.PlannedDeliveryDate = date;
 

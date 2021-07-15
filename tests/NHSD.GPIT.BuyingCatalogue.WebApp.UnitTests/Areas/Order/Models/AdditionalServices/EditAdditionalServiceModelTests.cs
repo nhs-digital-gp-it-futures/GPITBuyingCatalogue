@@ -15,13 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state)
         {
-            var model = new EditAdditionalServiceModel(odsCode, callOffId, state);
+            var model = new EditAdditionalServiceModel(odsCode, state);
 
             model.BackLinkText.Should().Be("Go back");
-            model.Title.Should().Be($"{state.CatalogueItemName} information for {callOffId}");
+            model.Title.Should().Be($"{state.CatalogueItemName} information for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);
             model.OrderItem.Should().Be(state);
 
@@ -32,14 +31,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
         [CommonAutoData]
         public static void WhenEditingExistingSolution_BackLinkCorrectlySet(
             string odsCode,
-            CallOffId callOffId,
             CreateOrderItemModel state)
         {
             state.IsNewSolution = false;
 
-            var model = new EditAdditionalServiceModel(odsCode, callOffId, state);
+            var model = new EditAdditionalServiceModel(odsCode, state);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{callOffId}/additional-services");
+            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services");
         }
 
         [Theory]
@@ -57,15 +55,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             fixture.Customize(new CatalogueItemIdCustomization());
             fixture.Customize(new IgnoreCircularReferenceCustomisation());
 
-            var callOffId = fixture.Create<CallOffId>();
             var state = fixture.Create<CreateOrderItemModel>();
 
             state.IsNewSolution = true;
             state.CataloguePrice.ProvisioningType = provisioningType;
 
-            var model = new EditAdditionalServiceModel(odsCode, callOffId, state);
+            var model = new EditAdditionalServiceModel(odsCode, state);
 
-            model.BackLink.Should().Be(string.Format(expectedBackLink, odsCode, callOffId));
+            model.BackLink.Should().Be(string.Format(expectedBackLink, odsCode, state.CallOffId));
         }
     }
 }

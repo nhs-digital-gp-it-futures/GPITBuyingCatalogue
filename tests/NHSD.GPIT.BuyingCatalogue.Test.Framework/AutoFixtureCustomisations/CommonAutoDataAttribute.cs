@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     new CreateSolutionModelCustomization(),
                     new CallOffIdCustomization(),
                     new CatalogueItemIdCustomization(),
+                    new ControllerBaseCustomization(),
                     new IgnoreCircularReferenceCustomisation(),
                     new SolutionCustomization())))
         {
