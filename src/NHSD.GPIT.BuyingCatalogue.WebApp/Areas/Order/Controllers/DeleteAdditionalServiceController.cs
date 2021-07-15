@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
 
             return RedirectToAction(
-                nameof(Index),
+                nameof(AdditionalServicesController.Index),
                 typeof(AdditionalServicesController).ControllerName(),
                 new { odsCode, callOffId });
         }

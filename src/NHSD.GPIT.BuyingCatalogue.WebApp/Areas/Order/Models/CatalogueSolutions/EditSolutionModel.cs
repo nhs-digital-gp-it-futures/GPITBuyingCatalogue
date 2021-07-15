@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
@@ -11,35 +10,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
         {
         }
 
-        public EditSolutionModel(string odsCode, CallOffId callOffId, CreateOrderItemModel createOrderItemModel)
+        public EditSolutionModel(string odsCode, CreateOrderItemModel state)
         {
-            if (!createOrderItemModel.IsNewSolution)
+            if (!state.IsNewSolution)
             {
-                BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions";
+                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions";
             }
             else
             {
-                if (createOrderItemModel.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/declarative";
-                else if (createOrderItemModel.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/flat/ondemand";
+                if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/flat/declarative";
+                else if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/flat/ondemand";
                 else
-                    BackLink = $"/order/organisation/{odsCode}/order/{callOffId}/catalogue-solutions/select/solution/price/recipients/date";
+                    BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/recipients/date";
             }
 
             BackLinkText = "Go back";
-            Title = $"{createOrderItemModel.CatalogueItemName} information for {callOffId}";
+            Title = $"{state.CatalogueItemName} information for {state.CallOffId}";
             OdsCode = odsCode;
-            OrderItem = createOrderItemModel;
+            OrderItem = state;
 
             // TODO: Legacy appears to order based on recipient name, unless some recipients have info missing in which case they appear at the top
             OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(x => x.Selected).ToList();
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.Quantity is null))
-                recipient.Quantity = createOrderItemModel.Quantity;
+                recipient.Quantity = state.Quantity;
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.DeliveryDate is null))
-                recipient.DeliveryDate = createOrderItemModel.PlannedDeliveryDate;
+                recipient.DeliveryDate = state.PlannedDeliveryDate;
         }
 
         public CreateOrderItemModel OrderItem { get; set; }

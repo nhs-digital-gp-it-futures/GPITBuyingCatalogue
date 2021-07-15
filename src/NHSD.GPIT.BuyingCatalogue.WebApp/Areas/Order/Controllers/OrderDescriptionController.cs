@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderDescriptionService.SetOrderDescription(callOffId, model.Description);
 
             return RedirectToAction(
-                nameof(Order),
+                nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
                 new { odsCode, callOffId });
         }
