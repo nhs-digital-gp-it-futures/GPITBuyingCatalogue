@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             : base(factory, "/admin/catalogue-solutions/manage/99999-888/features")
         {
             ClearFeatures(new CatalogueItemId(99999, "888"));
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]
