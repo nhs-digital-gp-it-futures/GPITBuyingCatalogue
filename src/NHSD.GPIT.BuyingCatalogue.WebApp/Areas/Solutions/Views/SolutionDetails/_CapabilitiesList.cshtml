@@ -29,10 +29,10 @@
     {
         <nhs-table-row-container>
             <nhs-table-cell>
-                <span class="nhsuk-table-responsive__heading">Capability</span><b>@capability.Heading</b><br>@capability.Description
+                <span class="nhsuk-table-responsive__heading">Capability</span><b data-test-id="capability-name">@capability.Heading</b><br>@capability.Description
             </nhs-table-cell>
             <nhs-table-cell>
-                <span class="nhsuk-table-responsive__heading">Action </span><a href="@capability.CheckEpicsUrl" style="white-space: nowrap;">Check Epics</a>
+                <span class="nhsuk-table-responsive__heading">Action </span><a href="@capability.CheckEpicsUrl" style="white-space: nowrap;" data-test-id="check-epics-link">Check Epics</a>
             </nhs-table-cell>
         </nhs-table-row-container>
     }

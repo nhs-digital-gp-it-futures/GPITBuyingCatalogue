@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
@@ -45,11 +47,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.SavePage();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
-            var featureList = solution.Features.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
+            var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "888"));
+            var featuresModel = new FeaturesModel().FromCatalogueItem(catalogueItem);
 
-            featureList.Should().HaveCount(numFeatures)
-                .And.BeEquivalentTo(features);
+            featuresModel.AllFeatures.Should().BeEquivalentTo(features);
         }
 
         [Fact]
