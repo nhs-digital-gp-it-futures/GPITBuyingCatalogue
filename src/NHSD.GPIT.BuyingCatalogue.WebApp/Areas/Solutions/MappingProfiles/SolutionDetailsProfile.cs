@@ -78,7 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     {
                         opt.PreCondition(src => src.CataloguePrices != null);
                         opt.MapFrom(src => src.CataloguePrices.Where(x => x != null && x.Price != null));
-                    });
+                    })
+                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId));
 
             CreateMap<CatalogueItem, AdditionalServicesModel>()
                 .ForMember(
@@ -94,6 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
 
             CreateMap<CatalogueItem, CapabilitiesViewModel>()
+                .ForMember(dest => dest.CapabilitiesHeading, opt => opt.MapFrom(src => "Capabilities met"))
+                .ForMember(dest => dest.Name, opt => opt.Ignore())
+                .ForMember(dest => dest.Description, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.RowViewModels,
                     opt =>
@@ -227,8 +231,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>();
 
             CreateMap<CatalogueItemCapability, SolutionCheckEpicsModel>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
-                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId.ToString()))
+                .ForMember(dest => dest.CatalogueItemIdAdditional, opt => opt.Ignore())
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Description))
+                .ForMember(
+                    dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Capability == null ? null : src.Capability.Name))
+                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
                 .ForMember(dest => dest.SolutionName, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.NhsDefined,

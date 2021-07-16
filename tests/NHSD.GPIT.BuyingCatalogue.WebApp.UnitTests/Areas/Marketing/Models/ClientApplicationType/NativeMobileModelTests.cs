@@ -6,7 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationT
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.ClientApplicationType
-
 {
     public static class NativeMobileModelTests
     {
@@ -54,12 +53,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileConnectivityComplete())
                 .Returns(complete);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.ConnectivityStatus.Should().Be(expected);
+            nativeMobileModel.ConnectivityStatus.Should().Be(expected);
             mockClientApplication.Verify(c => c.NativeMobileConnectivityComplete());
         }
 
@@ -72,12 +71,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileHardwareRequirementsComplete())
                 .Returns(complete);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.HardwareRequirementsStatus.Should().Be(expected);
+            nativeMobileModel.HardwareRequirementsStatus.Should().Be(expected);
             mockClientApplication.Verify(c => c.NativeMobileHardwareRequirementsComplete());
         }
 
@@ -91,12 +90,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                 .Returns(true);
             mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
                 .Returns(true);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.IsComplete.Should().BeTrue();
+            nativeMobileModel.IsComplete.Should().BeTrue();
         }
 
         [Theory]
@@ -111,12 +110,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                 .Returns(true);
             mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
                 .Returns(true);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.IsComplete.Should().BeFalse();
+            nativeMobileModel.IsComplete.Should().BeFalse();
         }
 
         [Fact]
@@ -129,12 +128,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                 .Returns(false);
             mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
                 .Returns(true);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.IsComplete.Should().BeFalse();
+            nativeMobileModel.IsComplete.Should().BeFalse();
         }
 
         [Theory]
@@ -149,12 +148,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
                 .Returns(true);
             mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
                 .Returns(value);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.IsComplete.Should().BeFalse();
+            nativeMobileModel.IsComplete.Should().BeFalse();
         }
 
         [Theory]
@@ -166,12 +165,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileMemoryAndStorageComplete())
                 .Returns(complete);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.MemoryAndStorageStatus.Should().Be(expected);
+            nativeMobileModel.MemoryAndStorageStatus.Should().Be(expected);
             mockClientApplication.Verify(c => c.NativeMobileMemoryAndStorageComplete());
         }
 
@@ -184,12 +183,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileSupportedOperatingSystemsComplete())
                 .Returns(complete);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.SupportedOperatingSystemsStatus.Should().Be(expected);
+            nativeMobileModel.SupportedOperatingSystemsStatus.Should().Be(expected);
             mockClientApplication.Verify(c => c.NativeMobileSupportedOperatingSystemsComplete());
         }
 
@@ -202,12 +201,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             var mockClientApplication = new Mock<ClientApplication>();
             mockClientApplication.Setup(c => c.NativeMobileThirdPartyComplete())
                 .Returns(complete);
-            var NativeMobileModel = new NativeMobileModel
+            var nativeMobileModel = new NativeMobileModel
             {
                 ClientApplication = mockClientApplication.Object,
             };
 
-            NativeMobileModel.ThirdPartyStatus.Should().Be(expected);
+            nativeMobileModel.ThirdPartyStatus.Should().Be(expected);
             mockClientApplication.Verify(c => c.NativeMobileThirdPartyComplete());
         }
 

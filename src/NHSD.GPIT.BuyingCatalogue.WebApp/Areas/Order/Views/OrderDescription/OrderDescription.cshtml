@@ -1,0 +1,23 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription.OrderDescriptionModel;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="nhsuk-width-container" data-test-id="description-page">
+    <partial name="Partials/_BackLink" model="Model" />
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@Model.Title" advice="Provide a brief description of your order to help identify it from any others you’ve worked on." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <input type="hidden" asp-for="@Model.OdsCode" />
+                <input type="hidden" asp-for="@Model.Title" />
+                <nhs-textarea asp-for="Description" />
+                <nhs-submit-button text="Save and return" />
+            </form>
+        </div>
+    </div>
+</div>

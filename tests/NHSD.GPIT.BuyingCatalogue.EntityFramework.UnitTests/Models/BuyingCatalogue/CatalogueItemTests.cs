@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -11,6 +12,78 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 {
     public static class CatalogueItemTests
     {
+        [Theory]
+        [CommonAutoData]
+        public static void CatalogueItemCapability_ValidSolutionCapabilities_ReturnsFirst(
+            CatalogueItem catalogueItem)
+        {
+            var expected = catalogueItem.Solution.SolutionCapabilities.First();
+            var capabilityId = expected.Capability.Id;
+
+            var actual = catalogueItem.CatalogueItemCapability(capabilityId);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void CatalogueItemCapability_SolutionCapabilityHasNullCapability_ReturnsEmpty(
+            CatalogueItem catalogueItem,
+            Guid capabilityId)
+        {
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            catalogueItem.Solution.SolutionCapabilities = new List<CatalogueItemCapability>
+            {
+                new(),
+            };
+
+            var actual = catalogueItem.CatalogueItemCapability(capabilityId);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void CatalogueItemCapability_EmptySolutionCapabilities_ReturnsEmpty(
+            CatalogueItem catalogueItem,
+            Guid capabilityId)
+        {
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            catalogueItem.Solution.SolutionCapabilities = new List<CatalogueItemCapability>();
+
+            var actual = catalogueItem.CatalogueItemCapability(capabilityId);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void CatalogueItemCapability_NullSolutionCapabilities_ReturnsEmpty(
+            CatalogueItem catalogueItem,
+            Guid capabilityId)
+        {
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            catalogueItem.Solution.SolutionCapabilities = null;
+
+            var actual = catalogueItem.CatalogueItemCapability(capabilityId);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void CatalogueItemCapability_NullSolution_ReturnsEmpty(
+            CatalogueItem catalogueItem,
+            Guid capabilityId)
+        {
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            catalogueItem.Solution = null;
+
+            var actual = catalogueItem.CatalogueItemCapability(capabilityId);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
         [Theory]
         [CommonAutoData]
         public static void Features_NullSolution_ReturnsNull(CatalogueItem catalogueItem)

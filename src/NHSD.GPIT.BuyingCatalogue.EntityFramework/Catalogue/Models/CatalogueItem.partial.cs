@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public partial class CatalogueItem
     {
+        public virtual CatalogueItemCapability CatalogueItemCapability(
+            Guid capabilityId) =>
+            Solution?.SolutionCapabilities?.FirstOrDefault(
+                sc => sc.Capability != null && sc.Capability.Id == capabilityId)
+            ?? new CatalogueItemCapability { CatalogueItemId = CatalogueItemId };
+
         public virtual string[] Features() =>
             HasFeatures() ? JsonConvert.DeserializeObject<string[]>(Solution.Features) : null;
 
@@ -47,5 +55,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public MarketingContact SecondContact() =>
             Solution?.MarketingContacts?.Skip(1).FirstOrDefault() ?? new MarketingContact();
+
+        public string CatalogueItemName(CatalogueItemId catalogueItemId) => Supplier?.CatalogueItems
+            .FirstOrDefault(c => c.CatalogueItemId == catalogueItemId)
+            ?.Name;
+
+        public string AdditionalServiceDescription(CatalogueItemId catalogueItemId) => Supplier?.CatalogueItems
+            .FirstOrDefault(c => c.CatalogueItemId == catalogueItemId)
+            ?.AdditionalService?.FullDescription;
     }
 }

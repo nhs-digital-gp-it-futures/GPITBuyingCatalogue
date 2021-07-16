@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Fact]
         public static void Constructor_NullApplicationUserValidator_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(                
+            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
                 Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Fact]
         public static void Constructor_NullUserRepository_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(                  
+            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
                   null,
                   Mock.Of<IPasswordService>(),
                   Mock.Of<IPasswordResetCallback>(),
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Fact]
         public static void Constructor_NullPasswordService_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(                  
+            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
                   Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                   null,
                   Mock.Of<IPasswordResetCallback>(),
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Fact]
         public static void Constructor_NullEmailServiceCallback_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(                  
+            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
                   Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                   Mock.Of<IPasswordService>(),
                   Mock.Of<IPasswordResetCallback>(),
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         [Fact]
         public static void Constructor_NullRegistrationServiceCallback_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(                  
+            Assert.Throws<ArgumentNullException>(() => _ = new CreateBuyerService(
                   Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                   Mock.Of<IPasswordService>(),
                   Mock.Of<IPasswordResetCallback>(),
@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         {
             static async Task SendEmail()
             {
-                var createBuyerService = new CreateBuyerService(                    
+                var createBuyerService = new CreateBuyerService(
                     Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                     Mock.Of<IPasswordService>(),
                     Mock.Of<IPasswordResetCallback>(),
@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 .WithEmailAddress("ricardo@burton.com")
                 .Build();
 
-            var createBuyerService = new CreateBuyerService(                
+            var createBuyerService = new CreateBuyerService(
                 Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                 Mock.Of<IPasswordService>(),
                 mockPasswordResetCallback,
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var mockEmailService = new MockEmailService();
 
-            var createBuyerService = new CreateBuyerService(                
+            var createBuyerService = new CreateBuyerService(
                 Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
                 .WithEmailAddress("uncle@bob.com")
                 .Build();
 
-            var createBuyerService = new CreateBuyerService(                
+            var createBuyerService = new CreateBuyerService(
                 Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
@@ -320,7 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var mockEmailService = new MockEmailService();
 
-            var createBuyerService = new CreateBuyerService(                
+            var createBuyerService = new CreateBuyerService(
                 Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>(),
                 Mock.Of<IPasswordService>(),
                 passwordResetCallback,
@@ -354,7 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
                 var template = new EmailMessageTemplate(new EmailAddressTemplate("from@sender.test"));
 
-                CreateBuyerService = new CreateBuyerService(                    
+                CreateBuyerService = new CreateBuyerService(
                     UsersRepositoryMock.Object,
                     PasswordServiceMock.Object,
                     Mock.Of<IPasswordResetCallback>(),

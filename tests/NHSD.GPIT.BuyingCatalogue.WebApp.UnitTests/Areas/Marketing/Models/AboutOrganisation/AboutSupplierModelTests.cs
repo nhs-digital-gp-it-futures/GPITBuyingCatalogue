@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
             var catalogueItem = new CatalogueItem
             {
                 CatalogueItemId = new CatalogueItemId(1, "123"),
-                Supplier = new Supplier { SupplierUrl = link, Summary = description }
+                Supplier = new Supplier { SupplierUrl = link, Summary = description },
             };
 
             var model = new AboutSupplierModel(catalogueItem);

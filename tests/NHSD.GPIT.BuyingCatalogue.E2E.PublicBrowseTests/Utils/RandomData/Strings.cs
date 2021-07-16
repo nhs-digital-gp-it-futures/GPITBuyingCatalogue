@@ -16,5 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData
             var url = faker.Internet.Url();
             return string.Join(string.Empty, url, "/", faker.Random.AlphaNumeric(numChars - url.Length - 1));
         }
+
+        internal static string RandomFeature()
+        {
+            var faker = new Faker("en_GB");
+            return faker.Rant.Review();
+        }
     }
 }

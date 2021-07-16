@@ -6,15 +6,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 {
     public sealed class CommonAutoDataAttribute : AutoDataAttribute
     {
-        public CommonAutoDataAttribute() :
-            base(() => new Fixture().Customize(
+        public CommonAutoDataAttribute()
+            : base(() => new Fixture().Customize(
                 new CompositeCustomization(
-                    new AutoMoqCustomization(),                                        
+                    new AutoMoqCustomization(),
+                    new AddSolutionModelCustomization(),
+                    new CreateSolutionModelCustomization(),
                     new CallOffIdCustomization(),
-                    new CatalogueItemIdCustomization(),                    
+                    new CatalogueItemIdCustomization(),
+                    new ControllerBaseCustomization(),
                     new IgnoreCircularReferenceCustomisation(),
-                    new SolutionCustomization()
-                    )))
+                    new SolutionCustomization())))
         {
         }
     }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsCareCard.NhsCareCardViewComponent;
+﻿using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsCareCard
 {

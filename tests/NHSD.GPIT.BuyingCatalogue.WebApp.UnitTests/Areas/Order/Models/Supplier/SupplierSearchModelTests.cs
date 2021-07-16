@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode, 
+            string odsCode,
             EntityFramework.Ordering.Models.Order order)
         {
             var model = new SupplierSearchModel(odsCode, order);

@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         public Features(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/features")
         {
+            Login();
         }
 
         [Fact]

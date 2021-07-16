@@ -1,0 +1,43 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FeaturesModel
+@{
+    ViewData["Title"] = "Manage Features";
+}
+
+<div class="nhsuk-width-container ">
+    <vc:nhs-backlink text="Go back"
+                     url="@Url.Action("ManageCatalogueSolution", "CatalogueSolutions", new { solutionId = @Model.SolutionId })">
+    </vc:nhs-backlink>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <nhs-page-title title="Features"
+                            caption="@Model.SolutionName"
+                            advice="Highlight to buyers the key features of your Catalogue Solution."/>
+
+            <h2>Features list (optional)</h2>
+
+            <div class="nhsuk-hint">
+                List up to 10 key features that help meet needs in health and social care, for example how it can help manage information and resources.
+            </div>
+
+            <form method="post">
+
+                <nhs-input asp-for="Feature01" label-text="Feature 1 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature02" label-text="Feature 2 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature03" label-text="Feature 3 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature04" label-text="Feature 4 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature05" label-text="Feature 5 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature06" label-text="Feature 6 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature07" label-text="Feature 7 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature08" label-text="Feature 8 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature09" label-text="Feature 9 (optional)" character-count="true" maxlength="100"></nhs-input>
+                <nhs-input asp-for="Feature10" label-text="Feature 10 (optional)" character-count="true" maxlength="100"></nhs-input>
+
+                <nhs-submit-button text="Save and continue"/>
+
+            </form>
+
+        </div>
+    </div>
+</div>

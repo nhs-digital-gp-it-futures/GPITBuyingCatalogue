@@ -41,12 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                                     fixture.Build<MobileOperatingSystems>()
                                         .With(m => m.OperatingSystems, new HashSet<string> { "andrOID", "Apple ios" })
                                         .Create())
-                                .Create()
-                        ))
+                                .Create()))
                     .With(s => s.Features, JsonConvert.SerializeObject(fixture.Create<string[]>()))
                     .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>()))
-                    .With(s => s.Integrations, JsonConvert.SerializeObject(GetIntegrations(fixture)))
-            );
+                    .With(s => s.Integrations, JsonConvert.SerializeObject(GetIntegrations(fixture))));
         }
 
         private static HashSet<string> GetClientApplicationTypes()

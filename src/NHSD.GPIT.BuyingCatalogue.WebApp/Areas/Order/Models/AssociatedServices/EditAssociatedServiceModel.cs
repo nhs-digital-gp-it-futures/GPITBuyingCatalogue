@@ -14,10 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices
 
         public EditAssociatedServiceModel(string odsCode, CreateOrderItemModel state)
         {
-            if (state.IsNewSolution)
-                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service{(!state.SkipPriceSelection ? "/price" : string.Empty)}";
-            else
-                BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services";
+            BackLink = state.IsNewSolution
+                ? $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services/select/associated-service{(!state.SkipPriceSelection ? "/price" : string.Empty)}"
+                : $"/order/organisation/{odsCode}/order/{state.CallOffId}/associated-services";
 
             BackLinkText = "Go back";
             Title = $"{state.CatalogueItemName} associated service information for {state.CallOffId}";

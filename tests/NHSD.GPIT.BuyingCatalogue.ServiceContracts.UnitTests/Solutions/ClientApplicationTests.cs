@@ -455,7 +455,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             {
                 yield return new object[] { "some-value", true };
                 yield return new object[] { null, false };
-                yield return new object[] { "", false };
+                yield return new object[] { string.Empty, false };
                 yield return new object[] { "     ", false };
             }
         }

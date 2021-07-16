@@ -25,6 +25,11 @@ BEGIN
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
                  VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 199.99);
+            INSERT INTO catalogue.CatalogueItemCapabilities
+            VALUES (@additionalServiceId, '21AE013D-42A4-4748-B435-73D5887944C2', 1, '2021-05-10 17:22:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
+
+            INSERT INTO catalogue.CatalogueItemCapabilities
+            VALUES (@additionalServiceId, 'EFD93D25-447B-4CA3-9D78-108D42AFEAE0', 1, '2021-07-09 09:54:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
         END;
     END;
 
@@ -45,6 +50,11 @@ BEGIN
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
                  VALUES (@additionalServiceId, 2, 1, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', 2, 'GBP', @now, 299.99);
+                 
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+               FROM catalogue.Capabilities
+              WHERE CapabilityRef IN ('C1', 'C5');
         END;
     END;
 
@@ -68,6 +78,11 @@ BEGIN
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
                  VALUES (@additionalServiceId, 2, 1, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', 2, 'GBP', @now, 399.99),
                         (@additionalServiceId2, 2, 1, '774E5A1D-D15C-4A37-9990-81861BEAE42B', 2, 'GBP', @now, 389.99);
+                        
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+               FROM catalogue.Capabilities
+              WHERE CapabilityRef = 'C6';
         END;
     END;
 
@@ -95,6 +110,11 @@ BEGIN
                  VALUES (@cataloguePriceId, 1, 999, 123.45),
                         (@cataloguePriceId, 1000, 1999, 49.99),
                         (@cataloguePriceId, 2000, NULL, 19.99);
+                        
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+               FROM catalogue.Capabilities
+              WHERE CapabilityRef IN ('C7', 'C15');
         END;
     END;
 
@@ -122,6 +142,11 @@ BEGIN
                  VALUES (@cataloguePriceId, 1, 9, 100.45),
                         (@cataloguePriceId, 10, 199, 200.99),
                         (@cataloguePriceId, 200, NULL,300.99);
+                        
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+               FROM catalogue.Capabilities
+              WHERE CapabilityRef = 'C8';
         END;
     END;
 
@@ -142,6 +167,11 @@ BEGIN
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
                  VALUES (@additionalServiceId, 3, 1, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', null, 'GBP', @now, 499.99);
+                 
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+                 SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+                   FROM catalogue.Capabilities
+                  WHERE CapabilityRef IN ('C9', 'C19', 'C41');
         END;
     END;
 
@@ -162,6 +192,11 @@ BEGIN
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
                  VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 599.99);
+                 
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+                 SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+                   FROM catalogue.Capabilities
+                  WHERE CapabilityRef IN ('C9', 'C17');
         END;
     END;
 
@@ -182,6 +217,11 @@ BEGIN
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
                  VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 599.99);
+                 
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+                 SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+                   FROM catalogue.Capabilities
+                  WHERE CapabilityRef = 'C30';
         END;
     END;
 

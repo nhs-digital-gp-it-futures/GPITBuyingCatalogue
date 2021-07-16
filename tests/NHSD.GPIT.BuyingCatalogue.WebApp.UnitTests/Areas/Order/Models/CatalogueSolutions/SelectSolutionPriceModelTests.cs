@@ -28,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             model.Title.Should().Be($"List price for {solutionName}");
             model.OdsCode.Should().Be(odsCode);
 
-
             // TODO: model.Prices
         }
     }

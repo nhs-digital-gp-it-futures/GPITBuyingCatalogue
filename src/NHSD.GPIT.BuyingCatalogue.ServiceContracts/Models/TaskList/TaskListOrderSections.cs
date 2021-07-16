@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
         AssociatedServices = 32,
         FundingSource = 64,
         DescriptionComplete = Description,
-        OrderingPartyComplete = OrderingParty | DescriptionComplete,
+        OrderingPartyComplete = OrderingParty,
         SupplierComplete = Supplier | OrderingPartyComplete,
         CommencementDateComplete = CommencementDate | SupplierComplete,
         CatalogueSolutionsComplete = CatalogueSolutions | CommencementDateComplete,

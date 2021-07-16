@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode, 
-            CallOffId callOffId, 
+            string odsCode,
+            CallOffId callOffId,
             List<EntityFramework.Catalogue.Models.Supplier> suppliers)
         {
             var model = new SupplierSearchSelectModel(odsCode, callOffId, suppliers);

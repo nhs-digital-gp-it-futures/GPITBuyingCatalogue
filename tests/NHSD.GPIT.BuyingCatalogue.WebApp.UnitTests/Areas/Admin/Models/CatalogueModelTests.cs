@@ -2,7 +2,6 @@
 using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
@@ -34,30 +33,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             actual.CatalogueItemId.Should().Be(catalogueItem.CatalogueItemId.ToString());
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static void Constructor_ValidSupplierLastUpdated_SetAsLastUpdated(CatalogueItem catalogueItem)
         {
-            var expected = catalogueItem.Supplier.LastUpdated;
+            var expected = catalogueItem.Solution.LastUpdated;
             expected.Should().BeAfter(DateTime.MinValue);
-            
+
             var actual = new CatalogueModel(catalogueItem);
 
             actual.LastUpdated.Should().Be(expected);
         }
-        
+
         [Theory]
         [CommonAutoData]
-        public static void Constructor_SupplierIsNull_SetMinValueAsLastUpdated(CatalogueItem catalogueItem)
+        public static void Constructor_SolutionIsNull_SetMinValueAsLastUpdated(CatalogueItem catalogueItem)
         {
-            catalogueItem.Supplier = null;
-            
+            catalogueItem.Solution = null;
+
             var actual = new CatalogueModel(catalogueItem);
 
             actual.LastUpdated.Should().Be(DateTime.MinValue);
         }
-        
+
         [Theory]
         [CommonAutoData]
         public static void Constructor_SetsExpected_PublishedStatus(CatalogueItem catalogueItem)
@@ -90,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         public static void Constructor_SupplierIsNull_SetsEmptyStringAsSupplier(CatalogueItem catalogueItem)
         {
             catalogueItem.Supplier = null;
-            
+
             var actual = new CatalogueModel(catalogueItem);
 
             actual.Supplier.Should().BeEmpty();

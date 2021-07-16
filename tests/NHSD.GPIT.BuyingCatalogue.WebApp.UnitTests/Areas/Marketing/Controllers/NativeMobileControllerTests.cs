@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -24,14 +25,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [Fact]
         public static void ClassIsCorrectlyDecorated()
         {
-            typeof(NativeMobileController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
+            typeof(NativeMobileController).Should()
+                .BeDecoratedWith<AuthorizeAttribute>(p => p.Policy == "AdminOnly");
+
+            typeof(NativeMobileController).Should()
+                .BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Marketing");
         }
 
         [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                    _ = new NativeMobileController( null,
+                    _ = new NativeMobileController(
+                        null,
                         Mock.Of<ISolutionsService>()))
                 .ParamName.Should().Be("mapper");
         }
@@ -40,7 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new NativeMobileController( Mock.Of<IMapper>(),
+                _ = new NativeMobileController(
+                    Mock.Of<IMapper>(),
                     null))
                 .ParamName.Should().Be("solutionsService");
         }

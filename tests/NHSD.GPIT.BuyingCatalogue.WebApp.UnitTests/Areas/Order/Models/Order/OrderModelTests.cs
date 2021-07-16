@@ -11,10 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            string odsCode, 
-            EntityFramework.Ordering.Models.Order order, 
-            OrderTaskList orderSections
-        )
+            string odsCode,
+            EntityFramework.Ordering.Models.Order order,
+            OrderTaskList orderSections)
         {
             var model = new OrderModel(odsCode, order, orderSections);
 

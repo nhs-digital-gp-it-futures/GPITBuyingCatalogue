@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 ClientApplication = new ClientApplication
                 {
                     ClientApplicationTypes = new HashSet<string> { valid },
-                }
+                },
             };
 
             var actual = model.HasApplicationType("SOME-value");
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 ClientApplication = new ClientApplication
                 {
                     ClientApplicationTypes = new HashSet<string> { "valid" },
-                }
+                },
             };
 
             var actual = model.HasApplicationType("SOME-value");
