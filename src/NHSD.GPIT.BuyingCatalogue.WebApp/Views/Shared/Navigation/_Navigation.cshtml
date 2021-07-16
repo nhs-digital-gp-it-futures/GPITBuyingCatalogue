@@ -1,4 +1,7 @@
-﻿<nav class="nhsuk-header__navigation" id="header-navigation" role="navigation" aria-label="Primary navigation" aria-labelledby="label-navigation">
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+<nav class="nhsuk-header__navigation" id="header-navigation" role="navigation" aria-label="Primary navigation" aria-labelledby="label-navigation">
     <div class="nhsuk-width-container">
         <p class="nhsuk-header__navigation-title">
             <span id="label-navigation">Menu</span>
@@ -19,17 +22,24 @@
                 </a>
             </li>
             <li class="nhsuk-header__navigation-item">
-                <a class="nhsuk-header__navigation-link" asp-action="Index" asp-controller="Home">
+                <a class="nhsuk-header__navigation-link" 
+                   asp-action="@nameof(HomeController.Index)"
+                   asp-controller="@typeof(HomeController).ControllerName()">
                     Catalogue Solutions
                 </a>
             </li>
             <li class="nhsuk-header__navigation-item">
-                <a class="nhsuk-header__navigation-link" asp-action="Index" asp-controller="Home">
+                <a class="nhsuk-header__navigation-link"
+                   asp-action="@nameof(DashboardController.Index)"
+                   asp-controller="@typeof(DashboardController).ControllerName()"
+                   asp-area="@typeof(DashboardController).AreaName()">
                     Create or manage orders
                 </a>
             </li>
             <li class="nhsuk-header__navigation-item">
-                <a class="nhsuk-header__navigation-link" asp-action="Index" asp-controller="Home">
+                <a class="nhsuk-header__navigation-link"
+                   asp-action="@nameof(GuideController.Index)"
+                   asp-controller="@typeof(GuideController).ControllerName()">
                     Buyer's guide
                 </a>
             </li>
