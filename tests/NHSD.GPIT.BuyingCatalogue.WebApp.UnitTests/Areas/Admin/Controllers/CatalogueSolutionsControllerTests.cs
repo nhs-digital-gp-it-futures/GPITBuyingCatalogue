@@ -507,5 +507,101 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new RoadmapModel().FromCatalogueItem(catalogueItem));
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_HostingType_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(new CatalogueItem());
+
+            await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>()).HostingType(
+                catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_HostingType_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.HostingType(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_HostingType_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.HostingType(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HostingType_CallsSaveHosting(
+            CatalogueItemId catalogueItemId,
+            HostingTypeSectionModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.HostingType(catalogueItemId, model);
+
+            mockService.Verify(s => s.SaveHosting(catalogueItemId, It.IsAny<Hosting>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HostingType_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            HostingTypeSectionModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.HostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HostingType_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.HostingType(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem));
+        }
     }
 }
