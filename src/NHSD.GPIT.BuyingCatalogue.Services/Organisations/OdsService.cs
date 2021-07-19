@@ -16,11 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     {
         private const int DefaultCacheDuration = 60;
 
-        private readonly IOdsSettings settings;
+        private readonly OdsSettings settings;
         private readonly IMemoryCache memoryCache;
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
-        public OdsService(IOdsSettings settings, IMemoryCache memoryCache)
+        public OdsService(OdsSettings settings, IMemoryCache memoryCache)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
