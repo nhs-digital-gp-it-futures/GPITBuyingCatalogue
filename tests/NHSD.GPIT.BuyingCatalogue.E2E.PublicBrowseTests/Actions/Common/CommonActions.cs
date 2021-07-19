@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -93,6 +95,57 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             {
                 return false;
             }
+        }
+
+        internal bool PageLoadedCorrectGetIndex(
+            Type controller,
+            string methodName)
+        {
+            if (controller.BaseType != typeof(Controller))
+                throw new InvalidOperationException($"{nameof(controller)} is not a type of {nameof(Controller)}");
+
+            if (string.IsNullOrWhiteSpace(methodName))
+                throw new ArgumentNullException(nameof(methodName), $"{nameof(methodName)} should not be null");
+
+            Wait.Until(d => d.FindElement(CommonSelectors.Header1));
+
+            var controllerRoute =
+                (controller.GetCustomAttributes(typeof(RouteAttribute), false)
+                            ?.FirstOrDefault() as RouteAttribute)
+                                ?.Template;
+
+            var methodRoute =
+                (controller.GetMethods()
+                .Where(m =>
+                    m.Name == methodName
+                    && m.GetCustomAttributes(typeof(HttpGetAttribute), false)
+                        .Any())
+                        ?.FirstOrDefault()
+                        .GetCustomAttributes(typeof(HttpGetAttribute), false)
+                            .FirstOrDefault() as HttpGetAttribute)?.Template;
+
+            var absoluteRoute = methodRoute switch
+            {
+                null => controllerRoute,
+                _ => methodRoute[0] != '~'
+                    ? controllerRoute + "/" + methodRoute
+                    : methodRoute[2..],
+            };
+
+            var driverUrl = new Uri(Driver.Url);
+
+            var actionUrl = new Uri("https://www.fake.com/" + absoluteRoute, UriKind.Absolute);
+
+            for (int i = 0; i < actionUrl.Segments.Length; i++)
+            {
+                if (!actionUrl.Segments[i].StartsWith("%7B"))
+                {
+                    if (driverUrl.Segments[i] != actionUrl.Segments[i])
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         internal string PageTitle()
