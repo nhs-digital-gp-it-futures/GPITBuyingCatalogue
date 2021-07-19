@@ -72,7 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             string odsCode,
             OdsOrganisation organisation)
         {
-            var settingsMock = new Mock<IOdsSettings>();
             var memoryCacheMock = new Mock<IMemoryCache>();
 
             object expectedValue = organisation;
@@ -80,13 +79,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 .Setup(m => m.TryGetValue($"ODS-{odsCode}", out expectedValue))
                 .Returns(true);
 
-            var service = new OdsService(settingsMock.Object, memoryCacheMock.Object);
+            var settings = new OdsSettings();
+
+            var service = new OdsService(settings, memoryCacheMock.Object);
 
             var (org, error) = await service.GetOrganisationByOdsCode(odsCode);
 
             error.Should().BeNull();
             org.Should().BeEquivalentTo(organisation);
-            settingsMock.Verify(v => v.ApiBaseUrl, Times.Never);
+            memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Never);
         }
 
         [Fact]
@@ -113,7 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 IsBuyerOrganisation = true,
             };
 
-            var settingsMock = new Mock<IOdsSettings>();
             var memoryCacheMock = new Mock<IMemoryCache>();
 
             object expectedValue = null;
@@ -123,10 +123,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
 
-            settingsMock.Setup(s => s.ApiBaseUrl).Returns("https://spineservice");
-            settingsMock.Setup(s => s.BuyerOrganisationRoleIds).Returns(new string[] { "RO98", "RO177", "RO213", "RO272" });
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = "https://spineservice",
+                BuyerOrganisationRoleIds = new string[] { "RO98", "RO177", "RO213", "RO272" },
+            };
 
-            var service = new OdsService(settingsMock.Object, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object);
 
             var (org, error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -142,7 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             using var httpTest = new HttpTest();
             httpTest.RespondWith(status: 200, body: ValidResponseBody);
 
-            var settingsMock = new Mock<IOdsSettings>();
             var memoryCacheMock = new Mock<IMemoryCache>();
 
             object expectedValue = null;
@@ -152,10 +154,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
 
-            settingsMock.Setup(s => s.ApiBaseUrl).Returns("https://spineservice");
-            settingsMock.Setup(s => s.BuyerOrganisationRoleIds).Returns(new string[] { "X123" });
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = "https://spineservice",
+                BuyerOrganisationRoleIds = new string[] { "X123" },
+            };
 
-            var service = new OdsService(settingsMock.Object, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object);
 
             var (org, error) = await service.GetOrganisationByOdsCode(OdsCode);
 
@@ -170,7 +175,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             using var httpTest = new HttpTest();
             httpTest.RespondWithJson(new { ErrorCode = 404, ErrorText = "Not Found." }, 404);
 
-            var settingsMock = new Mock<IOdsSettings>();
             var memoryCacheMock = new Mock<IMemoryCache>();
 
             object expectedValue = null;
@@ -180,9 +184,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
 
-            settingsMock.Setup(s => s.ApiBaseUrl).Returns("https://spineservice");
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = "https://spineservice",
+            };
 
-            var service = new OdsService(settingsMock.Object, memoryCacheMock.Object);
+            var service = new OdsService(settings, memoryCacheMock.Object);
 
             var (org, error) = await service.GetOrganisationByOdsCode(OdsCode);
 
