@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -9,6 +12,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -137,6 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             org.Should().BeOfType<OdsOrganisation>();
             org.Should().NotBeNull();
             org.Should().BeEquivalentTo(expected);
+            memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
 
         [Fact]
@@ -196,6 +201,191 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             error.Should().Be("Organisation not found");
             org.Should().BeNull();
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Never);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public static void GetServiceRecipientsByParentOdsCode_NoOdsCode_ThrowsException(string odsCode)
+        {
+            var serviceMock = new Mock<IOdsService>();
+
+            _ = Assert.ThrowsAsync<ArgumentNullException>(() => _ = serviceMock.Object.GetServiceRecipientsByParentOdsCode(odsCode));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task GetServiceRecipientsByParentOdsCode_CachedCode_ReturnsFromCache(
+            string odsCode,
+            IEnumerable<ServiceRecipient> serviceRecipients)
+        {
+            var memoryCacheMock = new Mock<IMemoryCache>();
+
+            object expectedValue = serviceRecipients;
+            memoryCacheMock
+                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Returns(true);
+
+            var settings = new OdsSettings();
+
+            var service = new OdsService(settings, memoryCacheMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+
+            result.Should().BeEquivalentTo(serviceRecipients);
+            memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Never);
+        }
+
+        [Fact]
+        public static async Task GetServiceRecipientsByParentOdsCode_SinglePage_ReturnsOrganisation()
+        {
+            var odsCode = "123";
+
+            var childOrg = new ServiceRecipient { Name = "Organisation 1", PrimaryRoleId = "RO177", OrgId = "ABC" };
+            var json = CreatePageJson(childOrg);
+
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 200, body: json);
+
+            var memoryCacheMock = new Mock<IMemoryCache>();
+
+            object expectedValue = null;
+            memoryCacheMock
+                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Returns(false);
+
+            memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
+
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = "https://spineservice",
+                GetChildOrganisationSearchLimit = 2,
+                GpPracticeRoleId = "RO177",
+            };
+
+            var service = new OdsService(settings, memoryCacheMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+
+            result.Should().BeEquivalentTo(childOrg);
+            memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
+        }
+
+        [Fact]
+        public static async Task GetServiceRecipientsByParentOdsCode_MultiplePages_ReturnsOrganisation()
+        {
+            var odsCode = "123";
+
+            var childOne = new ServiceRecipient { Name = "Organisation 1", PrimaryRoleId = "RO177", OrgId = "ABC" };
+            var childTwo = new ServiceRecipient { Name = "Organisation 2", PrimaryRoleId = "RO177", OrgId = "ABD" };
+            var jsonPageOne = CreatePageJson(childOne);
+            var jsonPageTwo = CreatePageJson(childTwo);
+            var jsonPageThree = CreatePageJson();
+
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 200, body: jsonPageOne)
+            .RespondWith(status: 200, body: jsonPageTwo)
+            .RespondWith(status: 200, body: jsonPageThree);
+
+            var memoryCacheMock = new Mock<IMemoryCache>();
+
+            object expectedValue = null;
+            memoryCacheMock
+                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Returns(false);
+
+            memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
+
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = "https://spineservice",
+                GetChildOrganisationSearchLimit = 1,
+                GpPracticeRoleId = "RO177",
+            };
+
+            var service = new OdsService(settings, memoryCacheMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+
+            result.Should().BeEquivalentTo(childOne, childTwo);
+            memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
+        }
+
+        [Fact]
+        public static async Task GetServiceRecipientsByParentOdsCode_SinglePageDifferentRoleIds_ReturnsOnlyMatching()
+        {
+            var odsCode = "123";
+
+            var childOne = new ServiceRecipient { Name = "Organisation 1", PrimaryRoleId = "RO177", OrgId = "ABC" };
+            var childTwo = new ServiceRecipient { Name = "Organisation 2", PrimaryRoleId = "RO178", OrgId = "ABD" };
+            var jsonPageOne = CreatePageJson(childOne, childTwo);
+
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 200, body: jsonPageOne);
+
+            var memoryCacheMock = new Mock<IMemoryCache>();
+
+            object expectedValue = null;
+            memoryCacheMock
+                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Returns(false);
+
+            memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
+
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = "https://spineservice",
+                GetChildOrganisationSearchLimit = 3,
+                GpPracticeRoleId = "RO177",
+            };
+
+            var service = new OdsService(settings, memoryCacheMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+
+            result.Should().BeEquivalentTo(childOne);
+            memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
+        }
+
+        [Fact]
+        public static async Task GetServiceRecipientsByParentOdsCode_NoOrganisations_ReturnsEmptyList()
+        {
+            var odsCode = "123";
+
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 200, body: CreatePageJson());
+
+            var memoryCacheMock = new Mock<IMemoryCache>();
+
+            object expectedValue = null;
+            memoryCacheMock
+                .Setup(m => m.TryGetValue($"ServiceRecipients-ODS-{odsCode}", out expectedValue))
+                .Returns(false);
+
+            memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
+
+            var settings = new OdsSettings
+            {
+                ApiBaseUrl = "https://spineservice",
+                GetChildOrganisationSearchLimit = 3,
+                GpPracticeRoleId = "RO177",
+            };
+
+            var service = new OdsService(settings, memoryCacheMock.Object);
+
+            var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
+
+            result.Should().BeEmpty();
+            memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
+        }
+
+        private static string CreatePageJson(params ServiceRecipient[] serviceRecipients)
+        {
+            var recipientJson = serviceRecipients.Select(r => JsonSerializer.Serialize(r));
+            var json = string.Join(',', recipientJson);
+
+            return $@"{{""Organisations"": [{json}]}}";
         }
     }
 }
