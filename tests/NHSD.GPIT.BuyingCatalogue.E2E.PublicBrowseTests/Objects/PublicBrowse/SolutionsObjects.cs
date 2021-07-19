@@ -5,22 +5,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
 {
     internal static class SolutionsObjects
     {
-        public static By SolutionList => CustomBy.DataTestId("solution-cards");
+        public static By SolutionList => ByExtensions.DataTestId("solution-cards");
 
-        public static By SolutionsInList => CustomBy.DataTestId("solution-card");
+        public static By SolutionsInList => ByExtensions.DataTestId("solution-card");
 
-        public static By SolutionName => CustomBy.DataTestId("solution-card-name");
+        public static By SolutionName => ByExtensions.DataTestId("solution-card-name");
 
-        public static By SolutionSupplierName => CustomBy.DataTestId("solution-card-supplier");
+        public static By SolutionSupplierName => ByExtensions.DataTestId("solution-card-supplier");
 
-        public static By SolutionSummary => CustomBy.DataTestId("solution-card-summary");
+        public static By SolutionSummary => ByExtensions.DataTestId("solution-card-summary");
 
-        public static By SolutionCapabilityList => CustomBy.DataTestId("capability-list");
+        public static By SolutionCapabilityList => ByExtensions.DataTestId("capability-list");
 
-        public static By SolutionCapabilityName => CustomBy.DataTestId("capability-list-item");
+        public static By SolutionCapabilityName => ByExtensions.DataTestId("capability-list-item");
 
-        public static By FoundationSolutionIndicators => CustomBy.DataTestId("solution-card-foundation");
+        public static By FoundationSolutionIndicators => ByExtensions.DataTestId("solution-card-foundation");
 
-        public static By CompareSolutions => CustomBy.DataTestId("compare-button", "a");
+        public static By CompareSolutions => ByExtensions.DataTestId("compare-button", "a");
     }
 }

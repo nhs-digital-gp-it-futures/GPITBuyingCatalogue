@@ -9,27 +9,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By SupplierName => By.Id("SupplierId");
 
-        internal static By SolutionFrameworks => CustomBy.DataTestId("framework-names");
+        internal static By SolutionFrameworks => ByExtensions.DataTestId("framework-names");
 
         internal static By SaveSolutionButton => By.Id("Submit");
 
-        internal static By FoundationSolution => CustomBy.DataTestId("foundation-solution");
+        internal static By FoundationSolution => ByExtensions.DataTestId("foundation-solution");
 
         internal static By ManageSuppliersOrgsLink => By.LinkText("Manage suppliers organisations");
 
         internal static By AddSuppliersOrgLink => By.CssSelector(".nhsuk-action-link a");
 
-        internal static By SupplierOrgsTable => CustomBy.DataTestId("manage-suppliers-table");
+        internal static By SupplierOrgsTable => ByExtensions.DataTestId("manage-suppliers-table");
 
-        internal static By SupplierOrgRow => CustomBy.DataTestId("manage-suppliers-table");
+        internal static By SupplierOrgRow => ByExtensions.DataTestId("manage-suppliers-table");
 
-        internal static By SupplierEditLink => CustomBy.DataTestId("edit-link");
+        internal static By SupplierEditLink => ByExtensions.DataTestId("edit-link");
 
         internal static By AddSolutionLink => By.LinkText("Add a solution");
 
         internal static By CatalogueSolutionLink => By.LinkText("Manage Catalogue Solutions");
 
-        internal static By CatalogueSolutionTable => CustomBy.DataTestId("manage-catalogue-solution-list");
+        internal static By CatalogueSolutionTable => ByExtensions.DataTestId("manage-catalogue-solution-list");
 
         internal static By CatalogueSolutionFilter => By.ClassName("nhsuk-details");
 

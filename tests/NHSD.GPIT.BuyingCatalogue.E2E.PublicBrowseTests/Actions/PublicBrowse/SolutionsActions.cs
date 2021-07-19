@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         internal static void ClickSolutionName(IWebElement selectedSolution)
         {
-            selectedSolution.FindElement(CustomBy.DataTestId("solution-card-view-link")).FindElement(By.TagName("a")).Click();
+            selectedSolution.FindElement(ByExtensions.DataTestId("solution-card-view-link")).FindElement(By.TagName("a")).Click();
         }
 
         internal bool ListOfSolutionsDisplayed()

@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Ordering.OrderDescription.DescriptionInput));
+                Driver.FindElement(Objects.Ordering.OrderDescription.DescriptionInput);
                 return true;
             }
             catch
@@ -25,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
 
         internal bool DescriptionInputShowingError(string errorMessage)
         {
-            var errorSpanText = Driver.FindElement(By.XPath("//span[@data-valmsg-for=\"Description\"")).Text;
+            var errorSpanText = Driver.FindElement(ByExtensions.DataValMessage("Description")).Text;
 
             return errorSpanText == errorMessage;
         }
