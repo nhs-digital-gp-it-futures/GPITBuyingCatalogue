@@ -21,16 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin.EditSolution
 
             for (int i = 0; i < numFeatures; i++)
             {
-                var feature = Strings.RandomFeature().Replace(",", string.Empty);
+                var feature = Strings.RandomFeature();
 
                 if (feature.Length > 100)
                 {
                     feature = feature.Remove(100);
                 }
 
-                features.Add($"\"{feature}\"");
+                features.Add(feature);
 
-                Driver.FindElement(Objects.Admin.EditSolution.FeaturesObjects.FeatureInput(i+1)).SendKeys(feature);
+                Driver.FindElement(Objects.Admin.EditSolution.FeaturesObjects.FeatureInput(i + 1)).SendKeys(feature);
             }
 
             return features;
