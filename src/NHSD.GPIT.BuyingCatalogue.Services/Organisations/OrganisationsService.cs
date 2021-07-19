@@ -27,8 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (await organisationRepository.GetAllAsync(x => true)).OrderBy(x => x.Name).ToList();
         }
 
-        public async Task<Guid> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
+        public async Task<(Guid OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
         {
+            var persistedOrganisation = await organisationRepository.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode);
+
+            if (persistedOrganisation.Any())
+                return (Guid.Empty, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
+
             var organisation = new Organisation
             {
                 Address = odsOrganisation.Address,
@@ -44,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             await organisationRepository.SaveChangesAsync();
 
-            return organisation.OrganisationId;
+            return (organisation.OrganisationId, null);
         }
 
         public async Task<Organisation> GetOrganisation(Guid id)

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public FindOrganisationModel(string odsCode)
         {
             OdsCode = odsCode;
-            BackLink = "/admin/organisations";
+            BackLink = "/admin/buyer-organisations";
         }
 
         public string OdsCode { get; set; }
