@@ -16,11 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     {
         private const int DefaultCacheDuration = 60;
 
-        private readonly OdsSettings settings;
+        private readonly IOdsSettings settings;
         private readonly IMemoryCache memoryCache;
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
-        public OdsService(OdsSettings settings, IMemoryCache memoryCache)
+        public OdsService(IOdsSettings settings, IMemoryCache memoryCache)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DefaultCacheDuration));
         }
 
-        public async Task<OdsOrganisation> GetOrganisationByOdsCode(string odsCode)
+        public async Task<(OdsOrganisation Organisation, string Error)> GetOrganisationByOdsCode(string odsCode)
         {
             if (string.IsNullOrWhiteSpace(odsCode))
                 throw new ArgumentException(odsCode);
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             var key = $"ODS-{odsCode}";
 
             if (memoryCache.TryGetValue(key, out OdsOrganisation odsOrganisation))
-                return odsOrganisation;
+                return (odsOrganisation, null);
 
             var response = await settings.ApiBaseUrl
                 .AppendPathSegment("organisations")
@@ -57,14 +57,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             };
 
             if (odsOrganisation is null)
-                return null;
+                return (null, "Organisation not found");
 
-            // TODO
-            // if (!(odsOrganisation.IsActive && odsOrganisation.IsBuyerOrganisation))
-            //    return new StatusCodeResult(StatusCodes.Status406NotAcceptable);
+            if (!(odsOrganisation.IsActive && odsOrganisation.IsBuyerOrganisation))
+                return (null, "Not a buyer organisation");
+
             memoryCache.Set(key, odsOrganisation, memoryCacheOptions);
 
-            return odsOrganisation;
+            return (odsOrganisation, null);
         }
 
         public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentOdsCode(string odsCode)
