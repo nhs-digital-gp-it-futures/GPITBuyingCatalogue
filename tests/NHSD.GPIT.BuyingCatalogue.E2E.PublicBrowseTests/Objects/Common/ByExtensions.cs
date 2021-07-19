@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
         {
             var selectorString = $"[data-valmsg-for={valMessageContent}]".Trim();
 
+            selectorString = selectorString.Replace(".", "\\.");
+
             return By.CssSelector(selectorString);
         }
     }

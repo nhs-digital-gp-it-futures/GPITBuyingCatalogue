@@ -36,8 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             TextGenerators = new TextGenerators(Driver);
 
             uri = new Uri(factory.RootUri);
-            var combinedUri = new Uri(uri, urlArea);
-            Driver.Navigate().GoToUrl(combinedUri);
+
+            NavigateToUrl(urlArea);
         }
 
         public LocalWebApplicationFactory Factory { get; protected set; }
@@ -128,6 +128,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").Email;
                 AuthorizationPages.LoginActions.Login(user, DefaultPassword);
             }
+        }
+
+        internal void NavigateToUrl(string relativeUrl)
+        {
+            NavigateToUrl(new Uri(relativeUrl, UriKind.Relative));
+        }
+
+        internal void NavigateToUrl(Uri relativeUri)
+        {
+            var combinedUri = new Uri(uri, relativeUri);
+            Driver.Navigate().GoToUrl(combinedUri);
         }
     }
 }

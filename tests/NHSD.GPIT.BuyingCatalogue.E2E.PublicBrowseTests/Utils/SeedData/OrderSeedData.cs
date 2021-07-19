@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
@@ -15,6 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddOrderAtDescriptionStage(context);
+            AddOrderAtCallOffPartyStage(context);
+            AddOrderAtSupplierStage(context);
+            AddOrderAtCommencementDateStage(context);
             context.SaveChanges();
         }
 
@@ -34,6 +32,112 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = timenow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
+            };
+
+            var user = context.Users.Where(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId).FirstOrDefault();
+
+            order.SetLastUpdatedBy(
+                new Guid(user.Id),
+                $"{user.FirstName} {user.LastName}");
+
+            context.Add(order);
+        }
+
+        private static void AddOrderAtCallOffPartyStage(BuyingCatalogueDbContext context)
+        {
+            var orderId = 90001;
+            var timenow = DateTime.UtcNow;
+
+            var organisationId = context.Organisations.Where(o => o.OdsCode == "03F").FirstOrDefault().OrganisationId;
+
+            var order = new Order
+            {
+                Id = orderId,
+                Revision = 1,
+                CallOffId = new CallOffId(orderId, 1),
+                OrderingPartyId = organisationId,
+                Created = timenow,
+                OrderStatus = OrderStatus.Incomplete,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+            };
+
+            var user = context.Users.Where(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId).FirstOrDefault();
+
+            order.SetLastUpdatedBy(
+                new Guid(user.Id),
+                $"{user.FirstName} {user.LastName}");
+
+            context.Add(order);
+        }
+
+        private static void AddOrderAtSupplierStage(BuyingCatalogueDbContext context)
+        {
+            var orderId = 90002;
+            var timenow = DateTime.UtcNow;
+
+            var organisationId = context.Organisations.Where(o => o.OdsCode == "03F").FirstOrDefault().OrganisationId;
+
+            var order = new Order
+            {
+                Id = orderId,
+                Revision = 1,
+                CallOffId = new CallOffId(orderId, 1),
+                OrderingPartyId = organisationId,
+                Created = timenow,
+                OrderStatus = OrderStatus.Incomplete,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new()
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.com",
+                    Phone = "123456789",
+                },
+            };
+
+            var user = context.Users.Where(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId).FirstOrDefault();
+
+            order.SetLastUpdatedBy(
+                new Guid(user.Id),
+                $"{user.FirstName} {user.LastName}");
+
+            context.Add(order);
+        }
+
+        private static void AddOrderAtCommencementDateStage(BuyingCatalogueDbContext context)
+        {
+            var orderId = 90003;
+            var timenow = DateTime.UtcNow;
+
+            var organisationId = context.Organisations.Where(o => o.OdsCode == "03F").FirstOrDefault().OrganisationId;
+
+            var order = new Order
+            {
+                Id = orderId,
+                Revision = 1,
+                CallOffId = new CallOffId(orderId, 1),
+                OrderingPartyId = organisationId,
+                Created = timenow,
+                OrderStatus = OrderStatus.Incomplete,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new()
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = "99997",
+                SupplierContact = new()
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
             };
 
             var user = context.Users.Where(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId).FirstOrDefault();

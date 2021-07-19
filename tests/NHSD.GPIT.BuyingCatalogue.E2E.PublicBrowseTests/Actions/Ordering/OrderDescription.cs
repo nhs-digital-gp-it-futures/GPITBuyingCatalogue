@@ -1,5 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
@@ -24,11 +23,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
             }
         }
 
-        internal bool DescriptionInputShowingError(string errorMessage)
+        internal string DescriptionInputValue()
         {
-            var errorSpanText = Driver.FindElement(ByExtensions.DataValMessage("Description")).Text;
+            try
+            {
+                var element = Driver.FindElement(Objects.Ordering.OrderDescription.DescriptionInput);
+                return element.Text;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
 
-            return errorSpanText == errorMessage;
+        internal void DeleteDescriptionInputValue()
+        {
+            Driver.FindElement(Objects.Ordering.OrderDescription.DescriptionInput).Clear();
         }
     }
 }

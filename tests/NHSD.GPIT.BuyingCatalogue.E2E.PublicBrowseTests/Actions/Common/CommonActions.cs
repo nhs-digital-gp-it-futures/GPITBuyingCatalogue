@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -136,6 +137,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 
             var actionUrl = new Uri("https://www.fake.com/" + absoluteRoute, UriKind.Absolute);
 
+            if (driverUrl.Segments.Length != actionUrl.Segments.Length)
+                return false;
+
             for (int i = 0; i < actionUrl.Segments.Length; i++)
             {
                 if (!actionUrl.Segments[i].StartsWith("%7B"))
@@ -146,6 +150,53 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns if the referenced Element's Error message is equal to the Expected Error Message.
+        /// </summary>
+        /// <param name="dataValMessage">This will be the value of data-valmgs-for on the Error span when the elements is in error.</param>
+        /// <param name="errorMessage">the expected error message.</param>
+        /// <returns>true if error message is same as expected, false if not.</returns>
+        internal bool ElementShowingCorrectErrorMessage(string dataValMessage, string errorMessage)
+        {
+            return ElementShowingCorrectErrorMessage(ByExtensions.DataValMessage(dataValMessage), errorMessage);
+        }
+
+        /// <summary>
+        /// Returns if the referenced Element's Error message is equal to the Expected Error Message.
+        /// </summary>
+        /// <param name="targetElement">the element containing the error message.</param>
+        /// <param name="errorMessage">the expected error message.</param>
+        /// <returns>true if error message is same as expected, false if not.</returns>
+        internal bool ElementShowingCorrectErrorMessage(By targetElement, string errorMessage)
+        {
+            var errorSpanText = Driver.FindElement(targetElement).Text;
+
+            return errorSpanText == errorMessage;
+        }
+
+        internal bool ElementIsDisplayed(By targetElement)
+        {
+            try
+            {
+                return Driver.FindElement(targetElement).Displayed;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal bool ElementTextEqualToo(By targetElement, string expectedText)
+        {
+            return Driver.FindElement(targetElement).Text.Trim().Equals(expectedText.Trim(), StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        internal void ElementAddValue(By targetElement, string value)
+        {
+            Driver.FindElement(targetElement).Clear();
+            Driver.FindElement(targetElement).SendKeys(value);
         }
 
         internal string PageTitle()

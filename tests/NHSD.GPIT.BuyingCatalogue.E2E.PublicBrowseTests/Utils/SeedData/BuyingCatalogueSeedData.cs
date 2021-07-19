@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -1215,38 +1213,91 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // Suppliers
             List<Supplier> suppliers = new()
             {
-                new Supplier
+                new()
                 {
                     Id = "99999",
                     Name = "DFOCVC Supplier",
                     LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = Guid.Empty,
+                    LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
-                    Address = JsonConvert.DeserializeObject<Address>(@"{""line1"": ""DFOCVC Supplier Tower"", ""line2"": ""High Street"", ""city"": ""Leeds"", ""county"": ""West Yorkshire"", ""postcode"": ""LS1 1BB"", ""country"": ""UK""}"),
+                    Address = new()
+                    {
+                        Line1 = "DFOCVC Supplier Tower",
+                        Line2 = "High Street",
+                        Town = "Leeds",
+                        County = "West Yorkshire",
+                        Country = "UK",
+                    },
+                    SupplierContacts = new List<SupplierContact>
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Email = "test@test.com",
+                            FirstName = "Dave",
+                            LastName = "Smith",
+                            LastUpdated = DateTime.UtcNow,
+                            LastUpdatedBy = Guid.Empty,
+                            PhoneNumber = "00987654321",
+                            SupplierId = "99999",
+                        },
+                    },
                     Summary = "About this supplier",
+                    SupplierUrl = "https://www.e2etest.com",
+                },
+                new()
+                {
+                    Id = "99998",
+                    Name = "E2E Test Supplier With Contact",
+                    LastUpdated = DateTime.UtcNow,
+                    LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
+                    LegalName = "E2E Supplier WC",
+                    Deleted = false,
+                    Address = new()
+                    {
+                        Line1 = "E2E Test Supplier",
+                        Line2 = "High Street",
+                        Town = "Cardiff",
+                        County = "Cardiff",
+                        Country = "UK",
+                    },
+                    Summary = "About this Supplier",
+                    SupplierUrl = "https://www.e2etest.com",
+                    SupplierContacts = new List<SupplierContact>()
+                    {
+                        new()
+                        {
+                            Id = new Guid("49a57b7a-5ecf-484f-a4fc-7d2de0c1aa51"),
+                            SupplierId = "99998",
+                            FirstName = "Alice",
+                            LastName = "Smith",
+                            Email = "Alice.Smith@e2etest.com",
+                            PhoneNumber = "123456789",
+                        },
+                    },
+                },
+                new()
+                {
+                    Id = "99997",
+                    Name = "E2E Test Supplier",
+                    LastUpdated = DateTime.UtcNow,
+                    LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
+                    LegalName = "E2E Supplier",
+                    Deleted = false,
+                    Address = new()
+                    {
+                        Line1 = "E2E Test Supplier",
+                        Line2 = "High Street",
+                        Town = "Cardiff",
+                        County = "Cardiff",
+                        Country = "UK",
+                    },
+                    Summary = "About this Supplier",
                     SupplierUrl = "https://www.e2etest.com",
                 },
             };
             context.AddRange(suppliers);
-
-            // Supplier Contacts
-            var supplierContacts = new List<SupplierContact>
-            {
-                new SupplierContact
-                {
-                    Id = Guid.NewGuid(),
-                    Email = "test@test.com",
-                    FirstName = "Dave",
-                    LastName = "Smith",
-                    LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = Guid.Empty,
-                    PhoneNumber = "00987654321",
-                    SupplierId = "99999",
-                },
-            };
-
-            context.AddRange(supplierContacts);
 
             // TimeUnit
             List<Database.Models.TimeUnit> timeUnits = new()

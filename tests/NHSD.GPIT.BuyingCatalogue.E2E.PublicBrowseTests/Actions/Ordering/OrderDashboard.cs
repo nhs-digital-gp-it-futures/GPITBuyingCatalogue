@@ -14,21 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Driver.FindElement(Objects.Ordering.OrderDashboard.TaskList);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public bool OrderDescriptionLinkDisplayed()
-        {
-            try
-            {
-                Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionLink);
-                return true;
+                return Driver.FindElement(Objects.Ordering.OrderDashboard.TaskList).Displayed;
             }
             catch
             {
@@ -39,19 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         public void ClickOrderDescriptionLink()
         {
             Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionLink).Click();
-        }
-
-        public bool OrderDescriptionStatusDisplayed()
-        {
-            try
-            {
-                Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionStatus);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         public IWebElement GetOrderDescriptionStatus() => Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionStatus);
