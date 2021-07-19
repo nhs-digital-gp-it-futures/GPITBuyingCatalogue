@@ -11,6 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Authorization
 
         internal static By LoginButton => By.CssSelector("button[type=submit]");
 
-        internal static By LogoutLink => CustomBy.DataTestId("logout-link");
+        internal static By LogoutLink => ByExtensions.DataTestId("logout-link");
     }
 }

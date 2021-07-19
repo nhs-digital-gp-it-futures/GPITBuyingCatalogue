@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Common.CustomBy.DataTestId("incomplete-orders-table")));
+                Wait.Until(d => d.FindElement(Objects.Common.ByExtensions.DataTestId("incomplete-orders-table")));
                 return true;
             }
             catch
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Common.CustomBy.DataTestId("complete-orders-table")));
+                Wait.Until(d => d.FindElement(Objects.Common.ByExtensions.DataTestId("complete-orders-table")));
                 return true;
             }
             catch

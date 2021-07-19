@@ -1,16 +1,24 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
     public sealed class OrganisationDashboard
-        : TestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private static readonly Dictionary<string, string> Parameters = new() { { "OdsCode", "03F" } };
+
         public OrganisationDashboard(LocalWebApplicationFactory factory)
-            : base(factory, "order/organisation/03F")
+            : base(
+                  factory,
+                  typeof(DashboardController),
+                  nameof(DashboardController.Organisation),
+                  Parameters)
         {
-            BuyerLogin();
         }
 
         [Fact]
@@ -25,7 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrganisationDashboard_CreateOrder_Click()
         {
             OrderingPages.OrganisationDashboard.ClickCreateNewOrder();
-            CommonActions.PageTitle().Should().BeEquivalentTo("New Order");
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.NewOrder)).Should().BeTrue();
         }
     }
 }

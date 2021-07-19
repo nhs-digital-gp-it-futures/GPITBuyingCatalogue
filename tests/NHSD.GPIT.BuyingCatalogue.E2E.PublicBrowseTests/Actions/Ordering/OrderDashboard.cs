@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Ordering.OrderDashboard.TaskList));
+                Driver.FindElement(Objects.Ordering.OrderDashboard.TaskList);
                 return true;
             }
             catch
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionLink));
+                Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionLink);
                 return true;
             }
             catch
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionStatus));
+                Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionStatus);
                 return true;
             }
             catch

@@ -10,8 +10,9 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {
     public abstract class TestBase
     {
@@ -30,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             AdminPages = new AdminPages(Driver).PageActions;
             OrderingPages = new OrderingPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
+            Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
 
             TextGenerators = new TextGenerators(Driver);
 
@@ -41,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         public LocalWebApplicationFactory Factory { get; protected set; }
 
         public IWebDriver Driver { get; protected set; }
+
+        internal WebDriverWait Wait { get; private set; }
 
         internal Actions.Common.CommonActions CommonActions { get; }
 

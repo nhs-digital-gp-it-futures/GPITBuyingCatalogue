@@ -5,9 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 {
     internal static class AddUserObjects
     {
-        internal static By ConfirmationTitle => CustomBy.DataTestId("add-user-confirmation-page-title");
+        internal static By ConfirmationTitle => ByExtensions.DataTestId("add-user-confirmation-page-title");
 
-        internal static By AddUserButton => CustomBy.DataTestId("add-user-button", "button");
+        internal static By AddUserButton => ByExtensions.DataTestId("add-user-button", "button");
 
         internal static By FirstName => By.Id("FirstName");
 

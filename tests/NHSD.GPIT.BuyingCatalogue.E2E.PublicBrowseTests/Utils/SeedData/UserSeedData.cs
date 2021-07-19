@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
     internal static class UserSeedData
     {
