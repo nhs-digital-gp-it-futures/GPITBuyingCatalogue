@@ -25,9 +25,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void NewOrderDashboard_AllSectionsDisplayed()
         {
             CommonActions.PageTitle().Should().BeEquivalentTo("New Order");
-            OrderingPages.OrderDashboard.TaskListDisplayed().Should().BeTrue();
-            OrderingPages.OrderDashboard.OrderDescriptionLinkDisplayed().Should().BeTrue();
-            OrderingPages.OrderDashboard.OrderDescriptionStatusDisplayed().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.TaskList)
+                .Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.OrderDescriptionLink)
+                .Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.OrderDescriptionStatus)
+                .Should().BeTrue();
         }
 
         [Fact]
@@ -37,7 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderDescriptionController),
-                nameof(OrderDescriptionController.NewOrderDescription)).Should().BeTrue();
+                nameof(OrderDescriptionController.NewOrderDescription))
+                    .Should().BeTrue();
         }
     }
 }

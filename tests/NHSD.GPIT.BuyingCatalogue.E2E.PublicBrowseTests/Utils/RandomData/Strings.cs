@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using System;
+using Bogus;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData
 {
@@ -21,6 +22,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData
         {
             var faker = new Faker("en_GB");
             return faker.Rant.Review();
+        }
+
+        internal static string RandomEmail(int numChars)
+        {
+            var faker = new Faker("en_GB");
+            var email = faker.Internet.Email();
+            return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email);
+        }
+
+        internal static DateTime RandomDateSoon()
+        {
+            var faker = new Faker("en_GB");
+            return faker.Date.Soon(5);
         }
     }
 }

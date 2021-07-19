@@ -1,47 +1,55 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
-    public sealed class NewOrderDescription
+    public sealed class OrderDescription
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private static readonly Dictionary<string, string> Parameters = new() { { "OdsCode", "03F" } };
+        private static readonly CallOffId CallOffId = new(90001, 1);
 
-        public NewOrderDescription(LocalWebApplicationFactory factory)
+        private static readonly Dictionary<string, string> Parameters = new() { { "OdsCode", "03F" }, { "CallOffId", CallOffId.ToString() } };
+
+        public OrderDescription(LocalWebApplicationFactory factory)
             : base(
-                  factory,
-                  typeof(OrderDescriptionController),
-                  nameof(OrderDescriptionController.NewOrderDescription),
-                  Parameters)
+                 factory,
+                 typeof(OrderDescriptionController),
+                 nameof(OrderDescriptionController.OrderDescription),
+                 Parameters)
         {
         }
 
         [Fact]
-        public void NewOrderDescription_AllSectionsDisplayed()
+        public async Task OrderDescription_AllSectionsDisplayed()
         {
             CommonActions.PageTitle().Should().BeEquivalentTo("Order description");
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             OrderingPages.OrderDescription.DescriptionInputDisplayed().Should().BeTrue();
+
+            await using var context = GetEndToEndDbContext();
+            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
+
+            OrderingPages.OrderDescription.DescriptionInputValue().Should().BeEquivalentTo(order.Description);
         }
 
         [Fact]
-        public void NewOrderDescription_NoTextThrowsError()
+        public void OrderDescription_DeletingAndSaving_ShouldError()
         {
+            OrderingPages.OrderDescription.DeleteDescriptionInputValue();
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderDescriptionController),
-                nameof(OrderDescriptionController.NewOrderDescription))
-                    .Should().BeTrue();
+                nameof(OrderDescriptionController.OrderDescription));
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
 
@@ -50,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public async Task NewOrderDescription_InputText_CreatesOrder()
+        public async Task OrderDescription_InputText_UpdatesDescription()
         {
             var description = TextGenerators.TextInputAddText(Objects.Ordering.OrderDescription.DescriptionInput, 100);
 
@@ -61,9 +69,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(OrderController.Order)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var order = await context.Orders.OrderByDescending(o => o.Created).FirstAsync();
+            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
 
-            order.Description.Should().Be(description);
+            order.Description.Should().BeEquivalentTo(description);
         }
     }
 }

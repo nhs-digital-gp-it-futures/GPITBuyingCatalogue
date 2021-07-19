@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -25,10 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
             }
         }
 
+        [StringLength(2)]
         public string Day { get; set; }
 
+        [StringLength(2)]
         public string Month { get; set; }
 
+        [StringLength(4)]
         public string Year { get; set; }
 
         public (DateTime? Date, string Error) ToDateTime()

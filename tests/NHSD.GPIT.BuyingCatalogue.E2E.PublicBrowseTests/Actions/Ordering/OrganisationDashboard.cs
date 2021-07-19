@@ -14,8 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Ordering.OrganisationDashboard.CreateOrderLink));
-                return true;
+                return Driver.FindElement(Objects.Ordering.OrganisationDashboard.CreateOrderLink).Displayed;
             }
             catch
             {
@@ -27,8 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Common.ByExtensions.DataTestId("incomplete-orders-table")));
-                return true;
+                return Driver.FindElement(Objects.Common.ByExtensions.DataTestId("incomplete-orders-table")).Displayed;
             }
             catch
             {
@@ -40,8 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             try
             {
-                Wait.Until(d => d.FindElement(Objects.Common.ByExtensions.DataTestId("complete-orders-table")));
-                return true;
+                return Driver.FindElement(Objects.Common.ByExtensions.DataTestId("complete-orders-table")).Displayed;
             }
             catch
             {
