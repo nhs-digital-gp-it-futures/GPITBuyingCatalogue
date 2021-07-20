@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class AddUserConfirmationModel : NavBaseModel
+    public sealed class AddUserConfirmationModel : NavBaseModel
     {
         public AddUserConfirmationModel(string userName, Guid organisationId)
         {

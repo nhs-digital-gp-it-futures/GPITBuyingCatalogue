@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class RemoveAnOrganisationModel : NavBaseModel
+    public sealed class RemoveAnOrganisationModel : NavBaseModel
     {
         public RemoveAnOrganisationModel()
         {

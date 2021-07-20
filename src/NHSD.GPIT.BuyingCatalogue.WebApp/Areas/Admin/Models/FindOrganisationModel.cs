@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class FindOrganisationModel : NavBaseModel
+    public sealed class FindOrganisationModel : NavBaseModel
     {
         public FindOrganisationModel()
         {

@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class AddAnOrganisationErrorModel : NavBaseModel
+    public sealed class AddAnOrganisationErrorModel : NavBaseModel
     {
         public AddAnOrganisationErrorModel()
         {

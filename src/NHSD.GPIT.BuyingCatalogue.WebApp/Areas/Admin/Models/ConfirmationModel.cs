@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class ConfirmationModel : NavBaseModel
+    public sealed class ConfirmationModel : NavBaseModel
     {
         public ConfirmationModel(string organisationName)
         {
