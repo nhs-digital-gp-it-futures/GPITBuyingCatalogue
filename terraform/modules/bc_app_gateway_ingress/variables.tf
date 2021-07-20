@@ -41,3 +41,7 @@ variable "managed_id_principal_id" {
 variable "app_service_hostname" {
   type = string
 }
+
+variable "app_dns_url" {
+  type = string
+}

@@ -15,6 +15,7 @@ module "appgateway" {
   dns_name                = "gpitfbuyingcatalogue${local.shortenv}"
   pip_name                = "${var.project}-${var.environment}-publicip"
   app_service_hostname    = module.webapp.webapp_default_site_hostname
+  app_dns_url             = var.app_url
   
   depends_on = [
     azurerm_user_assigned_identity.managed_id
