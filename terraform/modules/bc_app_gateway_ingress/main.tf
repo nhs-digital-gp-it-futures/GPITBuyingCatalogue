@@ -35,7 +35,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     path                                = "/"
     port                                = 80
     protocol                            = "Http"
-    request_timeout                     = 1
+    request_timeout                     = 5
     pick_host_name_from_backend_address = true
   }
 
@@ -117,7 +117,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
       response_header_configuration {
         header_name  = "Location"
-        header_value = "{http_resp_Location_1}://platform.dynamic.buyingcatalogue.digital.nhs.uk{http_resp_Location_2}"
+        header_value = "{http_resp_Location_1}://${var.app_dns_url}{http_resp_Location_2}"
       }
     }
   }
