@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             repositoryMock.Setup(r => r.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode))
-                .ReturnsAsync(new Organisation[] { organisation });
+                .ReturnsAsync(new[] { organisation });
 
             (Guid orgId, var error) = await service.AddOdsOrganisation(odsOrganisation, agreementSigned);
 

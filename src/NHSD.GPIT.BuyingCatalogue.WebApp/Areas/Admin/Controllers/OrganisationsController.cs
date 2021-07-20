@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("find")]
         public async Task<IActionResult> Find(FindOrganisationModel model)
         {
-            (var organisation, var error) = await odsService.GetOrganisationByOdsCode(model.OdsCode);
+            var (organisation, error) = await odsService.GetOrganisationByOdsCode(model.OdsCode);
 
             if (organisation is null)
                 ModelState.AddModelError(nameof(model.OdsCode), error);
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select")]
         public async Task<IActionResult> Select(string ods)
         {
-            (var organisation, _) = await odsService.GetOrganisationByOdsCode(ods);
+            var (organisation, _) = await odsService.GetOrganisationByOdsCode(ods);
 
             return View(new SelectOrganisationModel(organisation));
         }
@@ -129,9 +129,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            (var organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
+            var (organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            (var orgId, var error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId,  error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
 
             if (orgId == Guid.Empty)
             {

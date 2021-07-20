@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class DescriptionModel : MarketingBaseModel
+    public sealed class DescriptionModel : MarketingBaseModel
     {
         public DescriptionModel()
             : base(null)

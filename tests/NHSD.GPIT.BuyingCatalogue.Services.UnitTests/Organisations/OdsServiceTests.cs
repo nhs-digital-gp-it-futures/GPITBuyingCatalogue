@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var settings = new OdsSettings
             {
                 ApiBaseUrl = "https://spineservice",
-                BuyerOrganisationRoleIds = new string[] { "RO98", "RO177", "RO213", "RO272" },
+                BuyerOrganisationRoleIds = new[] { "RO98", "RO177", "RO213", "RO272" },
             };
 
             var service = new OdsService(settings, memoryCacheMock.Object);
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             object expectedValue = null;
             memoryCacheMock
-                .Setup(x => x.TryGetValue($"ODS-{OdsCode}", out expectedValue))
+                .Setup(m => m.TryGetValue($"ODS-{OdsCode}", out expectedValue))
                 .Returns(false);
 
             memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var settings = new OdsSettings
             {
                 ApiBaseUrl = "https://spineservice",
-                BuyerOrganisationRoleIds = new string[] { "X123" },
+                BuyerOrganisationRoleIds = new[] { "X123" },
             };
 
             var service = new OdsService(settings, memoryCacheMock.Object);
@@ -237,12 +237,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Never);
         }
 
-        [Fact]
-        public static async Task GetServiceRecipientsByParentOdsCode_SinglePage_ReturnsOrganisation()
+        [Theory]
+        [CommonAutoData]
+        public static async Task GetServiceRecipientsByParentOdsCode_SinglePage_ReturnsOrganisation(
+            string odsCode,
+            ServiceRecipient childOrg)
         {
-            var odsCode = "123";
+            childOrg.PrimaryRoleId = "RO177";
 
-            var childOrg = new ServiceRecipient { Name = "Organisation 1", PrimaryRoleId = "RO177", OrgId = "ABC" };
             var json = CreatePageJson(childOrg);
 
             using var httpTest = new HttpTest();
@@ -272,13 +274,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
 
-        [Fact]
-        public static async Task GetServiceRecipientsByParentOdsCode_MultiplePages_ReturnsOrganisation()
+        [Theory]
+        [CommonAutoData]
+        public static async Task GetServiceRecipientsByParentOdsCode_MultiplePages_ReturnsOrganisation(
+            string odsCode,
+            ServiceRecipient childOne,
+            ServiceRecipient childTwo)
         {
-            var odsCode = "123";
-
-            var childOne = new ServiceRecipient { Name = "Organisation 1", PrimaryRoleId = "RO177", OrgId = "ABC" };
-            var childTwo = new ServiceRecipient { Name = "Organisation 2", PrimaryRoleId = "RO177", OrgId = "ABD" };
+            childOne.PrimaryRoleId = "RO177";
+            childTwo.PrimaryRoleId = "RO177";
             var jsonPageOne = CreatePageJson(childOne);
             var jsonPageTwo = CreatePageJson(childTwo);
             var jsonPageThree = CreatePageJson();
@@ -312,13 +316,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
 
-        [Fact]
-        public static async Task GetServiceRecipientsByParentOdsCode_SinglePageDifferentRoleIds_ReturnsOnlyMatching()
+        [Theory]
+        [CommonAutoData]
+        public static async Task GetServiceRecipientsByParentOdsCode_SinglePageDifferentRoleIds_ReturnsOnlyMatching(
+            string odsCode,
+            ServiceRecipient childOne,
+            ServiceRecipient childTwo)
         {
-            var odsCode = "123";
-
-            var childOne = new ServiceRecipient { Name = "Organisation 1", PrimaryRoleId = "RO177", OrgId = "ABC" };
-            var childTwo = new ServiceRecipient { Name = "Organisation 2", PrimaryRoleId = "RO178", OrgId = "ABD" };
+            childOne.PrimaryRoleId = "RO177";
+            childTwo.PrimaryRoleId = "RO178";
             var jsonPageOne = CreatePageJson(childOne, childTwo);
 
             using var httpTest = new HttpTest();
@@ -348,11 +354,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
 
-        [Fact]
-        public static async Task GetServiceRecipientsByParentOdsCode_NoOrganisations_ReturnsEmptyList()
+        [Theory]
+        [CommonAutoData]
+        public static async Task GetServiceRecipientsByParentOdsCode_NoOrganisations_ReturnsEmptyList(
+            string odsCode)
         {
-            var odsCode = "123";
-
             using var httpTest = new HttpTest();
             httpTest.RespondWith(status: 200, body: CreatePageJson());
 

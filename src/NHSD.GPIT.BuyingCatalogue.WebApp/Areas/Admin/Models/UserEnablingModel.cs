@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class UserEnablingModel : NavBaseModel
+    public sealed class UserEnablingModel : NavBaseModel
     {
         public UserEnablingModel(Organisation organisation, AspNetUser user)
         {
