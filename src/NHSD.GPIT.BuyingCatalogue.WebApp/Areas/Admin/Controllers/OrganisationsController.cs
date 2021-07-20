@@ -79,13 +79,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("find")]
-        public IActionResult Find(FindOrganisationModel model)
+        public async Task<IActionResult> Find(FindOrganisationModel model)
         {
+            var (organisation, error) = await odsService.GetOrganisationByOdsCode(model.OdsCode);
+
+            if (organisation is null)
+                ModelState.AddModelError(nameof(model.OdsCode), error);
+
             if (!ModelState.IsValid)
                 return View(model);
 
-            // TODO - Check ODS code has not already been added
-            // TODO - Check the ODS code is valid
             return RedirectToAction(
                 nameof(Select),
                 typeof(OrganisationsController).ControllerName(),
@@ -95,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select")]
         public async Task<IActionResult> Select(string ods)
         {
-            var organisation = await odsService.GetOrganisationByOdsCode(ods);
+            var (organisation, _) = await odsService.GetOrganisationByOdsCode(ods);
 
             return View(new SelectOrganisationModel(organisation));
         }
@@ -115,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select/create")]
         public async Task<IActionResult> Create(string ods)
         {
-            var organisation = await odsService.GetOrganisationByOdsCode(ods);
+            (var organisation, _) = await odsService.GetOrganisationByOdsCode(ods);
 
             return View(new CreateOrganisationModel(organisation));
         }
@@ -126,13 +129,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var organisation = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
-            var orgId = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
+
+            var (orgId,  error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
+
+            if (orgId == Guid.Empty)
+            {
+                return RedirectToAction(
+                    nameof(Error),
+                    typeof(OrganisationsController).ControllerName(),
+                    new { model.OdsOrganisation.OdsCode, error });
+            }
 
             return RedirectToAction(
                 nameof(Confirmation),
                 typeof(OrganisationsController).ControllerName(),
                 new { id = orgId.ToString() });
+        }
+
+        [HttpGet("find/select/create/error")]
+        public IActionResult Error(string odsCode, string error)
+        {
+            return View(new AddAnOrganisationErrorModel(odsCode, error));
         }
 
         [HttpGet("find/select/create/confirmation")]

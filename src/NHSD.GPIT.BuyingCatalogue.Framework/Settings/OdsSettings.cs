@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class OdsSettings
     {
         public string ApiBaseUrl { get; set; }

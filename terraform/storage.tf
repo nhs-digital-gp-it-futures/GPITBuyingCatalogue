@@ -9,7 +9,7 @@ module "storage_account" {
   replication_type     = "grs"
   container_name       = "documents"
 
-  vnet_subnet_id       = azurerm_subnet.gateway.id
+  vnet_subnet_id       = azurerm_subnet.backend.id
   kv_id                = local.kv_id
   kv_key               = "${var.project}${var.environment}-storage-constring"
 

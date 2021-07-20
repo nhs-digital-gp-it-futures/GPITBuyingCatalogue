@@ -99,3 +99,7 @@ variable "smtp_server_host" {
 variable "smtp_server_port" {
   type = string
 }
+
+variable "vnet_subnet_id" {
+  type = string
+}
