@@ -98,14 +98,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.SaveChanges();
         }
 
-        internal void ClearRoadmap(CatalogueItemId solutionId)
-        {
-            using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.Id == solutionId);
-            solution.RoadMap = string.Empty;
-            context.SaveChanges();
-        }
-
         internal void Login()
         {
             if (AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
