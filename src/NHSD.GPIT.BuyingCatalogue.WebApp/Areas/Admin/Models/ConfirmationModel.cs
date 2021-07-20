@@ -2,12 +2,12 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class ConfirmationModel : NavBaseModel
+    public sealed class ConfirmationModel : NavBaseModel
     {
         public ConfirmationModel(string organisationName)
         {
             Name = organisationName;
-            BackLink = "/admin/organisations";
+            BackLink = "/admin/buyer-organisations";
             BackLinkText = "Back to dashboard";
         }
 

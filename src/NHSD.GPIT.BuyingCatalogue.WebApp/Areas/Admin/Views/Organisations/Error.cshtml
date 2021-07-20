@@ -1,0 +1,10 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddAnOrganisationErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="nhsuk-width-container" data-test-id="create-org-error-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <h1 data-test-id="create-org-error-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Error</h1>
+    <p data-test-id="create-org-error-page-description" class="nhsuk-heading-l nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">@Model.Error</p>
+</div>
