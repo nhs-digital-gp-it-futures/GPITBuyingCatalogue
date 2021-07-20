@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
@@ -30,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Features(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new FeaturesModel().FromCatalogueItem(solution));
@@ -88,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new DescriptionModel(solution));
@@ -116,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new ImplementationTimescaleModel(solution));
@@ -141,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Roadmap(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new RoadmapModel().FromCatalogueItem(solution));
@@ -157,6 +158,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }
 
             await solutionsService.SaveRoadMap(solutionId, model.Link);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/hosting-type")]
+        public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new HostingTypeSectionModel(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/hosting-type")]
+        public async Task<IActionResult> HostingType(CatalogueItemId solutionId, HostingTypeSectionModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+
+            Hosting hosting = new Hosting
+            {
+                PublicCloud = catalogueItem.Solution?.GetHosting()?.PublicCloud,
+                PrivateCloud = catalogueItem.Solution?.GetHosting()?.PrivateCloud,
+                HybridHostingType = catalogueItem.Solution?.GetHosting()?.HybridHostingType,
+                OnPremise = catalogueItem.Solution?.GetHosting()?.OnPremise,
+            };
+
+            await solutionsService.SaveHosting(solutionId, hosting);
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
