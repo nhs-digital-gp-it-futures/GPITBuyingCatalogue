@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -243,6 +246,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddDataProtection()
                 .SetApplicationName(dataProtectionAppName)
                 .PersistKeysToDbContext<BuyingCatalogueDbContext>();
+        }
+
+        public static void ConfigureResponseCompression(this IServiceCollection services)
+        {
+            services.AddResponseCompression(opt =>
+            {
+                opt.Providers.Add<GzipCompressionProvider>();
+                opt.Providers.Add<BrotliCompressionProvider>();
+                opt.EnableForHttps = true;
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
         }
     }
 }
