@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -76,8 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
 
-                // TODO: - This will need addressing. Its causing issues due to SSL termination in Azure
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
                 options.AccessDeniedPath = "/404";
@@ -85,8 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddAntiforgery(options =>
             {
-                // TODO: - This will need addressing. Its causing issues due to SSL termination in Azure
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.Name = "antiforgery";
             });
         }
@@ -245,6 +246,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddDataProtection()
                 .SetApplicationName(dataProtectionAppName)
                 .PersistKeysToDbContext<BuyingCatalogueDbContext>();
+        }
+
+        public static void ConfigureResponseCompression(this IServiceCollection services)
+        {
+            services.AddResponseCompression(opt =>
+            {
+                opt.Providers.Add<GzipCompressionProvider>();
+                opt.Providers.Add<BrotliCompressionProvider>();
+                opt.EnableForHttps = true;
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
         }
     }
 }

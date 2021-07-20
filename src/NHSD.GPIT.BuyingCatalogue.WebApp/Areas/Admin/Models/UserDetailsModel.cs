@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class UserDetailsModel : NavBaseModel
+    public sealed class UserDetailsModel : NavBaseModel
     {
         public UserDetailsModel()
         {

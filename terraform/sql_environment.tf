@@ -18,7 +18,7 @@ resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
   name                = "${var.project}-${var.environment}-subnet-rule"
   resource_group_name = azurerm_resource_group.sql-primary.name
   server_name         = "${var.project}-${var.environment}-sql-primary"
-  subnet_id           = azurerm_subnet.gateway.id
+  subnet_id           = azurerm_subnet.backend.id
 
   depends_on = [
     module.sql_server_pri
