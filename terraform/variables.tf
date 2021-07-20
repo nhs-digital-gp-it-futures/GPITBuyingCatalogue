@@ -37,6 +37,13 @@ variable "vnet_address_space" {
   type = string
 }
 
+variable "vnet_gateway_address_space" {
+  type = string
+}
+
+variable "vnet_backend_address_space" {
+  type = string
+}
 variable "primary_vpn" {
   type = string
 }
