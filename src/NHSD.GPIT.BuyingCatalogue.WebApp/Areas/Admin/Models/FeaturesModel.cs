@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public sealed class FeaturesModel
+    public class FeaturesModel
     {
         [StringLength(100)]
         public string Feature01 { get; set; }
