@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     new AutoMoqCustomization(),
                     new AddSolutionModelCustomization(),
                     new CreateSolutionModelCustomization(),
+                    new OrderEntityCustomization(),
                     new CallOffIdCustomization(),
                     new CatalogueItemIdCustomization(),
                     new ControllerBaseCustomization(),

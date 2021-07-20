@@ -12,11 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
         }
 
-        internal string PageTitle()
-        {
-            return Driver.FindElement(CommonObjects.PageTitle).Text;
-        }
-
         internal void ClickGoBackLink()
         {
             Driver.FindElement(CommonObjects.GoBackLink).Click();

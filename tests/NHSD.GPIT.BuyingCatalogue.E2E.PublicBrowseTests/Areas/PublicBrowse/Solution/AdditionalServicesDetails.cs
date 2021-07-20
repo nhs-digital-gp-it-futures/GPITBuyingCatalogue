@@ -22,7 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             await using var context = GetEndToEndDbContext();
             var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).Name;
-            PublicBrowsePages.SolutionAction.AdditionalServicesNameDisplayed().Should().BeEquivalentTo($"additional services - {pageTitle}");
+            CommonActions.PageTitle()
+                .Should()
+                .BeEquivalentTo(CommonActions.FormatStringForComparison($"additional services - {pageTitle}"));
         }
 
         [Fact]

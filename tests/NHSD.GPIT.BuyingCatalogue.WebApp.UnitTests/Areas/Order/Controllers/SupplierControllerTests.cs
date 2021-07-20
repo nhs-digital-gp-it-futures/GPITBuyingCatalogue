@@ -161,6 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var fixture = new Fixture().Customize(new CompositeCustomization(
                 new AutoMoqCustomization(),
                 new CreateSolutionModelCustomization(),
+                new OrderEntityCustomization(),
                 new CallOffIdCustomization(),
                 new CatalogueItemIdCustomization(),
                 new ControllerBaseCustomization(),

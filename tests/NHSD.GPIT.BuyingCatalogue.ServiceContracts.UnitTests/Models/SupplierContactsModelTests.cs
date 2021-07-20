@@ -38,8 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             var fixture = new Fixture();
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            fixture.Customize(new CallOffIdCustomization());
-            fixture.Customize(new CatalogueItemIdCustomization());
+            fixture
+                .Customize(new OrderEntityCustomization())
+                .Customize(new CatalogueItemIdCustomization())
+                .Customize(new CallOffIdCustomization());
+
             var model = fixture.Create<SupplierContactsModel>();
 
             model.SetSolutionId();

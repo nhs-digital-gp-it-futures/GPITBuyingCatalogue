@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
@@ -16,7 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public byte Revision { get; set; }
 
-        public CallOffId CallOffId { get; set; }
+        [NotMapped]
+        public CallOffId CallOffId => new(Id, Revision);
 
         public string Description { get; set; }
 
