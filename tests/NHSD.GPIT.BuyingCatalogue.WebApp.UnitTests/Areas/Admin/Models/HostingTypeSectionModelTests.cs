@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Fact]
         public static void StatusHostingType_NoCloudTypeAdded_ReturnsNotStarted()
         {
-            var model = new HostingTypeSectionModel { };
+            var model = new HostingTypeSectionModel();
 
             var actual = model.StatusHostingType();
 

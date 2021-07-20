@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Features(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new FeaturesModel().FromCatalogueItem(solution));
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new DescriptionModel(solution));
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new ImplementationTimescaleModel(solution));
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> Roadmap(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new RoadmapModel().FromCatalogueItem(solution));
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new HostingTypeSectionModel(solution));
