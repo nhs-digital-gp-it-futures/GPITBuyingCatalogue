@@ -29,9 +29,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             Response.Cookies.Append(
                 Cookies.BuyingCatalogueConsent,
                 cookieDataString,
-                new CookieOptions { Expires = DateTime.Now.Add(cookieExpiration.ConsentExpiration), });
+                new CookieOptions
+                {
+                    Expires = DateTime.Now.Add(cookieExpiration.ConsentExpiration),
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                });
 
-            return Redirect(Request.GetTypedHeaders().Referer.ToString());
+            return Redirect(Request.GetTypedHeaders().Referer is null ? "~/" : Request.GetTypedHeaders().Referer.ToString());
         }
     }
 }
