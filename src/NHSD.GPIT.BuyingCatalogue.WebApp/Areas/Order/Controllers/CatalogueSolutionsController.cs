@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions;
@@ -22,25 +20,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
-        private readonly IOdsService odsService;
         private readonly IOrderItemService orderItemService;
-        private readonly IDefaultDeliveryDateService defaultDeliveryDateService;
         private readonly IOrderSessionService orderSessionService;
 
-        // TODO: too many dependencies, i.e. too many responsibilities
         public CatalogueSolutionsController(
             IOrderService orderService,
             ISolutionsService solutionsService,
-            IOdsService odsService,
             IOrderItemService orderItemService,
-            IDefaultDeliveryDateService defaultDeliveryDateService,
             IOrderSessionService orderSessionService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
-            this.defaultDeliveryDateService = defaultDeliveryDateService ?? throw new ArgumentNullException(nameof(defaultDeliveryDateService));
             this.orderSessionService = orderSessionService ?? throw new ArgumentNullException(nameof(orderSessionService));
         }
 
@@ -107,8 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 orderSessionService.SetOrderStateToSession(state);
 
                 return RedirectToAction(
-                    nameof(SelectSolutionServiceRecipients),
-                    typeof(CatalogueSolutionsController).ControllerName(),
+                    nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
+                    typeof(CatalogueSolutionRecipientsController).ControllerName(),
                     new { odsCode, callOffId });
             }
 
@@ -148,111 +139,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             orderSessionService.SetPrice(callOffId, cataloguePrice);
 
             return RedirectToAction(
-                nameof(SelectSolutionServiceRecipients),
-                typeof(CatalogueSolutionsController).ControllerName(),
+                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
+                typeof(CatalogueSolutionRecipientsController).ControllerName(),
                 new { odsCode, callOffId });
-        }
-
-        [HttpGet("select/solution/price/recipients")]
-        public async Task<IActionResult> SelectSolutionServiceRecipients(string odsCode, CallOffId callOffId, string selectionMode)
-        {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            if (state.ServiceRecipients is null)
-            {
-                var recipients = await odsService.GetServiceRecipientsByParentOdsCode(odsCode);
-                state.ServiceRecipients = recipients.Select(x => new OrderItemRecipientModel(x)).ToList();
-                orderSessionService.SetOrderStateToSession(state);
-            }
-
-            return View(new SelectSolutionServiceRecipientsModel(
-                odsCode,
-                callOffId,
-                state.CatalogueItemName,
-                state.ServiceRecipients,
-                selectionMode,
-                state.IsNewSolution,
-                state.CatalogueItemId.GetValueOrDefault()));
-        }
-
-        [HttpPost("select/solution/price/recipients")]
-        public IActionResult SelectSolutionServiceRecipients(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsModel model)
-        {
-            if (!model.ServiceRecipients.Any(sr => sr.Selected))
-                ModelState.AddModelError("ServiceRecipients[0].Selected", "Select a Service Recipient");
-
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            state.ServiceRecipients = model.ServiceRecipients;
-
-            orderSessionService.SetOrderStateToSession(state);
-
-            if (!state.IsNewSolution)
-            {
-                return RedirectToAction(
-                    nameof(EditSolution),
-                    typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId, state.CatalogueItemId });
-            }
-
-            return RedirectToAction(
-                nameof(SelectSolutionServiceRecipientsDate),
-                typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId });
-        }
-
-        [HttpGet("select/solution/price/recipients/date")]
-        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId)
-        {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            var defaultDeliveryDate = await defaultDeliveryDateService.GetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault());
-
-            return View(new SelectSolutionServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate));
-        }
-
-        [HttpPost("select/solution/price/recipients/date")]
-        public async Task<IActionResult> SelectSolutionServiceRecipientsDate(string odsCode, CallOffId callOffId, SelectSolutionServiceRecipientsDateModel model)
-        {
-            var state = orderSessionService.GetOrderStateFromSession(callOffId);
-
-            (DateTime? date, var error) = model.ToDateTime();
-
-            if (error is not null)
-                ModelState.AddModelError("Day", error);
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            state.PlannedDeliveryDate = date;
-
-            await defaultDeliveryDateService.SetDefaultDeliveryDate(callOffId, state.CatalogueItemId.GetValueOrDefault(), date.Value);
-
-            orderSessionService.SetOrderStateToSession(state);
-
-            if (state.CataloguePrice.ProvisioningType == ProvisioningType.Declarative)
-            {
-                return RedirectToAction(
-                    nameof(SelectFlatDeclarativeQuantity),
-                    typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId });
-            }
-
-            if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
-            {
-                return RedirectToAction(
-                    nameof(SelectFlatOnDemandQuantity),
-                    typeof(CatalogueSolutionsController).ControllerName(),
-                    new { odsCode, callOffId });
-            }
-
-            return RedirectToAction(
-                nameof(EditSolution),
-                typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId, state.CatalogueItemId });
         }
 
         [HttpGet("select/solution/price/flat/declarative")]
@@ -326,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var state = await orderSessionService.InitialiseStateForEdit(odsCode, callOffId, catalogueItemId);
 
-            return View(new EditSolutionModel(odsCode, callOffId, state));
+            return View(new EditSolutionModel(odsCode, state));
         }
 
         [HttpPost("{catalogueItemId}")]
@@ -336,12 +225,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             for (int i = 0; i < model.OrderItem.ServiceRecipients.Count; i++)
             {
-                (DateTime? date, var error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
+                var (_, error) = model.OrderItem.ServiceRecipients[i].ToDateTime(state.CommencementDate);
 
                 if (error is not null)
-                {
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Day", error);
-                }
 
                 if (model.OrderItem.ServiceRecipients[i].Quantity is null or 0)
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");
@@ -363,34 +250,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             await orderItemService.Create(callOffId, state);
 
             orderSessionService.ClearSession(callOffId);
-
-            return RedirectToAction(
-                nameof(Index),
-                typeof(CatalogueSolutionsController).ControllerName(),
-                new { odsCode, callOffId });
-        }
-
-        [HttpGet("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteSolution(
-            string odsCode,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            string catalogueItemName)
-        {
-            var order = await orderService.GetOrder(callOffId);
-
-            return View(new DeleteSolutionModel(odsCode, callOffId, catalogueItemId, catalogueItemName, order.Description));
-        }
-
-        [HttpPost("delete/{catalogueItemId}/confirmation/{catalogueItemName}")]
-        public async Task<IActionResult> DeleteSolution(
-            string odsCode,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            string catalogueItemName,
-            DeleteSolutionModel model)
-        {
-            await orderItemService.DeleteOrderItem(callOffId, catalogueItemId);
 
             return RedirectToAction(
                 nameof(Index),

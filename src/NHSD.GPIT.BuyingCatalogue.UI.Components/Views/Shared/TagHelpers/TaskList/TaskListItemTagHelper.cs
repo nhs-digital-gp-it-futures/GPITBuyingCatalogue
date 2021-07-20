@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             }
             else
             {
-                taskNameSpan.InnerHtml.AppendHtml(GetLabelAnchorBuilder(context));
+                taskNameSpan.InnerHtml.AppendHtml(GetLabelAnchorBuilder());
             }
 
             var statusTag = GetNhsTagBuilder(context);
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             return builder;
         }
 
-        private TagBuilder GetLabelAnchorBuilder(TagHelperContext context)
+        private TagBuilder GetLabelAnchorBuilder()
         {
             var builder = new TagBuilder(TagHelperConstants.Anchor);
 

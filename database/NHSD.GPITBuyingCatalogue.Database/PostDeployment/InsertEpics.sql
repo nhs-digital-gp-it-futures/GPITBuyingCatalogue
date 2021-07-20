@@ -10,10 +10,14 @@
 
 DECLARE @capabilityId AS uniqueidentifier = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C1');
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
 VALUES
-('C1E1', 'Manage Appointments', @capabilityId, 1, 1),
-('C1E2', 'Manage Appointments by Proxy', @capabilityId, 3, 1);
+('C1E1', 'Manage Appointments', @capabilityId, 1, 1, 0),
+('C1E2', 'Manage Appointments by Proxy', @capabilityId, 3, 1, 0),
+('S020X01E05', 'Supplier-defined epic 5', @capabilityId, 3, 1, 1),
+('S020X01E06', 'Supplier-defined epic 6', @capabilityId, 3, 1, 1),
+('S020X01E07', 'Supplier-defined epic 7', @capabilityId, 3, 0, 1),
+('S020X01E08', 'Supplier-defined epic 8', @capabilityId, 3, 1, 1);
 
 SET @capabilityId = (SELECT Id FROM catalogue.Capabilities WHERE CapabilityRef = 'C2');
 

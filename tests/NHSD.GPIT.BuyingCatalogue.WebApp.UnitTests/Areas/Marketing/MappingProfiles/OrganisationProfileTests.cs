@@ -19,20 +19,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
     {
         private IMapper mapper;
 
-        [Fact]
-        public static void Mappings_Configuration_Valid()
-        {
-            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
-
-            mapperConfiguration.AssertConfigurationIsValid();
-        }
-
         public OrganisationProfileTests()
         {
             mapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<OrganisationProfile>();
             }).CreateMapper();
+        }
+
+        [Fact]
+        public static void Mappings_Configuration_Valid()
+        {
+            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<OrganisationProfile>());
+
+            mapperConfiguration.AssertConfigurationIsValid();
         }
 
         public void Dispose()

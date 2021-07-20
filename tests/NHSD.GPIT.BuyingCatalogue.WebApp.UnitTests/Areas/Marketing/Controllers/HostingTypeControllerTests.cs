@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -21,10 +22,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
     public static class HostingTypeControllerTests
     {
         [Fact]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(HostingTypeController).Should()
+                .BeDecoratedWith<AuthorizeAttribute>(p => p.Policy == "AdminOnly");
+
+            typeof(HostingTypeController).Should()
+                .BeDecoratedWith<AreaAttribute>(r => r.RouteValue == "Marketing");
+        }
+
+        [Fact]
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new HostingTypeController(null,
+                _ = new HostingTypeController(
+                    null,
                     Mock.Of<ISolutionsService>())).ParamName.Should().Be("mapper");
         }
 
@@ -32,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static void Constructor_NullSolutionService_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new HostingTypeController( Mock.Of<IMapper>(), null))
+                _ = new HostingTypeController(Mock.Of<IMapper>(), null))
                 .ParamName.Should().Be("solutionsService");
         }
 

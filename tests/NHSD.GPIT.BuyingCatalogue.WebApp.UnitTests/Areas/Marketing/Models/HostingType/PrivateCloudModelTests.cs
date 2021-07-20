@@ -7,7 +7,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.HostingType
-
 {
     public static class PrivateCloudModelTests
     {

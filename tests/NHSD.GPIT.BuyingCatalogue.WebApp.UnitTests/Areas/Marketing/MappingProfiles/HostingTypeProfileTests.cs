@@ -26,11 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             }).CreateMapper();
         }
 
-        public void Dispose()
-        {
-            mapper = null;
-        }
-
         [Fact]
         public static void Mappings_Configuration_Valid()
         {
@@ -41,6 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
 
             mapperConfiguration.AssertConfigurationIsValid();
+        }
+
+        public void Dispose()
+        {
+            mapper = null;
         }
 
         [Theory]

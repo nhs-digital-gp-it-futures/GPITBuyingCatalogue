@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
         public OnPremise(LocalWebApplicationFactory factory)
             : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-on-premise")
         {
+            Login();
         }
 
         [Fact]

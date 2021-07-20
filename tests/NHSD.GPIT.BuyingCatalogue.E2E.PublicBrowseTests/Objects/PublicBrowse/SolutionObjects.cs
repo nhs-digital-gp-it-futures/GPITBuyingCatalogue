@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
 
         internal static By PriceColumn => CustomBy.DataTestId("price");
 
-        internal static By SolutionEpicLink => By.LinkText("Check Epics");
+        internal static By CheckEpicLink => CustomBy.DataTestId("check-epics-link");
 
         internal static By AssociatedServicesTable => CustomBy.DataTestId("associated-services-table");
 
@@ -32,5 +32,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         internal static By Description => CustomBy.DataTestId("description");
 
         internal static By OrderGuidance => CustomBy.DataTestId("order-guidance");
+
+        internal static By AdditionalServicesTable => CustomBy.DataTestId("additional-services-table");
+
+        internal static By FullDescription => CustomBy.DataTestId("full-description");
+
+        internal static By BreadcrumbsBanner => By.ClassName("nhsuk-breadcrumb__item");
+
+        internal static By CatalogueSolutionCrumb => CustomBy.DataTestId("catalogue-solutions-crumb");
+
+        internal static By CatalogueSolutionPage => CustomBy.DataTestId("solutions-list-body");
+
+        internal static By CapabilityName => CustomBy.DataTestId("capability-name");
     }
 }

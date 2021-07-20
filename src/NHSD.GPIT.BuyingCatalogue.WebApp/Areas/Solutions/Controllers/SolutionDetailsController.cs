@@ -53,6 +53,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
         }
 
+        [Route("futures/{id}/additional-services/{additionalId}/capabilities")]
+        public async Task<IActionResult> CapabilitiesAdditionalServices(
+            CatalogueItemId id,
+            CatalogueItemId additionalId)
+        {
+            var solution = await solutionsService.GetSolutionAdditionalServiceCapabilities(
+                id,
+                additionalId);
+            if (solution is null)
+                return BadRequest($"No Catalogue Item found for Id: {id}");
+
+            var viewModel = mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution);
+            viewModel.CapabilitiesHeading = null;
+            viewModel.Name = solution.CatalogueItemName(additionalId);
+
+            viewModel.Description = solution.AdditionalServiceDescription(additionalId);
+
+            return View(viewModel);
+        }
+
         [Route("futures/{catalogueItemId}/capability/{capabilityId:guid}")]
         public async Task<IActionResult> CheckEpics(CatalogueItemId catalogueItemId, Guid capabilityId)
         {
@@ -60,18 +80,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution == null)
                 return BadRequest($"No Catalogue Item found for Id: {catalogueItemId} with Capability Id: {capabilityId}");
 
-            var solutionCapability = solution.Solution != null ?
-                solution.Solution.SolutionCapabilities.FirstOrDefault(sc => sc.Capability.Id == capabilityId)
-                ?? new CatalogueItemCapability() : new CatalogueItemCapability();
+            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(
+                solution.CatalogueItemCapability(capabilityId));
 
-            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(solutionCapability);
+            return View(model.WithSolutionName(solution.Name));
+        }
 
-            if (solution.Name != null)
-            {
-                model.SolutionName = solution.Name;
-            }
+        [Route("futures/{catalogueItemId}/additional-services/{catalogueItemIdAdditional}/capability/{capabilityId:guid}")]
+        public async Task<IActionResult> CheckEpicsAdditionalServices(
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId catalogueItemIdAdditional,
+            Guid capabilityId)
+        {
+            var solution = await solutionsService.GetAdditionalServiceCapability(
+                catalogueItemId,
+                catalogueItemIdAdditional,
+                capabilityId);
+            if (solution == null)
+                return BadRequest($"No Catalogue Item found for Id: {catalogueItemId} with Capability Id: {capabilityId}");
 
-            return View(model);
+            var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(
+                solution.CatalogueItemCapability(capabilityId));
+
+            return View(
+                "CheckEpics",
+                model.WithItems(catalogueItemId, catalogueItemIdAdditional, solution.Name));
         }
 
         [Route("futures/{id}/client-application-types")]
@@ -148,12 +181,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             return View(mapper.Map<CatalogueItem, ListPriceModel>(solution));
-        }
-
-        [Route("futures/{id}/check-capability-epic")]
-        public IActionResult CheckCapabilityEpic(string id)
-        {
-            return View();
         }
 
         [Route("futures/{id}/supplier-details")]

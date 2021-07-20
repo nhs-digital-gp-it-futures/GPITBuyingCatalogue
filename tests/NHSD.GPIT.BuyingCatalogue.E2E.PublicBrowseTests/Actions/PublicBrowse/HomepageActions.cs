@@ -71,5 +71,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         {
             Driver.FindElement(Objects.PublicBrowse.HomepageObjects.BuyersGuideTile).Click();
         }
+
+        internal bool HomePageDisplayed()
+        {
+            Driver.FindElement(Objects.PublicBrowse.HomepageObjects.HomePage);
+            return true;
+        }
     }
 }

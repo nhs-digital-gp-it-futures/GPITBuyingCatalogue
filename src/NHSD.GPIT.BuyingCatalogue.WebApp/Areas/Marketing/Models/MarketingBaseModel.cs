@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
     {
         protected MarketingBaseModel(CatalogueItem catalogueItem)
         {
-            BackLinkText = "Return to all sections";
+            BackLinkText = "Go back";
             CatalogueItem = catalogueItem;
             ClientApplication = CatalogueItem?.Solution?.GetClientApplication();
             SolutionId = CatalogueItem?.CatalogueItemId;

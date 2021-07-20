@@ -137,7 +137,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 .Should().Be(model.NativeDesktop);
             clientApplication.ClientApplicationTypes.Contains("native-mobile")
                 .Should().Be(model.NativeMobile);
-            clientApplication.ValidateAllPropertiesExcept(original,
+            clientApplication.ValidateAllPropertiesExcept(
+                original,
                 new[] { nameof(ClientApplication.ClientApplicationTypes) });
         }
     }

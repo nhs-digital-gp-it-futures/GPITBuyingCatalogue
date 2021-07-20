@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 {

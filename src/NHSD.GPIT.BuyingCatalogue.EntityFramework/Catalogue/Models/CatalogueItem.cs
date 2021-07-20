@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         public string SupplierId { get; set; }
 

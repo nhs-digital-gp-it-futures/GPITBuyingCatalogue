@@ -316,7 +316,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
-
                 new CatalogueItem
                 {
                     CatalogueItemId = new CatalogueItemId(99999, "003"),
@@ -429,6 +428,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     PublishedStatus = PublicationStatus.Published,
                     SupplierId = "99999",
                 },
+                new CatalogueItem
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "888"),
+                    PublishedStatus = PublicationStatus.Draft,
+                    SupplierId = "99999",
+                    Name = "Editable Solution",
+                    Created = DateTime.UtcNow,
+                    Solution = new Solution
+                    {
+                        Id = new CatalogueItemId(99999, "888"),
+                        LastUpdatedBy = Guid.Parse("c78ca505-b820-48a4-a0cb-e4b04a6f455c"),
+                        LastUpdated = DateTime.UtcNow,
+                    },
+                },
             };
             context.AddRange(dfocvcSolutions);
 
@@ -452,6 +465,67 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 },
             };
             context.AddRange(associatedServices);
+
+            List<CatalogueItem> additionalServices = new()
+            {
+                new CatalogueItem
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    Name = "Additional service",
+                    CatalogueItemType = CatalogueItemType.AdditionalService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = "99999",
+                    AdditionalService = new AdditionalService
+                    {
+                        Summary = "This is the summary of the Additional Service",
+                        FullDescription = "This is the description of the Additional Service",
+                        LastUpdated = DateTime.UtcNow,
+                        LastUpdatedBy = Guid.Empty,
+                        Solution = dfocvcSolutions.Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")).Solution,
+                    },
+                },
+            };
+            context.AddRange(additionalServices);
+
+            List<CatalogueItemCapability> additionalServiceCapabilities = new()
+            {
+                new CatalogueItemCapability
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    LastUpdated = DateTime.UtcNow,
+                    LastUpdatedBy = Guid.Empty,
+                    StatusId = 1,
+                },
+            };
+            context.AddRange(additionalServiceCapabilities);
+
+            List<CatalogueItemEpic> additionalServiceEpics = new()
+            {
+                new CatalogueItemEpic
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    EpicId = "C2E1",
+                    StatusId = 1,
+                },
+                new CatalogueItemEpic
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    EpicId = "C2E2",
+                    StatusId = 1,
+                },
+                new CatalogueItemEpic
+                {
+                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                    EpicId = "E123456",
+                    StatusId = 1,
+                },
+            };
+            context.AddRange(additionalServiceEpics);
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
@@ -1049,6 +1123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 new Epic { Id = "E00087", Name = "Retain attachments (file and images) received during Video Consultation in the Patient Record", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, Active = true },
                 new Epic { Id = "E00088", Name = "SNOMED code Video Consultation", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C44").Id, CompliancyLevel = CompliancyLevel.May, Active = true },
                 new Epic { Id = "E00099", Name = "User Friendly", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C43").Id, CompliancyLevel = CompliancyLevel.May, Active = true, SupplierDefined = true },
+                new Epic { Id = "E123456", Name = "SupplierDefinedEpic 123", CapabilityId = capabilities.Single(s => s.CapabilityRef == "C2").Id, CompliancyLevel = CompliancyLevel.May, Active = true, SupplierDefined = true },
             };
             context.AddRange(epics);
 

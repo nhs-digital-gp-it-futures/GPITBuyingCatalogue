@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Serilog;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
@@ -23,8 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        private const string OperatingModeEnvironmentVariable = "OPERATING_MODE";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureDataProtection(Configuration);
+
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
@@ -42,10 +44,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             });
 
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            });
+            services.AddMvc(
+                    options =>
+                    {
+                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    });
+
+            services.AddFluentValidation(
+                    options =>
+                    {
+                        options.RegisterValidatorsFromAssemblyContaining<AddSolutionModelValidator>();
+                    });
 
             services.AddApplicationInsightsTelemetry();
 
@@ -129,12 +138,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
             app.UseHttpsRedirection();
-
-            var operatingMode = Environment.GetEnvironmentVariable(OperatingModeEnvironmentVariable);
-
-            // Disable the marketing pages when deployed publicly
-            if (string.IsNullOrWhiteSpace(operatingMode) || !operatingMode.Equals("Private", StringComparison.InvariantCultureIgnoreCase))
-                app.UseMiddleware<DisableMarketingMiddleware>();
 
             app.UseMiddleware<Framework.Middleware.CookieConsent.CookieConsentMiddleware>();
 
