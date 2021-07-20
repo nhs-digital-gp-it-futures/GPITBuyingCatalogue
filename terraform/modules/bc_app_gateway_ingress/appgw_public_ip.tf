@@ -1,4 +1,4 @@
-resource "azurerm_public_ip" "PipAppGw" {
+resource "azurerm_public_ip" "pip_app_gateway" {
   name                = var.pip_name
   location            = var.region
   domain_name_label   = var.dns_name
@@ -7,6 +7,7 @@ resource "azurerm_public_ip" "PipAppGw" {
   sku                 = "Standard"
 
   tags = {
-    environment       = var.environment
+    environment       = var.environment,
+    architecture      = "new"
   }
 }
