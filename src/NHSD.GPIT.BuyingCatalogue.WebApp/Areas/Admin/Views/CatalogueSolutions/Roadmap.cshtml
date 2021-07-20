@@ -15,15 +15,11 @@
                 caption="@Model.SolutionName"
                 advice="Let buyers know about any future development plans for your Catalogue Solution."/>
 
-            <h2>Link to roadmap (optional)</h2>
-
-            <div class="nhsuk-hint">
-                Provide a URL to a page that gives buyers further information about your roadmap.
-            </div>
-
             <form method="post">
 
                 <nhs-input asp-for="Link"
+                    label-text="Link to roadmap (optional)"
+                    label-hint="Provide a URL to a page that gives buyers further information about your roadmap."
                     character-count="true"></nhs-input>
 
                 <div class="nhsuk-inset-text">

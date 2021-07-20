@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             services.ConfigureDataProtection(Configuration);
 
+            services.ConfigureResponseCompression();
+
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(ActionArgumentNullFilter));
@@ -96,6 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper, ILogger<Startup> logger)
         {
+            app.UseResponseCompression();
+
             app.UseSerilogRequestLogging(opts =>
             {
                 opts.GetLevel = SerilogRequestLoggingOptions.GetLevel;

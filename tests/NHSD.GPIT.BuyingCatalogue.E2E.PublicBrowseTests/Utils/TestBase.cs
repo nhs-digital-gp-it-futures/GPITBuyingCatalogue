@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             context.SaveChanges();
         }
 
-        internal void ClearRoadmap(CatalogueItemId solutionId)
+        internal void ClearRoadMap(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.Single(s => s.Id == solutionId);
