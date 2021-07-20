@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public DevelopmentPlans(LocalWebApplicationFactory factory)
             : base(factory, "/admin/catalogue-solutions/manage/99999-888/development-plans")
         {
+            ClearRoadMap(new CatalogueItemId(99999, "888"));
             Login();
         }
 
@@ -40,16 +41,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         [Fact]
         public async Task DevelopmentPlans_GoBackWithoutSaving()
         {
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
-            solution.RoadMap = string.Empty;
-
-            await context.SaveChangesAsync();
-
             TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
 
             AdminPages.CommonActions.ClickGoBack();
 
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
             var roadmapUrl = solution.RoadMap;
 
             roadmapUrl.Should().BeNullOrEmpty();
