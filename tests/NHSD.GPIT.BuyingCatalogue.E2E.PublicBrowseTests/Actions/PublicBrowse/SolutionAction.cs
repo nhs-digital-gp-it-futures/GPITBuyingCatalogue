@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -15,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         public void ClickEpics()
         {
-            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionEpicLink).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CheckEpicLink).Click();
         }
 
         public bool CatalogueSolutionPageDisplayed()
@@ -27,6 +28,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
         internal bool SolutionNameDisplayed()
         {
             return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.SolutionName).Displayed;
+        }
+
+        internal IList<IWebElement> GetCheckEpicLinks()
+        {
+            return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CheckEpicLink);
+        }
+
+        internal IEnumerable<string> GetCapabilitiesListNames()
+        {
+            return Driver.FindElements(Objects.PublicBrowse.SolutionObjects.CapabilityName).Select(c => c.Text);
         }
 
         internal void WaitUntilSolutionNameDisplayed()

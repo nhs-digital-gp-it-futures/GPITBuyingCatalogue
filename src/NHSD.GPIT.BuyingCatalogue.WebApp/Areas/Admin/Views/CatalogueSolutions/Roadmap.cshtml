@@ -5,15 +5,15 @@
 
 <div class="nhsuk-width-container ">
     <vc:nhs-backlink text="Go back"
-                     url="@Url.Action("ManageCatalogueSolution", "CatalogueSolutions", new { solutionId = @Model.SolutionId })">
+        url="@Url.Action("ManageCatalogueSolution", "CatalogueSolutions", new { solutionId = @Model.SolutionId })">
     </vc:nhs-backlink>
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
 
             <nhs-page-title title="Development plans"
-                            caption="@Model.SolutionName"
-                            advice="Let buyers know about any future development plans for your Catalogue Solution."/>
+                caption="@Model.SolutionName"
+                advice="Let buyers know about any future development plans for your Catalogue Solution."/>
 
             <h2>Link to roadmap (optional)</h2>
 
@@ -23,7 +23,8 @@
 
             <form method="post">
 
-                <nhs-input asp-for="Link"></nhs-input>
+                <nhs-input asp-for="Link"
+                    character-count="true"></nhs-input>
 
                 <div class="nhsuk-inset-text">
                     <span class="nhsuk-u-visually-hidden">Information: </span>
