@@ -6,4 +6,3 @@ resource "azurerm_subnet_network_security_group_association" "gateway" {
     azurerm_network_security_rule.Azure
   ]
  }
- 
