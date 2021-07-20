@@ -16,10 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         }
 
         // Click Actions
-        public void ClickGoBackLink()
-        {
+        public void ClickGoBackLink() =>
             Driver.FindElement(CommonSelectors.GoBackLink).Click();
-        }
 
         public bool GoBackLinkDisplayed()
         {
@@ -52,7 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             }
         }
 
-        public void ClickFirstCheckbox() => Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
+        public void ClickFirstCheckbox() =>
+            Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
 
         public string ClickCheckbox(By targetField, int index = 0)
         {
@@ -97,6 +96,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
                 return false;
             }
         }
+
+        /// <summary>
+        /// Formats a string by removing all newline and whitespace so that we get more consistant comparisons
+        /// </summary>
+        /// <param name="formatString">the string to format.</param>
+        /// <returns>a formatted string</returns>
+        internal string FormatStringForComparison(string formatString) =>
+            formatString.Replace("\r\n", " ").Replace("\r", string.Empty).Replace("\n", string.Empty).Trim();
 
         internal bool PageLoadedCorrectGetIndex(
             Type controller,
@@ -158,10 +165,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         /// <param name="dataValMessage">This will be the value of data-valmgs-for on the Error span when the elements is in error.</param>
         /// <param name="errorMessage">the expected error message.</param>
         /// <returns>true if error message is same as expected, false if not.</returns>
-        internal bool ElementShowingCorrectErrorMessage(string dataValMessage, string errorMessage)
-        {
-            return ElementShowingCorrectErrorMessage(ByExtensions.DataValMessage(dataValMessage), errorMessage);
-        }
+        internal bool ElementShowingCorrectErrorMessage(string dataValMessage, string errorMessage) =>
+            ElementShowingCorrectErrorMessage(ByExtensions.DataValMessage(dataValMessage), errorMessage);
 
         /// <summary>
         /// Returns if the referenced Element's Error message is equal to the Expected Error Message.
@@ -173,14 +178,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         {
             var errorSpanText = Driver.FindElement(targetElement).Text;
 
-            return errorSpanText == errorMessage;
+            return FormatStringForComparison(errorSpanText) == FormatStringForComparison(errorMessage);
         }
 
-        internal bool ElementIsDisplayed(By targetElement)
+        internal bool ElementIsDisplayed(By targetElement) =>
+            ElementExists(targetElement) && Driver.FindElement(targetElement).Displayed;
+
+        internal bool ElementExists(By targetElement)
         {
             try
             {
-                return Driver.FindElement(targetElement).Displayed;
+                Driver.FindElement(targetElement);
+                return true;
             }
             catch
             {
@@ -188,10 +197,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             }
         }
 
-        internal bool ElementTextEqualToo(By targetElement, string expectedText)
-        {
-            return Driver.FindElement(targetElement).Text.Trim().Equals(expectedText.Trim(), StringComparison.InvariantCultureIgnoreCase);
-        }
+        internal bool ElementTextEqualToo(By targetElement, string expectedText) =>
+            Driver.FindElement(targetElement).Text.Trim().Equals(expectedText.Trim(), StringComparison.InvariantCultureIgnoreCase);
 
         internal void ElementAddValue(By targetElement, string value)
         {
@@ -199,9 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver.FindElement(targetElement).SendKeys(value);
         }
 
-        internal string PageTitle()
-        {
-            return Driver.FindElement(CommonSelectors.Header1).Text;
-        }
+        internal string PageTitle() =>
+            FormatStringForComparison(Driver.FindElement(CommonSelectors.Header1).Text);
     }
 }

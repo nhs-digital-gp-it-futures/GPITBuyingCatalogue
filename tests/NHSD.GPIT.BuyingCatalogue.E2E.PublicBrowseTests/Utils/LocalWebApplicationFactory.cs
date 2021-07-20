@@ -81,6 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>()).UseSerilog();
+            builder.UseWebRoot(System.IO.Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -17,13 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            builder.Property(oi => oi.Created).HasDefaultValueSql("(getutcdate())");
+            builder.Property(oi => oi.Created).HasDefaultValue(DateTime.UtcNow);
             builder.Property(oi => oi.DefaultDeliveryDate).HasColumnType("date");
             builder.Property(oi => oi.EstimationPeriod)
                 .HasConversion<int>()
                 .HasColumnName("EstimationPeriodId");
 
-            builder.Property(oi => oi.LastUpdated).HasDefaultValueSql("(getutcdate())");
+            builder.Property(oi => oi.LastUpdated).HasDefaultValue(DateTime.UtcNow);
             builder.Property(oi => oi.Price).HasColumnType("decimal(18, 4)");
 
             builder.HasOne(oi => oi.CatalogueItem)

@@ -27,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                CallOffId = new CallOffId(orderId, 1),
                 OrderingPartyId = organisationId,
                 Created = timenow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -54,7 +53,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                CallOffId = new CallOffId(orderId, 1),
                 OrderingPartyId = organisationId,
                 Created = timenow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -82,7 +80,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                CallOffId = new CallOffId(orderId, 1),
                 OrderingPartyId = organisationId,
                 Created = timenow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -117,7 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                CallOffId = new CallOffId(orderId, 1),
                 OrderingPartyId = organisationId,
                 Created = timenow,
                 OrderStatus = OrderStatus.Incomplete,

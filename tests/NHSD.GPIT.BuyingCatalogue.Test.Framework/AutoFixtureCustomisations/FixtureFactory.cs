@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         private static readonly ICustomization[] Customizations =
         {
             new AutoMoqCustomization(),
-            new CallOffIdCustomization(),
+            new OrderEntityCustomization(),
             new CatalogueItemIdCustomization(),
         };
 

@@ -51,9 +51,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
             Fixture fixture = new Fixture();
 
             var odsCode = fixture.Create<string>();
-            fixture.Customize(new CallOffIdCustomization());
-            fixture.Customize(new CatalogueItemIdCustomization());
-            fixture.Customize(new IgnoreCircularReferenceCustomisation());
+            fixture
+                .Customize(new OrderEntityCustomization())
+                .Customize(new CatalogueItemIdCustomization())
+                .Customize(new IgnoreCircularReferenceCustomisation())
+                .Customize(new CallOffIdCustomization());
 
             var state = fixture.Create<CreateOrderItemModel>();
 
