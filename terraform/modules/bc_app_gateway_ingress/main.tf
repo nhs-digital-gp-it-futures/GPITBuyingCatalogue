@@ -67,8 +67,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     name                       = "${var.ag_name_fragment}-appgateway-rqrt"
     rule_type                  = "Basic"
     http_listener_name         = "${var.ag_name_fragment}-appgateway-httplstn"
-    backend_address_pool_name  = "${var.ag_name_fragment}-appgateway-beap"
-    backend_http_settings_name = "${var.ag_name_fragment}-appgateway-be-htst"
+    redirect_configuration_name = "${var.ag_name_fragment}-appgateway-http-redirect"
   }
 
   http_listener {
@@ -87,6 +86,14 @@ resource "azurerm_application_gateway" "app_gateway" {
     backend_http_settings_name = "${var.ag_name_fragment}-appgateway-be-htst"
   }
 
+  redirect_configuration {
+    name = "${var.ag_name_fragment}-appgateway-http-redirect"
+    redirect_type = "Permanent"
+    target_listener_name = "${var.ag_name_fragment}-appgateway-httpslstn"
+    include_path = true
+    include_query_string = true
+  }
+
   # Rewrite rules
   rewrite_rule_set {
     name = "${var.ag_name_fragment}-appgateway-rewrite-rules"
@@ -96,6 +103,21 @@ resource "azurerm_application_gateway" "app_gateway" {
       response_header_configuration {
         header_name  = "Strict-Transport-Security"
         header_value = "max-age=86400; includeSubDomains"
+      }
+    }
+
+    rewrite_rule {
+      name          = "RewriteUrlFromAzurewebsites"
+      rule_sequence = 2
+      condition {
+        variable = "http_resp_Location"
+        pattern = "(https?):.*azurewebsites.net(.*)$"                   
+        ignore_case = true
+      }
+
+      response_header_configuration {
+        header_name  = "Location"
+        header_value = "{http_resp_Location_1}://platform.dynamic.buyingcatalogue.digital.nhs.uk{http_resp_Location_2}"
       }
     }
   }
