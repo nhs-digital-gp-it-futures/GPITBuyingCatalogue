@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Cookie.Name = "user-session";
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
-             
+
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
 
             services.AddAntiforgery(options =>
-            {                
+            {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.Name = "antiforgery";
             });
