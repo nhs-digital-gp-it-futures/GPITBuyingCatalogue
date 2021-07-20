@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public class DetailsModel : NavBaseModel
+    public sealed class DetailsModel : NavBaseModel
     {
         public DetailsModel()
         {
@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             Organisation = organisation;
             Users = users;
             RelatedOrganisations = relatedOrganisations;
-            BackLink = "/admin/organisations";
+            BackLink = "/admin/buyer-organisations";
         }
 
         public Organisation Organisation { get; set; }
