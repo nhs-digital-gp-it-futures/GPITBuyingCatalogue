@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -57,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void SolutionDetails_Breadcrumbs_BreadcrumbBannerDisplayed()
         {
-            PublicBrowsePages.CommonActions.BreadcrumbBannerDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SolutionObjects.BreadcrumbsBanner).Should().BeTrue();
         }
 
         [Theory]
@@ -71,14 +72,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void SolutionDetails_Breadcrumbs_CatalogueSolutionPageDisplayed()
         {
-            PublicBrowsePages.CommonActions.ClickCatalogueSolutionBreadcrumb();
+            CommonActions.ClickLinkElement(SolutionObjects.CatalogueSolutionCrumb);
             PublicBrowsePages.SolutionAction.CatalogueSolutionPageDisplayed().Should().BeTrue();
         }
 
         [Fact]
         public void SolutionDetails_Breadcrumbs_HomePageDisplayed()
         {
-            PublicBrowsePages.CommonActions.ClickHomeBreadcrumb();
+            CommonActions.ClickLinkElement(HomepageObjects.HomePageCrumb);
             PublicBrowsePages.HomePageActions.HomePageDisplayed().Should().BeTrue();
         }
     }

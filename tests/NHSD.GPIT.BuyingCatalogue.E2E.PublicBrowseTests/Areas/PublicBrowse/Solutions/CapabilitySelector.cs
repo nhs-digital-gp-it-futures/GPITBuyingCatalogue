@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
         [Fact]
         public void CapabilitySelector_GoBack()
         {
-            PublicBrowsePages.CommonActions.ClickGoBackLink();
+            CommonActions.ClickGoBackLink();
 
             CommonActions.PageTitle()
                 .Should()
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
         [Fact]
         public async Task CapabilitySelector_NoCheckboxSelected()
         {
-            PublicBrowsePages.CommonActions.ClickContinueButton();
+            CommonActions.ClickSave();
 
             using var context = GetEndToEndDbContext();
             var solutionsCount =
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
         {
             PublicBrowsePages.CapabilitySelectorActions.ClickFirstCheckbox();
 
-            PublicBrowsePages.CommonActions.ClickContinueButton();
+            CommonActions.ClickSave();
 
             PublicBrowsePages.SolutionsActions.GetSolutionsInList().Should().HaveCount(1);
         }

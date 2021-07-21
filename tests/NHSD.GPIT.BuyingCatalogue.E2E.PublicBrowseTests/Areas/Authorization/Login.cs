@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using Xunit;
@@ -15,10 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         {
         }
 
-        [Fact(Skip="TODO : Jon to fix")]
+        [Fact(Skip = "TODO : Jon to fix")]
         public void Login_FormDisplayed()
         {
-            PublicBrowsePages.CommonActions.ClickLoginLink();
+            CommonActions.ClickLinkElement(CommonObjects.LoginLink);
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -31,14 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             using var context = GetUsersContext();
             var userEmail = (await context.AspNetUsers.FirstAsync(s => s.OrganisationFunction == "Authority")).Email;
 
-            PublicBrowsePages.CommonActions.ClickLoginLink();
+            CommonActions.ClickLinkElement(CommonObjects.LoginLink);
 
             AuthorizationPages.LoginActions.Login(userEmail, DefaultPassword);
 
             AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeTrue();
         }
 
-        [Theory(Skip ="TODO: Jon to fix")]
+        [Theory(Skip = "TODO: Jon to fix")]
         [InlineData("user", "")]
         [InlineData("user", "falsePassword")]
         [InlineData("falseUser@email.com", "password")]
@@ -49,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             var userEmail = user == "user" ? (await context.AspNetUsers.FirstAsync(s => s.OrganisationFunction == "Authority")).Email : user;
             var userPassword = password == "password" ? DefaultPassword : password;
 
-            PublicBrowsePages.CommonActions.ClickLoginLink();
+            CommonActions.ClickLinkElement(CommonObjects.LoginLink);
 
             AuthorizationPages.LoginActions.Login(userEmail, userPassword);
 
