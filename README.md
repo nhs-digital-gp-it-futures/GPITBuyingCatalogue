@@ -1,6 +1,6 @@
 # GPITBuyingCatalogue
 
-Add a commit with a commit subject that is too long.
+Add a commit with a commit subject that is too long. Foobar.
 
 ASP.NET Core Buying Catalogue Web Application
 
