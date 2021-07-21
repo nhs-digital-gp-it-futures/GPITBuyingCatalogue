@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrganisationDashboard_CreateOrder_Click()
         {
-            OrderingPages.OrganisationDashboard.ClickCreateNewOrder();
+            CommonActions.ClickLinkElement(Objects.Ordering.OrganisationDashboard.CreateOrderLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),

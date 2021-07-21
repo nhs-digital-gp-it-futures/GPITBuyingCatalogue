@@ -10,11 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
         }
 
-        public void ClickOrderDescriptionLink()
-        {
-            Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionLink).Click();
-        }
-
         public IWebElement GetOrderDescriptionStatus() => Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionStatus);
     }
 }

@@ -37,13 +37,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             await using var context = GetEndToEndDbContext();
             var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
 
-            OrderingPages.OrderDescription.DescriptionInputValue().Should().BeEquivalentTo(order.Description);
+            CommonActions.InputValueEqualToo(Objects.Ordering.OrderDescription.DescriptionInput, order.Description);
         }
 
         [Fact]
         public void OrderDescription_DeletingAndSaving_ShouldError()
         {
-            OrderingPages.OrderDescription.DeleteDescriptionInputValue();
+            CommonActions.ClearInputElement(Objects.Ordering.OrderDescription.DescriptionInput);
 
             CommonActions.ClickSave();
 

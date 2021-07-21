@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var associatedServices = AssociatedServicesSeedData.GetAssociatedServices();
             context.AddRange(associatedServices);
 
-            var additionalServices = AdditonalServicesSeedData.GetAdditionalServices();
+            var additionalServices = AdditionalServicesSeedData.GetAdditionalServices(catalogueSolutions);
             context.AddRange(additionalServices);
 
             List<CatalogueItemCapability> additionalServiceCapabilities = new()

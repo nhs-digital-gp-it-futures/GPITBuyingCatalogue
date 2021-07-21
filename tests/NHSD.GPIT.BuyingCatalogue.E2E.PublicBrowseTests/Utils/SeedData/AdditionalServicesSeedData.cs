@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
-    public static class AdditonalServicesSeedData
+    public static class AdditionalServicesSeedData
     {
-        public static List<CatalogueItem> GetAdditionalServices()
+        public static List<CatalogueItem> GetAdditionalServices(IList<CatalogueItem> catalogueSolutions)
         {
             return new()
             {
@@ -28,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Solution = catalogueSolutions.Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")).Solution,
                     },
                 },
-            }
+            };
+        }
     }
-    }
+}

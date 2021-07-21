@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void NewOrderDashboard_ClickOrderDescription()
         {
-            OrderingPages.OrderDashboard.ClickOrderDescriptionLink();
+            CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.OrderDescriptionLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderDescriptionController),

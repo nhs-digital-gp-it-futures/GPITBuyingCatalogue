@@ -203,6 +203,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool InputElementIsEmpty(By targetElement) =>
             string.IsNullOrWhiteSpace(FormatStringForComparison(Driver.FindElement(targetElement).GetAttribute("value")));
 
+        internal void ClearInputElement(By targetElement) =>
+            Driver.FindElement(targetElement).Clear();
+
+        internal void ClickLinkElement(By targetElement) =>
+            Driver.FindElement(targetElement).Click();
+
         internal void ElementAddValue(By targetElement, string value)
         {
             Driver.FindElement(targetElement).Clear();
