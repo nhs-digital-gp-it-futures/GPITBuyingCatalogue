@@ -98,7 +98,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         /// <param name="formatString">the string to format.</param>
         /// <returns>a formatted string.</returns>
         internal string FormatStringForComparison(string formatString) =>
-            formatString.Replace("\r\n", " ").Replace("\r", string.Empty).Replace("\n", string.Empty).Trim();
+            formatString
+            .Replace("\r\n", string.Empty)
+            .Replace("\r", string.Empty)
+            .Replace("\n", string.Empty)
+            .Replace(" ", string.Empty)
+            .Trim();
 
         internal bool PageLoadedCorrectGetIndex(
             Type controller,

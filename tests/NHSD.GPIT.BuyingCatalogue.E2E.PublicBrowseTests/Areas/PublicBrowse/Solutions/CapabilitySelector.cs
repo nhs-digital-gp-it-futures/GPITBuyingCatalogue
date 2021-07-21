@@ -35,11 +35,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
         }
 
         [Fact]
-        public void CapabilitySelector_NoCheckboxSelected()
+        public async Task CapabilitySelector_NoCheckboxSelected()
         {
             PublicBrowsePages.CommonActions.ClickContinueButton();
 
-            PublicBrowsePages.SolutionsActions.GetSolutionsInList().Should().HaveCount(2);
+            using var context = GetEndToEndDbContext();
+            var solutionsCount =
+                await context.CatalogueItems
+                .Include(c => c.Solution).ThenInclude(s => s.FrameworkSolutions)
+                .Where(c =>
+                    c.PublishedStatus == EntityFramework.Catalogue.Models.PublicationStatus.Published
+                    && c.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.Solution
+                    && c.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == "NHSDGP001"))
+                .CountAsync();
+
+            PublicBrowsePages.SolutionsActions.GetSolutionsInList().Should().HaveCount(solutionsCount);
         }
 
         [Fact]
