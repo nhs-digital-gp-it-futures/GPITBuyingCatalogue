@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
 
             var odsCode = fixture.Create<string>();
             fixture
-                .Customize(new OrderEntityCustomization())
+                .Customize(new OrderCustomization())
                 .Customize(new CatalogueItemIdCustomization())
                 .Customize(new IgnoreCircularReferenceCustomisation())
                 .Customize(new CallOffIdCustomization());

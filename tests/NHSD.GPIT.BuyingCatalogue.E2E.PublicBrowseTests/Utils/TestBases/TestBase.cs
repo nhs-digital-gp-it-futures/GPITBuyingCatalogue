@@ -130,12 +130,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             }
         }
 
-        internal void NavigateToUrl(string relativeUrl)
+        protected void NavigateToUrl(string relativeUrl)
         {
             NavigateToUrl(new Uri(relativeUrl, UriKind.Relative));
         }
 
-        internal void NavigateToUrl(Uri relativeUri)
+        protected void NavigateToUrl(Uri relativeUri)
         {
             var combinedUri = new Uri(uri, relativeUri);
             Driver.Navigate().GoToUrl(combinedUri);

@@ -10,19 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
         }
 
-        internal bool DescriptionInputDisplayed()
-        {
-            try
-            {
-                Driver.FindElement(Objects.Ordering.OrderDescription.DescriptionInput);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         internal string DescriptionInputValue()
         {
             try

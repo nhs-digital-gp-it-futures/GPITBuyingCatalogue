@@ -8,7 +8,7 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-
+            <nhs-validation-summary />
             <nhs-page-title title="@Model.Title" advice="Check the supplier information and edit details for the primary contact for this order." />
 
             <div data-test-id="supplier-page-insetAdvice">
@@ -46,7 +46,10 @@
         <div class="nhsuk-grid-row">
             <div data-test-id="primary-contact-fields" class="nhsuk-grid-column-two-thirds">
                 <h2 data-test-id="primary-contact-heading" class="nhsuk-u-font-size-32 nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-3">Primary contact’s details</h2>
-
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="Name" />
+                <input type="hidden" asp-for="Title" />
                 <div class="nhsuk-u-margin-bottom-5">
                     <nhs-input asp-for="PrimaryContact.FirstName"
                                           label-text="First name" />
@@ -58,12 +61,7 @@
                                           label-text="Telephone number" />
                 </div>
 
-                <div data-test-id="save-button">
-
-                    <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                        Save and return
-                    </button>
-                </div>
+                <nhs-submit-button />
             </div>
         </div>
     </form>

@@ -10,16 +10,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 {
     internal sealed class CommonActions : ActionBase
     {
-        public CommonActions(IWebDriver driver)
+        internal CommonActions(IWebDriver driver)
             : base(driver)
         {
         }
 
+        internal int GetNumberOfRadioButtonsDisplayed =>
+                    Driver.FindElements(By.ClassName("nhsuk-radios__input")).Count;
+
         // Click Actions
-        public void ClickGoBackLink() =>
+        internal void ClickGoBackLink() =>
             Driver.FindElement(CommonSelectors.GoBackLink).Click();
 
-        public bool GoBackLinkDisplayed()
+        internal bool GoBackLinkDisplayed()
         {
             try
             {
@@ -32,28 +35,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             }
         }
 
-        public void ClickSave()
+        internal void ClickSave()
         {
             Driver.FindElement(CommonSelectors.SaveAndReturn).Click();
         }
 
-        public bool SaveButtonDisplayed()
+        internal bool SaveButtonDisplayed()
         {
-            try
-            {
-                Wait.Until(d => d.FindElement(CommonSelectors.SaveAndReturn));
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return ElementIsDisplayed(CommonSelectors.SaveAndReturn);
         }
 
-        public void ClickFirstCheckbox() =>
+        internal void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
 
-        public string ClickCheckbox(By targetField, int index = 0)
+        internal string ClickCheckbox(By targetField, int index = 0)
         {
             var checkboxItems = Driver.FindElements(targetField);
 
@@ -63,20 +58,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             return selected.FindElement(By.TagName("label")).Text;
         }
 
-        public void ClickSection(By targetField, string section)
+        internal void ClickSection(By targetField, string section)
         {
             Driver.FindElements(targetField)
                 .Single(s => s.Text.Contains(section)).FindElement(By.TagName("a"))
                 .Click();
         }
 
-        public void SelectDropdownItem(By targetField, int index = 0)
+        internal void SelectDropdownItem(By targetField, int index = 0)
         {
             var select = Driver.FindElement(targetField);
             new SelectElement(select).SelectByIndex(index);
         }
 
-        public void ClickRadioButtonWithText(string label)
+        internal void ClickRadioButtonWithText(string label)
         {
             var radioButtonItems = Driver.FindElements(CommonSelectors.RadioButtonItems);
 
@@ -84,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         }
 
         // testing
-        public bool ErrorSummaryDisplayed()
+        internal bool ErrorSummaryDisplayed()
         {
             try
             {
@@ -98,10 +93,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         }
 
         /// <summary>
-        /// Formats a string by removing all newline and whitespace so that we get more consistant comparisons
+        /// Formats a string by removing all newline and whitespace so that we get more consistant comparisons.
         /// </summary>
         /// <param name="formatString">the string to format.</param>
-        /// <returns>a formatted string</returns>
+        /// <returns>a formatted string.</returns>
         internal string FormatStringForComparison(string formatString) =>
             formatString.Replace("\r\n", " ").Replace("\r", string.Empty).Replace("\n", string.Empty).Trim();
 
@@ -198,7 +193,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         }
 
         internal bool ElementTextEqualToo(By targetElement, string expectedText) =>
-            Driver.FindElement(targetElement).Text.Trim().Equals(expectedText.Trim(), StringComparison.InvariantCultureIgnoreCase);
+            FormatStringForComparison(Driver.FindElement(targetElement).Text)
+            .Equals(FormatStringForComparison(expectedText), StringComparison.InvariantCultureIgnoreCase);
+
+        internal bool InputValueEqualToo(By targetElement, string expectedText) =>
+            FormatStringForComparison(Driver.FindElement(targetElement).GetAttribute("value"))
+            .Equals(FormatStringForComparison(expectedText), StringComparison.InvariantCultureIgnoreCase);
+
+        internal bool InputElementIsEmpty(By targetElement) =>
+            string.IsNullOrWhiteSpace(FormatStringForComparison(Driver.FindElement(targetElement).GetAttribute("value")));
 
         internal void ElementAddValue(By targetElement, string value)
         {

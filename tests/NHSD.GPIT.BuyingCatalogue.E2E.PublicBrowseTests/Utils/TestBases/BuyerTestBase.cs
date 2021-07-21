@@ -15,7 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             BuyerLogin();
         }
 
-        private static string GenerateUrlFromMethod(Type controller, string methodName, IDictionary<string, string> parameters)
+        protected static string GenerateUrlFromMethod(
+            Type controller,
+            string methodName,
+            IDictionary<string, string> parameters,
+            IDictionary<string, string> queryParameters = null)
         {
             if (controller.BaseType != typeof(Controller))
                 throw new InvalidOperationException($"{nameof(controller)} is not a type of {nameof(Controller)}");
@@ -49,8 +53,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                     : new StringBuilder(methodRoute[2..].ToLowerInvariant()),
             };
 
-            foreach (var param in parameters)
-                absoluteRoute.Replace('{' + param.Key.ToLowerInvariant() + '}', param.Value);
+            if (parameters.Any())
+            {
+                foreach (var param in parameters)
+                    absoluteRoute.Replace('{' + param.Key.ToLowerInvariant() + '}', param.Value);
+            }
+
+            if (queryParameters is not null && queryParameters.Any())
+            {
+                absoluteRoute.Append('?');
+                foreach (var param in queryParameters)
+                    absoluteRoute.Append($"{param.Key}={param.Value}&");
+
+                absoluteRoute.Remove(absoluteRoute.Length - 1, 1);
+            }
 
             var absoluteRouteUrl = absoluteRoute.ToString();
 
@@ -65,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             }
 
             return new Uri("https://www.fake.com/" + absoluteRoute.ToString(), UriKind.Absolute)
-                .AbsolutePath[1..];
+                .PathAndQuery[1..];
         }
     }
 }

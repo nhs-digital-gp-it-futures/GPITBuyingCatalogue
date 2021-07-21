@@ -10,18 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
         }
 
-        public bool TaskListDisplayed()
-        {
-            try
-            {
-                return Driver.FindElement(Objects.Ordering.OrderDashboard.TaskList).Displayed;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         public void ClickOrderDescriptionLink()
         {
             Driver.FindElement(Objects.Ordering.OrderDashboard.OrderDescriptionLink).Click();

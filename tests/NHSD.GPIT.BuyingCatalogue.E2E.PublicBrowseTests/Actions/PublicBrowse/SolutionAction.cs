@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         internal string AdditionalServicesNameDisplayed()
         {
-            return  Driver.FindElement(Objects.PublicBrowse.SolutionObjects.ImplementationName).Text;
+            return Driver.FindElement(Objects.PublicBrowse.SolutionObjects.ImplementationName).Text;
         }
 
         internal bool AdditionalServicesTableDisplayed()

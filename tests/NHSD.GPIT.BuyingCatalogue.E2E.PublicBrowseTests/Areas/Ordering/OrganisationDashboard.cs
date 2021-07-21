@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
@@ -22,11 +24,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void OrganisationDashboard_OrganisationDashboard_SectionsCorrectlyDisplayed()
+        public async Task OrganisationDashboard_OrganisationDashboard_SectionsCorrectlyDisplayed()
         {
-            OrderingPages.OrganisationDashboard.CreateOrderButtonDisplayed().Should().BeTrue();
-            OrderingPages.OrganisationDashboard.IncompleteOrderTableDisplayed().Should().BeTrue();
-            OrderingPages.OrganisationDashboard.CompleteOrderTableDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.OrganisationDashboard.CreateOrderLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Common.ByExtensions.DataTestId("incomplete-orders-table")).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Common.ByExtensions.DataTestId("complete-orders-table")).Should().BeTrue();
+
+            using var context = GetEndToEndDbContext();
+            var organisation = await context.Organisations.SingleAsync(o => o.OdsCode == Parameters["OdsCode"]);
+
+            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison(organisation.Name));
         }
 
         [Fact]

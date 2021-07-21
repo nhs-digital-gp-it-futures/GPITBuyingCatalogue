@@ -8,10 +8,6 @@
 
         internal OrderDescription OrderDescription { get; set; }
 
-        internal CallOffPartyInformation CallOffPartyInformation { get; set; }
-
-        internal SupplierInformation SupplierInformation { get; set; }
-
         internal CommencementDate CommencementDate { get; set; }
     }
 }
