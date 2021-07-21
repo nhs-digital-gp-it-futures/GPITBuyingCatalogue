@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Compression;
+using System.Threading.Tasks;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -78,11 +81,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Cookie.Name = "user-session";
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
-
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
                 options.AccessDeniedPath = "/404";
+
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = ctx =>
+                    {
+                        var relativeRedirectUri = new Uri(ctx.RedirectUri).PathAndQuery;
+                        ctx.Response.Headers[HeaderNames.Location] = relativeRedirectUri;
+                        ctx.Response.StatusCode = StatusCodes.Status302Found;
+                        return Task.CompletedTask;
+                    },
+                };
             });
 
             services.AddAntiforgery(options =>
