@@ -25,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.PageTitle()
                 .Should()
                 .BeEquivalentTo(CommonActions.FormatStringForComparison($"additional services - {pageTitle}"));
+
         }
 
         [Fact]

@@ -41,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
             await using var context = GetEndToEndDbContext();
             var dbSolutions = await context.CatalogueItems
-                                            .Where(c => c.SupplierId == "99999")
                                             .Where(c => c.PublishedStatus == publicationStatus)
                                             .Where(c => c.CatalogueItemType == CatalogueItemType.Solution)
                                             .ToListAsync();

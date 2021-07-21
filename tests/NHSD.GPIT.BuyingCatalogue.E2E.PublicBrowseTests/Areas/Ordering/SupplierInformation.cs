@@ -115,12 +115,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 { "search", SearchWithContact },
             };
+
             NavigateToUrl(
-                GenerateUrlFromMethod(
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect),
                 Parameters,
-                queryParameters));
+                queryParameters);
 
             CommonActions.ClickSave();
 
@@ -142,12 +142,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 { "search", SearchWithContact },
             };
+
             NavigateToUrl(
-                GenerateUrlFromMethod(
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect),
                 Parameters,
-                queryParameters));
+                queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
 
@@ -188,12 +188,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 { "search", SearchNoContact },
             };
+
             NavigateToUrl(
-                GenerateUrlFromMethod(
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect),
                 Parameters,
-                queryParameters));
+                queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
 
@@ -234,12 +234,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 { "search", SearchNoContact },
             };
+
             NavigateToUrl(
-                GenerateUrlFromMethod(
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect),
                 Parameters,
-                queryParameters));
+                queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
 
@@ -272,11 +272,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             };
 
             NavigateToUrl(
-                GenerateUrlFromMethod(
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect),
                 Parameters,
-                queryParameters));
+                queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
 
@@ -314,12 +313,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             {
                 { "search", SearchNoContact },
             };
+
             NavigateToUrl(
-                GenerateUrlFromMethod(
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect),
                 Parameters,
-                queryParameters));
+                queryParameters);
 
             CommonActions.ClickRadioButtonWithText(queryParameters["search"]);
 
