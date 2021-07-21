@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -90,8 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     OnRedirectToLogin = ctx =>
                     {
                         var relativeRedirectUri = new Uri(ctx.RedirectUri).PathAndQuery;
-                        ctx.Response.Headers["Location"] = relativeRedirectUri;
-                        ctx.Response.StatusCode = 302;
+                        ctx.Response.Headers[HeaderNames.Location] = relativeRedirectUri;
+                        ctx.Response.StatusCode = StatusCodes.Status302Found;
                         return Task.CompletedTask;
                     },
                 };

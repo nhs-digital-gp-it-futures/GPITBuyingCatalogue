@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             app.UseResponseCompression();
 
-            var forwardingOptions = new ForwardedHeadersOptions()
+            var forwardingOptions = new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
             };
