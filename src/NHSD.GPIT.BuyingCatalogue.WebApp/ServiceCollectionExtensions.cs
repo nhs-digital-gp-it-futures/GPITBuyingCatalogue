@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Compression;
+using System.Threading.Tasks;
 using AutoMapper;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -78,11 +80,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Cookie.Name = "user-session";
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
-
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.ExpireTimeSpan = cookieExpiration.ExpireTimeSpan;
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
                 options.AccessDeniedPath = "/404";
+
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = ctx =>
+                    {
+                        var relativeRedirectUri = new Uri(ctx.RedirectUri).PathAndQuery;
+                        ctx.Response.Headers["Location"] = relativeRedirectUri;
+                        ctx.Response.StatusCode = 302;
+                        return Task.CompletedTask;
+                    },
+                };
             });
 
             services.AddAntiforgery(options =>
