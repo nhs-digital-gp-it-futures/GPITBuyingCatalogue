@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -39,7 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string SolutionName { get; set; }
 
-        public Dictionary<string, string> HostingTypesToAdd { get; set; }
+        public List<HostingType> HostingTypesToAdd { get; set; }
+
+        [Required(ErrorMessage = "Select a hosting type")]
+        public string SelectedHostingType { get; set; }
 
         public override bool? IsComplete =>
             Convert.ToBoolean(PublicCloud?.IsValid()) ||
@@ -54,19 +58,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         private void PopulateHostingTypesToAdd()
         {
-            HostingTypesToAdd = new Dictionary<string, string>();
+            HostingTypesToAdd = new List<HostingType>();
 
-            if (Convert.ToBoolean(PublicCloud?.IsValid()))
-                HostingTypesToAdd.Add("PublicCloud", "Public cloud");
+            if (!Convert.ToBoolean(PublicCloud?.IsValid()))
+                HostingTypesToAdd.Add(new HostingType("Public cloud", "PublicCloud"));
 
-            if (Convert.ToBoolean(PrivateCloud?.IsValid()))
-                HostingTypesToAdd.Add("PrivateCloud", "Private cloud");
+            if (!Convert.ToBoolean(PrivateCloud?.IsValid()))
+                HostingTypesToAdd.Add(new HostingType("Private cloud", "PrivateCloud"));
 
-            if (Convert.ToBoolean(Hybrid?.IsValid()))
-                HostingTypesToAdd.Add("HybridCloud", "Hybrid cloud");
+            if (!Convert.ToBoolean(Hybrid?.IsValid()))
+                HostingTypesToAdd.Add(new HostingType("Hybrid", "HybridCloud"));
 
-            if (Convert.ToBoolean(OnPremise?.IsValid()))
-                HostingTypesToAdd.Add("OnPremiseCloud", "On premise");
+            if (!Convert.ToBoolean(OnPremise?.IsValid()))
+                HostingTypesToAdd.Add(new HostingType("On premise", "OnPremiseCloud"));
         }
     }
 }

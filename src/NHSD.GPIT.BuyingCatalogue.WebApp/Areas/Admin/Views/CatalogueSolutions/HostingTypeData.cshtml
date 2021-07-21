@@ -1,0 +1,20 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeSectionModel
+@{
+    Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
+    ViewData["Title"] = "Add a Hosting Type page";
+}
+
+<div class="nhsuk-width-container ">
+    <main id="maincontent" role="main">
+        <partial name="Partials/_BackLink" model="Model" />
+        <div class="nhsuk-grid-row">
+
+            <div class="nhsuk-grid-column-two-thirds">
+                <nhs-page-title title="Public cloud hosting"
+                                advice="Provide the following information about the public cloud hosting of your Catalogue Solution." />
+
+                <nhs-submit-button text="Save and continue" />
+            </div>
+        </div>
+    </main>
+</div>

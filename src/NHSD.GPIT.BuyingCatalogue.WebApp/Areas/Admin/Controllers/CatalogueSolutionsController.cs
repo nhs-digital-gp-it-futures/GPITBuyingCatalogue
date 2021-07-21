@@ -195,5 +195,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
+
+        [HttpGet("manage/{solutionId}/hosting-type/add-hosting-type")]
+        public async Task<IActionResult> AddHostingType(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution == null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new HostingTypeSectionModel(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/hosting-type/add-hosting-type")]
+        public async Task<IActionResult> AddHostingType(CatalogueItemId solutionId, HostingTypeSectionModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var solution = await solutionsService.GetSolution(solutionId);
+                return View(new HostingTypeSectionModel(solution));
+            }
+
+            return RedirectToAction(nameof(HostingTypeData), new { solutionId, model.SelectedHostingType });
+        }
+
+        [HttpGet("manage/{solutionId}/hosting-type/add-hosting-type/{selectedHostingType}")]
+        public IActionResult HostingTypeData()
+        {
+            // TODO: Update action when working on this page
+            return View(new HostingTypeSectionModel());
+        }
     }
 }
