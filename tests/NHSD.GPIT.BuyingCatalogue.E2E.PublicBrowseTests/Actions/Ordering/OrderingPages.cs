@@ -8,10 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             PageActions = new ActionCollection
             {
-                OrganisationDashboard = new(driver),
                 OrderDashboard = new(driver),
-                OrderDescription = new(driver),
-                CommencementDate = new(driver),
             };
         }
 
