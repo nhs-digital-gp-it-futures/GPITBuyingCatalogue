@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public DevelopmentPlans(LocalWebApplicationFactory factory)
             : base(factory, "/admin/catalogue-solutions/manage/99999-888/development-plans")
         {
-            ClearRoadmap(new CatalogueItemId(99999, "888"));
+            ClearRoadMap(new CatalogueItemId(99999, "888"));
             AuthorityLogin();
         }
 
