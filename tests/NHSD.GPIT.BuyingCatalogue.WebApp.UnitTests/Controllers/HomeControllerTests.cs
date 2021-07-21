@@ -11,17 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
     public static class HomeControllerTests
     {
         [Fact]
-        public static void Get_Index_ReturnsDefaultView()
-        {
-            var controller = new HomeController();
-
-            var result = controller.Index() as ViewResult;
-
-            result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
-        }
-
-        [Fact]
         public static void Get_PrivacyPolicy_ReturnsDefaultView()
         {
             var controller = new HomeController();
