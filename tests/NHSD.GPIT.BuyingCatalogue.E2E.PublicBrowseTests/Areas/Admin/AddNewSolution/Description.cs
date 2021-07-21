@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
@@ -13,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public Description(LocalWebApplicationFactory factory)
             : base(factory, "/admin/catalogue-solutions/manage/99999-888/description")
         {
-            Login();
+            AuthorityLogin();
         }
 
         [Fact]
@@ -22,7 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             await using var context = GetEndToEndDbContext();
             var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "888"))).Name;
 
-            PublicBrowsePages.CommonActions.PageTitle().Should().BeEquivalentTo($"Description - {solutionName}");
+            CommonActions.PageTitle()
+                .Should()
+                .BeEquivalentTo(CommonActions.FormatStringForComparison($"Description - {solutionName}"));
         }
 
         [Fact]

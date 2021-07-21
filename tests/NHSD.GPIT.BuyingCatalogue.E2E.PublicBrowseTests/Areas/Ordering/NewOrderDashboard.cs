@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void NewOrderDashboard_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("New Order");
+            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison("New Order"));
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.TaskList)
                 .Should().BeTrue();

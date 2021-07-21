@@ -33,7 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void CommencementDate_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Commencement date for {CallOffId}");
+            CommonActions.PageTitle()
+                .Should()
+                .BeEquivalentTo(CommonActions.FormatStringForComparison($"Commencement date for {CallOffId}"));
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CommencementDate.CommencementDateDayInput).Should().BeTrue();
