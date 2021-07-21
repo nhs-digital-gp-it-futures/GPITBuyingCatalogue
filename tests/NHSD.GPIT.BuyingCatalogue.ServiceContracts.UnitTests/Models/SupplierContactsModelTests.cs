@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             fixture
-                .Customize(new OrderEntityCustomization())
+                .Customize(new OrderCustomization())
                 .Customize(new CatalogueItemIdCustomization())
                 .Customize(new CallOffIdCustomization());
 

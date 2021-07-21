@@ -22,10 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public CallOffId(int id, byte revision)
         {
             if (id is < 0 or > MaxId)
-                throw new ArgumentOutOfRangeException(nameof(id), $"id must be between 0 and {MaxId}: Current Value - {id}");
+                throw new ArgumentOutOfRangeException(nameof(id), id, $"id must be between 0 and {MaxId}");
 
             if (revision > MaxRevision)
-                throw new ArgumentOutOfRangeException(nameof(revision), $"revision must be less than {MaxRevision}: Current Value - {revision}");
+                throw new ArgumentOutOfRangeException(nameof(revision), revision, $"revision must be less than {MaxRevision}");
 
             Id = id;
             Revision = revision;

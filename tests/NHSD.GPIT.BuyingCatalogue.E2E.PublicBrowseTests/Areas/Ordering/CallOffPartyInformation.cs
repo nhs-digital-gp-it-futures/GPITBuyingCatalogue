@@ -32,13 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageTitle().Should().BeEquivalentTo($"Call-off Ordering Party information for {CallOffId}");
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            OrderingPages.CallOffPartyInformation.OrganisationNameDisplayed().Should().BeTrue();
-            OrderingPages.CallOffPartyInformation.OrganisationOdsCodeDisplayed().Should().BeTrue();
-            OrderingPages.CallOffPartyInformation.OrganisationAddressFirstLineDisplayed().Should().BeTrue();
-            OrderingPages.CallOffPartyInformation.FirstNameInputDisplayed().Should().BeTrue();
-            OrderingPages.CallOffPartyInformation.LastNameInputDisplayed().Should().BeTrue();
-            OrderingPages.CallOffPartyInformation.EmailAddressInputDisplayed().Should().BeTrue();
-            OrderingPages.CallOffPartyInformation.PhoneNumberInputDisplayed().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationName).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationOdsCode).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationAddressLine1).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.FirstNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.LastNameInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.EmailAddressInput).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.PhoneNumberInput).Should().BeTrue();
         }
 
         [Fact]
@@ -81,8 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public async Task OrderingPartyInformation_InputText_AddsPartyInformation()
         {
-            var firstname = TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.FirstNameInput, 100);
-            var lastname = TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.LastNameInput, 100);
+            var firstName = TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.FirstNameInput, 100);
+            var lastName = TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.LastNameInput, 100);
             var email = TextGenerators.EmailInputAddText(Objects.Ordering.CalloffPartyInformation.EmailAddressInput, 256);
             var phone = TextGenerators.TextInputAddText(Objects.Ordering.CalloffPartyInformation.PhoneNumberInput, 35);
 
@@ -96,8 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             var order = await context.Orders.Include(o => o.OrderingPartyContact)
                 .SingleAsync(o => o.Id == CallOffId.Id);
 
-            order.OrderingPartyContact.FirstName.Should().BeEquivalentTo(firstname);
-            order.OrderingPartyContact.LastName.Should().BeEquivalentTo(lastname);
+            order.OrderingPartyContact.FirstName.Should().BeEquivalentTo(firstName);
+            order.OrderingPartyContact.LastName.Should().BeEquivalentTo(lastName);
             order.OrderingPartyContact.Email.Should().BeEquivalentTo(email);
             order.OrderingPartyContact.Phone.Should().BeEquivalentTo(phone);
         }

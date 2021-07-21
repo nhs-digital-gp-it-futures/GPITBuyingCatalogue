@@ -13,16 +13,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "First Name Required")]
         [StringLength(100)]
         public string FirstName { get; set; }
 
+        [Required(ErrorMessage = "Last Name Required")]
         [StringLength(100)]
         public string LastName { get; set; }
 
+        [Required(ErrorMessage = "Email Address Required")]
         [StringLength(256)]
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Telephone Number Required")]
         [StringLength(35)]
         public string Phone { get; set; }
 

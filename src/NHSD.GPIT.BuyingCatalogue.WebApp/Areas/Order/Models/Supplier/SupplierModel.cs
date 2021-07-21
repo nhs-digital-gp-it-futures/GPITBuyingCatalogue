@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
 
         public string Name { get; set; }
 
-        public Address Address { get; init; }
+        public Address Address { get; set; }
 
         public Contact PrimaryContact { get; init; }
     }
