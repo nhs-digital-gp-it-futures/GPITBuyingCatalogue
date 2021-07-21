@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
-            CommonActions.GetNumberOfRadioButtonsDisplayed.Should().Be(2);
+            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(2);
         }
 
         [Fact]
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
-            CommonActions.GetNumberOfRadioButtonsDisplayed.Should().Be(1);
+            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(1);
         }
 
         [Fact]
