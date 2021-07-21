@@ -1,5 +1,8 @@
 # GPITBuyingCatalogue
-ASP.NET Core Buying Catalogue Web Application 
+
+Add a commit with a commit subject that is too long.
+
+ASP.NET Core Buying Catalogue Web Application
 
 This repository contains a revised architecture for the Buying Catalogue.
 
