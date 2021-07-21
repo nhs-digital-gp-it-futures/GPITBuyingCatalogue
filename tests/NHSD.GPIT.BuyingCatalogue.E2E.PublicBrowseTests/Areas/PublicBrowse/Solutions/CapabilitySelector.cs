@@ -31,7 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
         {
             PublicBrowsePages.CommonActions.ClickGoBackLink();
 
-            CommonActions.PageTitle().Should().ContainEquivalentOf("GP IT Futures framework");
+            CommonActions.PageTitle()
+                .Should()
+                .ContainEquivalentOf(CommonActions.FormatStringForComparison("GP IT Futures framework"));
         }
 
         [Fact]

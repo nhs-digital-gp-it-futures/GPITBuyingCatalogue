@@ -29,7 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void OrderingPartyInformation_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Call-off Ordering Party information for {CallOffId}");
+            CommonActions.PageTitle()
+                .Should()
+                .BeEquivalentTo(CommonActions.FormatStringForComparison($"Call-off Ordering Party information for {CallOffId}"));
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
