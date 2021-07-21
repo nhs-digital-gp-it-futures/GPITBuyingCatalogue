@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             foreach (var header in request.Headers)
                 HeaderInfo.Add($"{header.Key} {header.Value}");
 
-            HeaderInfo.Add($"** Scheme {request.Scheme}");
+            HeaderInfo.Add($"*** Scheme {request.Scheme}");
         }
 
         public List<string> HeaderInfo { get; set; }
