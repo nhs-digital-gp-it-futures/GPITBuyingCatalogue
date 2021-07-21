@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
@@ -7,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return View(new HomeModel(Request));
         }
 
         [Route("privacy-policy")]
