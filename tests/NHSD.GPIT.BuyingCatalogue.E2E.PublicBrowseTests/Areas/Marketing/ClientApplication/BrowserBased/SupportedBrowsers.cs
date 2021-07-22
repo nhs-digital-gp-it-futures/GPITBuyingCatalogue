@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public async Task SupportedBrowser_SelectBrowser()
         {
-            var browser = CommonActions.ClickCheckbox(CommonSelectors.BrowserCheckboxItem);
+            var browser = CommonActions.ClickCheckbox(CommonSelectors.CheckboxItem);
 
             CommonActions.ClickRadioButtonWithText("Yes");
 
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [InlineData("No")]
         public async Task SupportedBrowser_SelectMobileResponsive(string label)
         {
-            CommonActions.ClickCheckbox(CommonSelectors.BrowserCheckboxItem);
+            CommonActions.ClickCheckbox(CommonSelectors.CheckboxItem);
             CommonActions.ClickRadioButtonWithText(label);
 
             CommonActions.ClickSave();

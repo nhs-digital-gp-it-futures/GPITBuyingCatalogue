@@ -4,10 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
 {
     internal static class CommonSelectors
     {
-        internal static By SaveAndReturn => By.Id("Submit");
-
-        internal static By GoBackLink => By.ClassName("nhsuk-back-link__link");
-
         internal static By Link => By.Id("Link");
 
         internal static By Description => By.Id("Description");
@@ -18,13 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
 
         internal static By NhsInput => By.ClassName("nhsuk-input");
 
-        internal static By NhsErrorSection => By.ClassName("nhsuk-error-summary");
-
         internal static By AdditionalInfoTextArea => By.Id("AdditionalInformation");
-
-        internal static By RadioButtonItems => By.CssSelector(".nhsuk-radios__item");
-
-        internal static By BrowserCheckboxItem => By.CssSelector(".nhsuk-checkboxes__item");
 
         internal static By BrowserBasedCheckbox => By.Id("BrowserBased");
 
@@ -49,7 +39,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
         internal static By MinimumCpuTextArea => By.Id("MinimumCpu");
 
         internal static By Header3 => By.TagName("h3");
-
-        internal static By Header1 => By.TagName("h1");
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             var capabilityName = (await context.Capabilities.SingleAsync(c => c.Id == Guid.Parse(CapabilityId))).Name;
             var solutionName = (await context.CatalogueItems.SingleAsync(c => c.CatalogueItemId == new CatalogueItemId(99999, "001"))).Name;
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison($"{capabilityName} - {solutionName}"));
+            CommonActions.PageTitle().Should().BeEquivalentTo($"{capabilityName} - {solutionName}".FormatForComparison());
         }
 
         [Fact]

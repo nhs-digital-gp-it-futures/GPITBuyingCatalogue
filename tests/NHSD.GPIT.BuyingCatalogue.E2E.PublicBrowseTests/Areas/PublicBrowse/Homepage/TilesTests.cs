@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             PublicBrowsePages.HomePageActions.ClickBuyersGuideTile();
             CommonActions.PageTitle()
                 .Should()
-                .ContainEquivalentOf(CommonActions.FormatStringForComparison("Buyer’s Guide"));
+                .ContainEquivalentOf("Buyer’s Guide".FormatForComparison());
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             PublicBrowsePages.HomePageActions.ClickDFOCVCTile();
             CommonActions.PageTitle()
                 .Should()
-                .ContainEquivalentOf(CommonActions.FormatStringForComparison("DFOCVC framework - results"));
+                .ContainEquivalentOf("DFOCVC framework - results".FormatForComparison());
         }
     }
 }

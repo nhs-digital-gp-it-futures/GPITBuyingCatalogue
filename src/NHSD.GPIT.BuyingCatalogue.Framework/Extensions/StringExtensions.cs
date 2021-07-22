@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
@@ -22,5 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
             return Numbers[number - 1];
         }
+
+        public static string FormatForComparison(this string value) =>
+            new(value.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+        public static bool EqualsIgnoreWhiteSpace(this string a, string b) =>
+            a.FormatForComparison().EqualsIgnoreCase(b.FormatForComparison());
     }
 }

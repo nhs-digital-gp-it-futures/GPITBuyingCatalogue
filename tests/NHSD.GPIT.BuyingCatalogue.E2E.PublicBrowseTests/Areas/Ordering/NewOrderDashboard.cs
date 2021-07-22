@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void NewOrderDashboard_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison("New Order"));
+            CommonActions.PageTitle().Should().BeEquivalentTo("New Order".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.TaskList)
                 .Should().BeTrue();

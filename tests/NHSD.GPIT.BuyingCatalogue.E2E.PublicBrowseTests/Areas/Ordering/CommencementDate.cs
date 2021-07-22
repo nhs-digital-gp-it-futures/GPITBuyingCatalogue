@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -35,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo(CommonActions.FormatStringForComparison($"Commencement date for {CallOffId}"));
+                .BeEquivalentTo($"Commencement date for {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CommencementDate.CommencementDateDayInput).Should().BeTrue();

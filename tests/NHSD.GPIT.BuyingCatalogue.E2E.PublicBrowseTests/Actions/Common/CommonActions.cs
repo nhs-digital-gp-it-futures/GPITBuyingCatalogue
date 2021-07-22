@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
@@ -23,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver.FindElement(targetElement).Click();
 
         internal void ClickSave() =>
-            Driver.FindElement(CommonSelectors.SaveAndReturn).Click();
+            Driver.FindElement(CommonSelectors.SubmitButton).Click();
 
         internal void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
@@ -63,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             ElementExists(targetElement) && Driver.FindElement(targetElement).Displayed;
 
         internal bool SaveButtonDisplayed() =>
-            ElementIsDisplayed(CommonSelectors.SaveAndReturn);
+            ElementIsDisplayed(CommonSelectors.SubmitButton);
 
         internal bool GoBackLinkDisplayed() =>
             ElementIsDisplayed(CommonSelectors.GoBackLink);
@@ -89,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 
         // Get Element Values
         internal string PageTitle() =>
-            FormatStringForComparison(Driver.FindElement(CommonSelectors.Header1).Text);
+            Driver.FindElement(CommonSelectors.Header1).Text.FormatForComparison();
 
         // Element Comparisons
 
@@ -103,30 +104,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             ElementShowingCorrectErrorMessage(ByExtensions.DataValMessage(dataValMessage), errorMessage);
 
         internal bool ElementShowingCorrectErrorMessage(By targetElement, string errorMessage) =>
-            FormatStringForComparison(Driver.FindElement(targetElement).Text)
-            == FormatStringForComparison(errorMessage);
+            Driver.FindElement(targetElement).Text.EqualsIgnoreWhiteSpace(errorMessage);
 
         internal bool ElementTextEqualToo(By targetElement, string expectedText) =>
-            FormatStringForComparison(Driver.FindElement(targetElement).Text)
-            .Equals(FormatStringForComparison(expectedText), StringComparison.InvariantCultureIgnoreCase);
+            Driver.FindElement(targetElement).Text.EqualsIgnoreWhiteSpace(expectedText);
 
         internal bool InputValueEqualToo(By targetElement, string expectedText) =>
-            FormatStringForComparison(Driver.FindElement(targetElement).GetAttribute("value"))
-            .Equals(FormatStringForComparison(expectedText), StringComparison.InvariantCultureIgnoreCase);
+            Driver.FindElement(targetElement).GetAttribute("value").EqualsIgnoreWhiteSpace(expectedText);
 
         internal bool InputElementIsEmpty(By targetElement) =>
-            string.IsNullOrWhiteSpace(FormatStringForComparison(Driver.FindElement(targetElement).GetAttribute("value")));
+            string.IsNullOrWhiteSpace(Driver.FindElement(targetElement).GetAttribute("value").FormatForComparison());
 
         // Element Utils
-
-        /// <summary>
-        /// Formats a string by removing all newline and whitespace so that we get more consistent comparisons.
-        /// </summary>
-        /// <param name="formatString">the string to format.</param>
-        /// <returns>a formatted string.</returns>
-        internal string FormatStringForComparison(string formatString) =>
-            new(formatString.Where(c => !char.IsWhiteSpace(c)).ToArray());
-
         internal bool PageLoadedCorrectGetIndex(
             Type controllerType,
             string methodName)
@@ -139,21 +128,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 
             Wait.Until(d => d.FindElement(CommonSelectors.Header1));
 
-            var controllerRoute =
-                (controllerType
-                    .GetCustomAttributes(typeof(RouteAttribute), false)
-                    ?.FirstOrDefault() as RouteAttribute)?.Template;
+            var controllerRoute = controllerType.GetCustomAttribute<HttpGetAttribute>(false)?.Template;
 
-            var methodRoute =
-                (controllerType
-                .GetMethods()
-                .Where(m =>
-                    m.Name == methodName
-                    && m.GetCustomAttributes(typeof(HttpGetAttribute), false)
-                    .Any())
-                ?.FirstOrDefault()
-                .GetCustomAttributes(typeof(HttpGetAttribute), false)
-                .FirstOrDefault() as HttpGetAttribute)?.Template;
+            var methodRoute = controllerType.GetMethods()
+                .FirstOrDefault(m => m.Name == methodName && m.GetCustomAttribute<HttpGetAttribute>(false) is not null)?
+                .GetCustomAttribute<HttpGetAttribute>(false)?.Template;
 
             var absoluteRoute = methodRoute switch
             {

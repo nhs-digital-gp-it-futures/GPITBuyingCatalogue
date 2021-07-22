@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
 
@@ -27,7 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             await using var context = GetEndToEndDbContext();
             var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "888"))).Name;
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison($"Features - {solutionName}"));
+            CommonActions.PageTitle()
+                .Should()
+                .BeEquivalentTo($"Features - {solutionName}".FormatForComparison());
         }
 
         [Theory]

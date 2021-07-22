@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
@@ -33,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
 
             CommonActions.PageTitle()
                 .Should()
-                .ContainEquivalentOf(CommonActions.FormatStringForComparison("GP IT Futures framework"));
+                .ContainEquivalentOf("GP IT Futures framework".FormatForComparison());
         }
 
         [Fact]
