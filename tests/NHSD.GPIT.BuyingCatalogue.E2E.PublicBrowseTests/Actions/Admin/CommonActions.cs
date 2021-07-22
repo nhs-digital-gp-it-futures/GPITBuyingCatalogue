@@ -1,5 +1,4 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
