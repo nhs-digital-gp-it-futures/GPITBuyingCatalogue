@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
@@ -59,6 +60,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             dbSolution.Supplier.Id.Should().Be("99999");
             dbSolution.PublishedStatus.Should().Be(PublicationStatus.Draft);
+        }
+
+        [Fact]
+        public async Task AddSolution_SolutionWithDuplicateName_ThrowsError()
+        {
+            await using var context = GetEndToEndDbContext();
+            var existingSolution = await context.CatalogueItems.FirstOrDefaultAsync();
+
+            CommonActions.ElementAddValue(Objects.Admin.AddSolutionObjects.SolutionName, existingSolution.Name);
+
+            CommonActions.SelectDropdownItem(Objects.Admin.AddSolutionObjects.SupplierName, 0);
+
+            CommonActions.ClickFirstCheckbox();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AddCatalogueSolutionController),
+                nameof(AddCatalogueSolutionController.Index)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage("SolutionName", "A solution with this name already exists")
+                .Should().BeTrue();
         }
     }
 }
