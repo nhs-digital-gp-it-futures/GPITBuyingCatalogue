@@ -66,9 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             if ((string.IsNullOrEmpty(aspFor?.Name) && string.IsNullOrEmpty(formName))
                 || string.IsNullOrEmpty(hintText))
-            {
                 return null;
-            }
 
             var name = !string.IsNullOrEmpty(aspFor?.Name) ? aspFor.Name : formName;
 
@@ -91,9 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             if ((string.IsNullOrEmpty(aspFor.Name) && string.IsNullOrEmpty(formName))
                 || string.IsNullOrEmpty(htmlAttributeLabelText))
-            {
                 return null;
-            }
 
             return htmlGenerator.GenerateLabel(
                 viewContext,
