@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(Objects.Common.ByExtensions.DataTestId("incomplete-orders-table")).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Common.ByExtensions.DataTestId("complete-orders-table")).Should().BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
             var organisation = await context.Organisations.SingleAsync(o => o.OdsCode == Parameters["OdsCode"]);
 
             CommonActions.PageTitle().Should().BeEquivalentTo(organisation.Name.FormatForComparison());

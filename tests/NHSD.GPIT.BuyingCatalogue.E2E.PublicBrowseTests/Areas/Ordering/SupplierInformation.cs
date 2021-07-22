@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
             var order = await context.Orders
                 .Include(o => o.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(o => o.SupplierContact)
@@ -206,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
             var order = await context.Orders
                 .Include(o => o.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(o => o.SupplierContact)

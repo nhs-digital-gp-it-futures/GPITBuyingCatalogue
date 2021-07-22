@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
         {
             CommonActions.ClickSave();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
             var solutionsCount =
                 await context.CatalogueItems
                 .Include(c => c.Solution).ThenInclude(s => s.FrameworkSolutions)

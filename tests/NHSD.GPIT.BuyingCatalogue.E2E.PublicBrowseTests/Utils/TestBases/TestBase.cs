@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         private readonly Uri uri;
 
-        public TestBase(LocalWebApplicationFactory factory, string urlArea = "")
+        protected TestBase(LocalWebApplicationFactory factory, string urlArea = "")
         {
             Factory = factory;
 
@@ -50,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal Actions.Common.CommonActions CommonActions { get; }
 
-        internal WebDriverWait Wait { get; private set; }
+        internal WebDriverWait Wait { get; }
 
         internal Actions.PublicBrowse.ActionCollection PublicBrowsePages { get; }
 
@@ -116,32 +117,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal void AuthorityLogin()
         {
-            if (AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-            {
-                using var context = GetEndToEndDbContext();
-                var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").Email;
-                AuthorizationPages.LoginActions.Login(user, DefaultPassword);
-            }
+            if (!AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            using var context = GetEndToEndDbContext();
+            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Authority").Email;
+            AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
         internal void BuyerLogin()
         {
-            if (AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-            {
-                using var context = GetEndToEndDbContext();
-                var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").Email;
-                AuthorizationPages.LoginActions.Login(user, DefaultPassword);
-            }
+            if (!AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+                return;
+
+            using var context = GetEndToEndDbContext();
+            var user = context.AspNetUsers.First(s => s.OrganisationFunction == "Buyer").Email;
+            AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
         protected static string GenerateUrlFromMethod(
-            Type controller,
+            Type controllerType,
             string methodName,
             IDictionary<string, string> parameters,
             IDictionary<string, string> queryParameters = null)
         {
-            if (controller.BaseType != typeof(Controller))
-                throw new InvalidOperationException($"{nameof(controller)} is not a type of {nameof(Controller)}");
+            if (controllerType.BaseType != typeof(Controller))
+                throw new InvalidOperationException($"{nameof(controllerType)} is not a type of {nameof(Controller)}");
 
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentNullException(nameof(methodName), $"{nameof(methodName)} should not be null");
@@ -149,20 +150,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             if (parameters is null)
                 throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} should not be null");
 
-            var controllerRoute =
-                (controller.GetCustomAttributes(typeof(Microsoft.AspNetCore.Mvc.RouteAttribute), false)
-                            ?.FirstOrDefault() as Microsoft.AspNetCore.Mvc.RouteAttribute)
-                                ?.Template;
+            var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template;
 
-            var methodRoute =
-                (controller.GetMethods()
-                .Where(m =>
-                    m.Name == methodName
-                    && m.GetCustomAttributes(typeof(HttpGetAttribute), false)
-                        .Any())
-                        ?.FirstOrDefault()
-                        .GetCustomAttributes(typeof(HttpGetAttribute), false)
-                            .FirstOrDefault() as HttpGetAttribute)?.Template;
+            var methodRoute = controllerType.GetMethods()
+                .FirstOrDefault(m => m.Name == methodName && m.GetCustomAttribute<HttpGetAttribute>(false) is not null)?
+                .GetCustomAttribute<HttpGetAttribute>(false)?.Template;
 
             var absoluteRoute = methodRoute switch
             {
