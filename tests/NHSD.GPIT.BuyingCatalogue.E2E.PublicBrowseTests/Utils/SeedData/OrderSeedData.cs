@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
         {
-            var orderId = 90000;
-            var timenow = DateTime.UtcNow;
+            const int orderId = 90000;
+            var timeNow = DateTime.UtcNow;
 
             var organisationId = context.Organisations.Where(o => o.OdsCode == "03F").FirstOrDefault().OrganisationId;
 
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 Revision = 1,
                 OrderingPartyId = organisationId,
-                Created = timenow,
+                Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
             };
@@ -44,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderAtCallOffPartyStage(BuyingCatalogueDbContext context)
         {
-            var orderId = 90001;
-            var timenow = DateTime.UtcNow;
+            const int orderId = 90001;
+            var timeNow = DateTime.UtcNow;
 
             var organisationId = context.Organisations.Where(o => o.OdsCode == "03F").FirstOrDefault().OrganisationId;
 
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 Revision = 1,
                 OrderingPartyId = organisationId,
-                Created = timenow,
+                Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -71,8 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderAtSupplierStage(BuyingCatalogueDbContext context)
         {
-            var orderId = 90002;
-            var timenow = DateTime.UtcNow;
+            const int orderId = 90002;
+            var timeNow = DateTime.UtcNow;
 
             var organisationId = context.Organisations.Where(o => o.OdsCode == "03F").FirstOrDefault().OrganisationId;
 
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 Revision = 1,
                 OrderingPartyId = organisationId,
-                Created = timenow,
+                Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
