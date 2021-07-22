@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -21,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse
 
         public bool CatalogueSolutionPageDisplayed()
         {
-             Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionPage);
-             return true;
+            Driver.FindElement(Objects.PublicBrowse.SolutionObjects.CatalogueSolutionPage);
+            return true;
         }
 
         internal bool SolutionNameDisplayed()
