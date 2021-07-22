@@ -23,12 +23,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             Small = 3,
         }
 
-        public static TagBuilder GetFieldsetBuilder(string formName)
+        public static TagBuilder GetFieldsetBuilder(string formName, string labelHint)
         {
             var builder = new TagBuilder(TagHelperConstants.FieldSet);
 
             builder.AddCssClass(NhsFieldset);
-            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, $"{formName}-hint");
+
+            if (!string.IsNullOrWhiteSpace(labelHint))
+                builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, TagBuilder.CreateSanitizedId($"{formName}-hint", "_"));
 
             return builder;
         }

@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
 
-            var fieldset = GetFieldsetBuilder(formName);
+            var fieldset = GetFieldsetBuilder(formName, LabelHint);
 
             var fieldsetheading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
 
