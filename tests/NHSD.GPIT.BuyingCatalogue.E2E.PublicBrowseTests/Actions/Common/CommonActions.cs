@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
 
             Wait.Until(d => d.FindElement(CommonSelectors.Header1));
 
-            var controllerRoute = controllerType.GetCustomAttribute<HttpGetAttribute>(false)?.Template;
+            var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template;
 
             var methodRoute = controllerType.GetMethods()
                 .FirstOrDefault(m => m.Name == methodName && m.GetCustomAttribute<HttpGetAttribute>(false) is not null)?
