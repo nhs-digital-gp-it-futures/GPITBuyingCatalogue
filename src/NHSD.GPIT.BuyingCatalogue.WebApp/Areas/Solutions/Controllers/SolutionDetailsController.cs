@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
             var viewModel = mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution);
-            viewModel.CapabilitiesHeading = null;
+
             viewModel.Name = solution.CatalogueItemName(additionalId);
 
             viewModel.Description = solution.AdditionalServiceDescription(additionalId);
