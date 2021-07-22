@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
 
         private void SetLabelAriaDescription(TagBuilder labelBuilder)
         {
-            if (string.IsNullOrWhiteSpace(SuffixText))
+            if (labelBuilder is null || string.IsNullOrWhiteSpace(SuffixText))
                 return;
 
             labelBuilder.MergeAttribute(
