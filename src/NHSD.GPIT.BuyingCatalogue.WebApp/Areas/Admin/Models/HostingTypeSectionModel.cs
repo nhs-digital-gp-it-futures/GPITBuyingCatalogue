@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public sealed class HostingTypeSectionModel : MarketingBaseModel
+    public class HostingTypeSectionModel : MarketingBaseModel
     {
         public HostingTypeSectionModel()
             : base(null)
@@ -22,34 +21,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
+            var hosting = catalogueItem.Solution?.GetHosting();
+
             SolutionName = catalogueItem?.Name;
-            PublicCloud = CatalogueItem.Solution?.GetHosting()?.PublicCloud;
-            PrivateCloud = CatalogueItem.Solution?.GetHosting()?.PrivateCloud;
-            Hybrid = CatalogueItem.Solution?.GetHosting()?.HybridHostingType;
-            OnPremise = CatalogueItem.Solution?.GetHosting()?.OnPremise;
+
+            PublicCloud = new PublicCloudModel(hosting?.PublicCloud);
+
+            PrivateCloud = new PrivateCloudModel(hosting?.PrivateCloud);
+
+            Hybrid = new HybridModel(hosting?.HybridHostingType);
+
+            OnPremise = new OnPremiseModel(hosting?.OnPremise);
+
             PopulateHostingTypesToAdd();
         }
 
-        public PublicCloud PublicCloud { get; set; }
+        public PublicCloudModel PublicCloud { get; set; }
 
-        public PrivateCloud PrivateCloud { get; set; }
+        public PrivateCloudModel PrivateCloud { get; set; }
 
-        public HybridHostingType Hybrid { get; set; }
+        public HybridModel Hybrid { get; set; }
 
-        public OnPremise OnPremise { get; set; }
+        public OnPremiseModel OnPremise { get; set; }
 
         public string SolutionName { get; set; }
 
         public List<HostingType> HostingTypesToAdd { get; set; }
 
-        [Required(ErrorMessage = "Select a hosting type")]
-        public string SelectedHostingType { get; set; }
-
         public override bool? IsComplete =>
-            Convert.ToBoolean(PublicCloud?.IsValid()) ||
-            Convert.ToBoolean(PrivateCloud?.IsValid()) ||
-            Convert.ToBoolean(Hybrid?.IsValid()) ||
-            Convert.ToBoolean(OnPremise?.IsValid());
+            Convert.ToBoolean(PublicCloud?.IsComplete) ||
+            Convert.ToBoolean(PrivateCloud?.IsComplete) ||
+            Convert.ToBoolean(Hybrid?.IsComplete) ||
+            Convert.ToBoolean(OnPremise?.IsComplete);
+
+        public bool? AddedHostingType => IsComplete == true ? true : null;
 
         public FeatureCompletionStatus StatusHostingType() =>
            Convert.ToBoolean(IsComplete)

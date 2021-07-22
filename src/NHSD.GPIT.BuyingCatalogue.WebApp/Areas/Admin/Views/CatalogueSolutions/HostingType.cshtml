@@ -26,7 +26,7 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
-
+                
                 @if (Convert.ToBoolean(Model.IsComplete))
                 {
                     <nhs-table>
@@ -34,42 +34,42 @@
                         <nhs-table-column> </nhs-table-column>
 
 
-                        @if (Convert.ToBoolean(Model.PublicCloud.IsValid()))
+                        @if (Convert.ToBoolean(Model.PublicCloud.IsComplete))
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>Public cloud</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a href="#">Edit</a>
+                                    <a asp-action="PublicCloud" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }
 
-                        @if (Convert.ToBoolean(Model.PrivateCloud.IsValid()))
+                        @if (Convert.ToBoolean(Model.PrivateCloud.IsComplete))
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>Private cloud</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a href="#">Edit</a>
+                                    <a asp-action="PrivateCloud" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }
 
-                        @if (Convert.ToBoolean(Model.Hybrid.IsValid()))
+                        @if (Convert.ToBoolean(Model.Hybrid.IsComplete))
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>Hybrid</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a href="#">Edit</a>
+                                    <a asp-action="Hybrid" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }
 
-                        @if (Convert.ToBoolean(Model.OnPremise.IsValid()))
+                        @if (Convert.ToBoolean(Model.OnPremise.IsComplete))
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>On premise</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <a href="#">Edit</a>
+                                    <a asp-action="OnPremise" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }

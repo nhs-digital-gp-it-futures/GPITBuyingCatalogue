@@ -53,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     {
                         options.AddServerHeader = false;
                     });
+                    webBuilder.UseIIS();
                 });
         }
     }
