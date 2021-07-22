@@ -74,6 +74,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var frameworks = new List<FrameworkModel> { new() { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
 
             model.Frameworks = frameworks;
+
+            mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
+                .ReturnsAsync((CatalogueItem)null);
+
             var controller = GetController(mockService, userId);
 
             await controller.Index(model);
@@ -89,10 +93,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_Index_SolutionNameAlreadyExists_ThrowsError(
+            AddSolutionModel model,
+            CatalogueItem existingSolution,
+            List<Supplier> suppliers,
+            Mock<ISolutionsService> mockService)
+        {
+            var frameworks = new List<FrameworkModel> { new() { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
+
+            existingSolution.Name = model.SolutionName;
+
+            model.Frameworks = frameworks;
+
+            mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
+                .ReturnsAsync(existingSolution);
+
+            mockService.Setup(s => s.GetAllSuppliers())
+                .ReturnsAsync(suppliers);
+
+            var controller = new AddCatalogueSolutionController(mockService.Object);
+
+            var actual = (await controller.Index(model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewData.ModelState.IsValid.Should().BeFalse();
+            actual.ViewData.ModelState.ErrorCount.Should().Be(1);
+            actual.ViewData.ModelState.FirstOrDefault().Key.Should().BeEquivalentTo(nameof(AddSolutionModel.SolutionName));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_RedirectsToManageCatalogueSolutions(
             AddSolutionModel model,
             Mock<ISolutionsService> mockService)
         {
+            mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
+                .ReturnsAsync((CatalogueItem)null);
+
             var controller = GetController(mockService, Guid.NewGuid());
 
             var actual = (await controller.Index(model)).As<RedirectToActionResult>();
@@ -111,6 +148,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetAllSuppliers())
                 .ReturnsAsync(suppliers);
+
+            mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
+                .ReturnsAsync((CatalogueItem)null);
+
             var controller = new AddCatalogueSolutionController(mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
