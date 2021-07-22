@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         public string LabelHint { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.CharacterCountName)]
-        public bool EnableCharacterCounter { get; set; } = false;
+        public bool CharacterCountEnabled { get; set; } = false;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var input = GetInputBuilder();
-            var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, EnableCharacterCounter);
+            var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, CharacterCountEnabled);
 
             formGroup.InnerHtml
                 .AppendHtml(label)
@@ -52,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 .AppendHtml(input)
                 .AppendHtml(counter);
 
-            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, EnableCharacterCounter, defaultMaxLength: DefaultMaxLength);
+            TagHelperBuilders.UpdateOutputDiv(output, For, ViewContext, formGroup, CharacterCountEnabled, defaultMaxLength: DefaultMaxLength);
         }
 
         private TagBuilder GetInputBuilder()
@@ -64,10 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 For.Model,
                 null,
                 new
-                {
-                    @class = TagHelperConstants.NhsInput,
-                    aria_describedby = $"{For.Name}-info {For.Name}-summary",
-                });
+                { @class = TagHelperConstants.NhsInput, });
 
             if (!builder.Attributes.Any(a => a.Key == "maxlength"))
             {
@@ -76,11 +74,26 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 builder.MergeAttribute("data-val", "true");
             }
 
+            var describedBy = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(LabelHint))
+                describedBy.Add($"{For.Name}-hint");
+
+            if (!TagHelperFunctions.IsCounterDisabled(For, CharacterCountEnabled))
+            {
+                describedBy.Add($"{For.Name}-info");
+                builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
+            }
+
+            if (describedBy.Any())
+            {
+                builder.MergeAttribute(
+                    TagHelperConstants.AriaDescribedBy,
+                    TagBuilder.CreateSanitizedId(string.Join(' ', describedBy), "_"));
+            }
+
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
                 builder.Attributes[TagHelperConstants.Type] = "password";
-
-            if (!TagHelperFunctions.IsCounterDisabled(For, EnableCharacterCounter))
-                builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);

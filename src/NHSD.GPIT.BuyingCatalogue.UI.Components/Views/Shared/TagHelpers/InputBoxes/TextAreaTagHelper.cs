@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -72,14 +73,28 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 new
                 {
                     @class = NhsTextArea,
-                    aria_describedby = $"{For.Name}-info {For.Name}-summary",
                 });
 
             if (!builder.Attributes.Any(a => a.Key == "maxlength"))
                 builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
 
+            var describedBy = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(LabelHint))
+                describedBy.Add($"{For.Name}-hint");
+
             if (!TagHelperFunctions.IsCounterDisabled(For, CharacterCountEnabled))
+            {
+                describedBy.Add($"{For.Name}-info");
                 builder.AddCssClass(TagHelperConstants.GovUkJsCharacterCount);
+            }
+
+            if (describedBy.Any())
+            {
+                builder.MergeAttribute(
+                    TagHelperConstants.AriaDescribedBy,
+                    TagBuilder.CreateSanitizedId(string.Join(' ', describedBy), "_"));
+            }
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
             {
