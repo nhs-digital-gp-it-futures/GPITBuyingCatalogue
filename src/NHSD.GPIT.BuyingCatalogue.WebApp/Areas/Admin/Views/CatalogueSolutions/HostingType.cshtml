@@ -14,10 +14,10 @@
             <nhs-page-title title="Hosting Type" caption="@Model.SolutionName"
                             advice="Let buyers know how your Catalogue Solution can be hosted. You must add at least one." />
 
-            @*TODO: Update Action Link to Add Hosting Type*@
             <vc:nhs-action-link url="@Url.Action(
-            nameof(CatalogueSolutionsController.HostingType),
-            typeof(CatalogueSolutionsController).ControllerName())" text="Add a hosting type" />
+            nameof(CatalogueSolutionsController.AddHostingType),
+            typeof(CatalogueSolutionsController).ControllerName(),
+            new { Model.SolutionId})" text="Add a hosting type" />
 
             <p>
                 Use the link to add information on each of the hosting types your Catalogue Solution works with.
