@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo(CommonActions.FormatStringForComparison($"Find supplier information for {CallOffId}"));
+                .BeEquivalentTo($"Find supplier information for {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierSearchInput).Should().BeTrue();
@@ -55,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison("No supplier found"));
+            CommonActions.PageTitle().Should().BeEquivalentTo("No supplier found".FormatForComparison());
         }
 
         [Fact]
@@ -69,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(SupplierController),
                 nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison("No supplier found"));
+            CommonActions.PageTitle().Should().BeEquivalentTo("No supplier found".FormatForComparison());
         }
 
         [Fact]
@@ -84,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     typeof(SupplierController),
                     nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison("Suppliers found"));
+            CommonActions.PageTitle().Should().BeEquivalentTo("Suppliers found".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
@@ -103,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                     typeof(SupplierController),
                     nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison("Suppliers found"));
+            CommonActions.PageTitle().Should().BeEquivalentTo("Suppliers found".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierRadioContainer);
 
@@ -165,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Include(o => o.SupplierContact)
                 .SingleAsync(o => o.Id == CallOffId.Id);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison($"Supplier information for {CallOffId}"));
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Supplier information for {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierName).Should().BeTrue();
@@ -211,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Include(o => o.SupplierContact)
                 .SingleAsync(o => o.Id == CallOffId.Id);
 
-            CommonActions.PageTitle().Should().BeEquivalentTo(CommonActions.FormatStringForComparison($"Supplier information for {CallOffId}"));
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Supplier information for {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierName).Should().BeTrue();
