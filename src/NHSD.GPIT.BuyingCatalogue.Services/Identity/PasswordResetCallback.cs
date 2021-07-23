@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
@@ -10,11 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     {
         private readonly IHttpContextAccessor accessor;
         private readonly LinkGenerator generator;
+        private readonly ILogger<PasswordResetCallback> logger;
 
-        public PasswordResetCallback(IHttpContextAccessor accessor, LinkGenerator generator)
+        public PasswordResetCallback(IHttpContextAccessor accessor, LinkGenerator generator, ILogger<PasswordResetCallback> logger)
         {
             this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
             this.generator = generator ?? throw new ArgumentNullException(nameof(generator));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Uri GetPasswordResetCallback(PasswordResetToken token)
@@ -37,7 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
 
         private string GetAuthority()
         {
-            if (accessor.HttpContext.Request.Host.Port.HasValue)
+            foreach (var header in accessor.HttpContext.Request.Headers)
+                logger.LogTrace($"Header: {header.Key} {header.Value}");
+
+            if (accessor.HttpContext.Request.Host.Port.HasValue && accessor.HttpContext.Request.Host.Port.Value != 80)
                 return $"{accessor.HttpContext.Request.Host.Host}:{accessor.HttpContext.Request.Host.Port}";
 
             return accessor.HttpContext.Request.Host.Host;

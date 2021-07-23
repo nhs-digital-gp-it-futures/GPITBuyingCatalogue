@@ -102,7 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             var forwardingOptions = new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto |
+                    ForwardedHeaders.XForwardedHost,
+                ForwardedHostHeaderName = "X-Original-Host",
             };
 
             forwardingOptions.KnownNetworks.Clear();

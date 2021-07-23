@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NO
+using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -139,3 +140,4 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         }
     }
 }
+#endif
