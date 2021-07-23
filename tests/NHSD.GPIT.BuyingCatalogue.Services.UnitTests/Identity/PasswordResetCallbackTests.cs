@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             private readonly Mock<IHttpContextAccessor> mockAccessor = new();
             private readonly Mock<LinkGenerator> mockGenerator = new();
-            private readonly DomainNameSettings domainNameSettings = new DomainNameSettings();
+            private readonly DomainNameSettings domainNameSettings = new();
 
             internal PasswordResetCallbackContext(string url)
             {
