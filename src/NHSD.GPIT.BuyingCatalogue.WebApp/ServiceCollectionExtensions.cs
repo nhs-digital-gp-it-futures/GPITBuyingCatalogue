@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         private const string BuyingCatalogueBlobContainerEnvironmentVariable = "BC_BLOB_CONTAINER";
         private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
         private const string BuyingCatalogueSmtpPortEnvironmentVariable = "BC_SMTP_PORT";
+        private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -173,6 +174,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(smtpSettings);
             services.AddScoped<IMailTransport, SmtpClient>();
             services.AddTransient<IEmailService, MailKitEmailService>();
+        }
+
+        public static void ConfigureDomainName(this IServiceCollection services)
+        {
+            var domain = Environment.GetEnvironmentVariable(BuyingCatalogueDomainNameEnvironmentVariable);
+
+            if (string.IsNullOrWhiteSpace(domain))
+                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDomainNameEnvironmentVariable}' must be set for the domain name");
+
+            var domainNameSettings = new DomainNameSettings { DomainName = domain };
+            services.AddSingleton(domainNameSettings);
         }
 
         public static void ConfigureConsentCookieSettings(this IServiceCollection services, IConfiguration configuration)

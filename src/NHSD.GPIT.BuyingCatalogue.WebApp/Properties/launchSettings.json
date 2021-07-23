@@ -19,7 +19,8 @@
         "BC_BLOB_CONNECTION": "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;",
         "BC_BLOB_CONTAINER": "buyingcatalogue-documents",
         "BC_SMTP_HOST": "localhost",
-        "BC_SMTP_PORT": "1081"
+        "BC_SMTP_PORT": "1081",
+        "DOMAIN_NAME": "localhost:49036"
       }
     },
     "NHSD.GPIT.BuyingCatalogue.WebApp": {
@@ -33,7 +34,8 @@
         "BC_BLOB_CONNECTION": "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;",
         "BC_BLOB_CONTAINER": "buyingcatalogue-documents",
         "BC_SMTP_HOST": "localhost",
-        "BC_SMTP_PORT": "1081"
+        "BC_SMTP_PORT": "1081",
+        "DOMAIN_NAME": "localhost:5001"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
@@ -52,7 +54,8 @@
         "BC_BLOB_CONNECTION": "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://host.docker.internal:10100/devstoreaccount1;QueueEndpoint=http://host.docker.internal:10101/devstoreaccount1;TableEndpoint=http://host.docker.internal:10102/devstoreaccount1;",
         "BC_BLOB_CONTAINER": "buyingcatalogue-documents",
         "BC_SMTP_HOST": "host.docker.internal",
-        "BC_SMTP_PORT": "1081"
+        "BC_SMTP_PORT": "1081",
+        "DOMAIN_NAME": "localhost:49155"
       }
     }
   }

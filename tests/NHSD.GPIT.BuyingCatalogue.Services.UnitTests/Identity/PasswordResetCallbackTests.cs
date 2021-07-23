@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders;
@@ -19,7 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             Assert.Throws<ArgumentNullException>(() => _ = new PasswordResetCallback(
                 null,
-                Mock.Of<LinkGenerator>()));
+                Mock.Of<LinkGenerator>(),
+                new DomainNameSettings()));
         }
 
         [Fact]
@@ -27,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             Assert.Throws<ArgumentNullException>(() => _ = new PasswordResetCallback(
                 Mock.Of<IHttpContextAccessor>(),
-                null));
+                null,
+                new DomainNameSettings()));
         }
 
         [Fact]
@@ -35,7 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             var callback = new PasswordResetCallback(
                 Mock.Of<IHttpContextAccessor>(),
-                Mock.Of<LinkGenerator>());
+                Mock.Of<LinkGenerator>(),
+                new DomainNameSettings());
 
             Assert.Throws<ArgumentNullException>(() => callback.GetPasswordResetCallback(null));
         }
@@ -82,12 +86,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             private readonly Mock<IHttpContextAccessor> mockAccessor = new();
             private readonly Mock<LinkGenerator> mockGenerator = new();
+            private readonly DomainNameSettings domainNameSettings = new DomainNameSettings();
 
             internal PasswordResetCallbackContext(string url)
             {
                 var mockRequest = new Mock<HttpRequest>();
                 mockRequest.Setup(r => r.Scheme).Returns("https");
-                mockRequest.Setup(r => r.Host).Returns(new HostString(url));
+                domainNameSettings.DomainName = url;
 
                 var mockContext = new Mock<HttpContext>();
                 mockContext.Setup(c => c.Request).Returns(mockRequest.Object);
@@ -119,7 +124,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             internal PasswordResetCallback Callback => new(
                 mockAccessor.Object,
-                mockGenerator.Object);
+                mockGenerator.Object,
+                domainNameSettings);
 
             internal RouteValueDictionary RouteValues { get; private set; }
 
