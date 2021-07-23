@@ -31,7 +31,11 @@
     <nhs-table-row-container>
         <nhs-table-cell>
             <a data-test-id="@item.CatalogueItemId-catalogueItemName"
-               href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/catalogue-solutions/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
+               asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+               asp-action="@nameof(CatalogueSolutionsController.EditSolution)"
+               asp-route-odsCode="@Model.OdsCode"
+               asp-route-callOffId="@Model.CallOffId"
+               asp-route-catalogueItemId="@item.CatalogueItemId">@item.CatalogueItem.Name</a>
         </nhs-table-cell>
         <nhs-table-cell>
             <div class="bc-c-data-text ">@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
