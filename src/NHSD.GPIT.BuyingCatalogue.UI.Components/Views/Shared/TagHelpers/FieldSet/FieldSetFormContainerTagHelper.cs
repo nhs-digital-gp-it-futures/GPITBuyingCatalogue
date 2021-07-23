@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             string formName = TagHelperFunctions.GetModelKebabNameFromFor(For);
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
-            var fieldset = GetFieldsetBuilder(formName);
+            var fieldset = GetFieldsetBuilder(formName, LabelHint);
             var fieldsetheading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName);
 

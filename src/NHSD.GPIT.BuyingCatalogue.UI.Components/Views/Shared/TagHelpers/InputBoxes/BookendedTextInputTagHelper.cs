@@ -52,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
         {
             var formGroup = GetGovFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
+            SetLabelAriaDescription(label);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var inputWrapper = GetInputWrapper();
@@ -100,12 +101,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
                 new
                 {
                     @class = $"{TagHelperConstants.NhsInput} {TextInputWidthClass}",
-                    aria_describedby = $"{For.Name}-info {For.Name}-summary",
                     spellcheck = "false",
                 });
 
             if (!builder.Attributes.Any(a => a.Key == "maxlength"))
                 builder.MergeAttribute("maxlength", DefaultMaxLength.ToString());
+
+            if (!string.IsNullOrWhiteSpace(LabelHint))
+                builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, TagBuilder.CreateSanitizedId($"{For.Name}-hint", "_"));
 
             if (TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
                 builder.AddCssClass(TagHelperConstants.NhsValidationInputError);
@@ -122,6 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
             builder.AddCssClass(GovUkInputPrefixClass);
 
             builder.MergeAttribute(TagHelperConstants.AriaHidden, "true");
+            builder.GenerateId($"{For.Name}-prefix", "_");
 
             builder.InnerHtml.Append(PrefixText);
 
@@ -137,10 +141,21 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
             builder.AddCssClass(GovUkInputSuffixClass);
 
             builder.MergeAttribute(TagHelperConstants.AriaHidden, "true");
+            builder.GenerateId($"{For.Name}-suffix", "_");
 
             builder.InnerHtml.Append(SuffixText);
 
             return builder;
+        }
+
+        private void SetLabelAriaDescription(TagBuilder labelBuilder)
+        {
+            if (labelBuilder is null || string.IsNullOrWhiteSpace(SuffixText))
+                return;
+
+            labelBuilder.MergeAttribute(
+                TagHelperConstants.AriaDescription,
+                TagBuilder.CreateSanitizedId($"{For.Name}-suffix", "_"));
         }
     }
 }
