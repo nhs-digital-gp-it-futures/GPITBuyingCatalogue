@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         private string GetAuthority()
         {
             foreach (var header in accessor.HttpContext.Request.Headers)
-                logger.LogTrace($"Header: {header.Key} {header.Value}");
+                logger.LogInformation($"Header: {header.Key} {header.Value}");
 
             if (accessor.HttpContext.Request.Host.Port.HasValue && accessor.HttpContext.Request.Host.Port.Value != 80)
                 return $"{accessor.HttpContext.Request.Host.Host}:{accessor.HttpContext.Request.Host.Port}";
