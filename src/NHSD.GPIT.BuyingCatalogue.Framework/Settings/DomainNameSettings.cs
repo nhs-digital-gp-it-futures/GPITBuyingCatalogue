@@ -3,9 +3,9 @@
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
     /// <summary>
-    /// Password reset settings.
+    /// Domain name settings.
     /// </summary>
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class DomainNameSettings
     {
         public string DomainName { get; set; }
