@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             Environment.SetEnvironmentVariable("BC_BLOB_CONTAINER", "buyingcatalogue-documents");
             Environment.SetEnvironmentVariable("BC_SMTP_HOST", "localhost");
             Environment.SetEnvironmentVariable("BC_SMTP_PORT", "1081");
+            Environment.SetEnvironmentVariable("DOMAIN_NAME", "localhost");
         }
 
         [Theory]
