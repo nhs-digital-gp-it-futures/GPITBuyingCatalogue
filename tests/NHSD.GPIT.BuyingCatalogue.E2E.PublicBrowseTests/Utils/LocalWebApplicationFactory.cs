@@ -6,6 +6,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -81,6 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         internal IWebDriver Driver { get; }
 
+        private SqliteConnection sqliteConnection;
+
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>()).UseSerilog();
@@ -94,9 +97,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     services.Remove(descriptor);
                 }
 
+                sqliteConnection?.Dispose();
+                sqliteConnection = new SqliteConnection("DataSource=:memory:");
+                sqliteConnection.Open();
+
                 services.AddDbContext<EndToEndDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase(BcDbName);
+                    // options.UseInMemoryDatabase(BcDbName);
+                    options.UseSqlite(sqliteConnection);
                 });
                 services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>();
 
@@ -107,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 var bcDb = scopedServices.GetRequiredService<EndToEndDbContext>();
 
-                bcDb.Database.EnsureCreated();
+                bool ret = bcDb.Database.EnsureCreated();
 
                 try
                 {
@@ -115,9 +123,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     UserSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
                 }
-                catch
+                catch( Exception ex)
                 {
                     // figure out error logging here
+                    System.Diagnostics.Trace.WriteLine(ex.Message);
                 }
             });
 

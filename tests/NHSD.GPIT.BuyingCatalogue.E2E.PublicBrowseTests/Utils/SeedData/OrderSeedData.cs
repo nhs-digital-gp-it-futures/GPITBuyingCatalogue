@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
+                Description = "This is an Order Description",
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);

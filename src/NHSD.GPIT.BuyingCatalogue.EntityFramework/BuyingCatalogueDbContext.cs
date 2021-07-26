@@ -45,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
 
+        public DbSet<CatalogueItemCapabilityStatus> CatalogueItemCapabilityStatus { get; set; }
+
         public DbSet<CatalogueItemEpic> CatalogueItemEpics { get; set; }
 
         public DbSet<CataloguePrice> CataloguePrices { get; set; }
