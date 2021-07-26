@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Features(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/features")
+            : base(factory, "marketing/supplier/solution/99999-002/section/features")
         {
             AuthorityLogin();
         }
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
 
             solution.Features.Should().ContainEquivalentOf(feature);
         }
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
 
             foreach (var feature in addedFeatures)
             {
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearFeatures(new CatalogueItemId(99999, "99"));
+            ClearFeatures(new CatalogueItemId(99999, "002"));
         }
     }
 }

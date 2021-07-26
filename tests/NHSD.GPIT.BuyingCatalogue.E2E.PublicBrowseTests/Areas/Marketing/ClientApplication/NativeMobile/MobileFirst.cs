@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
     public sealed class MobileFirst : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public MobileFirst(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/mobile-first-approach")
+            : base(factory, "marketing/supplier/solution/99999-002/section/native-mobile/mobile-first-approach")
         {
             AuthorityLogin();
         }
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
             await using var context = GetEndToEndDbContext();
 
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication;
 
             clientApplication.Should().ContainEquivalentOf($"NativeMobileFirstDesign\":{(label == "Yes").ToString().ToLower()}");
         }
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

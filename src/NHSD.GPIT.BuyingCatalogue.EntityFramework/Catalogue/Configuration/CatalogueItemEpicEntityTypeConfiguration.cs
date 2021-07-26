@@ -30,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SolutionEpic_Epic");
 
-            builder.HasOne<Solution>()
-                .WithMany(s => s.SolutionEpics)
+            builder.HasOne<CatalogueItem>()
+                .WithMany(s => s.CatalogueItemEpics)
                 .HasForeignKey(se => se.CatalogueItemId)
                 .HasConstraintName("FK_SolutionEpic_Solution");
 

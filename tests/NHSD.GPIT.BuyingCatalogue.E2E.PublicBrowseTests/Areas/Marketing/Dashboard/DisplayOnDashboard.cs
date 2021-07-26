@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     public sealed class DisplayOnDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public DisplayOnDashboard(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/")
+            : base(factory, "marketing/supplier/solution/99999-002/")
         {
             AuthorityLogin();
         }
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

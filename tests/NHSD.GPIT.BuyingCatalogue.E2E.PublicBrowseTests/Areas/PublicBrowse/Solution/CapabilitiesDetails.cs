@@ -20,7 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task CapabilitiesDetails_VerifyCapabilities()
         {
             await using var context = GetEndToEndDbContext();
-            var capabilitiesInfo = (await context.Solutions.Include(s => s.SolutionCapabilities).ThenInclude(s => s.Capability).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionCapabilities.Select(s => s.Capability);
+            var capabilitiesInfo =
+                (await context.CatalogueItems
+                    .Include(ci => ci.CatalogueItemCapabilities)
+                        .ThenInclude(s => s.Capability)
+                    .SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")))
+                .CatalogueItemCapabilities
+                .Select(s => s.Capability);
+
             var capabilitiesList = PublicBrowsePages.SolutionAction.GetCapabilitiesContent().ToArray()[0];
 
             var capabilitiesTitle = capabilitiesInfo.Select(c => c.Name.Trim());
@@ -43,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             var nhsEpicsList = PublicBrowsePages.SolutionAction.GetNhsSolutionEpics().ToArray();
 
             await using var context = GetEndToEndDbContext();
-            var nhsEpicsInfo = (await context.Solutions.Include(s => s.SolutionEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionEpics.Select(s => s.Epic);
+            var nhsEpicsInfo = (await context.CatalogueItems.Include(s => s.CatalogueItemEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).CatalogueItemEpics.Select(s => s.Epic);
 
             nhsEpicsList.Should().BeEquivalentTo(nhsEpicsInfo.Where(e => !e.SupplierDefined).Select(c => c.Name));
         }
@@ -55,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             var supplierEpicsList = PublicBrowsePages.SolutionAction.GetSupplierSolutionEpics();
 
             await using var context = GetEndToEndDbContext();
-            var supplierEpicsInfo = (await context.Solutions.Include(s => s.SolutionEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).SolutionEpics.Select(s => s.Epic);
+            var supplierEpicsInfo = (await context.CatalogueItems.Include(s => s.CatalogueItemEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).CatalogueItemEpics.Select(s => s.Epic);
 
             supplierEpicsList.Should().BeEquivalentTo(supplierEpicsInfo.Where(e => e.SupplierDefined).Select(c => c.Name));
         }

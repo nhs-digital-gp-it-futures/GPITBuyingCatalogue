@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
     public sealed class SelectClientApplication : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public SelectClientApplication(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/client-application-types")
+            : base(factory, "marketing/supplier/solution/99999-002/section/client-application-types")
         {
             AuthorityLogin();
         }
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

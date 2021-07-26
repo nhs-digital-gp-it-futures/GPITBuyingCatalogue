@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     {
         public virtual CatalogueItemCapability CatalogueItemCapability(
             Guid capabilityId) =>
-            Solution?.SolutionCapabilities?.FirstOrDefault(
+            CatalogueItemCapabilities?.FirstOrDefault(
                 sc => sc.Capability != null && sc.Capability.Id == capabilityId)
             ?? new CatalogueItemCapability { CatalogueItemId = CatalogueItemId };
 
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public virtual bool HasAssociatedServices() => AssociatedService != null
             || Supplier?.CatalogueItems?.Any(c => c.AssociatedService is not null) == true;
 
-        public virtual bool HasCapabilities() => Solution?.SolutionCapabilities?.Any() == true;
+        public virtual bool HasCapabilities() => CatalogueItemCapabilities?.Any() == true;
 
         public virtual bool HasClientApplication() => !string.IsNullOrWhiteSpace(Solution?.ClientApplication);
 

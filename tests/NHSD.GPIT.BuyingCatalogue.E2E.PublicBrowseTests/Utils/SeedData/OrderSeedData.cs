@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
+                Description = "This is an Order Description",
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
@@ -105,15 +106,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderAtCommencementDateStage(BuyingCatalogueDbContext context)
         {
-            var orderId = 90003;
-            var timenow = DateTime.UtcNow;
+            const int orderId = 90003;
+            var timeNow = DateTime.UtcNow;
 
             var order = new Order
             {
                 Id = orderId,
                 Revision = 1,
                 OrderingPartyId = GetOganisationId(context),
-                Created = timenow,
+                Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -145,15 +146,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderAtCatalogueSolutionStage(BuyingCatalogueDbContext context)
         {
-            var orderId = 90004;
-            var timenow = DateTime.UtcNow;
+            const int orderId = 90004;
+            var timeNow = DateTime.UtcNow;
 
             var order = new Order
             {
                 Id = orderId,
                 Revision = 1,
                 OrderingPartyId = GetOganisationId(context),
-                Created = timenow,
+                Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -164,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "Clark.Kent@TheDailyPlanet.Fake",
                     Phone = "123456789",
                 },
-                SupplierId = "99997",
+                SupplierId = "99998",
                 SupplierContact = new()
                 {
                     FirstName = "Bruce",
@@ -186,15 +187,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static void AddOrderWithAddedCatalogueSolution(BuyingCatalogueDbContext context)
         {
-            var orderId = 90005;
-            var timenow = DateTime.UtcNow;
+            const int orderId = 90005;
+            var timeNow = DateTime.UtcNow;
 
             var order = new Order
             {
                 Id = orderId,
                 Revision = 1,
                 OrderingPartyId = GetOganisationId(context),
-                Created = timenow,
+                Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -240,7 +241,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var orderItemRecipients = new List<OrderItemRecipient>()
             {
-                new OrderItemRecipient {
+                new OrderItemRecipient
+                {
                     Recipient = recipient,
                     DeliveryDate = order.CommencementDate,
                     Quantity = 1000,

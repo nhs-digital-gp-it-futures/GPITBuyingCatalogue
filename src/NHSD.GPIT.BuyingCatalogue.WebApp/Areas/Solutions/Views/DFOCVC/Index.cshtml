@@ -56,7 +56,7 @@
                         <div data-test-id="capability-list">
                             <h5 class="nhsuk-u-font-size-22">Capabilities met</h5>
                             <ul>
-                                @foreach (var capability in solution.Solution.SolutionCapabilities)
+                                @foreach (var capability in solution.CatalogueItemCapabilities)
                                 {
                                     <li data-test-id="capability-list-item" class="nhsuk-u-font-size-16">
                                         @capability.Capability.Name

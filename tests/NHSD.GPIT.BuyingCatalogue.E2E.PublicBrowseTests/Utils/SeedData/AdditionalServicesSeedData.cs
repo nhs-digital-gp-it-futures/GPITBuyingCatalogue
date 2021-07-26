@@ -28,6 +28,41 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         LastUpdatedBy = Guid.Empty,
                         Solution = catalogueSolutions.Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")).Solution,
                     },
+                    CatalogueItemCapabilities = new List<CatalogueItemCapability>
+                    {
+                        new CatalogueItemCapability
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            LastUpdated = DateTime.UtcNow,
+                            LastUpdatedBy = Guid.Empty,
+                            StatusId = 1,
+                        },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new CatalogueItemEpic
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            EpicId = "C2E1",
+                            StatusId = 1,
+                        },
+                        new CatalogueItemEpic
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            EpicId = "C2E2",
+                            StatusId = 1,
+                        },
+                        new CatalogueItemEpic
+                        {
+                            CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            EpicId = "E123456",
+                            StatusId = 1,
+                        },
+                    },
                 },
             };
         }

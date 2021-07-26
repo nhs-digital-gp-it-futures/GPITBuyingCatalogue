@@ -14,7 +14,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
-using NHSD.GPIT.BuyingCatalogue.Framework.Middleware;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
@@ -35,7 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureDataProtection(Configuration);
+            if (!IsE2ETestEnvironment())
+            {
+                services.ConfigureDataProtection(Configuration);
+            }
 
             services.ConfigureResponseCompression();
 
@@ -62,7 +64,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureDbContexts();
 
-            services.ConfigureSession();
+            if (!IsE2ETestEnvironment())
+            {
+                services.ConfigureSession();
+            }
 
             services.ConfigureIdentity();
 
@@ -117,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 opts.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms. Action {ActionName}";
             });
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment("E2ETest"))
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -193,5 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 endpoints.MapDefaultControllerRoute();
             });
         }
+
+        private static bool IsE2ETestEnvironment() => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "E2ETest";
     }
 }

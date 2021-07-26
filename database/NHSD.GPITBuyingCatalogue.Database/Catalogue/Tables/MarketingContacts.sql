@@ -9,6 +9,6 @@
      Department nvarchar(50) NULL,
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy uniqueidentifier NOT NULL,
-     CONSTRAINT PK_MarketingContact PRIMARY KEY CLUSTERED (SolutionId, Id),
+     CONSTRAINT PK_MarketingContact PRIMARY KEY (Id),
      CONSTRAINT FK_MarketingContact_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(Id) ON DELETE CASCADE
 );

@@ -58,9 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             CatalogueItemId id,
             CatalogueItemId additionalId)
         {
-            var solution = await solutionsService.GetSolutionAdditionalServiceCapabilities(
-                id,
-                additionalId);
+            var solution = await solutionsService.GetSolutionAdditionalServiceCapabilities(id);
+
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
@@ -93,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             Guid capabilityId)
         {
             var solution = await solutionsService.GetAdditionalServiceCapability(
-                catalogueItemId,
                 catalogueItemIdAdditional,
                 capabilityId);
             if (solution == null)
