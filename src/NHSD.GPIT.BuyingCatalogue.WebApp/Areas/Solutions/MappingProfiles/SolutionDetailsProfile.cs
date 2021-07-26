@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         ((dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false) ?
                         new DescriptionListViewModel
                         {
-                            Heading = "Mobile application",
+                            Heading = "Mobile or tablet application",
                             Items = GetNativeMobileItems(dest.ClientApplication),
                         }
                         : null)))
@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         if (dest.ClientApplication?.ClientApplicationTypes?.Any(x => x.EqualsIgnoreCase(KeyNativeMobile)) ?? false)
                         {
                             dest.ApplicationTypes.Items.Add(
-                                "Mobile application",
+                                "Mobile or tablet application",
                                 new ListViewModel { Text = dest.HasApplicationType(KeyNativeMobile) });
                         }
                     });

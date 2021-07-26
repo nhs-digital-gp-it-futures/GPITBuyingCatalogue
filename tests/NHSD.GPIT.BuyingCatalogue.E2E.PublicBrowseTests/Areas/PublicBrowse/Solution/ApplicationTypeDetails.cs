@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Theory]
         [InlineData("browser-based application")]
         [InlineData("desktop application")]
-        [InlineData("mobile application")]
+        [InlineData("mobile or tablet application")]
         public void ApplicationTypeDetails_AllFieldsDisplayed(string rowHeader)
         {
             PublicBrowsePages.SolutionAction.GetTableRowContent(rowHeader).Should().NotBeNullOrEmpty();
