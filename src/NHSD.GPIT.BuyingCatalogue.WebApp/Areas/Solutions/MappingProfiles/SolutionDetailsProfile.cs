@@ -102,8 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     dest => dest.RowViewModels,
                     opt =>
                     {
-                        opt.PreCondition(src => src.Solution?.SolutionCapabilities != null);
-                        opt.MapFrom(src => src.Solution.SolutionCapabilities);
+                        opt.PreCondition(src => src.CatalogueItemCapabilities != null);
+                        opt.MapFrom(src => src.CatalogueItemCapabilities);
                     })
                 .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
                 .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);

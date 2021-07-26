@@ -11,10 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
     public sealed class NativeDesktopDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public NativeDesktopDashboard(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop")
+            : base(factory, "marketing/supplier/solution/99999-002/section/native-desktop")
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "99"));
+            var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "002"));
             solution.ClientApplication = null;
             context.SaveChanges();
 
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

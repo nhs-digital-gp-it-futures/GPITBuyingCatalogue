@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common;
@@ -67,20 +66,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal EndToEndDbContext GetEndToEndDbContext()
         {
-            var options = new DbContextOptionsBuilder<EndToEndDbContext>()
-                .UseInMemoryDatabase(Factory.BcDbName)
-                .Options;
-
-            return new(options);
+            return Factory.DbContext;
         }
 
         internal EndToEndDbContext GetUsersContext()
         {
-            var options = new DbContextOptionsBuilder<EndToEndDbContext>()
-                .UseInMemoryDatabase(Factory.BcDbName)
-                .Options;
-
-            return new(options);
+            return Factory.DbContext;
         }
 
         internal void ClearClientApplication(CatalogueItemId solutionId)

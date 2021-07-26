@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     public sealed class HardwareRequirements : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public HardwareRequirements(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/hardware-requirements")
+            : base(factory, "marketing/supplier/solution/99999-002/section/browser-based/hardware-requirements")
         {
             AuthorityLogin();
         }
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
             await using var context = GetEndToEndDbContext();
 
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication;
             clientApplication.Should().ContainEquivalentOf($"\"HardwareRequirements\":\"{hardwareRequirement}\"");
         }
 
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

@@ -14,10 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     public sealed class Integrations : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Integrations(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/integrations")
+            : base(factory, "marketing/supplier/solution/99999-002/section/integrations")
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "99"));
+            var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "002"));
             solution.IntegrationsUrl = string.Empty;
             context.SaveChanges();
 
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
             solution.IntegrationsUrl.Should().Be(link);
         }
 
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

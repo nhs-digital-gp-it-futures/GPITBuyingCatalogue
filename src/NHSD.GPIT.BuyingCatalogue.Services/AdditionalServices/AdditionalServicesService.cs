@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
         public Task<List<CatalogueItem>> GetAdditionalServicesBySolutionIds(IEnumerable<CatalogueItemId> solutionIds)
         {
             return dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier)
                 .Include(i => i.AdditionalService)
                 .Where(i => solutionIds.Contains(i.AdditionalService.SolutionId)

@@ -38,7 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
         {
             return dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
@@ -50,7 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities)
         {
             var solutions = await dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Solution)
+                .Include(s => s.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
@@ -63,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 solutions = solutions.Where(
                         solution => capabilities.All(
                             capability =>
-                                solution.Solution.SolutionCapabilities.Any(
+                                solution.CatalogueItemCapabilities.Any(
                                     x => x.Capability.CapabilityRef == capability)))
                     .ToList();
             }
@@ -82,7 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId)
         {
             return dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
@@ -93,7 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<CatalogueItem> GetSolutionByName(string solutionName)
         {
             return dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
                 .Include(i => i.Supplier)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
@@ -108,29 +112,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 throw new ArgumentException($"{nameof(capabilityId)} is empty");
 
             return await dbContext.CatalogueItems
-                .Include(c => c.Solution)
-                .ThenInclude(s => s.SolutionCapabilities)
-                .ThenInclude(sc => sc.Capability)
-                .ThenInclude(sc => sc.Epics)
+                .Include(ci => ci.Solution)
+                .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
                 .Where(
                     c => c.CatalogueItemId == catalogueItemId
-                        && c.Solution.SolutionCapabilities.Any(sc => sc.CapabilityId == capabilityId))
+                        && c.CatalogueItemCapabilities.Any(sc => sc.CapabilityId == capabilityId))
                 .FirstOrDefaultAsync();
         }
 
         public async Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId)
         {
             var solution = await dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(s => s.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier).ThenInclude(s => s.SupplierContacts)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions).ThenInclude(fs => fs.Framework)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Status)
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics).ThenInclude(se => se.Epic)
+                .Include(s => s.CatalogueItemEpics).ThenInclude(se => se.Status)
+                .Include(s => s.CatalogueItemEpics).ThenInclude(se => se.Epic)
                 .Include(i => i.CataloguePrices).ThenInclude(p => p.PricingUnit)
-                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Take(1)).ThenInclude(c => c.AssociatedService)
                 .Where(i => i.CatalogueItemId == solutionId)
                 .FirstOrDefaultAsync();
+
+            var associatedServices = await dbContext.CatalogueItems
+                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService && c.AssociatedService != null).Take(1))
+                .ThenInclude(c => c.AssociatedService)
+                .Where(i => i.CatalogueItemId == solutionId)
+                .SingleOrDefaultAsync();
+
+            solution?.Supplier?.CatalogueItems.Add(associatedServices.Supplier?.CatalogueItems?.FirstOrDefault());
 
             var additionalServices = await dbContext.CatalogueItems
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService && c.AdditionalService != null).Take(1))
@@ -146,10 +155,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId)
         {
             var solution = await dbContext.CatalogueItems
-               .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
+               .Include(s => s.CatalogueItemCapabilities)
                .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
                .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
-               .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
+               .Include(s => s.CatalogueItemEpics)
                .Include(i => i.CataloguePrices)
                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.AssociatedService)
                .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService || c.CatalogueItemType == CatalogueItemType.AssociatedService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
@@ -167,63 +176,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return solution;
         }
 
-        public async Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(
-            CatalogueItemId id,
-            CatalogueItemId additionalId)
+        public async Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id)
         {
-            var solution = await dbContext.CatalogueItems
+            var catalogueItem = await dbContext.CatalogueItems
                 .Include(i => i.Solution)
-                .Include(i => i.Supplier)
-                .ThenInclude(
-                    s => s.CatalogueItems.Where(
-                        c => c.CatalogueItemId == additionalId))
-                .ThenInclude(s => s.AdditionalService)
+                .Include(i => i.CatalogueItemCapabilities)
+                .ThenInclude(cic => cic.Capability)
+                .ThenInclude(c => c.Epics)
                 .Where(i => i.CatalogueItemId == id)
                 .SingleAsync();
 
-            var capabilities = await dbContext.CatalogueItemCapabilities
-                .Include(c => c.Capability)
-                .ThenInclude(c => c.Epics)
-                .Where(c => c.CatalogueItemId == additionalId
-                        && c.Status.Id == 1)
-                .ToListAsync();
-
-            solution.Solution.SolutionCapabilities = capabilities;
-
-            return solution;
+            return catalogueItem;
         }
 
         public async Task<CatalogueItem> GetAdditionalServiceCapability(
             CatalogueItemId catalogueItemId,
-            CatalogueItemId catalogueItemIdAdditional,
             Guid capabilityId)
         {
-            var solution = await dbContext.CatalogueItems
+            var catalogueItem = await dbContext.CatalogueItems
                 .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemCapabilities.Where(cic => cic.CapabilityId == capabilityId))
+                .ThenInclude(cic => cic.Capability)
+                .ThenInclude(c => c.Epics)
                 .Where(i => i.CatalogueItemId == catalogueItemId)
                 .SingleAsync();
 
-            var capability = await dbContext.CatalogueItemCapabilities
-                .Include(c => c.Capability)
-                .ThenInclude(c => c.Epics)
-                .Where(c => c.CatalogueItemId == catalogueItemIdAdditional
-                    && c.CapabilityId == capabilityId)
-                .SingleOrDefaultAsync();
+            if (catalogueItem.CatalogueItemCapabilities is null)
+            {
+                catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
+            }
 
-            solution.Solution.SolutionCapabilities = capability == null
-                ? new List<CatalogueItemCapability>()
-                : new List<CatalogueItemCapability> { capability, };
-
-            return solution;
+            return catalogueItem;
         }
 
         public async Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId)
         {
             var solution = await dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities)
+                .Include(i => i.CatalogueItemCapabilities)
                 .Include(i => i.Solution).ThenInclude(s => s.FrameworkSolutions)
                 .Include(i => i.Solution).ThenInclude(s => s.MarketingContacts)
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionEpics)
+                .Include(s => s.CatalogueItemEpics)
                 .Include(i => i.CataloguePrices)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService || c.CatalogueItemType == CatalogueItemType.AdditionalService)).ThenInclude(c => c.AdditionalService)
                 .Include(i => i.Supplier).ThenInclude(s => s.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService || c.CatalogueItemType == CatalogueItemType.AdditionalService)).ThenInclude(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
@@ -244,7 +236,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<List<CatalogueItem>> GetDFOCVCSolutions()
         {
             return dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
@@ -384,7 +377,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
         {
             return dbContext.CatalogueItems
-                .Include(i => i.Solution).ThenInclude(s => s.SolutionCapabilities).ThenInclude(sc => sc.Capability)
+                .Include(i => i.Solution)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier)
                 .Where(i => i.SupplierId == supplierId
                     && i.CatalogueItemType == CatalogueItemType.Solution

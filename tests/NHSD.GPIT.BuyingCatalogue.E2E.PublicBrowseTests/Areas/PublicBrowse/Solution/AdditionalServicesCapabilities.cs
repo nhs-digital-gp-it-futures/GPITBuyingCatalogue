@@ -19,13 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async Task AdditionalServicesCapabilities_AllCapabilitiesDisplayed()
         {
-            var capabilitiesNames = PublicBrowsePages.SolutionAction.GetCapabilitiesListNames();
+            var capabilitiesNames = PublicBrowsePages.SolutionAction.GetCapabilitiesListNames().OrderBy(c => c);
             var numberEpicLinks = PublicBrowsePages.SolutionAction.GetCheckEpicLinks();
 
             await using var context = GetEndToEndDbContext();
             var dbCapabilities = await context.CatalogueItemCapabilities.Include(c => c.Capability).Where(c => c.CatalogueItemId == new CatalogueItemId(99999, "001A999")).ToListAsync();
 
-            capabilitiesNames.Should().BeEquivalentTo(dbCapabilities.Select(c => c.Capability.Name));
+            capabilitiesNames.Should().HaveCount(dbCapabilities.Count);
             numberEpicLinks.Should().HaveCount(dbCapabilities.Count);
         }
     }

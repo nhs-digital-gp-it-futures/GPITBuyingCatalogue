@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             }
         }
 
-        public SolutionCapabilitiesModel[] Capabilities { get; set; }
+        public CatalogueItemCapabilitiesModel[] Capabilities { get; set; }
 
         public string Contact1Name { get; private set; }
 
@@ -147,11 +147,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateCapabilities()
         {
-            var capabilities = new List<SolutionCapabilitiesModel>();
+            var capabilities = new List<CatalogueItemCapabilitiesModel>();
 
-            foreach (var capability in CatalogueItem.Solution.SolutionCapabilities.OrderBy(x => x.Capability.Name))
+            foreach (var capability in CatalogueItem.CatalogueItemCapabilities.OrderBy(x => x.Capability.Name))
             {
-                capabilities.Add(new SolutionCapabilitiesModel(capability, CatalogueItem.Solution));
+                capabilities.Add(new CatalogueItemCapabilitiesModel(capability, CatalogueItem));
             }
 
             Capabilities = capabilities.ToArray();

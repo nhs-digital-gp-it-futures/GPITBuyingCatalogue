@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
     public sealed class ThirdPartyComponents : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public ThirdPartyComponents(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/native-desktop/third-party")
+            : base(factory, "marketing/supplier/solution/99999-002/section/native-desktop/third-party")
         {
             AuthorityLogin();
         }
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
             await using var context = GetEndToEndDbContext();
 
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication;
             clientApplication.Should().ContainEquivalentOf($"ThirdPartyComponents\":\"{thirdPartyComponent}\"");
             clientApplication.Should().ContainEquivalentOf($"DeviceCapabilities\":\"{deviceCapability}\"");
         }
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

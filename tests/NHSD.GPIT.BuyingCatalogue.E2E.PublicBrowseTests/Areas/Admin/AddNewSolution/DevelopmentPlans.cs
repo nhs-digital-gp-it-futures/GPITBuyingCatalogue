@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
@@ -10,12 +12,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class DevelopmentPlans : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class DevelopmentPlans : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public DevelopmentPlans(LocalWebApplicationFactory factory)
-            : base(factory, "/admin/catalogue-solutions/manage/99999-888/development-plans")
+            : base(factory, "/admin/catalogue-solutions/manage/99999-002/development-plans")
         {
-            ClearRoadMap(new CatalogueItemId(99999, "888"));
+            ClearRoadMap(new CatalogueItemId(99999, "003"));
             AuthorityLogin();
         }
 
@@ -23,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task DevelopmentPlans_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "888"))).Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -38,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
             solution.RoadMap.Should().Be(link);
         }
 
@@ -50,10 +52,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
             var roadmapUrl = solution.RoadMap;
 
             roadmapUrl.Should().BeNullOrEmpty();
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "002"));
+            solution.RoadMap = null;
+            context.SaveChanges();
         }
     }
 }

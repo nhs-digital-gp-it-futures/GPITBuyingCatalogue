@@ -11,14 +11,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void Constructor_NullSolutionCapability_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionCapabilitiesModel(null, new Solution()));
+                _ = new CatalogueItemCapabilitiesModel(null, new CatalogueItem()));
         }
 
         [Fact]
         public static void Constructor_NullSolution_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _ = new SolutionCapabilitiesModel(new CatalogueItemCapability(), null));
+                _ = new CatalogueItemCapabilitiesModel(new CatalogueItemCapability(), null));
         }
     }
 }

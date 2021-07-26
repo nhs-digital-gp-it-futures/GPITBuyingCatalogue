@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             await using var context = GetEndToEndDbContext();
             var capabilityName = (await context.Capabilities.SingleAsync(c => c.Id == Guid.Parse(CapabilityId))).Name;
-            var solutionName = (await context.CatalogueItems.SingleAsync(c => c.CatalogueItemId == new CatalogueItemId(99999, "001"))).Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(c => c.CatalogueItemId == new CatalogueItemId(99999, "001A999"))).Name;
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"{capabilityName} - {solutionName}".FormatForComparison());
         }

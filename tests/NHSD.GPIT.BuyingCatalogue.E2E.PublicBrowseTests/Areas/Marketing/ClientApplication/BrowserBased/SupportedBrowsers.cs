@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     public sealed class SupportedBrowsers : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public SupportedBrowsers(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based/supported-browsers")
+            : base(factory, "marketing/supplier/solution/99999-002/section/browser-based/supported-browsers")
         {
             AuthorityLogin();
         }
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication.Should().ContainEquivalentOf(browser);
+            (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication.Should().ContainEquivalentOf(browser);
         }
 
         [Theory]
@@ -44,13 +44,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             string labelConvert = label == "Yes" ? "true" : "false";
 
             await using var context = GetEndToEndDbContext();
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication;
             clientApplication.Should().ContainEquivalentOf(@$"MobileResponsive"":{labelConvert}");
         }
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

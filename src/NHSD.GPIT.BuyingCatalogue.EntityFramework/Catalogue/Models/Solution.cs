@@ -11,8 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             AdditionalServices = new HashSet<AdditionalService>();
             FrameworkSolutions = new HashSet<FrameworkSolution>();
             MarketingContacts = new HashSet<MarketingContact>();
-            SolutionCapabilities = new HashSet<CatalogueItemCapability>();
-            SolutionEpics = new HashSet<CatalogueItemEpic>();
         }
 
         public CatalogueItemId Id { get; set; }
@@ -52,9 +50,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<FrameworkSolution> FrameworkSolutions { get; set; }
 
         public ICollection<MarketingContact> MarketingContacts { get; set; }
-
-        public ICollection<CatalogueItemCapability> SolutionCapabilities { get; set; }
-
-        public ICollection<CatalogueItemEpic> SolutionEpics { get; set; }
     }
 }
