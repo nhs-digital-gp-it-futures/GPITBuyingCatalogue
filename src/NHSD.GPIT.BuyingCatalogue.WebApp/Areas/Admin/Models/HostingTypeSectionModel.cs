@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             var hosting = catalogueItem.Solution?.GetHosting();
 
             SolutionName = catalogueItem.Name;
-            ExistingHostingTypes = hosting!.AvailableHosting ?? Array.Empty<HostingType>();
+            ExistingHostingTypes = hosting?.AvailableHosting ?? Array.Empty<HostingType>();
             HostingTypesToAdd = Enum.GetValues<HostingType>().Except(ExistingHostingTypes).ToList();
             HostingTypesToAddRadioItems = HostingTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingHostingTypesCount = ExistingHostingTypes.Count;

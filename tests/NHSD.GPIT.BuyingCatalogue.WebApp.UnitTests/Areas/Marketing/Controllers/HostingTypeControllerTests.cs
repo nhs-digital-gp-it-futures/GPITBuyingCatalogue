@@ -197,49 +197,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_PublicCloud_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             PublicCloudModel model)
         {
             var mockMapper = new Mock<IMapper>();
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>();
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting.Object);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 mockMapper.Object, mockService.Object);
 
             await controller.PublicCloud(id, model);
 
-            mockHosting.VerifySet(h => h.PublicCloud = model.PublicCloud);
+            hosting.PublicCloud.Should().BeEquivalentTo(model.PublicCloud);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             PublicCloudModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PublicCloud(id, model);
 
-            mockService.Verify(s => s.SaveHosting(id, mockHosting));
+            mockService.Verify(s => s.SaveHosting(id, hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             PublicCloudModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
 
@@ -398,49 +398,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_PrivateCloud_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             PrivateCloudModel model)
         {
             var mockMapper = new Mock<IMapper>();
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>();
-            mockService.Setup(s => s.GetHosting(id)).ReturnsAsync(mockHosting.Object);
+            mockService.Setup(s => s.GetHosting(id))
+                .ReturnsAsync(hosting);
 
             var controller = new HostingTypeController(
                 mockMapper.Object, mockService.Object);
 
             await controller.PrivateCloud(id, model);
 
-            mockHosting.VerifySet(h => h.PrivateCloud = model.PrivateCloud);
+            hosting.PrivateCloud.Should().BeEquivalentTo(model.PrivateCloud);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             PrivateCloudModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
+
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.PrivateCloud(id, model);
 
-            mockService.Verify(s => s.SaveHosting(id, mockHosting));
+            mockService.Verify(s => s.SaveHosting(id, hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             PrivateCloudModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
 
@@ -600,48 +602,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_Hybrid_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             HybridModel model)
         {
             var mockMapper = new Mock<IMapper>();
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>();
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting.Object);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 mockMapper.Object, mockService.Object);
 
             await controller.Hybrid(id, model);
 
-            mockHosting.VerifySet(h => h.HybridHostingType = model.HybridHostingType);
+            hosting.HybridHostingType.Should().BeEquivalentTo(model.HybridHostingType);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             HybridModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.Hybrid(id, model);
 
-            mockService.Verify(s => s.SaveHosting(id, mockHosting));
+            mockService.Verify(s => s.SaveHosting(id, hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Hybrid_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             HybridModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
-            mockService.Setup(s => s.GetHosting(id)).ReturnsAsync(mockHosting);
+            mockService.Setup(s => s.GetHosting(id))
+                .ReturnsAsync(hosting);
 
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
@@ -802,49 +805,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_OnPremise_ValidModel_MapsModelToHosting(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             OnPremiseModel model)
         {
             var mockMapper = new Mock<IMapper>();
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>();
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting.Object);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 mockMapper.Object, mockService.Object);
 
             await controller.OnPremise(id, model);
 
-            mockHosting.VerifySet(h => h.OnPremise = model.OnPremise);
+            hosting.OnPremise.Should().BeEquivalentTo(model.OnPremise);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             OnPremiseModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
 
             await controller.OnPremise(id, model);
 
-            mockService.Verify(s => s.SaveHosting(id, mockHosting));
+            mockService.Verify(s => s.SaveHosting(id, hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            Hosting hosting,
             OnPremiseModel model)
         {
             var mockService = new Mock<ISolutionsService>();
-            var mockHosting = new Mock<Hosting>().Object;
             mockService.Setup(s => s.GetHosting(id))
-                .ReturnsAsync(mockHosting);
+                .ReturnsAsync(hosting);
             var controller = new HostingTypeController(
                 Mock.Of<IMapper>(), mockService.Object);
 

@@ -514,10 +514,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_HostingType_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
 
             await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>()).HostingType(
                 catalogueItemId);
@@ -619,10 +620,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddHostingType_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
             await controller.AddHostingType(catalogueItemId);
@@ -735,10 +737,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_PublicCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
             await controller.PublicCloud(catalogueItemId);
@@ -803,10 +806,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_PublicCloud_RedirectsToHostingType(
             CatalogueItemId catalogueItemId,
+            Hosting hosting,
             PublicCloudModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
 
             var actual = (await controller.PublicCloud(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -839,10 +846,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_PrivateCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
             await controller.PrivateCloud(catalogueItemId);
@@ -907,10 +915,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_PrivateCloud_RedirectsToHostingType(
             CatalogueItemId catalogueItemId,
+            Hosting hosting,
             PrivateCloudModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
 
             var actual = (await controller.PrivateCloud(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -943,10 +955,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_HybridCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
             await controller.Hybrid(catalogueItemId);
@@ -1011,10 +1024,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_HybridCloud_RedirectsToHostingType(
             CatalogueItemId catalogueItemId,
+            Hosting hosting,
             HybridModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
 
             var actual = (await controller.Hybrid(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -1047,10 +1064,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_OnPremiseCloud_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
             await controller.OnPremise(catalogueItemId);
@@ -1115,10 +1133,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_OnPremise_RedirectsToHostingType(
             CatalogueItemId catalogueItemId,
+            Hosting hosting,
             OnPremiseModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
 
             var actual = (await controller.OnPremise(catalogueItemId, model)).As<RedirectToActionResult>();
 
