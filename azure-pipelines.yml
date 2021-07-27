@@ -96,6 +96,17 @@ jobs:
         $(semVer)
         $(latestTag)
 
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        $release = "$(semVer)"
+        mkdir $(Build.ArtifactStagingDirectory)/code
+        $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
+        
+  - publish: $(build.artifactStagingDirectory)/code
+    artifact: code-version
+
 - job: buildDatabaseDacpacs
   displayName: Build all Dacpacs and push
   variables:    
@@ -137,7 +148,6 @@ jobs:
 - job: createBuildArtifact
   displayName: Create Build Artifact
   dependsOn: dockerBuildAndPush
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
      
   steps:
   - task: CopyFiles@2

@@ -103,3 +103,7 @@ variable "smtp_server_port" {
 variable "vnet_subnet_id" {
   type = string
 }
+
+variable "app_dns_url" {
+  type = string
+}
