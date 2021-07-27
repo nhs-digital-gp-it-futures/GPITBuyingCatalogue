@@ -13,8 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        [InlineData(null)]
-        public static void IsComplete_PublicCloudNotNull_ReturnsIsValid(bool? expected)
+        public static void IsComplete_PublicCloudNotNull_ReturnsIsValid(bool expected)
         {
             var mockPublicCloud = new Mock<PublicCloud>();
             mockPublicCloud.Setup(h => h.IsValid())

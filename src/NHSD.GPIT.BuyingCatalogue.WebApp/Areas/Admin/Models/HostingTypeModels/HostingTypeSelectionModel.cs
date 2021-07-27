@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
 {
-    public class HostingTypeSelectionModel : HostingTypeSectionModel
+    public sealed class HostingTypeSelectionModel : HostingTypeSectionModel
     {
         public HostingTypeSelectionModel()
-            : base()
         {
         }
 
@@ -15,7 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         {
         }
 
-        [Required(ErrorMessage = "Select a hosting type")]
-        public string SelectedHostingType { get; set; }
+        public bool HostingTypesAvailableForSelection { get; set; }
+
+        public HostingType? SelectedHostingType { get; set; }
     }
 }

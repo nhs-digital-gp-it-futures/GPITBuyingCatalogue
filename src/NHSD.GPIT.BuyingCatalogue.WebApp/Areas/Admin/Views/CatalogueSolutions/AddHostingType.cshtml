@@ -1,6 +1,8 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels.HostingTypeSelectionModel
+﻿@using System.Linq
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels.HostingTypeSelectionModel
 @{
     ViewData["Title"] = "Add a Hosting Type page";
+    var anyHostingTypes = Model.HostingTypesToAdd.Any();
 }
 <div class="nhsuk-width-container ">
     <main id="maincontent" role="main">
@@ -9,17 +11,24 @@
             <div class="nhsuk-grid-column-two-thirds">
                 <nhs-validation-summary />
                 <nhs-page-title title="Add a hosting type"
-                                advice="Select a hosting type that supports your Catalogue Solution. You can add other options later." />
+                                advice="@(anyHostingTypes ? "Select a hosting type that supports your Catalogue Solution. You can add other options later." : "All hosting types already added.")" />
+
                 <form method="post">
-                    <div class="nhsuk-form-group">
-                        <nhs-fieldset-form-label asp-for="@Model">
-                            <nhs-radio-buttons asp-for="@Model.SelectedHostingType"
-                                               values="@Model.HostingTypesToAdd"
-                                               value-name="Id"
-                                               display-name="Name" />
-                        </nhs-fieldset-form-label>
-                    </div>
-                    <br />
+                    <input type="hidden" asp-for="@Model.HostingTypesAvailableForSelection" value="@anyHostingTypes" />
+
+                    @if (anyHostingTypes)
+                    {
+                        <div class="nhsuk-form-group">
+                            <nhs-fieldset-form-label asp-for="@Model">
+                                <nhs-radio-buttons asp-for="@Model.SelectedHostingType"
+                                                   values="@Model.HostingTypesToAddRadioItems"
+                                                   value-name="Value"
+                                                   display-name="Text" />
+                            </nhs-fieldset-form-label>
+                        </div>
+                        <br />
+                    }
+
                     <nhs-submit-button text="Save and continue" />
                 </form>
             </div>

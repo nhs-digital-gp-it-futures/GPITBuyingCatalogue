@@ -672,7 +672,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
-            model.SelectedHostingType = "PublicCloud";
+            model.SelectedHostingType = HostingType.PublicCloud;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.PublicCloud));
@@ -689,7 +689,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
-            model.SelectedHostingType = "PrivateCloud";
+            model.SelectedHostingType = HostingType.PrivateCloud;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.PrivateCloud));
@@ -706,7 +706,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
-            model.SelectedHostingType = "HybridCloud";
+            model.SelectedHostingType = HostingType.Hybrid;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.Hybrid));
@@ -723,7 +723,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
-            model.SelectedHostingType = "OnPremiseCloud";
+            model.SelectedHostingType = HostingType.OnPremise;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.OnPremise));
