@@ -38,6 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_SMTP_PORT = "9999";
 
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
+        private const string DOMAIN_NAME = "127.0.0.1";
+
         private const string Browser = "chrome";
         private readonly IWebHost host;
 
@@ -148,6 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable(nameof(BC_SMTP_HOST), BC_SMTP_HOST);
 
             SetEnvironmentVariable(nameof(BC_SMTP_PORT), BC_SMTP_PORT);
+
+            SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
         }
 
         private static void SetEnvironmentVariable(string name, string value)

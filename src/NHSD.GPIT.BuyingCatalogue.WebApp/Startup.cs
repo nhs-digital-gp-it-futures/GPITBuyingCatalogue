@@ -84,6 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureEmail(Configuration);
 
+            services.ConfigureDomainName();
+
             services.ConfigureDisabledErrorMessage(Configuration);
 
             services.ConfigureAuthorization();

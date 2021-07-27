@@ -8,6 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering
         {
             PageActions = new ActionCollection
             {
+                CatalogueItems = new(driver),
                 OrderDashboard = new(driver),
             };
         }

@@ -2,9 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.AdditionalServiceModel
-@{
-    ViewData["Title"] = Model.Title;
-}
+@{ ViewData["Title"] = Model.Title; }
 
 <div class="nhsuk-width-container" data-test-id="additional-services-page">
     <partial name="Partials/_BackLink" model="Model" />
@@ -25,31 +23,32 @@
                                          text="Add Additional Service"
                                          use-primary-colour="false" />
 
-                <nhs-table>
+                <nhs-table data-test-id="added-order-items">
                     <nhs-table-column>Additional Service</nhs-table-column>
                     <nhs-table-column>Unit of order</nhs-table-column>
                     <nhs-table-column>Service Recipients (ODS code)</nhs-table-column>
                     @foreach (var item in Model.OrderItems)
                     {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                <a data-test-id="@item.CatalogueItemId-catalogueItemName"
-                                   href="/order/organisation/@Model.OdsCode/order/@Model.CallOffId/additional-services/@item.CatalogueItemId">@item.CatalogueItem.Name</a>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <div class="bc-c-data-text ">@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <nhs-details label-text="Service recipients (ODS code)">
-                                    @foreach (var recipient in item.OrderItemRecipients)
-                                    {
-                                        @($"{recipient.Recipient.Name}({recipient.Recipient.OdsCode})")
-                                        <br><br>
-                                    }
-                                </nhs-details>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
+        <nhs-table-row-container>
+            <nhs-table-cell>
+                <a data-test-id="@item.CatalogueItemId-catalogueItemName"
+                   asp-controller="@typeof(AdditionalServicesController).ControllerName()"
+                   asp-action="@nameof(AdditionalServicesController.EditAdditionalService)"
+                   asp-route-callOffId="@Model.CallOffId"
+                   asp-route-odsCode="@Model.OdsCode"
+                   asp-route-catalogueItemId="@item.CatalogueItemId">@item.CatalogueItem.Name</a>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <div class="bc-c-data-text ">@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                <nhs-details label-text="Service recipients (ODS code)">
+                    @foreach (var recipient in item.OrderItemRecipients)
+                    {@($"{recipient.Recipient.Name}({recipient.Recipient.OdsCode})")
+                        <br><br>}
+                </nhs-details>
+            </nhs-table-cell>
+        </nhs-table-row-container>}
                 </nhs-table>
             </nhs-fieldset-form-container>
             <vc:nhs-secondary-button text="Continue"

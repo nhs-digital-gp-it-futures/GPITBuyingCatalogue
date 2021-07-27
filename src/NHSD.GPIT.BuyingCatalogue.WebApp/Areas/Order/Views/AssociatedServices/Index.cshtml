@@ -1,9 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.AssociatedServiceModel
-@{
-    ViewData["Title"] = Model.Title;
-}
+@{ ViewData["Title"] = Model.Title; }
 
 <div class="nhsuk-width-container" data-test-id="associated-services-page">
     <partial name="Partials/_BackLink" model="Model" />
@@ -23,35 +21,33 @@
                                                   new { Model.OdsCode, Model.CallOffId })"
                                          text="Add Associated Service"
                                          use-primary-colour="false" />
-                <nhs-table>
+                <nhs-table data-test-id="added-order-items">
                     <nhs-table-column>Associated Service</nhs-table-column>
                     <nhs-table-column>Unit of order</nhs-table-column>
                     @foreach (var item in Model.OrderItems)
                     {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                <a asp-action="EditAssociatedService"
-                                   asp-controller="AssociatedServices"
-                                   asp-route-catalogueItemId="@item.CatalogueItemId"
-                                   asp-route-odsCode="@Model.OdsCode"
-                                   asp-route-callOffId="@Model.CallOffId">
-                                    @item.CatalogueItem.Name
-                                </a>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
+        <nhs-table-row-container>
+            <nhs-table-cell>
+                <a asp-action="EditAssociatedService"
+                   asp-controller="AssociatedServices"
+                   asp-route-catalogueItemId="@item.CatalogueItemId"
+                   asp-route-odsCode="@Model.OdsCode"
+                   asp-route-callOffId="@Model.CallOffId">
+                    @item.CatalogueItem.Name
+                </a>
+            </nhs-table-cell>
+            <nhs-table-cell>
+                @item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit
+            </nhs-table-cell>
+        </nhs-table-row-container>}
                 </nhs-table>
                 @if (!Model.OrderItems.Any())
                 {
-                    <div data-test-id="show-added-orderItems">
-                        <div data-test-id="no-added-orderItems">
-                            <p>No Associated Services added</p>
-                        </div>
-                    </div>
-                }
+    <div data-test-id="show-added-orderItems">
+        <div data-test-id="no-added-orderItems">
+            <p>No Associated Services added</p>
+        </div>
+    </div>}
             </nhs-fieldset-form-container>
             <vc:nhs-secondary-button text="Continue"
                                      use-primary-colour="true"
