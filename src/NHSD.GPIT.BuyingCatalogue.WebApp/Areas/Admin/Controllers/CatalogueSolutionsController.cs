@@ -177,11 +177,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("manage/{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId, HostingTypeSectionModel model)
         {
-            if (model.ExistingHostingTypesCount == 0)
-            {
-                ModelState.AddModelError(" ", "Add at least one hosting type");
+            if (!ModelState.IsValid)
                 return View(model);
-            }
 
             var catalogueItem = await solutionsService.GetSolution(solutionId);
 
