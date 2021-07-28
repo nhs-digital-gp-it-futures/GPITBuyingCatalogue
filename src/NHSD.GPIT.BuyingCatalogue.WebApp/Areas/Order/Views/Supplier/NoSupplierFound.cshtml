@@ -2,8 +2,6 @@
 @{
     ViewData["Title"] = "No supplier found";
 }
-<div class="nhsuk-width-container nhsuk-u-margin-top-4 nhsuk-u-margin-bottom-4 nhsuk-u-padding-4">
-    <partial name="Partials/_BackLink" model="Model" />
-    <h1 class="nhsuk-heading-l nhsuk-u-margin-top-5" data-test-id="error-title">No supplier found</h1>
-    <p data-test-id="error-description">There are no suppliers that match the search terms you've provided. Try searching again.</p>
-</div>
+
+<partial name="Partials/_BackLink" model="Model" />
+<nhs-page-title title="@ViewData["Title"]" advice="There are no suppliers that match the search terms you've provided. Try searching again." />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -27,6 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             HybridHostingType = new HostingTypeModel(CatalogueItem.Solution.GetHosting().HybridHostingType);
             OnPremise = new HostingTypeModel(CatalogueItem.Solution.GetHosting().OnPremise);
         }
+
+        public List<Address> Contacts { get; set; }
 
         public CatalogueItem CatalogueItem { get; }
 
@@ -89,22 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public CatalogueItemCapabilitiesModel[] Capabilities { get; set; }
 
-        public string Contact1Name { get; private set; }
-
-        public string Contact1Department { get; private set; }
-
-        public string Contact1PhoneNumber { get; private set; }
-
-        public string Contact1EmailAddress { get; private set; }
-
-        public string Contact2Name { get; private set; }
-
-        public string Contact2Department { get; private set; }
-
-        public string Contact2PhoneNumber { get; private set; }
-
-        public string Contact2EmailAddress { get; private set; }
-
         public bool DisplayContacts
         {
             get { return CatalogueItem.Solution.MarketingContacts.Any(); }
@@ -121,21 +108,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateContactInformation()
         {
-            if (CatalogueItem.Solution.MarketingContacts.Any())
-            {
+           if (CatalogueItem.Solution.MarketingContacts.Any())
+           {
                 var contact = CatalogueItem.Solution.MarketingContacts.First();
-                Contact1Name = $"{contact.FirstName} {contact.LastName}";
-                Contact1Department = contact.Department;
-                Contact1PhoneNumber = contact.PhoneNumber;
-                Contact1EmailAddress = contact.Email;
+                Contacts = new List<Address>();
+                Contacts.Add(new Address { Line1 = $"{contact.FirstName} {contact.LastName}", Line2 = contact.Department, Line3 = contact.PhoneNumber, Line4 = contact.Email });
 
                 if (CatalogueItem.Solution.MarketingContacts.Count > 1)
                 {
                     contact = CatalogueItem.Solution.MarketingContacts.Skip(1).First();
-                    Contact2Name = $"{contact.FirstName} {contact.LastName}";
-                    Contact2Department = contact.Department;
-                    Contact2PhoneNumber = contact.PhoneNumber;
-                    Contact2EmailAddress = contact.Email;
+                    Contacts.Add(new Address { Line1 = $"{contact.FirstName} {contact.LastName}", Line2 = contact.Department, Line3 = contact.PhoneNumber, Line4 = contact.Email });
                 }
             }
         }

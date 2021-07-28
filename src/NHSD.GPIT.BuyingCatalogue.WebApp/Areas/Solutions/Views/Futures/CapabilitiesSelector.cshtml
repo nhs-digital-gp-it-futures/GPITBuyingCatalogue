@@ -1,61 +1,46 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesModel
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
-    ViewData["Title"] = "Catalogue Solutions on the GP IT Futures framework - Capability selector";
+    ViewData["Title"] = "Catalogue Solutions on the GP IT Futures framework – Capability selector";
 }
 
-<div class="nhsuk-width-container">
 
-    <partial name="Partials/_BackLink" model="Model" />
-
-    <h1 class="nhsuk-u-margin-top-6 nhsuk-u-margin-bottom-4" data-test-id="capabilities-selector-page-title">Catalogue Solutions on the GP IT Futures framework – Capability selector</h1>
-    <form method="post">
-        <div class="nhsuk-grid-row">
-            <fieldset class="nhsuk-fieldset" aria-describedby="capabilities-hint" data-test-id="capabilities-selector-fieldset">
-                <legend class="nhsuk-heading-l nhsuk-u-font-size-22 nhsuk-grid-column-two-thirds" data-test-id="capabilities-selector-page-description">
-                    Select the Capabilities that match the needs of your organisation. Any Catalogue Solutions found will have proven they can address these needs and, in some cases, will do even more.
-                </legend>
-                <div class="nhsuk-hint nhsuk-grid-column-two-thirds" id="capabilities-hint">
-                    Select all options that are relevant to you.
+<partial name="Partials/_BackLink" model="Model" />
+<nhs-page-title title="@ViewData["Title"]" />
+<form method="post">
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-5">
+        <fieldset class="nhsuk-fieldset" aria-describedby="capabilities-hint" data-test-id="capabilities-selector-fieldset">
+            <legend class="nhsuk-heading-l nhsuk-u-font-size-22 nhsuk-grid-column-two-thirds" data-test-id="capabilities-selector-page-description">
+                Select the Capabilities that match the needs of your organisation. Any Catalogue Solutions found will have proven they can address these needs and, in some cases, will do even more.
+            </legend>
+            <div class="nhsuk-hint nhsuk-grid-column-two-thirds" id="capabilities-hint">
+                Select all options that are relevant to you.
+            </div>
+            <div id="capabilities-selector" data-test-id="capabilities-selector">
+                <div data-test-id="capabilities-checkbox-column-1" class="nhsuk-grid-column-one-half">
+                    <nhs-checkbox-container>
+                        @for (var i = 0; i < Model.LeftCapabilities.Length; i++)
+                        {
+                            <nhs-checkbox
+                                asp-for="@Model.LeftCapabilities[i].Checked" 
+                                label-text="@Model.LeftCapabilities[i].CapabilityName" 
+                                hidden-input="@Model.LeftCapabilities[i].CapabilityRef"  />
+                        }
+                    </nhs-checkbox-container >
                 </div>
-
-                <div id="capabilities-selector" data-test-id="capabilities-selector">
-                    <div data-test-id="capabilities-checkbox-column-1" class="nhsuk-grid-column-one-half">
-                        <div class="nhsuk-form-group">
-                            <div class="nhsuk-checkboxes">
-
-                                @for (var i = 0; i < Model.LeftCapabilities.Length; i++)
-                                {
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" type="checkbox" asp-for="@Model.LeftCapabilities[i].Checked" />
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.LeftCapabilities[i].Checked">@Model.LeftCapabilities[i].CapabilityName</label>
-                                        <input type="hidden" asp-for="@Model.LeftCapabilities[i].CapabilityName" />
-                                        <input type="hidden" asp-for="@Model.LeftCapabilities[i].CapabilityRef" />
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-test-id="capabilities-checkbox-column-2" class="nhsuk-grid-column-one-half">
-                        <div class="nhsuk-form-group">
-                            <div class="nhsuk-checkboxes">
-
-                                @for (var i = 0; i < Model.RightCapabilities.Length; i++)
-                                {
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input class="nhsuk-checkboxes__input" type="checkbox" asp-for="@Model.RightCapabilities[i].Checked" />
-                                        <label class="nhsuk-label nhsuk-checkboxes__label" asp-for="@Model.RightCapabilities[i].Checked">@Model.RightCapabilities[i].CapabilityName</label>
-                                        <input type="hidden" asp-for="@Model.RightCapabilities[i].CapabilityName" />
-                                        <input type="hidden" asp-for="@Model.RightCapabilities[i].CapabilityRef" />
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
+                <div data-test-id="capabilities-checkbox-column-2" class="nhsuk-grid-column-one-half">
+                    <nhs-checkbox-container>
+                        @for (var i = 0; i < Model.RightCapabilities.Length; i++)
+                        {
+                            <nhs-checkbox
+                                asp-for="@Model.RightCapabilities[i].Checked" 
+                                label-text="@Model.RightCapabilities[i].CapabilityName" 
+                                hidden-input="@Model.RightCapabilities[i].CapabilityRef"  />
+                        }
+                    </nhs-checkbox-container >
                 </div>
-            </fieldset>
-        </div>
-        <nhs-submit-button text="Continue" />
-    </form>
-</div>
+            </div>
+        </fieldset>
+    </div>
+    <nhs-submit-button text="Continue" />
+</form>

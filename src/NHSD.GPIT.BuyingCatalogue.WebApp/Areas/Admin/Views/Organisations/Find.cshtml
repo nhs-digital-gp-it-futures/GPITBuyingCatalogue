@@ -3,37 +3,26 @@
     ViewData["Title"] = "Find an organisation";
 }
 
-<div class="nhsuk-width-container" data-test-id="find-org-page">
+<div data-test-id="find-org-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <h1 data-test-id="find-org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Find an organisation</h1>
-            <h2 data-test-id="find-org-page-description" class="nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">Enter the correct Organisation Data Service (ODS) code to find the organisation you&#39;re looking for.</h2>
+            <nhs-page-title title="@ViewData["Title"]" advice="Enter the correct Organisation Data Service (ODS) code to find the organisation you're looking for." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <div class="nhsuk-grid-row">
                     <div class="nhsuk-grid-column-two-thirds">
                         <div data-test-id="question-odsCode">
-                            <div data-test-id="text-field-input">
-                                <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                    <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.OdsCode">
-                                        Enter ODS code
-                                    </label>
-                                    <input class="nhsuk-input nhsuk-input--width-10" asp-for="@Model.OdsCode" type="text">
-                                </div>
-                            </div>
-                            <div data-test-id="text-field-footer">
-                                <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                                </span>
-                            </div>
+                            <nhs-input
+                                asp-for="@Model.OdsCode" 
+                                label-text="Enter ODS code"
+                            />
                         </div>
                     </div>
                 </div>
-                <div data-test-id="continue-button" class="nhsuk-u-margin-top-9">
-                    <button class="nhsuk-button nhsuk-u-margin-bottom-9" type="submit">
-                        Continue
-                    </button>
+                <div data-test-id="continue-button">
+                    <nhs-submit-button text="Continue" />
                 </div>
             </form>
         </div>

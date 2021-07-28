@@ -19,9 +19,8 @@
 
     @await RenderSectionAsync("Banner", false)
 
-    <div class="nhsuk-width-container">
-        <main role="main" class="nhsuk-main-wrapper nhsuk-u-padding-top-0" id="maincontent">
-            <div class="nhsuk-u-padding-top-5" />
+    <div class="nhsuk-width-container nhsuk-main-wrapper">
+        <main role="main" id="maincontent">
             @RenderBody()
         </main>
     </div>

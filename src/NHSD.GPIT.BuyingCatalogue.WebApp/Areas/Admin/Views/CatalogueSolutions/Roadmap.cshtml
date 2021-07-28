@@ -3,33 +3,31 @@
     ViewData["Title"] = "Manage development plans";
 }
 
-<div class="nhsuk-width-container ">
-    <vc:nhs-backlink text="Go back"
-        url="@Url.Action("ManageCatalogueSolution", "CatalogueSolutions", new { solutionId = @Model.SolutionId })">
-    </vc:nhs-backlink>
+<vc:nhs-backlink text="Go back"
+    url="@Url.Action("ManageCatalogueSolution", "CatalogueSolutions", new { solutionId = @Model.SolutionId })">
+</vc:nhs-backlink>
 
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-two-thirds">
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
 
-            <nhs-page-title title="Development plans"
-                caption="@Model.SolutionName"
-                advice="Let buyers know about any future development plans for your Catalogue Solution."/>
+        <nhs-page-title title="Development plans"
+            caption="@Model.SolutionName"
+            advice="Let buyers know about any future development plans for your Catalogue Solution."/>
 
-            <form method="post">
+        <form method="post">
 
-                <nhs-input asp-for="Link"
-                    label-text="Link to roadmap (optional)"
-                    label-hint="Provide a URL to a page that gives buyers further information about your roadmap."
-                    character-count="true"></nhs-input>
+            <nhs-input asp-for="Link"
+                label-text="Link to roadmap (optional)"
+                label-hint="Provide a URL to a page that gives buyers further information about your roadmap."
+                character-count="true"></nhs-input>
 
-                <div class="nhsuk-inset-text">
-                    <span class="nhsuk-u-visually-hidden">Information: </span>
-                    <p>This information will be published on the Buying Catalogue and therefore available to anyone. You should not include anything you consider commercially sensitive.</p>
-                </div>
-                <nhs-submit-button text="Save and continue"/>
+            <div class="nhsuk-inset-text">
+                <span class="nhsuk-u-visually-hidden">Information: </span>
+                <p>This information will be published on the Buying Catalogue and therefore available to anyone. You should not include anything you consider commercially sensitive.</p>
+            </div>
+            <nhs-submit-button text="Save and continue"/>
 
-            </form>
+        </form>
 
-        </div>
     </div>
 </div>

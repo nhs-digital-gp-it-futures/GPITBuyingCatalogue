@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
                 if (prop.GetValue(dbAddress) is not null)
                 {
                     var value = prop.GetValue(dbAddress).ToString();
-                    pageAddress.Should().Contain(value);
+                    pageAddress.First().Should().Contain(value);
                 }
             }
         }

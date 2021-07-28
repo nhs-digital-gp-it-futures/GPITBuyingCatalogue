@@ -1,25 +1,13 @@
-﻿@{
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@{
     ViewData["Title"] = "Buying Catalogue";
+    var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go back" };
 }
 
-<div data-test-id="nominate-organisation-page-back-link" class="nhsuk-u-margin-bottom-3">
-    <div class="nhsuk-back-link">
-        <a class="nhsuk-back-link__link" href="~/">
-            <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
-            </svg>
-            Go back
-        </a>
-    </div>
-</div>
+<partial name="Partials/_BackLink" model="@backLinkModel" />
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds nhsuk-u-margin-top-5">
-        <h1>
-            Nominate an organisation to create orders on your behalf
-        </h1>
-        <p class="nhsuk-heading-l nhsuk-u-font-size-22">
-            Get support procuring IT systems from the Buying Catalogue.
-        </p>
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="Nominate an organisation to create orders on your behalf" advice="Get support procuring IT systems from the Buying Catalogue." />
         <p>
             You can nominate an organisation to create orders from the Buying Catalogue on your behalf using the link below.
         </p>
@@ -30,14 +18,6 @@
             If you need advice about using the Buying Catalogue or procuring IT systems, contact the <a href="mailto:commercial.procurementhub@nhs.net">National Commercial and Procurement Hub</a>.
         </p>
         <br />
-        <div class="nhsuk-action-link">
-            <a class="nhsuk-action-link__link" href="mailto:buying.catalogue@nhs.net?subject=Nominate an organisation&amp;body=To%20the%20Buying%20Catalogue%20team%2C%0A%0AI%20wish%20to%20nominate%20an%20organisation%20to%20create%20orders%20on%20the%20Buying%20Catalogue%20on%20behalf%20of%20my%20organisation.%0A%0AMy%20details%20are%3A%0A%0AMy%20name%3A%0A%0AMy%20telephone%20number%3A%0A%0AMy%20email%20address%3A%0A%0AMy%20organisation%E2%80%99s%20name%3A%0A%0AMy%20organisation%E2%80%99s%20ODS%20code%3A">
-                <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-                </svg>
-                <span class="nhsuk-action-link__text">Nominate an organisation</span>
-            </a>
-        </div>
+        <vc:nhs-action-link url="mailto:buying.catalogue@nhs.net?subject=Nominate an organisation&body=To%20the%20Buying%20Catalogue%20team%2C%0A%0AI%20wish%20to%20nominate%20an%20organisation%20to%20create%20orders%20on%20the%20Buying%20Catalogue%20on%20behalf%20of%20my%20organisation.%0A%0AMy%20details%20are%3A%0A%0AMy%20name%3A%0A%0AMy%20telephone%20number%3A%0A%0AMy%20email%20address%3A%0A%0AMy%20organisation%E2%80%99s%20name%3A%0A%0AMy%20organisation%E2%80%99s%20ODS%20code%3A"  text="Nominate an organisation" />
     </div>
 </div>

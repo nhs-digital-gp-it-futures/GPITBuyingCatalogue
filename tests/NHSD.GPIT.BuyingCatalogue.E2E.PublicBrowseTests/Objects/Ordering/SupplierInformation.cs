@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         public static By SupplierName => ByExtensions.DataTestId("supplier-name");
 
-        public static By SupplierAddressLine1 => ByExtensions.DataTestId("supplier-address-1");
+        public static By SupplierAddress => ByExtensions.DataTestId("supplier-address");
 
         public static By SupplierFirstName => By.Id("PrimaryContact_FirstName");
 

@@ -1,21 +1,11 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel;
 
-<div class="nhsuk-width-container">
-    <main id="maincontent" role="main">
-        <article>
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-full">
-                    <p>
-                        <b>
-                            This Catalogue Solution has demonstrated that it can help meet the following business
-                            needs:
-                        </b>
-                    </p>
+<article>
+    <p>
+        <strong>
+            This Catalogue Solution has demonstrated that it can help meet the following business needs:
+        </strong>
+    </p>
 
-                    <partial name="_CapabilitiesList" model="Model"/>
-
-                </div>
-            </div>
-        </article>
-    </main>
-</div>
+    <partial name="_CapabilitiesList" model="Model"/>
+</article>

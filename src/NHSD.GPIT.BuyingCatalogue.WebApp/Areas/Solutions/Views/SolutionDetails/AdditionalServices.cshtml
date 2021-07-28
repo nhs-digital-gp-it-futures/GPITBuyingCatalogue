@@ -5,9 +5,9 @@
 
 <div>
     <p>
-        <b>
+        <strong>
             These are the Additional Services offered with this Catalogue Solution:
-        </b>
+        </strong>
     </p>
 
     <nhs-details label-text="What are Additional Services?">
@@ -40,13 +40,12 @@
         }
     </nhs-table>
 
-    <dl class="nhsuk-summary-list" data-test-id="additional-services-details">
+    <div class="nhsuk-summary-list" data-test-id="additional-services-details">
         @for (int i = 0; i < Model.Services.Count; i++)
         {
             var id = $"addit{i + 1}";
             <hr style="border-width: 4px;">
-            <a id="@id"></a>
-            <h3>@Model.Services[i].Name</h3>
+            <h3 id="@id">@Model.Services[i].Name</h3>
 
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Description" data-test-id="full-description">
@@ -74,5 +73,5 @@
             <partial name="_BackToTop" />
 
         }
-    </dl>
+    </div>
 </div>

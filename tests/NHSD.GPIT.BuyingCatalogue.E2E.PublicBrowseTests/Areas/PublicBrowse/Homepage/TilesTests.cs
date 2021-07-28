@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             PublicBrowsePages.HomePageActions.ClickDFOCVCTile();
             CommonActions.PageTitle()
                 .Should()
-                .ContainEquivalentOf("DFOCVC framework - results".FormatForComparison());
+                .ContainEquivalentOf("DFOCVC framework – results".FormatForComparison());
         }
     }
 }

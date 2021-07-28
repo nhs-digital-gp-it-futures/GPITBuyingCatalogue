@@ -3,13 +3,11 @@
     ViewData["Title"] = "Catalogue Solution implementation";
 }
 
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
-    </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="Catalogue Solution implementation"
+        <nhs-page-title title="@ViewData["Title"]"
                         advice="Describe the typical processes and timescales to implement your Catalogue Solution. Include typical timescales that maybe required to transition from an existing solution if applicable." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />

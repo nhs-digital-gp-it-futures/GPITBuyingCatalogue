@@ -109,6 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ElementTextEqualToo(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).Text.EqualsIgnoreWhiteSpace(expectedText);
 
+        internal bool ElementTextContains(By targetElement, string expectedText) =>
+            Driver.FindElement(targetElement).Text.Contains(expectedText);
+
         internal bool InputValueEqualToo(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).GetAttribute("value").EqualsIgnoreWhiteSpace(expectedText);
 

@@ -1,33 +1,28 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
-<div class="nhsuk-width-container ">
-    <main id="maincontent" role="main">
-        <article>
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
 
-                    <p><b>This Catalogue Solution is available at the following price:</b></p>
+<article class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
 
-                    @if (Model.HasFlatListPrices())
-                    {
-                        <nhs-table data-test-id="flat-list-price-table">
-                            <nhs-table-column>Price</nhs-table-column>
-                            <nhs-table-column>Unit</nhs-table-column>
+        <p><strong>This Catalogue Solution is available at the following price:</strong></p>
 
-                            @foreach (var item in Model.FlatListPrices)
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell data-test-id="price">
-                                        @item.CurrencyCode@item.Price
-                                    </nhs-table-cell>
-                                    <nhs-table-cell>
-                                        @item.Unit
-                                    </nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        </nhs-table>
-                    }
-                </div>
-            </div>
-        </article>
-    </main>
-</div>
+        @if (Model.HasFlatListPrices())
+        {
+            <nhs-table data-test-id="flat-list-price-table">
+                <nhs-table-column>Price</nhs-table-column>
+                <nhs-table-column>Unit</nhs-table-column>
+
+                @foreach (var item in Model.FlatListPrices)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell data-test-id="price">
+                            @item.CurrencyCode@item.Price
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @item.Unit
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
+    </div>
+</article>

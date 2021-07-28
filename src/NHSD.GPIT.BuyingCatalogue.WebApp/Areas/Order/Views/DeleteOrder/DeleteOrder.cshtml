@@ -3,7 +3,7 @@
     ViewData["Title"] = Model.Title;
 }
 
-<div class="nhsuk-width-container" data-test-id="delete-order-page">
+<div data-test-id="delete-order-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
@@ -15,22 +15,14 @@
                 <input type="hidden" asp-for="@Model.BackLinkText" />
                 <input type="hidden" asp-for="@Model.OdsCode" />
                 <input type="hidden" asp-for="@Model.Title" />
-                <div class="nhsuk-grid-row">
-                    <div class="nhsuk-grid-column-two-thirds">
-                        <div class="bc-u-inline-block">
-                            <div data-test-id="no-button">
-                                <a class="nhsuk-button nhsuk-u-margin-top-9 nhsuk-u-margin-right-5" href="@Model.BackLink" draggable="false">
-                                    Cancel delete
-                                </a>
-                            </div>
-                        </div>
-                        <div class="bc-u-inline-block">
-                            <div data-test-id="yes-button">
-                                <button class="nhsuk-button nhsuk-u-margin-top-9" type="submit">
-                                    Confirm delete
-                                </button>
-                            </div>
-                        </div>
+                <div class="bc-u-inline-block">
+                    <div data-test-id="no-button">
+                        <vc:nhs-secondary-button url="@Model.BackLink" text="Cancel delete" use-primary-colour="true" />
+                    </div>
+                </div>
+                <div class="bc-u-inline-block">
+                    <div data-test-id="yes-button">
+                        <nhs-submit-button text="Confirm delete" />
                     </div>
                 </div>
             </form>

@@ -1,69 +1,62 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.InteroperabilityModel;
-<div class="nhsuk-width-container">
-    <main id="maincontent" role="main">
-        <article>
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-full">
-                    <p>
-                        <b>
-                            View information about the systems this Catalogue Solution integrates with to exchange data:
-                        </b>
-                    </p>
-                    <h2>
-                        NHS assured integrations
-                    </h2>
-                    <p>
-                        @Model.TextDescriptionsProvided() You can find more information about <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration">IM1 integrations</a>
-                        and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
-                    </p>
 
-                    @for (var index = 0; index < Model.Integrations.Count; index++)
-                    {
-                        var integration = Model.Integrations[index];
-                        <h3>
-                            @integration.Title()
-                        </h3>
+<article>
+    <p>
+        <strong>
+            View information about the systems this Catalogue Solution integrates with to exchange data:
+        </strong>
+    </p>
+    <h2>
+        NHS assured integrations
+    </h2>
+    <p>
+        @Model.TextDescriptionsProvided() You can find more information about <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration">IM1 integrations</a>
+        and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
+    </p>
 
-                        @for (var modelIndex = 0; modelIndex < integration.Tables.Length; modelIndex++)
+    @for (var index = 0; index < Model.Integrations.Count; index++)
+    {
+        var integration = Model.Integrations[index];
+        <h3>
+            @integration.Title()
+        </h3>
+
+        @for (var modelIndex = 0; modelIndex < integration.Tables.Length; modelIndex++)
+        {
+            var tableViewModel = integration.Tables[modelIndex];
+
+            <nhs-table label-text="@integration.Name @tableViewModel.Name">
+                @foreach (var heading in tableViewModel.Headings)
+                {
+                    <nhs-table-column>@heading</nhs-table-column>
+                }
+
+                @foreach (var rowModel in tableViewModel.Rows)
+                {
+                    <nhs-table-row-container>
+                        @foreach (var cell in rowModel)
                         {
-                            var tableViewModel = integration.Tables[modelIndex];
-
-                            <nhs-table label-text="@integration.Name @tableViewModel.Name">
-                                @foreach (var heading in tableViewModel.Headings)
-                                {
-                                    <nhs-table-column>@heading</nhs-table-column>
-                                }
-
-                                @foreach (var rowModel in tableViewModel.Rows)
-                                {
-                                    <nhs-table-row-container>
-                                        @foreach (var cell in rowModel)
-                                        {
-                                            <nhs-table-cell>@cell</nhs-table-cell>
-                                        }
-                                    </nhs-table-row-container>
-                                }
-                            </nhs-table>
-
-                            <partial name="_BackToTop" />
-
-                            @if (modelIndex != integration.Tables.Length - 1)
-                            {
-                                <br />
-                                <br />
-                            }
+                            <nhs-table-cell>@cell</nhs-table-cell>
                         }
-                        <hr style="border-width: 4px;">
-                    }
-                    <h2>Supplier asserted integrations</h2>
-                    <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
-                    <p>
-                        <a href="https://www.caltechhealth.com/products/partner-products/" target="_blank">
-                            View the Supplier Asserted Integrations for this Catalogue Solution
-                        </a>
-                    </p>
-                </div>
-            </div>
-        </article>
-    </main>
-</div>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            <partial name="_BackToTop" />
+
+            @if (modelIndex != integration.Tables.Length - 1)
+            {
+                <br />
+                <br />
+            }
+        }
+        <hr style="border-width: 4px;">
+    }
+    <h2>Supplier asserted integrations</h2>
+    <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
+    <p>
+        <a href="https://www.caltechhealth.com/products/partner-products/" target="_blank">
+            View the Supplier Asserted Integrations for this Catalogue Solution
+        </a>
+    </p>
+</article>

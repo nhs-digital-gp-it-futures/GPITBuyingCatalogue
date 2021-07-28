@@ -1,15 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.HostingType.OnPremiseModel;
 @{
-    ViewData["Title"] = "Hosting type - on premise";
+    ViewData["Title"] = "Hosting type – on premise";
 }
 
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
-    </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="Hosting type – on premise"
+        <nhs-page-title title="@ViewData["Title"]"
                         advice="Provide information to buyers about how your Catalogue Solution can be hosted." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />

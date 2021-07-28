@@ -4,24 +4,37 @@
     ViewData["Title"] = "details";
 }
 
-<div class="nhsuk-width-container" data-test-id="view-user-page">
-    <partial name="Partials/_BackLink" model="Model" />
-    <h1 data-test-id="view-user-page-title" class="">@Model.User.GetDisplayName() details</h1>
-    <h2 data-test-id="organisation-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Organisation name</h2>
-    <div data-test-id="organisation-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.Organisation.Name</div>
-    <h2 data-test-id="user-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Name</h2>
-    <div data-test-id="user-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.User.GetDisplayName()</div>
-    <h2 data-test-id="user-contact-details-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Contact details</h2>
-    <div data-test-id="user-contact-details" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.User.PhoneNumber</div>
-    <h2 data-test-id="user-email-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Email address</h2>
-    <div data-test-id="user-email" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-7">@Model.User.Email</div>
-
-    <div class="nhsuk-grid-row">
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row" data-test-id="view-user-page">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@Model.User.GetDisplayName() details" />
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Organisation name">
+                <p data-test-id="organisation-name">
+                    @Model.Organisation.Name
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Name">
+                <p data-test-id="user-name">
+                    @Model.User.GetDisplayName()
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Contact details">
+                <p data-test-id="user-contact-details">
+                    @Model.User.PhoneNumber
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Email address">
+                <p data-test-id="user-email">
+                    @Model.User.Email
+                </p>
+            </nhs-summary-list-row>
+        </nhs-summary-list>
         <form method="post">
             <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
             <input type="hidden" asp-for="@Model.User.Id" />
             <input type="hidden" asp-for="@Model.User.Disabled" />
-            <div data-test-id="change-account-status-button" class="nhsuk-grid-column-one-quarter">
+            <div data-test-id="change-account-status-button">
                 <nhs-submit-button text="@Model.ToggleText" />
             </div>
         </form>

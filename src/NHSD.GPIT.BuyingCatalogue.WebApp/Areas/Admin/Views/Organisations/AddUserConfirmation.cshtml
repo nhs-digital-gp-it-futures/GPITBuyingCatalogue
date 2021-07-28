@@ -3,8 +3,9 @@
     ViewData["Title"] = $"{Model.Name} account added";
 }
 
-<div class="nhsuk-width-container" data-test-id="add-user-confirmation-page">
+<div data-test-id="add-user-confirmation-page">
     <partial name="Partials/_BackLink" model="Model" />
-    <h1 data-test-id="add-user-confirmation-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">@Model.Name account added</h1>
-    <h2 data-test-id="add-user-confirmation-page-description" class="nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">The user has been sent an email so they can set their password.</h2>
+    <div data-test-id="add-user-confirmation-page-title">
+        <nhs-page-title title="@Model.Name account added" advice="The user has been sent an email so they can set their password." />
+    </div>
 </div>

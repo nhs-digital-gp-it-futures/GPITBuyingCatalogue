@@ -4,356 +4,325 @@
     ViewData["Title"] = Model.CatalogueItem.Name;
 }
 
-<div class="nhsuk-width-container nhsuk-u-margin-top-5">
+<partial name="Partials/_BackLink" model="Model" />
 
-    <partial name="Partials/_BackLink" model="Model" />
+<div data-test-id="view-solution-header">
+    @if (Model.CatalogueItem.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation))
+    {
+        <div data-test-id="view-solution-foundation" class="bc-c-tag nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-4 bc-c-tag-outline">Foundation Solution Set</div>
+    }
+    <div data-test-id="view-solution-page-solution-name">
+        <nhs-page-title
+            title="@Model.CatalogueItem.Name" 
+            caption="@Model.CatalogueItem.Supplier.Name"
+        />
+    </div>
+    <p data-test-id="view-solution-page-solution-id" class="nhsuk-u-font-size-24">Solution ID: @Model.CatalogueItem.CatalogueItemId</p>
+    <nhs-endnote>
+        Solution information last updated: @Model.CatalogueItem.Solution.LastUpdated.ToString("d MMMM yyyy")<br /><br />
+        Framework(s): @Model.Frameworks
+    </nhs-endnote>
+</div>
 
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-full">
+@if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary) ||
+  !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
+  !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+{
+    <div data-test-id="view-solution-description">
 
-            <div data-test-id="view-solution-header">
-                @if (Model.CatalogueItem.Solution.FrameworkSolutions.Any(x => x.IsFoundation))
-                {
-                    <div data-test-id="view-solution-foundation" class="bc-c-tag nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-4 bc-c-tag-outline">Foundation Solution Set</div>
-                }
-                <h1 data-test-id="view-solution-page-solution-name" class="nhsuk-u-margin-bottom-2">@Model.CatalogueItem.Name</h1>
-                <h2 data-test-id="view-solution-page-supplier-name" class="nhsuk-u-margin-bottom-4">@Model.CatalogueItem.Supplier.Name</h2>
-                <p data-test-id="view-solution-page-solution-id" class="nhsuk-u-font-size-24">Solution ID: @Model.CatalogueItem.CatalogueItemId</p>
-                <div data-test-id="view-solution-page-last-updated" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4">Solution information last updated: @Model.CatalogueItem.Solution.LastUpdated.ToString("d MMMM yyyy")</div>
-                <div data-test-id="view-solution-page-frameworks" class="bc-t-font-color--grey-1">
-                    Framework(s): @Model.Frameworks
-                </div>
-            </div>
+        <div data-test-id="" class="bc-c-section-heading ">
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Description</h2>
+        </div>
 
-            @*Description DONE*@
+        <div class="nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
 
-            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary) ||
-              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
-              !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary))
             {
-                <div class="nhsuk-width-container" data-test-id="view-solution-description">
-
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Description</h3>
-                    </div>
-
-                    <div class="nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-
-                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.Summary))
-                        {
-                            <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
-                                <div data-test-id="view-section-table-row-vertical">
-                                    <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                        Summary
-                                    </h4>
-                                    <div class="nhsuk-grid-row">
-                                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                            <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.CatalogueItem.Solution.Summary</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
-                 !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
-                        {
-                            <div data-test-id="view-section-table-row-description" class="nhsuk-width-container bc-c-section-table-row ">
-                                <div data-test-id="view-section-table-row-vertical">
-                                    <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                        Full description
-                                    </h4>
-                                    <div class="nhsuk-grid-row">
-                                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription))
-                                            {
-                                                <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Solution.FullDescription</div>
-                                            }
-                                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
-                                            {
-                                                <div data-test-id="view-question-data-link" class="bc-c-data-link ">
-                                                    <a href="@Model.CatalogueItem.Solution.AboutUrl" target="_blank">
-                                                        @Model.CatalogueItem.Solution.AboutUrl
-                                                    </a>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
-
-            @*Features DONE*@
-
-            @if (Model.Features.Any())
-            {
-                <div class="nhsuk-width-container" data-test-id="view-features">
-
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Features</h3>
-                    </div>
-
-                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                        <div data-test-id="view-section-features-guidance">
-                            <div data-test-id="view-features-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution has the following features that can help meet needs in primary care:</div>
-                        </div>
-
-                        <div class="nhsuk-grid-column-two-thirds">
-
-                            <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
-                                <ul class="nhsuk-u-margin-bottom-0">
-                                    @foreach (var feature in Model.Features)
-                                    {
-                                        <li>@feature</li>
-                                    }
-                                </ul>
+                <div data-test-id="view-section-table-row-summary" class="bc-c-section-table-row ">
+                    <div data-test-id="view-section-table-row-vertical">
+                        <h3 data-test-id="view-section-table-row-title">
+                            Summary
+                        </h3>
+                        <div class="nhsuk-grid-row">
+                            <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                                <p data-test-id="view-question-data-text-summary">@Model.CatalogueItem.Solution.Summary</p>
                             </div>
                         </div>
                     </div>
                 </div>
             }
 
-            @*Capabilities*@
-
-            <partial name="_Capabilities" model="Model.Capabilities" />
-
-            @*Integrations DONE*@
-
-            <div data-test-id="view-integrations" class="nhsuk-width-container">
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Integrations</h3>
-                </div>
-                <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                    <div data-test-id="view-integrations-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">View information about the systems this Catalogue Solution integrates with to exchange data:</div>
-                    <div class="nhsuk-grid-column-full">
-                        <div data-test-id="view-authority-assured-integrations">
-                            <div data-test-id="view-section-table-row-authority-assured-integrations" class="nhsuk-width-container bc-c-section-table-row ">
-                                <div data-test-id="view-section-table-row-vertical">
-                                    <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                        NHS assured integrations
-                                    </h4>
-                                    <div class="nhsuk-grid-row">
-                                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                            <div data-test-id="view-question-data-text-link-authority-integrations" class="bc-c-data-link nhsuk-u-margin-bottom-3">
-                                                <a href="document/integrations.pdf" target="_blank">
-                                                    View NHS assured integrations
-                                                </a>
-                                            </div>
-                                            <div data-test-id="view-data-text-additional-information" class="bc-c-data-text bc-t-font-color--grey-1">To find out more about these NHS assured integrations, follow the links below.</div>
-                                            <div data-test-id="view-question-data-text-link-gpconnect" class="bc-c-data-link ">
-                                                <a href="https://digital.nhs.uk/services/gp-connect" target="_blank">
-                                                    GPConnect
-                                                </a>
-                                            </div>
-                                            <div data-test-id="view-question-data-text-link-im1" class="bc-c-data-link ">
-                                                <a href="https://digital.nhs.uk/services/future-gp-it-systems-and-services/im1-pairing-integration" target="_blank">
-                                                    IM1
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.IntegrationsUrl))
-                        {
-                            <div data-test-id="view-supplier-asserted-integrations">
-                                <div data-test-id="view-section-table-row-supplier-asserted-integrations" class="nhsuk-width-container bc-c-section-table-row bc-t-border--none">
-                                    <div data-test-id="view-section-table-row-vertical">
-                                        <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                            Supplier asserted integrations
-                                        </h4>
-                                        <div class="nhsuk-grid-row">
-                                            <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                                <div data-test-id="view-data-text-additional-information" class="bc-c-data-text ">Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</div>
-                                                <div data-test-id="view-question-data-text-link-supplier-integrations" class="bc-c-data-link ">
-                                                    <a href="@Model.CatalogueItem.Solution.IntegrationsUrl" target="_blank">
-                                                        @Model.CatalogueItem.Solution.IntegrationsUrl
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            @*Implementation*@
-
-            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.ImplementationDetail))
+            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription) ||
+     !string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
             {
-                <div class="nhsuk-width-container" data-test-id="view-implementation">
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Implementation</h3>
-                    </div>
-                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                        <div data-test-id="view-implementation-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">These are the typical processes and timescales to implement this Catalogue Solution:</div>
-                        <div class="nhsuk-grid-column-two-thirds">
-                            <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Solution.ImplementationDetail</div>
-                        </div>
-                    </div>
-                </div>
-            }
-
-            @*Client Application Types*@
-
-            @if (Model.DisplayClientApplicationTypes)
-            {
-                <div class="nhsuk-width-container" data-test-id="view-client-application-types">
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Client application type</h3>
-                    </div>
-                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                        <div data-test-id="view-section-client-application-types-guidance">
-                            <div data-test-id="view-client-application-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution is supported by the following client application types:</div>
-                        </div>
-                        <div class="nhsuk-grid-column-full">
-                            <partial name="_ClientApplicationTypes" model="Model.BrowserBased" />
-                            <partial name="_ClientApplicationTypes" model="Model.NativeMobile" />
-                            <partial name="_ClientApplicationTypes" model="Model.NativeDesktop" />
-                        </div>
-                    </div>
-                </div>
-            }
-
-            @*Hosting Type*@
-
-            @if (Model.DisplayHostingType)
-            {
-                <div class="nhsuk-width-container" data-test-id="view-hosting-types">
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Hosting type</h3>
-                    </div>
-                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                        <div data-test-id="view-section-hosting-types-guidance">
-                            <div data-test-id="view-hosting-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">These are the ways this Catalogue Solution can be hosted:</div>
-                        </div>
-                        <div class="nhsuk-grid-column-full">
-                            <partial name="_HostingType" model="Model.PublicCloud" />
-                            <partial name="_HostingType" model="Model.PrivateCloud" />
-                            <partial name="_HostingType" model="Model.HybridHostingType" />
-                            <partial name="_HostingType" model="Model.OnPremise" />
-                        </div>
-                    </div>
-                </div>
-            }
-
-            @*Roadmap DONE APART FROM LINK*@
-
-            <div class="nhsuk-width-container" data-test-id="view-roadmap">
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Roadmap</h3>
-                </div>
-                <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                    <div class="nhsuk-grid-column-two-thirds">
-                        <div data-test-id="view-section-roadmap-guidance">
-                            <div data-test-id="view-roadmap-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3">These are the supplier’s development plans for this Catalogue Solution:</div>
-                        </div>
-                        <div data-test-id="view-section-question-document-link">
-                            <div data-test-id="view-question-data-link-document-link" class="bc-c-data-link nhsuk-u-margin-bottom-4">
-                                <a href="@Model.CatalogueItem.CatalogueItemId/document/roadmap.pdf" target="_blank">
-                                    View roadmap
-                                </a>
-                            </div>
-                        </div>
-                        @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.RoadMap))
-                        {
-                            <div data-test-id="view-section-question-summary">
-                                <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.CatalogueItem.Solution.RoadMap</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            @*About Supplier*@
-
-            @if (Model.DisplaySupplier)
-            {
-                <div class="nhsuk-width-container" data-test-id="view-about-supplier">
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">About supplier</h3>
-                    </div>
-                    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-                        <div class="nhsuk-grid-column-two-thirds nhsuk-u-margin-bottom-5">
-                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.Summary))
-                            {
-                                <div data-test-id="view-section-question-description">
-                                    <div data-test-id="view-question-data-text-description" class="bc-c-data-text ">@Model.CatalogueItem.Supplier.Summary</div>
-                                </div>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.SupplierUrl))
-                            {
-                                <div data-test-id="view-section-question-link">
+                <div data-test-id="view-section-table-row-description" class="bc-c-section-table-row  nhsuk-u-margin-top-4">
+                    <div data-test-id="view-section-table-row-vertical">
+                        <h3 data-test-id="view-section-table-row-title">
+                            Full description
+                        </h3>
+                        <div class="nhsuk-grid-row">
+                            <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                                @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.FullDescription))
+                                {
+                                    <p data-test-id="view-question-data-text-description">@Model.CatalogueItem.Solution.FullDescription</p>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
+                                {
                                     <div data-test-id="view-question-data-link" class="bc-c-data-link ">
-                                        <a href="@Model.CatalogueItem.Supplier.SupplierUrl" target="_blank">
-                                            @Model.CatalogueItem.Supplier.SupplierUrl
+                                        <a href="@Model.CatalogueItem.Solution.AboutUrl" target="_blank">
+                                            @Model.CatalogueItem.Solution.AboutUrl
                                         </a>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
             }
+        </div>
+    </div>
+}
 
-            @*Learn More*@
+@*Features DONE*@
 
-            <div class="nhsuk-width-container" data-test-id="view-learn-more">
+@if (Model.Features.Any())
+{
+    <div data-test-id="view-features">
 
-                <div data-test-id="" class="bc-c-section-heading ">
-                    <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Learn more</h3>
-                </div>
+        <div class="bc-c-section-heading ">
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Features</h2>
+        </div>
 
-                <div class="nhsuk-grid-row nhsuk-u-padding-left-3">
-                    <div class="nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">
-                        <div data-test-id="view-section-learn-more">
-                            <div data-test-id="view-learn-more-guidance" class="bc-c-data-text nhsuk-u-margin-bottom-3">Learn more about this Catalogue Solution, for example its price, the standards it has met and any additional or associated services available.</div>
-                        </div>
-                        <div data-test-id="view-section-question-document-link">
-                            <a class="nhsuk-button nhsuk-button--secondary" href="100000-001/document/solution.pdf" draggable="false">
-                                Download PDF
-                            </a>
-                        </div>
-                    </div>
-                </div>
+        <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+            <div data-test-id="view-section-features-guidance">
+                <div data-test-id="view-features-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution has the following features that can help meet needs in primary care:</div>
             </div>
 
-            @*Contact Details*@
+            <div class="nhsuk-grid-column-two-thirds">
 
-            @if (Model.DisplayContacts)
-            {
-                <div class="nhsuk-width-container" data-test-id="view-solution-contact-details">
-                    <div data-test-id="" class="bc-c-section-heading ">
-                        <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Contact details</h3>
-                    </div>
-                    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4 nhsuk-u-padding-left-3">
-                        <div data-test-id="view-section-question-contact-1" class="nhsuk-grid-column-one-half">
-                            <div data-test-id="view-question-data-text-contact-name" class="bc-c-data-text ">@Model.Contact1Name</div>
-                            <div data-test-id="view-question-data-text-department-name" class="bc-c-data-text ">@Model.Contact1Department</div>
-                            <div data-test-id="view-question-data-text-phone-number" class="bc-c-data-text ">@Model.Contact1PhoneNumber</div>
-                            <div data-test-id="view-question-data-text-email-address" class="bc-c-data-text ">@Model.Contact1EmailAddress</div>
-                        </div>
-                        <div data-test-id="view-section-question-contact-2" class="nhsuk-grid-column-one-half">
-                            <div data-test-id="view-question-data-text-contact-name" class="bc-c-data-text ">@Model.Contact2Name</div>
-                            <div data-test-id="view-question-data-text-department-name" class="bc-c-data-text ">@Model.Contact2Department</div>
-                            <div data-test-id="view-question-data-text-phone-number" class="bc-c-data-text ">@Model.Contact2PhoneNumber</div>
-                            <div data-test-id="view-question-data-text-email-address" class="bc-c-data-text ">@Model.Contact2EmailAddress</div>
-                        </div>
-                    </div>
+                <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                    <ul class="nhsuk-u-margin-bottom-0">
+                        @foreach (var feature in Model.Features)
+                        {
+                            <li>@feature</li>
+                        }
+                    </ul>
                 </div>
-            }
-
-            <div class="nhsuk-u-padding-left-3 nhsuk-u-padding-right-3 nhsuk-u-padding-top-5 bc-u-text-align-right">
-                <partial name="_BackToTop" />
             </div>
         </div>
     </div>
+}
+
+<partial name="_Capabilities" model="Model.Capabilities" />
+
+<div data-test-id="view-integrations">
+    <div class="bc-c-section-heading ">
+        <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Integrations</h2>
+    </div>
+    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+        <div data-test-id="view-integrations-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">View information about the systems this Catalogue Solution integrates with to exchange data:</div>
+        <div class="nhsuk-grid-column-full">
+            <div data-test-id="view-authority-assured-integrations">
+                <div data-test-id="view-section-table-row-authority-assured-integrations" class="bc-c-section-table-row ">
+                    <div data-test-id="view-section-table-row-vertical">
+                        <h3 data-test-id="view-section-table-row-title">
+                            NHS assured integrations
+                        </h3>
+                        <div class="nhsuk-grid-row">
+                            <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                                <div data-test-id="view-question-data-text-link-authority-integrations" class="bc-c-data-link nhsuk-u-margin-bottom-3">
+                                    <a asp-controller="Document" asp-action="GetDocument" asp-route-documentName="integrations.pdf" target="_blank">
+                                        View NHS assured integrations
+                                    </a>
+                                </div>
+                                <div data-test-id="view-data-text-additional-information" class="bc-c-data-text bc-t-font-color--grey-1">To find out more about these NHS assured integrations, follow the links below.</div>
+                                <div data-test-id="view-question-data-text-link-gpconnect" class="bc-c-data-link ">
+                                    <a href="https://digital.nhs.uk/services/gp-connect" target="_blank">
+                                        GPConnect
+                                    </a>
+                                </div>
+                                <div data-test-id="view-question-data-text-link-im1" class="bc-c-data-link ">
+                                    <a href="https://digital.nhs.uk/services/future-gp-it-systems-and-services/im1-pairing-integration" target="_blank">
+                                        IM1
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.IntegrationsUrl))
+            {
+                <div data-test-id="view-supplier-asserted-integrations">
+                    <div data-test-id="view-section-table-row-supplier-asserted-integrations" class="bc-c-section-table-row bc-t-border--none">
+                        <div data-test-id="view-section-table-row-vertical">
+                            <h3 data-test-id="view-section-table-row-title">
+                                Supplier asserted integrations
+                            </h3>
+                            <div class="nhsuk-grid-row">
+                                <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                                    <p data-test-id="view-data-text-additional-information">Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
+                                    <div data-test-id="view-question-data-text-link-supplier-integrations" class="bc-c-data-link ">
+                                        <a href="@Model.CatalogueItem.Solution.IntegrationsUrl" target="_blank">
+                                            @Model.CatalogueItem.Solution.IntegrationsUrl
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.ImplementationDetail))
+{
+    <div data-test-id="view-implementation">
+        <div class="bc-c-section-heading ">
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Implementation</h2>
+        </div>
+        <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+            <div data-test-id="view-implementation-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">These are the typical processes and timescales to implement this Catalogue Solution:</div>
+            <div class="nhsuk-grid-column-two-thirds">
+                <p data-test-id="view-question-data-text-description">@Model.CatalogueItem.Solution.ImplementationDetail</p>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.DisplayClientApplicationTypes)
+{
+    <div data-test-id="view-client-application-types">
+        <div class="bc-c-section-heading ">
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Client application type</h2>
+        </div>
+        <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+            <div data-test-id="view-section-client-application-types-guidance">
+                <div data-test-id="view-client-application-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution is supported by the following client application types:</div>
+            </div>
+            <div class="nhsuk-grid-column-full">
+                <partial name="_ClientApplicationTypes" model="Model.BrowserBased" />
+                <partial name="_ClientApplicationTypes" model="Model.NativeMobile" />
+                <partial name="_ClientApplicationTypes" model="Model.NativeDesktop" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.DisplayHostingType)
+{
+    <div data-test-id="view-hosting-types">
+        <div class="bc-c-section-heading ">
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Hosting type</h2>
+        </div>
+        <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+            <div data-test-id="view-section-hosting-types-guidance">
+                <div data-test-id="view-hosting-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">These are the ways this Catalogue Solution can be hosted:</div>
+            </div>
+            <div class="nhsuk-grid-column-full">
+                <partial name="_HostingType" model="Model.PublicCloud" />
+                <partial name="_HostingType" model="Model.PrivateCloud" />
+                <partial name="_HostingType" model="Model.HybridHostingType" />
+                <partial name="_HostingType" model="Model.OnPremise" />
+            </div>
+        </div>
+    </div>
+}
+
+@*TODO: link*@
+<div data-test-id="view-roadmap">
+    <div class="bc-c-section-heading ">
+        <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Roadmap</h2>
+    </div>
+    <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+        <div class="nhsuk-grid-column-two-thirds">
+            <div data-test-id="view-section-roadmap-guidance">
+                <div data-test-id="view-roadmap-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3">These are the supplier’s development plans for this Catalogue Solution:</div>
+            </div>
+            <div data-test-id="view-section-question-document-link">
+                <div data-test-id="view-question-data-link-document-link" class="bc-c-data-link nhsuk-u-margin-bottom-4">
+                    <a href="@Model.CatalogueItem.CatalogueItemId/document/roadmap.pdf" target="_blank">
+                        View roadmap
+                    </a>
+                </div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.RoadMap))
+            {
+                <div data-test-id="view-section-question-summary">
+                    <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.CatalogueItem.Solution.RoadMap</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (Model.DisplaySupplier)
+{
+    <div data-test-id="view-about-supplier">
+        <div class="bc-c-section-heading">
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">About supplier</h2>
+        </div>
+        <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
+            <div class="nhsuk-grid-column-two-thirds nhsuk-u-margin-bottom-5">
+                @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.Summary))
+                {
+                    <div data-test-id="view-section-question-description">
+                        <p data-test-id="view-question-data-text-description">@Model.CatalogueItem.Supplier.Summary</p>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.SupplierUrl))
+                {
+                    <div data-test-id="view-section-question-link">
+                        <div data-test-id="view-question-data-link" class="bc-c-data-link ">
+                            <a href="@Model.CatalogueItem.Supplier.SupplierUrl" target="_blank">
+                                @Model.CatalogueItem.Supplier.SupplierUrl
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<div data-test-id="view-learn-more">
+
+    <div class="bc-c-section-heading ">
+        <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Learn more</h2>
+    </div>
+
+    <div class="nhsuk-grid-row nhsuk-u-padding-left-3">
+        <div class="nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">
+            <div data-test-id="view-section-learn-more">
+                <p data-test-id="view-learn-more-guidance">Learn more about this Catalogue Solution, for example its price, the standards it has met and any additional or associated services available.</p>
+            </div>
+            <div data-test-id="view-section-question-document-link">
+                <vc:nhs-secondary-button url="100000-001/document/solution.pdf" text="Download PDF" use-primary-colour="false" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.DisplayContacts)
+{
+    <div data-test-id="view-solution-contact-details">
+        <div class="bc-c-section-heading">
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Contact details</h2>
+        </div>
+        <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4 nhsuk-u-padding-left-3">
+            @foreach (var contact in Model.Contacts)
+            {
+                <div data-test-id="view-section-question-contact" class="nhsuk-grid-column-one-half">
+                    <vc:nhs-address address="@contact" />
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div class="nhsuk-u-padding-left-3 nhsuk-u-padding-right-3 nhsuk-u-padding-top-5 bc-u-text-align-right">
+    <partial name="_BackToTop" />
 </div>
