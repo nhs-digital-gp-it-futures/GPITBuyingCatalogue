@@ -12,11 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
         public void Customize(IFixture fixture)
         {
-            catalogueItem = fixture
-                .Customize(new CatalogueItemIdCustomization())
-                .Create<CatalogueItem>();
-
-            fixture.Customize<HostingTypeSectionModel>(_ => new HostingTypeSectionModelSpecimenBuilder());
+            fixture.Customize<HostingTypeSectionModel>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery()))
+                .Without(m => m.SolutionId)
+                .Without(m => m.SolutionName));
         }
 
         private sealed class HostingTypeSectionModelSpecimenBuilder : ISpecimenBuilder

@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -13,12 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem,
+            [Frozen] CatalogueItem catalogueItem,
             HostingTypeSectionModel expected)
         {
-            expected.SolutionId = catalogueItem.CatalogueItemId;
-            expected.SolutionName = catalogueItem.Name;
-
             var actual = new HostingTypeSectionModel(catalogueItem);
 
             actual.SolutionId.Should().BeEquivalentTo(expected.SolutionId);
