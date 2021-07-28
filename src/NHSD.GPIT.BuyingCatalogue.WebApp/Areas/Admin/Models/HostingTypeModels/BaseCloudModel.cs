@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
             BackLinkText = "Go back";
         }
 
-        public CatalogueItemId SolutionId { get; set; }
-
         [StringLength(1000)]
         [Url]
         public string Link { get; set; }
