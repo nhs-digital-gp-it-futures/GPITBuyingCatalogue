@@ -2,8 +2,6 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -16,24 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem,
+            [Frozen] CatalogueItem catalogueItem,
             HostingTypeSectionModel expected)
         {
-            expected.SolutionId = catalogueItem.CatalogueItemId;
-            expected.SolutionName = catalogueItem.Name;
-            expected.PublicCloud = catalogueItem.Solution?.GetHosting()?.PublicCloud;
-            expected.PrivateCloud = catalogueItem.Solution?.GetHosting()?.PrivateCloud;
-            expected.Hybrid = catalogueItem.Solution?.GetHosting()?.HybridHostingType;
-            expected.OnPremise = catalogueItem.Solution?.GetHosting()?.OnPremise;
-
             var actual = new HostingTypeSectionModel(catalogueItem);
 
             actual.SolutionId.Should().BeEquivalentTo(expected.SolutionId);
             actual.SolutionName.Should().BeEquivalentTo(expected.SolutionName);
-            actual.PublicCloud.Should().BeEquivalentTo(expected.PublicCloud);
-            actual.PrivateCloud.Should().BeEquivalentTo(expected.PrivateCloud);
-            actual.Hybrid.Should().BeEquivalentTo(expected.Hybrid);
-            actual.OnPremise.Should().BeEquivalentTo(expected.OnPremise);
         }
 
         [Fact]
@@ -45,11 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [AutoData]
-        public static void StatusHostingType_CloudTypeAdded_ReturnsCompleted(string summary)
+        [CommonAutoData]
+        public static void StatusHostingType_AvailableHosting_ReturnsCompleted(
+            HostingTypeSectionModel model)
         {
-            var model = new HostingTypeSectionModel { PublicCloud = new PublicCloud { Summary = summary } };
-
             var actual = model.StatusHostingType();
 
             actual.Should().Be(FeatureCompletionStatus.Completed);

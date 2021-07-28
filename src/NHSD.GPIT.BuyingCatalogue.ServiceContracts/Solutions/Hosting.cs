@@ -1,24 +1,37 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    [ExcludeFromCodeCoverage]
-    public class Hosting
+    public sealed class Hosting
     {
-        public Hosting()
+        public PublicCloud PublicCloud { get; set; }
+
+        public PrivateCloud PrivateCloud { get; set; }
+
+        public HybridHostingType HybridHostingType { get; set; }
+
+        public OnPremise OnPremise { get; set; }
+
+        public IReadOnlyList<HostingType> AvailableHosting
         {
-            PublicCloud = new PublicCloud();
-            PrivateCloud = new PrivateCloud();
-            HybridHostingType = new HybridHostingType();
-            OnPremise = new OnPremise();
+            get
+            {
+                var result = new List<HostingType>(4);
+
+                if (PublicCloud?.IsValid() ?? false)
+                    result.Add(HostingType.PublicCloud);
+
+                if (PrivateCloud?.IsValid() ?? false)
+                    result.Add(HostingType.PrivateCloud);
+
+                if (HybridHostingType?.IsValid() ?? false)
+                    result.Add(HostingType.Hybrid);
+
+                if (OnPremise?.IsValid() ?? false)
+                    result.Add(HostingType.OnPremise);
+
+                return result;
+            }
         }
-
-        public virtual PublicCloud PublicCloud { get; set; }
-
-        public virtual PrivateCloud PrivateCloud { get; set; }
-
-        public virtual HybridHostingType HybridHostingType { get; set; }
-
-        public virtual OnPremise OnPremise { get; set; }
     }
 }

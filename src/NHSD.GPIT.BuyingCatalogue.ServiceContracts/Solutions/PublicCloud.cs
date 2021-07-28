@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    [ExcludeFromCodeCoverage]
-    public class PublicCloud
+    public sealed class PublicCloud
     {
         [StringLength(1000)]
         [Url]
@@ -15,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         [StringLength(500)]
         public string Summary { get; set; }
 
-        public virtual bool? IsValid() =>
+        public bool IsValid() =>
             !string.IsNullOrWhiteSpace(Summary) ||
             !string.IsNullOrWhiteSpace(Link) ||
             !string.IsNullOrWhiteSpace(RequiresHscn);
