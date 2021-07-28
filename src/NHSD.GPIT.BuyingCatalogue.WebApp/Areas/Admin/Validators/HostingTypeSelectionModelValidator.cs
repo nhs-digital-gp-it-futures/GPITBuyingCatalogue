@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             RuleFor(m => m.SelectedHostingType)
                 .NotNull()
                 .WithMessage(SelectionErrorMessage)
-                .Unless(m => !m.HostingTypesAvailableForSelection);
+                .When(m => m.HostingTypesAvailableForSelection);
         }
     }
 }

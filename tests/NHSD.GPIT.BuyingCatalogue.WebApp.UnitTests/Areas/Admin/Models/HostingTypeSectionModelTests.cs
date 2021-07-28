@@ -36,18 +36,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             actual.ParamName.Should().Be("catalogueItem");
         }
 
-        // TODO: fix
-        [Theory(Skip = "Needs fixing")]
-        [AutoData]
-        public static void StatusHostingType_CloudTypeAdded_ReturnsCompleted(string summary)
+        [Theory]
+        [CommonAutoData]
+        public static void StatusHostingType_AvailableHosting_ReturnsCompleted(CatalogueItem catalogueItem)
         {
-            // TODO: fix
-            // var model = new HostingTypeSectionModel { PublicCloud = new PublicCloudModel() };
-            // model.PublicCloud.Summary = summary;
+            var hosting = catalogueItem?.Solution?.GetHosting();
 
-            // var actual = model.StatusHostingType();
+            hosting.AvailableHosting.Should().NotBeEmpty();
 
-            // actual.Should().Be(FeatureCompletionStatus.Completed);
+            HostingTypeSectionModel model = new HostingTypeSectionModel(catalogueItem);
+
+            var actual = model.StatusHostingType();
+
+            actual.Should().Be(FeatureCompletionStatus.Completed);
         }
 
         [Fact]
