@@ -13,14 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
         [Theory]
         [CommonAutoData]
         public static void IsComplete_PublicCloudNotNull_ReturnsValid(
-            bool expected,
             PublicCloud publicCloud)
         {
             var model = new PublicCloudModel { PublicCloud = publicCloud };
 
             var actual = model.IsComplete;
 
-            actual.Should().Be(expected);
+            actual.Should().Be(true);
         }
 
         [Fact]

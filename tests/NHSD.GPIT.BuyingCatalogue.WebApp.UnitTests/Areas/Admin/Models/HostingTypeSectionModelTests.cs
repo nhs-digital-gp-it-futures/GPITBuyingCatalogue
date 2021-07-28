@@ -38,14 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusHostingType_AvailableHosting_ReturnsCompleted(CatalogueItem catalogueItem)
+        public static void StatusHostingType_AvailableHosting_ReturnsCompleted(
+            HostingTypeSectionModel model)
         {
-            var hosting = catalogueItem?.Solution?.GetHosting();
-
-            hosting.AvailableHosting.Should().NotBeEmpty();
-
-            HostingTypeSectionModel model = new HostingTypeSectionModel(catalogueItem);
-
             var actual = model.StatusHostingType();
 
             actual.Should().Be(FeatureCompletionStatus.Completed);
