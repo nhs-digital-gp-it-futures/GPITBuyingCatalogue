@@ -647,7 +647,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSelectionModel(catalogueItem));
         }
 
         [Theory]
