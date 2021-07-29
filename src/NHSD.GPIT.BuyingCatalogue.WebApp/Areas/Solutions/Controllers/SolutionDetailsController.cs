@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution));
         }
 
-        [Route("futures/{id}/additional-services/{additionalId}/capabilities")]
+        [Route("futures/{catalogueItemId}/additional-services/{additionalServiceId}/capabilities")]
         public async Task<IActionResult> CapabilitiesAdditionalServices(
             CatalogueItemId catalogueItemId,
             CatalogueItemId additionalServiceId)
