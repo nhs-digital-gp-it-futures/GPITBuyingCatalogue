@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -43,9 +44,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string DOMAIN_NAME = "127.0.0.1";
 
-        private const string SqlliteConnectionString = "DataSource=:memory:"; //"Data Source=C:\\test.db";
-
         private const string Browser = "chrome";
+
+        // Sqllite constants
+        private const string SqlliteConnectionStringInMemory = "DataSource=:memory:";
+
+        private const string SqlliteFileSystemFileLocation = "C:\\test.db";
+
+        private const bool UseFileSystemSqlite = false;
+
+        private static readonly string SqlliteConnectionStringFileSystem = $"DataSource={SqlliteFileSystemFileLocation}";
+
+        private readonly string pathToServiceInstanceViewSqlFile =
+            Path.GetFullPath(Path.Combine(
+                Directory.GetCurrentDirectory(),
+                @"..\..\..\..\..\database\NHSD.GPITBuyingCatalogue.Database\Ordering\Views",
+                @"ServiceInstanceItems.sql"));
+
         private readonly IWebHost host;
 
         private SqliteConnection sqliteConnection;
@@ -104,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>()).UseSerilog();
-            builder.UseWebRoot(System.IO.Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
+            builder.UseWebRoot(Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
@@ -115,7 +130,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 }
 
                 sqliteConnection?.Dispose();
-                sqliteConnection = new SqliteConnection(SqlliteConnectionString);
+
+                if (UseFileSystemSqlite
+                    && File.Exists(SqlliteFileSystemFileLocation))
+                {
+                    File.Delete(SqlliteFileSystemFileLocation);
+                }
+
+                sqliteConnection =
+                new SqliteConnection(UseFileSystemSqlite ?
+                    SqlliteConnectionStringFileSystem :
+                    SqlliteConnectionStringInMemory);
                 sqliteConnection.Open();
 
                 services.AddDbContext<EndToEndDbContext>(options =>
@@ -142,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 try
                 {
-                    ApplyViewsAndTables(bcDb);
+                    Task.Run(() => ApplyViewsAndTables(bcDb)).Wait();
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
@@ -198,47 +223,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        private void ApplyViewsAndTables(EndToEndDbContext context)
+        private async Task ApplyViewsAndTables(EndToEndDbContext context)
         {
-            context.Database.ExecuteSqlRaw(
-                @"CREATE VIEW ServiceInstanceItems AS
-                    WITH ServiceInstanceIncrement AS
-                    (
-                        SELECT r.OrderId, r.CatalogueItemId, r.OdsCode,
-                                DENSE_RANK() OVER (
-                                    PARTITION BY r.OrderId, r.OdsCode
-                                        ORDER BY CASE WHEN c.CatalogueItemTypeId = 1 THEN r.CatalogueItemId ELSE a.SolutionId END) AS ServiceInstanceIncrement
-                            FROM OrderItemRecipients AS r
-                                INNER JOIN CatalogueItems AS c ON c.CatalogueItemId = r.CatalogueItemId
-                                        AND c.CatalogueItemTypeId IN (1, 2)
-                                LEFT OUTER JOIN AdditionalServices AS a ON a.CatalogueItemId = r.CatalogueItemId
-                            WHERE (a.SolutionId IS NULL OR EXISTS (
-                                SELECT *
-                                    FROM OrderItemRecipients AS r2
-                                    WHERE r2.OrderId = r.OrderId
-                                    AND r2.OdsCode = r.OdsCode
-                                    AND r2.CatalogueItemId = a.SolutionId))
-                    )
-                    SELECT r.OrderId, r.CatalogueItemId, r.OdsCode,
-                            'SI' + CAST(s.ServiceInstanceIncrement AS nvarchar(3)) + '-' + r.OdsCode AS ServiceInstanceId
-                        FROM OrderItemRecipients AS r
-                            LEFT OUTER JOIN ServiceInstanceIncrement AS s
-                                    ON s.OrderId = r.OrderId
-                                    AND s.CatalogueItemId = r.CatalogueItemId
-                                    AND s.OdsCode = r.OdsCode;");
+            var serviceInstanceItemsSql = await File.ReadAllTextAsync(pathToServiceInstanceViewSqlFile);
 
-            context.Database.ExecuteSqlRaw(
-                @"CREATE TABLE SessionData
-                (
-                    Id nvarchar(449) NOT NULL,
-                    [Value] varbinary(255) NOT NULL,
-                    ExpiresAtTime datetimeoffset(7) NOT NULL,
-                    SlidingExpirationInSeconds bigint NULL,
-                    AbsoluteExpiration datetimeoffset(7) NULL,
-                    CONSTRAINT PK_Sessions PRIMARY KEY (Id)
-                );
-                CREATE UNIQUE INDEX IX_SessionData_ExpiresAtTime
-                ON SessionData(ExpiresAtTime);");
+            if (string.IsNullOrWhiteSpace(serviceInstanceItemsSql))
+                throw new NullReferenceException($"{nameof(serviceInstanceItemsSql)} was empty when it shouldn't be.");
+
+            // remove ordering and catalogue two part name
+            serviceInstanceItemsSql = serviceInstanceItemsSql.Replace("ordering.", string.Empty);
+            serviceInstanceItemsSql = serviceInstanceItemsSql.Replace("catalogue.", string.Empty);
+
+            context.Database.ExecuteSqlRaw(serviceInstanceItemsSql);
         }
     }
 }

@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
             var capabilities = new List<CatalogueItemCapabilitiesModel>();
 
-            foreach (var capability in CatalogueItem.CatalogueItemCapabilities.OrderBy(x => x.Capability.Name))
+            foreach (var capability in CatalogueItem.CatalogueItemCapabilities.OrderBy(cic => cic.Capability.Name))
             {
                 capabilities.Add(new CatalogueItemCapabilitiesModel(capability, CatalogueItem));
             }
