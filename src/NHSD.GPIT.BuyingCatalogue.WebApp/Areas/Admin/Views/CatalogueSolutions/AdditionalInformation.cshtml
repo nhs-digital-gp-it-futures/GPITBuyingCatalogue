@@ -1,0 +1,26 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels.AdditionalInformationModel;
+@{
+    ViewData["Title"] = "Browser-based application - additional information";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="Browser-based application – additional information"
+                            advice="Let buyers know any additional information about your Catalogue Solution." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.SolutionId" />
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <nhs-textarea asp-for="AdditionalInformation"
+                              label-text="Additional information (optional)"
+                              label-hint="Provide additional information about your browser-based Catalogue Solution" />
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>
