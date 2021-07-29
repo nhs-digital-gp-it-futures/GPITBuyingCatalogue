@@ -55,19 +55,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         [Route("futures/{id}/additional-services/{additionalId}/capabilities")]
         public async Task<IActionResult> CapabilitiesAdditionalServices(
-            CatalogueItemId id,
-            CatalogueItemId additionalId)
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId)
         {
-            var solution = await solutionsService.GetSolutionAdditionalServiceCapabilities(id);
+            var solution = await solutionsService.GetSolutionAdditionalServiceCapabilities(catalogueItemId);
 
             if (solution is null)
-                return BadRequest($"No Catalogue Item found for Id: {id}");
+                return BadRequest($"No Catalogue Item found for Id: {catalogueItemId}");
 
             var viewModel = mapper.Map<CatalogueItem, CapabilitiesViewModel>(solution);
 
-            viewModel.Name = solution.CatalogueItemName(additionalId);
+            viewModel.Name = solution.CatalogueItemName(additionalServiceId);
 
-            viewModel.Description = solution.AdditionalServiceDescription(additionalId);
+            viewModel.Description = solution.AdditionalServiceDescription(additionalServiceId);
 
             return View(viewModel);
         }
