@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -131,16 +130,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 sqliteConnection?.Dispose();
 
-                if (UseFileSystemSqlite
-                    && File.Exists(SqlliteFileSystemFileLocation))
+                if (UseFileSystemSqlite && File.Exists(SqlliteFileSystemFileLocation))
                 {
                     File.Delete(SqlliteFileSystemFileLocation);
                 }
 
-                sqliteConnection =
-                new SqliteConnection(UseFileSystemSqlite ?
-                    SqlliteConnectionStringFileSystem :
-                    SqlliteConnectionStringInMemory);
+                sqliteConnection = new SqliteConnection(
+                    UseFileSystemSqlite ? SqlliteConnectionStringFileSystem : SqlliteConnectionStringInMemory);
                 sqliteConnection.Open();
 
                 services.AddDbContext<EndToEndDbContext>(options =>
@@ -228,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             var serviceInstanceItemsSql = File.ReadAllText(pathToServiceInstanceViewSqlFile);
 
             if (string.IsNullOrWhiteSpace(serviceInstanceItemsSql))
-                throw new NullReferenceException($"{nameof(serviceInstanceItemsSql)} was empty when it shouldn't be.");
+                throw new FormatException($"{nameof(serviceInstanceItemsSql)} was empty when it shouldn't be.");
 
             // remove ordering and catalogue two part name
             serviceInstanceItemsSql = serviceInstanceItemsSql.Replace("ordering.", string.Empty);
