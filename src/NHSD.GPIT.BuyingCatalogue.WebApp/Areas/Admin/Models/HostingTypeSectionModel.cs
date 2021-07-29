@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -9,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
-    public sealed class HostingTypeSectionModel : MarketingBaseModel
+    public class HostingTypeSectionModel : MarketingBaseModel
     {
         public HostingTypeSectionModel()
             : base(null)
@@ -22,55 +23,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            SolutionName = catalogueItem?.Name;
-            PublicCloud = CatalogueItem.Solution?.GetHosting()?.PublicCloud;
-            PrivateCloud = CatalogueItem.Solution?.GetHosting()?.PrivateCloud;
-            Hybrid = CatalogueItem.Solution?.GetHosting()?.HybridHostingType;
-            OnPremise = CatalogueItem.Solution?.GetHosting()?.OnPremise;
-            PopulateHostingTypesToAdd();
+            var hosting = catalogueItem.Solution?.GetHosting();
+
+            SolutionName = catalogueItem.Name;
+            ExistingHostingTypes = hosting?.AvailableHosting ?? Array.Empty<HostingType>();
+            HostingTypesToAdd = Enum.GetValues<HostingType>().Except(ExistingHostingTypes).ToList();
+            HostingTypesToAddRadioItems = HostingTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
+            ExistingHostingTypesCount = ExistingHostingTypes.Count;
+            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.CatalogueItemId}";
         }
 
-        public PublicCloud PublicCloud { get; set; }
+        public IReadOnlyList<HostingType> ExistingHostingTypes { get; } = Array.Empty<HostingType>();
 
-        public PrivateCloud PrivateCloud { get; set; }
-
-        public HybridHostingType Hybrid { get; set; }
-
-        public OnPremise OnPremise { get; set; }
+        public int? ExistingHostingTypesCount { get; set; }
 
         public string SolutionName { get; set; }
 
         public List<HostingType> HostingTypesToAdd { get; set; }
 
-        [Required(ErrorMessage = "Select a hosting type")]
-        public string SelectedHostingType { get; set; }
+        public IEnumerable<object> HostingTypesToAddRadioItems { get; }
 
-        public override bool? IsComplete =>
-            Convert.ToBoolean(PublicCloud?.IsValid()) ||
-            Convert.ToBoolean(PrivateCloud?.IsValid()) ||
-            Convert.ToBoolean(Hybrid?.IsValid()) ||
-            Convert.ToBoolean(OnPremise?.IsValid());
+        public override bool? IsComplete => ExistingHostingTypes.Any();
 
-        public FeatureCompletionStatus StatusHostingType() =>
-           Convert.ToBoolean(IsComplete)
-               ? FeatureCompletionStatus.Completed
-               : FeatureCompletionStatus.NotStarted;
-
-        private void PopulateHostingTypesToAdd()
-        {
-            HostingTypesToAdd = new List<HostingType>();
-
-            if (!Convert.ToBoolean(PublicCloud?.IsValid()))
-                HostingTypesToAdd.Add(new HostingType("Public cloud", "PublicCloud"));
-
-            if (!Convert.ToBoolean(PrivateCloud?.IsValid()))
-                HostingTypesToAdd.Add(new HostingType("Private cloud", "PrivateCloud"));
-
-            if (!Convert.ToBoolean(Hybrid?.IsValid()))
-                HostingTypesToAdd.Add(new HostingType("Hybrid", "HybridCloud"));
-
-            if (!Convert.ToBoolean(OnPremise?.IsValid()))
-                HostingTypesToAdd.Add(new HostingType("On premise", "OnPremiseCloud"));
-        }
+        public FeatureCompletionStatus StatusHostingType() => IsComplete.GetValueOrDefault()
+            ? FeatureCompletionStatus.Completed
+            : FeatureCompletionStatus.NotStarted;
     }
 }

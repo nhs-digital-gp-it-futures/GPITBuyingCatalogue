@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -42,7 +44,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string DOMAIN_NAME = "127.0.0.1";
 
         private const string Browser = "chrome";
+
+        // Sqllite constants
+        private const string SqlliteConnectionStringInMemory = "DataSource=:memory:";
+
+        private const string SqlliteFileSystemFileLocation = "C:/test.db";
+
+        private const bool UseFileSystemSqlite = false;
+
+        private static readonly string SqlliteConnectionStringFileSystem = $"DataSource={SqlliteFileSystemFileLocation}";
+
+        private readonly string pathToServiceInstanceViewSqlFile =
+            Path.GetFullPath(Path.Combine(
+                Directory.GetCurrentDirectory(),
+                @"../../../../../database/NHSD.GPITBuyingCatalogue.Database/Ordering/Views",
+                @"ServiceInstanceItems.sql"));
+
         private readonly IWebHost host;
+
+        private SqliteConnection sqliteConnection;
+
+        private IServiceProvider scopedServices;
 
         public LocalWebApplicationFactory()
         {
@@ -81,10 +103,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         internal IWebDriver Driver { get; }
 
+        internal EndToEndDbContext DbContext
+        {
+            get
+            {
+                var options = new DbContextOptionsBuilder<EndToEndDbContext>()
+                    .UseSqlite(sqliteConnection)
+                    .Options;
+
+                return new EndToEndDbContext(options);
+            }
+        }
+
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             var builder = WebHost.CreateDefaultBuilder(Array.Empty<string>()).UseSerilog();
-            builder.UseWebRoot(System.IO.Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
+            builder.UseWebRoot(Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
             builder.UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
@@ -94,34 +128,55 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     services.Remove(descriptor);
                 }
 
+                sqliteConnection?.Dispose();
+
+                if (UseFileSystemSqlite && File.Exists(SqlliteFileSystemFileLocation))
+                {
+                    File.Delete(SqlliteFileSystemFileLocation);
+                }
+
+                sqliteConnection = new SqliteConnection(
+                    UseFileSystemSqlite ? SqlliteConnectionStringFileSystem : SqlliteConnectionStringInMemory);
+                sqliteConnection.Open();
+
                 services.AddDbContext<EndToEndDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase(BcDbName);
+                    options.UseSqlite(sqliteConnection);
                 });
                 services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>();
 
                 var sp = services.BuildServiceProvider();
 
                 using var scope = sp.CreateScope();
-                var scopedServices = scope.ServiceProvider;
+                scopedServices = scope.ServiceProvider;
 
                 var bcDb = scopedServices.GetRequiredService<EndToEndDbContext>();
 
                 bcDb.Database.EnsureCreated();
 
+                services.AddDistributedMemoryCache();
+
+                services.AddSession(options =>
+                {
+                    options.IdleTimeout = TimeSpan.FromMinutes(60);
+                });
+
                 try
                 {
+                    ApplyViewsAndTables(bcDb);
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
                 }
-                catch
+                catch (Exception ex)
                 {
                     // figure out error logging here
+                    Trace.WriteLine(ex.Message);
                 }
             });
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");
+
             return builder;
         }
 
@@ -133,6 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             if (disposing)
             {
                 host?.Dispose();
+                sqliteConnection?.Dispose();
             }
         }
 
@@ -140,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         {
             SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
 
-            SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+            SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
 
             SetEnvironmentVariable("SMTPSERVER__PORT", BC_SMTP_PORT);
 
@@ -161,6 +217,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 Environment.SetEnvironmentVariable(name, value);
             }
+        }
+
+        private void ApplyViewsAndTables(EndToEndDbContext context)
+        {
+            var serviceInstanceItemsSql = File.ReadAllText(pathToServiceInstanceViewSqlFile);
+
+            if (string.IsNullOrWhiteSpace(serviceInstanceItemsSql))
+                throw new FormatException($"{nameof(serviceInstanceItemsSql)} was empty when it shouldn't be.");
+
+            // remove ordering and catalogue two part name
+            serviceInstanceItemsSql = serviceInstanceItemsSql.Replace("ordering.", string.Empty);
+            serviceInstanceItemsSql = serviceInstanceItemsSql.Replace("catalogue.", string.Empty);
+
+            context.Database.ExecuteSqlRaw(serviceInstanceItemsSql);
         }
     }
 }

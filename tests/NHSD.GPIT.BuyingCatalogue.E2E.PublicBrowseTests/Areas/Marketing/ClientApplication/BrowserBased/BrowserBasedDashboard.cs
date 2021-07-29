@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
     public sealed class BrowserBasedDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public BrowserBasedDashboard(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/browser-based")
+            : base(factory, "marketing/supplier/solution/99999-002/section/browser-based")
         {
             AuthorityLogin();
         }
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

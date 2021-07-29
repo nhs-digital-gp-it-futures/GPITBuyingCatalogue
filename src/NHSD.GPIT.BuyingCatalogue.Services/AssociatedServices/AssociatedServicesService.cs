@@ -21,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
         public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(string supplierId)
         {
             return dbContext.CatalogueItems
-                .Include(c => c.Solution)
-                .ThenInclude(s => s.SolutionCapabilities)
+                .Include(s => s.CatalogueItemCapabilities)
                 .ThenInclude(sc => sc.Capability)
                 .Include(c => c.Supplier)
                 .Include(c => c.AssociatedService)

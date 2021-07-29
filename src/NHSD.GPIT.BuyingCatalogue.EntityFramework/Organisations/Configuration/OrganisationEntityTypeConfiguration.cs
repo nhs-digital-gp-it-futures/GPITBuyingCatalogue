@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
@@ -21,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
                     a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
 
             builder.Property(o => o.OrganisationId).ValueGeneratedNever();
-            builder.Property(o => o.LastUpdated).HasDefaultValueSql("(getutcdate())");
+            builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
             builder.Property(o => o.Name)
                 .IsRequired()
                 .HasMaxLength(255);

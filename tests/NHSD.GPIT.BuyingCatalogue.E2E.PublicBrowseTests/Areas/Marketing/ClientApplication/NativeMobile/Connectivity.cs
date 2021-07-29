@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
     public sealed class Connectivity : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Connectivity(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/native-mobile/connectivity")
+            : base(factory, "marketing/supplier/solution/99999-002/section/native-mobile/connectivity")
         {
             AuthorityLogin();
         }
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
             await using var context = GetEndToEndDbContext();
 
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication;
 
             clientApplication.Should().ContainEquivalentOf("ConnectionType\":[\"GPRS\"]");
             clientApplication.Should().ContainEquivalentOf("MinimumConnectionSpeed\":\"0.5Mbps\"");
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

@@ -6,14 +6,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 {
     public sealed class CatalogueSolutions
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private static readonly CallOffId CallOffId = new(90004, 1);
 
-        private static readonly Dictionary<string, string> Parameters = new() { { "OdsCode", "03F" }, { "CallOffId", CallOffId.ToString() } };
+        private static readonly Dictionary<string, string> Parameters =
+            new() { { "OdsCode", "03F" }, { "CallOffId", CallOffId.ToString() } };
 
         public CatalogueSolutions(LocalWebApplicationFactory factory)
             : base(

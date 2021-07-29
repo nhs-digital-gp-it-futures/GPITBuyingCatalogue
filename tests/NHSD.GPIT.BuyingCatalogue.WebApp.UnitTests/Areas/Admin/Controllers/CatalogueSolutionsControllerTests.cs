@@ -10,12 +10,14 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 using Xunit;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
@@ -513,10 +515,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_HostingType_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
 
             await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>()).HostingType(
                 catalogueItemId);
@@ -561,11 +564,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_HostingType_CallsSaveHosting(
             CatalogueItemId catalogueItemId,
-            HostingTypeSectionModel model,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
+            HostingTypeSectionModel model = new HostingTypeSectionModel(catalogueItem);
+
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
             await controller.HostingType(catalogueItemId, model);
 
             mockService.Verify(s => s.SaveHosting(catalogueItemId, It.IsAny<Hosting>()));
@@ -575,10 +582,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_HostingType_RedirectsToManageCatalogueSolution(
             CatalogueItemId catalogueItemId,
-            HostingTypeSectionModel model,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            HostingTypeSectionModel model = new HostingTypeSectionModel(catalogueItem);
+
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.HostingType(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -609,10 +621,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_AddHostingType_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
-                .ReturnsAsync(new CatalogueItem());
+                .ReturnsAsync(catalogueItem);
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
             await controller.AddHostingType(catalogueItemId);
@@ -635,7 +648,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HostingTypeSectionModel(catalogueItem));
+            actual.Model.Should().BeEquivalentTo(new HostingTypeSelectionModel(catalogueItem));
         }
 
         [Theory]
@@ -655,19 +668,506 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddHostingType_RedirectsToManageCatalogueSolution(
+        public static async Task Post_AddHostingType_RedirectsToPublicCloud(
             CatalogueItemId catalogueItemId,
-            HostingTypeSectionModel model,
+            HostingTypeSelectionModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
+            model.SelectedHostingType = HostingType.PublicCloud;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.HostingTypeData));
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.PublicCloud));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
-            actual.RouteValues["selectedHostingType"].Should().Be(model.SelectedHostingType);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddHostingType_RedirectsToPrivateCloud(
+            CatalogueItemId catalogueItemId,
+            HostingTypeSelectionModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            model.SelectedHostingType = HostingType.PrivateCloud;
+            var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.PrivateCloud));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddHostingType_RedirectsToHybridCloud(
+            CatalogueItemId catalogueItemId,
+            HostingTypeSelectionModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            model.SelectedHostingType = HostingType.Hybrid;
+            var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.Hybrid));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddHostingType_RedirectsToOnPremiseCloud(
+            CatalogueItemId catalogueItemId,
+            HostingTypeSelectionModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            model.SelectedHostingType = HostingType.OnPremise;
+            var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.OnPremise));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_PublicCloud_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.PublicCloud(catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_PublicCloud_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(hosting?.PublicCloud));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_PublicCloud_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.PublicCloud(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_PublicCloud_CallsSaveHosting(
+            CatalogueItemId catalogueItemId,
+            PublicCloudModel model,
+            Hosting hosting,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+            await controller.PublicCloud(catalogueItemId, model);
+
+            hosting.PublicCloud = new PublicCloud { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn };
+
+            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_PublicCloud_RedirectsToHostingType(
+            CatalogueItemId catalogueItemId,
+            Hosting hosting,
+            PublicCloudModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+
+            var actual = (await controller.PublicCloud(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.HostingType));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_PublicCloud_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new PublicCloudModel(hosting.PublicCloud));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_PrivateCloud_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.PrivateCloud(catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_PrivateCloud_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(hosting?.PrivateCloud));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_PrivateCloud_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.PrivateCloud(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_PrivateCloud_CallsSaveHosting(
+            CatalogueItemId catalogueItemId,
+            PrivateCloudModel model,
+            Hosting hosting,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+            await controller.PrivateCloud(catalogueItemId, model);
+
+            hosting.PrivateCloud = new PrivateCloud { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn, HostingModel = model.HostingModel };
+
+            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_PrivateCloud_RedirectsToHostingType(
+            CatalogueItemId catalogueItemId,
+            Hosting hosting,
+            PrivateCloudModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+
+            var actual = (await controller.PrivateCloud(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.HostingType));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_PrivateCloud_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new PrivateCloudModel(hosting?.PrivateCloud));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_HybridCloud_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.Hybrid(catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_HybridCloud_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new HybridModel(hosting?.HybridHostingType));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_HybridCloud_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Hybrid(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HybridCloud_CallsSaveHosting(
+            CatalogueItemId catalogueItemId,
+            HybridModel model,
+            Hosting hosting,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+            await controller.Hybrid(catalogueItemId, model);
+
+            hosting.HybridHostingType = new HybridHostingType { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn, HostingModel = model.HostingModel };
+
+            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HybridCloud_RedirectsToHostingType(
+            CatalogueItemId catalogueItemId,
+            Hosting hosting,
+            HybridModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+
+            var actual = (await controller.Hybrid(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.HostingType));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HybridCloud_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new HybridModel(hosting?.HybridHostingType));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_OnPremiseCloud_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.OnPremise(catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_OnPremise_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(hosting?.OnPremise));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_OnPremise_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.OnPremise(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_OnPremise_CallsSaveHosting(
+            CatalogueItemId catalogueItemId,
+            OnPremiseModel model,
+            Hosting hosting,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+            await controller.OnPremise(catalogueItemId, model);
+
+            hosting.OnPremise = new OnPremise { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn, HostingModel = model.HostingModel };
+
+            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_OnPremise_RedirectsToHostingType(
+            CatalogueItemId catalogueItemId,
+            Hosting hosting,
+            OnPremiseModel model,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            mockService.Setup(s => s.GetHosting(catalogueItemId))
+                .ReturnsAsync(hosting);
+
+            var actual = (await controller.OnPremise(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.HostingType));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_OnPremise_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
+
+            var hosting = catalogueItem.Solution?.GetHosting();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new OnPremiseModel(hosting?.OnPremise));
         }
 
         [Theory]

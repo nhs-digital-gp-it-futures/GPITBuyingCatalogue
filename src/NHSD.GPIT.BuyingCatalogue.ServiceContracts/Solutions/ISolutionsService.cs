@@ -61,13 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
 
-        Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(
-            CatalogueItemId id,
-            CatalogueItemId additionalId);
+        Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id);
 
         Task<CatalogueItem> GetAdditionalServiceCapability(
             CatalogueItemId catalogueItemId,
-            CatalogueItemId catalogueItemIdAdditional,
             Guid capabilityId);
 
         Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model);

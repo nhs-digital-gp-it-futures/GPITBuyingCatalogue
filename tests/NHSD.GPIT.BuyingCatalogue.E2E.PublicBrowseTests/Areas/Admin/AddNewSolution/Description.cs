@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
     public sealed class Description : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public Description(LocalWebApplicationFactory factory)
-            : base(factory, "/admin/catalogue-solutions/manage/99999-888/description")
+            : base(factory, "/admin/catalogue-solutions/manage/99999-002/description")
         {
             AuthorityLogin();
         }
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task Description_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "888"))).Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
             solution.Summary.Should().Be(summary);
             solution.FullDescription.Should().Be(fullDescription);
             solution.AboutUrl.Should().Be(link);
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task Description_GoBackWithoutSaving()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
             solution.FullDescription = string.Empty;
             solution.AboutUrl = string.Empty;
 

@@ -11,8 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("MarketingContacts", Schemas.Catalogue);
 
-            builder.HasKey(m => new { m.SolutionId, m.Id });
-
             builder.Property(m => m.SolutionId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));

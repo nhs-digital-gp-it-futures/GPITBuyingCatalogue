@@ -36,6 +36,7 @@ module "webapp" {
   smtp_server_host = var.smtp_server_host
   smtp_server_port = var.smtp_server_port
   vnet_subnet_id = azurerm_subnet.gateway.id
+  app_dns_url = var.app_url
 
   depends_on = [module.sql_server_pri]
 }

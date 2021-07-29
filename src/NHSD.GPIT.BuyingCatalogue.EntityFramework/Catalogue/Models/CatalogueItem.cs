@@ -32,5 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public virtual Solution Solution { get; set; }
 
         public ICollection<CataloguePrice> CataloguePrices { get; set; }
+
+        public ICollection<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
+
+        public ICollection<CatalogueItemEpic> CatalogueItemEpics { get; set; }
     }
 }

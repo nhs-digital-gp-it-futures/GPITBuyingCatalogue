@@ -351,7 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockCatalogueItemCapability);
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(
-                    s => s.GetAdditionalServiceCapability(catalogueItemId, catalogueItemIdAdditional, capabilityId))
+                    s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId))
                 .ReturnsAsync(mockCatalogueItem.Object);
 
             var mockSolutionCheckEpicsModel = new Mock<SolutionCheckEpicsModel>();
@@ -368,7 +368,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .CheckEpicsAdditionalServices(catalogueItemId, catalogueItemIdAdditional, capabilityId);
 
             mockService.Verify(
-                s => s.GetAdditionalServiceCapability(catalogueItemId, catalogueItemIdAdditional, capabilityId));
+                s => s.GetAdditionalServiceCapability(catalogueItemIdAdditional, capabilityId));
             mockCatalogueItem.Verify(c => c.CatalogueItemCapability(capabilityId));
             mockMapper.Verify(
                 m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(mockCatalogueItemCapability));

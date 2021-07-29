@@ -1,0 +1,65 @@
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using Xunit;
+
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
+{
+    public sealed class CatalogueSolutionSelectSolution
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    {
+        private static readonly CallOffId CallOffId = new(90004, 01);
+
+        private static readonly Dictionary<string, string> Parameters =
+            new() { { "OdsCode", "03F" }, { nameof(CallOffId), CallOffId.ToString() } };
+
+        public CatalogueSolutionSelectSolution(LocalWebApplicationFactory factory)
+            : base(
+                  factory,
+                  typeof(CatalogueSolutionsController),
+                  nameof(CatalogueSolutionsController.SelectSolution),
+                  Parameters)
+        {
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectSolution_AllSectionsDisplayed()
+        {
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtons).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectSolution_DontSelectSolution_ThrowsError()
+        {
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.SelectSolution)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Ordering.CatalogueSolutions.SelectCatalogueSolutionErrorMessage, "Error: Select a Catalogue Solution")
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectSolution_SelectSolution_ExpectedResult()
+        {
+            CommonActions.ClickRadioButtonWithText("E2E With Contact Multiple Prices");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.SelectSolutionPrice)).Should().BeTrue();
+        }
+    }
+}

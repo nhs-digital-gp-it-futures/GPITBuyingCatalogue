@@ -11,20 +11,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
     public static class PublicCloudModelTests
     {
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        [InlineData(null)]
-        public static void IsComplete_PublicCloudNotNull_ReturnsIsValid(bool? expected)
+        [CommonAutoData]
+        public static void IsComplete_PublicCloudNotNull_ReturnsValid(
+            PublicCloud publicCloud)
         {
-            var mockPublicCloud = new Mock<PublicCloud>();
-            mockPublicCloud.Setup(h => h.IsValid())
-                .Returns(expected);
-            var model = new PublicCloudModel { PublicCloud = mockPublicCloud.Object };
+            var model = new PublicCloudModel { PublicCloud = publicCloud };
 
             var actual = model.IsComplete;
 
-            mockPublicCloud.Verify(h => h.IsValid());
-            actual.Should().Be(expected);
+            actual.Should().Be(true);
+        }
+
+        [Fact]
+        public static void IsComplete_PublicCloudBlank_ReturnsInValid()
+        {
+            var model = new PublicCloudModel { PublicCloud = new PublicCloud() };
+
+            var actual = model.IsComplete;
+
+            actual.Should().Be(false);
         }
 
         [Fact]

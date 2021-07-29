@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
     public sealed class PublicCloud : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public PublicCloud(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/hosting-type-public-cloud")
+            : base(factory, "marketing/supplier/solution/99999-002/section/hosting-type-public-cloud")
         {
             AuthorityLogin();
         }
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "99"))).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PublicCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
 
         public void Dispose()
         {
-            ClearHostingTypes(new CatalogueItemId(99999, "99"));
+            ClearHostingTypes(new CatalogueItemId(99999, "002"));
         }
     }
 }

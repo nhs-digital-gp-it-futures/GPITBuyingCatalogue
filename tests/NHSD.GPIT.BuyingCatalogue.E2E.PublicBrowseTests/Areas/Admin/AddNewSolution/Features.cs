@@ -13,9 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
     public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public Features(LocalWebApplicationFactory factory)
-            : base(factory, "/admin/catalogue-solutions/manage/99999-888/features")
+            : base(factory, "/admin/catalogue-solutions/manage/99999-002/features")
         {
-            ClearFeatures(new CatalogueItemId(99999, "888"));
+            ClearFeatures(new CatalogueItemId(99999, "002"));
             AuthorityLogin();
         }
 
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task Features_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "888"))).Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.SavePage();
 
             await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "888"));
+            var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
             var featuresModel = new FeaturesModel().FromCatalogueItem(catalogueItem);
 
             featuresModel.AllFeatures.Should().BeEquivalentTo(features);
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "888"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
             var features = solution.Features;
 
             features.Should().BeNullOrEmpty();

@@ -14,10 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
     public sealed class SupplierDetails : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public SupplierDetails(LocalWebApplicationFactory factory)
-            : base(factory, "marketing/supplier/solution/99999-99/section/about-supplier")
+            : base(factory, "marketing/supplier/solution/99999-002/section/about-supplier")
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(c => c.Supplier).Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "99"));
+            var catalogueItem = context.CatalogueItems.Include(c => c.Supplier).Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
             catalogueItem.Supplier.Summary = string.Empty;
             catalogueItem.Supplier.SupplierUrl = string.Empty;
             context.SaveChanges();
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.Include(c => c.Supplier).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "99"));
+            var catalogueItem = await context.CatalogueItems.Include(c => c.Supplier).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
             catalogueItem.Supplier.Summary.Should().Be(summary);
             catalogueItem.Supplier.SupplierUrl.Should().Be(link);
         }
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
 
         public void Dispose()
         {
-            ClearClientApplication(new CatalogueItemId(99999, "99"));
+            ClearClientApplication(new CatalogueItemId(99999, "002"));
         }
     }
 }

@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         public static void CatalogueItemCapability_ValidSolutionCapabilities_ReturnsFirst(
             CatalogueItem catalogueItem)
         {
-            var expected = catalogueItem.Solution.SolutionCapabilities.First();
+            var expected = catalogueItem.CatalogueItemCapabilities.First();
             var capabilityId = expected.Capability.Id;
 
             var actual = catalogueItem.CatalogueItemCapability(capabilityId);
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             Guid capabilityId)
         {
             var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
-            catalogueItem.Solution.SolutionCapabilities = new List<CatalogueItemCapability>
+            catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>
             {
                 new(),
             };
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             Guid capabilityId)
         {
             var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
-            catalogueItem.Solution.SolutionCapabilities = new List<CatalogueItemCapability>();
+            catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
 
             var actual = catalogueItem.CatalogueItemCapability(capabilityId);
 
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             Guid capabilityId)
         {
             var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
-            catalogueItem.Solution.SolutionCapabilities = null;
+            catalogueItem.CatalogueItemCapabilities = null;
 
             var actual = catalogueItem.CatalogueItemCapability(capabilityId);
 
@@ -342,7 +342,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void HasCapabilities_SolutionCapabilitiesNotEmpty_ReturnsTrue(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.SolutionCapabilities.Any().Should().BeTrue();
+            catalogueItem.CatalogueItemCapabilities.Any().Should().BeTrue();
 
             var actual = catalogueItem.HasCapabilities();
 
@@ -353,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void HasCapabilities_SolutionCapabilitiesEmpty_ReturnsFalse(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.SolutionCapabilities = new List<CatalogueItemCapability>();
+            catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
 
             var actual = catalogueItem.HasCapabilities();
 
@@ -364,7 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void HasCapabilities_SolutionCapabilitiesNull_ReturnsFalse(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution.SolutionCapabilities = null;
+            catalogueItem.CatalogueItemCapabilities = null;
 
             var actual = catalogueItem.HasCapabilities();
 
@@ -375,7 +375,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void HasCapabilities_SolutionIsNull_ReturnsFalse(CatalogueItem catalogueItem)
         {
-            catalogueItem.Solution = null;
+            catalogueItem.CatalogueItemCapabilities = null;
 
             var actual = catalogueItem.HasCapabilities();
 

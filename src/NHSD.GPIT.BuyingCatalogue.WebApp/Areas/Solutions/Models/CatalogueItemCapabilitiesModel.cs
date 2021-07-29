@@ -5,21 +5,21 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public sealed class SolutionCapabilitiesModel
+    public sealed class CatalogueItemCapabilitiesModel
     {
-        public SolutionCapabilitiesModel(CatalogueItemCapability solutionCapability, Solution solution)
+        public CatalogueItemCapabilitiesModel(CatalogueItemCapability solutionCapability, CatalogueItem catalogueItem)
         {
             if (solutionCapability is null)
                 throw new ArgumentNullException(nameof(solutionCapability));
 
-            if (solution is null)
-                throw new ArgumentNullException(nameof(solution));
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
 
             Id = solutionCapability.Capability.Id;
             Name = $"{solutionCapability.Capability.Name}, {solutionCapability.Capability.Version}";
             SourceUrl = solutionCapability.Capability.SourceUrl;
             Description = solutionCapability.Capability.Description;
-            PopulateEpics(solution);
+            PopulateEpics(catalogueItem);
         }
 
         public Guid Id { get; set; }
@@ -38,9 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public List<string> MayEpicsNotMet { get; set; } = new();
 
-        private void PopulateEpics(Solution solution)
+        private void PopulateEpics(CatalogueItem catalogueItem)
         {
-            foreach (var solutionEpic in solution.SolutionEpics.Where(se => se.CapabilityId == Id && se.Epic.Active))
+            foreach (var solutionEpic in catalogueItem.CatalogueItemEpics.Where(cie => cie.CapabilityId == Id && cie.Epic.Active))
             {
                 var epicLabel = $"{solutionEpic.Epic.Name} ({solutionEpic.Epic.Id})";
 

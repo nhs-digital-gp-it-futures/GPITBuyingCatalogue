@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -19,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion<int>()
                 .HasColumnName("CatalogueItemTypeId");
 
-            builder.Property(i => i.Created).HasDefaultValueSql("(getutcdate())");
+            builder.Property(i => i.Created).HasDefaultValue(DateTime.UtcNow);
             builder.Property(i => i.Name)
                 .IsRequired()
                 .HasMaxLength(255);
