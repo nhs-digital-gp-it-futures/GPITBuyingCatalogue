@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         // Sqllite constants
         private const string SqlliteConnectionStringInMemory = "DataSource=:memory:";
 
-        private const string SqlliteFileSystemFileLocation = "C:\\test.db";
+        private const string SqlliteFileSystemFileLocation = "C:/test.db";
 
         private const bool UseFileSystemSqlite = false;
 
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private readonly string pathToServiceInstanceViewSqlFile =
             Path.GetFullPath(Path.Combine(
                 Directory.GetCurrentDirectory(),
-                @"..\..\..\..\..\database\NHSD.GPITBuyingCatalogue.Database\Ordering\Views",
+                @"../../../../../database/NHSD.GPITBuyingCatalogue.Database/Ordering/Views",
                 @"ServiceInstanceItems.sql"));
 
         private readonly IWebHost host;
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 try
                 {
-                    Task.Run(() => ApplyViewsAndTables(bcDb)).Wait();
+                    ApplyViewsAndTables(bcDb);
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
@@ -223,9 +223,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        private async Task ApplyViewsAndTables(EndToEndDbContext context)
+        private void ApplyViewsAndTables(EndToEndDbContext context)
         {
-            var serviceInstanceItemsSql = await File.ReadAllTextAsync(pathToServiceInstanceViewSqlFile);
+            var serviceInstanceItemsSql = File.ReadAllText(pathToServiceInstanceViewSqlFile);
 
             if (string.IsNullOrWhiteSpace(serviceInstanceItemsSql))
                 throw new NullReferenceException($"{nameof(serviceInstanceItemsSql)} was empty when it shouldn't be.");
