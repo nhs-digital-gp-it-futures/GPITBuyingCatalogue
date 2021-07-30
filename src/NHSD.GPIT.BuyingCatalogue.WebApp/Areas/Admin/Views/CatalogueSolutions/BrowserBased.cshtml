@@ -1,0 +1,94 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels.BrowserBasedModel
+@{
+    ViewData["Title"] = "Browser-based application";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="Browser-based application"
+                            advice="Provide information about your browser-based Catalogue Solution." />
+
+            <nhs-table>
+
+                <nhs-table-column>Section</nhs-table-column>
+                <nhs-table-column>Mandatory</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column></nhs-table-column>
+
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>Supported browser</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag text="@Model.SupportedBrowsersStatus" colour="@GetTagColour(Model.SupportedBrowsersStatus)" /></nhs-table-cell>
+
+                    <nhs-table-cell>
+                        <a asp-action="SupportedBrowsers" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>Plug-ins or extensions required</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag text="@Model.PlugInsStatus" colour="@GetTagColour(Model.PlugInsStatus)" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="PlugInsOrExtensions" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>Connectivity and resolution</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag text="@Model.ConnectivityStatus" colour="@GetTagColour(Model.ConnectivityStatus)" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="ConnectivityAndResolution" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>Hardware requirements</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag text="@Model.HardwareRequirementsStatus" colour="@GetTagColour(Model.HardwareRequirementsStatus)" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="HardwareRequirements" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>Additional information</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag text="@Model.AdditionalInformationStatus" colour="@GetTagColour(Model.AdditionalInformationStatus)" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="AdditionalInformation" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+
+            </nhs-table>
+
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.ClientApplication.BrowsersSupported" />
+                <input type="hidden" asp-for="@Model.ClientApplication.MobileResponsive" />
+                <input type="hidden" asp-for="@Model.ClientApplication.Plugins.Required" />
+
+                <nhs-submit-button text="Save and Continue" />
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@{
+    NhsTagsTagHelper.TagColour GetTagColour(string status) =>
+        status switch
+        {
+            "COMPLETE" => NhsTagsTagHelper.TagColour.Green,
+            "INCOMPLETE" => NhsTagsTagHelper.TagColour.Grey,
+            _ => NhsTagsTagHelper.TagColour.Grey,
+        };
+}
