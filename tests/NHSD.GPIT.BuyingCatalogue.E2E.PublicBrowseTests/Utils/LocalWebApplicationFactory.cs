@@ -4,12 +4,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -112,6 +115,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     .Options;
 
                 return new EndToEndDbContext(options);
+            }
+        }
+
+        internal IDistributedCache GetCache
+        {
+            get
+            {
+                return host.Services.GetRequiredService<IDistributedCache>();
+            }
+        }
+
+        internal IDataProtectionProvider GetDataProtectionProvider
+        {
+            get
+            {
+                return host.Services.GetRequiredService<IDataProtectionProvider>();
+            }
+        }
+
+        internal ILoggerFactory GetLoggerFactory
+        {
+            get
+            {
+                return host.Services.GetRequiredService<ILoggerFactory>();
             }
         }
 
