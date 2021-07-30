@@ -54,11 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         {
             foreach (var browser in Browsers)
             {
-                if (ClientApplication.BrowsersSupported is not null &&
-                    ClientApplication.BrowsersSupported.Contains(browser.BrowserName))
-                {
-                    browser.Checked = true;
-                }
+                browser.Checked = ClientApplication.BrowsersSupported is not null &&
+                    ClientApplication.BrowsersSupported.Contains(browser.BrowserName);
             }
         }
     }

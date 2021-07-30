@@ -373,7 +373,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.BrowsersSupported.Clear();
             clientApplication.BrowsersSupported = model.Browsers is null
                 ? new HashSet<string>()
-                : model.Browsers.Where(x => x.Checked == true).Select(x => x.BrowserName).ToHashSet();
+                : model.Browsers.Where(b => b.Checked).Select(b => b.BrowserName).ToHashSet();
 
             clientApplication.MobileResponsive = string.IsNullOrWhiteSpace(model.MobileResponsive)
                 ? (bool?)null
