@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
@@ -22,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                   factory,
                   typeof(CatalogueSolutionsController),
                   nameof(CatalogueSolutionsController.SelectSolution),
-                  Parameters)
+                  Parameters,
+                  true)
         {
         }
 
@@ -53,13 +56,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [Fact]
         public void CatalogueSolutionsSelectSolution_SelectSolution_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText("E2E With Contact Multiple Prices");
+            var expectedCatalogueItemName = "E2E With Contact Multiple Prices";
+
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "001");
+
+            CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.SelectSolutionPrice)).Should().BeTrue();
+
+            CreateOrderItemModel cacheModel = Session.GetOrderStateFromSession(CallOffId.ToString());
+
+            cacheModel.CallOffId.Should().Be(CallOffId);
+            cacheModel.CatalogueItemId.Should().Be(expectedCatalogueItemId);
+            cacheModel.CatalogueItemName.Should().BeEquivalentTo(expectedCatalogueItemName);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Authorization;
@@ -12,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -24,7 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         private readonly Uri uri;
 
-        protected TestBase(LocalWebApplicationFactory factory, string urlArea = "")
+        protected TestBase(
+            LocalWebApplicationFactory factory,
+            string urlArea = "",
+            IDictionary<string, object> sessionValues = null)
         {
             Factory = factory;
 
@@ -36,8 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             OrderingPages = new OrderingPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
-
             TextGenerators = new TextGenerators(Driver);
+
+            SessionValues = sessionValues;
 
             uri = new Uri(factory.RootUri);
 
@@ -49,6 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         public IWebDriver Driver { get; protected set; }
 
         internal Actions.Common.CommonActions CommonActions { get; }
+
+        internal SessionHandler Session { get; private set; }
 
         internal WebDriverWait Wait { get; }
 
@@ -63,6 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal Actions.Ordering.ActionCollection OrderingPages { get; }
 
         internal TextGenerators TextGenerators { get; }
+
+        internal IDictionary<string, object> SessionValues { get; init; }
 
         internal EndToEndDbContext GetEndToEndDbContext()
         {
@@ -126,10 +136,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
+        internal async Task InitializeSessionAndSetValuesToSession()
+        {
+            Session = new SessionHandler(
+            Factory.GetDataProtectionProvider,
+            Factory.GetCache,
+            Factory.Driver,
+            Factory.GetLoggerFactory);
+
+            if (SessionValues is not null && SessionValues.Any())
+            {
+                foreach (var entry in SessionValues)
+                {
+                    switch (entry.Value)
+                    {
+                        case string:
+                            await Session.SetStringAsync(entry.Key, entry.Value.ToString());
+                            break;
+
+                        default:
+                            await Session.SetObjectAsync(entry.Key, entry.Value);
+                            break;
+                    }
+                }
+            }
+        }
+
         protected static string GenerateUrlFromMethod(
             Type controllerType,
             string methodName,
-            IDictionary<string, string> parameters,
+            IDictionary<string, string> parameters = null,
             IDictionary<string, string> queryParameters = null)
         {
             if (controllerType.BaseType != typeof(Controller))
@@ -137,9 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentNullException(nameof(methodName), $"{nameof(methodName)} should not be null");
-
-            if (parameters is null)
-                throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} should not be null");
 
             var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template;
 
@@ -155,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                     : new StringBuilder(methodRoute[2..].ToLowerInvariant()),
             };
 
-            if (parameters.Any())
+            if (parameters is not null && parameters.Any())
             {
                 foreach (var param in parameters)
                     absoluteRoute.Replace('{' + param.Key.ToLowerInvariant() + '}', param.Value);
@@ -200,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         protected void NavigateToUrl(
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters,
+            IDictionary<string, string> parameters = null,
             IDictionary<string, string> queryParameters = null)
         {
             NavigateToUrl(new Uri(GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
