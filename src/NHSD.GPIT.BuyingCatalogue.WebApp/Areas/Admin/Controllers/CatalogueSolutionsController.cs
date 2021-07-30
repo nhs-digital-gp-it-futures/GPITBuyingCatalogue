@@ -328,7 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new BrowserBasedModel(solution));
@@ -352,7 +352,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new SupportedBrowsersModel(solution));
@@ -371,9 +371,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
             clientApplication.BrowsersSupported.Clear();
-            clientApplication.BrowsersSupported = model.Browsers == null
+            clientApplication.BrowsersSupported = model.Browsers is null
                 ? new HashSet<string>()
-                : model.Browsers.Where(x => x.Checked).Select(x => x.BrowserName).ToHashSet();
+                : model.Browsers.Where(x => x.Checked == true).Select(x => x.BrowserName).ToHashSet();
 
             clientApplication.MobileResponsive = string.IsNullOrWhiteSpace(model.MobileResponsive)
                 ? (bool?)null
