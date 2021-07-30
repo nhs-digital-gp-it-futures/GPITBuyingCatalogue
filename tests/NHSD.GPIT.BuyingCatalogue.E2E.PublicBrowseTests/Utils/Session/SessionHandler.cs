@@ -58,25 +58,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session
             return GetObject<CreateOrderItemModel>(key);
         }
 
-        public async Task SetOrderStateToSessionAsync(CreateOrderItemModel model)
+        public void SetOrderStateToSessionAsync(CreateOrderItemModel model)
         {
-            await SetObjectAsync(model.CallOffId.ToString(), model);
+            SetObject(model.CallOffId.ToString(), model);
         }
 
-        public async Task SetStringAsync(string key, string value)
+        public void SetString(string key, string value)
         {
             Session.SetString(key, value);
-            await Session.CommitAsync();
+            Session.CommitAsync();
         }
 
-        public async Task SetObjectAsync(string key, object value)
+        public void SetObject(string key, object value)
         {
             Session.SetString(
                 key,
                 JsonSerializer.Serialize(
                     value,
                     new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve }));
-            await Session.CommitAsync();
+            Session.CommitAsync();
         }
 
         public void Remove(string key)

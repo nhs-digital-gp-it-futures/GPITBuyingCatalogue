@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             BuyerLogin();
 
             if (initialiseSession)
-                Task.Run(() => InitializeSessionAndSetValuesToSession()).Wait();
+                InitializeSessionAndSetValuesToSession();
 
             if (sessionValues is not null && sessionValues.Any())
                 Driver.Navigate().Refresh();

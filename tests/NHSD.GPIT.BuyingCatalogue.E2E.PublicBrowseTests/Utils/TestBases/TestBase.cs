@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
-        internal async Task InitializeSessionAndSetValuesToSession()
+        internal void InitializeSessionAndSetValuesToSession()
         {
             Session = new SessionHandler(
             Factory.GetDataProtectionProvider,
@@ -146,16 +146,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
             if (SessionValues is not null && SessionValues.Any())
             {
-                foreach (var entry in SessionValues)
+                foreach (var (key, value) in SessionValues)
                 {
-                    switch (entry.Value)
+                    switch (value)
                     {
                         case string:
-                            await Session.SetStringAsync(entry.Key, entry.Value.ToString());
+                            Session.SetString(key, value.ToString());
                             break;
 
                         default:
-                            await Session.SetObjectAsync(entry.Key, entry.Value);
+                            Session.SetObject(key, value);
                             break;
                     }
                 }
