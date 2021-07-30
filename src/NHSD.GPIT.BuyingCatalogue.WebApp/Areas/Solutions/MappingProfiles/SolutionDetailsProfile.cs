@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
                         dest.ApplicationTypes = new DescriptionListViewModel
                         {
-                            Heading = "Application Type",
+                            Heading = "Application type",
                             Items = new Dictionary<string, ListViewModel>(),
                         };
 
