@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         public BrowserBasedModelValidator()
         {
             RuleFor(m => m.IsComplete)
-                .Must(x => x == true)
+                .NotEmpty()
                 .WithMessage(MandatoryRequiredMessage);
         }
     }

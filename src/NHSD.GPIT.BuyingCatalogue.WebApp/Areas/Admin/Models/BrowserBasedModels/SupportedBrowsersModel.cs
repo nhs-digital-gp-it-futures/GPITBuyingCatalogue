@@ -47,15 +47,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         public string MobileResponsive { get; set; }
 
         public override bool IsComplete =>
-            ClientApplication?.BrowsersSupported != null && ClientApplication.BrowsersSupported.Any() &&
+            ClientApplication?.BrowsersSupported is not null && ClientApplication.BrowsersSupported.Any() &&
             ClientApplication.MobileResponsive.HasValue;
 
         private void CheckBrowsers()
         {
             foreach (var browser in Browsers)
             {
-                if (ClientApplication.BrowsersSupported != null &&
-                    ClientApplication.BrowsersSupported.Any(x => x.Equals(browser.BrowserName, StringComparison.InvariantCultureIgnoreCase)))
+                if (ClientApplication.BrowsersSupported is not null &&
+                    ClientApplication.BrowsersSupported.Contains(browser.BrowserName))
                 {
                     browser.Checked = true;
                 }
