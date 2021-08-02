@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [Fact]
         public void CatalogueSolutionsSelectSolution_AllSectionsDisplayed()
         {
-            InitializeTestSession();
-
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtons).Should().BeTrue();
         }
@@ -39,8 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [Fact]
         public void CatalogueSolutionsSelectSolution_DontSelectSolution_ThrowsError()
         {
-            InitializeTestSession();
-
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
