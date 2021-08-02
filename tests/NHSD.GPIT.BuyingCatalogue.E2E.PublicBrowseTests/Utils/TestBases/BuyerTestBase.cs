@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {
@@ -11,21 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             LocalWebApplicationFactory factory,
             Type controller,
             string methodName,
-            IDictionary<string, string> parameters,
-            bool initialiseSession = false,
-            IDictionary<string, object> sessionValues = null)
+            IDictionary<string, string> parameters)
             : base(
                   factory,
-                  GenerateUrlFromMethod(controller, methodName, parameters),
-                  sessionValues)
+                  GenerateUrlFromMethod(controller, methodName, parameters))
         {
             BuyerLogin();
-
-            if (initialiseSession)
-                InitializeSessionAndSetValuesToSession();
-
-            if (sessionValues is not null && sessionValues.Any())
-                Driver.Navigate().Refresh();
         }
     }
 }

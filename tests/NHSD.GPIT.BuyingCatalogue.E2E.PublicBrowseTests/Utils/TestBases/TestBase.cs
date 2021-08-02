@@ -28,8 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         protected TestBase(
             LocalWebApplicationFactory factory,
-            string urlArea = "",
-            IDictionary<string, object> sessionValues = null)
+            string urlArea = "")
         {
             Factory = factory;
 
@@ -42,8 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             CommonActions = new Actions.Common.CommonActions(Driver);
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             TextGenerators = new TextGenerators(Driver);
-
-            SessionValues = sessionValues;
 
             uri = new Uri(factory.RootUri);
 
@@ -71,8 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal Actions.Ordering.ActionCollection OrderingPages { get; }
 
         internal TextGenerators TextGenerators { get; }
-
-        internal IDictionary<string, object> SessionValues { get; init; }
 
         internal EndToEndDbContext GetEndToEndDbContext()
         {
@@ -136,30 +131,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
 
-        internal void InitializeSessionAndSetValuesToSession()
+        internal async Task SetValuesToSession(Dictionary<string, object> sessionValues)
         {
-            Session = new SessionHandler(
-            Factory.GetDataProtectionProvider,
-            Factory.GetCache,
-            Factory.Driver,
-            Factory.GetLoggerFactory);
-
-            if (SessionValues is not null && SessionValues.Any())
+            if (sessionValues is not null && sessionValues.Any())
             {
-                foreach (var (key, value) in SessionValues)
+                foreach (var (key, value) in sessionValues)
                 {
                     switch (value)
                     {
                         case string:
-                            Session.SetString(key, value.ToString());
+                            await Session.SetStringAsync(key, value.ToString());
                             break;
 
                         default:
-                            Session.SetObject(key, value);
+                            await Session.SetObjectAsync(key, value);
                             break;
                     }
                 }
             }
+        }
+
+        internal void InitializeSession()
+        {
+            Session = new SessionHandler(
+                Factory.GetDataProtectionProvider,
+                Factory.GetCache,
+                Factory.Driver,
+                Factory.GetLoggerFactory);
         }
 
         protected static string GenerateUrlFromMethod(

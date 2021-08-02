@@ -23,14 +23,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                   factory,
                   typeof(CatalogueSolutionsController),
                   nameof(CatalogueSolutionsController.SelectSolution),
-                  Parameters,
-                  true)
+                  Parameters)
         {
         }
 
         [Fact]
         public void CatalogueSolutionsSelectSolution_AllSectionsDisplayed()
         {
+            InitializeTestSession();
+
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtons).Should().BeTrue();
         }
@@ -38,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [Fact]
         public void CatalogueSolutionsSelectSolution_DontSelectSolution_ThrowsError()
         {
+            InitializeTestSession();
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -53,8 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectSolution_SelectSolution_ExpectedResult()
+        public void CatalogueSolutionsSelectSolution_SelectSolution_MultiplePrices_ExpectedResult()
         {
+            InitializeTestSession();
+
             var expectedCatalogueItemName = "E2E With Contact Multiple Prices";
 
             var expectedCatalogueItemId = new CatalogueItemId(99998, "001");
@@ -72,6 +77,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             cacheModel.CallOffId.Should().Be(CallOffId);
             cacheModel.CatalogueItemId.Should().Be(expectedCatalogueItemId);
             cacheModel.CatalogueItemName.Should().BeEquivalentTo(expectedCatalogueItemName);
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectSolution_SelectSolution_SingePrice_ExpectedResult()
+        {
+            InitializeTestSession();
+
+            var expectedCatalogueItemName = "E2E With Contact With Single Price";
+
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "002");
+
+            CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionRecipientsController),
+                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients)).Should().BeTrue();
+
+            CreateOrderItemModel cacheModel = Session.GetOrderStateFromSession(CallOffId.ToString());
+
+            cacheModel.CallOffId.Should().Be(CallOffId);
+            cacheModel.CatalogueItemId.Should().Be(expectedCatalogueItemId);
+            cacheModel.CatalogueItemName.Should().BeEquivalentTo(expectedCatalogueItemName);
+            cacheModel.SkipPriceSelection.Should().BeTrue();
+            cacheModel.AgreedPrice.Should().NotBeNull();
+        }
+
+        private void InitializeTestSession()
+        {
+            InitializeSession();
         }
     }
 }
