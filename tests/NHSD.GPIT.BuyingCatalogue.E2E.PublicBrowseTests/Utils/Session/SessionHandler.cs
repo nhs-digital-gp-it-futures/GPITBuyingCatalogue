@@ -58,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session
             return GetObject<CreateOrderItemModel>(key);
         }
 
-        public void SetOrderStateToSessionAsync(CreateOrderItemModel model)
+        public Task SetOrderStateToSessionAsync(CreateOrderItemModel model)
         {
-            SetObjectAsync(model.CallOffId.ToString(), model);
+            return SetObjectAsync(model.CallOffId.ToString(), model);
         }
 
         public Task SetStringAsync(string key, string value)
@@ -80,10 +80,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session
             return Session.CommitAsync();
         }
 
-        public void Remove(string key)
+        public Task Clear()
         {
-            Session.Remove(key);
-            Session.CommitAsync();
+            Session.Clear();
+            return Session.CommitAsync();
         }
 
         private static string Pad(string text)

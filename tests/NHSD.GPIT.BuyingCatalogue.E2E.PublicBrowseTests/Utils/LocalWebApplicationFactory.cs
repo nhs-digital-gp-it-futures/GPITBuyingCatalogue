@@ -118,29 +118,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        internal IDistributedCache GetCache
-        {
-            get
-            {
-                return host.Services.GetRequiredService<IDistributedCache>();
-            }
-        }
+        internal IDistributedCache GetCache => host.Services.GetRequiredService<IDistributedCache>();
 
-        internal IDataProtectionProvider GetDataProtectionProvider
-        {
-            get
-            {
-                return host.Services.GetRequiredService<IDataProtectionProvider>();
-            }
-        }
+        internal IDataProtectionProvider GetDataProtectionProvider => host.Services.GetRequiredService<IDataProtectionProvider>();
 
-        internal ILoggerFactory GetLoggerFactory
-        {
-            get
-            {
-                return host.Services.GetRequiredService<ILoggerFactory>();
-            }
-        }
+        internal ILoggerFactory GetLoggerFactory => host.Services.GetRequiredService<ILoggerFactory>();
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
