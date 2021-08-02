@@ -133,31 +133,38 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal async Task SetValuesToSession(Dictionary<string, object> sessionValues)
         {
-            if (sessionValues is not null && sessionValues.Any())
+            foreach (var (key, value) in sessionValues)
             {
-                foreach (var (key, value) in sessionValues)
+                switch (value)
                 {
-                    switch (value)
-                    {
-                        case string:
-                            await Session.SetStringAsync(key, value.ToString());
-                            break;
+                    case string:
+                        await Session.SetStringAsync(key, value.ToString());
+                        break;
 
-                        default:
-                            await Session.SetObjectAsync(key, value);
-                            break;
-                    }
+                    default:
+                        await Session.SetObjectAsync(key, value);
+                        break;
                 }
             }
         }
 
-        internal void InitializeSession()
+        internal void InitializeSessionHandler()
         {
             Session = new SessionHandler(
                 Factory.GetDataProtectionProvider,
                 Factory.GetCache,
                 Factory.Driver,
                 Factory.GetLoggerFactory);
+        }
+
+        internal Task DisposeSession()
+        {
+            if (Session is null)
+            {
+                InitializeSessionHandler();
+            }
+
+            return Session.Clear();
         }
 
         protected static string GenerateUrlFromMethod(

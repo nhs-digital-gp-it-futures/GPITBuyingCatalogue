@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -11,7 +12,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 {
     public sealed class CatalogueSolutionSelectSolution
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
         private static readonly CallOffId CallOffId = new(90004, 01);
 
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         {
             InitializeTestSession();
 
-            var expectedCatalogueItemName = "E2E With Contact Multiple Prices";
+            const string expectedCatalogueItemName = "E2E With Contact Multiple Prices";
 
             var expectedCatalogueItemId = new CatalogueItemId(99998, "001");
 
@@ -80,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         {
             InitializeTestSession();
 
-            var expectedCatalogueItemName = "E2E With Contact With Single Price";
+            const string expectedCatalogueItemName = "E2E With Contact With Single Price";
 
             var expectedCatalogueItemId = new CatalogueItemId(99998, "002");
 
@@ -101,9 +102,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             cacheModel.AgreedPrice.Should().NotBeNull();
         }
 
+        public Task DisposeAsync()
+        {
+            return DisposeSession();
+        }
+
+        public Task InitializeAsync() => Task.CompletedTask;
+
         private void InitializeTestSession()
         {
-            InitializeSession();
+            InitializeSessionHandler();
         }
     }
 }
