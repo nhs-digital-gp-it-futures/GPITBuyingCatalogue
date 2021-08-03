@@ -310,23 +310,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mapper.Verify(x => x.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel));
         }
 
-        // TODO: fix
-        [Theory(Skip = "Broken")]
+        [Theory]
         [CommonAutoData]
-        public static async Task Post_ContactDetails_ModelValid_CallsSaveOnService(CatalogueItemId id)
+        public static async Task Post_ContactDetails_ModelValid_CallsSaveOnService(
+            CatalogueItemId id,
+            ContactDetailsModel contactDetailsModel,
+            SupplierContactsModel supplierContactsModel,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            [Frozen] Mock<IMapper> mapper,
+            AboutOrganisationController controller)
         {
-            var contactDetailsModel = new Mock<ContactDetailsModel>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mapper = new Mock<IMapper>();
-            var supplierContactsModel = new Mock<SupplierContactsModel>().Object;
             mapper.Setup(x => x.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel))
                 .Returns(supplierContactsModel);
-            var controller = new AboutOrganisationController(
-                mapper.Object, mockService.Object);
 
             await controller.ContactDetails(id, contactDetailsModel);
 
-            mockService.Verify(x => x.SaveSupplierContacts(supplierContactsModel));
+            solutionsServiceMock.Verify(x => x.SaveSupplierContacts(supplierContactsModel));
         }
 
         [Theory]

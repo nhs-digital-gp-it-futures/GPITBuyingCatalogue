@@ -110,27 +110,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Verify(m => m.Map<CatalogueItem, AdditionalInformationModel>(mockCatalogueItem));
         }
 
-        // TODO: fix
-        [Theory(Skip = "Broken")]
+        [Theory]
         [CommonAutoData]
-        public static async Task Get_AdditionalInformation_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
+        public static async Task Get_AdditionalInformation_ValidId_ReturnsExpectedViewWithModel(
+            CatalogueItemId id,
+            CatalogueItem catalogueItem,
+            AdditionalInformationModel additionalInformationModel,
+            [Frozen] Mock<IMapper> mockMapper,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            NativeMobileController controller)
         {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockSolutionsService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            var mockAdditionalInformationModel = new Mock<AdditionalInformationModel>().Object;
-            mockMapper.Setup(m => m.Map<CatalogueItem, AdditionalInformationModel>(mockCatalogueItem))
-                .Returns(mockAdditionalInformationModel);
+            mockMapper.Setup(m => m.Map<CatalogueItem, AdditionalInformationModel>(catalogueItem))
+                .Returns(additionalInformationModel);
             mockSolutionsService.Setup(s => s.GetSolution(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(
-                mockMapper.Object, mockSolutionsService.Object);
+                .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.AdditionalInformation(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockAdditionalInformationModel);
+            actual.Model.Should().Be(additionalInformationModel);
         }
 
         [Fact]

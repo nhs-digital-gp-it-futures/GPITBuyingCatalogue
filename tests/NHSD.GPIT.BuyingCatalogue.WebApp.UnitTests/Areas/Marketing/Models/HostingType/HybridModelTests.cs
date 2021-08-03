@@ -38,8 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Host
             actual.Should().BeNull();
         }
 
-        // TODO: fix
-        [Theory(Skip = "Broken")]
+        [Theory]
         [CommonAutoData]
         public static void Get_RequiresHscnChecked_HybridHostingTypeHasValidRequiresHscn_ReturnsTrue(HybridModel model)
         {
