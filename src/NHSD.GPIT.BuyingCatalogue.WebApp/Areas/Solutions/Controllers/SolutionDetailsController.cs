@@ -167,8 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {id}");
 
-            var viewModel = mapper.Map<CatalogueItem, InteroperabilityModel>(solution);
-            return View(viewModel);
+            return View(new InteroperabilityModel(solution));
         }
 
         [Route("futures/{id}/list-price")]

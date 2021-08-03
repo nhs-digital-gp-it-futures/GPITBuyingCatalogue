@@ -17,44 +17,82 @@
                         and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
                     </p>
 
-                    @for (var index = 0; index < Model.Integrations.Count; index++)
+                    <h3>IM1 integrations</h3>
+
+                    @if (Model.IM1Integrations.Any())
                     {
-                        var integration = Model.Integrations[index];
-                        <h3>
-                            @integration.Title()
-                        </h3>
-
-                        @for (var modelIndex = 0; modelIndex < integration.Tables.Length; modelIndex++)
+                        @foreach (var qualifier in Model.IM1IntegrationQualifiers)
                         {
-                            var tableViewModel = integration.Tables[modelIndex];
-
-                            <nhs-table label-text="@integration.Name @tableViewModel.Name">
-                                @foreach (var heading in tableViewModel.Headings)
-                                {
-                                    <nhs-table-column>@heading</nhs-table-column>
-                                }
-
-                                @foreach (var rowModel in tableViewModel.Rows)
+                            <nhs-table label-text=@($"IM1 {qualifier}")>
+                                <nhs-table-column>
+                                    Provider or consumer
+                                </nhs-table-column>
+                                <nhs-table-column>
+                                    System integrating with
+                                </nhs-table-column>
+                                <nhs-table-column>
+                                    Description
+                                </nhs-table-column>
+                                <nhs-table-column></nhs-table-column>
+                                @foreach (var integration in Model.IM1Integrations.Where(i => i.Qualifier == qualifier))
                                 {
                                     <nhs-table-row-container>
-                                        @foreach (var cell in rowModel)
-                                        {
-                                            <nhs-table-cell>@cell</nhs-table-cell>
-                                        }
+                                        <nhs-table-cell>
+                                            @(integration.IsConsumer ? "Consumer" : "Provider")
+                                        </nhs-table-cell>
+                                        <nhs-table-cell>
+                                            @integration.IntegratesWith
+                                        </nhs-table-cell>
+                                        <nhs-table-cell>
+                                            <p class="nhsuk-u-margin-0">
+                                                @integration.Description
+                                            </p>
+                                        </nhs-table-cell>
                                     </nhs-table-row-container>
                                 }
                             </nhs-table>
 
-                            <partial name="_BackToTop" />
-
-                            @if (modelIndex != integration.Tables.Length - 1)
-                            {
-                                <br />
-                                <br />
-                            }
+                            <div class="nhsuk-u-margin-bottom-5">
+                                <partial name="Partials/_BackToTop" />
+                            </div>
                         }
-                        <hr style="border-width: 4px;">
                     }
+
+                    <h3>GP Connect integrations</h3>
+
+                    @if (Model.GpConnectIntegrations.Any())
+                    {
+                        @foreach (var qualifier in Model.GpConnectIntegrationQualifiers)
+                        {
+                            <nhs-table label-text=@($"GP Connect {qualifier}")>
+                                <nhs-table-column>
+                                    Provider or consumer
+                                </nhs-table-column>
+                                <nhs-table-column>
+                                    Additional information
+                                </nhs-table-column>
+                                <nhs-table-column></nhs-table-column>
+                                @foreach (var integration in Model.GpConnectIntegrations.Where(i => i.Qualifier == qualifier))
+                                {
+                                    <nhs-table-row-container>
+                                        <nhs-table-cell>
+                                            @(integration.IsConsumer ? "Consumer" : "Provider")
+                                        </nhs-table-cell>
+                                        <nhs-table-cell>
+                                            <p class="nhsuk-u-margin-0">
+                                                @integration.AdditionalInformation
+                                            </p>
+                                        </nhs-table-cell>
+                                    </nhs-table-row-container>
+                                }
+                            </nhs-table>
+
+                            <div class="nhsuk-u-margin-bottom-5">
+                                <partial name="Partials/_BackToTop" />
+                            </div>
+                        }
+                    }
+              
                     <h2>Supplier asserted integrations</h2>
                     <p>Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
                     <p>

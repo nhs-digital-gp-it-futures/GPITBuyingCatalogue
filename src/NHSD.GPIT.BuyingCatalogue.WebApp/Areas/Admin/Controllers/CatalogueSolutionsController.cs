@@ -127,11 +127,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new InteroperabilityModel(solution));
         }
 
-// TODO
-//        [HttpPost("manage/{solutionId}/Interoperability")]
-//        public async Task<IActionResult> Interoperability(CatalogueItemId solutionId, DescriptionModel model)
-//        {
-//        }
+        [HttpPost("manage/{solutionId}/Interoperability")]
+        public async Task<IActionResult> Interoperability(CatalogueItemId solutionId, InteroperabilityModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var solution = await solutionsService.GetSolution(solutionId);
+                model.SetSolution(solution);
+                return View(model);
+            }
+
+            await solutionsService.SaveIntegrationLink(solutionId, model.Link);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
 
         [HttpGet("manage/{solutionId}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId)

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -19,9 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void TextDescriptionsProvided_MultipleIntegrations_ReturnsPluralText(
+            Integration integration,
             InteroperabilityModel model)
         {
-            model.Integrations.Count.Should().BeGreaterThan(1);
+            model.IM1Integrations = new Integration[] { integration };
 
             var actual = model.TextDescriptionsProvided();
 
@@ -34,7 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void TextDescriptionsProvided_NoIntegration_ReturnsDefaultText(
             InteroperabilityModel model)
         {
-            model.Integrations = new List<IntegrationModel>();
+            model.IM1Integrations = new Integration[0];
+            model.GpConnectIntegrations = new Integration[0];
 
             var actual = model.TextDescriptionsProvided();
 
@@ -46,7 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void TextDescriptionsProvided_NullIntegration_ReturnsDefaultText(
             InteroperabilityModel model)
         {
-            model.Integrations = null;
+            model.IM1Integrations = null;
+            model.GpConnectIntegrations = null;
 
             var actual = model.TextDescriptionsProvided();
 

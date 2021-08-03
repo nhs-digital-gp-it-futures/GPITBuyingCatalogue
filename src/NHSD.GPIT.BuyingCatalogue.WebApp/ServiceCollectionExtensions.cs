@@ -67,9 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     CatalogueItemToSolutionStatusModelConverter>();
 
             services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
-            services
-                .AddTransient<IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>,
-                    IntegrationModelsResolver>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
