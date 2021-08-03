@@ -1,0 +1,145 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModel;
+@{
+    ViewData["Title"] = "Interoperability";
+}
+
+<div class="nhsuk-width-container">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@ViewData["Title"]"
+                            caption="Describe any systems your Catalogue Solution integrates with to exchange data." />
+
+            <h2>NHS assured integrations (optional)</h2>
+
+            <nhs-details label-text="What are NHS assured integrations?">
+                <p>
+                    IM1 and GP Connect offer integrations specified and assured by the NHS. They allow clinical information and data to be shared quickly and efficiently between IT systems.
+                </p>
+                <p>
+                    If your Catalogue Solution uses any of these integrations, you must provide information on them using the add integrations links.
+                </p>
+                <p>
+                    You can find more information about <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration">IM1 integrations</a> and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
+                </p>
+            </nhs-details>
+
+            <h3>IM1 integrations</h3>
+            <vc:nhs-action-link url="#" text="Add an IM1 integration" />
+            <p>
+                Use the links to add information on each of the IM1 integrations your Catalogue Solution works with.
+            </p>
+
+            @if (Model.IM1Integrations.Any())
+            {
+                @foreach (var qualifier in Model.IM1IntegrationQualifiers)
+                {
+                    <nhs-table label-text=@($"IM1 {qualifier}")>
+                        <nhs-table-column>
+                            Provider or consumer
+                        </nhs-table-column>
+                        <nhs-table-column>
+                            System integrating with
+                        </nhs-table-column>
+                        <nhs-table-column>
+                            Description
+                        </nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+                        @foreach (var integration in Model.IM1Integrations.Where(i => i.Qualifier == qualifier))
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    @(integration.IsConsumer ? "Consumer" : "Provider")
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @integration.IntegratesWith
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <p class="nhsuk-u-margin-0">
+                                        @integration.Description
+                                    </p>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a href="#">
+                                        Edit
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+
+                    <div class="nhsuk-u-margin-bottom-5">
+                        <partial name="Partials/_BackToTop" />
+                    </div>
+                }
+            }
+
+            <h3>GP Connect integrations</h3>
+
+            <vc:nhs-action-link url="#" text="Add a GP Connect integration" />
+
+            <p>
+                Use the links to add information on each of the GP Connect integrations your Catalogue Solution works with.
+            </p>
+
+            @if (Model.GpConnectIntegrations.Any())
+            {
+                @foreach (var qualifier in Model.GpConnectIntegrationQualifiers)
+                {
+                    <nhs-table label-text=@($"GP Connect {qualifier}")>
+                        <nhs-table-column>
+                            Provider or consumer
+                        </nhs-table-column>
+                        <nhs-table-column>
+                            Additional information
+                        </nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+                        @foreach (var integration in Model.GpConnectIntegrations.Where(i => i.Qualifier == qualifier))
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    @(integration.IsConsumer ? "Consumer" : "Provider")
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <p class="nhsuk-u-margin-0">
+                                        @integration.AdditionalInformation
+                                    </p>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a href="#">
+                                        Edit
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+
+                    <div class="nhsuk-u-margin-bottom-5">
+                        <partial name="Partials/_BackToTop" />
+                    </div>
+                }
+            }
+
+            <h2>Supplier asserted integrations</h2>
+
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <input type="hidden" asp-for="@Model.BackLinkText" />
+                <nhs-input asp-for="Link"
+                           label-text="Supplier asserted integrations (optional)"
+                           label-hint="Provide a URL to a page that gives information about your own integrations that fully or partially integrate with other systems. "
+                           character-count="true" />
+                <nhs-inset-text>
+                    <p>
+                        If you are providing a URL, it must link to a page detailing all the supplier asserted integrations for your Catalogue Solution. It’s your responsibility to keep this page up-to-date.
+                    </p>
+                </nhs-inset-text>
+                <div class="nhsuk-u-margin-bottom-5">
+                    <partial name="Partials/_BackToTop" />
+                </div>
+                <nhs-submit-button text="Save and continue" />
+            </form>
+        </div>
+    </div>
+</div>

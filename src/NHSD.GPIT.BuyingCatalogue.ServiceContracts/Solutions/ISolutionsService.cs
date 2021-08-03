@@ -35,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link);
 
+        Task SaveInteroperabilityLink(CatalogueItemId solutionId, string link);
+
         Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features);
 
         Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink);

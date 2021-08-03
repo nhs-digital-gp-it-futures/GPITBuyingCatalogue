@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -24,6 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
                 return new Hosting();
 
             return JsonConvert.DeserializeObject<Hosting>(solution.Hosting);
+        }
+
+        public static List<Integration> GetIntegrations(this Solution solution)
+        {
+            if (string.IsNullOrWhiteSpace(solution.Integrations))
+                return new List<Integration>();
+
+            return JsonConvert.DeserializeObject<List<Integration>>(solution.Integrations);
         }
     }
 }

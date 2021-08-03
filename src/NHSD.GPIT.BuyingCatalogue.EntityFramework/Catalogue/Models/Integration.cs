@@ -1,11 +1,21 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿using System;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public class Integration
     {
-        public string Link { get; set; }
+        public Guid Id { get; set; }
 
-        public string Name { get; set; }
+        public string IntegrationType { get; set; }
 
-        public IntegrationSubType[] SubTypes { get; set; }
+        public string Qualifier { get; set; }
+
+        public bool IsConsumer { get; set; }
+
+        public string IntegratesWith { get; set; }
+
+        public string Description { get; set; }
+
+        public string AdditionalInformation { get; set; }
     }
 }

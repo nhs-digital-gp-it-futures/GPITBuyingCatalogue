@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoFixture;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -43,8 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                                         .Create())
                                 .Create()))
                     .With(s => s.Features, JsonConvert.SerializeObject(fixture.Create<string[]>()))
-                    .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>()))
-                    .With(s => s.Integrations, JsonConvert.SerializeObject(GetIntegrations(fixture))));
+                    .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>())));
         }
 
         private static HashSet<string> GetClientApplicationTypes()
@@ -57,31 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 result.Add("NATive-mobile");
             if (DateTime.Now.Ticks % 2 == 0)
                 result.Add("native-DESKtop");
-
-            return result;
-        }
-
-        private List<Integration> GetIntegrations(IFixture fixture)
-        {
-            var result = fixture.Build<Integration>()
-                .With(i => i.SubTypes, fixture.CreateMany<IntegrationSubType>().ToArray)
-                .CreateMany()
-                .ToList();
-
-            foreach (var integration in result)
-            {
-                for (int i = 0; i < integration.SubTypes.Length; i++)
-                {
-                    if (i % 2 == 0)
-                    {
-                        integration.SubTypes[i].DetailsDictionary.Clear();
-                    }
-                    else
-                    {
-                        integration.SubTypes[i].DetailsSystemDictionary.Clear();
-                    }
-                }
-            }
 
             return result;
         }

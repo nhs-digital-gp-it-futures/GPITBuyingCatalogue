@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using FluentValidation;
@@ -21,8 +20,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
@@ -60,7 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         [InlineData(typeof(IMailTransport), typeof(SmtpClient))]
         [InlineData(typeof(IMemberValueResolver<object, object, string, string>), typeof(ConfigSettingResolver))]
         [InlineData(typeof(IMemberValueResolver<object, object, string, bool?>), typeof(StringToNullableBoolResolver))]
-        [InlineData(typeof(IMemberValueResolver<CatalogueItem, InteroperabilityModel, string, IList<IntegrationModel>>), typeof(IntegrationModelsResolver))]
         [InlineData(typeof(IPasswordResetCallback), typeof(PasswordResetCallback))]
         [InlineData(typeof(IPasswordService), typeof(PasswordService))]
         [InlineData(typeof(IPasswordValidator<AspNetUser>), typeof(PasswordValidator))]
