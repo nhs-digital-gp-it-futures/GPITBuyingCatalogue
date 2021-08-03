@@ -7,5 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
         internal static By GoBackLink => By.ClassName("nhsuk-back-link__link");
 
         internal static By SaveButton => By.Id("Submit");
+
+        internal static By ActionLink => By.ClassName("nhsuk-action-link__link");
     }
 }

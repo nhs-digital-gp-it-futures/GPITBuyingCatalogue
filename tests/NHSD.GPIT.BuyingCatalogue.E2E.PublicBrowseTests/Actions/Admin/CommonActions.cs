@@ -19,5 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
             Driver.FindElement(Objects.Admin.CommonObjects.GoBackLink).Click();
         }
+
+        internal void ClickAddHostingTypeLink()
+        {
+            Driver.FindElement(Objects.Admin.CommonObjects.ActionLink).Click();
+        }
     }
 }
