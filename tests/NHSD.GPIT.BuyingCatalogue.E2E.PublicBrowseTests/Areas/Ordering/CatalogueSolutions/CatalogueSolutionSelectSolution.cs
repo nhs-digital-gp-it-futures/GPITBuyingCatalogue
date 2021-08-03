@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 {
     public sealed class CatalogueSolutionSelectSolution
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
         private static readonly CallOffId CallOffId = new(90004, 01);
 
@@ -51,15 +53,65 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectSolution_SelectSolution_ExpectedResult()
+        public void CatalogueSolutionsSelectSolution_SelectSolution_MultiplePrices_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText("E2E With Contact Multiple Prices");
+            InitializeTestSession();
+
+            const string expectedCatalogueItemName = "E2E With Contact Multiple Prices";
+
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "001");
+
+            CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.SelectSolutionPrice)).Should().BeTrue();
+
+            CreateOrderItemModel cacheModel = Session.GetOrderStateFromSession(CallOffId.ToString());
+
+            cacheModel.CallOffId.Should().Be(CallOffId);
+            cacheModel.CatalogueItemId.Should().Be(expectedCatalogueItemId);
+            cacheModel.CatalogueItemName.Should().BeEquivalentTo(expectedCatalogueItemName);
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectSolution_SelectSolution_SingePrice_ExpectedResult()
+        {
+            InitializeTestSession();
+
+            const string expectedCatalogueItemName = "E2E With Contact With Single Price";
+
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "002");
+
+            CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionRecipientsController),
+                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients)).Should().BeTrue();
+
+            CreateOrderItemModel cacheModel = Session.GetOrderStateFromSession(CallOffId.ToString());
+
+            cacheModel.CallOffId.Should().Be(CallOffId);
+            cacheModel.CatalogueItemId.Should().Be(expectedCatalogueItemId);
+            cacheModel.CatalogueItemName.Should().BeEquivalentTo(expectedCatalogueItemName);
+            cacheModel.SkipPriceSelection.Should().BeTrue();
+            cacheModel.AgreedPrice.Should().NotBeNull();
+        }
+
+        public Task DisposeAsync()
+        {
+            return DisposeSession();
+        }
+
+        public Task InitializeAsync() => Task.CompletedTask;
+
+        private void InitializeTestSession()
+        {
+            InitializeSessionHandler();
         }
     }
 }

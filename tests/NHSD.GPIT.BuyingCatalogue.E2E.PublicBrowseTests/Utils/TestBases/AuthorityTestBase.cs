@@ -2,7 +2,9 @@
 {
     public abstract class AuthorityTestBase : TestBase
     {
-        protected AuthorityTestBase(LocalWebApplicationFactory factory, string urlArea = "")
+        protected AuthorityTestBase(
+            LocalWebApplicationFactory factory,
+            string urlArea = "")
             : base(factory, urlArea)
         {
             AuthorityLogin();
