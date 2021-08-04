@@ -46,6 +46,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             return Driver.FindElements(targetField)[index].FindElement(By.TagName("label")).Text;
         }
 
+        internal void ClickRadioButtonWithValue(string value)
+        {
+            Driver.FindElements(CommonSelectors.RadioButtonItems)
+                .Select(rb => rb.FindElement(By.TagName("input")))
+                .Single(rbi => rbi.GetAttribute("value") == value)
+                .Click();
+        }
+
         internal void SelectDropdownItem(By targetField, int index = 0) =>
             new SelectElement(Driver.FindElement(targetField)).SelectByIndex(index);
 
