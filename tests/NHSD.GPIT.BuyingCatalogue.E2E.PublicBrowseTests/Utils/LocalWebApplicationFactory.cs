@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -118,7 +119,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        internal IDistributedCache GetCache => host.Services.GetRequiredService<IDistributedCache>();
+        internal IDistributedCache GetDistributedCache => host.Services.GetRequiredService<IDistributedCache>();
+
+        internal IMemoryCache GetMemoryCache => host.Services.GetRequiredService<IMemoryCache>();
 
         internal IDataProtectionProvider GetDataProtectionProvider => host.Services.GetRequiredService<IDataProtectionProvider>();
 
