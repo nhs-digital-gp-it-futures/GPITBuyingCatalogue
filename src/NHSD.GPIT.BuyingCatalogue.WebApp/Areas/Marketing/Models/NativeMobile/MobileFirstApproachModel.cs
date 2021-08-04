@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 {
-    public class MobileFirstApproachModel : MarketingBaseModel
+    public sealed class MobileFirstApproachModel : MarketingBaseModel
     {
         public MobileFirstApproachModel()
             : base(null)
@@ -26,9 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
 
         public string MobileFirstApproach { get; set; }
 
-        public virtual bool? MobileFirstDesign() =>
+        public bool? MobileFirstDesign() =>
             string.IsNullOrWhiteSpace(MobileFirstApproach)
-                ? (bool?)null
+                ? null
                 : MobileFirstApproach.Equals("Yes", StringComparison.InvariantCultureIgnoreCase);
     }
 }

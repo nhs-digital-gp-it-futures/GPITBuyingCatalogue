@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
@@ -17,7 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 {
     public static class CatalogueItemToSolutionStatusModelConverterTests
     {
-        private const string KeyIncomplete = "INCOMPLETE";
+        private const string Complete = "COMPLETE";
+        private const string Incomplete = "INCOMPLETE";
 
         [Theory]
         [CommonAutoData]
@@ -297,25 +299,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
         }
 
         [Theory]
-        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void Convert_CatalogueItemToSolutionStatusModel_SetsNativeMobileStatus(
-            bool complete,
-            string expected)
+        [CommonAutoData]
+        public static void Convert_CatalogueItemToSolutionStatusModel_NativeMobileModelComplete_SetsNativeMobileStatus(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IMapper> mapperMock,
+            NativeMobileModel model,
+            CatalogueItemToSolutionStatusModelConverter converter)
         {
-            var mockNativeMobileModel = new Mock<NativeMobileModel>();
-            mockNativeMobileModel.Setup(a => a.IsComplete)
-                .Returns(complete);
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockMapper = GetMockMapper();
-            mockMapper.Setup(m => m.Map<CatalogueItem, NativeMobileModel>(mockCatalogueItem))
-                .Returns(mockNativeMobileModel.Object);
-            var converter = new CatalogueItemToSolutionStatusModelConverter(mockMapper.Object);
+            mapperMock.Setup(m => m.Map<CatalogueItem, NativeMobileModel>(catalogueItem)).Returns(model);
 
-            var actual = converter.Convert(mockCatalogueItem, default, default);
+            var actual = converter.Convert(catalogueItem, default, default);
 
-            mockMapper.Verify(m => m.Map<CatalogueItem, NativeMobileModel>(mockCatalogueItem));
-            mockNativeMobileModel.VerifyGet(a => a.IsComplete);
-            actual.NativeMobileStatus.Should().Be(expected);
+            mapperMock.Verify(m => m.Map<CatalogueItem, NativeMobileModel>(catalogueItem));
+            actual.NativeMobileStatus.Should().Be(Complete);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Convert_CatalogueItemToSolutionStatusModel_NativeMobileModelIncomplete_SetsNativeMobileStatus(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] ClientApplication clientApplication,
+            NativeMobileModel model,
+            CatalogueItemToSolutionStatusModelConverter converter)
+        {
+            clientApplication.NativeMobileFirstDesign = null;
+            mapperMock.Setup(m => m.Map<CatalogueItem, NativeMobileModel>(catalogueItem)).Returns(model);
+
+            var actual = converter.Convert(catalogueItem, default, default);
+
+            mapperMock.Verify(m => m.Map<CatalogueItem, NativeMobileModel>(catalogueItem));
+            actual.NativeMobileStatus.Should().Be(Incomplete);
         }
 
         [Theory]
@@ -448,8 +462,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
         {
             public static IEnumerable<object[]> TestData()
             {
-                yield return new object[] { null, KeyIncomplete };
-                yield return new object[] { false, KeyIncomplete };
+                yield return new object[] { null, Incomplete };
+                yield return new object[] { false, Incomplete };
                 yield return new object[] { true, "COMPLETE" };
             }
         }

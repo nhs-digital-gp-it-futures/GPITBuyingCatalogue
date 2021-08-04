@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework
             where T : new()
         {
             var copy = new T();
-            foreach (var item in input.GetType().GetProperties())
+            foreach (var item in input.GetType().GetProperties().Where(p => p.CanWrite))
             {
                 copy.GetType().GetProperty(item.Name).SetValue(
                     copy,

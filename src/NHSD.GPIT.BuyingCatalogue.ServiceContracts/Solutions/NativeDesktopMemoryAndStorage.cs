@@ -1,9 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    [ExcludeFromCodeCoverage]
-    public class NativeDesktopMemoryAndStorage
+    public sealed class NativeDesktopMemoryAndStorage
     {
         public string MinimumCpu { get; set; }
 
@@ -13,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string StorageRequirementsDescription { get; set; }
 
-        public virtual bool IsValid() =>
+        public bool IsValid() =>
             !string.IsNullOrWhiteSpace(MinimumMemoryRequirement)
             && !string.IsNullOrWhiteSpace(StorageRequirementsDescription)
             && !string.IsNullOrWhiteSpace(MinimumCpu);
