@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             Session = new SessionHandler(
                 Factory.GetDataProtectionProvider,
-                Factory.GetCache,
+                Factory.GetDistributedCache,
                 Factory.Driver,
                 Factory.GetLoggerFactory);
         }

@@ -645,15 +645,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
+                            CataloguePriceId = 1,
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.Patient,
                             CataloguePriceType = CataloguePriceType.Flat,
-                            PricingUnit = new()
+                            PricingUnit = new PricingUnit
                             {
                                 PricingUnitId = Guid.NewGuid(),
-                                Name = "Test Pricing",
+                                Name = "Test Pricing Patient",
                                 TierName = "Test Tier",
-                                Description = "Per Test",
+                                Description = "per test patient",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
@@ -662,15 +663,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         },
                         new()
                         {
+                            CataloguePriceId = 2,
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
                             ProvisioningType = ProvisioningType.OnDemand,
                             CataloguePriceType = CataloguePriceType.Flat,
-                            PricingUnit = new()
+                            PricingUnit = new PricingUnit
                             {
                                 PricingUnitId = Guid.NewGuid(),
-                                Name = "Test Pricing",
+                                Name = "Test Pricing On Demand",
                                 TierName = "Test Tier",
-                                Description = "Per Test",
+                                Description = "per test on demand",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
@@ -679,15 +681,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         },
                         new()
                         {
+                            CataloguePriceId = 3,
                             CatalogueItemId = new CatalogueItemId(99998, "001"),
-                            ProvisioningType = ProvisioningType.OnDemand,
+                            ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
-                            PricingUnit = new()
+                            PricingUnit = new PricingUnit
                             {
                                 PricingUnitId = Guid.NewGuid(),
-                                Name = "Test Pricing",
+                                Name = "Test Pricing Declarative",
                                 TierName = "Test Tier",
-                                Description = "Per Test",
+                                Description = "per test declarative",
                             },
                             TimeUnit = TimeUnit.PerYear,
                             CurrencyCode = "GBP",
@@ -802,6 +805,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
+                            CataloguePriceId = 4,
                             CatalogueItemId = new CatalogueItemId(99998, "002"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
