@@ -182,17 +182,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             AdditionalInformationModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.AdditionalInformation(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -217,50 +216,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             AdditionalInformationModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.AdditionalInformation(id, model);
 
-            mockClientApplication.VerifySet(c =>
-                c.NativeMobileAdditionalInformation = model.AdditionalInformation);
+            clientApplication.NativeMobileAdditionalInformation.Should().Be(model.AdditionalInformation);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             AdditionalInformationModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.AdditionalInformation(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             AdditionalInformationModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.AdditionalInformation(id, model)).As<RedirectToActionResult>();
 
@@ -400,17 +393,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             ConnectivityModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.Connectivity(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -435,54 +427,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            MobileConnectionDetails details,
+            NativeMobileController controller,
             ConnectivityModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var mockMapper = new Mock<IMapper>();
-            var mockMobileConnectionDetails = new Mock<MobileConnectionDetails>().Object;
-            mockMapper.Setup(m => m.Map<ConnectivityModel, MobileConnectionDetails>(model))
-                .Returns(mockMobileConnectionDetails);
-            var controller = new NativeMobileController(
-                mockMapper.Object, mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
+            mapperMock.Setup(m => m.Map<ConnectivityModel, MobileConnectionDetails>(model)).Returns(details);
 
             await controller.Connectivity(id, model);
 
-            mockMapper.Verify(m => m.Map<ConnectivityModel, MobileConnectionDetails>(model));
-            mockClientApplication.VerifySet(c => c.MobileConnectionDetails = mockMobileConnectionDetails);
+            mapperMock.Verify(m => m.Map<ConnectivityModel, MobileConnectionDetails>(model));
+            clientApplication.MobileConnectionDetails.Should().Be(details);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             ConnectivityModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.Connectivity(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             ConnectivityModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.Connectivity(id, model)).As<RedirectToActionResult>();
 
@@ -624,17 +610,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             HardwareRequirementsModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.HardwareRequirements(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -659,50 +644,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             HardwareRequirementsModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.HardwareRequirements(id, model);
 
-            mockClientApplication.VerifySet(c =>
-                c.NativeMobileHardwareRequirements = model.Description);
+            clientApplication.NativeMobileHardwareRequirements.Should().Be(model.Description);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             HardwareRequirementsModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.HardwareRequirements(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             HardwareRequirementsModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.HardwareRequirements(id, model)).As<RedirectToActionResult>();
 
@@ -842,17 +821,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             MemoryAndStorageModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.MemoryAndStorage(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -877,54 +855,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            MobileMemoryAndStorage storage,
+            NativeMobileController controller,
             MemoryAndStorageModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var mockMapper = new Mock<IMapper>();
-            var mockMobileMemoryAndStorage = new Mock<MobileMemoryAndStorage>().Object;
-            mockMapper.Setup(m => m.Map<MemoryAndStorageModel, MobileMemoryAndStorage>(model))
-                .Returns(mockMobileMemoryAndStorage);
-            var controller = new NativeMobileController(
-                mockMapper.Object, mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
+            mapperMock.Setup(m => m.Map<MemoryAndStorageModel, MobileMemoryAndStorage>(model)).Returns(storage);
 
             await controller.MemoryAndStorage(id, model);
 
-            mockMapper.Verify(m => m.Map<MemoryAndStorageModel, MobileMemoryAndStorage>(model));
-            mockClientApplication.VerifySet(c => c.MobileMemoryAndStorage = mockMobileMemoryAndStorage);
+            mapperMock.Verify(m => m.Map<MemoryAndStorageModel, MobileMemoryAndStorage>(model));
+            clientApplication.MobileMemoryAndStorage.Should().Be(storage);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             MemoryAndStorageModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.MemoryAndStorage(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             MemoryAndStorageModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.MemoryAndStorage(id, model)).As<RedirectToActionResult>();
 
@@ -996,24 +968,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_MobileFirstApproach_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
+        public static async Task Get_MobileFirstApproach_ValidId_ReturnsExpectedViewWithModel(
+            [Frozen] CatalogueItemId id,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            MobileFirstApproachModel model,
+            NativeMobileController controller)
         {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockSolutionsService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            var mockMobileFirstApproachModel = new Mock<MobileFirstApproachModel>().Object;
-            mockMapper.Setup(m => m.Map<CatalogueItem, MobileFirstApproachModel>(mockCatalogueItem))
-                .Returns(mockMobileFirstApproachModel);
-            mockSolutionsService.Setup(s => s.GetSolution(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new NativeMobileController(
-                mockMapper.Object, mockSolutionsService.Object);
+            mapperMock.Setup(m => m.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem)).Returns(model);
+            solutionsServiceMock.Setup(s => s.GetSolution(id)).ReturnsAsync(catalogueItem);
 
             var actual = (await controller.MobileFirstApproach(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockMobileFirstApproachModel);
+            actual.Model.Should().Be(model);
         }
 
         [Fact]
@@ -1096,60 +1066,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(null, null)]
+        [CommonInlineAutoData("", null)]
+        [CommonInlineAutoData("\t", null)]
+        [CommonInlineAutoData("No", false)]
+        [CommonInlineAutoData("Yes", true)]
         public static async Task Post_MobileFirstApproach_ModelValid_MapsClientApplication(
-            CatalogueItemId solutionId,
-            bool? mobileFirstDesign)
+            string mobileFirstApproach,
+            bool? expectedMobileFirstDesign,
+            [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
+            MobileFirstApproachModel model)
         {
-            var mockModel = new Mock<MobileFirstApproachModel>
-            {
-                CallBase = true,
-            };
-            mockModel.Object.SolutionId = solutionId;
-            mockModel.Setup(m => m.MobileFirstDesign())
-                .Returns(mobileFirstDesign);
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(solutionId))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            model.MobileFirstApproach = mobileFirstApproach;
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
-            await controller.MobileFirstApproach(solutionId, mockModel.Object);
+            await controller.MobileFirstApproach(id, model);
 
-            mockModel.Verify(m => m.MobileFirstDesign());
-            mockClientApplication.VerifySet(c => c.NativeMobileFirstDesign = mobileFirstDesign);
+            clientApplication.NativeMobileFirstDesign.Should().Be(expectedMobileFirstDesign);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_MobileFirstApproach_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             MobileFirstApproachModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.MobileFirstApproach(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_MobileFirstApproach_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             MobileFirstApproachModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.MobileFirstApproach(id, model)).As<RedirectToActionResult>();
 
@@ -1322,53 +1286,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_OperatingSystems_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            MobileOperatingSystems mobileOperatingSystems,
+            NativeMobileController controller,
             OperatingSystemsModel model)
         {
-            var mockMobileOperatingSystems = new Mock<MobileOperatingSystems>().Object;
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(m => m.Map<OperatingSystemsModel, MobileOperatingSystems>(model))
-                .Returns(mockMobileOperatingSystems);
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeMobileController(
-                mockMapper.Object, mockService.Object);
+            mapperMock.Setup(m => m.Map<OperatingSystemsModel, MobileOperatingSystems>(model)).Returns(mobileOperatingSystems);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.OperatingSystems(id, model);
 
-            mockClientApplication.VerifySet(c => c.MobileOperatingSystems = mockMobileOperatingSystems);
+            clientApplication.MobileOperatingSystems.Should().BeEquivalentTo(mobileOperatingSystems);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OperatingSystems_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             OperatingSystemsModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.OperatingSystems(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OperatingSystems_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             OperatingSystemsModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.OperatingSystems(id, model)).As<RedirectToActionResult>();
 
@@ -1508,17 +1466,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             ThirdPartyModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.ThirdParty(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -1543,54 +1500,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            MobileThirdParty mobileThirdParty,
+            NativeMobileController controller,
             ThirdPartyModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var mockMapper = new Mock<IMapper>();
-            var mockMobileThirdParty = new Mock<MobileThirdParty>().Object;
-            mockMapper.Setup(m => m.Map<ThirdPartyModel, MobileThirdParty>(model))
-                .Returns(mockMobileThirdParty);
-            var controller = new NativeMobileController(
-                mockMapper.Object, mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
+            mapperMock.Setup(m => m.Map<ThirdPartyModel, MobileThirdParty>(model)).Returns(mobileThirdParty);
 
             await controller.ThirdParty(id, model);
 
-            mockMapper.Verify(m => m.Map<ThirdPartyModel, MobileThirdParty>(model));
-            mockClientApplication.VerifySet(c => c.MobileThirdParty = mockMobileThirdParty);
+            mapperMock.Verify(m => m.Map<ThirdPartyModel, MobileThirdParty>(model));
+            clientApplication.MobileThirdParty.Should().BeEquivalentTo(mobileThirdParty);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             ThirdPartyModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.ThirdParty(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeMobileController controller,
             ThirdPartyModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeMobileController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.ThirdParty(id, model)).As<RedirectToActionResult>();
 

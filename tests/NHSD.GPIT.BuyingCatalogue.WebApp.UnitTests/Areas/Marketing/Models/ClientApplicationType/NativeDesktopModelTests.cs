@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType;
 using Xunit;
 
@@ -9,24 +9,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 {
     public static class NativeDesktopModelTests
     {
-        private const string KeyIncomplete = "INCOMPLETE";
+        private const string Incomplete = "INCOMPLETE";
+        private const string Complete = "COMPLETE";
 
         [Theory]
-        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
+        [CommonInlineAutoData(null, Incomplete)]
+        [CommonInlineAutoData("", Incomplete)]
+        [CommonInlineAutoData("\t", Incomplete)]
+        [CommonInlineAutoData("AdditionalInfo", Complete)]
         public static void AdditionalInformationStatus_Various_NativeDesktopAdditionalInformationComplete_ResultAsExpected(
-            bool? complete,
-            string expected)
+            string nativeDesktopInfo,
+            string expectedStatus,
+            [Frozen] ClientApplication clientApplication,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopAdditionalInformationComplete())
-                .Returns(complete);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            clientApplication.NativeDesktopAdditionalInformation = nativeDesktopInfo;
 
-            nativeDesktopModel.AdditionalInformationStatus.Should().Be(expected);
-            mockClientApplication.Verify(c => c.NativeDesktopAdditionalInformationComplete());
+            model.AdditionalInformationStatus.Should().Be(expectedStatus);
         }
 
         [Fact]
@@ -36,189 +35,141 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
             nativeDesktopModel.ClientApplication.Should().BeNull();
 
             nativeDesktopModel.IsComplete.Should().BeFalse();
-            nativeDesktopModel.ConnectivityStatus.Should().Be(KeyIncomplete);
-            nativeDesktopModel.HardwareRequirementsStatus.Should().Be(KeyIncomplete);
-            nativeDesktopModel.MemoryAndStorageStatus.Should().Be(KeyIncomplete);
-            nativeDesktopModel.SupportedOperatingSystemsStatus.Should().Be(KeyIncomplete);
-            nativeDesktopModel.ThirdPartyStatus.Should().Be(KeyIncomplete);
+            nativeDesktopModel.ConnectivityStatus.Should().Be(Incomplete);
+            nativeDesktopModel.HardwareRequirementsStatus.Should().Be(Incomplete);
+            nativeDesktopModel.MemoryAndStorageStatus.Should().Be(Incomplete);
+            nativeDesktopModel.SupportedOperatingSystemsStatus.Should().Be(Incomplete);
+            nativeDesktopModel.ThirdPartyStatus.Should().Be(Incomplete);
         }
 
         [Theory]
-        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
+        [CommonInlineAutoData(null, Incomplete)]
+        [CommonInlineAutoData("", Incomplete)]
+        [CommonInlineAutoData("\t", Incomplete)]
+        [CommonInlineAutoData("ConnectionSpeed", Complete)]
         public static void ConnectivityStatus_Various_NativeDesktopConnectivityComplete_ResultAsExpected(
-            bool? complete,
-            string expected)
+            string nativeDesktopMinConnectionSpeed,
+            string expectedStatus,
+            [Frozen] ClientApplication clientApplication,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
-                .Returns(complete);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            clientApplication.NativeDesktopMinimumConnectionSpeed = nativeDesktopMinConnectionSpeed;
 
-            nativeDesktopModel.ConnectivityStatus.Should().Be(expected);
-            mockClientApplication.Verify(c => c.NativeDesktopConnectivityComplete());
+            model.ConnectivityStatus.Should().Be(expectedStatus);
         }
 
         [Theory]
-        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
+        [CommonInlineAutoData(null, Incomplete)]
+        [CommonInlineAutoData("", Incomplete)]
+        [CommonInlineAutoData("\t", Incomplete)]
+        [CommonInlineAutoData("HardwareRequirements", Complete)]
         public static void HardwareRequirementsStatus_Various_NativeDesktopHardwareRequirementsComplete_ResultAsExpected(
-            bool? complete,
-            string expected)
+            string nativeDesktopHardwareRequirements,
+            string expectedStatus,
+            [Frozen] ClientApplication clientApplication,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopHardwareRequirementsComplete())
-                .Returns(complete);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            clientApplication.NativeDesktopHardwareRequirements = nativeDesktopHardwareRequirements;
 
-            nativeDesktopModel.HardwareRequirementsStatus.Should().Be(expected);
-            mockClientApplication.Verify(c => c.NativeDesktopHardwareRequirementsComplete());
-        }
-
-        [Fact]
-        public static void IsComplete_AllValuesValid_ReturnsTrue()
-        {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
-                .Returns(true);
-            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
-                .Returns(true);
-            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
-                .Returns(true);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
-
-            nativeDesktopModel.IsComplete.Should().BeTrue();
+            model.HardwareRequirementsStatus.Should().Be(expectedStatus);
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(null)]
-        public static void IsComplete_NativeDesktopSupportedOperatingSystemsComplete_NotTrue_ReturnsFalse(bool? value)
+        [CommonAutoData]
+        public static void IsComplete_AllValuesValid_ReturnsTrue(NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
-                .Returns(value);
-            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
-                .Returns(true);
-            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
-                .Returns(true);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
-
-            nativeDesktopModel.IsComplete.Should().BeFalse();
+            model.IsComplete.Should().BeTrue();
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(null)]
-        public static void IsComplete_NativeDesktopConnectivityComplete_NotTrue_ReturnsFalse(bool? value)
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData("\t")]
+        public static void IsComplete_NativeDesktopSupportedOperatingSystemsComplete_NotTrue_ReturnsFalse(
+            string nativeDesktopOperatingSystemsDescription,
+            [Frozen] ClientApplication clientApplication,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
-                .Returns(true);
-            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
-                .Returns(value);
-            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
-                .Returns(true);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            clientApplication.NativeDesktopOperatingSystemsDescription = nativeDesktopOperatingSystemsDescription;
 
-            nativeDesktopModel.IsComplete.Should().BeFalse();
+            model.IsComplete.Should().BeFalse();
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(null)]
-        public static void IsComplete_NativeDesktopMemoryComplete_NotTrue_ReturnsFalse(bool? value)
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData("\t")]
+        public static void IsComplete_NativeDesktopConnectivityComplete_NotTrue_ReturnsFalse(
+            string nativeDesktopMinConnectionSpeed,
+            [Frozen] ClientApplication clientApplication,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
-                .Returns(true);
-            mockClientApplication.Setup(c => c.NativeDesktopConnectivityComplete())
-                .Returns(true);
-            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
-                .Returns(value);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            clientApplication.NativeDesktopMinimumConnectionSpeed = nativeDesktopMinConnectionSpeed;
 
-            nativeDesktopModel.IsComplete.Should().BeFalse();
+            model.IsComplete.Should().BeFalse();
         }
 
         [Theory]
-        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData("\t")]
+        public static void IsComplete_NativeDesktopMemoryComplete_NotTrue_ReturnsFalse(
+            string minimumMemoryRequirement,
+            [Frozen] NativeDesktopMemoryAndStorage storage,
+            NativeDesktopModel model)
+        {
+            storage.MinimumMemoryRequirement = minimumMemoryRequirement;
+
+            model.IsComplete.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null, Incomplete)]
+        [CommonInlineAutoData("", Incomplete)]
+        [CommonInlineAutoData("\t", Incomplete)]
+        [CommonInlineAutoData("MinCPU", Complete)]
         public static void MemoryAndStorageStatus_Various_NativeDesktopMemoryAndStorageComplete_ResultAsExpected(
-            bool? complete,
-            string expected)
+            string minimumCpu,
+            string expectedStatus,
+            [Frozen] NativeDesktopMemoryAndStorage storage,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopMemoryAndStorageComplete())
-                .Returns(complete);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            storage.MinimumCpu = minimumCpu;
 
-            nativeDesktopModel.MemoryAndStorageStatus.Should().Be(expected);
-            mockClientApplication.Verify(c => c.NativeDesktopMemoryAndStorageComplete());
+            model.MemoryAndStorageStatus.Should().Be(expectedStatus);
         }
 
         [Theory]
-        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
+        [CommonInlineAutoData(null, Incomplete)]
+        [CommonInlineAutoData("", Incomplete)]
+        [CommonInlineAutoData("\t", Incomplete)]
+        [CommonInlineAutoData("Description", Complete)]
         public static void SupportedOperatingSystemsStatus_Various_NativeDesktopSupportedOperatingSystemsComplete_ResultAsExpected(
-            bool? complete,
-            string expected)
+            string osDescription,
+            string expected,
+            [Frozen] ClientApplication clientApplication,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopSupportedOperatingSystemsComplete())
-                .Returns(complete);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            clientApplication.NativeDesktopOperatingSystemsDescription = osDescription;
 
-            nativeDesktopModel.SupportedOperatingSystemsStatus.Should().Be(expected);
-            mockClientApplication.Verify(c => c.NativeDesktopSupportedOperatingSystemsComplete());
+            model.SupportedOperatingSystemsStatus.Should().Be(expected);
         }
 
         [Theory]
-        [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
+        [CommonInlineAutoData(null, Incomplete)]
+        [CommonInlineAutoData("", Incomplete)]
+        [CommonInlineAutoData("\t", Incomplete)]
+        [CommonInlineAutoData("Description", Complete)]
         public static void ThirdPartyStatus_Various_NativeDesktopThirdPartyComplete_ResultAsExpected(
-            bool? complete,
-            string expected)
+            string thirdPartyCapabilitiesAndComponents,
+            string expected,
+            [Frozen] NativeDesktopThirdParty thirdParty,
+            NativeDesktopModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            mockClientApplication.Setup(c => c.NativeDesktopThirdPartyComplete())
-                .Returns(complete);
-            var nativeDesktopModel = new NativeDesktopModel
-            {
-                ClientApplication = mockClientApplication.Object,
-            };
+            thirdParty.DeviceCapabilities = thirdPartyCapabilitiesAndComponents;
+            thirdParty.ThirdPartyComponents = thirdPartyCapabilitiesAndComponents;
 
-            nativeDesktopModel.ThirdPartyStatus.Should().Be(expected);
-            mockClientApplication.Verify(c => c.NativeDesktopThirdPartyComplete());
-        }
-
-        private static class ResultSetData
-        {
-            public static IEnumerable<object[]> TestData()
-            {
-                yield return new object[] { null, KeyIncomplete };
-                yield return new object[] { false, KeyIncomplete };
-                yield return new object[] { true, "COMPLETE" };
-            }
+            model.ThirdPartyStatus.Should().Be(expected);
         }
     }
 }

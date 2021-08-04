@@ -27,5 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public FeatureCompletionStatus StatusRoadmap() => new RoadmapModel().FromCatalogueItem(Solution).Status();
 
         public FeatureCompletionStatus StatusHostingType() => new HostingTypeSectionModel(Solution).StatusHostingType();
+
+        public FeatureCompletionStatus StatusClientApplicationType() => new ClientApplicationTypeSectionModel(Solution).StatusClientApplicationType();
     }
 }

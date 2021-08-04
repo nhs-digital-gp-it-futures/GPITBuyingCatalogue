@@ -182,17 +182,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             AdditionalInformationModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.AdditionalInformation(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -217,50 +216,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             AdditionalInformationModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.AdditionalInformation(id, model);
 
-            mockClientApplication.VerifySet(c =>
-                c.NativeDesktopAdditionalInformation = model.AdditionalInformation);
+            clientApplication.NativeDesktopAdditionalInformation.Should().Be(model.AdditionalInformation);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             AdditionalInformationModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.AdditionalInformation(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_AdditionalInformation_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             AdditionalInformationModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.AdditionalInformation(id, model)).As<RedirectToActionResult>();
 
@@ -400,31 +393,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             ConnectivityModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.Connectivity(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Connectivity_NullClientApplicationFromService_ReturnsBadRequestResult(
             [Frozen] CatalogueItemId id,
+            NativeDesktopController controller,
             ConnectivityModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
-
             var actual = (await controller.Connectivity(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
@@ -435,50 +422,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             ConnectivityModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.Connectivity(id, model);
 
-            mockClientApplication.VerifySet(c =>
-                c.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed);
+            clientApplication.NativeDesktopMinimumConnectionSpeed.Should().Be(model.SelectedConnectionSpeed);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             ConnectivityModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.Connectivity(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Connectivity_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             ConnectivityModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.Connectivity(id, model)).As<RedirectToActionResult>();
 
@@ -618,17 +599,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             HardwareRequirementsModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.HardwareRequirements(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -653,50 +633,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             HardwareRequirementsModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.HardwareRequirements(id, model);
 
-            mockClientApplication.VerifySet(c =>
-                c.NativeDesktopHardwareRequirements = model.Description);
+            clientApplication.NativeDesktopHardwareRequirements.Should().Be(model.Description);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             HardwareRequirementsModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.HardwareRequirements(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_HardwareRequirements_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             HardwareRequirementsModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.HardwareRequirements(id, model)).As<RedirectToActionResult>();
 
@@ -836,31 +810,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             MemoryAndStorageModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.MemoryAndStorage(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_NullClientApplicationFromService_ReturnsBadRequestResult(
             [Frozen] CatalogueItemId id,
+            NativeDesktopController controller,
             MemoryAndStorageModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(default(ClientApplication));
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
-
             var actual = (await controller.MemoryAndStorage(id, model)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
@@ -871,54 +839,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopMemoryAndStorage storage,
+            NativeDesktopController controller,
             MemoryAndStorageModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var mockMapper = new Mock<IMapper>();
-            var mockNativeDesktopMemoryAndStorage = new Mock<NativeDesktopMemoryAndStorage>().Object;
-            mockMapper.Setup(m => m.Map<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>(model))
-                .Returns(mockNativeDesktopMemoryAndStorage);
-            var controller = new NativeDesktopController(
-                mockMapper.Object, mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
+            mapperMock.Setup(m => m.Map<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>(model)).Returns(storage);
 
             await controller.MemoryAndStorage(id, model);
 
-            mockMapper.Verify(m => m.Map<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>(model));
-            mockClientApplication.VerifySet(c => c.NativeDesktopMemoryAndStorage = mockNativeDesktopMemoryAndStorage);
+            mapperMock.Verify(m => m.Map<MemoryAndStorageModel, NativeDesktopMemoryAndStorage>(model));
+            clientApplication.NativeDesktopMemoryAndStorage.Should().Be(storage);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             MemoryAndStorageModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.MemoryAndStorage(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_MemoryAndStorage_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             MemoryAndStorageModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.MemoryAndStorage(id, model)).As<RedirectToActionResult>();
 
@@ -1090,50 +1052,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_OperatingSystems_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             OperatingSystemsModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.OperatingSystems(id, model);
 
-            mockClientApplication.VerifySet(c =>
-                c.NativeDesktopOperatingSystemsDescription = model.OperatingSystemsDescription);
+            clientApplication.NativeDesktopOperatingSystemsDescription.Should().Be(model.OperatingSystemsDescription);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OperatingSystems_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             OperatingSystemsModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.OperatingSystems(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OperatingSystems_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             OperatingSystemsModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.OperatingSystems(id, model)).As<RedirectToActionResult>();
 
@@ -1273,17 +1229,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_GetsClientApplicationFromService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             ThirdPartyModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.ThirdParty(id, model);
 
-            mockService.Verify(s => s.GetClientApplication(id));
+            solutionsServiceMock.Verify(s => s.GetClientApplication(id));
         }
 
         [Theory]
@@ -1308,54 +1263,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_MapsClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopThirdParty thirdParty,
+            NativeDesktopController controller,
             ThirdPartyModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>();
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication.Object);
-            var mockMapper = new Mock<IMapper>();
-            var mockNativeDesktopThirdParty = new Mock<NativeDesktopThirdParty>().Object;
-            mockMapper.Setup(m => m.Map<ThirdPartyModel, NativeDesktopThirdParty>(model))
-                .Returns(mockNativeDesktopThirdParty);
-            var controller = new NativeDesktopController(
-                mockMapper.Object, mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
+            mapperMock.Setup(m => m.Map<ThirdPartyModel, NativeDesktopThirdParty>(model)).Returns(thirdParty);
 
             await controller.ThirdParty(id, model);
 
-            mockMapper.Verify(m => m.Map<ThirdPartyModel, NativeDesktopThirdParty>(model));
-            mockClientApplication.VerifySet(c => c.NativeDesktopThirdParty = mockNativeDesktopThirdParty);
+            mapperMock.Verify(m => m.Map<ThirdPartyModel, NativeDesktopThirdParty>(model));
+            clientApplication.NativeDesktopThirdParty.Should().Be(thirdParty);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_CallsSaveClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             ThirdPartyModel model)
         {
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(mockClientApplication);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.ThirdParty(id, model);
 
-            mockService.Verify(s => s.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_ThirdParty_ModelValid_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            NativeDesktopController controller,
             ThirdPartyModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(s => s.GetClientApplication(id))
-                .ReturnsAsync(new Mock<ClientApplication>().Object);
-            var controller = new NativeDesktopController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.ThirdParty(id, model)).As<RedirectToActionResult>();
 

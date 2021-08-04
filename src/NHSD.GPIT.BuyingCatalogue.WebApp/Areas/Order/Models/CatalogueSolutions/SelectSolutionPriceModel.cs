@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -23,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public List<PriceModel> Prices { get; set; }
 
+        [Required(ErrorMessage = "Select a price")]
         public int? SelectedPrice { get; set; }
 
         public void SetPrices(List<CataloguePrice> prices)
