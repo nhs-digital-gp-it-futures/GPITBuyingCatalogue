@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    [ExcludeFromCodeCoverage]
-    public class ClientApplication
+    public sealed class ClientApplication
     {
         public HashSet<string> ClientApplicationTypes { get; set; } = new();
 
@@ -13,95 +12,109 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public bool? MobileResponsive { get; set; }
 
-        public virtual Plugins Plugins { get; set; }
+        public Plugins Plugins { get; set; }
 
-        public virtual string HardwareRequirements { get; set; }
+        public string HardwareRequirements { get; set; }
 
-        public virtual string NativeMobileHardwareRequirements { get; set; }
+        public string NativeMobileHardwareRequirements { get; set; }
 
-        public virtual string NativeDesktopHardwareRequirements { get; set; }
+        public string NativeDesktopHardwareRequirements { get; set; }
 
-        public virtual string AdditionalInformation { get; set; }
+        public string AdditionalInformation { get; set; }
 
         public string MinimumConnectionSpeed { get; set; }
 
         public string MinimumDesktopResolution { get; set; }
 
-        public virtual bool? MobileFirstDesign { get; set; }
+        public bool? MobileFirstDesign { get; set; }
 
-        public virtual bool? NativeMobileFirstDesign { get; set; }
+        public bool? NativeMobileFirstDesign { get; set; }
 
-        public virtual MobileOperatingSystems MobileOperatingSystems { get; set; }
+        public MobileOperatingSystems MobileOperatingSystems { get; set; }
 
-        public virtual MobileConnectionDetails MobileConnectionDetails { get; set; }
+        public MobileConnectionDetails MobileConnectionDetails { get; set; }
 
-        public virtual MobileMemoryAndStorage MobileMemoryAndStorage { get; set; }
+        public MobileMemoryAndStorage MobileMemoryAndStorage { get; set; }
 
-        public virtual MobileThirdParty MobileThirdParty { get; set; } = new();
+        public MobileThirdParty MobileThirdParty { get; set; }
 
-        public virtual string NativeMobileAdditionalInformation { get; set; }
+        public string NativeMobileAdditionalInformation { get; set; }
 
-        public virtual string NativeDesktopOperatingSystemsDescription { get; set; }
+        public string NativeDesktopOperatingSystemsDescription { get; set; }
 
-        public virtual string NativeDesktopMinimumConnectionSpeed { get; set; }
+        public string NativeDesktopMinimumConnectionSpeed { get; set; }
 
-        public virtual NativeDesktopThirdParty NativeDesktopThirdParty { get; set; }
+        public NativeDesktopThirdParty NativeDesktopThirdParty { get; set; }
 
-        public virtual NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; }
+        public NativeDesktopMemoryAndStorage NativeDesktopMemoryAndStorage { get; set; }
 
-        public virtual string NativeDesktopAdditionalInformation { get; set; }
+        public string NativeDesktopAdditionalInformation { get; set; }
 
-        public virtual bool AdditionalInformationComplete() => !string.IsNullOrWhiteSpace(AdditionalInformation);
+        // TODO: refactor to avoid what is essentially duplication of ClientApplicationTypes
+        // (consider ClientApplicationTypes and use of ClientApplicationType enum)
+        public IReadOnlyList<ClientApplicationType> ExistingClientApplicationTypes
+        {
+            get
+            {
+                var result = new List<ClientApplicationType>(3);
 
-        public virtual bool? BrowserBasedModelComplete() =>
+                if (ClientApplicationTypes?.Any(type => type.Equals("browser-based", StringComparison.OrdinalIgnoreCase)) ?? false)
+                    result.Add(ClientApplicationType.BrowserBased);
+
+                if (ClientApplicationTypes?.Any(type => type.Equals("native-mobile", StringComparison.OrdinalIgnoreCase)) ?? false)
+                    result.Add(ClientApplicationType.MobileTablet);
+
+                if (ClientApplicationTypes?.Any(type => type.Equals("native-desktop", StringComparison.OrdinalIgnoreCase)) ?? false)
+                    result.Add(ClientApplicationType.Desktop);
+
+                return result;
+            }
+        }
+
+        public bool AdditionalInformationComplete() => !string.IsNullOrWhiteSpace(AdditionalInformation);
+
+        public bool? BrowserBasedModelComplete() =>
             SupportedBrowsersComplete() &&
             MobileFirstDesignComplete() &&
             PlugInsComplete().GetValueOrDefault() &&
             ConnectivityAndResolutionComplete();
 
-        public virtual bool ConnectivityAndResolutionComplete() => !string.IsNullOrWhiteSpace(MinimumConnectionSpeed);
+        public bool ConnectivityAndResolutionComplete() => !string.IsNullOrWhiteSpace(MinimumConnectionSpeed);
 
-        public virtual bool? HardwareRequirementsComplete() => !string.IsNullOrWhiteSpace(HardwareRequirements);
+        public bool? HardwareRequirementsComplete() => !string.IsNullOrWhiteSpace(HardwareRequirements);
 
-        public virtual bool? NativeDesktopAdditionalInformationComplete() =>
-            !string.IsNullOrWhiteSpace(NativeDesktopAdditionalInformation);
+        public bool NativeDesktopAdditionalInformationComplete() => !string.IsNullOrWhiteSpace(NativeDesktopAdditionalInformation);
 
-        public virtual bool? NativeDesktopConnectivityComplete() =>
-            !string.IsNullOrWhiteSpace(NativeDesktopMinimumConnectionSpeed);
+        public bool? NativeDesktopConnectivityComplete() => !string.IsNullOrWhiteSpace(NativeDesktopMinimumConnectionSpeed);
 
-        public virtual bool? NativeDesktopHardwareRequirementsComplete() =>
-            !string.IsNullOrWhiteSpace(NativeDesktopHardwareRequirements);
+        public bool? NativeDesktopHardwareRequirementsComplete() => !string.IsNullOrWhiteSpace(NativeDesktopHardwareRequirements);
 
-        public virtual bool? NativeDesktopMemoryAndStorageComplete() => NativeDesktopMemoryAndStorage?.IsValid();
+        public bool? NativeDesktopMemoryAndStorageComplete() => NativeDesktopMemoryAndStorage?.IsValid();
 
-        public virtual bool? NativeMobileMemoryAndStorageComplete() => MobileMemoryAndStorage?.IsValid();
+        public bool? NativeMobileMemoryAndStorageComplete() => MobileMemoryAndStorage?.IsValid();
 
-        public virtual bool? NativeDesktopSupportedOperatingSystemsComplete() =>
-            !string.IsNullOrWhiteSpace(NativeDesktopOperatingSystemsDescription);
+        public bool? NativeDesktopSupportedOperatingSystemsComplete() => !string.IsNullOrWhiteSpace(NativeDesktopOperatingSystemsDescription);
 
-        public virtual bool? NativeDesktopThirdPartyComplete() => NativeDesktopThirdParty?.IsValid();
+        public bool? NativeDesktopThirdPartyComplete() => NativeDesktopThirdParty?.IsValid();
 
-        public virtual bool? NativeMobileConnectivityComplete() => MobileConnectionDetails?.IsValid();
+        public bool? NativeMobileConnectivityComplete() => MobileConnectionDetails?.IsValid();
 
-        public virtual bool NativeMobileFirstApproachComplete() => NativeMobileFirstDesign.HasValue;
+        public bool NativeMobileFirstApproachComplete() => NativeMobileFirstDesign.HasValue;
 
-        public virtual bool MobileFirstDesignComplete() => MobileFirstDesign.HasValue;
+        public bool MobileFirstDesignComplete() => MobileFirstDesign.HasValue;
 
-        public virtual bool? NativeMobileSupportedOperatingSystemsComplete() =>
-            MobileOperatingSystems?.OperatingSystems?.Any();
+        public bool NativeMobileSupportedOperatingSystemsComplete() => MobileOperatingSystems?.OperatingSystems?.Any() ?? false;
 
-        public virtual bool NativeMobileAdditionalInformationComplete() =>
-            !string.IsNullOrWhiteSpace(NativeMobileAdditionalInformation);
+        public bool NativeMobileAdditionalInformationComplete() => !string.IsNullOrWhiteSpace(NativeMobileAdditionalInformation);
 
-        public virtual bool? NativeMobileHardwareRequirementsComplete() =>
-            !string.IsNullOrWhiteSpace(NativeMobileHardwareRequirements);
+        public bool? NativeMobileHardwareRequirementsComplete() => !string.IsNullOrWhiteSpace(NativeMobileHardwareRequirements);
 
-        public virtual bool? PlugInsComplete() => Plugins?.Required.HasValue;
+        public bool? PlugInsComplete() => Plugins?.Required.HasValue;
 
-        public virtual bool SupportedBrowsersComplete() =>
+        public bool SupportedBrowsersComplete() =>
             BrowsersSupported != null && BrowsersSupported.Any() &&
             MobileResponsive.HasValue;
 
-        public virtual bool? NativeMobileThirdPartyComplete() => MobileThirdParty?.IsValid();
+        public bool? NativeMobileThirdPartyComplete() => MobileThirdParty?.IsValid();
     }
 }

@@ -17,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 using Xunit;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
@@ -1822,6 +1823,160 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Verify(s => s.GetSolution(catalogueItemId));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ClientApplicationType_GetsSolutionFromService(
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService,
+            CatalogueSolutionsController catalogueSolutionsController)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItem.CatalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            await catalogueSolutionsController.ClientApplicationType(catalogueItem.CatalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItem.CatalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ClientApplicationType_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.ClientApplicationType(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ClientApplicationType_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.ClientApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ClientApplicationType_CallsSaveClientApplication(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            ClientApplicationTypeSectionModel model = new ClientApplicationTypeSectionModel(catalogueItem);
+
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            await controller.ClientApplicationType(catalogueItemId, model);
+
+            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, It.IsAny<ClientApplication>()));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ClientApplicationType_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            ClientApplicationTypeSectionModel model = new ClientApplicationTypeSectionModel(catalogueItem);
+
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.ClientApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ClientApplicationType_InvalidId_ReturnsBadRequestResult(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.ClientApplicationType(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddApplicationType_GetsSolutionFromService(
+            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            await controller.AddApplicationType(catalogueItemId);
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddApplicationType_ValidId_ReturnsViewWithExpectedModel(
+            CatalogueItem catalogueItem,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.AddApplicationType(catalogueItemId)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItemId));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSelectionModel(catalogueItem));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddApplicationType_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+
+            var actual = (await controller.AddApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
     }
 }

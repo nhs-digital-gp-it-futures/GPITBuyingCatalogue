@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
@@ -23,84 +23,52 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.AdditionalInformationComplete().Should().Be(expected);
         }
 
-        [Fact]
-        public static void BrowserBasedModelComplete_AllChecksTrue_ReturnsTrue()
+        [Theory]
+        [AutoData]
+        public static void BrowserBasedModelComplete_AllChecksTrue_ReturnsTrue(
+            ClientApplication clientApplication)
         {
-            var clientApplication = new Mock<ClientApplication> { CallBase = true };
-            clientApplication.Setup(x => x.SupportedBrowsersComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.MobileFirstDesignComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.PlugInsComplete())
-                .Returns(true);
-
-            clientApplication.Object.BrowserBasedModelComplete().Should().BeTrue();
+            clientApplication.BrowserBasedModelComplete().Should().BeTrue();
         }
 
-        [Fact]
-        public static void BrowserBasedModelComplete_SupportedBrowsersCompleteReturnsFalse_ReturnsFalse()
+        [Theory]
+        [AutoData]
+        public static void BrowserBasedModelComplete_SupportedBrowsersCompleteReturnsFalse_ReturnsFalse(
+            ClientApplication clientApplication)
         {
-            var clientApplication = new Mock<ClientApplication> { CallBase = true };
-            clientApplication.Setup(x => x.SupportedBrowsersComplete())
-                .Returns(false);
-            clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.NativeMobileFirstApproachComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.PlugInsComplete())
-                .Returns(true);
+            clientApplication.BrowsersSupported?.Clear();
 
-            clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
+            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
         }
 
-        [Fact]
-        public static void BrowserBasedModelComplete_ConnectivityAndResolutionCompleteReturnsFalse_ReturnsFalse()
+        [Theory]
+        [AutoData]
+        public static void BrowserBasedModelComplete_ConnectivityAndResolutionCompleteReturnsFalse_ReturnsFalse(
+            ClientApplication clientApplication)
         {
-            var clientApplication = new Mock<ClientApplication> { CallBase = true };
-            clientApplication.Setup(x => x.SupportedBrowsersComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
-                .Returns(false);
-            clientApplication.Setup(x => x.NativeMobileFirstApproachComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.PlugInsComplete())
-                .Returns(true);
+            clientApplication.MinimumConnectionSpeed = null;
 
-            clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
+            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
         }
 
-        [Fact]
-        public static void BrowserBasedModelComplete_NativeMobileFirstApproachCompleteReturnsFalse_ReturnsFalse()
+        [Theory]
+        [AutoData]
+        public static void BrowserBasedModelComplete_MobileFirstDesignCompleteReturnsFalse_ReturnsFalse(
+            ClientApplication clientApplication)
         {
-            var clientApplication = new Mock<ClientApplication> { CallBase = true };
-            clientApplication.Setup(x => x.SupportedBrowsersComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.NativeMobileFirstApproachComplete())
-                .Returns(false);
-            clientApplication.Setup(x => x.PlugInsComplete())
-                .Returns(true);
+            clientApplication.MobileFirstDesign = null;
 
-            clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
+            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
         }
 
-        [Fact]
-        public static void BrowserBasedModelComplete_PlugInsOrExtensionsCompleteReturnsFalse_ReturnsFalse()
+        [Theory]
+        [AutoData]
+        public static void BrowserBasedModelComplete_PlugInsOrExtensionsCompleteReturnsFalse_ReturnsFalse(
+            ClientApplication clientApplication)
         {
-            var clientApplication = new Mock<ClientApplication> { CallBase = true };
-            clientApplication.Setup(x => x.SupportedBrowsersComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.ConnectivityAndResolutionComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.NativeMobileFirstApproachComplete())
-                .Returns(true);
-            clientApplication.Setup(x => x.PlugInsComplete())
-                .Returns(false);
+            clientApplication.Plugins.Required = null;
 
-            clientApplication.Object.BrowserBasedModelComplete().Should().BeFalse();
+            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
         }
 
         [Theory]
@@ -174,21 +142,22 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageNotNull_ReturnsIsValidFromIt(
-            bool expected)
+        [CommonAutoData]
+        public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageValid_ReturnsTrue(
+            ClientApplication clientApplication)
         {
-            var mockNativeDesktopMemoryAndStorage = new Mock<NativeDesktopMemoryAndStorage>();
-            mockNativeDesktopMemoryAndStorage.Setup(x => x.IsValid())
-                .Returns(expected);
-            var clientApplication = new ClientApplication
-            {
-                NativeDesktopMemoryAndStorage = mockNativeDesktopMemoryAndStorage.Object,
-            };
+            clientApplication.NativeDesktopMemoryAndStorageComplete().Should().BeTrue();
+        }
 
-            clientApplication.NativeDesktopMemoryAndStorageComplete().Should().Be(expected);
-            mockNativeDesktopMemoryAndStorage.Verify(x => x.IsValid());
+        [Theory]
+        [CommonAutoData]
+        public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageInvalid_ReturnsFalse(
+            [Frozen] NativeDesktopMemoryAndStorage storage,
+            ClientApplication clientApplication)
+        {
+            storage.MinimumCpu = null;
+
+            clientApplication.NativeDesktopMemoryAndStorageComplete().Should().BeFalse();
         }
 
         [Fact]
@@ -203,21 +172,22 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageNotNull_ReturnsIsValidFromIt(
-            bool expected)
+        [CommonAutoData]
+        public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageValid_ReturnsTrue(
+            ClientApplication clientApplication)
         {
-            var mockMobileMemoryAndStorage = new Mock<MobileMemoryAndStorage>();
-            mockMobileMemoryAndStorage.Setup(x => x.IsValid())
-                .Returns(expected);
-            var clientApplication = new ClientApplication
-            {
-                MobileMemoryAndStorage = mockMobileMemoryAndStorage.Object,
-            };
+            clientApplication.NativeMobileMemoryAndStorageComplete().Should().BeTrue();
+        }
 
-            clientApplication.NativeMobileMemoryAndStorageComplete().Should().Be(expected);
-            mockMobileMemoryAndStorage.Verify(x => x.IsValid());
+        [Theory]
+        [CommonAutoData]
+        public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageInvalid_ReturnsFalse(
+            [Frozen] MobileMemoryAndStorage storage,
+            ClientApplication clientApplication)
+        {
+            storage.Description = null;
+
+            clientApplication.NativeMobileMemoryAndStorageComplete().Should().BeFalse();
         }
 
         [Fact]
@@ -291,22 +261,22 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
         [Theory]
         [AutoData]
-        public static void NativeMobileSupportedOperatingSystemsComplete_OperatingSystemsNull_ReturnsNull(
+        public static void NativeMobileSupportedOperatingSystemsComplete_OperatingSystemsNull_ReturnsFalse(
             ClientApplication clientApplication)
         {
             clientApplication.MobileOperatingSystems.OperatingSystems = null;
 
-            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeNull();
+            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeFalse();
         }
 
         [Theory]
         [AutoData]
-        public static void NativeMobileSupportedOperatingSystemsComplete_MobileOperatingSystemsNull_ReturnsNull(
+        public static void NativeMobileSupportedOperatingSystemsComplete_MobileOperatingSystemsNull_ReturnsFalse(
             ClientApplication clientApplication)
         {
             clientApplication.MobileOperatingSystems = null;
 
-            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeNull();
+            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeFalse();
         }
 
         [Theory]
@@ -423,19 +393,23 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public static void ThirdPartyComplete_MobileThirdPartyNotNull_ReturnsIsValid(bool expected)
+        [CommonAutoData]
+        public static void ThirdPartyComplete_MobileThirdPartyValid_ReturnsTrue(
+            ClientApplication clientApplication)
         {
-            var mockMobileThirdParty = new Mock<MobileThirdParty>();
-            mockMobileThirdParty.Setup(m => m.IsValid())
-                .Returns(expected);
-            var clientApplication = new ClientApplication
-            {
-                MobileThirdParty = mockMobileThirdParty.Object,
-            };
+            clientApplication.NativeMobileThirdPartyComplete().Should().BeTrue();
+        }
 
-            clientApplication.NativeMobileThirdPartyComplete().Should().Be(expected);
+        [Theory]
+        [CommonAutoData]
+        public static void ThirdPartyComplete_MobileThirdPartyInvalid_ReturnsFalse(
+            [Frozen] MobileThirdParty thirdParty,
+            ClientApplication clientApplication)
+        {
+            thirdParty.DeviceCapabilities = null;
+            thirdParty.ThirdPartyComponents = null;
+
+            clientApplication.NativeMobileThirdPartyComplete().Should().BeFalse();
         }
 
         [Fact]

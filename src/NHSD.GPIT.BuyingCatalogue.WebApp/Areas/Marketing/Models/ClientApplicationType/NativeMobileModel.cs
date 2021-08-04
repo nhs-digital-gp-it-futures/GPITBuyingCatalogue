@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicationType
 {
-    public class NativeMobileModel : MarketingBaseModel
+    public sealed class NativeMobileModel : MarketingBaseModel
     {
         public NativeMobileModel()
             : base(null)
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.ClientApplicat
 
         public override bool? IsComplete =>
             ClientApplication != null &&
-            ClientApplication.NativeMobileSupportedOperatingSystemsComplete().GetValueOrDefault() &&
+            ClientApplication.NativeMobileSupportedOperatingSystemsComplete() &&
             ClientApplication.NativeMobileFirstApproachComplete() &&
             ClientApplication.NativeMobileMemoryAndStorageComplete().GetValueOrDefault();
 

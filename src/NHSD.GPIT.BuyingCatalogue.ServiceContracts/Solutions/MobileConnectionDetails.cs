@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    [ExcludeFromCodeCoverage]
-    public class MobileConnectionDetails
+    public sealed class MobileConnectionDetails
     {
         public HashSet<string> ConnectionType { get; set; }
 
