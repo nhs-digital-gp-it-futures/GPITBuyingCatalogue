@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         public async Task SupplierDetails_EnterDescription()
         {
             var summary = TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
-            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            var link = TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             CommonActions.ClickSave();
 

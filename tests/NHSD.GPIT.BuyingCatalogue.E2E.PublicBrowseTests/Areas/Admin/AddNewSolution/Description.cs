@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         {
             var summary = TextGenerators.TextInputAddText(CommonSelectors.Summary, 350);
             var fullDescription = TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
-            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            var link = TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             CommonActions.ClickSave();
 
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             await context.SaveChangesAsync();
 
             TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
-            TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             AdminPages.CommonActions.ClickGoBack();
 
