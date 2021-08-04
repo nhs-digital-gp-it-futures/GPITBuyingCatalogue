@@ -211,8 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             actual.Should().BeEmpty();
         }
 
-        // TODO: fix
-        [Theory(Skip = "Broken")]
+        [Theory]
         [CommonAutoData]
         public static void HasAdditionalServices_SolutionCapabilitiesNotEmpty_ReturnsTrue(CatalogueItem catalogueItem)
         {

@@ -26,9 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
     {
         private const string LastReviewedDate = "26 Aug 2025";
 
-        private IMapper mapper;
-        private Mock<IConfiguration> configuration;
-        private MapperConfiguration mapperConfiguration;
+        private readonly IMapper mapper;
+        private readonly Mock<IConfiguration> configuration;
+        private readonly MapperConfiguration mapperConfiguration;
 
         public SolutionDetailsProfileTests()
         {
@@ -224,8 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
-        // TODO: fix
-        [Theory(Skip = "Broken")]
+        [Theory]
         [CommonAutoData]
         public void Map_CatalogueItemToListPriceModel_ResultAsExpected(
            CatalogueItem catalogueItem)
@@ -571,7 +570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
-        private IList<CatalogueItem> GetAllCatalogueItems()
+        private static IList<CatalogueItem> GetAllCatalogueItems()
         {
             var fixture = new Fixture();
             var items = Enumerable.Range(1, 5)

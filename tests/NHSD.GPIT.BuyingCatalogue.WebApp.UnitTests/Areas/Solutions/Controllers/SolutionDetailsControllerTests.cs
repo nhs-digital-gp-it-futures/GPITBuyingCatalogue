@@ -1009,7 +1009,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     Id = Guid.NewGuid(),
                     IntegrationType = "IM1",
                     Qualifier = "Bulk",
-                    IsConsumer = false,
                     IntegratesWith = "Audit+",
                     Description = "Audit+ utilises a bulk extraction of full clinical records (including confidential and deceased patients) from EMIS Web to provide General Practices with a crossplatform clinical decision support and management tool; supporting QOF performance management, improvement and NHS Health Checks.",
                 },
@@ -1018,9 +1017,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     Id = Guid.NewGuid(),
                     IntegrationType = "GP Connect",
                     Qualifier = "Access Record HTML",
-                    IsConsumer = false,
-                    IntegratesWith = "",
-                    Description = "",
                     AdditionalInformation = "EMIS Web received Full Roll Out Approval from NHS Digital for GP Connect HTML View Provision on 20/06/19",
                 },
             };

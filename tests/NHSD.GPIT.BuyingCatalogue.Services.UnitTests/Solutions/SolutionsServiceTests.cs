@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using Bogus;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -49,90 +48,80 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSupplierContacts(mockModel.Object);
 
-            mockModel.Verify(x => x.SetSolutionId());
+            mockModel.Verify(m => m.SetSolutionId());
         }
 
-        // TODO: fix
-        [Fact(Skip = "Broken")]
-        public static async Task SaveSupplierContacts_Retrieves_ContactsForSolutionId()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSupplierContacts_Retrieves_ContactsForSolutionId(
+            [Frozen] CatalogueItemId catalogueItemId,
+            MarketingContact contact,
+            SupplierContactsModel supplierContactsModel,
+            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
+            SolutionsService service)
         {
-            var mockModel = new Mock<SupplierContactsModel>();
-            var solutionId = new CatalogueItemId(1, "123");
-            mockModel.SetupGet(x => x.SolutionId)
-                .Returns(solutionId);
+            // Parameter included to freeze value for marketing contact and supplier contacts model
+            _ = catalogueItemId;
 
-            var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-            mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .Callback((Expression<Func<MarketingContact, bool>> predicate) => predicate.Compile()(new MarketingContact { SolutionId = solutionId }).Should().BeTrue());
+            void TestPredicate(Expression<Func<MarketingContact, bool>> expression)
+            {
+                var predicate = expression.Compile();
+                var result = predicate(contact);
 
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                mockMarketingContactRepository.Object,
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                result.Should().BeTrue();
+            }
 
-            await service.SaveSupplierContacts(mockModel.Object);
+            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
+                .Callback<Expression<Func<MarketingContact, bool>>>(TestPredicate);
 
-            mockMarketingContactRepository.Verify(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()));
+            await service.SaveSupplierContacts(supplierContactsModel);
+
+            mockMarketingContactRepository.Verify(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()));
         }
 
-        // TODO: fix
-        [Fact(Skip = "Broken")]
-        public static async Task SaveSupplierContacts_NoContactsInDatabase_AddsValidContactsToRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSupplierContacts_NoContactsInDatabase_AddsValidContactsToRepository(
+            [Frozen] MarketingContact[] validContacts,
+            SupplierContactsModel supplierContactsModel,
+            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
+            SolutionsService service)
         {
-            var validContacts = new Mock<IList<MarketingContact>>().Object;
-            var mockModel = new Mock<SupplierContactsModel>();
-            mockModel.Setup(x => x.ValidContacts())
-                .Returns(validContacts);
-
-            var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-            mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
+            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(Array.Empty<MarketingContact>());
 
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                mockMarketingContactRepository.Object,
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+            await service.SaveSupplierContacts(supplierContactsModel);
 
-            await service.SaveSupplierContacts(mockModel.Object);
-
-            mockModel.Verify(x => x.ValidContacts());
-            mockMarketingContactRepository.Verify(x => x.AddAll(validContacts));
+            mockMarketingContactRepository.Verify(r => r.AddAll(validContacts));
         }
 
-        // TODO: fix
-        [Fact(Skip = "Broken")]
-        public static async Task SaveSupplierContacts_ContactsInDatabase_RemovesEmptyContactsFromDatabase()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSupplierContacts_ContactsInDatabase_RemovesEmptyContactsFromDatabase(
+            MarketingContact[] savedModels,
+            SupplierContactsModel supplierContactsModel,
+            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
+            SolutionsService service)
         {
-            var savedModels = new Faker<MarketingContact>()
-                .RuleFor(x => x.Id, f => f.Random.Int(100, 500))
-                .Generate(2);
+            supplierContactsModel.Contacts = new[]
+            {
+                new MarketingContact
+                {
+                    Id = savedModels[0].Id,
+                    Department = "Department",
+                },
+                new MarketingContact
+                {
+                    Id = savedModels[1].Id,
+                },
+            };
 
-            var mockModel = new Mock<SupplierContactsModel>();
-            var mockNewContact = new Mock<MarketingContact>();
-            mockNewContact.Setup(x => x.IsEmpty())
-                .Returns(true);
-            mockModel.Setup(x => x.ContactFor(savedModels[1].Id))
-                .Returns(mockNewContact.Object);
+            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
+                .ReturnsAsync(savedModels);
 
-            var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-            mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
-                .ReturnsAsync(savedModels.ToArray);
+            await service.SaveSupplierContacts(supplierContactsModel);
 
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                mockMarketingContactRepository.Object,
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            await service.SaveSupplierContacts(mockModel.Object);
-
-            mockNewContact.Verify(x => x.IsEmpty());
-            mockMarketingContactRepository.Verify(x => x.Remove(It.Is<MarketingContact>(y => y.Id == savedModels[1].Id)));
+            mockMarketingContactRepository.Verify(r => r.Remove(It.Is<MarketingContact>(c => c.Id == savedModels[1].Id)));
         }
 
         // TODO: fix
@@ -145,13 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var mockModel = new Mock<SupplierContactsModel>();
             var mockNewContact = new Mock<MarketingContact>();
-            mockNewContact.Setup(x => x.IsEmpty())
+            mockNewContact.Setup(c => c.IsEmpty())
                 .Returns(false);
-            mockModel.Setup(x => x.ContactFor(savedModels[0].Id))
+            mockModel.Setup(m => m.ContactFor(savedModels[0].Id))
                 .Returns(mockNewContact.Object);
 
             var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-            mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
+            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(savedModels);
 
             var service = new SolutionsService(
@@ -173,11 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             var mockModel = new Mock<SupplierContactsModel>();
             var newAndValidContacts = new Mock<IList<MarketingContact>>().Object;
-            mockModel.Setup(x => x.NewAndValidContacts())
+            mockModel.Setup(m => m.NewAndValidContacts())
                 .Returns(newAndValidContacts);
 
             var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-            mockMarketingContactRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
+            mockMarketingContactRepository.Setup(r => r.GetAllAsync(It.IsAny<Expression<Func<MarketingContact, bool>>>()))
                 .ReturnsAsync(new[] { new MarketingContact() });
 
             var service = new SolutionsService(
@@ -189,24 +178,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSupplierContacts(mockModel.Object);
 
-            mockModel.Verify(x => x.NewAndValidContacts());
+            mockModel.Verify(m => m.NewAndValidContacts());
             mockMarketingContactRepository.Verify(r => r.AddAll(newAndValidContacts));
         }
 
-        // TODO: fix
-        [Fact(Skip = "Broken")]
-        public static async Task SaveSupplierContacts_CallsSaveChangesAsync_OnRepository()
+        [Theory]
+        [CommonAutoData]
+        public static async Task SaveSupplierContacts_CallsSaveChangesAsync_OnRepository(
+            SupplierContactsModel supplierContactsModel,
+            [Frozen] Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>> mockMarketingContactRepository,
+            SolutionsService service)
         {
-            var mockMarketingContactRepository = new Mock<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>();
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                mockMarketingContactRepository.Object,
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            await service.SaveSupplierContacts(Mock.Of<SupplierContactsModel>());
+            await service.SaveSupplierContacts(supplierContactsModel);
 
             mockMarketingContactRepository.Verify(r => r.SaveChangesAsync());
         }
@@ -215,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveIntegrationLink_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(
@@ -250,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveSolutionDescription_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(
@@ -269,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveSolutionFeatures_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(
@@ -288,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveImplementationDetail_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(
@@ -307,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveRoadMap_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(
@@ -341,7 +324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveClientApplication_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(
@@ -375,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveHosting_CallsSaveChangesAsync_OnRepository()
         {
             var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
+            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
                 .ReturnsAsync(new Solution());
 
             var service = new SolutionsService(
@@ -410,7 +393,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveSupplier_CallsSaveChangesAsync_OnRepository()
         {
             var mockSupplierRepository = new Mock<IDbRepository<Supplier, BuyingCatalogueDbContext>>();
-            mockSupplierRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<Supplier, bool>>>()))
+            mockSupplierRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Supplier, bool>>>()))
                 .ReturnsAsync(new Supplier());
 
             var service = new SolutionsService(
