@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public DevelopmentPlans(LocalWebApplicationFactory factory)
             : base(factory, "/admin/catalogue-solutions/manage/99999-002/development-plans")
         {
-            ClearRoadMap(new CatalogueItemId(99999, "003"));
+            ClearRoadMap(new CatalogueItemId(99999, "002"));
             AuthorityLogin();
         }
 
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         [Fact]
         public async Task DevelopmentPlans_EnterRoadMapLinkAsync()
         {
-            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            var link = TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             CommonActions.ClickSave();
 
@@ -47,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         [Fact]
         public async Task DevelopmentPlans_GoBackWithoutSaving()
         {
-            TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             AdminPages.CommonActions.ClickGoBack();
 
