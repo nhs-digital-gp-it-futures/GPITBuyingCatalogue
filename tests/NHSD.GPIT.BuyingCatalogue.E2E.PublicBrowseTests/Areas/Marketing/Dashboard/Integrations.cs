@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -27,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         [Fact]
         public async Task Integrations_AddUrl()
         {
-            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            var link = TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             CommonActions.ClickSave();
 
@@ -41,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             Driver.Navigate().Refresh();
 
-            TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
             CommonActions.ClickSave();
 
             MarketingPages.DashboardActions.SectionMarkedComplete("Integrations").Should().BeTrue();

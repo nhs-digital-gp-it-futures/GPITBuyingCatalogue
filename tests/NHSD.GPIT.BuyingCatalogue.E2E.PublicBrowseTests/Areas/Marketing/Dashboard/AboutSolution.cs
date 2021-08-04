@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             var summary = TextGenerators.TextInputAddText(CommonSelectors.Summary, 350);
             var description = TextGenerators.TextInputAddText(CommonSelectors.Description, 1100);
-            var link = TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            var link = TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             CommonActions.ClickSave();
 
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         {
             TextGenerators.TextInputAddText(CommonSelectors.Summary, 350);
             TextGenerators.TextInputAddText(CommonSelectors.Description, 1100);
-            TextGenerators.UrlInputAddText(CommonSelectors.Link, 1000);
+            TextGenerators.UrlInputAddText(Objects.Common.CommonSelectors.LinkTextBox, 1000);
 
             CommonActions.ClickSave();
 
