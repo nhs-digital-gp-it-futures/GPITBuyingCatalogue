@@ -83,3 +83,7 @@ variable "cicd_range" {
 variable "app_url" {
   type = string
 }
+
+variable "acr_subscription_id" {
+  type = string
+}
