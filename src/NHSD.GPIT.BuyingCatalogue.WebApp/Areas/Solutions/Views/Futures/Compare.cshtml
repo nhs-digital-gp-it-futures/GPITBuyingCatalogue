@@ -1,28 +1,16 @@
-﻿@{
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewData["Title"] = "Compare all Catalogue Solutions on the GP IT Futures framework";
+    var backLinkModel = new NavBaseModel{ BackLink = "/solutions/futures", BackLinkText = "Go back" };
 }
 
-<div class="nhsuk-width-container">
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-two-thirds">
-            <div class="nhsuk-u-padding-top-5" data-test-id="go-back-link">
-                <div class="nhsuk-back-link">
-                    <a class="nhsuk-back-link__link" href="~/solutions/futures">
-                        <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
-                        </svg>
-                        Back
-                    </a>
-                </div>
-            </div>
-            <h1 class="nhsuk-u-margin-top-6 nhsuk-u-margin-bottom-4" data-test-id="compare-page-title">Compare all Catalogue Solutions on the GP IT Futures framework</h1>
-            <p class="nhsuk-heading-l nhsuk-u-font-size-22 nhsuk-u-padding-bottom-5" data-test-id="compare-page-description">Use our compare document to help find what you’re looking for. It gives an overview of all the Catalogue Solutions available on the GP IT Futures framework and lets you filter them by the Capabilities they offer.</p>
-            <div data-test-id="compare-button">
-                <a class="nhsuk-button nhsuk-button--secondary" href="~/solutions/compare/document" draggable="false">
-                    Compare Solutions (.xlsx)
-                </a>
-            </div>
+<partial name="Partials/_BackLink" model="@backLinkModel" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewData["Title"]" advice="Use our compare document to help find what you’re looking for. It gives an overview of all the Catalogue Solutions available on the GP IT Futures framework and lets you filter them by the Capabilities they offer." />
+        <div data-test-id="compare-button">
+            <vc:nhs-secondary-button url="/solutions/compare/document"  text="Compare Solutions (.xlsx)" use-primary-colour="false" />
         </div>
     </div>
 </div>

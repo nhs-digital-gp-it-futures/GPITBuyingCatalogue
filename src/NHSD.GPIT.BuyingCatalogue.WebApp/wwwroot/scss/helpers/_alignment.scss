@@ -43,3 +43,11 @@
 .bc-u-flex {
     @include flex();
 }
+
+.bc-u-overflow-h {
+    overflow: hidden;
+}
+
+.bc-u-float-right {
+    float: right;
+}

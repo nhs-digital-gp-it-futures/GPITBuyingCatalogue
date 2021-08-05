@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationOdsCode).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationAddressLine1).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.OrganisationAddress).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.FirstNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.LastNameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CalloffPartyInformation.EmailAddressInput).Should().BeTrue();

@@ -3,37 +3,30 @@
     ViewData["Title"] = "Manage Suppliers";
 }
 
-<div class="nhsuk-width-container">
-    <main class="nhsuk-main-wrapper" id="maincontent" role="main">
-        <div class="nhsuk-grid-row govuk-!-margin-0">
+<nhs-page-title title="Manage supplier organisations"
+                advice="Add a new supplier organisation or edit the details for one that's already been created." />
 
-            <nhs-page-title title="Manage supplier organisations"
-                            advice="Add a new supplier organisation or edit the details for one that's already been created." />
+<vc:nhs-action-link url="admin-add-supplier" text="Add a supplier" data-test-id="add-supplier"/>
 
-            <vc:nhs-action-link url="admin-add-supplier" text="Add a supplier" data-test-id="add-supplier"/>
-
-            @if (Model?.Count > 0)
-            {
-                <nhs-table data-test-id="manage-suppliers-table">
-                    <nhs-table-column> Supplier name </nhs-table-column>
-                    <nhs-table-column> Supplier ID </nhs-table-column>
-                    <nhs-table-column></nhs-table-column>
-                    @foreach (var supplierModel in Model)
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                @supplierModel.Name
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @supplierModel.Id
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <a href="#" data-test-id="edit-link">Edit</a>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-                </nhs-table>
-            }
-        </div>
-    </main>
-</div>
+@if (Model?.Count > 0)
+{
+    <nhs-table data-test-id="manage-suppliers-table">
+        <nhs-table-column> Supplier name </nhs-table-column>
+        <nhs-table-column> Supplier ID </nhs-table-column>
+        <nhs-table-column></nhs-table-column>
+        @foreach (var supplierModel in Model)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>
+                    @supplierModel.Name
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    @supplierModel.Id
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a href="#" data-test-id="edit-link">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+}

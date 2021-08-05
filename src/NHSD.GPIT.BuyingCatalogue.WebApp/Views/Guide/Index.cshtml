@@ -1,40 +1,26 @@
-﻿@{
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@{
     ViewData["Title"] = "Buyer's Guide";
+    var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go back to homepage" };
 }
 
+<partial name="Partials/_BackLink" model="@backLinkModel" />
 <div data-test-id="guide-page-body" class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <div data-test-id="go-back-link">
-            <div class="nhsuk-back-link">
-                <a class="nhsuk-back-link__link" href="~/">
-                    <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
-                    </svg>
-                    Go back to homepage
-                </a>
-            </div>
-        </div>
-    </div>
     <div class="nhsuk-grid-column-two-thirds">
-        <div class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-0">
-            <h1 data-test-id="guide-page-title" class="nhsuk-u-margin-bottom-3">Buyer’s Guide</h1>
-            <p data-test-id="guide-page-description" class="nhsuk-heading-l nhsuk-u-font-size-22">Read the following information before using the Buying Catalogue. It’ll help you find the information you need to make an informed decision when procuring.</p>
-            <div data-test-id="guide-page-advice" class="nhsuk-inset-text nhsuk-u-padding-2 nhsuk-u-padding-right-4 nhsuk-u-padding-left-4 nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-6">
-                <span class="nhsuk-u-visually-hidden">Information: </span>
+        <nhs-page-title title="Buyer’s Guide" advice="Read the following information before using the Buying Catalogue. It’ll help you find the information you need to make an informed decision when procuring." />
+        <nhs-inset-text>
+            <p class="nhsuk-u-font-size-14">All products and services listed on the Buying Catalogue are known as Catalogue Solutions. Each Solution has a certain number of Capabilities which can address business needs in primary care.</p>
 
-                <p class="nhsuk-u-font-size-14">All products and services listed on the Buying Catalogue are known as Catalogue Solutions. Each Solution has a certain number of Capabilities which can address business needs in primary care.</p>
+            <p class="nhsuk-u-font-size-14">To prove these Capabilities, Suppliers must demonstrate that their Catalogue Solution can satisfy Epics which detail the functions required to successfully achieve a Capability.</p>
 
-                <p class="nhsuk-u-font-size-14">To prove these Capabilities, Suppliers must demonstrate that their Catalogue Solution can satisfy Epics which detail the functions required to successfully achieve a Capability.</p>
-
-                <p class="nhsuk-u-font-size-14">There is a link to further Buyer Guidance in the &#39;Learn more&#39; section of this page.</p>
-            </div>
-            <p data-test-id="guide-page-subtext" class="nhsuk-u-margin-bottom-0">These are the key terms you need to understand to use the Buying Catalogue effectively:</p>
-        </div>
+            <p class="nhsuk-u-font-size-14">There is a link to further Buyer Guidance in the &#39;Learn more&#39; section of this page.</p>
+        </nhs-inset-text>
+        <p data-test-id="guide-page-subtext" class="nhsuk-u-margin-bottom-0">These are the key terms you need to understand to use the Buying Catalogue effectively:</p>
     </div>
     <div class="nhsuk-grid-column-full">
 
         <div class="nhsuk-grid-row">
-            <div id="catalogue-solution" data-test-id="guide-section-catalogue-solution" class="nhsuk-width-container">
+            <div id="catalogue-solution" data-test-id="guide-section-catalogue-solution">
 
                 <div data-test-id="guide-section-title" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Catalogue Solution</h3>
@@ -71,7 +57,7 @@
         </div>
 
         <div class="nhsuk-grid-row">
-            <div id="capabilities" data-test-id="guide-section-capabilities" class="nhsuk-width-container">
+            <div id="capabilities" data-test-id="guide-section-capabilities">
 
                 <div data-test-id="guide-section-title" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Capabilities</h3>
@@ -146,7 +132,7 @@
         </div>
 
         <div class="nhsuk-grid-row">
-            <div id="standards" data-test-id="guide-section-standards" class="nhsuk-width-container">
+            <div id="standards" data-test-id="guide-section-standards">
 
                 <div data-test-id="guide-section-title" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Standards</h3>
@@ -167,7 +153,7 @@
         </div>
 
         <div class="nhsuk-grid-row">
-            <div id="work-off-plans" data-test-id="guide-section-work-off-plans" class="nhsuk-width-container">
+            <div id="work-off-plans" data-test-id="guide-section-work-off-plans">
 
                 <div data-test-id="guide-section-title" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Work-off Plans</h3>
@@ -188,7 +174,7 @@
         </div>
 
         <div class="nhsuk-grid-row">
-            <div id="integrations" data-test-id="guide-section-integrations" class="nhsuk-width-container">
+            <div id="integrations" data-test-id="guide-section-integrations">
 
                 <div data-test-id="guide-section-title" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Integrations</h3>
@@ -216,7 +202,7 @@
         </div>
 
         <div class="nhsuk-grid-row">
-            <div id="learn-more" data-test-id="guide-section-learn-more" class="nhsuk-width-container">
+            <div id="learn-more" data-test-id="guide-section-learn-more">
 
                 <div data-test-id="guide-section-title" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Learn More</h3>
@@ -241,7 +227,7 @@
         </div>
 
         <div class="nhsuk-grid-row">
-            <div id="contact-us" data-test-id="guide-section-contact-us" class="nhsuk-width-container">
+            <div id="contact-us" data-test-id="guide-section-contact-us">
 
                 <div data-test-id="guide-section-title" class="bc-c-section-heading ">
                     <h3 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Contact us</h3>

@@ -1,69 +1,48 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDescriptionModel;
 @{
 }
-<div class="nhsuk-width-container ">
-    <main id="maincontent" role="main">
-        <article>
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
-                    <dl class="nhsuk-summary-list">
-                        <div data-test-id="view-solution-page-solution-name" class="nhsuk-summary-list__row">
-                            <dt class="nhsuk-summary-list__key">
-                                Solution name
-                            </dt>
-                            <dd class="nhsuk-summary-list__value">
-                                @Model.SolutionName
-                            </dd>
-                        </div>
-                        <div class="nhsuk-summary-list__row">
-                            <dt class="nhsuk-summary-list__key">
-                                Supplier name
-                            </dt>
-                            <dd class="nhsuk-summary-list__value">
-                                @Model.SupplierName
-                            </dd>
-                        </div>
-                        <div class="nhsuk-summary-list__row">
-                            <dt class="nhsuk-summary-list__key">
-                                Solution ID
-                            </dt>
-                            <dd class="nhsuk-summary-list__value">
-                                @Model.SolutionId
-                            </dd>
-                        </div>
-                        <div class="nhsuk-summary-list__row">
-                            <dt class="nhsuk-summary-list__key">
-                                @Model.FrameworkTitle()
-                            </dt>
-                            <dd class="nhsuk-summary-list__value">
-                                @Html.DisplayFor(m => m.Frameworks)
-                            </dd>
-                        </div>
-                        <div class="nhsuk-summary-list__row">
-                            <dt class="nhsuk-summary-list__key">
-                                Foundation Solution
-                            </dt>
-                            <dd class="nhsuk-summary-list__value">
-                                @Model.IsFoundation
-                            </dd>
-                        </div>
-                    </dl>
+<article class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Solution name">
+                <p>
+                    @Model.SolutionName 
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Supplier name">
+                <p data-test-id="view-solution-page-solution-name">
+                    @Model.SupplierName
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Solution ID">
+                <p>
+                    @Model.SolutionId
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
+                <p>
+                    @Html.DisplayFor(m => m.Frameworks)
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Foundation Solution">
+                <p>
+                    @Model.IsFoundation
+                </p>
+            </nhs-summary-list-row>
+        </nhs-summary-list>
 
-                    @if (Model.HasSummary())
-                    {
-                        <h2>Summary</h2>
+        @if (Model.HasSummary())
+        {
+            <h2>Summary</h2>
 
-                        <p style="white-space: pre-line">@Model.Summary</p>
-                    }
+            <p style="white-space: pre-line">@Model.Summary</p>
+        }
 
-                    @if (Model.HasDescription())
-                    {
-                        <h2>Full description</h2>
+        @if (Model.HasDescription())
+        {
+            <h2>Full description</h2>
 
-                        <p style="white-space: pre-line">@Model.Description</p>
-                    }
-                </div>
-            </div>
-        </article>
-    </main>
-</div>
+            <p style="white-space: pre-line">@Model.Description</p>
+        }
+    </div>
+</article>

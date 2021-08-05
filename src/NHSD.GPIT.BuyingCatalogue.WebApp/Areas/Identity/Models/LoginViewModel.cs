@@ -12,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
         public string EmailAddress { get; set; }
 
         [Required(ErrorMessage = ErrorMessages.PasswordRequired)]
-        [DataType(DataType.Password)]
         [Password]
         public string Password { get; set; }
 

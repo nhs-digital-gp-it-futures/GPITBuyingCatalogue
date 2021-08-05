@@ -3,7 +3,7 @@
     ViewData["Title"] = Model.Title;
 }
 
-<div class="nhsuk-width-container" data-test-id="supplier-page">
+<div data-test-id="supplier-page">
     <partial name="Partials/_BackLink" model="Model" />
 
     <div class="nhsuk-grid-row">
@@ -11,46 +11,32 @@
             <nhs-validation-summary />
             <nhs-page-title title="@Model.Title" advice="Check the supplier information and edit details for the primary contact for this order." />
 
-            <div data-test-id="supplier-page-insetAdvice">
-                <div class="nhsuk-inset-text">
-                    <span class="nhsuk-u-visually-hidden">Information: </span>
+            <nhs-inset-text>
+                <p>
                     Once saved, you'll not be able to change the supplier for this order. To change the supplier, you'd need to start a new order.
-                </div>
-            </div>
-        </div>
-    </div>
+                </p>
+            </nhs-inset-text>
 
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Supplier name">
+                    <p data-test-id="supplier-name">
+                        @Model.Name
+                    </p>
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Registered address">
+                    <div data-test-id="supplier-address">
+                        <vc:nhs-address address="@Model.Address" />
+                    </div>
+                </nhs-summary-list-row>
+            </nhs-summary-list>
 
-            <h3 data-test-id="supplier-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Supplier name</h3>
-            <div data-test-id="supplier-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.Name</div>
-
-            <h3 data-test-id="supplier-address-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Registered address</h3>
-            <div data-test-id="supplier-address-1" class="nhsuk-u-font-size-19">@Model.Address.Line1</div>
-            <div data-test-id="supplier-address-2" class="nhsuk-u-font-size-19">@Model.Address.Line2</div>
-            <div data-test-id="supplier-address-3" class="nhsuk-u-font-size-19">@Model.Address.Line3</div>
-            <div data-test-id="supplier-address-4" class="nhsuk-u-font-size-19">@Model.Address.Line4</div>
-            <div data-test-id="supplier-address-5" class="nhsuk-u-font-size-19">@Model.Address.Line5</div>
-            <div data-test-id="supplier-address-town" class="nhsuk-u-font-size-19">@Model.Address.Town</div>
-            <div data-test-id="supplier-address-county" class="nhsuk-u-font-size-19">@Model.Address.County</div>
-            <div data-test-id="supplier-address-postcode" class="nhsuk-u-font-size-19">@Model.Address.Postcode</div>
-            <div data-test-id="supplier-address-country" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.Address.Country</div>
-        </div>
-    </div>
-
-    <form method="post">
-
-        <hr class="bc-c-order-table__hr" />
-
-        <div class="nhsuk-grid-row">
-            <div data-test-id="primary-contact-fields" class="nhsuk-grid-column-two-thirds">
-                <h2 data-test-id="primary-contact-heading" class="nhsuk-u-font-size-32 nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-3">Primary contact’s details</h2>
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="BackLink" />
-                <input type="hidden" asp-for="Name" />
-                <input type="hidden" asp-for="Title" />
-                <div class="nhsuk-u-margin-bottom-5">
+            <form method="post">
+                <div data-test-id="primary-contact-fields">
+                    <h2 data-test-id="primary-contact-heading">Primary contact’s details</h2>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="BackLink" />
+                    <input type="hidden" asp-for="Name" />
+                    <input type="hidden" asp-for="Title" />
                     <nhs-input asp-for="PrimaryContact.FirstName"
                                           label-text="First name" />
                     <nhs-input asp-for="PrimaryContact.LastName"
@@ -59,10 +45,11 @@
                                           label-text="Email address" />
                     <nhs-input asp-for="PrimaryContact.Phone"
                                           label-text="Telephone number" />
+                    <div data-test-id="save-button">
+                        <nhs-submit-button text="Save and return" />
+                    </div>
                 </div>
-
-                <nhs-submit-button />
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>

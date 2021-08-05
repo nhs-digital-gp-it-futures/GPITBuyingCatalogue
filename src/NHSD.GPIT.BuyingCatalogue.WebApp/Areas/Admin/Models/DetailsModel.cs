@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public DetailsModel(Organisation organisation, List<AspNetUser> users, List<Organisation> relatedOrganisations)
         {
             Organisation = organisation;
+            CatalogueAgreementText = organisation.CatalogueAgreementSigned ? "Organisation End User Agreement has been signed" : "Organisation End User Agreement has not been signed";
             Users = users;
             RelatedOrganisations = relatedOrganisations;
             BackLink = "/admin/buyer-organisations";
@@ -27,5 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public List<Organisation> RelatedOrganisations { get; set; }
 
         public Address OrganisationAddress => Organisation.Address;
+
+        public string CatalogueAgreementText { get; set; }
     }
 }

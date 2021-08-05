@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 {
     internal static class OrganisationObjects
     {
-        internal static By AddressLines => By.CssSelector("div[data-test-id^=org-page-address-]");
+        internal static By AddressLines => ByExtensions.DataTestId("org-page-address");
 
         internal static By OdsCode => ByExtensions.DataTestId("org-page-ods-code");
 

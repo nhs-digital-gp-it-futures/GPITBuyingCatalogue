@@ -1,144 +1,105 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DetailsModel
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @{
-    ViewData["Title"] = "Buying Catalogue - Admin";
+    ViewData["Title"] = "Buying Catalogue – Admin";
 }
 
-<div class="nhsuk-width-container" data-test-id="organisation-page">
+<div data-test-id="organisation-page">
     <partial name="Partials/_BackLink" model="Model" />
-    <h1 data-test-id="org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">@Model.Organisation.Name</h1>
-    <h2 data-test-id="org-page-description" class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-9">These are the details for the organisation and its users.</h2>
-    <h3 data-test-id="organisation-details-subheading" class="nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-7">Organisation details</h3>
-
-    <div data-test-id="edit-org-button">
-        <a class="nhsuk-button nhsuk-u-margin-bottom-9" href="/admin/organisations/@Model.Organisation.OrganisationId/edit" draggable="false">
-            Edit organisation
-        </a>
-    </div>
-
-    <div class="nhsuk-u-font-size-19 nhsuk-grid-row nhsuk-u-padding-bottom-5">
-        <div class="nhsuk-grid-column-one-half">
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-one-half">
-                    <h4 data-test-id="org-page-ods-code-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-0">ODS code</h4>
-                    <div data-test-id="org-page-ods-code" class="nhsuk-u-padding-bottom-6">@Model.Organisation.OdsCode</div>
-                    <h4 data-test-id="org-page-primary-role-id-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-0">Primary Role ID</h4>
-                    <div data-test-id="org-page-primary-role-id">@Model.Organisation.PrimaryRoleId</div>
-                </div>
-                <div class="nhsuk-grid-column-one-half">
-                    <h4 data-test-id="org-page-address-heading" class="nhsuk-heading-s nhsuk-u-padding-margin-0">Business address</h4>
-                    <div data-test-id="org-page-address-1">@Model.OrganisationAddress.Line1</div>
-                    <div data-test-id="org-page-address-2">@Model.OrganisationAddress.Line2</div>
-                    <div data-test-id="org-page-address-3">@Model.OrganisationAddress.Line3</div>
-                    <div data-test-id="org-page-address-4">@Model.OrganisationAddress.Town</div>
-                    <div data-test-id="org-page-address-5">@Model.OrganisationAddress.County</div>
-                    <div data-test-id="org-page-address-6">@Model.OrganisationAddress.Postcode</div>
-                    <div data-test-id="org-page-address-7">@Model.OrganisationAddress.Country</div>
-                </div>
+    <nhs-page-title title="@Model.Organisation.Name" advice="These are the details for the organisation and its users." />
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="ODS code">
+            <p data-test-id="org-page-ods-code">
+                @Model.Organisation.OdsCode
+            </p>
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Primary Role ID">
+            <p>
+                @Model.Organisation.PrimaryRoleId
+            </p>
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Business address">
+            <div data-test-id="org-page-address">
+                <vc:nhs-address address="@Model.OrganisationAddress" />
             </div>
-        </div>
-    </div>
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Contract">
+            <p>
+                <a data-test-id="edit-org-button" asp-area="Admin" asp-controller="Organisations" asp-action="EditOrganisation" asp-route-id="@Model.Organisation.OrganisationId" class="bc-u-float-right nhsuk-u-margin-left-2">Change</a>
+                @Model.CatalogueAgreementText
+            </p>
+        </nhs-summary-list-row>
+    </nhs-summary-list>
 
-    <hr />
-
-    <h3 data-test-id="accounts-subheading" class="nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-7">User accounts for @Model.Organisation.Name</h3>
+    <h2 data-test-id="accounts-subheading">User accounts for @Model.Organisation.Name</h2>
 
     <div data-test-id="add-user-button">
-
-        <a class="nhsuk-button nhsuk-u-margin-bottom-9" href="/admin/organisations/@Model.Organisation.OrganisationId/adduser" draggable="false">
-            Add new user
-        </a>
+        <vc:nhs-action-link url="/admin/organisations/@Model.Organisation.OrganisationId/adduser" text="Add new user" />
     </div>
 
-    <div data-test-id="user-table" class="nhsuk-u-font-size-19">
-
-        <table data-test-id="table" class="" style="page-break-inside:auto">
-
-            <thead data-test-id="table-headings" style="display:table-header-group;">
-
-            <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 " style="width:">
-                <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Name</div>
-            </th>
-
-            <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 " style="width:">
-                <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">Telephone number</div>
-            </th>
-
-            <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 " style="width:">
-                <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold">Email address</div>
-            </th>
-
-            <th data-test-id="column-heading-3" class="nhsuk-u-padding-bottom-0 " style="width:">
-                <div data-test-id="column-heading-3-data" class="nhsuk-u-font-weight-bold"></div>
-            </th>
-            </thead>
-
-            <tbody>
-
-                @for (int i = 0; i < Model.Users.Count(); i++)
-                {
-                    <tr data-test-id="table-row-@i" style="page-break-inside:avoid; page-break-after:auto">
-                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                            <a data-test-id="user-name-@Model.Users[i].Id" href="/admin/organisations/@Model.Organisation.OrganisationId/@Model.Users[i].Id">@Model.Users[i].GetDisplayName()</a>
-                        </td>
-                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                            <div data-test-id="user-phone-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].PhoneNumber</div>
-                        </td>
-                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                            <div data-test-id="user-email-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].Email</div>
-                        </td>
-                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div data-test-id="user-table">
+        <nhs-table>
+            <nhs-table-column>
+                Name
+            </nhs-table-column>
+            <nhs-table-column>
+                Telephone number
+            </nhs-table-column>
+            <nhs-table-column>
+                Email address
+            </nhs-table-column>
+            <nhs-table-column>
+            </nhs-table-column>
+            @for (var i = 0; i < Model.Users.Count; i++)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>
+                        @Model.Users[i].GetDisplayName()
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <div data-test-id="user-phone-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].PhoneNumber</div>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <div data-test-id="user-email-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].Email</div>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a data-test-id="user-name-@Model.Users[i].Id" asp-area="Admin" asp-controller="Organisations" asp-action="UserDetails" asp-route-organisationId="@Model.Organisation.OrganisationId" asp-route-userId="@Model.Users[i].Id">Manage</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
     </div>
 
-    <h3 class="nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-7">Related organisations</h3>
+    <h2>Related organisations</h2>
     <p>These are the organisations @Model.Organisation.Name can create orders for.</p>
     <div data-test-id="add-organisation-button">
-        <a class="nhsuk-button nhsuk-u-margin-bottom-9" href="/admin/organisations/proxy/@Model.Organisation.OrganisationId" draggable="false">
-            Add an organisation
-        </a>
+        <vc:nhs-action-link url="/admin/organisations/proxy/@Model.Organisation.OrganisationId" text="Add an organisation" />
     </div>
 
-    <div id="related-org-table" data-test-id="related-org-table" class="nhsuk-u-font-size-19">
-
-        <table data-test-id="table" class="" style="page-break-inside:auto">
-
-            <thead data-test-id="table-headings" style="display:table-header-group;">
-
-            <th data-test-id="column-heading-0" class="nhsuk-u-padding-bottom-0 " style="width:">
-                <div data-test-id="column-heading-0-data" class="nhsuk-u-font-weight-bold">Organisation name</div>
-            </th>
-
-            <th data-test-id="column-heading-1" class="nhsuk-u-padding-bottom-0 " style="width:">
-                <div data-test-id="column-heading-1-data" class="nhsuk-u-font-weight-bold">ODS code</div>
-            </th>
-
-            <th data-test-id="column-heading-2" class="nhsuk-u-padding-bottom-0 " style="width:">
-                <div data-test-id="column-heading-2-data" class="nhsuk-u-font-weight-bold"></div>
-            </th>
-            </thead>
-
-            <tbody>
-
-                @for (int i = 0; i < Model.RelatedOrganisations.Count(); i++)
-                {
-                    <tr data-test-id="table-row-@i" style="page-break-inside:avoid; page-break-after:auto">
-                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                            <div data-test-id="related-org-name-@Model.RelatedOrganisations[i].OrganisationId" class="bc-c-data-text ">@Model.RelatedOrganisations[i].Name</div>
-                        </td>
-                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                            <div data-test-id="related-org-odsCode-@Model.RelatedOrganisations[i].OrganisationId" class="bc-c-data-text ">@Model.RelatedOrganisations[i].OdsCode</div>
-                        </td>
-                        <td class="nhsuk-u-padding-bottom-0" style="border-bottom-style: solid">
-                            <a data-test-id="related-org-remove-@Model.RelatedOrganisations[i].OrganisationId" href="/admin/organisations/removeproxy/@Model.Organisation.OrganisationId/@Model.RelatedOrganisations[i].OrganisationId">Remove</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div id="related-org-table" data-test-id="related-org-table">
+        <nhs-table>
+            <nhs-table-column>
+                Organisation name
+            </nhs-table-column>
+            <nhs-table-column>
+                ODS code
+            </nhs-table-column>
+            <nhs-table-column>
+            </nhs-table-column>
+            @for (var i = 0; i < Model.RelatedOrganisations.Count; i++)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <div data-test-id="related-org-name-@Model.RelatedOrganisations[i].OrganisationId" class="bc-c-data-text ">@Model.RelatedOrganisations[i].Name</div>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <div data-test-id="related-org-odsCode-@Model.RelatedOrganisations[i].OrganisationId" class="bc-c-data-text ">@Model.RelatedOrganisations[i].OdsCode</div>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a data-test-id="related-org-remove-@Model.RelatedOrganisations[i].OrganisationId" asp-area="Admin" asp-controller="Organisations" asp-action="RemoveAnOrganisation" asp-route-organisationId="@Model.Organisation.OrganisationId" asp-route-relatedOrganisationId="@Model.RelatedOrganisations[i].OrganisationId">Remove</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
     </div>
 </div>

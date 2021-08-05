@@ -1,70 +1,57 @@
-﻿@{
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+@{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewData["Title"] = "Catalogue Solutions to help deal with coronavirus vaccinations";
+    var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go back to previous page" };
 }
 
-<div class="nhsuk-grid-row nhsuk-width-container" data-test-id="solutions-list-body">
-
-    <div class="nhsuk-u-padding-top-5" data-test-id="go-back-link">
-        <div class="nhsuk-back-link">
-            <a class="nhsuk-back-link__link" href="~/">
-                <svg class="nhsuk-icon nhsuk-icon__chevron-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
-                </svg>
-                Go back to previous page
-            </a>
-        </div>
-    </div>
-
+<partial name="Partials/_BackLink" model="@backLinkModel" />
+<div data-test-id="solutions-list-body">
     <div class="nhsuk-grid-row" data-test-id="general-description">
         <div class="nhsuk-grid-column-two-thirds">
-
-            <h1 class="nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3">Catalogue Solutions to help with coronavirus vaccinations</h1>
-
-            <p class="nhsuk-heading-l nhsuk-u-font-size-22">The Catalogue Solutions listed below have been assured by NHS Digital and can help manage coronavirus vaccinations.</p>
+            <nhs-page-title title="Catalogue Solutions to help with coronavirus vaccinations"
+                            advice="The Catalogue Solutions listed below have been assured by NHS Digital and can help manage coronavirus vaccinations." />
+            <nhs-inset-text>
+                <p class="nhsuk-u-font-size-14">
+                    For more information, visit the <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/10584916017/Solutions+to+support+coronavirus+vaccination+rollout+in+Primary+Care+Networks+COVID+Vaccine">
+                        dedicated coronavirus vaccination page
+                    </a> on our Buyer’s Guide.
+                </p>
+            </nhs-inset-text>
         </div>
     </div>
-
-    <div data-test-id="vaccinations-inset-text" class="nhsuk-inset-text nhsuk-u-padding-2 nhsuk-u-padding-right-4 nhsuk-u-padding-left-4 nhsuk-u-margin-top-2 nhsuk-u-margin-bottom-6">
-        <span class="nhsuk-u-visually-hidden">Information: </span>
-        <p class="nhsuk-u-font-size-14">
-            For more information, visit the <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/10584916017/Solutions+to+support+coronavirus+vaccination+rollout+in+Primary+Care+Networks+COVID+Vaccine">
-                dedicated coronavirus vaccination page
-            </a> on our Buyer’s Guide.
-        </p>
-    </div>
-
-    <div data-test-id="solution-cards-vaccinations" class="nhsuk-u-margin-bottom-7 nhsuk-u-margin-top-7">
-
+    <div data-test-id="solution-cards-vaccinations">
         <div class="nhsuk-u-padding-bottom-5 nhsuk-u-padding-top-7 bc-t-border-top--blue" data-test-id="solution-card-vaccinations">
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-one-half">
 
                     <div data-test-id="solution-card-vaccinations-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Coronavirus vaccinations</div>
 
-                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                        <a href="~/solutions/vaccinations/10064-004">
+                    <h2 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-name">
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10064-004">
                             Medloop Integrated COVID-19 Vaccine Manager (ICVM)
                         </a>
-                    </h3>
+                    </h2>
 
-                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
+                    <h3 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-supplier">
                         Medloop Limited
-                    </h4>
+                    </h3>
 
                     <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
                         The ICVM is a COVID-19 vaccine appointment management solution that enables healthcare professionals to upload patient lists and invite patients (via SMS) to book their first and second vaccination appointment based on the default setting of the vaccine type. The solution also offers an intuitive calendar that has the ability to mark open time slots, book patients in and record any adverse reactions from the vaccination directly into the patient record.
                     </p>
 
                     <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a href="~/solutions/vaccinations/10064-004">View this solution<span class="nhsuk-u-visually-hidden"> for Medloop Integrated COVID-19 Vaccine Manager (ICVM)</span></a>
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10064-004">
+                            View this solution<span class="nhsuk-u-visually-hidden"> for Medloop Integrated COVID-19 Vaccine Manager (ICVM)</span>
+                        </a>
                     </div>
                 </div>
 
                 <div class="nhsuk-grid-column-one-half">
-                    <h5 class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
+                    <h4 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
                         How this Catalogue Solution can help with coronavirus vaccinations
-                    </h5>
+                    </h4>
                     <ul data-test-id="solution-card-vaccinations-list">
 
                         <li data-test-id="vaccinations-list-item" class="nhsuk-u-font-size-16">
@@ -101,15 +88,15 @@
 
                     <div data-test-id="solution-card-vaccinations-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Coronavirus vaccinations</div>
 
-                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                        <a href="/solutions/vaccinations/10061-017">
+                    <h2 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-name">
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10061-017">
                             eVacc
                         </a>
-                    </h3>
+                    </h2>
 
-                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
+                    <h3 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-supplier">
                         Eva Health Technologies
-                    </h4>
+                    </h3>
 
                     <div data-test-id="solution-card-summary">
                         <p class="nhsuk-u-font-size-16">
@@ -121,14 +108,16 @@
                     </div>
 
                     <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a href="/solutions/vaccinations/10061-017">View this solution<span class="nhsuk-u-visually-hidden"> for eVacc</span></a>
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10061-017">
+                            View this solution<span class="nhsuk-u-visually-hidden"> for eVacc</span>
+                        </a>
                     </div>
                 </div>
 
                 <div class="nhsuk-grid-column-one-half">
-                    <h5 class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
+                    <h4 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
                         How this Catalogue Solution can help with coronavirus vaccinations
-                    </h5>
+                    </h4>
                     <ul data-test-id="solution-card-vaccinations-list">
 
                         <li data-test-id="vaccinations-list-item" class="nhsuk-u-font-size-16">
@@ -161,29 +150,31 @@
 
                     <div data-test-id="solution-card-vaccinations-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Coronavirus vaccinations</div>
 
-                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                        <a href="/solutions/vaccinations/10034-029">
+                    <h2 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-name">
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10034-029">
                             CHS Vaccination Appointment Management
                         </a>
-                    </h3>
+                    </h2>
 
-                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
+                    <h3 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-supplier">
                         Cegedim Healthcare Solutions
-                    </h4>
+                    </h3>
 
                     <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
                         The CHS Vaccination Appointments Management app supports vaccination delivery within GP practices, primary care networks and shared care settings, ensuring the smooth running of all aspects of your vaccination sessions. Using our intelligent appointment tools, you can quickly arrange and manage your appointments sessions and efficiently manage patient arrivals and appointments processing.
                     </p>
 
                     <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a href="/solutions/vaccinations/10034-029">View this solution<span class="nhsuk-u-visually-hidden"> for CHS Vaccination Appointment Management</span></a>
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10034-029">
+                            View this solution<span class="nhsuk-u-visually-hidden"> for CHS Vaccination Appointment Management</span>
+                        </a>
                     </div>
                 </div>
 
                 <div class="nhsuk-grid-column-one-half">
-                    <h5 class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
+                    <h4 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
                         How this Catalogue Solution can help with coronavirus vaccinations
-                    </h5>
+                    </h4>
                     <ul data-test-id="solution-card-vaccinations-list">
 
                         <li data-test-id="vaccinations-list-item" class="nhsuk-u-font-size-16">
@@ -212,29 +203,31 @@
 
                     <div data-test-id="solution-card-vaccinations-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Coronavirus vaccinations</div>
 
-                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                        <a href="/solutions/vaccinations/10030-001">
+                    <h2 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-name">
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10030-001">
                             accuRx
                         </a>
-                    </h3>
+                    </h2>
 
-                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
+                    <h3 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-supplier">
                         accuRx Limited
-                    </h4>
+                    </h3>
 
                     <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
                         accuRx offers vaccine appointment management functionality via its accuBook Additional Service. accuBook allows the sending of vaccination invite communications, appointment notification, reminders, and the ability for patients to manage their own vaccination appointments.
                     </p>
 
                     <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a href="/solutions/vaccinations/10030-001">View this solution<span class="nhsuk-u-visually-hidden"> for accuRx</span></a>
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10030-001">
+                            View this solution<span class="nhsuk-u-visually-hidden"> for accuRx</span>
+                        </a>
                     </div>
                 </div>
 
                 <div class="nhsuk-grid-column-one-half">
-                    <h5 class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
+                    <h4 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
                         How this Catalogue Solution can help with coronavirus vaccinations
-                    </h5>
+                    </h4>
                     <ul data-test-id="solution-card-vaccinations-list">
 
                         <li data-test-id="vaccinations-list-item" class="nhsuk-u-font-size-16">
@@ -275,29 +268,31 @@
 
                     <div data-test-id="solution-card-vaccinations-tag" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Coronavirus vaccinations</div>
 
-                    <h3 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-size-32" data-test-id="solution-card-name">
-                        <a href="/solutions/vaccinations/10020-001">
+                    <h2 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-name">
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10020-001">
                             Q Doctor
                         </a>
-                    </h3>
+                    </h2>
 
-                    <h4 class="nhsuk-u-margin-bottom-2 nhsuk-u-font-weight-bold nhsuk-u-font-size-22" data-test-id="solution-card-supplier">
+                    <h3 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-supplier">
                         MyMed Ltd
-                    </h4>
+                    </h3>
 
                     <p data-test-id="solution-card-summary" class="nhsuk-u-font-size-16">
                         Q Doctor is a secure video consultation and appointment booking platform used around the NHS, enabling digital appointment booking (including COVID-19 vaccination appointment management) and remote consultations between clinicians and patients.
                     </p>
 
                     <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a href="/solutions/vaccinations/10020-001">View this solution<span class="nhsuk-u-visually-hidden"> for Q Doctor</span></a>
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="VaccinationsSolutionDetail" asp-route-id="10020-001">
+                            View this solution<span class="nhsuk-u-visually-hidden"> for Q Doctor</span>
+                        </a>
                     </div>
                 </div>
 
                 <div class="nhsuk-grid-column-one-half">
-                    <h5 class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
+                    <h4 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-vaccinations-title">
                         How this Catalogue Solution can help with coronavirus vaccinations
-                    </h5>
+                    </h4>
                     <ul data-test-id="solution-card-vaccinations-list">
 
                         <li data-test-id="vaccinations-list-item" class="nhsuk-u-font-size-16">

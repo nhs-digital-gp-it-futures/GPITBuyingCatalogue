@@ -3,50 +3,50 @@
     ViewData["Title"] = "Confirm organisation";
 }
 
-<div class="nhsuk-width-container" data-test-id="create-org-page">
+<div data-test-id="create-org-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <h1 data-test-id="create-org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Create organisation</h1>
-            <h2 data-test-id="create-org-page-description" class="nhsuk-u-font-size-22 nhsuk-u-margin-bottom-9">Create organisation on the Buying Catalogue.</h2>
-            <div class="nhsuk-grid-row nhsuk-u-margin-bottom-4">
-                <h3 data-test-id="organisation-details-heading" class="nhsuk-grid-column-one-half">Organisation details</h3>
-                <a data-test-id="change-org-link" href="/admin/organisations/find?ods=@Model.OdsOrganisation.OdsCode" class="nhsuk-grid-column-one-half nhsuk-u-font-size-19">Change organisation</a>
+            <nhs-page-title title="Create organisation" advice="Create organisation on the Buying Catalogue." />
+        </div>
+        <div class="nhsuk-grid-column-full">
+            <div class="nhsuk-grid-row">
+                <h2 data-test-id="organisation-details-heading" class="nhsuk-grid-column-one-half">Organisation details</h2>
+                <a data-test-id="change-org-link" asp-area="Admin" asp-controller="Organisations" asp-action="Find" asp-route-ods="@Model.OdsOrganisation.OdsCode" class="nhsuk-grid-column-one-half nhsuk-u-font-size-19">Change organisation</a>
             </div>
-            <h4 data-test-id="organisation-ods-code-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">@Model.OdsOrganisation.OdsCode</h4>
-            <div data-test-id="organisation-ods-code" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">13Y</div>
-            <h4 data-test-id="organisation-name-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Organisation name</h4>
-            <div data-test-id="organisation-name" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">@Model.OdsOrganisation.OrganisationName</div>
-            <h4 data-test-id="organisation-address-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Address</h4>
-            <div data-test-id="organisation-address" class="nhsuk-u-margin-bottom-5">
-                <div data-test-id="organisation-address-1" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Line1</div>
-                <div data-test-id="organisation-address-2" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Line2</div>
-                <div data-test-id="organisation-address-3" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Line3</div>
-                <div data-test-id="organisation-address-4" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Town</div>
-                <div data-test-id="organisation-address-5" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.County</div>
-                <div data-test-id="organisation-address-6" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Postcode</div>
-                <div data-test-id="organisation-address-7" class="nhsuk-u-font-size-19">@Model.OdsOrganisation.Address.Country</div>
-            </div>
-            <h4 data-test-id="organisation-primary-role-id-heading" class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Primary Role ID</h4>
-            <div data-test-id="organisation-primary-role-id" class="nhsuk-u-font-size-19 nhsuk-u-margin-bottom-5">RO98</div>
+        </div>
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="ODS code">
+                    <p>
+                        @Model.OdsOrganisation.OdsCode
+                    </p>
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Organisation name">
+                    <p>
+                        @Model.OdsOrganisation.OrganisationName
+                    </p>
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Address">
+                    <vc:nhs-address address="@Model.OdsOrganisation.Address" />
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Primary Role ID">
+                    <p>
+                        @Model.OdsOrganisation.PrimaryRoleId
+                    </p>
+                </nhs-summary-list-row>
+            </nhs-summary-list>
             <form method="post">
                 <input type="hidden" asp-for="@Model.OdsOrganisation.OdsCode" />
-                <div data-test-id="catalogue-agreement-checkbox" class="nhsuk-u-margin-bottom-9">
-                    <div class="nhsuk-form-group">
-                        <div class="nhsuk-checkboxes">
-                            <div class="nhsuk-checkboxes__item">
-                                <input class="nhsuk-checkboxes__input" asp-for="@Model.CatalogueAgreementSigned" type="checkbox">
-                                <label class="nhsuk-label nhsuk-checkboxes__label" for="catalogue-agreement-checkbox">
-                                    Ensure this organisation has a signed Organisation End User Agreement before confirming
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <nhs-fieldset-form-label asp-for="@Model">
+                    <nhs-checkbox-container>
+                        <nhs-checkbox
+                        asp-for="@Model.CatalogueAgreementSigned" 
+                        label-text="Ensure this organisation has a signed Organisation End User Agreement before confirming" />
+                    </nhs-checkbox-container>
+                </nhs-fieldset-form-label>
                 <div data-test-id="save-button">
-                    <button class="nhsuk-button nhsuk-u-margin-bottom-9" type="submit">
-                        Save
-                    </button>
+                    <nhs-submit-button text="Save" />
                 </div>
             </form>
         </div>

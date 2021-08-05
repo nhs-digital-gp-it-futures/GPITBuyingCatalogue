@@ -2,73 +2,61 @@
 
 @if (Model.DisplayHostingType)
 {
-    <div data-test-id="view-section-hosting-type-@Model.DataTestTag" class="">
-        <details class="nhsuk-details">
-            <summary class="nhsuk-details__summary">
-                <span class="nhsuk-details__summary-text">
-                    @Model.Label
-                </span>
-            </summary>
-            <div class="nhsuk-details__text">
-                <dl data-test-id="view-section-table-hosting-type-@Model.DataTestTag" class="nhsuk-summary-list">
-
-                    @if (Model.DisplaySummary)
-                    {
-                        <div data-test-id="view-section-table-row-summary" class="nhsuk-width-container bc-c-section-table-row ">
-                            <div data-test-id="view-section-table-row-vertical">
-                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Summary
-                                </h4>
-                                <div class="nhsuk-grid-row">
-                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                        @if (Model.DisplaySummaryDescription)
-                                        {
-                                            <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.Summary</div>
-                                        }
-                                        @if (Model.DisplayLink)
-                                        {
-                                            <div data-test-id="view-question-data-text-link" class="bc-c-data-link ">
-                                                <a href="@Model.Link" target="_blank">
-                                                    @Model.Link
-                                                </a>
-                                            </div>
-                                        }
-                                    </div>
+    <nhs-details label-text="@Model.Label"> 
+        @if (Model.DisplaySummary)
+        {
+            <div data-test-id="view-section-table-row-summary" class="bc-c-section-table-row ">
+                <div data-test-id="view-section-table-row-vertical">
+                    <h4 data-test-id="view-section-table-row-title">
+                        Summary
+                    </h4>
+                    <div class="nhsuk-grid-row">
+                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                            @if (Model.DisplaySummaryDescription)
+                            {
+                                <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.Summary</div>
+                            }
+                            @if (Model.DisplayLink)
+                            {
+                                <div data-test-id="view-question-data-text-link" class="bc-c-data-link ">
+                                    <a href="@Model.Link" target="_blank">
+                                        @Model.Link
+                                    </a>
                                 </div>
-                            </div>
+                            }
                         </div>
-                    }
-
-                    @if (Model.DisplayHostingModel)
-                    {
-                        <div data-test-id="view-section-table-row-hosting-model" class="nhsuk-width-container bc-c-section-table-row ">
-                            <div data-test-id="view-section-table-row-vertical">
-                                <h4 data-test-id="view-section-table-row-title" class="nhsuk-heading-xs nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">
-                                    Data center hosting model
-                                </h4>
-                                <div class="nhsuk-grid-row">
-                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                        <div data-test-id="view-question-data-text-hosting-model" class="bc-c-data-text ">@Model.HostingModel</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-
-                    @if (Model.DisplayRequiresHscn)
-                    {
-                        <div data-test-id="view-section-table-row-requires-hscn" class="nhsuk-width-container bc-c-section-table-row ">
-                            <div data-test-id="view-section-table-row-vertical">
-                                <div class="nhsuk-grid-row">
-                                    <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                        <div data-test-id="view-question-data-text-requires-hscn" class="bc-c-data-text nhsuk-u-font-weight-bold">@Model.RequiresHscn</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </dl>
+                    </div>
+                </div>
             </div>
-        </details>
-    </div>
+        }
+
+        @if (Model.DisplayHostingModel)
+        {
+            <div data-test-id="view-section-table-row-hosting-model" class="bc-c-section-table-row ">
+                <div data-test-id="view-section-table-row-vertical">
+                    <h4 data-test-id="view-section-table-row-title">
+                        Data center hosting model
+                    </h4>
+                    <div class="nhsuk-grid-row">
+                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                            <div data-test-id="view-question-data-text-hosting-model" class="bc-c-data-text ">@Model.HostingModel</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.DisplayRequiresHscn)
+        {
+            <div data-test-id="view-section-table-row-requires-hscn" class="bc-c-section-table-row ">
+                <div data-test-id="view-section-table-row-vertical">
+                    <div class="nhsuk-grid-row">
+                        <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
+                            <div data-test-id="view-question-data-text-requires-hscn" class="bc-c-data-text nhsuk-u-font-weight-bold">@Model.RequiresHscn</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </nhs-details>
 }

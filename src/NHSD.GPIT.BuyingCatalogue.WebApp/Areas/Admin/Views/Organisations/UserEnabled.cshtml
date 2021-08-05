@@ -4,8 +4,7 @@
     ViewData["Title"] = $"{Model.User.GetDisplayName()} account re-enabled";
 }
 
-<div class="nhsuk-width-container" data-test-id="enable-user-confirmation-page">
+<div data-test-id="enable-user-confirmation-page">
     <partial name="Partials/_BackLink" model="Model" />
-    <h1 data-test-id="enable-user-confirmation-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">@Model.User.GetDisplayName() account re-enabled</h1>
-    <h2 data-test-id="enable-user-confirmation-page-description" class="nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">The user account has been successfully reactivated.</h2>
+    <nhs-page-title title="@ViewData["Title"]" advice="The user account has been successfully reactivated." />
 </div>

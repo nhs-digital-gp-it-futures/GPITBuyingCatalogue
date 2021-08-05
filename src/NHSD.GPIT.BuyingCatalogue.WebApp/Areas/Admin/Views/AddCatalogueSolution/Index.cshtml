@@ -3,64 +3,60 @@
     Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
     ViewData["Title"] = "Add a Solution page";
 }
-<div class="nhsuk-width-container ">
-    <main id="maincontent" role="main">
-        <partial name="Partials/_BackLink" model="Model"/>
-        <div class="nhsuk-grid-row">
-            <nhs-validation-summary/>
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <nhs-validation-summary/>
 
-            <div class="nhsuk-grid-column-two-thirds">
-                <nhs-page-title title="Add a solution"
-                    advice="Provide the following information about your Catalogue Solution." />
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="Add a solution"
+            advice="Provide the following information about your Catalogue Solution." />
 
-                <h2>Solution details</h2>
-                <form method="post">
-                    <nhs-input asp-for="SolutionName"
-                               label-text="Solution name" />
+        <h2>Solution details</h2>
+        <form method="post">
+            <nhs-input asp-for="SolutionName"
+                       label-text="Solution name" />
 
-                    <nhs-select asp-for="SupplierId"
-                                asp-items="@(new SelectList(Model.SuppliersSelectList, "Value", "Text"))"
-                                label-text="Supplier name" />
+            <nhs-select asp-for="SupplierId"
+                        asp-items="@(new SelectList(Model.SuppliersSelectList, "Value", "Text"))"
+                        label-text="Supplier name" />
 
-                    <nhs-fieldset-form-label asp-for="@Model"
-                                             label-text="Frameworks"
-                                             label-hint="Select all the apply.">
-                        <nhs-checkbox-container>
-                            @for (var i = 0; i < Model.Frameworks.Count; i++)
-                            {
-                                @if (Model.Frameworks[i].Name == "GP IT Futures Framework")
-                                {
-                                    <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
-                                                  label-text="@Model.Frameworks[i].Name"
-                                                  hidden-input="@Model.Frameworks[i].FrameworkId"
-                                                  data-test-id="framework-names">
-                                        <nhs-checkbox-container>
-                                            <nhs-checkbox asp-for="@Model.Frameworks[i].IsFoundation"
-                                                          label-text="Foundation Solution"
-                                                          hidden-input="@Model.Frameworks[i].FrameworkId"
-                                                          data-test-id="foundation-solution" />
-                                        </nhs-checkbox-container>
-                                    </nhs-checkbox>
-                                }
-                                else
-                                {
-                                    <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
-                                                  label-text="@Model.Frameworks[i].Name"
-                                                  hidden-input="@Model.Frameworks[i].FrameworkId"
-                                                  data-test-id="framework-names" />
-                                }
-
-                            }
-                        </nhs-checkbox-container>
-                    </nhs-fieldset-form-label>
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Frameworks"
+                                     label-hint="Select all the apply.">
+                <nhs-checkbox-container>
                     @for (var i = 0; i < Model.Frameworks.Count; i++)
                     {
-                        <input type="hidden" asp-for="@Model.Frameworks[i].Name" />
+                        @if (Model.Frameworks[i].Name == "GP IT Futures Framework")
+                        {
+                            <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
+                                          label-text="@Model.Frameworks[i].Name"
+                                          hidden-input="@Model.Frameworks[i].FrameworkId"
+                                          data-test-id="framework-names">
+                                <nhs-checkbox-container>
+                                    <nhs-checkbox asp-for="@Model.Frameworks[i].IsFoundation"
+                                                  label-text="Foundation Solution"
+                                                  hidden-input="@Model.Frameworks[i].FrameworkId"
+                                                  data-test-id="foundation-solution" />
+                                </nhs-checkbox-container>
+                            </nhs-checkbox>
+                        }
+                        else
+                        {
+                            <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
+                                          label-text="@Model.Frameworks[i].Name"
+                                          hidden-input="@Model.Frameworks[i].FrameworkId"
+                                          data-test-id="framework-names" />
+                        }
+
                     }
-                    <br>
-                    <nhs-submit-button text="Save and continue" />
-                </form>
-            </div>
-        </div>
-    </main>
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+            @for (var i = 0; i < Model.Frameworks.Count; i++)
+            {
+                <input type="hidden" asp-for="@Model.Frameworks[i].Name" />
+            }
+            <br>
+            <nhs-submit-button text="Save and continue" />
+        </form>
+    </div>
 </div>

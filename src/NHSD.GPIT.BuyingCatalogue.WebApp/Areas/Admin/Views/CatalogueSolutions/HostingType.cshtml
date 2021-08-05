@@ -5,49 +5,41 @@
 @{
     ViewData["Title"] = "Catalogue Solution hosting type";
 }
-<div class="nhsuk-width-container">
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-full">
-            <partial name="Partials/_BackLink" model="Model" />
-        </div>
-        <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
-            <nhs-page-title title="Hosting Type" caption="@Model.SolutionName"
-                            advice="Let buyers know how your Catalogue Solution can be hosted. You must add at least one." />
 
-            <vc:nhs-action-link url="@Url.Action(
-            nameof(CatalogueSolutionsController.AddHostingType),
-            typeof(CatalogueSolutionsController).ControllerName(),
-            new { Model.SolutionId})" text="Add a hosting type" />
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="Hosting Type" caption="@Model.SolutionName"
+                        advice="Let buyers know how your Catalogue Solution can be hosted. You must add at least one." />
 
-            <p>
-                Use the link to add information on each of the hosting types your Catalogue Solution works with.
-            </p>
+        <vc:nhs-action-link url="@Url.Action(
+        nameof(CatalogueSolutionsController.AddHostingType),
+        typeof(CatalogueSolutionsController).ControllerName(),
+        new { Model.SolutionId})" text="Add a hosting type" />
+        <form method="post">
+            <input type="hidden" asp-for="@Model.SolutionId" />
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.ExistingHostingTypesCount" />
 
-            <form method="post">
-                <input type="hidden" asp-for="@Model.SolutionId" />
-                <input type="hidden" asp-for="@Model.BackLink" />
-                <input type="hidden" asp-for="@Model.ExistingHostingTypesCount" />
+            @if (Model.ExistingHostingTypes.Any())
+            {
+                <nhs-table>
+                    <nhs-table-column>Hosting types added</nhs-table-column>
+                    <nhs-table-column> </nhs-table-column>
 
-                @if (Model.ExistingHostingTypes.Any())
-                {
-                    <nhs-table>
-                        <nhs-table-column>Hosting types added</nhs-table-column>
-                        <nhs-table-column> </nhs-table-column>
-
-                        @foreach (var hostingType in Model.ExistingHostingTypes)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@hostingType.AsString(EnumFormat.DisplayName)</nhs-table-cell>
-                                <nhs-table-cell>
-                                    <a asp-action="@hostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                }
-                <nhs-submit-button text="Save and Continue" />
-            </form>
-        </div>
+                    @foreach (var hostingType in Model.ExistingHostingTypes)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@hostingType.AsString(EnumFormat.DisplayName)</nhs-table-cell>
+                            <nhs-table-cell>
+                                <a asp-action="@hostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            }
+            <nhs-submit-button text="Save and Continue" />
+        </form>
     </div>
 </div>

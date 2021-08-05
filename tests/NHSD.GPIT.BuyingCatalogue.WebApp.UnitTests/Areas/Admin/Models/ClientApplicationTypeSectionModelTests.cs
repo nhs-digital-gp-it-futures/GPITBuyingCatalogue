@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -34,8 +38,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [Theory]
         [CommonAutoData]
         public static void StatusClientApplicationType_AvailableType_ReturnsCompleted(
-            ClientApplicationTypeSectionModel model)
+            CatalogueItem catalogueItem,
+            ClientApplication clientApplication)
         {
+            clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based" };
+            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+
+            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+
             var actual = model.StatusClientApplicationType();
 
             actual.Should().Be(FeatureCompletionStatus.Completed);

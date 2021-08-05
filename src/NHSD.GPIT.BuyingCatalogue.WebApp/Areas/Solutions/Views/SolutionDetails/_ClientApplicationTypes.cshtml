@@ -1,258 +1,194 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ClientApplicationTypeModel;
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
+
 @if (Model.DisplayClientApplication)
 {
-    <div data-test-id="view-section-@Model.DataTestTag" class="">
-        <details class="nhsuk-details">
-            <summary class="nhsuk-details__summary">
-                <span class="nhsuk-details__summary-text">
-                    @Model.Label
-                </span>
-            </summary>
-            <div class="nhsuk-details__text">
-                <div data-test-id="view-section-dl-@Model.DataTestTag" class="nhsuk-summary-list">
-                    <dl class="nhsuk-summary-list">
 
-                        @if (Model.BrowsersSupported.Any())
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Supported browser types
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
-                                        <ul class="nhsuk-u-margin-bottom-0">
-                                            @foreach (var browser in Model.BrowsersSupported)
-                                            {
-                                                <li>@browser</li>
-                                            }
-                                        </ul>
-                                    </div>
-                                </dd>
-                            </div>
-                        }
+    <div data-test-id="view-section-dl-@Model.DataTestTag">
+        <nhs-details label-text="@Model.Label"> 
+            @if (Model.BrowsersSupported.Any())
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Supported browser types">
+                        <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                            <ul class="nhsuk-u-margin-bottom-0">
+                                @foreach (var browser in Model.BrowsersSupported)
+                                {
+                                    <li>@browser</li>
+                                }
+                            </ul>
+                        </div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (Model.MobileOperatingSystems.Any())
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Supported operating systems
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
-                                        <ul class="nhsuk-u-margin-bottom-0">
-                                            @foreach (var os in Model.MobileOperatingSystems)
-                                            {
-                                                <li>@os</li>
-                                            }
-                                        </ul>
-                                    </div>
-                                </dd>
-                            </div>
-                        }
+            @if (Model.MobileOperatingSystems.Any())
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Supported operating systems">
+                        <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                            <ul class="nhsuk-u-margin-bottom-0">
+                                @foreach (var os in Model.MobileOperatingSystems)
+                                {
+                                    <li>@os</li>
+                                }
+                            </ul>
+                        </div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrEmpty(Model.OperatingSystemDescription))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Description of supported operating systems
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-operating-systems-description" class="bc-c-data-text ">@Model.OperatingSystemDescription</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrEmpty(Model.OperatingSystemDescription))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Description of supported operating systems">
+                        <div data-test-id="view-question-data-text-operating-systems-description" class="bc-c-data-text ">@Model.OperatingSystemDescription</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (Model.MobileResponsive.HasValue)
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Mobile responsive
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-mobile-responsive" class="bc-c-data-text ">@Model.MobileResponsive.ToYesNo()</div>
-                                </dd>
-                            </div>
-                        }
+            @if (Model.MobileResponsive.HasValue)
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Mobile responsive">
+                        <div data-test-id="view-question-data-text-mobile-responsive" class="bc-c-data-text ">@Model.MobileResponsive.ToYesNo()</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (Model.MobileFirstDesign.HasValue)
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Mobile first approach
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-mobile-first-design" class="bc-c-data-text ">@Model.MobileFirstDesign.ToYesNo()</div>
-                                </dd>
-                            </div>
-                        }
+            @if (Model.MobileFirstDesign.HasValue)
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Mobile first approach">
+                        <div data-test-id="view-question-data-text-mobile-first-design" class="bc-c-data-text ">@Model.MobileFirstDesign.ToYesNo()</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (Model.PluginsRequired.HasValue)
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Plug-ins or extensions required
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-plugins-required" class="bc-c-data-text ">@Model.PluginsRequired.ToYesNo()</div>
-                                </dd>
-                            </div>
-                        }
+            @if (Model.PluginsRequired.HasValue)
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Plug-ins or extensions required">
+                        <div data-test-id="view-question-data-text-plugins-required" class="bc-c-data-text ">@Model.PluginsRequired.ToYesNo()</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.PluginDetails))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Additional information about plug-ins or extensions
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-plugins-detail" class="bc-c-data-text ">@Model.PluginDetails</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.PluginDetails))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Additional information about plug-ins or extensions">
+                        <div data-test-id="view-question-data-text-plugins-detail" class="bc-c-data-text ">@Model.PluginDetails</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.MinimumConnectionSpeed))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Minimum connection speed
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-minimum-connection-speed" class="bc-c-data-text ">@Model.MinimumConnectionSpeed</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.MinimumConnectionSpeed))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Minimum connection speed">
+                        <div data-test-id="view-question-data-text-minimum-connection-speed" class="bc-c-data-text ">@Model.MinimumConnectionSpeed</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (Model.MobileConnectionTypes.Any())
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Connection types supported
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
-                                        <ul class="nhsuk-u-margin-bottom-0">
-                                            @foreach (var connectionType in Model.MobileConnectionTypes)
-                                            {
-                                                <li>@connectionType</li>
-                                            }
-                                        </ul>
-                                    </div>
-                                </dd>
-                            </div>
-                        }
+            @if (Model.MobileConnectionTypes.Any())
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Connection types supported">
+                        <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                            <ul class="nhsuk-u-margin-bottom-0">
+                                @foreach (var connectionType in Model.MobileConnectionTypes)
+                                {
+                                    <li>@connectionType</li>
+                                }
+                            </ul>
+                        </div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.ScreenResolution))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Screen resolution and aspect ratio
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-minimum-desktop-resolution" class="bc-c-data-text ">@Model.ScreenResolution</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.ScreenResolution))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Screen resolution and aspect ratio">
+                        <div data-test-id="view-question-data-text-minimum-desktop-resolution" class="bc-c-data-text ">@Model.ScreenResolution</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.ConnectionRequirements))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Connection requirements
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-connection-requirements-description" class="bc-c-data-text ">@Model.ConnectionRequirements</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.ConnectionRequirements))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Connection requirements">
+                        <div data-test-id="view-question-data-text-connection-requirements-description" class="bc-c-data-text ">@Model.ConnectionRequirements</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.MemoryRequirements))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Memory size
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-minimum-memory-requirement" class="bc-c-data-text ">@Model.MemoryRequirements</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.MemoryRequirements))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Memory size">
+                        <div data-test-id="view-question-data-text-minimum-memory-requirement" class="bc-c-data-text ">@Model.MemoryRequirements</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.StorageSpace))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Storage space
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-storage-requirements-description" class="bc-c-data-text ">@Model.StorageSpace</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.StorageSpace))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Storage space">
+                        <div data-test-id="view-question-data-text-storage-requirements-description" class="bc-c-data-text ">@Model.StorageSpace</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.ProcessingPower))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Processing power
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-minimum-cpu" class="bc-c-data-text ">@Model.ProcessingPower</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.ProcessingPower))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Processing power">
+                        <div data-test-id="view-question-data-text-minimum-cpu" class="bc-c-data-text ">@Model.ProcessingPower</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.ThirdPartyComponents))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Third-party components
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-third-party-components" class="bc-c-data-text ">@Model.ThirdPartyComponents</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.ThirdPartyComponents))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Third-party components">
+                        <div data-test-id="view-question-data-text-third-party-components" class="bc-c-data-text ">@Model.ThirdPartyComponents</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.DeviceCapabilities))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Device capabilities
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-device-capabilities" class="bc-c-data-text ">@Model.DeviceCapabilities</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.DeviceCapabilities))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Device capabilities">
+                        <div data-test-id="view-question-data-text-device-capabilities" class="bc-c-data-text ">@Model.DeviceCapabilities</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.HardwareRequirements))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Hardware requirements
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-hardware-requirements-description" class="bc-c-data-text ">@Model.HardwareRequirements</div>
-                                </dd>
-                            </div>
-                        }
+            @if (!string.IsNullOrWhiteSpace(Model.HardwareRequirements))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Hardware requirements">
+                        <div data-test-id="view-question-data-text-hardware-requirements-description" class="bc-c-data-text ">@Model.HardwareRequirements</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
 
-                        @if (!string.IsNullOrWhiteSpace(Model.AdditionalInformation))
-                        {
-                            <div class="nhsuk-summary-list__row">
-                                <dt class="nhsuk-summary-list__key">
-                                    Additional information
-                                </dt>
-                                <dd class="nhsuk-summary-list__value">
-                                    <div data-test-id="view-question-data-text-additional-information" class="bc-c-data-text ">@Model.AdditionalInformation</div>
-                                </dd>
-                            </div>
-                        }
-                    </dl>
-                </div>
-            </div>
-        </details>
+            @if (!string.IsNullOrWhiteSpace(Model.AdditionalInformation))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Additional information">
+                        <div data-test-id="view-question-data-text-additional-information" class="bc-c-data-text ">@Model.AdditionalInformation</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+        </nhs-details>
     </div>
 }

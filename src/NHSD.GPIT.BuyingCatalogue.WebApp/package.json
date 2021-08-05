@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "govuk-frontend": "^3.11.0",
-    "nhsuk-frontend": "5.0.0"
+    "nhsuk-frontend": "5.0.0",
+    "node-sass": "^4.14.1"
   },
   "devDependencies": {
+    "clean-css": "^4.2.1",
     "del": "^4.1.1",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
@@ -21,7 +23,6 @@
     "gulp-htmlmin": "^5.0.1",
     "gulp-sass": "^4.0.2",
     "gulp-uglify": "^3.0.2",
-    "merge-stream": "^2.0.0",
-    "clean-css": "^4.2.1"
+    "merge-stream": "^2.0.0"
   }
 }

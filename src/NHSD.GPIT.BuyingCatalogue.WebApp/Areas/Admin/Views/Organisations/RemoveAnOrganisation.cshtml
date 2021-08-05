@@ -1,26 +1,20 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.RemoveAnOrganisationModel
 @{
-    ViewData["Title"] = "Buying Catalogue - Admin";
+    ViewData["Title"] = "Buying Catalogue – Admin";
 }
 
-<div class="nhsuk-width-container" data-test-id="remove-proxy-organisation-page">
+<div data-test-id="remove-proxy-organisation-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <h1 data-test-id="org-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Remove organisation</h1>
-            <p data-test-id="organisation-details-subheading" class="nhsuk-heading-l nhsuk-u-font-size-22 nhsuk-u-margin-bottom-7">
-                This organisation will no longer be able to act on behalf of @Model.RelatedOrganisation.Name.
-            </p>
+            <nhs-page-title title="Remove organisation" advice="This organisation will no longer be able to act on behalf of @Model.RelatedOrganisation.Name." />
             <form method="POST">
                 <input type="hidden" asp-for="@Model.RelatedOrganisation.OrganisationId" />
                 <input type="hidden" asp-for="@Model.OrganisationId" />
                 <div data-test-id="submit-button">
-                    <button class="nhsuk-button" type="submit">
-                        Remove organisation
-                    </button>
+                    <nhs-submit-button text="Remove organisation" />
                 </div>
-
-                <a href="/admin/organisations/@Model.OrganisationId">Cancel</a>
+                <a asp-area="Admin" asp-controller="Organisations" asp-action="Details" asp-route-id="@Model.OrganisationId">Cancel</a>
             </form>
         </div>
     </div>

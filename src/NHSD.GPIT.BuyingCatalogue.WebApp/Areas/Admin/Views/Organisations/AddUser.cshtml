@@ -3,89 +3,36 @@
     ViewData["Title"] = "Add new user";
 }
 
-<div class="nhsuk-width-container" data-test-id="add-user-page">
+<div data-test-id="add-user-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <h1 data-test-id="add-user-page-title" class="nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-3">Add new user</h1>
-            <h2 data-test-id="add-user-page-description" class="nhsuk-u-font-size-24 nhsuk-u-margin-bottom-6">Provide the following information to make a new user account.</h2>
-            <h3 data-test-id="org-name-subheading" class="nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">Organisation name</h3>
-            <div data-test-id="org-name" class="bc-c-data-text nhsuk-u-margin-bottom-9">@Model.Organisation.Name</div>
-
+            <nhs-validation-summary />
+            <nhs-page-title title="Add new user" advice="Provide the following information to make a new user account." />
+            <h2 data-test-id="org-name-subheading" class="nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2">Organisation name</h2>
+            <p data-test-id="org-name" class="bc-c-data-text nhsuk-u-margin-bottom-9">
+                @Model.Organisation.Name
+            </p>
             <form method="post">
+                <nhs-input
+                    asp-for="@Model.FirstName" 
+                    label-text="First name"
+                />
 
-                <div class="nhsuk-u-margin-bottom-4">
-                    <div data-test-id="question-firstName">
-                        <div data-test-id="text-field-input">
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.FirstName">
-                                    First name
-                                </label>
-                                <input class="nhsuk-input" asp-for="@Model.FirstName" type="text">
-                            </div>
-                        </div>
-                        <div data-test-id="text-field-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="nhsuk-u-margin-bottom-4">
-                    <div data-test-id="question-lastName">
-                        <div data-test-id="text-field-input">
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.LastName">
-                                    Last name
-                                </label>
-                                <input class="nhsuk-input" asp-for="@Model.LastName" type="text">
-                            </div>
-                        </div>
-                        <div data-test-id="text-field-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="nhsuk-u-margin-bottom-4">
-                    <div data-test-id="question-phoneNumber">
-                        <div data-test-id="text-field-input">
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.TelephoneNumber">
-                                    Telephone number
-                                </label>
-                                <input class="nhsuk-input" asp-for="@Model.TelephoneNumber" type="text">
-                            </div>
-                        </div>
-                        <div data-test-id="text-field-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="nhsuk-u-margin-bottom-4">
-                    <div data-test-id="question-emailAddress">
-                        <div data-test-id="text-field-input">
-                            <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
-                                <label class="nhsuk-label nhsuk-u-font-size-24 nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-2" asp-for="@Model.EmailAddress">
-                                    Email address
-                                </label>
-                                <input class="nhsuk-input" asp-for="@Model.EmailAddress" type="text">
-                            </div>
-                        </div>
-                        <div data-test-id="text-field-footer">
-                            <span class="nhsuk-label bc-t-font-color--grey-1 nhsuk-u-font-size-16">
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div data-test-id="add-user-button" class="nhsuk-u-margin-top-9">
-                    <button class="nhsuk-button nhsuk-u-margin-bottom-9" type="submit">
-                        Add user
-                    </button>
+                <nhs-input
+                    asp-for="@Model.LastName" 
+                    label-text="Last name"
+                />
+                <nhs-input
+                    asp-for="@Model.TelephoneNumber" 
+                    label-text="Telephone number"
+                />
+                <nhs-input
+                    asp-for="@Model.EmailAddress" 
+                    label-text="Email address"
+                />
+                <div data-test-id="add-user-button">
+                    <nhs-submit-button text="Add user" />
                 </div>
             </form>
         </div>

@@ -1,15 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased.MobileFirstApproachModel;
 @{
-    ViewData["Title"] = "Browser based application - mobile first approach";
+    ViewData["Title"] = "Browser-based application – mobile first approach";
 }
 
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
-        <partial name="Partials/_BackLink" model="Model" />
-    </div>
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="Browser-based application – mobile first approach"
+        <nhs-page-title title="@ViewData["Title"]"
                         advice="Let buyers know about the design concepts of your Catalogue Solution." />
         <form method="post">
             <input type="hidden" asp-for="@Model.SolutionId" />

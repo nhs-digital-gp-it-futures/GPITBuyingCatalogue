@@ -1,18 +1,19 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 {
     public sealed class ResetPasswordViewModel
     {
         [Required(ErrorMessage = ErrorMessages.PasswordRequired)]
-        [DataType(DataType.Password)]
         [DisplayName("Enter a password")]
+        [Password]
         public string Password { get; set; }
 
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = ErrorMessages.PasswordMismatch)]
+        [Compare(nameof(Password), ErrorMessage = ErrorMessages.PasswordMismatch)]
         [DisplayName("Confirm password")]
+        [Password]
         public string ConfirmPassword { get; set; }
 
         public string Email { get; set; }
