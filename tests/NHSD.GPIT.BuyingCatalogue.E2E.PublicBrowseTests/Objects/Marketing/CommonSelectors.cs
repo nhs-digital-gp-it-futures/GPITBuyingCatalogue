@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
 
         internal static By NhsInput => By.ClassName("nhsuk-input");
 
-        internal static By AdditionalInfoTextArea => By.Id("AdditionalInformation");
-
         internal static By BrowserBasedCheckbox => By.Id("BrowserBased");
 
         internal static By NativeMobileCheckbox => By.Id("NativeMobile");

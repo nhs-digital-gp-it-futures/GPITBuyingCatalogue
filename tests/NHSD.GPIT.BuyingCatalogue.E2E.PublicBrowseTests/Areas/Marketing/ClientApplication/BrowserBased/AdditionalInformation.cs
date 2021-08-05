@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -21,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public async Task AdditionalInformation_CompleteAllFields()
         {
-            var additionalInformation = TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 500);
+            var additionalInformation = TextGenerators.TextInputAddText(Objects.Common.CommonSelectors.AdditionalInfoTextArea, 500);
 
             CommonActions.ClickSave();
 
@@ -34,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void AdditionalInformation_SectionComplete()
         {
-            TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 500);
+            TextGenerators.TextInputAddText(Objects.Common.CommonSelectors.AdditionalInfoTextArea, 500);
 
             CommonActions.ClickSave();
 
