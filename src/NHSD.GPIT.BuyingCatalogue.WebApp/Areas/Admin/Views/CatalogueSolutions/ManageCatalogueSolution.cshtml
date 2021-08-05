@@ -15,167 +15,166 @@
     </nav>
 }
 
-<div class="nhsuk-width-container">
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-full">
-            <nhs-page-title title="@Model.Solution.Name"
-                            caption="@Model.Solution.Supplier.Name"
-                            advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
-            @if (!string.IsNullOrWhiteSpace(Model.LastUpdatedByName))
-            {
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Last updated by">
-                    @Model.LastUpdatedByName  
-                </nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Last updated">
-                    @Model.Solution.Solution.LastUpdated.ToLongDateString()
-                </nhs-summary-list-row>
-            </nhs-summary-list>
-            }
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@Model.Solution.Name"
+                        caption="@Model.Solution.Supplier.Name"
+                        advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
+        @if (!string.IsNullOrWhiteSpace(Model.LastUpdatedByName))
+        {
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Last updated by">
+                @Model.LastUpdatedByName  
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Last updated">
+                @Model.Solution.Solution.LastUpdated.ToLongDateString()
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+        }
 
-            <nhs-fieldset-form-container asp-for="@Model"
-                                         label-text="Sections"
-                                         size="Large"
-                                         label-hint="Provide as much information as possible for buyers. You can save your progress at any point, but a Catalogue Solution Listing page cannot be published until all mandatory fields have been completed.">
+        <nhs-fieldset-form-container asp-for="@Model"
+                                        label-text="Sections"
+                                        size="Large"
+                                        label-hint="Provide as much information as possible for buyers. You can save your progress at any point, but a Catalogue Solution Listing page cannot be published until all mandatory fields have been completed.">
 
-                <nhs-table>
-                    <nhs-table-column>Section</nhs-table-column>
-                    <nhs-table-column>Mandatory</nhs-table-column>
-                    <nhs-table-column>Status</nhs-table-column>
-                    <nhs-table-column></nhs-table-column>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Details</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Description</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        @{ var descriptionStatus = Model.StatusDescription(); }
-                        <nhs-table-cell>
-                            <nhs-tag colour="@descriptionStatus.TagColour()" text="@descriptionStatus.Name()"/>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="Description" asp-controller="CatalogueSolutions"
-                               asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Features</nhs-table-cell>
-                        <nhs-table-cell>No</nhs-table-cell>
-                        @{ var featuresStatus = Model.StatusFeatures(); }
-                        <nhs-table-cell>
-                            <nhs-tag colour="@featuresStatus.TagColour()" text="@featuresStatus.Name()"/>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="Features" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Capabilities</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>List Price</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Additional Services</nhs-table-cell>
-                        <nhs-table-cell>No</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Associated Services</nhs-table-cell>
-                        <nhs-table-cell>No</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Interoperability</nhs-table-cell>
-                        <nhs-table-cell>No</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="Interoperability" asp-controller="CatalogueSolutions"
-                               asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Implementation</nhs-table-cell>
-                        <nhs-table-cell>No</nhs-table-cell>
-                        @{ var implementationStatus = Model.StatusImplementation(); }
-                        <nhs-table-cell>
-                            <nhs-tag colour="@implementationStatus.TagColour()" text="@implementationStatus.Name()"/>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="Implementation" asp-controller="CatalogueSolutions"
-                               asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Client Application Type</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        @{ var clientApplicationTypeStatus = Model.StatusClientApplicationType(); }
-                        <nhs-table-cell>
-                            <nhs-tag colour="@clientApplicationTypeStatus.TagColour()" text="@clientApplicationTypeStatus.Name()" />
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Hosting Type</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        @{ var hostingTypeStatus = Model.StatusHostingType(); }
-                        <nhs-table-cell>
-                            <nhs-tag colour="@hostingTypeStatus.TagColour()" text="@hostingTypeStatus.Name()" />
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Service Level Agreement</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Development plans</nhs-table-cell>
-                        <nhs-table-cell>No</nhs-table-cell>
-                        @{ var roadMapStatus = Model.StatusRoadmap(); }
-                        <nhs-table-cell>
-                            <nhs-tag colour="@roadMapStatus.TagColour()" text="@roadMapStatus.Name()"/>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a asp-action="Roadmap" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    <nhs-table-row-container>
-                        <nhs-table-cell>Supplier details</nhs-table-cell>
-                        <nhs-table-cell>Yes</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                        <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
-                    </nhs-table-row-container>                    
-                </nhs-table>
-            </nhs-fieldset-form-container>
+            <nhs-table>
+                <nhs-table-column>Section</nhs-table-column>
+                <nhs-table-column>Mandatory</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column></nhs-table-column>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Details</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Description</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    @{ var descriptionStatus = Model.StatusDescription(); }
+                    <nhs-table-cell>
+                        <nhs-tag colour="@descriptionStatus.TagColour()" text="@descriptionStatus.Name()"/>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Description" asp-controller="CatalogueSolutions"
+                            asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Features</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    @{ var featuresStatus = Model.StatusFeatures(); }
+                    <nhs-table-cell>
+                        <nhs-tag colour="@featuresStatus.TagColour()" text="@featuresStatus.Name()"/>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Features" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Capabilities</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>List Price</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Additional Services</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Associated Services</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Interoperability</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Interoperability" asp-controller="CatalogueSolutions"
+                            asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Implementation</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    @{ var implementationStatus = Model.StatusImplementation(); }
+                    <nhs-table-cell>
+                        <nhs-tag colour="@implementationStatus.TagColour()" text="@implementationStatus.Name()"/>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Implementation" asp-controller="CatalogueSolutions"
+                            asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Client Application Type</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    @{ var clientApplicationTypeStatus = Model.StatusClientApplicationType(); }
+                    <nhs-table-cell>
+                        <nhs-tag colour="@clientApplicationTypeStatus.TagColour()" text="@clientApplicationTypeStatus.Name()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Hosting Type</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    @{ var hostingTypeStatus = Model.StatusHostingType(); }
+                    <nhs-table-cell>
+                        <nhs-tag colour="@hostingTypeStatus.TagColour()" text="@hostingTypeStatus.Name()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Service Level Agreement</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Development plans</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    @{ var roadMapStatus = Model.StatusRoadmap(); }
+                    <nhs-table-cell>
+                        <nhs-tag colour="@roadMapStatus.TagColour()" text="@roadMapStatus.Name()"/>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="Roadmap" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
+                    <nhs-table-cell>Supplier details</nhs-table-cell>
+                    <nhs-table-cell>Yes</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
+                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                </nhs-table-row-container>                    
+            </nhs-table>
+        </nhs-fieldset-form-container>
 
-            <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="What would you like to do with this Catalogue Solution?"
-                                     label-hint="Select one option."
-                                     size="Large">
-                <nhs-radio-buttons asp-for="SelectedOption"
-                                   values="Model.PublicationStatuses.Cast<object>()"
-                                   value-name="EnumMemberName"
-                                   display-name="Name" />
-            </nhs-fieldset-form-label>
+        <nhs-fieldset-form-label asp-for="@Model"
+                                    label-text="What would you like to do with this Catalogue Solution?"
+                                    label-hint="Select one option."
+                                    size="Large">
+            <nhs-radio-buttons asp-for="SelectedOption"
+                                values="Model.PublicationStatuses.Cast<object>()"
+                                value-name="EnumMemberName"
+                                display-name="Name" />
+        </nhs-fieldset-form-label>
 
-            <nhs-submit-button text="Continue" />
-        </div>
+        <nhs-submit-button text="Continue" />
     </div>
 </div>
+
