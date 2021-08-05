@@ -1,9 +1,14 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class PasswordAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Property)]
+    public class PasswordAttribute : DataTypeAttribute
     {
+        public PasswordAttribute()
+            : base(DataType.Password)
+        {
+        }
     }
 }
