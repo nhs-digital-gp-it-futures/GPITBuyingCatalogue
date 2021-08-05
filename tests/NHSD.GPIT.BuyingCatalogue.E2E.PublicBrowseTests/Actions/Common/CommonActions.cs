@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
                 .Single(r => r.FindElement(By.TagName("label")).Text == label)
                 .FindElement(By.TagName("input"))
                 .Click();
+
+        internal IEnumerable<string> GetTableRowCells(int cellIndex = 0)
+        {
+            return Driver.FindElements(CommonSelectors.TableRow)
+                .Select(r => r.FindElements(CommonSelectors.TableCell)[cellIndex].Text);
+        }
 
         internal string ClickCheckbox(By targetField, int index = 0)
         {
