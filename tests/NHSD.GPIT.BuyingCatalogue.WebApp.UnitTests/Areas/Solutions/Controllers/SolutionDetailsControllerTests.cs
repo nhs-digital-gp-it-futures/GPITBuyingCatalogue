@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -811,44 +814,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Interoperability_ValidSolutionForId_MapsToModel(CatalogueItemId id)
+        public static async Task Get_Interoperability_ValidSolutionForId_ReturnsExpectedViewResult(
+            CatalogueItemId id,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            SolutionDetailsController controller)
         {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionDetailsController(
-                mockMapper.Object,
-                mockService.Object);
+            catalogueItem.Solution.Integrations = GetIntegrationsJson();
 
-            await controller.Interoperability(id);
+            var expectedViewData = new InteroperabilityModel(catalogueItem);
 
-            mockMapper.Verify(m => m.Map<CatalogueItem, InteroperabilityModel>(mockCatalogueItem));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Interoperability_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
-        {
-            var mockSolutionInteroperabilityModel = new Mock<InteroperabilityModel>().Object;
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, InteroperabilityModel>(mockCatalogueItem))
-                .Returns(mockSolutionInteroperabilityModel);
-            var controller = new SolutionDetailsController(
-                mockMapper.Object,
-                mockService.Object);
+            mockSolutionService.Setup(s => s.GetSolutionOverview(id))
+                .ReturnsAsync(catalogueItem);
 
             var actual = (await controller.Interoperability(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockSolutionInteroperabilityModel);
+            actual.Model.Should().BeEquivalentTo(expectedViewData);
         }
 
         [Theory]
@@ -1015,6 +998,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockAdditionalServicesModel);
+        }
+
+        private static string GetIntegrationsJson()
+        {
+            var integrations = new List<Integration>
+            {
+                new Integration
+                {
+                    Id = Guid.NewGuid(),
+                    IntegrationType = "IM1",
+                    Qualifier = "Bulk",
+                    IntegratesWith = "Audit+",
+                    Description = "Audit+ utilises a bulk extraction of full clinical records (including confidential and deceased patients) from EMIS Web to provide General Practices with a crossplatform clinical decision support and management tool; supporting QOF performance management, improvement and NHS Health Checks.",
+                },
+                new Integration
+                {
+                    Id = Guid.NewGuid(),
+                    IntegrationType = "GP Connect",
+                    Qualifier = "Access Record HTML",
+                    AdditionalInformation = "EMIS Web received Full Roll Out Approval from NHS Digital for GP Connect HTML View Provision on 20/06/19",
+                },
+            };
+
+            return JsonConvert.SerializeObject(integrations);
         }
     }
 }

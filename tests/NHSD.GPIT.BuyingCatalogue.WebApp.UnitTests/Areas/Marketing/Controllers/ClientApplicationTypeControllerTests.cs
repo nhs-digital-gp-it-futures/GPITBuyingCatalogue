@@ -271,24 +271,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_NativeMobile_ValidId_ReturnsExpectedViewWithModel(CatalogueItemId id)
+        public static async Task Get_NativeMobile_ValidId_ReturnsExpectedViewWithModel(
+            [Frozen] CatalogueItemId id,
+            CatalogueItem catalogueItem,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            [Frozen] Mock<IMapper> mapperMock,
+            ClientApplicationTypeController controller,
+            NativeMobileModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            mockService.Setup(x => x.GetSolution(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var mockMapper = new Mock<IMapper>();
-            var mockNativeMobileModel = new Mock<NativeMobileModel>().Object;
-            mockMapper.Setup(x => x.Map<CatalogueItem, NativeMobileModel>(mockCatalogueItem))
-                .Returns(mockNativeMobileModel);
-            var controller = new ClientApplicationTypeController(
-                mockMapper.Object, mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetSolution(id)).ReturnsAsync(catalogueItem);
+            mapperMock.Setup(m => m.Map<CatalogueItem, NativeMobileModel>(catalogueItem)).Returns(model);
 
             var actual = (await controller.NativeMobile(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().Be(mockNativeMobileModel);
+            actual.Model.Should().Be(model);
         }
 
         [Fact]
@@ -435,48 +433,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         [CommonAutoData]
         public static async Task Post_ClientApplicationTypes_ValidModel_MapsModelToClientApplication(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<IMapper> mapperMock,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            ClientApplicationTypeController controller,
             ClientApplicationTypesModel model)
         {
-            var mockMapper = new Mock<IMapper>();
-            var mockService = new Mock<ISolutionsService>();
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(s => s.GetClientApplication(id)).ReturnsAsync(mockClientApplication);
-            var controller = new ClientApplicationTypeController(
-                mockMapper.Object, mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.ClientApplicationTypes(id, model);
 
-            mockMapper.Verify(x => x.Map(model, mockClientApplication));
+            mapperMock.Verify(m => m.Map(model, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_ClientApplicationTypes_ValidModel_CallSaveClientApplicationOnService(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            ClientApplicationTypeController controller,
             ClientApplicationTypesModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(s => s.GetClientApplication(id)).ReturnsAsync(mockClientApplication);
-            var controller = new ClientApplicationTypeController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             await controller.ClientApplicationTypes(id, model);
 
-            mockService.Verify(x => x.SaveClientApplication(id, mockClientApplication));
+            solutionsServiceMock.Verify(s => s.SaveClientApplication(id, clientApplication));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_ClientApplicationTypes_ValidModel_ReturnsRedirectResult(
             [Frozen] CatalogueItemId id,
+            ClientApplication clientApplication,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            ClientApplicationTypeController controller,
             ClientApplicationTypesModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
-            var mockClientApplication = new Mock<ClientApplication>().Object;
-            mockService.Setup(s => s.GetClientApplication(id)).ReturnsAsync(mockClientApplication);
-            var controller = new ClientApplicationTypeController(
-                Mock.Of<IMapper>(), mockService.Object);
+            solutionsServiceMock.Setup(s => s.GetClientApplication(id)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.ClientApplicationTypes(id, model)).As<RedirectToActionResult>();
 

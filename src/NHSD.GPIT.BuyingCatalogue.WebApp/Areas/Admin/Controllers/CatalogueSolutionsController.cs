@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
@@ -112,6 +113,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.Summary,
                 model.Description,
                 model.Link);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/interoperability")]
+        public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new InteroperabilityModel(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/Interoperability")]
+        public async Task<IActionResult> Interoperability(CatalogueItemId solutionId, InteroperabilityModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var solution = await solutionsService.GetSolution(solutionId);
+                model.SetSolution(solution);
+                return View(model);
+            }
+
+            await solutionsService.SaveIntegrationLink(solutionId, model.Link);
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
@@ -376,8 +403,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 : model.Browsers.Where(b => b.Checked).Select(b => b.BrowserName).ToHashSet();
 
             clientApplication.MobileResponsive = string.IsNullOrWhiteSpace(model.MobileResponsive)
-                ? (bool?)null
+                ? null
                 : model.MobileResponsive.EqualsIgnoreCase("Yes");
+
+            // TODO: refactor use of string literal
+            clientApplication.ClientApplicationTypes.Add("browser-based");
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -410,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 AdditionalInformation = model.AdditionalInformation,
                 Required = string.IsNullOrWhiteSpace(model.PlugInsRequired)
-                    ? (bool?)null
+                    ? null
                     : model.PlugInsRequired.EqualsIgnoreCase("Yes"),
             };
 
@@ -502,6 +532,60 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
             return RedirectToAction(nameof(BrowserBased), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/client-application-type")]
+        public async Task<IActionResult> ClientApplicationType(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new ClientApplicationTypeSectionModel(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/client-application-type")]
+        public async Task<IActionResult> ClientApplicationType(CatalogueItemId solutionId, ClientApplicationTypeSectionModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var catalogueItem = await solutionsService.GetSolution(solutionId);
+
+            ClientApplication clientApplication = new ClientApplication
+            {
+                ClientApplicationTypes = catalogueItem.Solution?.GetClientApplication()?.ClientApplicationTypes,
+            };
+
+            await solutionsService.SaveClientApplication(solutionId, clientApplication);
+
+            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/client-application-type/add-application-type")]
+        public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new ClientApplicationTypeSelectionModel(solution));
+        }
+
+        [HttpPost("manage/{solutionId}/client-application-type/add-application-type")]
+        public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId, ClientApplicationTypeSelectionModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var solution = await solutionsService.GetSolution(solutionId);
+                return View(new ClientApplicationTypeSelectionModel(solution));
+            }
+
+            return model.SelectedApplicationType is null
+                ? RedirectToAction(nameof(ClientApplicationType), new { solutionId })
+                : RedirectToAction(model.SelectedApplicationType.ToString(), new { solutionId });
         }
     }
 }

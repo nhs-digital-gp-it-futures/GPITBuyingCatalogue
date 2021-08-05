@@ -1,0 +1,36 @@
+﻿@using System.Linq
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.ClientApplicationTypeSelectionModel
+@{
+    ViewData["Title"] = "Add an application type";
+    var anyApplicationTypes = Model.ApplicationTypesToAdd.Any();
+}
+<div class="nhsuk-width-container ">
+    <main id="maincontent" role="main">
+        <partial name="Partials/_BackLink" model="Model" />
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <nhs-validation-summary />
+                <nhs-page-title title="Add an application type"
+                                advice="@(anyApplicationTypes ? "Select an application type that supports your Catalogue Solution. You can add other options later." : "All application types already added.")" />
+                <form method="post">
+                    <input type="hidden" asp-for="@Model.ApplicationTypesAvailableForSelection" value="@anyApplicationTypes" />
+
+                    @if (anyApplicationTypes)
+                    {
+                        <div class="nhsuk-form-group">
+                            <nhs-fieldset-form-label asp-for="@Model">
+                                <nhs-radio-buttons asp-for="@Model.SelectedApplicationType"
+                                                   values="@Model.ApplicationTypesToAddRadioItems"
+                                                   value-name="Value"
+                                                   display-name="Text" />
+                            </nhs-fieldset-form-label>
+                        </div>
+                        <br />
+                    }
+
+                    <nhs-submit-button text="Save and continue" />
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

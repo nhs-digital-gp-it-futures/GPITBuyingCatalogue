@@ -4,8 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing
 {
     internal static class CommonSelectors
     {
-        internal static By Link => By.Id("Link");
-
         internal static By Description => By.Id("Description");
 
         internal static By Summary => By.Id("Summary");

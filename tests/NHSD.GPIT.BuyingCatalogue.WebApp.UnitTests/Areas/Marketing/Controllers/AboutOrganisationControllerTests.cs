@@ -54,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             typeof(AboutOrganisationController)
                 .GetMethods()
-                .First(x => x.Name == nameof(AboutOrganisationController.AboutSupplier)
-                            && x.GetCustomAttribute<HttpGetAttribute>() != null)
+                .First(m => m.Name == nameof(AboutOrganisationController.AboutSupplier)
+                            && m.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             await controller.AboutSupplier(id);
 
-            mockService.Verify(x => x.GetSolution(id));
+            mockService.Verify(s => s.GetSolution(id));
         }
 
         [Theory]
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            mockService.Setup(x => x.GetSolution(id))
+            mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
             var controller = new AboutOrganisationController(
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             await controller.AboutSupplier(id);
 
-            mockMapper.Verify(x => x.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem));
+            mockMapper.Verify(m => m.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem));
         }
 
         [Theory]
@@ -97,11 +97,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            mockService.Setup(x => x.GetSolution(id))
+            mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
             var mockAboutSupplierModel = new Mock<AboutSupplierModel>().Object;
-            mockMapper.Setup(x => x.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem))
+            mockMapper.Setup(m => m.Map<CatalogueItem, AboutSupplierModel>(mockCatalogueItem))
                 .Returns(mockAboutSupplierModel);
             var controller = new AboutOrganisationController(
                 mockMapper.Object, mockService.Object);
@@ -118,8 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             typeof(AboutOrganisationController)
                 .GetMethods()
-                .First(x => x.Name == nameof(AboutOrganisationController.AboutSupplier)
-                            && x.GetCustomAttribute<HttpPostAttribute>() != null)
+                .First(m => m.Name == nameof(AboutOrganisationController.AboutSupplier)
+                            && m.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be(nameof(AboutOrganisationController.AboutSupplier).ToLowerCaseHyphenated());
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             await controller.AboutSupplier(id, new Mock<AboutSupplierModel>().Object);
 
             mockService.Verify(
-                x => x.SaveSupplierDescriptionAndLink(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+                s => s.SaveSupplierDescriptionAndLink(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
                 Times.Never);
         }
 
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             await controller.AboutSupplier(id, model);
 
-            mockService.Verify(x => x.SaveSupplierDescriptionAndLink(
+            mockService.Verify(s => s.SaveSupplierDescriptionAndLink(
                 model.SupplierId,
                 model.Description,
                 model.Link));
@@ -195,8 +195,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             typeof(AboutOrganisationController)
                 .GetMethods()
-                .First(x => x.Name == nameof(AboutOrganisationController.ContactDetails)
-                            && x.GetCustomAttribute<HttpGetAttribute>() != null)
+                .First(m => m.Name == nameof(AboutOrganisationController.ContactDetails)
+                            && m.GetCustomAttribute<HttpGetAttribute>() != null)
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template
                 .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
@@ -212,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             await controller.ContactDetails(id);
 
-            mockService.Verify(x => x.GetSolution(id));
+            mockService.Verify(s => s.GetSolution(id));
         }
 
         [Theory]
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         public static async Task Get_ContactDetails_NullSolutionFromService_ReturnsBadRequestResponse(CatalogueItemId id)
         {
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetSolution(id))
+            mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new AboutOrganisationController(
                 Mock.Of<IMapper>(), mockService.Object);
@@ -238,11 +238,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockContactDetailsModel = new Mock<ContactDetailsModel>().Object;
             var mockCatalogueItem = new Mock<CatalogueItem>().Object;
             var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(x => x.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem))
+            mockMapper.Setup(m => m.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem))
                 .Returns(mockContactDetailsModel);
 
             var mockService = new Mock<ISolutionsService>();
-            mockService.Setup(x => x.GetSolution(id))
+            mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(mockCatalogueItem);
 
             var controller = new AboutOrganisationController(
@@ -250,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             var actual = (await controller.ContactDetails(id)).As<ViewResult>();
 
-            mockMapper.Verify(x => x.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem));
+            mockMapper.Verify(m => m.Map<CatalogueItem, ContactDetailsModel>(mockCatalogueItem));
             actual.ViewName.Should().BeNull();
             actual.Model.Should().Be(mockContactDetailsModel);
         }
@@ -260,8 +260,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             typeof(AboutOrganisationController)
                 .GetMethods()
-                .First(x => x.Name == nameof(AboutOrganisationController.ContactDetails)
-                            && x.GetCustomAttribute<HttpPostAttribute>() != null)
+                .First(m => m.Name == nameof(AboutOrganisationController.ContactDetails)
+                            && m.GetCustomAttribute<HttpPostAttribute>() != null)
                 .GetCustomAttribute<HttpPostAttribute>()
                 .Template
                 .Should().Be(nameof(AboutOrganisationController.ContactDetails).ToLowerCaseHyphenated());
@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             await controller.ContactDetails(id, new Mock<ContactDetailsModel>().Object);
 
-            mockService.Verify(x => x.SaveSupplierContacts(It.IsAny<SupplierContactsModel>()), Times.Never);
+            mockService.Verify(s => s.SaveSupplierContacts(It.IsAny<SupplierContactsModel>()), Times.Never);
         }
 
         [Theory]
@@ -307,26 +307,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
 
             await controller.ContactDetails(id, contactDetailsModel);
 
-            mapper.Verify(x => x.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel));
+            mapper.Verify(m => m.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel));
         }
 
-        // TODO: fix
-        [Theory(Skip = "Broken")]
+        [Theory]
         [CommonAutoData]
-        public static async Task Post_ContactDetails_ModelValid_CallsSaveOnService(CatalogueItemId id)
+        public static async Task Post_ContactDetails_ModelValid_CallsSaveOnService(
+            CatalogueItemId id,
+            ContactDetailsModel contactDetailsModel,
+            SupplierContactsModel supplierContactsModel,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            [Frozen] Mock<IMapper> mapper,
+            AboutOrganisationController controller)
         {
-            var contactDetailsModel = new Mock<ContactDetailsModel>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mapper = new Mock<IMapper>();
-            var supplierContactsModel = new Mock<SupplierContactsModel>().Object;
-            mapper.Setup(x => x.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel))
+            mapper.Setup(m => m.Map<ContactDetailsModel, SupplierContactsModel>(contactDetailsModel))
                 .Returns(supplierContactsModel);
-            var controller = new AboutOrganisationController(
-                mapper.Object, mockService.Object);
 
             await controller.ContactDetails(id, contactDetailsModel);
 
-            mockService.Verify(x => x.SaveSupplierContacts(supplierContactsModel));
+            solutionsServiceMock.Verify(s => s.SaveSupplierContacts(supplierContactsModel));
         }
 
         [Theory]
