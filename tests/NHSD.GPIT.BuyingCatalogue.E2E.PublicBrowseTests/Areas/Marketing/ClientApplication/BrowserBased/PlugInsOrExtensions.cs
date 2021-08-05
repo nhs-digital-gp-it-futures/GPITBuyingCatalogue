@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -24,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         public async Task PlugInsOrExtensions_SelectRadioButton(string label)
         {
             CommonActions.ClickRadioButtonWithText(label);
-            var additional = TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 100);
+            var additional = TextGenerators.TextInputAddText(Objects.Common.CommonSelectors.AdditionalInfoTextArea, 100);
 
             CommonActions.ClickSave();
 
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         public void PlugInsOrExtensions_SectionComplete()
         {
             CommonActions.ClickRadioButtonWithText("Yes");
-            TextGenerators.TextInputAddText(CommonSelectors.AdditionalInfoTextArea, 100);
+            TextGenerators.TextInputAddText(Objects.Common.CommonSelectors.AdditionalInfoTextArea, 100);
 
             CommonActions.ClickSave();
 

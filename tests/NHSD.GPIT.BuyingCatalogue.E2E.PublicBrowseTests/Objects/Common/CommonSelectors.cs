@@ -23,5 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
         internal static By TableRow => By.CssSelector("tbody tr.nhsuk-table__row");
 
         internal static By TableCell => By.CssSelector("td.nhsuk-table__cell");
+
+        internal static By AdditionalInfoTextArea => By.Id("AdditionalInformation");
     }
 }
