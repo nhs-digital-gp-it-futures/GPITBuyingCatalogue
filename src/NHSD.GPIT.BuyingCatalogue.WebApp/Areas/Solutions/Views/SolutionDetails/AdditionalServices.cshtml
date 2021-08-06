@@ -54,7 +54,7 @@
                     </p>
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Capabilities and Epics" data-test-id="capability-epics">
-                    <a asp-action="CapabilitiesAdditionalServices" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" asp-route-additionalId="@Model.Services[i].SolutionId" class="nhsuk-breadcrumb__link">
+                    <a asp-action="CapabilitiesAdditionalServices" asp-controller="SolutionDetails" asp-route-solutionId="@Model.SolutionId" asp-route-additionalServiceId="@Model.Services[i].SolutionId" class="nhsuk-breadcrumb__link">
                         Check Capabilities and Epics
                     </a>
                 </nhs-summary-list-row>

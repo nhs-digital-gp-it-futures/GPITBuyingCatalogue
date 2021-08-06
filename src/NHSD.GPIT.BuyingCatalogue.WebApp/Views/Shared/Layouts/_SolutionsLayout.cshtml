@@ -30,7 +30,7 @@
                 @if (Model.NotFirstSection())
                 {
                     <li class="nhsuk-breadcrumb__item">
-                        <a asp-action="Description" asp-controller="SolutionDetails" asp-route-id="@Model.SolutionId" class="nhsuk-breadcrumb__link">
+                        <a asp-action="Description" asp-controller="SolutionDetails" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">
                             @Model.SolutionName
                         </a>
                     </li>
@@ -64,7 +64,7 @@
                             <li class="nhsuk-contents-list__item">
                                 <a asp-action="@sectionModel.Action"
                                    asp-controller="@sectionModel.Controller"
-                                   asp-route-id="@sectionModel.Id"
+                                   asp-route-solutionId="@sectionModel.Id"
                                    class="nhsuk-contents-list__link">
                                     @sectionModel.Name
                                 </a>

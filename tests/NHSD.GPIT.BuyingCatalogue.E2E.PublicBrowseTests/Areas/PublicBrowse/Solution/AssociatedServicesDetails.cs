@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -7,14 +8,26 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public class AssociatedServicesDetails : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AssociatedServicesDetails : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private static readonly CatalogueItemId SolutionId = new(99999, "001");
+
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(SolutionId), SolutionId.ToString() },
+        };
+
         public AssociatedServicesDetails(LocalWebApplicationFactory factory)
-            : base(factory, "solutions/futures/99999-001/associated-services")
+            : base(
+                  factory,
+                  typeof(SolutionDetailsController),
+                  nameof(SolutionDetailsController.AssociatedServices),
+                  Parameters)
         {
         }
 

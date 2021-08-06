@@ -2,14 +2,19 @@
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.PublicBrowse.Areas.Solutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
 {
-    public sealed class GPITFoundationTests : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class GPITFoundationTests : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public GPITFoundationTests(LocalWebApplicationFactory factory)
-            : base(factory, "solutions/futures/foundation")
+            : base(
+                  factory,
+                  typeof(FuturesController),
+                  nameof(FuturesController.Foundation),
+                  null)
         {
         }
 
