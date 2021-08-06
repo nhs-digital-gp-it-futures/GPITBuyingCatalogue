@@ -22,9 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         [InlineData("Authority")]
         public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(string organisationFunction)
         {
-            var user = new AspNetUser { Id = "123", UserName = "Foo", OrganisationFunction = organisationFunction, FirstName = "Fred", LastName = "Smith" };
-            var userManager = MockUserManager<AspNetUser>();
-            userManager.Setup(m => m.GetUserIdAsync(user)).ReturnsAsync(user.Id);
+            var user = new AspNetUser { Id = Guid.NewGuid(), UserName = "Foo", OrganisationFunction = organisationFunction, FirstName = "Fred", LastName = "Smith" };
+            var userManager = MockUserManager();
+            userManager.Setup(m => m.GetUserIdAsync(user)).ReturnsAsync(user.Id.ToString());
             userManager.Setup(m => m.GetUserNameAsync(user)).ReturnsAsync(user.UserName);
 
             var orgService = new Mock<IOrganisationsService>();
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             userManager.Object.Options = identityOptions;
 
-            var factory = new UserClaimsPrincipalFactoryEx<AspNetUser>(
+            var factory = new UserClaimsPrincipalFactoryEx(
                 userManager.Object,
                 options.Object,
                 orgService.Object);
@@ -60,13 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             Assert.Contains(GetClaimValues(principal, "secondaryOrganisationOdsCode"), s => s.EqualsIgnoreCase("GHI"));
         }
 
-        public static Mock<UserManager<TUser>> MockUserManager<TUser>()
-            where TUser : class
+        public static Mock<UserManager<AspNetUser>> MockUserManager()
         {
-            var store = new Mock<IUserStore<TUser>>();
-            var mgr = new Mock<UserManager<TUser>>(store.Object, null, null, null, null, null, null, null, null);
-            mgr.Object.UserValidators.Add(new UserValidator<TUser>());
-            mgr.Object.PasswordValidators.Add(new PasswordValidator<TUser>());
+            var store = new Mock<IUserStore<AspNetUser>>();
+            var mgr = new Mock<UserManager<AspNetUser>>(store.Object, null, null, null, null, null, null, null, null);
+            mgr.Object.UserValidators.Add(new UserValidator<AspNetUser>());
+            mgr.Object.PasswordValidators.Add(new PasswordValidator<AspNetUser>());
             return mgr;
         }
 

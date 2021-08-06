@@ -331,7 +331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // Users
             var adminUser = new AspNetUser
             {
-                Id = "c78ca505-b820-48a4-a0cb-e4b04a6f455c",
+                Id = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"),
                 Email = "BobSmith@email.com",
                 NormalizedEmail = "BOBSMITH@EMAIL.COM",
                 UserName = "BobSmith@email.com",
@@ -351,7 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var buyUser = new AspNetUser
             {
-                Id = "747ca19f-103b-4244-bd3b-203824ce0cc6",
+                Id = new Guid("747ca19f-103b-4244-bd3b-203824ce0cc6"),
                 Email = "SueSmith@email.com",
                 NormalizedEmail = "SUESMITH@EMAIL.COM",
                 UserName = "SueSmith@email.com",

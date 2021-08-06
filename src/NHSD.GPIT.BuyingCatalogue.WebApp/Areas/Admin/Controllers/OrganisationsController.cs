@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var (organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            var (orgId,  error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId, error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
 
             if (orgId == Guid.Empty)
             {
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/adduser/confirmation/{id}")]
-        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, string id)
+        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, Guid id)
         {
             var user = await userService.GetUser(id);
 
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(Guid organisationId, string userId)
+        public async Task<IActionResult> UserDetails(Guid organisationId, Guid userId)
         {
             var user = await userService.GetUser(userId);
             var organisation = await organisationsService.GetOrganisation(organisationId);
@@ -221,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}/disable")]
-        public async Task<IActionResult> UserDisabled(Guid organisationId, string userId)
+        public async Task<IActionResult> UserDisabled(Guid organisationId, Guid userId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}/enable")]
-        public async Task<IActionResult> UserEnabled(Guid organisationId, string userId)
+        public async Task<IActionResult> UserEnabled(Guid organisationId, Guid userId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);

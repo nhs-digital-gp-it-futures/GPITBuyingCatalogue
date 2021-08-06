@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
             typeof(ITypeConverter<CatalogueItem, SolutionStatusModel>),
             typeof(CatalogueItemToSolutionStatusModelConverter))]
         [InlineData(typeof(ITypeConverter<string, bool?>), typeof(StringToNullableBoolResolver))]
-        [InlineData(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx<AspNetUser>))]
+        [InlineData(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx))]
         [InlineData(typeof(IValidator<AddSolutionModel>), typeof(AddSolutionModelValidator))]
         public void ContainsTheExpectedServiceInstances_B(Type requiredInterface, Type expectedType)
         {

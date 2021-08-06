@@ -36,11 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             this.aspNetUserValidator = aspNetUserValidator ?? throw new ArgumentNullException(nameof(aspNetUserValidator));
         }
 
-        public async Task<Result<string>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
+        public async Task<Result<Guid>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
         {
             var aspNetUser = new AspNetUser
             {
-                Id = Guid.NewGuid().ToString().ToUpper(),
+                Id = Guid.NewGuid(),
                 FirstName = firstName,
                 LastName = lastName,
                 PhoneNumber = phoneNumber,
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             var validationResult = await aspNetUserValidator.ValidateAsync(aspNetUser);
             if (!validationResult.IsSuccess)
-                return Result.Failure<string>(validationResult.Errors);
+                return Result.Failure<Guid>(validationResult.Errors);
 
             userRepository.Add(aspNetUser);
 
@@ -69,14 +69,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             return Result.Success(aspNetUser.Id);
         }
 
-        public async Task SendInitialEmailAsync(PasswordResetToken token)
+        public Task SendInitialEmailAsync(PasswordResetToken token)
         {
             if (token is null)
                 throw new ArgumentNullException(nameof(token));
 
             var user = token.User;
 
-            await emailService.SendEmailAsync(
+            return emailService.SendEmailAsync(
                 settings.EmailMessage,
                 new EmailAddress(user.Email, user.GetDisplayName()),
                 passwordResetCallback.GetPasswordResetCallback(token));

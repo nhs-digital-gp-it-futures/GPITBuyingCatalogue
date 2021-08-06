@@ -87,7 +87,6 @@
     <Folder Include="Catalogue\Tables" />
     <Folder Include="Users" />
     <Folder Include="Users\Tables" />
-    <Folder Include="Users\Indexes" />
     <Folder Include="Organisations" />
     <Folder Include="Organisations\Tables" />
     <Folder Include="Cache" />
@@ -174,8 +173,6 @@
     <Build Include="Users\Tables\AspNetUsers.sql" />
     <Build Include="Users\Tables\AspNetUserTokens.sql" />
     <Build Include="Security\Schemas\users.sql" />
-    <Build Include="Users\Indexes\RoleNameIndex.sql" />
-    <Build Include="Users\Indexes\UserNameIndex.sql" />
     <Build Include="Organisations\Tables\Organisations.sql" />
     <Build Include="Organisations\Tables\RelatedOrganisations.sql" />
     <Build Include="Security\Schemas\organisations.sql" />

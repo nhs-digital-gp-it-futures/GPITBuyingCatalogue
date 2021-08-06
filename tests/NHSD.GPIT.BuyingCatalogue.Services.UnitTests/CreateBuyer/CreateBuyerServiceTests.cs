@@ -99,12 +99,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         public static async Task CreateAsync_SuccessfulApplicationUserValidation_ReturnsSuccess()
         {
             var context = CreateBuyerServiceTestContext.Setup();
+
             var sut = context.CreateBuyerService;
 
             var actual = await sut.Create(Guid.NewGuid(), "Test", "Smith", "0123456789", "a.b@c.com");
 
             actual.IsSuccess.Should().BeTrue();
-            actual.Value.Should().NotBeNull();
+            actual.Value.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -163,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var actual = await sut.Create(Guid.NewGuid(), "Test", "Smith", "0123456789", "a.b@c.com");
 
-            var expected = Result.Failure<string>(new List<ErrorDetails>());
+            var expected = Result.Failure<Guid>(new List<ErrorDetails>());
             actual.Should().Be(expected);
         }
 

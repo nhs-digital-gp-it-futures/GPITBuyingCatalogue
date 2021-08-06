@@ -10,12 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
         {
             builder.ToTable("AspNetRoles", Schemas.Users);
 
-            builder.Property(r => r.Name).HasMaxLength(256);
-            builder.Property(r => r.NormalizedName).HasMaxLength(256);
+            builder.HasKey(r => r.Id);
 
-            builder.HasIndex(r => r.NormalizedName, "RoleNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedName] IS NOT NULL)");
+            builder.Property(r => r.Name).HasMaxLength(256).IsRequired();
+            builder.Property(r => r.NormalizedName).HasMaxLength(256).IsRequired();
+
+            builder.HasIndex(r => r.NormalizedName, "AK_AspNetRoles")
+                .IsUnique();
         }
     }
 }

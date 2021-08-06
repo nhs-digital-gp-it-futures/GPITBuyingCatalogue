@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
-using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -21,30 +22,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static async Task GetUser_InvalidUserId_ThrowsException(string userId)
+        [CommonAutoData]
+        public static async Task GetUser_CallsSingleAsync_OnRepository(
+            [Frozen] Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>> dbRepositoryMock,
+            Guid userId,
+            UsersService service)
         {
-            var service = new UsersService(
-                Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>());
-
-            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.GetUser(userId));
-
-            actual.ParamName.Should().Be("userId");
-        }
-
-        [Fact]
-        public static async Task GetUser_CallsSingleAsync_OnRepository()
-        {
-            var mockUsersRepository = new Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>();
-            mockUsersRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
+            dbRepositoryMock.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(new AspNetUser());
 
-            var service = new UsersService(
-                mockUsersRepository.Object);
+            await service.GetUser(userId);
 
-            await service.GetUser("123");
-
-            mockUsersRepository.Verify(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
+            dbRepositoryMock.Verify(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
         }
 
         [Fact]
@@ -80,18 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static async Task EnableOrDisableUser_InvalidUserId_ThrowsException(string userId)
-        {
-            var service = new UsersService(
-                Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>());
-
-            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.EnableOrDisableUser(userId, true));
-
-            actual.ParamName.Should().Be("userId");
-        }
-
-        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public static async Task EnableOrDisableUser_GetsUser_SetsDisabled_AndUpdates(bool enabled)
@@ -99,17 +76,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var user = new AspNetUser { Disabled = !enabled };
 
             var mockUsersRepository = new Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>();
-            mockUsersRepository.Setup(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
+            mockUsersRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
                 .ReturnsAsync(user);
 
             var service = new UsersService(
                 mockUsersRepository.Object);
 
-            await service.EnableOrDisableUser("123", enabled);
+            await service.EnableOrDisableUser(Guid.NewGuid(), enabled);
 
             Assert.Equal(enabled, user.Disabled);
-            mockUsersRepository.Verify(x => x.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
-            mockUsersRepository.Verify(x => x.SaveChangesAsync());
+            mockUsersRepository.Verify(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
+            mockUsersRepository.Verify(r => r.SaveChangesAsync());
         }
     }
 }

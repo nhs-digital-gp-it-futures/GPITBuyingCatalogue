@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
         {
             builder.ToTable("AspNetRoleClaims", Schemas.Users);
 
+            builder.HasKey(rc => rc.Id);
+
             builder.Property(rc => rc.RoleId).IsRequired();
 
             builder.HasOne(rc => rc.Role)

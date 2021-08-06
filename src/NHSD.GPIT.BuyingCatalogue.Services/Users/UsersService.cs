@@ -19,11 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        public async Task<AspNetUser> GetUser(string userId)
-        {
-            userId.ValidateNotNullOrWhiteSpace(nameof(userId));
-            return await userRepository.SingleAsync(x => x.Id == userId);
-        }
+        public Task<AspNetUser> GetUser(Guid userId) => userRepository.SingleAsync(u => u.Id == userId);
 
         public async Task<List<AspNetUser>> GetAllUsersForOrganisation(Guid organisationId)
         {
@@ -31,10 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             return (await userRepository.GetAllAsync(x => x.PrimaryOrganisationId == organisationId)).ToList();
         }
 
-        public async Task EnableOrDisableUser(string userId, bool disabled)
+        public async Task EnableOrDisableUser(Guid userId, bool disabled)
         {
-            userId.ValidateNotNullOrWhiteSpace(nameof(userId));
-            var user = await userRepository.SingleAsync(x => x.Id == userId);
+            var user = await userRepository.SingleAsync(u => u.Id == userId);
             user.Disabled = disabled;
             await userRepository.SaveChangesAsync();
         }

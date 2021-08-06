@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
         {
             builder.ToTable("AspNetUserClaims", Schemas.Users);
 
+            builder.HasKey(uc => uc.Id);
+
             builder.Property(uc => uc.UserId).IsRequired();
 
             builder.HasOne(uc => uc.User)

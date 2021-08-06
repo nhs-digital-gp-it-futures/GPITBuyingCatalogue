@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (solution.Solution.LastUpdatedBy != Guid.Empty)
             {
-                var lastUpdatedBy = await usersService.GetUser(solution.Solution.LastUpdatedBy.ToString());
+                var lastUpdatedBy = await usersService.GetUser(solution.Solution.LastUpdatedBy);
 
                 if (lastUpdatedBy is not null)
                     model.LastUpdatedByName = $"{lastUpdatedBy.FirstName} {lastUpdatedBy.LastName}";

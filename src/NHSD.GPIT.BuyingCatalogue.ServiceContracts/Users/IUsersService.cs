@@ -7,10 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
 {
     public interface IUsersService
     {
-        Task<AspNetUser> GetUser(string userId);
+        Task<AspNetUser> GetUser(Guid userId);
 
         Task<List<AspNetUser>> GetAllUsersForOrganisation(Guid organisationId);
 
-        Task EnableOrDisableUser(string userId, bool disabled);
+        Task EnableOrDisableUser(Guid userId, bool disabled);
     }
 }
