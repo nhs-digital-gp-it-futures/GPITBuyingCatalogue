@@ -77,7 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             if (existingItem is null)
             {
                 orderItems.Add(orderItem);
-                orderItem.MarkOrderSectionAsViewed(this);
 
                 return orderItem;
             }
@@ -105,11 +104,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             orderItems.RemoveAll(o => o.CatalogueItem.CatalogueItemId == catalogueItemId
                 || o.CatalogueItem.AdditionalService?.SolutionId == catalogueItemId);
-
-            if (!HasSolution())
-            {
-                Progress.AdditionalServicesViewed = false;
-            }
 
             if (orderItems.Count == 0)
             {

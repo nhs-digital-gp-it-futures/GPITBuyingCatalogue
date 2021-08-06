@@ -58,8 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public Contact SupplierContact { get; set; }
 
-        public OrderProgress Progress { get; init; } = new();
-
         public ICollection<DefaultDeliveryDate> DefaultDeliveryDates { get; set; }
 
         public IReadOnlyList<OrderItem> OrderItems => orderItems.AsReadOnly();
