@@ -1,29 +1,41 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class Features : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Features : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public Features(LocalWebApplicationFactory factory)
-            : base(factory, "/admin/catalogue-solutions/manage/99999-002/features")
+        private static readonly CatalogueItemId SolutionId = new(99999, "002");
+
+        private static readonly Dictionary<string, string> Parameters = new()
         {
-            ClearFeatures(new CatalogueItemId(99999, "002"));
-            AuthorityLogin();
+            { nameof(SolutionId), SolutionId.ToString() },
+        };
+
+        public Features(LocalWebApplicationFactory factory)
+            : base(
+                  factory,
+                  typeof(CatalogueSolutionsController),
+                  nameof(CatalogueSolutionsController.Features),
+                  Parameters)
+        {
         }
 
         [Fact]
         public async Task Features_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -48,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.SavePage();
 
             await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
+            var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.CatalogueItemId == SolutionId);
             var featuresModel = new FeaturesModel().FromCatalogueItem(catalogueItem);
 
             featuresModel.AllFeatures.Should().BeEquivalentTo(features);
@@ -62,10 +74,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.SingleAsync(s => s.Id == SolutionId);
             var features = solution.Features;
 
             features.Should().BeNullOrEmpty();
+        }
+
+        public void Dispose()
+        {
+            ClearFeatures(SolutionId);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -7,16 +9,27 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class HostingType : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class HostingType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        public HostingType(LocalWebApplicationFactory factory)
-           : base(factory, "/admin/catalogue-solutions/manage/99999-002/hosting-type")
+        private static readonly CatalogueItemId SolutionId = new(99999, "002");
+
+        private static readonly Dictionary<string, string> Parameters = new()
         {
-            AuthorityLogin();
+            { nameof(SolutionId), SolutionId.ToString() },
+        };
+
+        public HostingType(LocalWebApplicationFactory factory)
+           : base(
+                 factory,
+                 typeof(CatalogueSolutionsController),
+                 nameof(CatalogueSolutionsController.HostingType),
+                 Parameters)
+        {
         }
 
         [Fact]
@@ -52,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PublicCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
@@ -80,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PrivateCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
@@ -109,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.HybridHostingType.Should().BeEquivalentTo(expected, opt => opt.Excluding(h => h.RequiresHscn));
@@ -138,10 +151,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.OnPremise.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
+        }
+
+        public void Dispose()
+        {
+            ClearHostingTypes(SolutionId);
         }
     }
 }

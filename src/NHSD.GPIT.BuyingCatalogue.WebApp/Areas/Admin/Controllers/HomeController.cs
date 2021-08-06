@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [Route("buyer-organisations")]
+        [HttpGet("buyer-organisations")]
         public async Task<IActionResult> BuyerOrganisations()
         {
             var organisations = await organisationsService.GetAllOrganisations();
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new ListOrganisationsModel(organisationModel));
         }
 
-        [Route("manage-suppliers")]
+        [HttpGet("manage-suppliers")]
         public async Task<IActionResult> ManageSuppliers()
         {
             var suppliers = await solutionsService.GetAllSuppliers();

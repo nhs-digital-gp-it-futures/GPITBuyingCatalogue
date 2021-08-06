@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -9,18 +10,29 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class Organisation : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class Organisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
+        private static readonly Guid OrganisationId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
+
+        private static readonly Dictionary<string, string> Parameters = new()
+        {
+            { nameof(OrganisationId), OrganisationId.ToString() },
+        };
+
         private readonly SimpleSmtpServer smtp;
 
         public Organisation(LocalWebApplicationFactory factory)
-            : base(factory, "admin/organisations/b7ee5261-43e7-4589-907b-5eef5e98c085")
+            : base(
+                  factory,
+                  typeof(OrganisationsController),
+                  nameof(OrganisationsController.Details),
+                  Parameters)
         {
-            AuthorityLogin();
             smtp = SimpleSmtpServer.Start(9999);
         }
 
@@ -28,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public async Task Organisation_OrganisationDetailsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var dbAddress = (await context.Organisations.SingleAsync(s => s.OrganisationId == Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085"))).Address;
+            var dbAddress = (await context.Organisations.SingleAsync(s => s.OrganisationId == OrganisationId)).Address;
 
             var pageAddress = AdminPages.Organisation.GetAddress();
 
@@ -46,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public async Task Organisation_OdsCodeDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var dbOdsCode = (await context.Organisations.SingleAsync(s => s.OrganisationId == Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085"))).OdsCode;
+            var dbOdsCode = (await context.Organisations.SingleAsync(s => s.OrganisationId == OrganisationId)).OdsCode;
 
             var pageOdsCode = AdminPages.Organisation.GetOdsCode();
 
@@ -90,13 +102,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task Organisation_ViewUserDetails()
         {
-            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
-            var user = await AddUser(currentOrgId);
+            var user = await AddUser();
 
             AdminPages.Organisation.ViewUserDetails(user.Id);
 
             await using var context = GetEndToEndDbContext();
-            var organisationName = (await context.Organisations.SingleAsync(s => s.OrganisationId == currentOrgId)).Name;
+            var organisationName = (await context.Organisations.SingleAsync(s => s.OrganisationId == OrganisationId)).Name;
 
             AdminPages.UserDetails.GetOrganisationName().Should().BeEquivalentTo(organisationName);
             AdminPages.UserDetails.GetUserName().Should().BeEquivalentTo($"{user.FirstName} {user.LastName}");
@@ -107,8 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task Organisation_DisableUser()
         {
-            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
-            var user = await AddUser(currentOrgId);
+            var user = await AddUser();
 
             AdminPages.Organisation.ViewUserDetails(user.Id);
 
@@ -122,8 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task Organisation_EnableUser()
         {
-            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
-            var user = await AddUser(currentOrgId, false);
+            var user = await AddUser(false);
 
             AdminPages.Organisation.ViewUserDetails(user.Id);
 
@@ -137,17 +146,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task Organisation_AddRelatedOrganisation()
         {
-            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
             AdminPages.Organisation.ClickAddRelatedOrgButton();
 
-            var relatedOrgId = AdminPages.AddRelatedOrganisation.SelectOrganisation(currentOrgId.ToString());
+            var relatedOrgId = AdminPages.AddRelatedOrganisation.SelectOrganisation(OrganisationId);
 
             AdminPages.AddRelatedOrganisation.ClickAddRelatedOrgButton();
 
             var organisation = AdminPages.Organisation.GetRelatedOrganisation(relatedOrgId);
 
             await using var context = GetEndToEndDbContext();
-            var relatedOrgIds = (await context.RelatedOrganisations.ToListAsync()).Where(s => s.OrganisationId == currentOrgId);
+            var relatedOrgIds = await context.RelatedOrganisations.Where(s => s.OrganisationId == OrganisationId).ToListAsync();
             relatedOrgIds.Select(s => s.RelatedOrganisationId).Should().Contain(relatedOrgId);
 
             var relatedOrganisation = await context.Organisations.SingleAsync(s => s.OrganisationId == relatedOrgId);
@@ -159,14 +167,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         [Fact]
         public async Task Organisation_RemoveRelatedOrganisation()
         {
-            var currentOrgId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
-            var relatedOrgId = await AddRelatedOrganisation(currentOrgId);
+            var relatedOrgId = await AddRelatedOrganisation();
 
             AdminPages.Organisation.RemoveRelatedOrganisation(relatedOrgId);
 
             await using var context = GetEndToEndDbContext();
             var relationships = await context.RelatedOrganisations.ToListAsync();
-            var selectedRelationships = relationships.Where(o => o.OrganisationId == currentOrgId);
+            var selectedRelationships = relationships.Where(o => o.OrganisationId == OrganisationId);
 
             selectedRelationships.Select(s => s.RelatedOrganisationId).Should().NotContain(relatedOrgId);
         }
@@ -176,14 +183,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             smtp.Dispose();
         }
 
-        private async Task<Guid> AddRelatedOrganisation(Guid currentOrgId)
+        private async Task<Guid> AddRelatedOrganisation()
         {
             await using var context = GetEndToEndDbContext();
-            var organisations = (await context.Organisations.ToListAsync()).Where(o => o.OrganisationId != currentOrgId).ToList();
+            var organisations = await context.Organisations.Where(o => o.OrganisationId != OrganisationId).ToListAsync();
 
             var relatedOrganisation = new RelatedOrganisation
             {
-                OrganisationId = currentOrgId,
+                OrganisationId = OrganisationId,
                 RelatedOrganisationId = organisations[new Random().Next(organisations.Count)].OrganisationId,
             };
 
@@ -195,9 +202,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             return relatedOrganisation.RelatedOrganisationId;
         }
 
-        private async Task<AspNetUser> AddUser(Guid currentOrgId, bool isEnabled = true)
+        private async Task<AspNetUser> AddUser(bool isEnabled = true)
         {
-            var user = GenerateUser.GenerateAspNetUser(currentOrgId, DefaultPassword, isEnabled);
+            var user = GenerateUser.GenerateAspNetUser(OrganisationId, DefaultPassword, isEnabled);
             await using var context = GetEndToEndDbContext();
             context.Add(user);
             await context.SaveChangesAsync();

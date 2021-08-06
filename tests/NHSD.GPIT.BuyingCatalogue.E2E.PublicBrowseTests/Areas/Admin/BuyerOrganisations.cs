@@ -5,16 +5,20 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class BuyerOrganisations : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class BuyerOrganisations : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public BuyerOrganisations(LocalWebApplicationFactory factory)
-            : base(factory, "admin/buyer-organisations")
+            : base(
+                  factory,
+                  typeof(HomeController),
+                  nameof(HomeController.BuyerOrganisations),
+                  null)
         {
-            AuthorityLogin();
         }
 
         [Fact]

@@ -32,44 +32,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Details(Guid id)
+        [HttpGet("{organisationId}")]
+        public async Task<IActionResult> Details(Guid organisationId)
         {
-            var organisation = await organisationsService.GetOrganisation(id);
-            var users = await userService.GetAllUsersForOrganisation(id);
-            var relatedOrganisations = await organisationsService.GetRelatedOrganisations(id);
+            var organisation = await organisationsService.GetOrganisation(organisationId);
+            var users = await userService.GetAllUsersForOrganisation(organisationId);
+            var relatedOrganisations = await organisationsService.GetRelatedOrganisations(organisationId);
 
             return View(new DetailsModel(organisation, users, relatedOrganisations));
         }
 
-        [HttpGet("{id}/edit")]
-        public async Task<IActionResult> EditOrganisation(Guid id)
+        [HttpGet("{organisationId}/edit")]
+        public async Task<IActionResult> EditOrganisation(Guid organisationId)
         {
-            var organisation = await organisationsService.GetOrganisation(id);
+            var organisation = await organisationsService.GetOrganisation(organisationId);
 
             return View(new EditOrganisationModel(organisation));
         }
 
-        [HttpPost("{id}/edit")]
-        public async Task<IActionResult> EditOrganisation(Guid id, EditOrganisationModel model)
+        [HttpPost("{organisationId}/edit")]
+        public async Task<IActionResult> EditOrganisation(Guid organisationId, EditOrganisationModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await organisationsService.UpdateCatalogueAgreementSigned(id, model.CatalogueAgreementSigned);
+            await organisationsService.UpdateCatalogueAgreementSigned(organisationId, model.CatalogueAgreementSigned);
 
             return RedirectToAction(
                 nameof(EditConfirmation),
                 typeof(OrganisationsController).ControllerName(),
-                new { id });
+                new { organisationId });
         }
 
-        [HttpGet("{id}/edit/confirmation")]
-        public async Task<IActionResult> EditConfirmation(Guid id)
+        [HttpGet("{organisationId}/edit/confirmation")]
+        public async Task<IActionResult> EditConfirmation(Guid organisationId)
         {
-            var organisation = await organisationsService.GetOrganisation(id);
+            var organisation = await organisationsService.GetOrganisation(organisationId);
 
-            return View(new EditConfirmationModel(organisation.Name, id));
+            return View(new EditConfirmationModel(organisation.Name, organisationId));
         }
 
         [HttpGet("find")]
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(Confirmation),
                 typeof(OrganisationsController).ControllerName(),
-                new { id = orgId.ToString() });
+                new { organisationId = orgId });
         }
 
         [HttpGet("find/select/create/error")]
@@ -154,17 +154,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("find/select/create/confirmation")]
-        public async Task<IActionResult> Confirmation(string id)
+        public async Task<IActionResult> Confirmation(Guid organisationId)
         {
-            var organisation = await organisationsService.GetOrganisation(new Guid(id));
+            var organisation = await organisationsService.GetOrganisation(organisationId);
 
             return View(new ConfirmationModel(organisation.Name));
         }
 
-        [HttpGet("{id}/adduser")]
-        public async Task<IActionResult> AddUser(Guid id)
+        [HttpGet("{organisationId}/adduser")]
+        public async Task<IActionResult> AddUser(Guid organisationId)
         {
-            var organisation = await organisationsService.GetOrganisation(id);
+            var organisation = await organisationsService.GetOrganisation(organisationId);
 
             return View(new AddUserModel(organisation));
         }
@@ -181,13 +181,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(AddUserConfirmation),
                 typeof(OrganisationsController).ControllerName(),
-                new { organisationId, id = result.Value });
+                new { organisationId, userId = result.Value });
         }
 
-        [HttpGet("{organisationId}/adduser/confirmation/{id}")]
-        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, Guid id)
+        [HttpGet("{organisationId}/adduser/confirmation/{userId}")]
+        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, Guid userId)
         {
-            var user = await userService.GetUser(id);
+            var user = await userService.GetUser(userId);
 
             return View(new AddUserConfirmationModel(user.GetDisplayName(), organisationId));
         }
@@ -258,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(Details),
                 typeof(OrganisationsController).ControllerName(),
-                new { id = model.Organisation.OrganisationId });
+                new { model.Organisation.OrganisationId });
         }
 
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
@@ -279,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(
                 nameof(Details),
                 typeof(OrganisationsController).ControllerName(),
-                new { id = organisationId });
+                new { organisationId });
         }
     }
 }
