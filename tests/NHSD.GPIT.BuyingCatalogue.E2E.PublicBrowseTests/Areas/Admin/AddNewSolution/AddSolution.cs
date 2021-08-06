@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             CommonActions.ElementAddValue(Objects.Admin.AddSolutionObjects.SolutionName, existingSolution.Name);
 
-            CommonActions.SelectDropdownItem(Objects.Admin.AddSolutionObjects.SupplierName, 0);
+            CommonActions.SelectDropDownItem(Objects.Admin.AddSolutionObjects.SupplierName, 0);
 
             CommonActions.ClickFirstCheckbox();
 

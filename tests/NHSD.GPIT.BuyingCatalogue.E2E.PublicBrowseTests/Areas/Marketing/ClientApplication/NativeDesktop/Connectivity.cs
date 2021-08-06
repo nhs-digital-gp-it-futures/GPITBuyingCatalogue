@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public async Task Connectivity_CompleteAllFields()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ConnectionSpeedSelect, 1);
 
             CommonActions.ClickSave();
 
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void Connectivity_SectionComplete()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ConnectionSpeedSelect, 1);
 
             CommonActions.ClickSave();
 

@@ -21,8 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public async Task ConnectivityAndResolution_SelectBothFields()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
-            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ResolutionSelect, 1);
 
             CommonActions.ClickSave();
 
@@ -35,8 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
         [Fact]
         public void ConnectivityAndResolution_SectionComplete()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.ConnectionSpeedSelect, 1);
-            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ConnectionSpeedSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ResolutionSelect, 1);
 
             CommonActions.ClickSave();
 

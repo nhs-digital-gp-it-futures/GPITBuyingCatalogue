@@ -61,8 +61,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
                 .Click();
         }
 
-        internal void SelectDropdownItem(By targetField, int index = 0) =>
-            new SelectElement(Driver.FindElement(targetField)).SelectByIndex(index);
+        internal string SelectDropDownItem(By targetField, int index = 0)
+        {
+            var selectElement = new SelectElement(Driver.FindElement(targetField));
+            selectElement.SelectByIndex(index);
+
+            return selectElement.SelectedOption.GetAttribute("value");
+        }
+
+        internal string SelectRandomDropDownItem(By targetField)
+        {
+            var selectElement = new SelectElement(Driver.FindElement(targetField));
+            var optionsCount = selectElement.Options.Count;
+
+            // Ignoring the zero index as that is a null value element (with text "Please select").
+            return SelectDropDownItem(targetField, new Random().Next(1, optionsCount));
+        }
 
         // Input Element Actions
         internal void ClearInputElement(By targetElement) =>
