@@ -1,6 +1,6 @@
 ﻿CREATE TABLE users.AspNetUserTokens
 (
-     UserId nvarchar(450) NOT NULL,
+     UserId uniqueidentifier NOT NULL,
      LoginProvider nvarchar(128) NOT NULL,
      [Name] nvarchar(128) NOT NULL,
      [Value] nvarchar(max) NULL,

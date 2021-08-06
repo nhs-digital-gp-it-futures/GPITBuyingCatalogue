@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -28,8 +27,6 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -204,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, UserClaimsPrincipalFactoryEx<AspNetUser>>();
+            services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, UserClaimsPrincipalFactoryEx>();
 
             services.AddIdentity<AspNetUser, AspNetRole>(o =>
                 {
@@ -229,10 +226,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
         }
 
-        public static void ConfigureOrderMessageSettings(this IServiceCollection servies, IConfiguration configuration)
+        public static void ConfigureOrderMessageSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var orderMessageSettings = configuration.GetSection("orderMessage").Get<OrderMessageSettings>();
-            servies.AddSingleton(orderMessageSettings);
+            services.AddSingleton(orderMessageSettings);
         }
 
         public static void ConfigureRegistration(this IServiceCollection services, IConfiguration configuration)

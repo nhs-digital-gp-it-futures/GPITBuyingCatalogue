@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
-    [Table("AspNetRoles")]
-    public class AspNetRole : IdentityRole<string>
+    public sealed class AspNetRole : IdentityRole<Guid>
     {
         public AspNetRole()
         {
@@ -13,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
             AspNetUserRoles = new HashSet<AspNetUserRole>();
         }
 
-        public virtual ICollection<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+        public ICollection<AspNetRoleClaim> AspNetRoleClaims { get; set; }
 
-        public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
+        public ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
     }
 }

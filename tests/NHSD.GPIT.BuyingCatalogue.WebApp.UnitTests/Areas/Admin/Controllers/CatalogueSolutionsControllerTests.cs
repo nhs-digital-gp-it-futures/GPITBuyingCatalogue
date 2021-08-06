@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_Features_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(new CatalogueItem());
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_Features_ValidId_ReturnsViewWithExpectedModel(
             CatalogueItem catalogueItem,
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_Features_InvalidId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Features_CallsSavesSolutionFeatures(
             CatalogueItemId catalogueItemId,
             FeaturesModel model,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Features_RedirectsToManageCatalogueSolution(
             CatalogueItemId catalogueItemId,
             FeaturesModel model,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Features_InvalidId_ReturnsBadRequestResult(
             CatalogueItem catalogueItem,
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_Index_StatusInput_SetsSelectedOnModel_ReturnsViewWithModel(
             List<CatalogueItem> solutions,
-            [Frozen]Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> mockService,
             PublicationStatus status)
         {
             var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString() };
@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Guid userId)
         {
             expected.Solution.LastUpdatedBy = userId;
-            aspNetUser.Id = userId.ToString();
+            aspNetUser.Id = userId;
             var mockSolutionService = new Mock<ISolutionsService>();
             mockSolutionService.Setup(s => s.GetSolution(expected.CatalogueItemId))
                 .ReturnsAsync(expected);
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_Roadmap_GetsSolutionFromService(
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(new CatalogueItem());
@@ -436,7 +436,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_Roadmap_ValidId_ReturnsViewWithExpectedModel(
             CatalogueItem catalogueItem,
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
@@ -453,7 +453,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_Roadmap_InvalidId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
@@ -469,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Roadmap_CallsSavesSolutionRoadmap(
             CatalogueItemId catalogueItemId,
             RoadmapModel model,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
@@ -483,7 +483,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Roadmap_RedirectsToManageCatalogueSolution(
             CatalogueItemId catalogueItemId,
             RoadmapModel model,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
 
@@ -499,7 +499,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Roadmap_InvalidId_ReturnsBadRequestResult(
             CatalogueItem catalogueItem,
             CatalogueItemId catalogueItemId,
-            [Frozen]Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService)
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);

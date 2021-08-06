@@ -8,13 +8,12 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
-    public class UserClaimsPrincipalFactoryEx<TUser> : UserClaimsPrincipalFactory<TUser>
-        where TUser : AspNetUser
+    public sealed class UserClaimsPrincipalFactoryEx : UserClaimsPrincipalFactory<AspNetUser>
     {
         private readonly IOrganisationsService organisationService;
 
         public UserClaimsPrincipalFactoryEx(
-            UserManager<TUser> userManager,
+            UserManager<AspNetUser> userManager,
             IOptions<IdentityOptions> optionsAccessor,
             IOrganisationsService organisationService)
             : base(userManager, optionsAccessor)
@@ -22,22 +21,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
             this.organisationService = organisationService ?? throw new ArgumentNullException(nameof(organisationService));
         }
 
-        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(TUser user)
+        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(AspNetUser user)
         {
             _ = user ?? throw new ArgumentNullException(nameof(user));
 
             var id = await base.GenerateClaimsAsync(user);
 
-            var aspNetUser = (AspNetUser)user;
+            id.AddClaim(new Claim(Constants.Claims.UserDisplayName, $"{user.FirstName} {user.LastName}"));
+            id.AddClaim(new Claim(Constants.Claims.UserId, user.Id.ToString()));
+            id.AddClaim(new Claim(Constants.Claims.OrganisationFunction, user.OrganisationFunction));
 
-            id.AddClaim(new Claim(Constants.Claims.UserDisplayName, $"{aspNetUser.FirstName} {aspNetUser.LastName}"));
-            id.AddClaim(new Claim(Constants.Claims.UserId, aspNetUser.Id));
-            id.AddClaim(new Claim(Constants.Claims.OrganisationFunction, aspNetUser.OrganisationFunction));
-
-            var organisation = await organisationService.GetOrganisation(aspNetUser.PrimaryOrganisationId);
+            var organisation = await organisationService.GetOrganisation(user.PrimaryOrganisationId);
             id.AddClaim(new Claim(Constants.Claims.PrimaryOrganisationOdsCode, organisation.OdsCode));
 
-            var relatedOrganisations = await organisationService.GetRelatedOrganisations(aspNetUser.PrimaryOrganisationId);
+            var relatedOrganisations = await organisationService.GetRelatedOrganisations(user.PrimaryOrganisationId);
 
             foreach (var relatedOrganisation in relatedOrganisations)
                 id.AddClaim(new Claim(Constants.Claims.SecondaryOrganisationOdsCode, relatedOrganisation.OdsCode));

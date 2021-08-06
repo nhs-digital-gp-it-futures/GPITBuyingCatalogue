@@ -6,6 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.CreateBuyer
 {
     public interface ICreateBuyerService
     {
-        Task<Result<string>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress);
+        Task<Result<Guid>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress);
     }
 }

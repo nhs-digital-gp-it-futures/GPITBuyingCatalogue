@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
-
-#nullable disable
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
-    [Table("AspNetUsers")]
-    public partial class AspNetUser : IdentityUser<string>
+    public sealed class AspNetUser : IdentityUser<Guid>
     {
         public AspNetUser()
         {
@@ -30,12 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public string LastName { get; set; }
 
-        public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
+        public ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
 
-        public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
+        public ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
 
-        public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
+        public ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
 
-        public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; }
+        public ICollection<AspNetUserToken> AspNetUserTokens { get; set; }
     }
 }

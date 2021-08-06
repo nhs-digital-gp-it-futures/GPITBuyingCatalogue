@@ -16,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
     [Route("Identity/Account")]
     public sealed class AccountController : Controller
     {
-        public const string SignInErrorMessage = "Enter a valid email address and password";
-
         public const string UserDisabledErrorMessageTemplate = @"There is a problem accessing your account.
                 Contact the account administrator at: {0} or call {1}";
 
@@ -53,29 +51,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            var signinResult = await signInManager.PasswordSignInAsync(viewModel.EmailAddress, viewModel.Password, isPersistent: false, lockoutOnFailure: true);
+            var user = await userManager.FindByNameAsync(viewModel.EmailAddress);
+            var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
             if (signinResult.Succeeded)
             {
-                var user = await userManager.FindByEmailAsync(viewModel.EmailAddress);
+                if (!user.Disabled)
+                    return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
 
-                if (user.Disabled)
-                {
-                    var disabledErrorFormat = string.Format(
-                        CultureInfo.CurrentCulture,
-                        UserDisabledErrorMessageTemplate,
-                        disabledErrorMessageSettings.EmailAddress,
-                        disabledErrorMessageSettings.PhoneNumber);
+                var disabledErrorFormat = string.Format(
+                    CultureInfo.CurrentCulture,
+                    UserDisabledErrorMessageTemplate,
+                    disabledErrorMessageSettings.EmailAddress,
+                    disabledErrorMessageSettings.PhoneNumber);
 
-                    ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
+                ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
 
-                    return View(viewModel);
-                }
-
-                if (string.IsNullOrWhiteSpace(viewModel.ReturnUrl))
-                    return Redirect("~/");
-
-                return Redirect(viewModel.ReturnUrl);
+                return View(viewModel);
             }
 
             viewModel.Error = "The username or password were not recognised. Please try again.";

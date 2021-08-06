@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.SetLastUpdatedBy(
-                new Guid(user.Id),
+                user.Id,
                 $"{user.FirstName} {user.LastName}");
 
             context.Add(order);
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.SetLastUpdatedBy(
-                new Guid(user.Id),
+                user.Id,
                 $"{user.FirstName} {user.LastName}");
 
             context.Add(order);
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
-                OrderingPartyContact = new()
+                OrderingPartyContact = new Contact
                 {
                     FirstName = "Clark",
                     LastName = "Kent",
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.SetLastUpdatedBy(
-                new Guid(user.Id),
+                user.Id,
                 $"{user.FirstName} {user.LastName}");
 
             context.Add(order);
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
-                OrderingPartyContact = new()
+                OrderingPartyContact = new Contact
                 {
                     FirstName = "Clark",
                     LastName = "Kent",
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 SupplierId = "99997",
-                SupplierContact = new()
+                SupplierContact = new Contact
                 {
                     FirstName = "Bruce",
                     LastName = "Wayne",
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.SetLastUpdatedBy(
-                new Guid(user.Id),
+                user.Id,
                 $"{user.FirstName} {user.LastName}");
 
             context.Add(order);
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
-                OrderingPartyContact = new()
+                OrderingPartyContact = new Contact
                 {
                     FirstName = "Clark",
                     LastName = "Kent",
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 SupplierId = "99998",
-                SupplierContact = new()
+                SupplierContact = new Contact
                 {
                     FirstName = "Bruce",
                     LastName = "Wayne",
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.SetLastUpdatedBy(
-                new Guid(user.Id),
+                user.Id,
                 $"{user.FirstName} {user.LastName}");
 
             context.Add(order);
@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.SetLastUpdatedBy(
-                new Guid(user.Id),
+                user.Id,
                 $"{user.FirstName} {user.LastName}");
 
             order.AddOrUpdateOrderItem(addedSolution);

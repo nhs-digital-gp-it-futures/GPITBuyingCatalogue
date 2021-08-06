@@ -26,6 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By RelatedOrganisationRemove(Guid orgId) => ByExtensions.DataTestId($"related-org-remove-{orgId}");
 
-        internal static By UserName(string id) => ByExtensions.DataTestId($"user-name-{id}");
+        internal static By UserName(Guid id) => ByExtensions.DataTestId($"user-name-{id}");
     }
 }
