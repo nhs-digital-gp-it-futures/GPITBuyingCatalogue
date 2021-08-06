@@ -2,14 +2,19 @@
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
-    public sealed class TilesTests : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class TilesTests : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public TilesTests(LocalWebApplicationFactory factory)
-            : base(factory)
+            : base(
+                  factory,
+                  typeof(HomeController),
+                  nameof(HomeController.Index),
+                  null)
         {
         }
 

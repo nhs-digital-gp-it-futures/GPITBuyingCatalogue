@@ -21,7 +21,7 @@
                     <div class="nhsuk-grid-column-two-thirds">
 
                         <h2 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-name">
-                            <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="DVOCVCSolutionDetail" asp-route-id="@solution.CatalogueItemId">
+                            <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="DfocvcSolutionDetail" asp-route-solutionId="@solution.CatalogueItemId">
                                 @solution.Name
                             </a>
                         </h2>
@@ -35,7 +35,7 @@
                         </p>
 
                         <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                            <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="DVOCVCSolutionDetail" asp-route-id="@solution.CatalogueItemId">
+                            <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="DfocvcSolutionDetail" asp-route-solutionId="@solution.CatalogueItemId">
                                 View this solution<span class="nhsuk-u-visually-hidden"> for DFOCVC Online Consultation</span>
                             </a>
                             <a href="~/solutions/dfocvc/@solution.CatalogueItemId">View this solution<span class="nhsuk-u-visually-hidden"> for DFOCVC Online Consultation</span></a>

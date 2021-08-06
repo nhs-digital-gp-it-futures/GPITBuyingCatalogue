@@ -333,9 +333,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             typeof(SolutionDetailsController)
                 .GetMethod(nameof(SolutionDetailsController.CheckEpics))
-                .GetCustomAttribute<RouteAttribute>()
+                .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
-                .Be("futures/{catalogueItemId}/capability/{capabilityId:guid}");
+                .Be("futures/{solutionId}/capability/{capabilityId}");
         }
 
         [Theory]
@@ -410,10 +410,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             typeof(SolutionDetailsController)
                 .GetMethod(nameof(SolutionDetailsController.CheckEpicsAdditionalServices))
-                .GetCustomAttribute<RouteAttribute>()
+                .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
                 .Be(
-                    "futures/{catalogueItemId}/additional-services/{catalogueItemIdAdditional}/capability/{capabilityId:guid}");
+                    "futures/{solutionId}/additional-services/{additionalServiceId}/capability/{capabilityId}");
         }
 
         [Theory]
@@ -912,9 +912,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             typeof(SolutionDetailsController)
                 .GetMethod(nameof(SolutionDetailsController.SupplierDetails))
-                .GetCustomAttribute<RouteAttribute>()
+                .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
-                .Be("futures/{id}/supplier-details");
+                .Be("futures/{solutionId}/supplier-details");
         }
 
         [Fact]
@@ -922,9 +922,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             typeof(SolutionDetailsController)
                 .GetMethod(nameof(SolutionDetailsController.AdditionalServices))
-                .GetCustomAttribute<RouteAttribute>()
+                .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
-                .Be("futures/{id}/additional-services");
+                .Be("futures/{solutionId}/additional-services");
         }
 
         [Theory]

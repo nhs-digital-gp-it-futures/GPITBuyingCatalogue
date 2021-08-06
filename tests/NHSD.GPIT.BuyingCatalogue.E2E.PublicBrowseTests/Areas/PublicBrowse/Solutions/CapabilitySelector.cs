@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
 
             var capabilityCheckboxes = PublicBrowsePages.CapabilitySelectorActions.GetAllCheckboxLabels();
 
-            capabilities.Select(c => c.Capability.Name).Should().BeEquivalentTo(capabilityCheckboxes);
+            capabilityCheckboxes.Should().BeEquivalentTo(capabilities.Select(c => c.Capability.Name));
         }
 
         [Fact]

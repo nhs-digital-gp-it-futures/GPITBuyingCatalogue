@@ -20,13 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             this.documentService = documentService ?? throw new ArgumentNullException(nameof(documentService));
         }
 
-        [Route("Solutions/Futures")]
+        [HttpGet("Solutions/Futures")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [Route("Solutions/Futures/Foundation")]
+        [HttpGet("Solutions/Futures/Foundation")]
         public async Task<IActionResult> Foundation()
         {
             var solutions = await solutionsService.GetFuturesFoundationSolutions();
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(new SolutionsModel { CatalogueItems = solutions });
         }
 
-        [Route("Solutions/Futures/CapabilitiesSelector")]
+        [HttpGet("Solutions/Futures/CapabilitiesSelector")]
         public async Task<IActionResult> CapabilitiesSelector()
         {
             var model = new CapabilitiesModel();
@@ -65,19 +65,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return RedirectToAction("SearchResults", new { capabilities = queryString });
         }
 
-        [Route("Solutions/Futures/Compare")]
+        [HttpGet("Solutions/Futures/Compare")]
         public IActionResult Compare()
         {
             return View();
         }
 
-        [Route("Solutions/Compare/Document")]
+        [HttpGet("Solutions/Compare/Document")]
         public async Task<IActionResult> Document()
         {
             return await documentService.DownloadDocumentAsync("compare-solutions.xlsx");
         }
 
-        [Route("Solutions/Futures/SearchResults")]
+        [HttpGet("Solutions/Futures/SearchResults")]
         public async Task<IActionResult> SearchResults(string capabilities)
         {
             string[] splitCapabilities = Array.Empty<string>();

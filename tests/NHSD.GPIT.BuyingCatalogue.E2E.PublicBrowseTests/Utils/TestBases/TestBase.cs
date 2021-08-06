@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentNullException(nameof(methodName), $"{nameof(methodName)} should not be null");
 
-            var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template;
+            var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template ?? string.Empty;
 
             var methodRoute = controllerType.GetMethods()
                 .FirstOrDefault(m => m.Name == methodName && m.GetCustomAttribute<HttpGetAttribute>(false) is not null)?

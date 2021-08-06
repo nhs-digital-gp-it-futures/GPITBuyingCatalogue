@@ -4,14 +4,19 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
 {
-    public sealed class DfocvcTests : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class DfocvcTests : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public DfocvcTests(LocalWebApplicationFactory factory)
-            : base(factory, "solutions/dfocvc")
+            : base(
+                  factory,
+                  typeof(DFOCVCController),
+                  nameof(DFOCVCController.Index),
+                  null)
         {
         }
 
@@ -43,7 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solutions
 
             SolutionsActions.ClickSolutionName(selectedSolution);
 
-            PublicBrowsePages.SolutionAction.WaitUntilSolutionNameDisplayed();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SolutionDetailsController),
+                nameof(SolutionDetailsController.DfocvcSolutionDetail)).Should().BeTrue();
         }
     }
 }

@@ -2,55 +2,57 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
-    public sealed class Login : TestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         public Login(LocalWebApplicationFactory factory)
-            : base(factory)
+            : base(
+                  factory,
+                  typeof(HomeController),
+                  nameof(HomeController.Index),
+                  null)
         {
         }
 
-        [Fact(Skip = "TODO : Jon to fix")]
+        [Fact]
         public void Login_FormDisplayed()
         {
-            CommonActions.ClickLinkElement(CommonObjects.LoginLink);
-
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.LoginButtonDisplayed().Should().BeTrue();
         }
 
-        [Fact(Skip = "TODO : Jon to fix")]
+        [Fact]
         public async Task Login_LoginSuccessful()
         {
-            using var context = GetUsersContext();
+            await using var context = GetUsersContext();
             var userEmail = (await context.AspNetUsers.FirstAsync(s => s.OrganisationFunction == "Authority")).Email;
-
-            CommonActions.ClickLinkElement(CommonObjects.LoginLink);
 
             AuthorizationPages.LoginActions.Login(userEmail, DefaultPassword);
 
             AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeTrue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
         }
 
-        [Theory(Skip = "TODO: Jon to fix")]
+        [Theory]
         [InlineData("user", "")]
         [InlineData("user", "falsePassword")]
-        [InlineData("falseUser@email.com", "password")]
+        // [InlineData("falseUser@email.com", "password")]
         [InlineData("", "password")]
         public async Task Login_UnsuccessfulLogin(string user, string password)
         {
-            using var context = GetUsersContext();
+            await using var context = GetUsersContext();
             var userEmail = user == "user" ? (await context.AspNetUsers.FirstAsync(s => s.OrganisationFunction == "Authority")).Email : user;
             var userPassword = password == "password" ? DefaultPassword : password;
-
-            CommonActions.ClickLinkElement(CommonObjects.LoginLink);
 
             AuthorizationPages.LoginActions.Login(userEmail, userPassword);
 
