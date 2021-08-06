@@ -34,5 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
         internal static By CatalogueSolutionFilter => By.ClassName("nhsuk-details");
 
         internal static By FilterRadioButton => By.ClassName("nhsuk-radios__item");
+
+        internal static By ConnectivityDropdown => By.Id("SelectedConnectionSpeed");
+
+        internal static By ResolutionDropdown => By.Id("SelectedScreenResolution");
     }
 }

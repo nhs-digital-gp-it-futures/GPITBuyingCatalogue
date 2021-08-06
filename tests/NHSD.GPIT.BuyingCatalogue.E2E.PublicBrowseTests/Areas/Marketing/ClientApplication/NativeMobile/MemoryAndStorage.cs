@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public async Task MemoryAndStorage_CompleteAllFields()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.MemorySelect, 1);
 
             var description = TextGenerators.TextInputAddText(CommonSelectors.Description, 200);
 
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MemoryAndStorage_SectionComplete()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.MemorySelect, 1);
 
             TextGenerators.TextInputAddText(CommonSelectors.Description, 200);
 

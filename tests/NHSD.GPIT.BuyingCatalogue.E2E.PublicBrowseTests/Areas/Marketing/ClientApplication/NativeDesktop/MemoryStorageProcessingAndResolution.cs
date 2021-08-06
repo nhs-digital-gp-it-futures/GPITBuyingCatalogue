@@ -21,13 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public async Task MemoryStorageProcessingAndResolution_CompleteAllFields()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.MemorySelect, 1);
 
             var storageSpace = TextGenerators.TextInputAddText(CommonSelectors.StorageDescriptionTextArea, 100);
 
             var processingPower = TextGenerators.TextInputAddText(CommonSelectors.MinimumCpuTextArea, 100);
 
-            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ResolutionSelect, 1);
 
             CommonActions.ClickSave();
 
@@ -43,13 +43,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
         [Fact]
         public void MemoryStorageProcessingAndResolution_SectionComplete()
         {
-            CommonActions.SelectDropdownItem(CommonSelectors.MemorySelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.MemorySelect, 1);
 
             TextGenerators.TextInputAddText(CommonSelectors.StorageDescriptionTextArea, 300);
 
             TextGenerators.TextInputAddText(CommonSelectors.MinimumCpuTextArea, 300);
 
-            CommonActions.SelectDropdownItem(CommonSelectors.ResolutionSelect, 1);
+            CommonActions.SelectDropDownItem(CommonSelectors.ResolutionSelect, 1);
 
             CommonActions.ClickSave();
 
