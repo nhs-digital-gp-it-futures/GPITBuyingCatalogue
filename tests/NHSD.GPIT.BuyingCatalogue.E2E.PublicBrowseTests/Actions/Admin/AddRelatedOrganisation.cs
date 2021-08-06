@@ -13,13 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
         {
         }
 
-        internal Guid SelectOrganisation(string excludeOrg = null)
+        internal Guid SelectOrganisation(Guid? excludeOrg)
         {
             var orgs = (IEnumerable<IWebElement>)Driver.FindElements(Objects.Admin.AddRelatedOrgsObjects.OrganisationRadioButtons);
 
-            if (!string.IsNullOrEmpty(excludeOrg))
+            if (excludeOrg is not null)
             {
-                orgs = orgs.Where(s => s.GetAttribute("value") != excludeOrg);
+                orgs = orgs.Where(s => s.GetAttribute("value") != excludeOrg.Value.ToString());
             }
 
             var selectedOrg = orgs.First();

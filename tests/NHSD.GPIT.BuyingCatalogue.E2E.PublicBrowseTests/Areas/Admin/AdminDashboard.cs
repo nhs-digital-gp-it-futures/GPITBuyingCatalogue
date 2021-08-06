@@ -1,16 +1,20 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class AdminDashboard : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AdminDashboard : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public AdminDashboard(LocalWebApplicationFactory factory)
-            : base(factory, "admin")
+            : base(
+                  factory,
+                  typeof(HomeController),
+                  nameof(HomeController.Index),
+                  null)
         {
-            AuthorityLogin();
         }
 
         [Fact]

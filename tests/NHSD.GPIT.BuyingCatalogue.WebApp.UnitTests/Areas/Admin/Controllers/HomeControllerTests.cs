@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             typeof(HomeController)
                 .GetMethod(nameof(HomeController.BuyerOrganisations))
-                .GetCustomAttribute<RouteAttribute>()
+                .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
                 .Be("buyer-organisations");
         }

@@ -5,16 +5,20 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class ManageCatalogueSolutions : TestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class ManageCatalogueSolutions : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public ManageCatalogueSolutions(LocalWebApplicationFactory factory)
-            : base(factory, "admin/catalogue-solutions")
+            : base(
+                  factory,
+                  typeof(CatalogueSolutionsController),
+                  nameof(CatalogueSolutionsController.Index),
+                  null)
         {
-            AuthorityLogin();
         }
 
         [Fact]
