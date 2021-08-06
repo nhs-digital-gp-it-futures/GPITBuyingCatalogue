@@ -4,7 +4,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
@@ -20,34 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             var displayName = itemType.DisplayName();
 
             displayName.Should().Be(expectedName);
-        }
-
-        [Fact]
-        public static void MarkOrderSectionAsViewed_NullOrder_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() => CatalogueItemType.AdditionalService.MarkOrderSectionAsViewed(null));
-        }
-
-        [Fact]
-        public static void MarkOrderSectionAsViewed_InvalidType_ThrowsException()
-        {
-            var order = new Order();
-
-            Assert.Throws<ArgumentException>(() => CatalogueItemTypeExtensions.MarkOrderSectionAsViewed(0, order));
-        }
-
-        [Theory]
-        [MemberData(nameof(MarkOrderSectionAsViewedTestData.TestData), MemberType = typeof(MarkOrderSectionAsViewedTestData))]
-        public static void MarkOrderSectionAsViewed_MarksExpectedSection(
-            CatalogueItemType itemType,
-            Func<Order, bool> sectionViewed)
-        {
-            var order = new Order();
-            sectionViewed(order).Should().BeFalse();
-
-            itemType.MarkOrderSectionAsViewed(order);
-
-            sectionViewed(order).Should().BeTrue();
         }
 
         [Theory]
@@ -70,16 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             const CatalogueItemType itemType = 0;
 
             Assert.Throws<ArgumentOutOfRangeException>(() => itemType.InferEstimationPeriod(0, timeUnit));
-        }
-
-        private static class MarkOrderSectionAsViewedTestData
-        {
-            public static IEnumerable<object[]> TestData()
-            {
-                yield return new object[] { CatalogueItemType.AdditionalService, new Func<Order, bool>(o => o.Progress.AdditionalServicesViewed) };
-                yield return new object[] { CatalogueItemType.AssociatedService, new Func<Order, bool>(o => o.Progress.AssociatedServicesViewed) };
-                yield return new object[] { CatalogueItemType.Solution, new Func<Order, bool>(o => o.Progress.CatalogueSolutionsViewed) };
-            }
         }
 
         private static class InferEstimationPeriodTestData

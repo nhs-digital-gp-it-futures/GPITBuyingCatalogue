@@ -131,7 +131,6 @@
     <Build Include="Ordering\Tables\DefaultDeliveryDates.sql" />
     <Build Include="Ordering\Tables\OrderItemRecipients.sql" />
     <Build Include="Ordering\Tables\OrderItems.sql" />
-    <Build Include="Ordering\Tables\OrderProgress.sql" />
     <Build Include="Ordering\Tables\Orders.sql" />
     <Build Include="Ordering\Tables\OrderStatus.sql" />
     <Build Include="Ordering\Tables\ServiceRecipients.sql" />
