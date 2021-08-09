@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var cataloguePrice = solution.CataloguePrices.Single(x => x.CataloguePriceId == model.SelectedPrice);
+            var cataloguePrice = solution.CataloguePrices.Single(cp => cp.CataloguePriceId == model.SelectedPrice);
 
             orderSessionService.SetPrice(callOffId, cataloguePrice);
 

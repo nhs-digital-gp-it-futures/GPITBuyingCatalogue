@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateFrameworks()
         {
-            Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework.ShortName));
+            Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(f => f.Framework.ShortName));
         }
 
         private void PopulateCapabilities()

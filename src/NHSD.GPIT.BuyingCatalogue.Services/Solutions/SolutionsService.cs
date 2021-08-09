@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation)
                     && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "GP IT Futures"))
                 .ToListAsync();
         }
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         solution => capabilities.All(
                             capability =>
                                 solution.CatalogueItemCapabilities.Any(
-                                    x => x.Capability.CapabilityRef == capability)))
+                                    c => c.Capability.CapabilityRef == capability)))
                     .ToList();
             }
 
@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             model.SetSolutionId();
 
-            var marketingContacts = await marketingContactRepository.GetAllAsync(x => x.SolutionId == model.SolutionId);
+            var marketingContacts = await marketingContactRepository.GetAllAsync(mc => mc.SolutionId == model.SolutionId);
 
             if (!marketingContacts.Any())
             {

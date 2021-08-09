@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             {
                 browser.Checked =
                     (ClientApplication?.MobileOperatingSystems?.OperatingSystems ?? new HashSet<string>()).Any(
-                        x => x.Equals(browser.OperatingSystemName, StringComparison.InvariantCultureIgnoreCase));
+                        s => s.Equals(browser.OperatingSystemName, StringComparison.InvariantCultureIgnoreCase));
             }
         }
     }

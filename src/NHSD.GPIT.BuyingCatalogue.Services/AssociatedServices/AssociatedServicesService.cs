@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                     c => c.SupplierId == supplierId
                         && c.CatalogueItemType == CatalogueItemType.AssociatedService
                         && c.PublishedStatus == PublicationStatus.Published)
-                .OrderBy(x => x.Name)
+                .OrderBy(c => c.Name)
                 .ToListAsync();
         }
     }

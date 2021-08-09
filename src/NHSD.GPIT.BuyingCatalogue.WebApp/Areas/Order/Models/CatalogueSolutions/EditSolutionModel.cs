@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
             OrderItem = state;
 
             // TODO: Legacy appears to order based on recipient name, unless some recipients have info missing in which case they appear at the top
-            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(x => x.Selected).ToList();
+            OrderItem.ServiceRecipients = OrderItem.ServiceRecipients.Where(oir => oir.Selected).ToList();
 
             foreach (var recipient in OrderItem.ServiceRecipients.Where(r => r.Quantity is null))
                 recipient.Quantity = state.Quantity;

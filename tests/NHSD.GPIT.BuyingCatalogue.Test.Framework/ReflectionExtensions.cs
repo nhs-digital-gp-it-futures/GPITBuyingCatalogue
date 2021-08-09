@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework
         public static void ValidateAllPropertiesExcept<T>(this T input, T toCheck, string[] propertiesToExclude)
         {
             var remainingProperties = input.GetType().GetProperties()
-                .Where(x => !propertiesToExclude.Contains(x.Name));
+                .Where(mi => !propertiesToExclude.Contains(mi.Name));
 
             foreach (var propertyInfo in remainingProperties)
             {

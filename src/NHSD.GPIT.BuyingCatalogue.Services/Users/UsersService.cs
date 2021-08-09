@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
         public async Task<List<AspNetUser>> GetAllUsersForOrganisation(Guid organisationId)
         {
             organisationId.ValidateGuid(nameof(organisationId));
-            return (await userRepository.GetAllAsync(x => x.PrimaryOrganisationId == organisationId)).ToList();
+            return (await userRepository.GetAllAsync(u => u.PrimaryOrganisationId == organisationId)).ToList();
         }
 
         public async Task EnableOrDisableUser(Guid userId, bool disabled)

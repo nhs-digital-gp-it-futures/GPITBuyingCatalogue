@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             foreach (var connectionType in ConnectionTypes)
             {
                 if (ClientApplication?.MobileConnectionDetails?.ConnectionType != null &&
-                    ClientApplication.MobileConnectionDetails.ConnectionType.Any(x => x.Equals(connectionType.ConnectionType, StringComparison.InvariantCultureIgnoreCase)))
+                    ClientApplication.MobileConnectionDetails.ConnectionType.Any(s => s.Equals(connectionType.ConnectionType, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     connectionType.Checked = true;
                 }

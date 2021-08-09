@@ -30,12 +30,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 
         public IList<EntityFramework.Ordering.Models.Order> InCompleteOrders
         {
-            get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus == OrderStatus.Incomplete).ToList(); }
+            get { return allOrders.Where(o => !o.IsDeleted && o.OrderStatus == OrderStatus.Incomplete).ToList(); }
         }
 
         public IList<EntityFramework.Ordering.Models.Order> CompleteOrders
         {
-            get { return allOrders.Where(x => !x.IsDeleted && x.OrderStatus == OrderStatus.Complete).ToList(); }
+            get { return allOrders.Where(o => !o.IsDeleted && o.OrderStatus == OrderStatus.Complete).ToList(); }
         }
     }
 }

@@ -22,6 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string HasApplicationType(string key) =>
             (ClientApplication?.ClientApplicationTypes?.Any(
-                x => x.EqualsIgnoreCase(key))).ToYesNo();
+                s => s.EqualsIgnoreCase(key))).ToYesNo();
     }
 }
