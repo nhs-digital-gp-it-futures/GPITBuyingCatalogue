@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 /* ==========================================================================
    GENERIC / #BOX-SIZING
    ========================================================================== */
@@ -10892,6 +10892,12 @@ body {
   display: flex;
   flex-wrap: wrap; }
 
+.bc-u-overflow-h {
+  overflow: hidden; }
+
+.bc-u-float-right {
+  float: right; }
+
 .bc-t-border--none {
   border: 0; }
 
@@ -11214,9 +11220,3 @@ body {
         min-width: 1px;
         padding: 1em 0;
         text-align: left; } }
-.bc-u-overflow-h {
-    overflow: hidden;
-}
-.bc-u-float-right {
-    float: right;
-}

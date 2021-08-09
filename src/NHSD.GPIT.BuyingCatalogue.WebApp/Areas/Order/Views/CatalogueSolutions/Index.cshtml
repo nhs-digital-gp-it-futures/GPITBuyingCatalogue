@@ -38,7 +38,7 @@
                asp-route-catalogueItemId="@item.CatalogueItemId">@item.CatalogueItem.Name</a>
         </nhs-table-cell>
         <nhs-table-cell>
-            <div class="bc-c-data-text ">@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
+            <div>@item.CataloguePrice.PricingUnit.Description @item.CataloguePrice.TimeUnit?.Description()</div>
         </nhs-table-cell>
         <nhs-table-cell>
             <nhs-details label-text="Service recipients (ODS code)">
