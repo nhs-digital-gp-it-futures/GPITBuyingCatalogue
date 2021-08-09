@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             {
                 // Order must be frozen for this to work correctly
                 var order = context.Create<Order>();
-                return order.OrderingParty.OrganisationId;
+                return order.OrderingParty.Id;
             }
         }
 

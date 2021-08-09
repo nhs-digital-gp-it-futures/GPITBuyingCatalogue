@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOganisationId(context),
+                OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOganisationId(context),
+                OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOganisationId(context),
+                OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOganisationId(context),
+                OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOganisationId(context),
+                OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOganisationId(context),
+                OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
@@ -239,9 +239,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Name = "Test Recipient",
             };
 
-            var orderItemRecipients = new List<OrderItemRecipient>()
+            var orderItemRecipients = new List<OrderItemRecipient>
             {
-                new OrderItemRecipient
+                new()
                 {
                     Recipient = recipient,
                     DeliveryDate = order.CommencementDate,
@@ -262,14 +262,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.Add(order);
         }
 
-        private static Guid GetOganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")
+        private static Guid GetOrganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")
         {
-            return context.Organisations.Where(o => o.OdsCode == odsCode).FirstOrDefault().OrganisationId;
+            return context.Organisations.First(o => o.OdsCode == odsCode).Id;
         }
 
         private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, Guid organisationId)
         {
-            return context.Users.Where(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId).FirstOrDefault();
+            return context.Users.FirstOrDefault(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId);
         }
     }
 }

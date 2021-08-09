@@ -1,7 +1,7 @@
 ﻿DECLARE @ccgRoleId AS nchar(4) = 'RO98';
 
 IF NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId)
-	INSERT INTO organisations.Organisations (OrganisationId, [Name], [Address], OdsCode, PrimaryRoleId)
+	INSERT INTO organisations.Organisations (Id, [Name], [Address], OdsCode, PrimaryRoleId)
 	VALUES
 	('B7EE5261-43E7-4589-907B-5EEF5E98C085', 'Cheshire and Merseyside Commissioning Hub', '{"line1":"C/O NHS ENGLAND, 1W09, 1ST FLOOR","line2":"QUARRY HOUSE","line3":"QUARRY HILL","town":"LEEDS","county":"WEST YORKSHIRE","postcode":"LS2 7UE","country":"ENGLAND"}', '13Y', @ccgRoleId),
 	('43CC8258-6E92-4D39-9296-EDC5BB000563', 'Cumbria and North East Commissioning Hub', '{"line1":"C/O NHS ENGLAND, 1W09, 1ST FLOOR","line2":"QUARRY HOUSE","line3":"QUARRY HILL","town":"LEEDS","county":"WEST YORKSHIRE","postcode":"LS2 7UE","country":"ENGLAND"}', '13X', @ccgRoleId),

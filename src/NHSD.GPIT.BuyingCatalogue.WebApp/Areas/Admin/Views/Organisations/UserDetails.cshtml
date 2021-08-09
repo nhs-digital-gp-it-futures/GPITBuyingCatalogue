@@ -31,7 +31,7 @@
             </nhs-summary-list-row>
         </nhs-summary-list>
         <form method="post">
-            <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
+            <input type="hidden" asp-for="@Model.Organisation.Id" />
             <input type="hidden" asp-for="@Model.User.Id" />
             <input type="hidden" asp-for="@Model.User.Disabled" />
             <div data-test-id="change-account-status-button">

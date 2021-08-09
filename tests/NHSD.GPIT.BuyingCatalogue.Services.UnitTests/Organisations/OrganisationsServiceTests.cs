@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             repositoryMock.Setup(r => r.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode))
-                .ReturnsAsync(new Organisation[0]);
+                .ReturnsAsync(Array.Empty<Organisation>());
 
             Organisation newOrganisation = null;
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             repositoryMock.Verify(v => v.SaveChangesAsync(), Times.Once);
 
             newOrganisation.Address.Should().BeEquivalentTo(odsOrganisation.Address);
-            newOrganisation.OrganisationId.Should().Be(orgId);
+            newOrganisation.Id.Should().Be(orgId);
             newOrganisation.CatalogueAgreementSigned.Should().Be(agreementSigned);
             newOrganisation.LastUpdated.Date.Should().Be(DateTime.UtcNow.Date);
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);

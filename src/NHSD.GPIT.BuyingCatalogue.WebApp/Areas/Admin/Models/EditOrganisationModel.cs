@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public EditOrganisationModel(Organisation organisation)
         {
             CatalogueAgreementSigned = organisation.CatalogueAgreementSigned;
-            BackLink = $"/admin/organisations/{organisation.OrganisationId}";
+            BackLink = $"/admin/organisations/{organisation.Id}";
             Organisation = organisation;
             OrganisationAddress = organisation.Address;
         }

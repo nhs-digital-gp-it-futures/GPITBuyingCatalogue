@@ -40,17 +40,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public async Task Organisation_OrganisationDetailsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var dbAddress = (await context.Organisations.SingleAsync(s => s.OrganisationId == OrganisationId)).Address;
+            var dbAddress = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).Address;
 
-            var pageAddress = AdminPages.Organisation.GetAddress();
+            var pageAddress = AdminPages.Organisation.GetAddress().ToList();
 
             foreach (var prop in dbAddress.GetType().GetProperties())
             {
-                if (prop.GetValue(dbAddress) is not null)
-                {
-                    var value = prop.GetValue(dbAddress).ToString();
-                    pageAddress.First().Should().Contain(value);
-                }
+                if (prop.GetValue(dbAddress) is null)
+                    continue;
+
+                var value = prop.GetValue(dbAddress)?.ToString();
+                pageAddress.First().Should().Contain(value);
             }
         }
 
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public async Task Organisation_OdsCodeDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var dbOdsCode = (await context.Organisations.SingleAsync(s => s.OrganisationId == OrganisationId)).OdsCode;
+            var dbOdsCode = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).OdsCode;
 
             var pageOdsCode = AdminPages.Organisation.GetOdsCode();
 
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             AdminPages.Organisation.ViewUserDetails(user.Id);
 
             await using var context = GetEndToEndDbContext();
-            var organisationName = (await context.Organisations.SingleAsync(s => s.OrganisationId == OrganisationId)).Name;
+            var organisationName = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).Name;
 
             AdminPages.UserDetails.GetOrganisationName().Should().BeEquivalentTo(organisationName);
             AdminPages.UserDetails.GetUserName().Should().BeEquivalentTo($"{user.FirstName} {user.LastName}");
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             var relatedOrgIds = await context.RelatedOrganisations.Where(s => s.OrganisationId == OrganisationId).ToListAsync();
             relatedOrgIds.Select(s => s.RelatedOrganisationId).Should().Contain(relatedOrgId);
 
-            var relatedOrganisation = await context.Organisations.SingleAsync(s => s.OrganisationId == relatedOrgId);
+            var relatedOrganisation = await context.Organisations.SingleAsync(s => s.Id == relatedOrgId);
 
             organisation.OrganisationName.Should().BeEquivalentTo(relatedOrganisation.Name);
             organisation.OdsCode.Should().BeEquivalentTo(relatedOrganisation.OdsCode);
@@ -186,12 +186,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         private async Task<Guid> AddRelatedOrganisation()
         {
             await using var context = GetEndToEndDbContext();
-            var organisations = await context.Organisations.Where(o => o.OrganisationId != OrganisationId).ToListAsync();
+            var organisations = await context.Organisations.Where(o => o.Id != OrganisationId).ToListAsync();
 
             var relatedOrganisation = new RelatedOrganisation
             {
                 OrganisationId = OrganisationId,
-                RelatedOrganisationId = organisations[new Random().Next(organisations.Count)].OrganisationId,
+                RelatedOrganisationId = organisations[new Random().Next(organisations.Count)].Id,
             };
 
             context.RelatedOrganisations.Add(relatedOrganisation);

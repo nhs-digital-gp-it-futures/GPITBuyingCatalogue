@@ -9,7 +9,7 @@
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-page-title title="Remove organisation" advice="This organisation will no longer be able to act on behalf of @Model.RelatedOrganisation.Name." />
             <form method="POST">
-                <input type="hidden" asp-for="@Model.RelatedOrganisation.OrganisationId" />
+                <input type="hidden" asp-for="@Model.RelatedOrganisation.Id" />
                 <input type="hidden" asp-for="@Model.OrganisationId" />
                 <div data-test-id="submit-button">
                     <nhs-submit-button text="Remove organisation" />

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
         {
             builder.ToTable("Organisations", Schemas.Organisations);
 
-            builder.HasKey(o => o.OrganisationId)
+            builder.HasKey(o => o.Id)
                 .IsClustered(false);
 
             builder.Property(o => o.Address)
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
                     a => JsonSerializer.Serialize(a, null),
                     a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
 
-            builder.Property(o => o.OrganisationId).ValueGeneratedNever();
+            builder.Property(o => o.Id).ValueGeneratedNever();
             builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
             builder.Property(o => o.Name)
                 .IsRequired()

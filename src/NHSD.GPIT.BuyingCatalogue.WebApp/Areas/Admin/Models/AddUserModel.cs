@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public AddUserModel(Organisation organisation)
         {
             Organisation = organisation;
-            BackLink = $"/admin/organisations/{organisation.OrganisationId}";
+            BackLink = $"/admin/organisations/{organisation.Id}";
         }
 
         public Organisation Organisation { get; set; }

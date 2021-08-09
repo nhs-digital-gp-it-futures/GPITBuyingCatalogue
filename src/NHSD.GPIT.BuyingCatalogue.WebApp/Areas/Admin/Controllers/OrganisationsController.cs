@@ -248,17 +248,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("proxy/{organisationId}")]
-        public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model)
+        public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model, Guid organisationId)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await organisationsService.AddRelatedOrganisations(model.Organisation.OrganisationId, model.SelectedOrganisation);
+            await organisationsService.AddRelatedOrganisations(organisationId, model.SelectedOrganisation);
 
             return RedirectToAction(
                 nameof(Details),
                 typeof(OrganisationsController).ControllerName(),
-                new { model.Organisation.OrganisationId });
+                new { organisationId });
         }
 
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]

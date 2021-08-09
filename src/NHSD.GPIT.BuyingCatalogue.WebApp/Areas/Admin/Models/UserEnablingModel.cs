@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
             Organisation = organisation;
             User = user;
-            BackLink = $"/admin/organisations/{organisation.OrganisationId}/{user.Id}";
+            BackLink = $"/admin/organisations/{organisation.Id}/{user.Id}";
         }
 
         public AspNetUser User { get; set; }

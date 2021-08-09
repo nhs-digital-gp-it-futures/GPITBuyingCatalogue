@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             {
                 o.Name,
                 o.OdsCode,
-                o.OrganisationId,
+                OrganisationId = o.Id,
             }).ToListAsync();
 
             actualOrganisationNames
