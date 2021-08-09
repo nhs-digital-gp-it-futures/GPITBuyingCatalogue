@@ -44,10 +44,10 @@ AS
     BEGIN TRANSACTION;
 
     BEGIN TRY
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId)
+        INSERT INTO catalogue.CatalogueItems(Id, [Name], CatalogueItemTypeId, SupplierId)
              SELECT i.Id, i.[Name], @solutionCatalogueItemType, i.SupplierId
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM catalogue.CatalogueItems AS c WHERE c.CatalogueItemId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.CatalogueItems AS c WHERE c.Id = i.Id);
 
         INSERT INTO catalogue.Solutions(Id, LastUpdated, LastUpdatedBy)
              SELECT i.Id, @now, @emptyGuid

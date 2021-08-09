@@ -10,7 +10,7 @@ AS
 
         UPDATE catalogue.CatalogueItems
            SET PublishedStatusId = @publishedStatus
-         WHERE CatalogueItemId = @CatalogueItemId;
+         WHERE Id = @CatalogueItemId;
 
         COMMIT TRANSACTION;
     END TRY

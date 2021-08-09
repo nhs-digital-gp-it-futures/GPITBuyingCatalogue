@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         public HostingTypeSelectionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.CatalogueItemId}/hosting-type";
+            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/hosting-type";
         }
 
         public bool HostingTypesAvailableForSelection { get; set; }

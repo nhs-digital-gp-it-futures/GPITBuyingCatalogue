@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Description.Should().Be(clientApplication.MobileConnectionDetails.Description);
             actual.SelectedConnectionSpeed.Should()
                 .Be(clientApplication.MobileConnectionDetails.MinimumConnectionSpeed);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Description.Should().Be(clientApplication.NativeMobileHardwareRequirements);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
             actual.SelectedMemorySize.Should()
                 .Be(clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.MobileFirstApproach.Should().Be(clientApplication.NativeMobileFirstDesign.ToYesNo());
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -209,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 new() { OperatingSystemName = "Android", Checked = true },
                 new() { OperatingSystemName = "Other" },
             });
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.DeviceCapabilities.Should().Be(clientApplication.MobileThirdParty.DeviceCapabilities);
             actual.ThirdPartyComponents.Should().Be(clientApplication.MobileThirdParty.ThirdPartyComponents);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -325,6 +325,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
         }
 
         private static string GetBackLink(CatalogueItem catalogueItem) =>
-            $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-mobile";
+            $"/marketing/supplier/solution/{catalogueItem.Id}/section/native-mobile";
     }
 }

@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task Features_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == SolutionId)).Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.SavePage();
 
             await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var catalogueItem = await context.CatalogueItems.Include(c => c.Solution).SingleAsync(s => s.Id == SolutionId);
             var featuresModel = new FeaturesModel().FromCatalogueItem(catalogueItem);
 
             featuresModel.AllFeatures.Should().BeEquivalentTo(features);

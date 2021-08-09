@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             Guid capabilityId) =>
             CatalogueItemCapabilities?.FirstOrDefault(
                 sc => sc.Capability != null && sc.Capability.Id == capabilityId)
-            ?? new CatalogueItemCapability { CatalogueItemId = CatalogueItemId };
+            ?? new CatalogueItemCapability { CatalogueItemId = Id };
 
         public virtual string[] Features() =>
             HasFeatures() ? JsonConvert.DeserializeObject<string[]>(Solution.Features) : null;
@@ -57,11 +57,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             Solution?.MarketingContacts?.Skip(1).FirstOrDefault() ?? new MarketingContact();
 
         public string CatalogueItemName(CatalogueItemId catalogueItemId) => Supplier?.CatalogueItems
-            .FirstOrDefault(c => c.CatalogueItemId == catalogueItemId)
+            .FirstOrDefault(c => c.Id == catalogueItemId)
             ?.Name;
 
         public string AdditionalServiceDescription(CatalogueItemId catalogueItemId) => Supplier?.CatalogueItems
-            .FirstOrDefault(c => c.CatalogueItemId == catalogueItemId)
+            .FirstOrDefault(c => c.Id == catalogueItemId)
             ?.AdditionalService?.FullDescription;
     }
 }

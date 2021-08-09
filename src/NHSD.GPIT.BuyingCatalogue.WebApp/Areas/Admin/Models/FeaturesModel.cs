@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
             catalogueItem.ValidateNotNull(nameof(catalogueItem));
 
-            SolutionId = catalogueItem.CatalogueItemId;
+            SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
 
             var featuresToSet = catalogueItem.Features() ?? Array.Empty<string>();

@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             expected.Solution.LastUpdatedBy = userId;
             aspNetUser.Id = userId;
             var mockSolutionService = new Mock<ISolutionsService>();
-            mockSolutionService.Setup(s => s.GetSolution(expected.CatalogueItemId))
+            mockSolutionService.Setup(s => s.GetSolution(expected.Id))
                 .ReturnsAsync(expected);
 
             var mockUsersService = new Mock<IUsersService>();
@@ -200,9 +200,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(aspNetUser);
             var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUsersService.Object);
 
-            var actual = (await controller.ManageCatalogueSolution(expected.CatalogueItemId)).As<ViewResult>();
+            var actual = (await controller.ManageCatalogueSolution(expected.Id)).As<ViewResult>();
 
-            mockSolutionService.Verify(s => s.GetSolution(expected.CatalogueItemId));
+            mockSolutionService.Verify(s => s.GetSolution(expected.Id));
             mockUsersService.Verify(u => u.GetUser(aspNetUser.Id));
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expected = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(999999, "999"),
+                Id = new CatalogueItemId(999999, "999"),
                 Solution = new Solution
                 {
                     Summary = "XYZ Summary",
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object);
 
-            var actual = (await controller.Description(expected.CatalogueItemId)).As<ViewResult>();
+            var actual = (await controller.Description(expected.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
@@ -1832,12 +1832,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController catalogueSolutionsController)
         {
-            mockService.Setup(s => s.GetSolution(catalogueItem.CatalogueItemId))
+            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            await catalogueSolutionsController.ClientApplicationType(catalogueItem.CatalogueItemId);
+            await catalogueSolutionsController.ClientApplicationType(catalogueItem.Id);
 
-            mockService.Verify(s => s.GetSolution(catalogueItem.CatalogueItemId));
+            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
         }
 
         [Theory]

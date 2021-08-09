@@ -54,11 +54,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, HybridModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.HybridHostingType.Should().BeEquivalentTo(hosting.HybridHostingType);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -73,11 +73,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, OnPremiseModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.OnPremise.Should().BeEquivalentTo(hosting.OnPremise);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -92,11 +92,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, PrivateCloudModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.PrivateCloud.Should().BeEquivalentTo(hosting.PrivateCloud);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -111,11 +111,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, PublicCloudModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.PublicCloud.Should().BeEquivalentTo(hosting.PublicCloud);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 

@@ -17,7 +17,7 @@
             caption="@Model.CatalogueItem.Supplier.Name"
         />
     </div>
-    <p data-test-id="view-solution-page-solution-id" class="nhsuk-u-font-size-24">Solution ID: @Model.CatalogueItem.CatalogueItemId</p>
+    <p data-test-id="view-solution-page-solution-id" class="nhsuk-u-font-size-24">Solution ID: @Model.CatalogueItem.Id</p>
     <nhs-endnote>
         Solution information last updated: @Model.CatalogueItem.Solution.LastUpdated.ToString("d MMMM yyyy")<br /><br />
         Framework(s): @Model.Frameworks
@@ -242,7 +242,7 @@
             </div>
             <div data-test-id="view-section-question-document-link">
                 <div data-test-id="view-question-data-link-document-link" class="nhsuk-u-margin-bottom-4">
-                    <a href="@Model.CatalogueItem.CatalogueItemId/document/roadmap.pdf" target="_blank">
+                    <a href="@Model.CatalogueItem.Id/document/roadmap.pdf" target="_blank">
                         View roadmap
                     </a>
                 </div>

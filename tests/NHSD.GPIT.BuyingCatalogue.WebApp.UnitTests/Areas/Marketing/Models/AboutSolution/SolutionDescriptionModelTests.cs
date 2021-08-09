@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution { Summary = "A solution summary", FullDescription = "A full description", AboutUrl = "A Url" },
             };
 
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution { Summary = string.Empty, FullDescription = "A full description", AboutUrl = "A Url" },
             };
 
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution { Summary = summary },
             };
 

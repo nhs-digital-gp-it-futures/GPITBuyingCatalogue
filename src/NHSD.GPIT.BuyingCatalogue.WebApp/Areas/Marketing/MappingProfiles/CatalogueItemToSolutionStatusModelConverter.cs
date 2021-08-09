@@ -25,10 +25,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
 
             var result = new SolutionStatusModel
             {
-                BackLink = $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}",
+                BackLink = $"/marketing/supplier/solution/{catalogueItem.Id}",
                 BackLinkText = "Return to all sections",
                 CatalogueItemName = catalogueItem.Name,
-                SolutionId = catalogueItem.CatalogueItemId,
+                SolutionId = catalogueItem.Id,
                 SupplierId = catalogueItem.Supplier?.Id,
                 SupplierName = catalogueItem.Supplier?.Name,
             };
