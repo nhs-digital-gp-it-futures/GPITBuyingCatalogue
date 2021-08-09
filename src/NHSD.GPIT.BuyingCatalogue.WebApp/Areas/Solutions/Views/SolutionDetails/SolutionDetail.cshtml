@@ -68,7 +68,7 @@
                                 }
                                 @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
                                 {
-                                    <div data-test-id="view-question-data-link" class="bc-c-data-link ">
+                                    <div data-test-id="view-question-data-link">
                                         <a href="@Model.CatalogueItem.Solution.AboutUrl" target="_blank">
                                             @Model.CatalogueItem.Solution.AboutUrl
                                         </a>
@@ -128,18 +128,18 @@
                         </h3>
                         <div class="nhsuk-grid-row">
                             <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                <div data-test-id="view-question-data-text-link-authority-integrations" class="bc-c-data-link nhsuk-u-margin-bottom-3">
+                                <div data-test-id="view-question-data-text-link-authority-integrations" class="nhsuk-u-margin-bottom-3">
                                     <a asp-controller="Document" asp-action="GetDocument" asp-route-documentName="integrations.pdf" target="_blank">
                                         View NHS assured integrations
                                     </a>
                                 </div>
                                 <div data-test-id="view-data-text-additional-information" class="bc-t-font-color--grey-1">To find out more about these NHS assured integrations, follow the links below.</div>
-                                <div data-test-id="view-question-data-text-link-gpconnect" class="bc-c-data-link ">
+                                <div data-test-id="view-question-data-text-link-gpconnect">
                                     <a href="https://digital.nhs.uk/services/gp-connect" target="_blank">
                                         GPConnect
                                     </a>
                                 </div>
-                                <div data-test-id="view-question-data-text-link-im1" class="bc-c-data-link ">
+                                <div data-test-id="view-question-data-text-link-im1">
                                     <a href="https://digital.nhs.uk/services/future-gp-it-systems-and-services/im1-pairing-integration" target="_blank">
                                         IM1
                                     </a>
@@ -161,7 +161,7 @@
                             <div class="nhsuk-grid-row">
                                 <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
                                     <p data-test-id="view-data-text-additional-information">Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
-                                    <div data-test-id="view-question-data-text-link-supplier-integrations" class="bc-c-data-link ">
+                                    <div data-test-id="view-question-data-text-link-supplier-integrations">
                                         <a href="@Model.CatalogueItem.Solution.IntegrationsUrl" target="_blank">
                                             @Model.CatalogueItem.Solution.IntegrationsUrl
                                         </a>
@@ -241,7 +241,7 @@
                 <div data-test-id="view-roadmap-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3">These are the supplier’s development plans for this Catalogue Solution:</div>
             </div>
             <div data-test-id="view-section-question-document-link">
-                <div data-test-id="view-question-data-link-document-link" class="bc-c-data-link nhsuk-u-margin-bottom-4">
+                <div data-test-id="view-question-data-link-document-link" class="nhsuk-u-margin-bottom-4">
                     <a href="@Model.CatalogueItem.CatalogueItemId/document/roadmap.pdf" target="_blank">
                         View roadmap
                     </a>
@@ -274,7 +274,7 @@
                 @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.SupplierUrl))
                 {
                     <div data-test-id="view-section-question-link">
-                        <div data-test-id="view-question-data-link" class="bc-c-data-link ">
+                        <div data-test-id="view-question-data-link">
                             <a href="@Model.CatalogueItem.Supplier.SupplierUrl" target="_blank">
                                 @Model.CatalogueItem.Supplier.SupplierUrl
                             </a>
