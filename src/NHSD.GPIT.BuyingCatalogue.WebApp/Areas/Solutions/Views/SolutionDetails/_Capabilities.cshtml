@@ -9,7 +9,7 @@
     <div class="nhsuk-grid-row nhsuk-u-padding-left-3">
         <div class="nhsuk-grid-column-full">
             <div class="nhsuk-grid-row" data-test-id="view-section-capabilities-guidance">
-                <div data-test-id="view-capabilities-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">This Catalogue Solution has demonstrated that it can help meet the following needs in primary care:</div>
+                <div data-test-id="view-capabilities-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">This Catalogue Solution has demonstrated that it can help meet the following needs in primary care:</div>
             </div>
 
             @foreach (var capability in Model)
@@ -23,7 +23,7 @@
 
                         <div class="nhsuk-grid-row">
                             <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-full nhsuk-u-padding-0">
-                                <p data-test-id="view-question-data-text-description" class="bc-c-data-text nhsuk-grid-column-two-thirds">@capability.Description</p>
+                                <p data-test-id="view-question-data-text-description" class="nhsuk-grid-column-two-thirds">@capability.Description</p>
 
                                 <div data-test-id="view-section-capabilities" class="nhsuk-grid-column-full">
                                     <nhs-details label-text="How this capability was met">
