@@ -25,7 +25,7 @@
         </nhs-summary-list-row>
         <nhs-summary-list-row label-text="Contract">
             <p>
-                <a data-test-id="edit-org-button" asp-area="Admin" asp-controller="Organisations" asp-action="EditOrganisation" asp-route-organisationId="@Model.Organisation.OrganisationId" class="bc-u-float-right nhsuk-u-margin-left-2">Change</a>
+                <a data-test-id="edit-org-button" asp-area="Admin" asp-controller="Organisations" asp-action="EditOrganisation" asp-route-organisationId="@Model.Organisation.Id" class="bc-u-float-right nhsuk-u-margin-left-2">Change</a>
                 @Model.CatalogueAgreementText
             </p>
         </nhs-summary-list-row>
@@ -34,7 +34,7 @@
     <h2 data-test-id="accounts-subheading">User accounts for @Model.Organisation.Name</h2>
 
     <div data-test-id="add-user-button">
-        <vc:nhs-action-link url="/admin/organisations/@Model.Organisation.OrganisationId/adduser" text="Add new user" />
+        <vc:nhs-action-link url="/admin/organisations/@Model.Organisation.Id/adduser" text="Add new user" />
     </div>
 
     <div data-test-id="user-table">
@@ -50,20 +50,20 @@
             </nhs-table-column>
             <nhs-table-column>
             </nhs-table-column>
-            @for (var i = 0; i < Model.Users.Count; i++)
+            @foreach (var user in Model.Users)
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>
-                        @Model.Users[i].GetDisplayName()
+                        @user.GetDisplayName()
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <div data-test-id="user-phone-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].PhoneNumber</div>
+                        <div data-test-id="user-phone-@user.Id" class="bc-c-data-text ">@user.PhoneNumber</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <div data-test-id="user-email-@Model.Users[i].Id" class="bc-c-data-text ">@Model.Users[i].Email</div>
+                        <div data-test-id="user-email-@user.Id" class="bc-c-data-text ">@user.Email</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a data-test-id="user-name-@Model.Users[i].Id" asp-area="Admin" asp-controller="Organisations" asp-action="UserDetails" asp-route-organisationId="@Model.Organisation.OrganisationId" asp-route-userId="@Model.Users[i].Id">Manage</a>
+                        <a data-test-id="user-name-@user.Id" asp-area="Admin" asp-controller="Organisations" asp-action="UserDetails" asp-route-organisationId="@Model.Organisation.Id" asp-route-userId="@user.Id">Manage</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             }
@@ -73,7 +73,7 @@
     <h2>Related organisations</h2>
     <p>These are the organisations @Model.Organisation.Name can create orders for.</p>
     <div data-test-id="add-organisation-button">
-        <vc:nhs-action-link url="/admin/organisations/proxy/@Model.Organisation.OrganisationId" text="Add an organisation" />
+        <vc:nhs-action-link url="/admin/organisations/proxy/@Model.Organisation.Id" text="Add an organisation" />
     </div>
 
     <div id="related-org-table" data-test-id="related-org-table">
@@ -86,17 +86,17 @@
             </nhs-table-column>
             <nhs-table-column>
             </nhs-table-column>
-            @for (var i = 0; i < Model.RelatedOrganisations.Count; i++)
+            @foreach (var relatedOrganisation in Model.RelatedOrganisations)
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>
-                        <div data-test-id="related-org-name-@Model.RelatedOrganisations[i].OrganisationId" class="bc-c-data-text ">@Model.RelatedOrganisations[i].Name</div>
+                        <div data-test-id="related-org-name-@relatedOrganisation.Id" class="bc-c-data-text ">@relatedOrganisation.Name</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <div data-test-id="related-org-odsCode-@Model.RelatedOrganisations[i].OrganisationId" class="bc-c-data-text ">@Model.RelatedOrganisations[i].OdsCode</div>
+                        <div data-test-id="related-org-odsCode-@relatedOrganisation.Id" class="bc-c-data-text ">@relatedOrganisation.OdsCode</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a data-test-id="related-org-remove-@Model.RelatedOrganisations[i].OrganisationId" asp-area="Admin" asp-controller="Organisations" asp-action="RemoveAnOrganisation" asp-route-organisationId="@Model.Organisation.OrganisationId" asp-route-relatedOrganisationId="@Model.RelatedOrganisations[i].OrganisationId">Remove</a>
+                        <a data-test-id="related-org-remove-@relatedOrganisation.Id" asp-area="Admin" asp-controller="Organisations" asp-action="RemoveAnOrganisation" asp-route-organisationId="@Model.Organisation.Id" asp-route-relatedOrganisationId="@relatedOrganisation.Id">Remove</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             }

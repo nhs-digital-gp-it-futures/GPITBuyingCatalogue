@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var organisation = await organisationsService.GetOrganisationByOdsCode(odsCode);
 
-            var allOrders = await orderService.GetOrders(organisation.OrganisationId);
+            var allOrders = await orderService.GetOrders(organisation.Id);
 
             return View(new OrganisationModel(organisation, User, allOrders));
         }

@@ -14,7 +14,7 @@ BEGIN
     DECLARE @phoneNumber AS nvarchar(max) = '$(EA_USER_PHONE)';
 
     DECLARE @executiveAgencyRoleId AS nchar(5) = 'RO116';
-    DECLARE @organisationId AS uniqueidentifier = (SELECT OrganisationId FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
+    DECLARE @organisationId AS uniqueidentifier = (SELECT Id FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
 
     INSERT INTO users.AspNetUsers
     (

@@ -1,7 +1,7 @@
 ﻿DECLARE @csuRoleId AS nchar(5) = 'RO213';
 
 IF NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @csuRoleId)
-	INSERT INTO organisations.Organisations (OrganisationId, [Name], [Address], OdsCode, PrimaryRoleId)
+	INSERT INTO organisations.Organisations (Id, [Name], [Address], OdsCode, PrimaryRoleId)
 	VALUES
 	('C0CEB1BC-8AC6-4574-8D36-2FE828C76ACF', 'NHS Anglia Commissioning Support Unit', '{"line1":"LAKESIDE 400","line2":"OLD CHAPEL WAY","line3":"BROADLAND BUSINESS PARK","town":"NORWICH","county":"NORFOLK","postcode":"NR7 0WG","country":"ENGLAND"}', '0AP', @csuRoleId),
 	('1FB7238E-4642-4D7F-836E-EE917162E35C', 'NHS Arden and Greater East Midlands Commissioning Support Unit', '{"line1":"ST JOHNS HOUSE","line2":"30 EAST STREET","town":"LEICESTER","postcode":"LE1 6NB","country":"ENGLAND"}', '0DE', @csuRoleId),

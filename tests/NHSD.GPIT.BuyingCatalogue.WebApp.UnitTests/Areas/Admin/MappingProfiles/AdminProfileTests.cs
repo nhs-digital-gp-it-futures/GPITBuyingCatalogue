@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.MappingProfiles
         {
             var actual = mapper.Map<Organisation, OrganisationModel>(organisation);
 
-            actual.Id.Should().Be(organisation.OrganisationId);
+            actual.Id.Should().Be(organisation.Id);
             actual.Name.Should().Be(organisation.Name);
             actual.OdsCode.Should().Be(organisation.OdsCode);
         }

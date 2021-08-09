@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<IList<Order>> GetOrders(Guid organisationId)
         {
             return await dbContext.Organisations
-                .Where(o => o.OrganisationId == organisationId)
+                .Where(o => o.Id == organisationId)
                 .SelectMany(o => o.Orders)
                 .AsNoTracking()
                 .ToListAsync();
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<Order> CreateOrder(string description, string odsCode)
         {
-            var organisationId = (await organisationService.GetOrganisationByOdsCode(odsCode)).OrganisationId;
+            var organisationId = (await organisationService.GetOrganisationByOdsCode(odsCode)).Id;
 
             var orderingParty = await dbContext.Organisations.FindAsync(organisationId);
 

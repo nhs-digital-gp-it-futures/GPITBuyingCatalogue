@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddAnOrganisationModel
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AddAnOrganisationModel
 @{
     ViewData["Title"] = "Buying Catalogue – Admin";
 }
@@ -11,7 +12,7 @@
                 title="Add organisation to @Model.Organisation.Name"
                 advice="@Model.Organisation.Name will then be able to create orders on this organisation's behalf." />
             <form method="post">
-                <input type="hidden" asp-for="@Model.Organisation.OrganisationId" />
+                <input type="hidden" asp-for="@Model.Organisation.Id" />
 
                 <nhs-fieldset-form-label
                     asp-for="@Model"
@@ -19,8 +20,8 @@
                     label-hint="Select one option.">
                     <nhs-radio-buttons asp-for="@Model.SelectedOrganisation"
                                        values="@Model.AvailableOrganisations"
-                                       value-name="OrganisationId"
-                                       display-name="Name" />
+                                       value-name="@nameof(Organisation.Id)"
+                                       display-name="@nameof(Organisation.Name)" />
                 </nhs-fieldset-form-label>
                 <nhs-submit-button text="Confirm" />
             </form>
