@@ -57,10 +57,10 @@
                         @user.GetDisplayName()
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <div data-test-id="user-phone-@user.Id" class="bc-c-data-text ">@user.PhoneNumber</div>
+                        <div data-test-id="user-phone-@user.Id">@user.PhoneNumber</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <div data-test-id="user-email-@user.Id" class="bc-c-data-text ">@user.Email</div>
+                        <div data-test-id="user-email-@user.Id">@user.Email</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a data-test-id="user-name-@user.Id" asp-area="Admin" asp-controller="Organisations" asp-action="UserDetails" asp-route-organisationId="@Model.Organisation.Id" asp-route-userId="@user.Id">Manage</a>
@@ -90,10 +90,10 @@
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>
-                        <div data-test-id="related-org-name-@relatedOrganisation.Id" class="bc-c-data-text ">@relatedOrganisation.Name</div>
+                        <div data-test-id="related-org-name-@relatedOrganisation.Id">@relatedOrganisation.Name</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <div data-test-id="related-org-odsCode-@relatedOrganisation.Id" class="bc-c-data-text ">@relatedOrganisation.OdsCode</div>
+                        <div data-test-id="related-org-odsCode-@relatedOrganisation.Id">@relatedOrganisation.OdsCode</div>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a data-test-id="related-org-remove-@relatedOrganisation.Id" asp-area="Admin" asp-controller="Organisations" asp-action="RemoveAnOrganisation" asp-route-organisationId="@Model.Organisation.Id" asp-route-relatedOrganisationId="@relatedOrganisation.Id">Remove</a>

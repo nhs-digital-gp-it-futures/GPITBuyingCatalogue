@@ -68,7 +68,7 @@
                                 }
                                 @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.AboutUrl))
                                 {
-                                    <div data-test-id="view-question-data-link" class="bc-c-data-link ">
+                                    <div data-test-id="view-question-data-link">
                                         <a href="@Model.CatalogueItem.Solution.AboutUrl" target="_blank">
                                             @Model.CatalogueItem.Solution.AboutUrl
                                         </a>
@@ -93,12 +93,12 @@
 
         <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
             <div data-test-id="view-section-features-guidance">
-                <div data-test-id="view-features-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution has the following features that can help meet needs in primary care:</div>
+                <div data-test-id="view-features-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution has the following features that can help meet needs in primary care:</div>
             </div>
 
             <div class="nhsuk-grid-column-two-thirds">
 
-                <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                <div data-test-id="view-question-data-bulletlist">
                     <ul class="nhsuk-u-margin-bottom-0">
                         @foreach (var feature in Model.Features)
                         {
@@ -118,7 +118,7 @@
         <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Integrations</h2>
     </div>
     <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-        <div data-test-id="view-integrations-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">View information about the systems this Catalogue Solution integrates with to exchange data:</div>
+        <div data-test-id="view-integrations-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">View information about the systems this Catalogue Solution integrates with to exchange data:</div>
         <div class="nhsuk-grid-column-full">
             <div data-test-id="view-authority-assured-integrations">
                 <div data-test-id="view-section-table-row-authority-assured-integrations" class="bc-c-section-table-row ">
@@ -128,18 +128,18 @@
                         </h3>
                         <div class="nhsuk-grid-row">
                             <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
-                                <div data-test-id="view-question-data-text-link-authority-integrations" class="bc-c-data-link nhsuk-u-margin-bottom-3">
+                                <div data-test-id="view-question-data-text-link-authority-integrations" class="nhsuk-u-margin-bottom-3">
                                     <a asp-controller="Document" asp-action="GetDocument" asp-route-documentName="integrations.pdf" target="_blank">
                                         View NHS assured integrations
                                     </a>
                                 </div>
-                                <div data-test-id="view-data-text-additional-information" class="bc-c-data-text bc-t-font-color--grey-1">To find out more about these NHS assured integrations, follow the links below.</div>
-                                <div data-test-id="view-question-data-text-link-gpconnect" class="bc-c-data-link ">
+                                <div data-test-id="view-data-text-additional-information" class="bc-t-font-color--grey-1">To find out more about these NHS assured integrations, follow the links below.</div>
+                                <div data-test-id="view-question-data-text-link-gpconnect">
                                     <a href="https://digital.nhs.uk/services/gp-connect" target="_blank">
                                         GPConnect
                                     </a>
                                 </div>
-                                <div data-test-id="view-question-data-text-link-im1" class="bc-c-data-link ">
+                                <div data-test-id="view-question-data-text-link-im1">
                                     <a href="https://digital.nhs.uk/services/future-gp-it-systems-and-services/im1-pairing-integration" target="_blank">
                                         IM1
                                     </a>
@@ -161,7 +161,7 @@
                             <div class="nhsuk-grid-row">
                                 <div data-test-id="view-section-table-row-component" class="nhsuk-grid-column-two-thirds">
                                     <p data-test-id="view-data-text-additional-information">Supplier asserted integrations are interoperability interfaces prepared by a supplier and are not specified or assured by the NHS.</p>
-                                    <div data-test-id="view-question-data-text-link-supplier-integrations" class="bc-c-data-link ">
+                                    <div data-test-id="view-question-data-text-link-supplier-integrations">
                                         <a href="@Model.CatalogueItem.Solution.IntegrationsUrl" target="_blank">
                                             @Model.CatalogueItem.Solution.IntegrationsUrl
                                         </a>
@@ -183,7 +183,7 @@
             <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Implementation</h2>
         </div>
         <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
-            <div data-test-id="view-implementation-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">These are the typical processes and timescales to implement this Catalogue Solution:</div>
+            <div data-test-id="view-implementation-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3 nhsuk-grid-column-two-thirds">These are the typical processes and timescales to implement this Catalogue Solution:</div>
             <div class="nhsuk-grid-column-two-thirds">
                 <p data-test-id="view-question-data-text-description">@Model.CatalogueItem.Solution.ImplementationDetail</p>
             </div>
@@ -199,7 +199,7 @@
         </div>
         <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
             <div data-test-id="view-section-client-application-types-guidance">
-                <div data-test-id="view-client-application-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution is supported by the following client application types:</div>
+                <div data-test-id="view-client-application-types-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">This Catalogue Solution is supported by the following client application types:</div>
             </div>
             <div class="nhsuk-grid-column-full">
                 <partial name="_ClientApplicationTypes" model="Model.BrowserBased" />
@@ -218,7 +218,7 @@
         </div>
         <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
             <div data-test-id="view-section-hosting-types-guidance">
-                <div data-test-id="view-hosting-types-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">These are the ways this Catalogue Solution can be hosted:</div>
+                <div data-test-id="view-hosting-types-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-4 nhsuk-grid-column-two-thirds">These are the ways this Catalogue Solution can be hosted:</div>
             </div>
             <div class="nhsuk-grid-column-full">
                 <partial name="_HostingType" model="Model.PublicCloud" />
@@ -238,10 +238,10 @@
     <div class="nhsuk-grid-row nhsuk-u-padding-left-3 nhsuk-u-padding-right-3">
         <div class="nhsuk-grid-column-two-thirds">
             <div data-test-id="view-section-roadmap-guidance">
-                <div data-test-id="view-roadmap-guidance" class="bc-c-data-text bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3">These are the supplier’s development plans for this Catalogue Solution:</div>
+                <div data-test-id="view-roadmap-guidance" class="bc-t-font-color--grey-1 nhsuk-u-margin-bottom-3">These are the supplier’s development plans for this Catalogue Solution:</div>
             </div>
             <div data-test-id="view-section-question-document-link">
-                <div data-test-id="view-question-data-link-document-link" class="bc-c-data-link nhsuk-u-margin-bottom-4">
+                <div data-test-id="view-question-data-link-document-link" class="nhsuk-u-margin-bottom-4">
                     <a href="@Model.CatalogueItem.CatalogueItemId/document/roadmap.pdf" target="_blank">
                         View roadmap
                     </a>
@@ -250,7 +250,7 @@
             @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Solution.RoadMap))
             {
                 <div data-test-id="view-section-question-summary">
-                    <div data-test-id="view-question-data-text-summary" class="bc-c-data-text ">@Model.CatalogueItem.Solution.RoadMap</div>
+                    <div data-test-id="view-question-data-text-summary">@Model.CatalogueItem.Solution.RoadMap</div>
                 </div>
             }
         </div>
@@ -274,7 +274,7 @@
                 @if (!string.IsNullOrWhiteSpace(Model.CatalogueItem.Supplier.SupplierUrl))
                 {
                     <div data-test-id="view-section-question-link">
-                        <div data-test-id="view-question-data-link" class="bc-c-data-link ">
+                        <div data-test-id="view-question-data-link">
                             <a href="@Model.CatalogueItem.Supplier.SupplierUrl" target="_blank">
                                 @Model.CatalogueItem.Supplier.SupplierUrl
                             </a>

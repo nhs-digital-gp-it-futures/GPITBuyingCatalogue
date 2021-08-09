@@ -11,7 +11,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Supported browser types">
-                        <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                        <div data-test-id="view-question-data-bulletlist">
                             <ul class="nhsuk-u-margin-bottom-0">
                                 @foreach (var browser in Model.BrowsersSupported)
                                 {
@@ -27,7 +27,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Supported operating systems">
-                        <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                        <div data-test-id="view-question-data-bulletlist">
                             <ul class="nhsuk-u-margin-bottom-0">
                                 @foreach (var os in Model.MobileOperatingSystems)
                                 {
@@ -43,7 +43,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Description of supported operating systems">
-                        <div data-test-id="view-question-data-text-operating-systems-description" class="bc-c-data-text ">@Model.OperatingSystemDescription</div>
+                        <div data-test-id="view-question-data-text-operating-systems-description">@Model.OperatingSystemDescription</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -52,7 +52,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Mobile responsive">
-                        <div data-test-id="view-question-data-text-mobile-responsive" class="bc-c-data-text ">@Model.MobileResponsive.ToYesNo()</div>
+                        <div data-test-id="view-question-data-text-mobile-responsive">@Model.MobileResponsive.ToYesNo()</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -61,7 +61,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Mobile first approach">
-                        <div data-test-id="view-question-data-text-mobile-first-design" class="bc-c-data-text ">@Model.MobileFirstDesign.ToYesNo()</div>
+                        <div data-test-id="view-question-data-text-mobile-first-design">@Model.MobileFirstDesign.ToYesNo()</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -70,7 +70,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Plug-ins or extensions required">
-                        <div data-test-id="view-question-data-text-plugins-required" class="bc-c-data-text ">@Model.PluginsRequired.ToYesNo()</div>
+                        <div data-test-id="view-question-data-text-plugins-required">@Model.PluginsRequired.ToYesNo()</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -79,7 +79,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Additional information about plug-ins or extensions">
-                        <div data-test-id="view-question-data-text-plugins-detail" class="bc-c-data-text ">@Model.PluginDetails</div>
+                        <div data-test-id="view-question-data-text-plugins-detail">@Model.PluginDetails</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -88,7 +88,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Minimum connection speed">
-                        <div data-test-id="view-question-data-text-minimum-connection-speed" class="bc-c-data-text ">@Model.MinimumConnectionSpeed</div>
+                        <div data-test-id="view-question-data-text-minimum-connection-speed">@Model.MinimumConnectionSpeed</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -97,7 +97,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Connection types supported">
-                        <div data-test-id="view-question-data-bulletlist" class="bc-c-data-bulletlist ">
+                        <div data-test-id="view-question-data-bulletlist">
                             <ul class="nhsuk-u-margin-bottom-0">
                                 @foreach (var connectionType in Model.MobileConnectionTypes)
                                 {
@@ -113,7 +113,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Screen resolution and aspect ratio">
-                        <div data-test-id="view-question-data-text-minimum-desktop-resolution" class="bc-c-data-text ">@Model.ScreenResolution</div>
+                        <div data-test-id="view-question-data-text-minimum-desktop-resolution">@Model.ScreenResolution</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -122,7 +122,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Connection requirements">
-                        <div data-test-id="view-question-data-text-connection-requirements-description" class="bc-c-data-text ">@Model.ConnectionRequirements</div>
+                        <div data-test-id="view-question-data-text-connection-requirements-description">@Model.ConnectionRequirements</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -131,7 +131,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Memory size">
-                        <div data-test-id="view-question-data-text-minimum-memory-requirement" class="bc-c-data-text ">@Model.MemoryRequirements</div>
+                        <div data-test-id="view-question-data-text-minimum-memory-requirement">@Model.MemoryRequirements</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -140,7 +140,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Storage space">
-                        <div data-test-id="view-question-data-text-storage-requirements-description" class="bc-c-data-text ">@Model.StorageSpace</div>
+                        <div data-test-id="view-question-data-text-storage-requirements-description">@Model.StorageSpace</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -149,7 +149,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Processing power">
-                        <div data-test-id="view-question-data-text-minimum-cpu" class="bc-c-data-text ">@Model.ProcessingPower</div>
+                        <div data-test-id="view-question-data-text-minimum-cpu">@Model.ProcessingPower</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -158,7 +158,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Third-party components">
-                        <div data-test-id="view-question-data-text-third-party-components" class="bc-c-data-text ">@Model.ThirdPartyComponents</div>
+                        <div data-test-id="view-question-data-text-third-party-components">@Model.ThirdPartyComponents</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -167,7 +167,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Device capabilities">
-                        <div data-test-id="view-question-data-text-device-capabilities" class="bc-c-data-text ">@Model.DeviceCapabilities</div>
+                        <div data-test-id="view-question-data-text-device-capabilities">@Model.DeviceCapabilities</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -176,7 +176,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Hardware requirements">
-                        <div data-test-id="view-question-data-text-hardware-requirements-description" class="bc-c-data-text ">@Model.HardwareRequirements</div>
+                        <div data-test-id="view-question-data-text-hardware-requirements-description">@Model.HardwareRequirements</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
@@ -185,7 +185,7 @@
             {
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Additional information">
-                        <div data-test-id="view-question-data-text-additional-information" class="bc-c-data-text ">@Model.AdditionalInformation</div>
+                        <div data-test-id="view-question-data-text-additional-information">@Model.AdditionalInformation</div>
                     </nhs-summary-list-row>
                 </nhs-summary-list>
             }
