@@ -13,10 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database.Configuration
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Id)
-                    .HasColumnName("CatalogueItemTypeId")
-                    .HasDefaultValue(1)
-                    .ValueGeneratedNever()
-                    .IsRequired();
+                .HasDefaultValue(1)
+                .ValueGeneratedNever()
+                .IsRequired();
 
             builder.Property(e => e.Name)
                 .IsRequired()

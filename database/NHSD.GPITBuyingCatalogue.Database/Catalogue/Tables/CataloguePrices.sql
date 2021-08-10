@@ -11,8 +11,8 @@
     Price decimal(18, 4) NULL,
     CONSTRAINT PK_CataloguePrice PRIMARY KEY (CataloguePriceId),
     CONSTRAINT FK_CataloguePrice_CatalogueItem_CatalogueItemId FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
-    CONSTRAINT FK_CataloguePrice_ProvisioningType_ProvisioningTypeId FOREIGN KEY (ProvisioningTypeId) REFERENCES catalogue.ProvisioningTypes(ProvisioningTypeId),
-    CONSTRAINT FK_CataloguePrice_CataloguePriceType_CataloguePriceTypeId FOREIGN KEY (CataloguePriceTypeId) REFERENCES catalogue.CataloguePriceTypes(CataloguePriceTypeId),
-    CONSTRAINT FK_CataloguePrice_PricingUnit_PricingUnitId FOREIGN KEY (PricingUnitId) REFERENCES catalogue.PricingUnits(PricingUnitId),
-    CONSTRAINT FK_CataloguePrice_TimeUnit_TimeUnitId FOREIGN KEY (TimeUnitId) REFERENCES catalogue.TimeUnits(TimeUnitId),
+    CONSTRAINT FK_CataloguePrice_ProvisioningType_ProvisioningTypeId FOREIGN KEY (ProvisioningTypeId) REFERENCES catalogue.ProvisioningTypes(Id),
+    CONSTRAINT FK_CataloguePrice_CataloguePriceType_CataloguePriceTypeId FOREIGN KEY (CataloguePriceTypeId) REFERENCES catalogue.CataloguePriceTypes(Id),
+    CONSTRAINT FK_CataloguePrice_PricingUnit_PricingUnitId FOREIGN KEY (PricingUnitId) REFERENCES catalogue.PricingUnits(Id),
+    CONSTRAINT FK_CataloguePrice_TimeUnit_TimeUnitId FOREIGN KEY (TimeUnitId) REFERENCES catalogue.TimeUnits(Id),
 );

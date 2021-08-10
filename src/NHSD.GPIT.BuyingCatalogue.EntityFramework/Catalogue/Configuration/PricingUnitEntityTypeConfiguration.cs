@@ -10,10 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("PricingUnits", Schemas.Catalogue);
 
-            builder.HasKey(u => u.PricingUnitId)
+            builder.HasKey(u => u.Id)
                 .IsClustered(false);
 
-            builder.Property(u => u.PricingUnitId).ValueGeneratedNever();
+            builder.Property(u => u.Id).ValueGeneratedNever();
             builder.Property(u => u.Description)
                 .IsRequired()
                 .HasMaxLength(40);

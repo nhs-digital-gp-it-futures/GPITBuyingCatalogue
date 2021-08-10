@@ -10,12 +10,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database.Configuration
         {
             builder.ToTable("TimeUnit");
 
-            builder.Property(e => e.TimeUnitId).ValueGeneratedNever();
-            builder.Property(e => e.Description)
+            builder.HasKey(t => t.Id);
+
+            builder.Property(t => t.Id).ValueGeneratedNever();
+            builder.Property(t => t.Description)
                 .IsRequired()
                 .HasMaxLength(32);
 
-            builder.Property(e => e.Name)
+            builder.Property(t => t.Name)
                 .IsRequired()
                 .HasMaxLength(20);
         }

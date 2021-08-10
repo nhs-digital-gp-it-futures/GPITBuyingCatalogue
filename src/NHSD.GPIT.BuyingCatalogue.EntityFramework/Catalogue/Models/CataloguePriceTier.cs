@@ -2,7 +2,7 @@
 {
     public sealed class CataloguePriceTier
     {
-        public int CataloguePriceTierId { get; set; }
+        public int Id { get; set; }
 
         public int CataloguePriceId { get; set; }
 

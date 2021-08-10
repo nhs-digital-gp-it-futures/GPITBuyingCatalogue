@@ -46,12 +46,12 @@ AS
         INSERT INTO catalogue.CatalogueItems(Id, [Name], CatalogueItemTypeId, SupplierId)
              SELECT i.Id, i.[Name], @associatedServiceCatalogueItemType, i.SupplierId
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.AssociatedServiceId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.CatalogueItemId = i.Id);
 
-        INSERT INTO catalogue.AssociatedServices(AssociatedServiceId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.AssociatedServices(CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
              SELECT i.Id, i.[Description], i.OrderGuidance, @now, @emptyGuid
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.AssociatedServiceId = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.CatalogueItemId = i.Id);
 
         INSERT INTO catalogue.SupplierServiceAssociations(AssociatedServiceId, CatalogueItemId)
              SELECT AssociatedServiceId, AssociatedCatalogueItemId

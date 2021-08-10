@@ -2,7 +2,7 @@
 {
     public sealed class TimeUnit
     {
-        public int TimeUnitId { get; init; }
+        public int Id { get; init; }
 
         public string Name { get; init; }
 
