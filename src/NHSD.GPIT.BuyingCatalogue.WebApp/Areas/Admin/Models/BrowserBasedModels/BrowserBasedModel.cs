@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         public BrowserBasedModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
+            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/add-application-type";
         }
 
         public override bool IsComplete =>
