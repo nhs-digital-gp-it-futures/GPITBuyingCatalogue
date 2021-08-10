@@ -16,13 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution
         public string SupplierName { get; set; }
 
         public bool IsBrowserBased => ClientApplication != null && ClientApplication.ClientApplicationTypes.Any(
-            x => x.EqualsIgnoreCase("browser-based"));
+            s => s.EqualsIgnoreCase("browser-based"));
 
         public bool IsNativeDesktop => ClientApplication != null && ClientApplication.ClientApplicationTypes.Any(
-            x => x.EqualsIgnoreCase("native-desktop"));
+            s => s.EqualsIgnoreCase("native-desktop"));
 
         public bool IsNativeMobile => ClientApplication != null && ClientApplication.ClientApplicationTypes.Any(
-            x => x.EqualsIgnoreCase("native-mobile"));
+            s => s.EqualsIgnoreCase("native-mobile"));
 
         public override bool? IsComplete => throw new NotImplementedException();
 

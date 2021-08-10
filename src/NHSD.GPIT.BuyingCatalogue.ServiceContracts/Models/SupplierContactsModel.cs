@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public MarketingContact[] Contacts { get; set; }
 
-        public MarketingContact ContactFor(int contactId) => Contacts?.FirstOrDefault(x => x.Id == contactId);
+        public MarketingContact ContactFor(int contactId) => Contacts?.FirstOrDefault(mc => mc.Id == contactId);
 
         public void SetSolutionId()
         {

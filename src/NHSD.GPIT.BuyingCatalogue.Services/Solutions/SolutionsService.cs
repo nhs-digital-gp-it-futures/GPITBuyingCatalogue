@@ -15,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
     public sealed class SolutionsService : ISolutionsService
     {
+        private const string FuturesFrameworkShortName = "GP IT Futures";
+        private const string DfocvcShortName = "DFOCVC";
+
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
@@ -44,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
                     && i.Solution.FrameworkSolutions.Any(x => x.IsFoundation)
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "GP IT Futures"))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == FuturesFrameworkShortName))
                 .ToListAsync();
         }
 
@@ -56,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "GP IT Futures"))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == FuturesFrameworkShortName))
                 .ToListAsync();
 
             // TODO - Refactor this. Should be possible to include in the above expression
@@ -238,13 +241,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == "DFOCVC"))
+                    && i.Solution.FrameworkSolutions.Any(fs => fs.Framework.ShortName == DfocvcShortName))
                 .ToListAsync();
         }
 
         public Task<List<Capability>> GetFuturesCapabilities()
         {
-            return dbContext.Capabilities.Where(c => c.Category.Name == "GP IT Futures")
+            return dbContext.Capabilities.Where(c => c.Category.Name == FuturesFrameworkShortName)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }

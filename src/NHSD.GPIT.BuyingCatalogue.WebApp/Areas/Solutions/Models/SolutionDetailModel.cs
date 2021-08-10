@@ -111,8 +111,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
            if (CatalogueItem.Solution.MarketingContacts.Any())
            {
                 var contact = CatalogueItem.Solution.MarketingContacts.First();
-                Contacts = new List<Address>();
-                Contacts.Add(new Address { Line1 = $"{contact.FirstName} {contact.LastName}", Line2 = contact.Department, Line3 = contact.PhoneNumber, Line4 = contact.Email });
+                Contacts = new List<Address>
+                {
+                    new Address { Line1 = $"{contact.FirstName} {contact.LastName}", Line2 = contact.Department, Line3 = contact.PhoneNumber, Line4 = contact.Email },
+                };
 
                 if (CatalogueItem.Solution.MarketingContacts.Count > 1)
                 {
@@ -124,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateFrameworks()
         {
-            Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework.ShortName));
+            Frameworks = string.Join(',', CatalogueItem.Solution.FrameworkSolutions.Select(f => f.Framework.ShortName));
         }
 
         private void PopulateCapabilities()

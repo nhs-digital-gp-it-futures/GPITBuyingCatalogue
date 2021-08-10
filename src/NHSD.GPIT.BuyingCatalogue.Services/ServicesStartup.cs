@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
 
         private static void ConfigureInterfaceClasses(IServiceCollection services)
         {
-            services.Scan(x => x.FromAssemblies(AssembliesToScan())
+            services.Scan(ts => ts.FromAssemblies(AssembliesToScan())
                 .AddClasses().AsMatchingInterface()
                 .WithTransientLifetime());
         }

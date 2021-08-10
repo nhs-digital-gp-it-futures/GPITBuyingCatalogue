@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 
                 if (!odsCode.Equals(context.HttpContext.User.GetPrimaryOdsCode(), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (!context.HttpContext.User.GetSecondaryOdsCodes().Any(x => x.EqualsIgnoreCase(odsCode)))
+                    if (!context.HttpContext.User.GetSecondaryOdsCodes().Any(s => s.EqualsIgnoreCase(odsCode)))
                     {
                         logger.LogWarning($"Attempt was made to access {context.HttpContext.Request.Path} when user cannot access {odsCode}.");
                         context.Result = new NotFoundResult();

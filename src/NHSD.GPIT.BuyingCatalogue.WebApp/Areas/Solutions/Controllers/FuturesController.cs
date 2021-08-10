@@ -58,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [Route("Solutions/Futures/CapabilitiesSelector")]
         public IActionResult CapabilitiesSelector(CapabilitiesModel model)
         {
-            var selected = model.LeftCapabilities.Where(x => x.Checked).Union(model.RightCapabilities.Where(x => x.Checked));
+            var selected = model.LeftCapabilities.Where(c => c.Checked).Union(model.RightCapabilities.Where(c => c.Checked));
 
-            var queryString = string.Join("-", selected.Select(x => x.CapabilityRef));
+            var queryString = string.Join("-", selected.Select(c => c.CapabilityRef));
 
             return RedirectToAction("SearchResults", new { capabilities = queryString });
         }

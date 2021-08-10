@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
             Title = "Which organisation are you looking for?";
             OdsCode = currentOdsCode;
             AvailableOrganisations = organisations;
-            SelectedOrganisation = organisations.Single(x => x.OdsCode.EqualsIgnoreCase(currentOdsCode)).OdsCode;
+            SelectedOrganisation = organisations.Single(o => o.OdsCode.EqualsIgnoreCase(currentOdsCode)).OdsCode;
         }
 
         public List<Organisation> AvailableOrganisations { get; set; }

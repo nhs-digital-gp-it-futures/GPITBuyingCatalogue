@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             foreach (var browser in Browsers)
             {
                 if (ClientApplication.BrowsersSupported != null &&
-                    ClientApplication.BrowsersSupported.Any(x => x.Equals(browser.BrowserName, StringComparison.InvariantCultureIgnoreCase)))
+                    ClientApplication.BrowsersSupported.Any(s => s.Equals(browser.BrowserName, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     browser.Checked = true;
                 }
