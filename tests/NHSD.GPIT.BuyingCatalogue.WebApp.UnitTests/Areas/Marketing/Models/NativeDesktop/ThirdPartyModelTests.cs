@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Nati
             var json = JsonConvert.SerializeObject(clientApplication);
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution { ClientApplication = json },
             };
 

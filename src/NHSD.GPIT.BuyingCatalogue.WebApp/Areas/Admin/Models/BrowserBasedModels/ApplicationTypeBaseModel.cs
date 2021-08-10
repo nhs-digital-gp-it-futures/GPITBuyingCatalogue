@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -13,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
     public class ApplicationTypeBaseModel : NavBaseModel
     {
         public ApplicationTypeBaseModel()
-            : base()
         {
         }
 
@@ -22,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
             BackLink = "./";
             BackLinkText = "Go back";
             ClientApplication = catalogueItem?.Solution?.GetClientApplication();
-            SolutionId = catalogueItem?.CatalogueItemId;
+            SolutionId = catalogueItem?.Id;
         }
 
         public ClientApplication ClientApplication { get; set; }

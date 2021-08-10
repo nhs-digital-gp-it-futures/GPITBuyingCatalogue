@@ -482,7 +482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 repository => repository.Add(
                     It.Is<CatalogueItem>(
                         c =>
-                            c.CatalogueItemId == catalogueItemId.NextSolutionId() &&
+                            c.Id == catalogueItemId.NextSolutionId() &&
                             c.CatalogueItemType == CatalogueItemType.Solution &&
                             c.Solution.LastUpdated > DateTime.UtcNow.AddMinutes(-2) &&
                             c.Solution.LastUpdatedBy == model.UserId &&

@@ -30,10 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = converter.Convert(catalogueItem, default, default);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.CatalogueItemName.Should().Be(catalogueItem.Name);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
             actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
         }

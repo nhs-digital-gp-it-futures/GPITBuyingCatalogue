@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeMobile
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-mobile";
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.Id}/section/native-mobile";
 
             MobileFirstApproach = ClientApplication?.NativeMobileFirstDesign.ToYesNo();
         }

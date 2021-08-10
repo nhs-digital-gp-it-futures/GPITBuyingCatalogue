@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             CataloguePrices = new HashSet<CataloguePrice>();
         }
 
-        public CatalogueItemId CatalogueItemId { get; set; }
+        public CatalogueItemId Id { get; set; }
 
         public virtual string Name { get; set; }
 

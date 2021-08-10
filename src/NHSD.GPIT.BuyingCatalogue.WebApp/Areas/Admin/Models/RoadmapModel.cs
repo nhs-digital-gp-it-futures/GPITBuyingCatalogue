@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             catalogueItem.ValidateNotNull(nameof(catalogueItem));
 
             Link = catalogueItem.Solution?.RoadMap;
-            SolutionId = catalogueItem.CatalogueItemId;
+            SolutionId = catalogueItem.Id;
             SolutionName = catalogueItem.Name;
 
             return this;

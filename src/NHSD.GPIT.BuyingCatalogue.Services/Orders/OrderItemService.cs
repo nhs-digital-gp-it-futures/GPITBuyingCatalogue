@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public Task<OrderItem> GetOrderItem(CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             Expression<Func<Order, IEnumerable<OrderItem>>> orderItems = o =>
-                o.OrderItems.Where(i => i.CatalogueItem.CatalogueItemId == catalogueItemId);
+                o.OrderItems.Where(i => i.CatalogueItem.Id == catalogueItemId);
 
             return dbContext.Orders
                 .Where(o => o.Id == callOffId.Id)

@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             ApplicationTypesToAdd = Enum.GetValues<ClientApplicationType>().Except(ExistingClientApplicationTypes).ToList();
             ApplicationTypesToAddRadioItems = ApplicationTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingApplicationTypesCount = ExistingClientApplicationTypes.Count;
-            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.CatalogueItemId}";
+            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
         }
 
         public IReadOnlyList<ClientApplicationType> ExistingClientApplicationTypes { get; } = Array.Empty<ClientApplicationType>();

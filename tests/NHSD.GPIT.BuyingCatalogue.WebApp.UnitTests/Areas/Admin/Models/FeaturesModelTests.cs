@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             FeaturesModel expected)
         {
             catalogueItem.Solution.Features = JsonConvert.SerializeObject(expected.AllFeatures);
-            expected.SolutionId = catalogueItem.CatalogueItemId;
+            expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 
             var actual = new FeaturesModel().FromCatalogueItem(catalogueItem);

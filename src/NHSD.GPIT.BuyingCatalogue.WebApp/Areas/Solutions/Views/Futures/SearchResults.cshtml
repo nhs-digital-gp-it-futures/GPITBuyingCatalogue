@@ -3,7 +3,7 @@
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewData["Title"] = "GP IT Futures framework – results";
-    var backLinkModel = new NavBaseModel{ BackLink = "/solutions/futures/capabilitiesselector", BackLinkText = "Go back" };
+    var backLinkModel = new NavBaseModel { BackLink = "/solutions/futures/capabilitiesselector", BackLinkText = "Go back" };
 }
 
 <div data-test-id="solutions-list-body">
@@ -32,7 +32,7 @@
                     <div data-test-id="solution-card-foundation" class="bc-c-tag nhsuk-u-font-weight-bold bc-c-tag-foundation nhsuk-u-margin-bottom-4">Foundation Solution Set</div>
 
                     <h2 class="nhsuk-u-margin-bottom-2" data-test-id="solution-card-name">
-                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="Description" asp-route-solutionId="@solution.CatalogueItemId">
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="Description" asp-route-solutionId="@solution.Id">
                             @solution.Name
                         </a>
                     </h2>
@@ -46,7 +46,7 @@
                     </p>
 
                     <div data-test-id="solution-card-view-link" class="nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
-                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="Description" asp-route-solutionId="@solution.CatalogueItemId">
+                        <a asp-area="Solutions" asp-controller="SolutionDetails" asp-action="Description" asp-route-solutionId="@solution.Id">
                             View this solution<span class="nhsuk-u-visually-hidden"> for @solution.Name</span>
                         </a>
                     </div>
@@ -70,5 +70,5 @@
             </div>
         </div>
     }
-    <div class="bc-t-border-top--blue" />
+    <div class="bc-t-border-top--blue"></div>
 </div>

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "001A999"),
+                    Id = new CatalogueItemId(99999, "001A999"),
                     Name = "Additional service",
                     CatalogueItemType = CatalogueItemType.AdditionalService,
                     Created = DateTime.UtcNow,
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         FullDescription = "This is the description of the Additional Service",
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
-                        Solution = catalogueSolutions.Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "001")).Solution,
+                        Solution = catalogueSolutions.Single(s => s.Id == new CatalogueItemId(99999, "001")).Solution,
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {

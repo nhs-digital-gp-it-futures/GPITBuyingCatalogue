@@ -50,12 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, AboutSupplierModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Description.Should().Be(catalogueItem.Supplier.Summary);
             actual.Link.Should().Be(catalogueItem.Supplier.SupplierUrl);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -69,12 +69,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, ContactDetailsModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.Contact1.Should().BeEquivalentTo(catalogueItem.FirstContact());
             actual.Contact2.Should().BeEquivalentTo(catalogueItem.SecondContact());
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, FeaturesModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Listing1.Should().Be(features[0]);
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.Listing8.Should().Be(features[7]);
             actual.Listing9.Should().Be(features[8]);
             actual.Listing10.Should().Be(features[9]);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -140,11 +140,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, ImplementationTimescalesModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Description.Should().Be(catalogueItem.Solution.ImplementationDetail);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -157,11 +157,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, IntegrationsModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Link.Should().Be(catalogueItem.Solution.IntegrationsUrl);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -174,10 +174,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, RoadmapModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.Summary.Should().Be(catalogueItem.Solution.RoadMap);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
@@ -192,12 +192,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(catalogueItem);
 
-            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+            actual.BackLink.Should().Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Description.Should().Be(catalogueItem.Solution.FullDescription);
             actual.Link.Should().Be(catalogueItem.Solution.AboutUrl);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.Summary.Should().Be(catalogueItem.Solution.Summary);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }

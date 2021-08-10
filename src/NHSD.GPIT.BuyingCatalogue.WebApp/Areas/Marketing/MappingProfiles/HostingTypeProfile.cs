@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
         public HostingTypeProfile()
         {
             CreateMap<CatalogueItem, HybridModel>()
-                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.Id)))
                 .ForMember(
                     dest => dest.HybridHostingType,
                     opt => opt.MapFrom(src =>
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, OnPremiseModel>()
-                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.Id)))
                 .ForMember(
                     dest => dest.OnPremise,
                     opt => opt.MapFrom(src =>
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, PrivateCloudModel>()
-                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.Id)))
                 .ForMember(
                     dest => dest.PrivateCloud,
                     opt => opt.MapFrom(src =>
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, PublicCloudModel>()
-                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
+                .ForMember(dest => dest.BackLink, opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.Id)))
                 .ForMember(
                     dest => dest.PublicCloud,
                     opt => opt.MapFrom(src =>

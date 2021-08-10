@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void DeleteOrderItemAndUpdateProgress(CatalogueItemId catalogueItemId)
         {
-            orderItems.RemoveAll(o => o.CatalogueItem.CatalogueItemId == catalogueItemId
+            orderItems.RemoveAll(o => o.CatalogueItem.Id == catalogueItemId
                 || o.CatalogueItem.AdditionalService?.SolutionId == catalogueItemId);
 
             if (orderItems.Count == 0)

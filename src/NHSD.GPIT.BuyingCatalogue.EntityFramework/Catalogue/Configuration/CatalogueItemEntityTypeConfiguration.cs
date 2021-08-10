@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("CatalogueItems", Schemas.Catalogue);
 
-            builder.Property(i => i.CatalogueItemId)
+            builder.Property(i => i.Id)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 

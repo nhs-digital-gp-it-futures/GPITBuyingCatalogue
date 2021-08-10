@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, MarketingBaseModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetSolutionBackLink(src.Id)))
                 .ForMember(dest => dest.BackLinkText, opt => opt.MapFrom(src => "Return to all sections"))
                 .ForMember(
                     dest => dest.ClientApplication,
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                                 ? JsonConvert.DeserializeObject<ClientApplication>(src.Solution.ClientApplication)
                                 : new ClientApplication());
                     })
-                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.CatalogueItemId))
+                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(
                     dest => dest.SupplierId,
                     opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Id))

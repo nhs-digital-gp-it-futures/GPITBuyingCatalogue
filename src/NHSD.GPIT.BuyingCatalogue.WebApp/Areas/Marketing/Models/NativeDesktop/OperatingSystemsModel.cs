@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.NativeDesktop
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/native-desktop";
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.Id}/section/native-desktop";
 
             OperatingSystemsDescription = ClientApplication?.NativeDesktopOperatingSystemsDescription;
         }
