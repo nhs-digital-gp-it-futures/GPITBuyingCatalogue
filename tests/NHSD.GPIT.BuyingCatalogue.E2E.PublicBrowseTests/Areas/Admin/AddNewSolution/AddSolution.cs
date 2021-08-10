@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 nameof(AddCatalogueSolutionController.Index)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage("SolutionName", "A solution with this name already exists")
                 .Should().BeTrue();
         }

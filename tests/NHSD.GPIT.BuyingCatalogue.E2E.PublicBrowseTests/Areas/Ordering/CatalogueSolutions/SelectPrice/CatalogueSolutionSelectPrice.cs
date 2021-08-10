@@ -57,6 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                   nameof(CatalogueSolutionsController.SelectSolutionPrice)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions
                 .ElementShowingCorrectErrorMessage(Objects.Ordering.CatalogueSolutions.SelectCatalogueSolutionPriceErrorMessage, "Error: Select a price")

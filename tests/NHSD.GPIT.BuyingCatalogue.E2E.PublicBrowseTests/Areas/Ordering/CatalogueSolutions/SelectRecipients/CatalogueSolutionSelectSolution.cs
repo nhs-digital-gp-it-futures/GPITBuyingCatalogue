@@ -45,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 nameof(CatalogueSolutionsController.SelectSolution)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.CatalogueSolutions.SelectCatalogueSolutionErrorMessage, "Error: Select a Catalogue Solution")
