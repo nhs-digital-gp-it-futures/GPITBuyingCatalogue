@@ -5,7 +5,7 @@
 }
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
-    <nhs-validation-summary/>
+    <nhs-validation-summary RadioId="Frameworks[0].Selected"/>
 
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="Add a solution"
@@ -28,7 +28,7 @@
                     {
                         @if (Model.Frameworks[i].Name == "GP IT Futures Framework")
                         {
-                            <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
+                            <nhs-checkbox asp-for="Frameworks[i].Selected"
                                           label-text="@Model.Frameworks[i].Name"
                                           hidden-input="@Model.Frameworks[i].FrameworkId"
                                           data-test-id="framework-names">

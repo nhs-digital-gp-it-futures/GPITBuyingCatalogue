@@ -36,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             output.Content
                 .AppendHtml(yesRadio)
                 .AppendHtml(noRadio);
+
+            TagHelperFunctions.TellParentTagIfThisTagIsInError(ViewContext, context, For);
         }
 
         private TagBuilder BuildYesRadio(bool isChecked)
@@ -43,8 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var yesBuilder = new TagBuilder(TagHelperConstants.Div);
             yesBuilder.AddCssClass(TagHelperConstants.RadioItemClass);
 
-            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "Yes", isChecked);
-            var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "Yes", "Yes");
+            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "Yes", 0, isChecked);
+            var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "Yes", 0);
 
             yesBuilder.InnerHtml
                 .AppendHtml(input)
@@ -58,8 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var yesBuilder = new TagBuilder(TagHelperConstants.Div);
             yesBuilder.AddCssClass(TagHelperConstants.RadioItemClass);
 
-            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "No", isChecked);
-            var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "No", "No");
+            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, "No", 1, isChecked);
+            var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, "No", 1);
 
             yesBuilder.InnerHtml
                 .AppendHtml(input)

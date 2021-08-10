@@ -10,7 +10,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
+            <nhs-validation-summary RadioId="EstimationPeriod"/>
             <nhs-page-title title="@Model.Title"
                             advice="Provide the price you've agreed with the supplier and the quantity you want to order." />
         </div>
@@ -40,7 +40,7 @@
                                     <nhs-fieldset-form-label asp-for="@Model"
                                                              label-text="Over what period did you estimate the quantity?"
                                                              label-hint="Select one option.">
-                                        <nhs-radio-buttons asp-for="@Model.EstimationPeriod"
+                                        <nhs-radio-buttons asp-for="EstimationPeriod"
                                                            values="@Model.TimeUnits.Cast<object>()"
                                                            value-name="EnumMemberName"
                                                            display-name="Description" />

@@ -19,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         private const string NhsValidationSummary = "nhsuk-error-summary";
         private const string NhsValidationSummaryList = "nhsuk-error-summary__list";
 
+        private const string RadioIdName = "RadioId";
+
         private const string DefaultTitle = "There is a problem";
 
         [HtmlAttributeNotBound]
@@ -27,6 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         [HtmlAttributeName(TitleName)]
         public string Title { get; set; }
+
+        [HtmlAttributeName(RadioIdName)]
+        public string RadioId { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -61,12 +66,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             attributes.ForEach(a => output.Attributes.Add(a));
         }
 
-        private static TagBuilder GetListItemBuilder(string linkElement, string errorMessage)
+        private TagBuilder GetListItemBuilder(string linkElement, string errorMessage)
         {
+            if (!string.IsNullOrWhiteSpace(RadioId) && linkElement == RadioId)
+                linkElement = $"{RadioId}_0";
+
+            var sanitizedLinkElement = TagBuilder.CreateSanitizedId(linkElement, "_");
+
             var listItemBuilder = new TagBuilder(TagHelperConstants.ListItem);
 
             var linkBuilder = new TagBuilder(TagHelperConstants.Anchor);
-            linkBuilder.Attributes.Add(TagHelperConstants.Link, $"#{linkElement}");
+            linkBuilder.Attributes.Add(TagHelperConstants.Link, $"#{sanitizedLinkElement}");
             linkBuilder.InnerHtml.Append(errorMessage);
             listItemBuilder.InnerHtml.AppendHtml(linkBuilder);
 

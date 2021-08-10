@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             RuleFor(m => m.Browsers)
                 .Must(b => b.Any(c => c.Checked == true))
-                .WithMessage(MandatoryRequiredMessage);
+                .WithMessage(MandatoryRequiredMessage)
+                .OverridePropertyName("Browsers[0].Checked");
         }
     }
 }

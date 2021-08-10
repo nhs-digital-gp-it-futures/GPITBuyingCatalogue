@@ -6,7 +6,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary RadioId="MobileFirstApproach"/>
         <nhs-page-title title="@ViewData["Title"]"
                         advice="Let buyers know about the design concepts of your Catalogue Solution." />
         <form method="post">
@@ -15,7 +15,7 @@
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Mobile first approach"
                                      label-hint="Is your Catalogue Solution designed with a mobile first approach?">
-                <nhs-yesno-radio-buttons asp-for="@Model.MobileFirstApproach" />
+                <nhs-yesno-radio-buttons asp-for="MobileFirstApproach" />
             </nhs-fieldset-form-label>
             <nhs-submit-button />
         </form>

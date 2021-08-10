@@ -51,6 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         }
 
         private IEnumerable<TagBuilder> BuildRadiosFromValueList() =>
-            Values.Select(value => RadioButtonBuilders.BuildRadioItem(ViewContext, For, htmlGenerator, value, ValueName, DisplayName));
+            Values.Select((value, index) => RadioButtonBuilders.BuildRadioItem(ViewContext, For, htmlGenerator, value, index, ValueName, DisplayName));
     }
 }
