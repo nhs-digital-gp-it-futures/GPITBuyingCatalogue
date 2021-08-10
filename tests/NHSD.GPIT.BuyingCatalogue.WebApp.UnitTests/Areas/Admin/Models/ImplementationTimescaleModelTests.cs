@@ -6,7 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
-using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             CatalogueItem catalogueItem,
             ImplementationTimescaleModel expected)
         {
-            expected.SolutionId = catalogueItem.CatalogueItemId;
+            expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
             expected.Description = catalogueItem.Solution?.ImplementationDetail;
 

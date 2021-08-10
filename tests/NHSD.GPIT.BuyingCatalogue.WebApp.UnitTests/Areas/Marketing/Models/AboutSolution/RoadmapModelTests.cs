@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution { RoadMap = "A solution road map" },
             };
 

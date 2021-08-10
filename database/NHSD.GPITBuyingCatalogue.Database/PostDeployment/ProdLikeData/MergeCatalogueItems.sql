@@ -6,7 +6,7 @@ BEGIN
 
     CREATE TABLE #CatalogueItem
     (
-        CatalogueItemId nvarchar(14) NOT NULL,
+        Id nvarchar(14) NOT NULL,
         [Name] nvarchar(255) NOT NULL,
         CatalogueItemTypeId int NOT NULL,
         SupplierId nvarchar(6) NOT NULL,
@@ -15,7 +15,7 @@ BEGIN
     );
 
     -- Catalogue Solutions
-    INSERT INTO #CatalogueItem (CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId, PublishedStatusId, Created) 
+    INSERT INTO #CatalogueItem (Id, [Name], CatalogueItemTypeId, SupplierId, PublishedStatusId, Created) 
          VALUES (N'10000-001', N'Emis Web GP',                          1, N'10000', 3, CAST(N'2020-03-25T07:30:18.1133333' AS datetime2)),
                 (N'10000-002', N'Anywhere Consult',                     1, N'10000', 3, CAST(N'2020-04-06T10:50:03.2166667' AS datetime2)),
                 (N'10000-054', N'Online and Video Consult',             1, N'10000', 3, CAST(N'2020-04-03T12:25:59.0533333' AS datetime2)),
@@ -136,7 +136,7 @@ BEGIN
 
     MERGE INTO catalogue.CatalogueItems AS TARGET
     USING #CatalogueItem AS SOURCE
-    ON TARGET.CatalogueItemId = SOURCE.CatalogueItemId  
+    ON TARGET.Id = SOURCE.Id  
     WHEN MATCHED THEN  
            UPDATE SET TARGET.[Name] = SOURCE.[Name],
                       TARGET.CatalogueItemTypeId = SOURCE.CatalogueItemTypeId,
@@ -144,7 +144,7 @@ BEGIN
                       TARGET.PublishedStatusId = SOURCE.PublishedStatusId,
                       TARGET.Created = SOURCE.Created
     WHEN NOT MATCHED BY TARGET THEN  
-        INSERT (CatalogueItemId, [Name], CatalogueItemTypeId, SupplierId, PublishedStatusId, Created) 
-        VALUES (SOURCE.CatalogueItemId, SOURCE.[Name], SOURCE.CatalogueItemTypeId, SOURCE.SupplierId, SOURCE.PublishedStatusId, SOURCE.Created);
+        INSERT (Id, [Name], CatalogueItemTypeId, SupplierId, PublishedStatusId, Created) 
+        VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.CatalogueItemTypeId, SOURCE.SupplierId, SOURCE.PublishedStatusId, SOURCE.Created);
 END;
 GO

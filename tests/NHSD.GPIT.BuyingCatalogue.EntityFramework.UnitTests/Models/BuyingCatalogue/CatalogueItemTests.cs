@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             CatalogueItem catalogueItem,
             Guid capabilityId)
         {
-            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>
             {
                 new(),
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             CatalogueItem catalogueItem,
             Guid capabilityId)
         {
-            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
 
             var actual = catalogueItem.CatalogueItemCapability(capabilityId);
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             CatalogueItem catalogueItem,
             Guid capabilityId)
         {
-            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.CatalogueItemCapabilities = null;
 
             var actual = catalogueItem.CatalogueItemCapability(capabilityId);
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             CatalogueItem catalogueItem,
             Guid capabilityId)
         {
-            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.CatalogueItemId };
+            var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.Solution = null;
 
             var actual = catalogueItem.CatalogueItemCapability(capabilityId);

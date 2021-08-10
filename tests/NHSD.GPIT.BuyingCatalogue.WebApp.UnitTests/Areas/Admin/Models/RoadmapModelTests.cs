@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
@@ -36,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             RoadmapModel expected)
         {
             expected.Link = catalogueItem.Solution.RoadMap;
-            expected.SolutionId = catalogueItem.CatalogueItemId;
+            expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 
             var actual = new RoadmapModel().FromCatalogueItem(catalogueItem);

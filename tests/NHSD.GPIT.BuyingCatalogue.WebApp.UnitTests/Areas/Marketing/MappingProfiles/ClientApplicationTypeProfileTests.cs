@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.BrowserBased.Should()
                 .Be(clientApplication.ClientApplicationTypes.Any(x => x.EqualsIgnoreCase("browser-based")));
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                 .Be(clientApplication.ClientApplicationTypes.Any(x => x.EqualsIgnoreCase("native-desktop")));
             actual.NativeMobile.Should()
                 .Be(clientApplication.ClientApplicationTypes.Any(x => x.EqualsIgnoreCase("native-mobile")));
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -79,10 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, BrowserBasedModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -97,10 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, NativeDesktopModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -115,10 +115,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, NativeMobileModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 

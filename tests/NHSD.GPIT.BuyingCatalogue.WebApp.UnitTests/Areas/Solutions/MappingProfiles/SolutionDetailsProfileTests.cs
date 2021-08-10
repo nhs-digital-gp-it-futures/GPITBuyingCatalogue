@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                     });
             actual.Section.Should().Be("Associated Services");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 },
             });
             actual.Section.Should().Be(nameof(SolutionDetailsController.Capabilities));
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                     });
             actual.Section.Should().Be("Client application type");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 },
             });
             actual.Section.Should().Be("List price");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                     });
             actual.Section.Should().Be("Hosting type");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                     });
             actual.Section.Should().Be("Implementation");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -364,7 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                     });
             actual.Section.Should().Be("Description");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
             actual.Summary.Should().Be(catalogueItem.Solution.Summary);
             actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
@@ -457,7 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                     });
             actual.Section.Should().Be("Features");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -520,7 +520,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 .BeEquivalentTo(
                     catalogueItem.CataloguePrices.Where(c => c != null)
                         .Select(src => $"£{src.Price.GetValueOrDefault():F} {src.PricingUnit.Description}"));
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
         }
 
         [Theory]
@@ -566,7 +566,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         },
                     });
             actual.Section.Should().Be("Additional Services");
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 

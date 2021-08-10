@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "-S-999"),
+                    Id = new CatalogueItemId(99999, "-S-999"),
                     Name = "Associated Service For Test",
                     CatalogueItemType = CatalogueItemType.AssociatedService,
                     Created = DateTime.UtcNow,

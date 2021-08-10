@@ -6,7 +6,7 @@ WITH ServiceInstanceIncrement AS
                PARTITION BY r.OrderId, r.OdsCode
                    ORDER BY CASE WHEN c.CatalogueItemTypeId = 1 THEN r.CatalogueItemId ELSE a.SolutionId END) AS ServiceInstanceIncrement
       FROM ordering.OrderItemRecipients AS r
-           INNER JOIN catalogue.CatalogueItems AS c ON c.CatalogueItemId = r.CatalogueItemId
+           INNER JOIN catalogue.CatalogueItems AS c ON c.Id = r.CatalogueItemId
                    AND c.CatalogueItemTypeId IN (1, 2)
            LEFT OUTER JOIN catalogue.AdditionalServices AS a ON a.CatalogueItemId = r.CatalogueItemId
        WHERE (a.SolutionId IS NULL OR EXISTS (

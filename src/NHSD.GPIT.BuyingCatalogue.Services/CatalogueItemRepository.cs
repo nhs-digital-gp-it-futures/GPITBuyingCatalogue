@@ -22,10 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
 
             var catalogueSolution = await DbSet
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.SupplierId == supplierId)
-                .OrderByDescending(i => i.CatalogueItemId)
+                .OrderByDescending(i => i.Id)
                 .FirstOrDefaultAsync();
 
-            return catalogueSolution?.CatalogueItemId ?? new CatalogueItemId(supplierIdentifier, "000");
+            return catalogueSolution?.Id ?? new CatalogueItemId(supplierIdentifier, "000");
         }
 
         public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>

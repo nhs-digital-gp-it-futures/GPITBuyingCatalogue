@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, OperatingSystemsModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.Id)))
                 .ForMember(dest => dest.OperatingSystemsDescription, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, ConnectivityModel>()
                     .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.Id)))
                 .ForMember(
                     dest => dest.ConnectionSpeeds,
                     opt => opt.MapFrom(src => ProfileDefaults.ConnectionSpeeds))
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, MemoryAndStorageModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.Id)))
                 .ForMember(
                     dest => dest.MemorySizes,
                     opt => opt.MapFrom(src => ProfileDefaults.MemorySizes))
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, ThirdPartyModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.Id)))
                 .ForMember(dest => dest.ThirdPartyComponents, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, HardwareRequirementsModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.Id)))
                 .ForMember(dest => dest.Description, opt =>
                 {
                     opt.SetMappingOrder(10);
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, AdditionalInformationModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetNativeDesktopBackLink(src.Id)))
                 .ForMember(dest => dest.AdditionalInformation, opt =>
                 {
                     opt.SetMappingOrder(10);

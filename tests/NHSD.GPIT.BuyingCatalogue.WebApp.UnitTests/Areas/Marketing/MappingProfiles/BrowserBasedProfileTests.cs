@@ -68,10 +68,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             actual.AdditionalInformation.Should().Be(clientApplication.AdditionalInformation);
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, ConnectivityAndResolutionModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ConnectionSpeeds.Should().BeEquivalentTo(new List<SelectListItem>
             {
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
             actual.SelectedConnectionSpeed.Should().Be(actual.ClientApplication.MinimumConnectionSpeed);
             actual.SelectedScreenResolution.Should().Be(actual.ClientApplication.MinimumDesktopResolution);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -151,11 +151,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, HardwareRequirementsModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Description.Should().Be(clientApplication.HardwareRequirements);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -182,10 +182,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, MobileFirstApproachModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -228,11 +228,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 
             actual.AdditionalInformation.Should().Be(clientApplication.Plugins.AdditionalInformation);
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.PlugInsRequired.Should().Be(clientApplication.Plugins.Required.ToYesNo());
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -261,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             var actual = mapper.Map<CatalogueItem, SupportedBrowsersModel>(catalogueItem);
 
             actual.BackLink.Should()
-                .Be($"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/browser-based");
+                .Be($"/marketing/supplier/solution/{catalogueItem.Id}/section/browser-based");
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.Browsers.Should().BeEquivalentTo(new SupportedBrowserModel[]
             {
@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             });
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.MobileResponsive.Should().Be(clientApplication.MobileResponsive.ToYesNo());
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 

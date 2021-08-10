@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.BrowserBased
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}/section/browser-based";
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.Id}/section/browser-based";
 
             SelectedConnectionSpeed = ClientApplication?.MinimumConnectionSpeed;
 

@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BackLink.Should().Be(GetBackLink(catalogueItem));
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                         new() { Text = "Higher than 30Mbps", Value = "Higher than 30Mbps" },
                     });
             actual.SelectedConnectionSpeed.Should().Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.Description.Should().Be(clientApplication.NativeDesktopHardwareRequirements);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
                     });
             actual.StorageDescription.Should()
                 .Be(clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.BackLinkText.Should().Be("Return to all sections");
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.OperatingSystemsDescription.Should().Be(clientApplication.NativeDesktopOperatingSystemsDescription);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -198,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
             actual.DeviceCapabilities.Should().Be(clientApplication.NativeDesktopThirdParty.DeviceCapabilities);
             actual.ThirdPartyComponents.Should().Be(clientApplication.NativeDesktopThirdParty.ThirdPartyComponents);
-            actual.SolutionId.Should().Be(catalogueItem.CatalogueItemId);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SupplierId.Should().Be(catalogueItem.Supplier.Id);
         }
 
@@ -216,6 +216,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
         }
 
         private static string GetBackLink(CatalogueItem catalogueItem) =>
-            $"/marketing/supplier/solution/{catalogueItem.CatalogueItemId}/section/native-desktop";
+            $"/marketing/supplier/solution/{catalogueItem.Id}/section/native-desktop";
     }
 }

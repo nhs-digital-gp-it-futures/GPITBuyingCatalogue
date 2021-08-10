@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task HostingType_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).Name;
+            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Name;
 
             CommonActions.PageTitle()
                 .Should()

@@ -175,6 +175,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
         }
 
         private static string GetBackLink(CatalogueItem catalogueItem) =>
-            ProfileDefaults.GetNativeMobileBackLink(catalogueItem.CatalogueItemId);
+            ProfileDefaults.GetNativeMobileBackLink(catalogueItem.Id);
     }
 }

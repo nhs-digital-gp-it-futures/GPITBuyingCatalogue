@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.AboutSolution
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            BackLink = $"/marketing/supplier/solution/{CatalogueItem.CatalogueItemId}";
+            BackLink = $"/marketing/supplier/solution/{CatalogueItem.Id}";
             Description = CatalogueItem.Solution.ImplementationDetail;
         }
 

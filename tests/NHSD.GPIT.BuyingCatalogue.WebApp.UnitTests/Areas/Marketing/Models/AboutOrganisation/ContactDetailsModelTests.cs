@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution
                 {
                     MarketingContacts = Array.Empty<MarketingContact>(),
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution
                 {
                     MarketingContacts = new MarketingContact[] { new() { FirstName = "Fred" } },
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Abou
         {
             var catalogueItem = new CatalogueItem
             {
-                CatalogueItemId = new CatalogueItemId(1, "123"),
+                Id = new CatalogueItemId(1, "123"),
                 Solution = new Solution
                 {
                     MarketingContacts = new MarketingContact[]

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
             catalogueItem.ValidateNotNull(nameof(catalogueItem));
 
-            CatalogueItemId = catalogueItem.CatalogueItemId.ToString();
+            CatalogueItemId = catalogueItem.Id.ToString();
             Name = catalogueItem.Name;
             LastUpdated = catalogueItem.Solution?.LastUpdated ?? DateTime.MinValue;
             PublishedStatus = catalogueItem.PublishedStatus.Name();

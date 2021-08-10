@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "001"),
+                    Id = new CatalogueItemId(99999, "001"),
                     SupplierId = "99999",
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "002"),
+                    Id = new CatalogueItemId(99999, "002"),
                     SupplierId = "99999",
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
@@ -195,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "003"),
+                    Id = new CatalogueItemId(99999, "003"),
                     SupplierId = "99999",
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
@@ -306,7 +306,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "004"),
+                    Id = new CatalogueItemId(99999, "004"),
                     SupplierId = "99999",
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
@@ -417,7 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99999, "005"),
+                    Id = new CatalogueItemId(99999, "005"),
                     PublishedStatus = PublicationStatus.Draft,
                     CatalogueItemType = CatalogueItemType.Solution,
                     SupplierId = "99999",
@@ -432,7 +432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99997, "001"),
+                    Id = new CatalogueItemId(99997, "001"),
                     SupplierId = "99997",
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
@@ -538,7 +538,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99998, "001"),
+                    Id = new CatalogueItemId(99998, "001"),
                     SupplierId = "99998",
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
@@ -701,7 +701,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new CatalogueItem
                 {
-                    CatalogueItemId = new CatalogueItemId(99998, "002"),
+                    Id = new CatalogueItemId(99998, "002"),
                     SupplierId = "99998",
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,

@@ -39,9 +39,9 @@ IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM catalogue
 BEGIN
     SET @solutionId = '100000-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Write on Time', '100000', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, Integrations, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -73,9 +73,9 @@ BEGIN
 
     SET @solutionId = '100001-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Appointment Gateway', '100001', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -106,9 +106,9 @@ BEGIN
 
     SET @solutionId = '100002-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Zen Guidance', '100002', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -136,9 +136,9 @@ BEGIN
 
     SET @solutionId = '100003-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Intellidoc Comms', '100003', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -166,9 +166,9 @@ BEGIN
 
     SET @solutionId = '100004-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Diagnostics XYZ', '100004', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -199,9 +199,9 @@ BEGIN
 
     SET @solutionId = '100005-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Document Wizard', '100005', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -229,9 +229,9 @@ BEGIN
 
     SET @solutionId = '100006-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Paperlite', '100006', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -259,9 +259,9 @@ BEGIN
 
     SET @solutionId = '100007-001';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'Medsort', '100007', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -288,9 +288,9 @@ BEGIN
     /*************************************************************************************************************************************************************/
 
     SET @solutionId = '100007-002';
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'BostonDynamics', '100007', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -318,9 +318,9 @@ BEGIN
 
     SET @solutionId = '99999-89';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'NotEmis Web GP', '99999', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version],
@@ -499,9 +499,9 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
 
     SET @solutionId = '99998-98';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'NotSystmOne', '99998', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version],
@@ -566,9 +566,9 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
 
     SET @solutionId = '99999-01';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'DFOCVC Online Consultation', '99999', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)
@@ -599,9 +599,9 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
 
     SET @solutionId = '99999-02';
 
-    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE CatalogueItemId = @solutionId)
+    IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @solutionId)
     BEGIN
-        INSERT INTO catalogue.CatalogueItems(CatalogueItemId, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
+        INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
              VALUES (@solutionId, @solutionItemType, 'GPIT DFOCVC Online Consultation', '99999', @publishedStatus, @now);
 
         INSERT INTO catalogue.Solutions(Id, [Version], Features, Hosting, AboutUrl, Summary, FullDescription, LastUpdated, LastUpdatedBy)

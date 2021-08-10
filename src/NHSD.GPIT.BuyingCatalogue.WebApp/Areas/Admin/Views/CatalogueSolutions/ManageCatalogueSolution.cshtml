@@ -57,7 +57,7 @@
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Description" asp-controller="CatalogueSolutions"
-                            asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                            asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -68,7 +68,7 @@
                         <nhs-tag colour="@featuresStatus.TagColour()" text="@featuresStatus.Name()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Features" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                        <a asp-action="Features" asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -101,7 +101,7 @@
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Interoperability" asp-controller="CatalogueSolutions"
-                            asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                            asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -113,7 +113,7 @@
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Implementation" asp-controller="CatalogueSolutions"
-                            asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                            asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -124,7 +124,7 @@
                         <nhs-tag colour="@clientApplicationTypeStatus.TagColour()" text="@clientApplicationTypeStatus.Name()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                        <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -135,7 +135,7 @@
                         <nhs-tag colour="@hostingTypeStatus.TagColour()" text="@hostingTypeStatus.Name()" />
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                        <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
@@ -152,7 +152,7 @@
                         <nhs-tag colour="@roadMapStatus.TagColour()" text="@roadMapStatus.Name()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Roadmap" asp-route-solutionId="@Model.Solution.CatalogueItemId">Edit</a>
+                        <a asp-action="Roadmap" asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>

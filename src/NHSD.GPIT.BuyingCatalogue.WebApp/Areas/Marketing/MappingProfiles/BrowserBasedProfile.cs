@@ -21,13 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                 })
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.Id)))
                 .IncludeBase<CatalogueItem, MarketingBaseModel>();
 
             CreateMap<CatalogueItem, ConnectivityAndResolutionModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.Id)))
                 .ForMember(dest => dest.ConnectionSpeeds, opt => opt.MapFrom(src => ProfileDefaults.ConnectionSpeeds))
                 .ForMember(dest => dest.ScreenResolutions, opt => opt.MapFrom(src => ProfileDefaults.ScreenResolutions))
                 .ForMember(dest => dest.SelectedConnectionSpeed, opt => opt.Ignore())
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, HardwareRequirementsModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.Id)))
                 .ForMember(dest => dest.Description, opt =>
                 {
                     opt.SetMappingOrder(20);
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, MobileFirstApproachModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.Id)))
                 .ForMember(dest => dest.MobileFirstApproach, opt =>
                 {
                     opt.SetMappingOrder(20);
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                 .ForMember(dest => dest.AdditionalInformation, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.Id)))
                 .ForMember(dest => dest.PlugInsRequired, opt => opt.Ignore())
                 .IncludeBase<CatalogueItem, MarketingBaseModel>()
                 .AfterMap((_, dest) =>
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
             CreateMap<CatalogueItem, SupportedBrowsersModel>()
                 .ForMember(
                     dest => dest.BackLink,
-                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.CatalogueItemId)))
+                    opt => opt.MapFrom(src => ProfileDefaults.GetBrowserBasedBackLink(src.Id)))
                 .ForMember(dest => dest.Browsers, opt => opt.MapFrom(src => new SupportedBrowserModel[]
                 {
                     new() { BrowserName = "Google Chrome" },

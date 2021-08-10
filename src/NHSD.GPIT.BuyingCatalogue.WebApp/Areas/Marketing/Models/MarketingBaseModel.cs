@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             BackLinkText = "Go back";
             CatalogueItem = catalogueItem;
             ClientApplication = CatalogueItem?.Solution?.GetClientApplication();
-            SolutionId = CatalogueItem?.CatalogueItemId;
+            SolutionId = CatalogueItem?.Id;
             SupplierId = CatalogueItem?.Supplier?.Id;
         }
 
