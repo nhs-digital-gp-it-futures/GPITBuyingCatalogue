@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
             solution.RoadMap.Should().Be(link);
         }
 
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
             var roadmapUrl = solution.RoadMap;
 
             roadmapUrl.Should().BeNullOrEmpty();

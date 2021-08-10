@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.N
 
             await using var context = GetEndToEndDbContext();
 
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).ClientApplication;
             clientApplication.Should().ContainEquivalentOf($"\"NativeMobileHardwareRequirements\":\"{hardwareRequirement}\"");
         }
 

@@ -8,5 +8,5 @@
     SolutionId nvarchar(14) NULL,
     CONSTRAINT PK_AdditionalService PRIMARY KEY (CatalogueItemId),
     CONSTRAINT FK_AdditionalService_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
-    CONSTRAINT FK_AdditionalService_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(Id),
+    CONSTRAINT FK_AdditionalService_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(CatalogueItemId),
 );

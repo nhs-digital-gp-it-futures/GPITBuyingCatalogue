@@ -11,7 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("Solutions", Schemas.Catalogue);
 
-            builder.Property(s => s.Id)
+            builder.HasKey(s => s.CatalogueItemId);
+
+            builder.Property(s => s.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
@@ -26,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasOne(s => s.CatalogueItem)
                 .WithOne(i => i.Solution)
-                .HasForeignKey<Solution>(s => s.Id)
+                .HasForeignKey<Solution>(s => s.CatalogueItemId)
                 .HasConstraintName("FK_Solution_CatalogueItem");
         }
     }

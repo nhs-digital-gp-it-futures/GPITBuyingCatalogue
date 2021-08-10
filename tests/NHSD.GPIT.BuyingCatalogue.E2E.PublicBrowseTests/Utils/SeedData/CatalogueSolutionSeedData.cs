@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Name = "DFOCVC Solution Full",
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99999, "001"),
+                        CatalogueItemId = new CatalogueItemId(99999, "001"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     PublishedStatus = PublicationStatus.Draft,
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99999, "002"),
+                        CatalogueItemId = new CatalogueItemId(99999, "002"),
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         LastUpdatedBy = Guid.Empty,
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Name = "GPIT Solution Full",
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99999, "003"),
+                        CatalogueItemId = new CatalogueItemId(99999, "003"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -313,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Name = "GPIT Solution Full 2",
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99999, "004"),
+                        CatalogueItemId = new CatalogueItemId(99999, "004"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution 2",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -425,7 +425,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Created = DateTime.UtcNow,
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99999, "005"),
+                        CatalogueItemId = new CatalogueItemId(99999, "005"),
                         LastUpdatedBy = Guid.Parse("c78ca505-b820-48a4-a0cb-e4b04a6f455c"),
                         LastUpdated = DateTime.UtcNow,
                     },
@@ -439,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Name = "E2E With No Contact Solution",
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99999, "006"),
+                        CatalogueItemId = new CatalogueItemId(99999, "006"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -545,7 +545,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Name = "E2E With Contact Multiple Prices",
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99998, "001"),
+                        CatalogueItemId = new CatalogueItemId(99998, "001"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - E2E With Contact Multiple Prices",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
@@ -709,7 +709,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
                     Solution = new Solution
                     {
-                        Id = new CatalogueItemId(99999, "008"),
+                        CatalogueItemId = new CatalogueItemId(99999, "008"),
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - E2E With Contact With Single Price",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interopable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",

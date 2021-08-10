@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication.Should().ContainEquivalentOf(browser);
+            (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).ClientApplication.Should().ContainEquivalentOf(browser);
         }
 
         [Theory]
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.ClientApplication.B
             string labelConvert = label == "Yes" ? "true" : "false";
 
             await using var context = GetEndToEndDbContext();
-            var clientApplication = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).ClientApplication;
+            var clientApplication = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).ClientApplication;
             clientApplication.Should().ContainEquivalentOf(@$"MobileResponsive"":{labelConvert}");
         }
 

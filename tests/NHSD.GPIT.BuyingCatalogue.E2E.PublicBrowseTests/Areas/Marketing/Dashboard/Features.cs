@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
 
             solution.Features.Should().ContainEquivalentOf(feature);
         }
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
 
             foreach (var feature in addedFeatures)
             {

@@ -26,7 +26,7 @@ AS
     INSERT INTO @missingSolutions (Id)
          SELECT DISTINCT i.SolutionId
            FROM @items AS i
-          WHERE NOT EXISTS (SELECT * FROM catalogue.Solutions AS s WHERE s.Id = i.SolutionId);
+          WHERE NOT EXISTS (SELECT * FROM catalogue.Solutions AS s WHERE s.CatalogueItemId = i.SolutionId);
 
     IF EXISTS (SELECT * FROM @missingSolutions)
     BEGIN;
