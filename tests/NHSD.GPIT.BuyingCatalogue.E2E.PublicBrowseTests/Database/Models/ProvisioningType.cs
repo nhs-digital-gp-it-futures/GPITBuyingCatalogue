@@ -2,7 +2,7 @@
 {
     public sealed class ProvisioningType
     {
-        public int ProvisioningTypeId { get; init; }
+        public int Id { get; init; }
 
         public string Name { get; init; }
     }

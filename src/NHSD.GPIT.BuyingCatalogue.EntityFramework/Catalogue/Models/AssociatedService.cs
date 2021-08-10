@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class AssociatedService
     {
-        public CatalogueItemId AssociatedServiceId { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string Description { get; set; }
 

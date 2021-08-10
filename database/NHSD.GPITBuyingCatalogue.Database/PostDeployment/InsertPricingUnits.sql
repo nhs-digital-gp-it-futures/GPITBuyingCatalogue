@@ -1,12 +1,12 @@
 ﻿CREATE TABLE #PricingUnit
 (
-    PricingUnitId uniqueidentifier NOT NULL,
+    Id uniqueidentifier NOT NULL,
     [Name] nvarchar(20) NOT NULL,
     TierName nvarchar(30) NOT NULL,
     [Description] nvarchar(40) NOT NULL
 );
 
-INSERT INTO #PricingUnit(PricingUnitId, [Name], TierName, [Description])
+INSERT INTO #PricingUnit(Id, [Name], TierName, [Description])
 VALUES
     ('F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 'patient'            , 'patients'       , 'per patient'),
     ('D43C661A-0587-45E1-B315-5E5091D6E9D0', 'bed'                , 'beds'           , 'per bed'),
@@ -148,14 +148,14 @@ VALUES
 
 MERGE INTO catalogue.PricingUnits AS TARGET
 USING #PricingUnit AS SOURCE
-ON TARGET.PricingUnitId = SOURCE.PricingUnitId
+ON TARGET.Id = SOURCE.Id
 WHEN MATCHED THEN
     UPDATE SET TARGET.[Name] = SOURCE.[Name],
                TARGET.TierName = SOURCE.TierName,
                TARGET.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN
-    INSERT (PricingUnitId, [Name], TierName, [Description])
-    VALUES (SOURCE.PricingUnitId, SOURCE.[Name], SOURCE.TierName, SOURCE.[Description]);
+    INSERT (Id, [Name], TierName, [Description])
+    VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.TierName, SOURCE.[Description]);
 
 DROP TABLE #PricingUnit;
 GO

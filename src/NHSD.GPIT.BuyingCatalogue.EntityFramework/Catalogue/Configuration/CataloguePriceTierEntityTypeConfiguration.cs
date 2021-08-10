@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("CataloguePriceTiers", Schemas.Catalogue);
 
+            builder.HasKey(t => t.Id);
+
             builder.Property(t => t.Price).HasColumnType("decimal(18, 3)");
 
             builder.HasOne<CataloguePrice>()

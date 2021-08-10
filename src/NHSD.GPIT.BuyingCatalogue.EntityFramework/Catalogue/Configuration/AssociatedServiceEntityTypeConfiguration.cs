@@ -11,7 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("AssociatedServices", Schemas.Catalogue);
 
-            builder.Property(a => a.AssociatedServiceId)
+            builder.HasKey(a => a.CatalogueItemId);
+
+            builder.Property(a => a.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
@@ -20,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasOne(a => a.CatalogueItem)
                 .WithOne(i => i.AssociatedService)
-                .HasForeignKey<AssociatedService>(a => a.AssociatedServiceId)
+                .HasForeignKey<AssociatedService>(a => a.CatalogueItemId)
                 .HasConstraintName("FK_SupplierService_CatalogueItem");
         }
     }

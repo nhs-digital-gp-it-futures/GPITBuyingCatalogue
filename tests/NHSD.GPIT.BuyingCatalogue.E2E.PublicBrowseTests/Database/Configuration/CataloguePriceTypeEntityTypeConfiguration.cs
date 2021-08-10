@@ -10,8 +10,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database.Configuration
         {
             builder.ToTable("CataloguePriceType");
 
-            builder.Property(e => e.CataloguePriceTypeId).ValueGeneratedNever();
-            builder.Property(e => e.Name)
+            builder.HasKey(p => p.Id);
+
+            builder.Property(p => p.Id).ValueGeneratedNever();
+            builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(10);
         }

@@ -651,7 +651,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
                             {
-                                PricingUnitId = Guid.NewGuid(),
+                                Id = Guid.NewGuid(),
                                 Name = "Test Pricing Patient",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
                             {
-                                PricingUnitId = Guid.NewGuid(),
+                                Id = Guid.NewGuid(),
                                 Name = "Test Pricing On Demand",
                                 TierName = "Test Tier",
                                 Description = "per test on demand",
@@ -687,7 +687,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
                             {
-                                PricingUnitId = Guid.NewGuid(),
+                                Id = Guid.NewGuid(),
                                 Name = "Test Pricing Declarative",
                                 TierName = "Test Tier",
                                 Description = "per test declarative",
@@ -811,7 +811,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new()
                             {
-                                PricingUnitId = Guid.NewGuid(),
+                                Id = Guid.NewGuid(),
                                 Name = "Test Pricing",
                                 TierName = "Test Tier",
                                 Description = "Per Test",

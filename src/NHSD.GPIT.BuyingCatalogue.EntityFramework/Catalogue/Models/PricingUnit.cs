@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class PricingUnit
     {
-        public Guid PricingUnitId { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 

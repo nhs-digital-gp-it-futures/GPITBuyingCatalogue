@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CataloguePriceType = CataloguePriceType.Flat,
                     PricingUnit = new()
                     {
-                        PricingUnitId = Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         TierName = "patient",
                         Name = "patient",
                         Description = "per patient",
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CataloguePriceType = CataloguePriceType.Flat,
                     PricingUnit = new()
                     {
-                        PricingUnitId = Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         TierName = "thing",
                         Name = "thing",
                         Description = "per thing",
@@ -105,8 +105,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // CataloguePriceType
             List<Database.Models.CataloguePriceType> cataloguePriceTypes = new()
             {
-                new Database.Models.CataloguePriceType { CataloguePriceTypeId = 1, Name = "Flat" },
-                new Database.Models.CataloguePriceType { CataloguePriceTypeId = 2, Name = "Tiered" },
+                new Database.Models.CataloguePriceType { Id = 1, Name = "Flat" },
+                new Database.Models.CataloguePriceType { Id = 2, Name = "Tiered" },
             };
             context.AddRange(cataloguePriceTypes);
 
@@ -685,9 +685,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // ProvisioningType
             List<Database.Models.ProvisioningType> provisioningTypes = new()
             {
-                new Database.Models.ProvisioningType { ProvisioningTypeId = 1, Name = "Patient" },
-                new Database.Models.ProvisioningType { ProvisioningTypeId = 2, Name = "Declarative" },
-                new Database.Models.ProvisioningType { ProvisioningTypeId = 3, Name = "OnDemand" },
+                new Database.Models.ProvisioningType { Id = 1, Name = "Patient" },
+                new Database.Models.ProvisioningType { Id = 2, Name = "Declarative" },
+                new Database.Models.ProvisioningType { Id = 3, Name = "OnDemand" },
             };
             context.AddRange(provisioningTypes);
 
@@ -812,8 +812,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // TimeUnit
             List<Database.Models.TimeUnit> timeUnits = new()
             {
-                new Database.Models.TimeUnit { TimeUnitId = 1, Name = "month", Description = "per month" },
-                new Database.Models.TimeUnit { TimeUnitId = 2, Name = "year", Description = "per year" },
+                new Database.Models.TimeUnit { Id = 1, Name = "month", Description = "per month" },
+                new Database.Models.TimeUnit { Id = 2, Name = "year", Description = "per year" },
             };
             context.AddRange(timeUnits);
         }
