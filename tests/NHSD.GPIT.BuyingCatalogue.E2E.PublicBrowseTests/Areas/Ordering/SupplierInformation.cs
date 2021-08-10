@@ -132,6 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(SupplierController.SupplierSearchSelect)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Ordering.SupplierInformation.SupplierRadioErrorMessage,
@@ -259,6 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage("PrimaryContact.FirstName", "First Name Required").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage("PrimaryContact.LastName", "Last Name Required").Should().BeTrue();
@@ -342,7 +344,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
-//            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+           CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage("PrimaryContact.Email", "The Email field is not a valid e-mail address.").Should().BeTrue();
         }

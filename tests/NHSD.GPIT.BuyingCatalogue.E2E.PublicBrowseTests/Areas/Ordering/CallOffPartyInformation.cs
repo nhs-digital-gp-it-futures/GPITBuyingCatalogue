@@ -55,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(OrderingPartyController.OrderingParty)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage("Contact.FirstName", "First Name Required").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage("Contact.LastName", "Last Name Required").Should().BeTrue();
@@ -77,6 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(OrderingPartyController.OrderingParty)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage("Contact.EmailAddress", "The EmailAddress field is not a valid e-mail address.")
                 .Should().BeTrue();
