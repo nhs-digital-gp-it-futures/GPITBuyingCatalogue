@@ -7,7 +7,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
+            <nhs-validation-summary RadioId="SelectedSolutionId"/>
             <nhs-page-title title="@Model.Title" advice="These are the Associated Services provided by this supplier. Select the one you want to purchase from the list." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />

@@ -9,7 +9,7 @@
             <partial name="Partials/_BackLink" model="Model" />
         </div>
         <div class="nhsuk-grid-column-full">
-            <nhs-validation-summary />
+            <nhs-validation-summary RadioId="PlugInsRequired"/>
             <nhs-page-title title="Browser-based application – plug-ins or extensions required"
                             advice="Let buyers know if any plug-ins or extensions are needed to use your Catalogue Solution." />
             <form method="post">
@@ -18,7 +18,7 @@
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Plug-ins or extensions required"
                                          label-hint="Does a device using your Catalogue Solution require plug-ins or extensions that customise its browsers or software to function?">
-                    <nhs-yesno-radio-buttons asp-for="@Model.PlugInsRequired" />
+                    <nhs-yesno-radio-buttons asp-for="PlugInsRequired" />
                 </nhs-fieldset-form-label>
                 <nhs-textarea asp-for="AdditionalInformation"
                               label-text="Additional information (optional)"

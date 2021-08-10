@@ -9,7 +9,7 @@
         <partial name="Partials/_BackLink" model="Model" />
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
-                <nhs-validation-summary />
+                <nhs-validation-summary RadioId="SelectedApplicationType"/>
                 <nhs-page-title title="Add an application type"
                                 advice="@(anyApplicationTypes ? "Select an application type that supports your Catalogue Solution. You can add other options later." : "All application types already added.")" />
                 <form method="post">
@@ -19,7 +19,7 @@
                     {
                         <div class="nhsuk-form-group">
                             <nhs-fieldset-form-label asp-for="@Model">
-                                <nhs-radio-buttons asp-for="@Model.SelectedApplicationType"
+                                <nhs-radio-buttons asp-for="SelectedApplicationType"
                                                    values="@Model.ApplicationTypesToAddRadioItems"
                                                    value-name="Value"
                                                    display-name="Text" />

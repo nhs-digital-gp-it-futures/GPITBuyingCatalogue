@@ -6,7 +6,7 @@
 <div data-test-id="order-item-provisiontype-page">
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
-        <nhs-validation-summary />
+        <nhs-validation-summary RadioId="EstimationPeriod"/>
         <nhs-page-title title="Quantity of @Model.SolutionName for @Model.CallOffId"
                         advice="Enter the quantity you think you'll need and over what period" />
         <div class="nhsuk-grid-column-full">
@@ -23,7 +23,7 @@
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Which organisation are you looking for?"
                                          label-hint="Select one option.">
-                    <nhs-radio-buttons asp-for="@Model.EstimationPeriod"
+                    <nhs-radio-buttons asp-for="EstimationPeriod"
                                        values="@Model.TimeUnits.Cast<object>()"
                                        value-name="EnumMemberName"
                                        display-name="Description" />

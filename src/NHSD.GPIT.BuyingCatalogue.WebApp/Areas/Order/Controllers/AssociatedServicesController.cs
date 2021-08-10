@@ -182,7 +182,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 ModelState.AddModelError("OrderItem.Price", "Price cannot be greater than list price");
 
             if (state.CataloguePrice.ProvisioningType == ProvisioningType.OnDemand)
+            {
                 state.EstimationPeriod = model.EstimationPeriod;
+
+                if (model.EstimationPeriod is null)
+                    ModelState.AddModelError(nameof(model.EstimationPeriod), "Estimation period is required");
+            }
 
             if (!ModelState.IsValid)
             {
