@@ -18,7 +18,7 @@
                     asp-for="@Model"
                     label-text="Which organisation are you looking for?"
                     label-hint="Select one option.">
-                    <nhs-radio-buttons asp-for="@Model.SelectedOrganisation"
+                    <nhs-radio-buttons asp-for="SelectedOrganisation"
                                        values="@Model.AvailableOrganisations"
                                        value-name="@nameof(Organisation.Id)"
                                        display-name="@nameof(Organisation.Name)" />

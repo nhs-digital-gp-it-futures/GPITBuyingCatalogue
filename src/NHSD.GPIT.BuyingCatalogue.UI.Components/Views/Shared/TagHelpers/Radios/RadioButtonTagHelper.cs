@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
     {
         public const string TagHelperName = "nhs-radio-button";
 
+        private const string IndexName = "index";
+
         private readonly IHtmlGenerator htmlGenerator;
 
         public RadioButtonTagHelper(IHtmlGenerator htmlGenerator) => this.htmlGenerator = htmlGenerator;
@@ -31,6 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         [HtmlAttributeName(TagHelperConstants.DisplayName)]
         public string DisplayName { get; set; }
 
+        [HtmlAttributeName(IndexName)]
+        public int Index { get; set; }
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
@@ -38,8 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.RadioItemClass));
 
-            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, ValueName);
-            var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, Value, DisplayName, ValueName);
+            var input = RadioButtonBuilders.GetRadioInputBuilder(ViewContext, For, htmlGenerator, Value, ValueName, Index);
+            var label = RadioButtonBuilders.GetRadioLabelBuilder(ViewContext, For, htmlGenerator, Value, DisplayName, Index);
 
             var childContent = await output.GetChildContentAsync();
 
