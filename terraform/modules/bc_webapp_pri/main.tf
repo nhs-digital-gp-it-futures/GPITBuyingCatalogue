@@ -29,12 +29,12 @@ resource "azurerm_app_service" "webapp" {
 
     APPINSIGHTS_INSTRUMENTATIONKEY      = var.instrumentation_key
     BC_SMTP_HOST                        = var.smtp_server_host
-    BC_SMTP_PORT                        = var.smtp_server_port
-    
+    BC_SMTP_PORT                        = var.smtp_server_port   
+
     # Settings for Container Registy  
-    DOCKER_REGISTRY_SERVER_URL          = "https://${data.azurerm_container_registry.acr.login_server}"
-    DOCKER_REGISTRY_SERVER_USERNAME     = data.azurerm_container_registry.acr.admin_username
-    DOCKER_REGISTRY_SERVER_PASSWORD     = var.acr_pwd
+    DOCKER_REGISTRY_SERVER_URL          = "https://${var.docker_registry_server_url}" 
+    DOCKER_REGISTRY_SERVER_USERNAME     = var.docker_registry_server_username
+    DOCKER_REGISTRY_SERVER_PASSWORD     = var.docker_registry_server_password
  
     DOMAIN_NAME                         = var.app_dns_url
     
@@ -48,7 +48,7 @@ resource "azurerm_app_service" "webapp" {
   
   # Configure Docker Image to load on start
   site_config {
-    linux_fx_version          = "DOCKER|${data.azurerm_container_registry.acr.login_server}/${var.repository_name}:latest"
+    linux_fx_version          = "DOCKER|https://${var.docker_registry_server_url}/${var.repository_name}:latest"
     use_32_bit_worker_process = true
     always_on                 = var.always_on
     min_tls_version           = "1.2"

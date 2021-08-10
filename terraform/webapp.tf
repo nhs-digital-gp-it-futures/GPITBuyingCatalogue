@@ -1,8 +1,3 @@
-data "azurerm_container_registry" "acr" {
-  name                = "gpitfuturesdevacr"
-  resource_group_name = "gpitfutures-dev-rg-acr"
-}
-
 module "webapp" {
   source           = "./modules/bc_webapp_pri"
   
@@ -37,6 +32,9 @@ module "webapp" {
   smtp_server_port = var.smtp_server_port
   vnet_subnet_id = azurerm_subnet.gateway.id
   app_dns_url = var.app_url
+  docker_registry_server_url = data.azurerm_container_registry.acr.login_server
+  docker_registry_server_username = data.azurerm_container_registry.acr.admin_username
+  docker_registry_server_password = data.azurerm_container_registry.acr.admin_password
 
   depends_on = [module.sql_server_pri]
 }

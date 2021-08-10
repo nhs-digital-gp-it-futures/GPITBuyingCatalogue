@@ -107,3 +107,15 @@ variable "vnet_subnet_id" {
 variable "app_dns_url" {
   type = string
 }
+
+variable "docker_registry_server_url" {
+  type = string
+}
+
+variable "docker_registry_server_username" {
+  type = string
+}
+
+variable "docker_registry_server_password" {
+  type = string
+}

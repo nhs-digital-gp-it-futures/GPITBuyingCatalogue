@@ -15,3 +15,11 @@ provider "azurerm" {
   features {
   }
 }
+
+
+provider "azurerm" {
+  alias = "acr"
+  subscription_id = var.acr_subscription_id
+  features {
+  }
+}
