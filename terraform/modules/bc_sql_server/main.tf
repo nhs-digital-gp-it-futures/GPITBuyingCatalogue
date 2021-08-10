@@ -7,6 +7,7 @@ resource "azurerm_sql_server" "sql_server" {
   administrator_login_password = var.sql_admin_password
 
   tags = {
-    environment                = var.environment
+    environment                = var.environment,
+    architecture               = "new"
   }
 }

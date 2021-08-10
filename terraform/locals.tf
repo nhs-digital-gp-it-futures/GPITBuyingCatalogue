@@ -15,4 +15,6 @@ locals {
   # WebApp URLs
   gw_webappURL = var.environment != "preprod" && var.environment != "prod" ? join("", ["private", trim(var.coreurl, var.environment)]) : "private.${var.coreurl}"
   aspnetcoreEnvironment = local.shortenv != "production" ? "Development" : "Production"
+
+  sql_region2   = "ukwest"
 }
