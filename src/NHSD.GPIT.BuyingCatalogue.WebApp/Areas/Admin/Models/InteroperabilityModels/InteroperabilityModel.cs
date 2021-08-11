@@ -51,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;
             BackLinkText = "Go back";
+            BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
         }
     }
 }
