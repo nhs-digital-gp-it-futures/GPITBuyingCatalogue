@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
 
             fixture.Customize<Order>(order => order
                 .With(o => o.Id, callOffId.Id)
-                .With(o => o.Revision, callOffId.Revision)
                 .Without(o => o.IsDeleted)
                 .Without(o => o.OrderStatus));
         }

@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(o => o.OrderStatus)
                 .HasConversion<int>()
                 .HasColumnName("OrderStatusId");
-            builder.Property(o => o.Revision).HasDefaultValue(1);
+
             builder.Property(o => o.SupplierId).HasMaxLength(6);
 
             builder.HasOne(o => o.OrderingPartyContact)
