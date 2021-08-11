@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
     public sealed class AdditionalServiceEpics : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private static readonly Guid CapabilityId = Guid.Parse("4F09E77B-E3A3-4A25-8EC1-815921F83628");
+        private static readonly int CapabilityId = 2;
 
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 

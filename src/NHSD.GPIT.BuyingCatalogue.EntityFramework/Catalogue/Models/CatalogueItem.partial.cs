@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     public partial class CatalogueItem
     {
         public virtual CatalogueItemCapability CatalogueItemCapability(
-            Guid capabilityId) =>
+            int capabilityId) =>
             CatalogueItemCapabilities?.FirstOrDefault(
                 sc => sc.Capability != null && sc.Capability.Id == capabilityId)
             ?? new CatalogueItemCapability { CatalogueItemId = Id };

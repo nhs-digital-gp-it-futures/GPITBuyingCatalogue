@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     {
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public Guid CapabilityId { get; set; }
+        public int CapabilityId { get; set; }
 
         public string EpicId { get; set; }
 
