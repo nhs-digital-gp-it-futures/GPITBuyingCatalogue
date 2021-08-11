@@ -743,7 +743,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            Id = Guid.NewGuid(),
+                            Id = 1,
                             Email = "test@test.com",
                             FirstName = "Dave",
                             LastName = "Smith",
@@ -774,11 +774,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     Summary = "About this Supplier",
                     SupplierUrl = "https://www.e2etest.com",
-                    SupplierContacts = new List<SupplierContact>()
+                    SupplierContacts = new List<SupplierContact>
                     {
                         new()
                         {
-                            Id = new Guid("49a57b7a-5ecf-484f-a4fc-7d2de0c1aa51"),
+                            Id = 2,
                             SupplierId = 99998,
                             FirstName = "Alice",
                             LastName = "Smith",
