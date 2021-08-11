@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "Clark.Kent@TheDailyPlanet.Fake",
                     Phone = "123456789",
                 },
-                SupplierId = "99997",
+                SupplierId = 99997,
                 SupplierContact = new Contact
                 {
                     FirstName = "Bruce",
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "Clark.Kent@TheDailyPlanet.Fake",
                     Phone = "123456789",
                 },
-                SupplierId = "99998",
+                SupplierId = 99998,
                 SupplierContact = new Contact
                 {
                     FirstName = "Bruce",
@@ -206,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "Clark.Kent@TheDailyPlanet.Fake",
                     Phone = "123456789",
                 },
-                SupplierId = "99999",
+                SupplierId = 99999,
                 SupplierContact = new()
                 {
                     FirstName = "Bruce",

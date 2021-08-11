@@ -6,7 +6,7 @@
     [Description] nvarchar(100) NOT NULL,
     OrderingPartyId uniqueidentifier NOT NULL,
     OrderingPartyContactId int NULL,
-    SupplierId nvarchar(6) NULL,
+    SupplierId int NULL,
     SupplierContactId int NULL,
     CommencementDate date NULL,
     FundingSourceOnlyGMS bit NULL,

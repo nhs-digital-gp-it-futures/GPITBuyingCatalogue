@@ -725,7 +725,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new()
                 {
-                    Id = "99999",
+                    Id = 99999,
                     Name = "DFOCVC Supplier",
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
@@ -750,7 +750,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             LastUpdated = DateTime.UtcNow,
                             LastUpdatedBy = Guid.Empty,
                             PhoneNumber = "00987654321",
-                            SupplierId = "99999",
+                            SupplierId = 99999,
                         },
                     },
                     Summary = "About this supplier",
@@ -758,7 +758,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = "99998",
+                    Id = 99998,
                     Name = "E2E Test Supplier With Contact",
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
@@ -779,7 +779,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new()
                         {
                             Id = new Guid("49a57b7a-5ecf-484f-a4fc-7d2de0c1aa51"),
-                            SupplierId = "99998",
+                            SupplierId = 99998,
                             FirstName = "Alice",
                             LastName = "Smith",
                             Email = "Alice.Smith@e2etest.com",
@@ -789,7 +789,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = "99997",
+                    Id = 99997,
                     Name = "E2E Test Supplier",
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith

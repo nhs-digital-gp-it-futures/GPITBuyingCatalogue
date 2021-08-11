@@ -18,7 +18,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Write on Time additional service', '100000', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Write on Time additional service', 100000, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Write on Time', 'Write on time Addttion Full Description', @now , @emptyGuid, @solutionId);
@@ -43,7 +43,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Appointment Gateway additional service', '100001', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Appointment Gateway additional service', 100001, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Appointment Gateway', 'Appointment Gateway Addition Full Description', @now , @emptyGuid, @solutionId);
@@ -69,8 +69,8 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Zen Guidance additional service', '100002', @publishedStatus, @now),
-                        (@additionalServiceId2, @additionalServiceItemType, 'Zen Guidance additional service 2', '100002', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Zen Guidance additional service', 100002, @publishedStatus, @now),
+                        (@additionalServiceId2, @additionalServiceItemType, 'Zen Guidance additional service 2', 100002, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Zen Guidance', 'Zen Guidance Addition Full Description', @now , @emptyGuid, @solutionId);
@@ -96,7 +96,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Diagnostics XYZ additional service', '100004', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Diagnostics XYZ additional service', 100004, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Diagnostics XYZ', 'Diagnostics XYZ Addition Full Description', @now , @emptyGuid, @solutionId);
@@ -128,7 +128,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Document Wizard additional service', '100005', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Document Wizard additional service', 100005, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Document Wizard', 'Document Wizard Addition Full Description', @now , @emptyGuid, @solutionId);
@@ -160,7 +160,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Paperlite additional service', '100006', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Paperlite additional service', 100006, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Paperlite', 'Paperlite Addition Full Description', @now , @emptyGuid, @solutionId);
@@ -185,7 +185,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Medsort additional service', '100007', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Medsort additional service', 100007, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Medsort', 'Medsort Addition Full Description', @now , @emptyGuid, @solutionId);
@@ -210,7 +210,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Boston Dynamics additional service', '100007', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'Boston Dynamics additional service', 100007, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to Boston Dynamics', 'Boston Dynamics Addition Full Description', @now , @emptyGuid, @solutionId);
@@ -235,7 +235,7 @@ BEGIN
         IF NOT EXISTS (SELECT * FROM catalogue.CatalogueItems WHERE Id = @additionalServiceId)
         BEGIN
             INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-                 VALUES (@additionalServiceId, @additionalServiceItemType, 'NotEmis Web GP additional service', '99999', @publishedStatus, @now);
+                 VALUES (@additionalServiceId, @additionalServiceItemType, 'NotEmis Web GP additional service', 99999, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
                  VALUES (@additionalServiceId,'Addition to NotEmis Web GP', 'NotEmis Web GP Addition Full Description', @now , @emptyGuid, @solutionId);

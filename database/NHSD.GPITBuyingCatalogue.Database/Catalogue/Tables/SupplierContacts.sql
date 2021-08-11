@@ -1,7 +1,7 @@
 ﻿CREATE TABLE catalogue.SupplierContacts
 (
      Id uniqueidentifier NOT NULL,
-     SupplierId nvarchar(6) NOT NULL,
+     SupplierId int NOT NULL,
      FirstName nvarchar(35) NOT NULL,
      LastName nvarchar(35) NOT NULL,
      Email nvarchar(255) NOT NULL,

@@ -14,14 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models
             CatalogueItem = catalogueItem;
             ClientApplication = CatalogueItem?.Solution?.GetClientApplication();
             SolutionId = CatalogueItem?.Id;
-            SupplierId = CatalogueItem?.Supplier?.Id;
+            SupplierId = CatalogueItem?.Supplier?.Id ?? 0;
         }
 
         public abstract bool? IsComplete { get; }
 
         public CatalogueItemId? SolutionId { get; set; }
 
-        public string SupplierId { get; set; }
+        public int SupplierId { get; set; }
 
         public ClientApplication ClientApplication { get; set; }
 

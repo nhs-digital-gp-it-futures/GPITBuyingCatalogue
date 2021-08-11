@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemType = CatalogueItemType.AdditionalService,
                     Created = DateTime.UtcNow,
                     PublishedStatus = PublicationStatus.Published,
-                    SupplierId = "99999",
+                    SupplierId = 99999,
                     AdditionalService = new AdditionalService
                     {
                         Summary = "This is the summary of the Additional Service",

@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(string supplierId)
+        public Task<List<CatalogueItem>> GetAssociatedServicesForSupplier(int? supplierId)
         {
             return dbContext.CatalogueItems
                 .Include(s => s.CatalogueItemCapabilities)
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .Include(c => c.Supplier)
                 .Include(c => c.AssociatedService)
                 .Where(
-                    c => c.SupplierId == supplierId
+                    c => c.SupplierId == supplierId.GetValueOrDefault()
                         && c.CatalogueItemType == CatalogueItemType.AssociatedService
                         && c.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(c => c.Name)

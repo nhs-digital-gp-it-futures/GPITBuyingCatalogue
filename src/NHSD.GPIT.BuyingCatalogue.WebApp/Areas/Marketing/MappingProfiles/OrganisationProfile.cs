@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                 .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(
                     dest => dest.SupplierId,
-                    opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Id))
+                    opt => opt.MapFrom(src => src.Supplier == null ? (int?)null : src.Supplier.Id))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter();
 
             CreateMap<CatalogueItem, RoadmapModel>()

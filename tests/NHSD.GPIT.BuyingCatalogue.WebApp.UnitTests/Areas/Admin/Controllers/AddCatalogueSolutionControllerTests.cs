@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().BeNull();
             actual.Model.As<AddSolutionModel>()
                 .SuppliersSelectList.Should()
-                .BeEquivalentTo(suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id)));
+                .BeEquivalentTo(suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture))));
         }
 
         [Theory]

@@ -23,7 +23,7 @@ BEGIN
     SET @associatedServiceId = '100000-S-001';
 
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-         VALUES (@associatedServiceId, @associatedServiceItemType, N'Practice reorganisation', '100000', @publishedStatus, @now);
+         VALUES (@associatedServiceId, @associatedServiceItemType, N'Practice reorganisation', 100000, @publishedStatus, @now);
 
     INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy) 
          VALUES (@associatedServiceId, 
@@ -38,7 +38,7 @@ BEGIN
     SET @associatedServiceId = '100000-S-002';
 
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-         VALUES (@associatedServiceId, @associatedServiceItemType, N'Engineering', '100000', @publishedStatus, @now);
+         VALUES (@associatedServiceId, @associatedServiceItemType, N'Engineering', 100000, @publishedStatus, @now);
 
     INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy) 
          VALUES (@associatedServiceId, 
@@ -58,7 +58,7 @@ BEGIN
      SET @associatedServiceId = '100000-S-003';
 
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-         VALUES (@associatedServiceId, @associatedServiceItemType, N'Lloyd George digitisation', '100000', @publishedStatus, @now);
+         VALUES (@associatedServiceId, @associatedServiceItemType, N'Lloyd George digitisation', 100000, @publishedStatus, @now);
 
     INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy) 
          VALUES (@associatedServiceId, 
@@ -73,7 +73,7 @@ BEGIN
      SET @associatedServiceId = '100000-S-004';
 
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-         VALUES (@associatedServiceId, @associatedServiceItemType, N'Lloyd George digitisation (upload only)', '100000', @publishedStatus, @now);
+         VALUES (@associatedServiceId, @associatedServiceItemType, N'Lloyd George digitisation (upload only)', 100000, @publishedStatus, @now);
 
     INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy) 
          VALUES (@associatedServiceId, 
@@ -88,7 +88,7 @@ BEGIN
      SET @associatedServiceId = '100000-S-005';
 
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-         VALUES (@associatedServiceId, @associatedServiceItemType, N'Project management', '100000', @publishedStatus, @now);
+         VALUES (@associatedServiceId, @associatedServiceItemType, N'Project management', 100000, @publishedStatus, @now);
 
     INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy) 
          VALUES (@associatedServiceId, 

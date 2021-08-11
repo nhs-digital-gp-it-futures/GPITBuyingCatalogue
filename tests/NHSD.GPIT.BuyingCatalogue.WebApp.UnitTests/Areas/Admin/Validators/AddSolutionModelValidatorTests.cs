@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             AddSolutionModel model)
         {
-            model.SupplierId = string.Empty;
+            model.SupplierId = null;
 
             await new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ValidateAsync(model);
@@ -54,27 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldHaveValidationErrorFor(m => m.SupplierId, model)
                 .WithErrorMessage("Select a supplier name");
-            mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-        }
 
-        [Theory]
-        [CommonAutoData]
-        public static async Task Validate_InvalidSupplierId_SetsModelErrorForSupplierId(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            AddSolutionModel model,
-            string invalidSupplierId)
-        {
-            model.SupplierId = invalidSupplierId;
-
-            await new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ValidateAsync(model);
-
-            new AddSolutionModelValidator(mockSolutionsService.Object)
-                .ShouldHaveValidationErrorFor(m => m.SupplierId, model)
-                .WithErrorMessage("Supplier Id should be a valid integer");
-            mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            mockSolutionsService.Verify(s => s.SupplierHasSolutionName(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
@@ -97,14 +78,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AddSolutionModel model)
         {
             mockSolutionsService
-                .Setup(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName))
+                .Setup(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName))
                 .ReturnsAsync(false);
 
             await new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ValidateAsync(model);
 
             mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName));
+                .Verify(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName));
         }
 
         [Theory]
@@ -118,8 +99,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldHaveValidationErrorFor(m => m.SolutionName, model)
                 .WithErrorMessage("Enter a solution name");
+
             mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+                .Verify(s => s.SupplierHasSolutionName(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
@@ -133,8 +115,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             new AddSolutionModelValidator(mockSolutionsService.Object)
                 .ShouldHaveValidationErrorFor(m => m.SolutionName, model)
                 .WithErrorMessage("Solution name cannot be more than 255 characters");
+
             mockSolutionsService
-                .Verify(s => s.SupplierHasSolutionName(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+                .Verify(s => s.SupplierHasSolutionName(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
         [Theory]
@@ -144,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AddSolutionModel model)
         {
             mockSolutionsService
-                .Setup(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName))
+                .Setup(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName))
                 .ReturnsAsync(true);
 
             new AddSolutionModelValidator(mockSolutionsService.Object)
@@ -159,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AddSolutionModel model)
         {
             mockSolutionsService
-                .Setup(s => s.SupplierHasSolutionName(model.SupplierId, model.SolutionName))
+                .Setup(s => s.SupplierHasSolutionName(model.SupplierId.Value, model.SolutionName))
                 .ReturnsAsync(false);
 
             new AddSolutionModelValidator(mockSolutionsService.Object)

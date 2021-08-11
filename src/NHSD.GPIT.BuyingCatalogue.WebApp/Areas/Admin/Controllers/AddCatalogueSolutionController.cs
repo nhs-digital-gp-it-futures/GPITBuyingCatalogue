@@ -52,7 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 Frameworks = model.Frameworks,
                 Name = model.SolutionName,
-                SupplierId = model.SupplierId,
+
+                // Model validation ensures supplier ID has a value
+                SupplierId = model.SupplierId!.Value,
                 UserId = User.UserId(),
             });
 

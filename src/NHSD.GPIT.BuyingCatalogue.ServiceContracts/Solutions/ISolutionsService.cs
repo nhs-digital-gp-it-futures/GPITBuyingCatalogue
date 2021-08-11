@@ -53,13 +53,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task SaveHosting(CatalogueItemId solutionId, Hosting hosting);
 
-        Task<Supplier> GetSupplier(string supplierId);
+        Task<Supplier> GetSupplier(int supplierId);
 
-        Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link);
+        Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link);
 
         Task SaveSupplierContacts(SupplierContactsModel model);
 
-        Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId);
+        Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId);
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
 
@@ -73,6 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<IList<Framework>> GetAllFrameworks();
 
-        Task<bool> SupplierHasSolutionName(string supplierId, string solutionName);
+        Task<bool> SupplierHasSolutionName(int supplierId, string solutionName);
     }
 }

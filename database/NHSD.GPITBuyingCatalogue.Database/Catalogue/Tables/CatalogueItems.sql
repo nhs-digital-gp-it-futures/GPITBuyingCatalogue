@@ -3,7 +3,7 @@
     Id nvarchar(14) NOT NULL,
     [Name] nvarchar(255) NOT NULL,
     CatalogueItemTypeId int NOT NULL,
-    SupplierId nvarchar(6) NOT NULL,
+    SupplierId int NOT NULL,
     PublishedStatusId int CONSTRAINT DF_CatalogueItem_PublishedStatus DEFAULT 1 NOT NULL,
     Created datetime2(7) CONSTRAINT DF_CatalogueItem_Created DEFAULT GETUTCDATE() NOT NULL,
     CONSTRAINT PK_CatalogueItem PRIMARY KEY (Id),

@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -45,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToListAsync();
         }
 
-        public Task<Supplier> GetSupplierFromBuyingCatalogue(string id)
+        public Task<Supplier> GetSupplierFromBuyingCatalogue(int id)
         {
             return dbContext.Suppliers
                 .Include(o => o.SupplierContacts)
@@ -53,10 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleAsync();
         }
 
-        public async Task AddOrderSupplier(CallOffId callOffId, string supplierId)
+        public async Task AddOrderSupplier(CallOffId callOffId, int supplierId)
         {
-            supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
-
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
             var order = await orderService.GetOrder(callOffId);
 

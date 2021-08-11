@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemType = CatalogueItemType.AssociatedService,
                     Created = DateTime.UtcNow,
                     PublishedStatus = PublicationStatus.Published,
-                    SupplierId = "99999",
+                    SupplierId = 99999,
                     AssociatedService = new AssociatedService
                     {
                         Description = "This is the description of the Associated Service",
