@@ -29,5 +29,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
         internal static By AdditionalInfoTextArea => By.Id("AdditionalInformation");
 
         internal static By Description => By.Id("Description");
+
+        internal static By DateDay => By.Id("Day");
+
+        internal static By DateMonth => By.Id("Month");
+
+        internal static By DateYear => By.Id("Year");
     }
 }

@@ -53,13 +53,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (!TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, aspFor))
                 return null;
 
-            return htmlGenerator.GenerateValidationMessage(
+            var builder = htmlGenerator.GenerateValidationMessage(
                 viewContext,
                 aspFor.ModelExplorer,
                 aspFor.Name,
                 null,
                 TagHelperConstants.Span,
                 new { @class = TagHelperConstants.NhsErrorMessage });
+
+            builder.GenerateId($"{aspFor.Name}-error", "_");
+
+            return builder;
         }
 
         public static TagBuilder GetLabelHintBuilder(ModelExpression aspFor, string hintText, string formName = null)
