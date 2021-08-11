@@ -102,11 +102,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             ElementIsDisplayed(CommonSelectors.NhsErrorSection);
 
         internal bool ErrorSummaryLinksExist() =>
-            Driver
-            .FindElement(CommonSelectors.NhsErrorSectionLinkList)
-            .FindElements(By.TagName("a"))
-            .Select(l => l.GetAttribute("href"))
-            .All(href => ElementIsDisplayed(By.Id(href)));
+        Driver
+        .FindElement(CommonSelectors.NhsErrorSectionLinkList)
+        .FindElements(By.TagName("a"))
+        .Select(l => l.GetAttribute("href"))
+        .Select(s => s[(s.LastIndexOf('#') + 1)..])
+        .All(href => ElementExists(By.Id(href)));
 
         internal bool ElementExists(By targetElement)
         {
