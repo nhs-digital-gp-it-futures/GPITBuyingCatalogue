@@ -3,11 +3,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public class CatalogueItemCapability
+    public sealed class CatalogueItemCapability
     {
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public Guid CapabilityId { get; set; }
+        public int CapabilityId { get; set; }
 
         public int StatusId { get; set; }
 

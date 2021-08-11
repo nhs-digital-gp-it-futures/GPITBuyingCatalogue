@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void CatalogueItemCapability_SolutionCapabilityHasNullCapability_ReturnsEmpty(
             CatalogueItem catalogueItem,
-            Guid capabilityId)
+            int capabilityId)
         {
             var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void CatalogueItemCapability_EmptySolutionCapabilities_ReturnsEmpty(
             CatalogueItem catalogueItem,
-            Guid capabilityId)
+            int capabilityId)
         {
             var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void CatalogueItemCapability_NullSolutionCapabilities_ReturnsEmpty(
             CatalogueItem catalogueItem,
-            Guid capabilityId)
+            int capabilityId)
         {
             var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.CatalogueItemCapabilities = null;
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [CommonAutoData]
         public static void CatalogueItemCapability_NullSolution_ReturnsEmpty(
             CatalogueItem catalogueItem,
-            Guid capabilityId)
+            int capabilityId)
         {
             var expected = new CatalogueItemCapability { CatalogueItemId = catalogueItem.Id };
             catalogueItem.Solution = null;

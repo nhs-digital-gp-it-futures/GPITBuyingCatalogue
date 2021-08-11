@@ -1,19 +1,15 @@
-﻿using System;
-
-#nullable disable
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public partial class FrameworkCapability
+    public sealed class FrameworkCapability
     {
         public string FrameworkId { get; set; }
 
-        public Guid CapabilityId { get; set; }
+        public int CapabilityId { get; set; }
 
         public bool IsFoundation { get; set; }
 
-        public virtual Capability Capability { get; set; }
+        public Capability Capability { get; set; }
 
-        public virtual Framework Framework { get; set; }
+        public Framework Framework { get; set; }
     }
 }

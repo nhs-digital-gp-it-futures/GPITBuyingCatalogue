@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionByName(string solutionName);
 
-        Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, Guid capabilityId);
+        Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, int capabilityId);
 
         Task<CatalogueItem> GetSolutionWithAllAssociatedServices(CatalogueItemId solutionId);
 
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetAdditionalServiceCapability(
             CatalogueItemId catalogueItemId,
-            Guid capabilityId);
+            int capabilityId);
 
         Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model);
 

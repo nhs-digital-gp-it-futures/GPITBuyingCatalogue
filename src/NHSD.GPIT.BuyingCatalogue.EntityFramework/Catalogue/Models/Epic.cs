@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class Epic
     {
@@ -8,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Name { get; set; }
 
-        public Guid CapabilityId { get; set; }
+        public int CapabilityId { get; set; }
 
         public string SourceUrl { get; set; }
 
