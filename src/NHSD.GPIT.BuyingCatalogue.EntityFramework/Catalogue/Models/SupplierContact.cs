@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class SupplierContact
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public int SupplierId { get; set; }
 
