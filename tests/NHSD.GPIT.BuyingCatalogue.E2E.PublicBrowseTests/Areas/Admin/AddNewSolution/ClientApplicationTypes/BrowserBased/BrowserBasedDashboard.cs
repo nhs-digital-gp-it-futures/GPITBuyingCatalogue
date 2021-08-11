@@ -39,14 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Fact]
-        public void BrowserBasedDashboard_ErrorThrownMissingMandatory()
-        {
-            CommonActions.ClickSave();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-        }
-
-        [Fact]
         public void BrowserBasedDashboard_ClickGoBackLink()
         {
             CommonActions.ClickGoBackLink();

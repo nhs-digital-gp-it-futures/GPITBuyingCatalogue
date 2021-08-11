@@ -10,5 +10,5 @@
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy uniqueidentifier NOT NULL,
      CONSTRAINT PK_MarketingContact PRIMARY KEY (Id),
-     CONSTRAINT FK_MarketingContact_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(Id) ON DELETE CASCADE
+     CONSTRAINT FK_MarketingContact_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(CatalogueItemId) ON DELETE CASCADE,
 );

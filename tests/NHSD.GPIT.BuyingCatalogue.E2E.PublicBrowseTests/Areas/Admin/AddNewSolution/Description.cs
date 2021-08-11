@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
 
             solution.Summary.Should().Be(summary);
             solution.FullDescription.Should().Be(fullDescription);
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
 
             solution.FullDescription.Should().BeNullOrEmpty();
             solution.AboutUrl.Should().BeNullOrEmpty();
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.Id == SolutionId);
+            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
             solution.FullDescription = string.Empty;
             solution.AboutUrl = string.Empty;
             context.SaveChanges();

@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             {
                 await using var context = GetEndToEndDbContext();
-                var featureInfo = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Features;
+                var featureInfo = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).Features;
 
                 var featureList = PublicBrowsePages.SolutionAction.GetFeatureContent();
 

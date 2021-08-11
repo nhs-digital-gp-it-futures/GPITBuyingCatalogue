@@ -101,6 +101,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ErrorSummaryDisplayed() =>
             ElementIsDisplayed(CommonSelectors.NhsErrorSection);
 
+        internal bool ErrorSummaryLinksExist() =>
+        Driver
+        .FindElement(CommonSelectors.NhsErrorSectionLinkList)
+        .FindElements(By.TagName("a"))
+        .Select(l => l.GetAttribute("href"))
+        .Select(s => s[(s.LastIndexOf('#') + 1)..])
+        .All(href => ElementExists(By.Id(href)));
+
         internal bool ElementExists(By targetElement)
         {
             try
@@ -125,9 +133,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver.FindElement(CommonSelectors.Header1).Text.FormatForComparison();
 
         internal int GetNumberOfSelectedCheckBoxes() =>
-            Driver.FindElements(By.ClassName("nhsuk-checkboxes__input")).Count(cb => cb.Selected);
+            Driver
+            .FindElements(By.ClassName("nhsuk-checkboxes__input"))
+            .Count(cb => cb.Selected);
 
-        internal bool AllCheckBoxesSelected() => Driver.FindElements(By.ClassName("nhsuk-checkboxes__input")).All(cb => cb.Selected);
+        internal bool AllCheckBoxesSelected() =>
+            Driver
+            .FindElements(By.ClassName("nhsuk-checkboxes__input"))
+            .All(cb => cb.Selected);
 
         // Element Comparisons
 

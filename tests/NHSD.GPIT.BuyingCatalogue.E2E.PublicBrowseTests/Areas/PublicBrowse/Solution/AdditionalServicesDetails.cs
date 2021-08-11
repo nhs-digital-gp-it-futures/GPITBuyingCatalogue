@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await using var context = GetEndToEndDbContext();
             var additionalServicesInDb = await context.CatalogueItems
             .Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService)
-            .Where(c => c.SupplierId == "99999")
+            .Where(c => c.SupplierId == 99999)
                 .ToListAsync();
 
             var additionalServicesInTable = PublicBrowsePages.SolutionAction.GetAdditionalServicesNamesFromTable();
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await using var context = GetEndToEndDbContext();
             var additionalDescInDb = await context.CatalogueItems
             .Include(c => c.AdditionalService).Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService)
-            .Where(c => c.SupplierId == "99999")
+            .Where(c => c.SupplierId == 99999)
             .Select(a => a.AdditionalService.FullDescription)
             .ToListAsync();
 

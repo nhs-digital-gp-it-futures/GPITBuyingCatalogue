@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
 
             solution.MarketingContacts.First().Should().BeEquivalentTo(
                 contact,
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.Include(s => s.MarketingContacts).SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
 
             solution.MarketingContacts.First().Should().BeEquivalentTo(
                 firstContact,

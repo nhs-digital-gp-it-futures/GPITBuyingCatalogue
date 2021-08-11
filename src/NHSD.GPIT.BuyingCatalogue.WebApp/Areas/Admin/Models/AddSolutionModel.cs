@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -15,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             BackLinkText = "Go back";
         }
 
-        public string SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
         public string SolutionName { get; set; }
 
@@ -29,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
             SuppliersSelectList = suppliers == null || !suppliers.Any()
             ? System.Array.Empty<SelectListItem>()
-            : suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id));
+            : suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture)));
 
             return this;
         }

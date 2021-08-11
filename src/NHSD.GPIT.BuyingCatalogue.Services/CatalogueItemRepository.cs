@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -15,20 +14,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
         {
         }
 
-        public async Task<CatalogueItemId> GetLatestCatalogueItemIdFor(string supplierId)
+        public async Task<CatalogueItemId> GetLatestCatalogueItemIdFor(int supplierId)
         {
-            if (!int.TryParse(supplierId, out var supplierIdentifier))
-                throw new ArgumentException($"'{supplierId}' is not a valid Supplier Id");
-
             var catalogueSolution = await DbSet
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.SupplierId == supplierId)
                 .OrderByDescending(i => i.Id)
                 .FirstOrDefaultAsync();
 
-            return catalogueSolution?.Id ?? new CatalogueItemId(supplierIdentifier, "000");
+            return catalogueSolution?.Id ?? new CatalogueItemId(supplierId, "000");
         }
 
-        public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
+        public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
             DbSet.AnyAsync(i => i.SupplierId == supplierId && i.Name == solutionName);
     }
 }

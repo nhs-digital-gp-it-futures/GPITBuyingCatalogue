@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public DateTime? CommencementDate { get; set; }
 
-        public string SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
         public DateTime? PlannedDeliveryDate { get; set; }
 

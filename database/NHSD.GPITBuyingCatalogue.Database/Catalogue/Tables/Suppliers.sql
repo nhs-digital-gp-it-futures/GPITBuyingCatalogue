@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.Suppliers
 (
-     Id nvarchar(6) NOT NULL,
+     Id int NOT NULL,
      [Name] nvarchar(255) NOT NULL,
      LegalName nvarchar(255) NOT NULL,
      Summary nvarchar(1100) NULL,

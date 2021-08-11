@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             ModelExpression aspFor,
             IHtmlGenerator htmlGenerator,
             object item,
+            int index,
             string valueName,
             string displayName)
         {
@@ -35,8 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
             builder.AddCssClass(TagHelperConstants.RadioItemClass);
 
-            var input = GetRadioInputBuilder(viewcontext, aspFor, htmlGenerator, item, valueName);
-            var label = GetRadioLabelBuilder(viewcontext, aspFor, htmlGenerator, item, displayName, valueName);
+            var input = GetRadioInputBuilder(viewcontext, aspFor, htmlGenerator, item, valueName, index);
+            var label = GetRadioLabelBuilder(viewcontext, aspFor, htmlGenerator, item, displayName, index);
 
             builder.InnerHtml.AppendHtml(input);
             builder.InnerHtml.AppendHtml(label);
@@ -50,15 +51,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             IHtmlGenerator htmlGenerator,
             object item,
             string displayName,
-            string valueName)
+            int index)
         {
             var itemText = GetGenericValueFromName(item, displayName);
 
-            var itemValue = GetGenericValueFromName(item, valueName);
-
             return string.IsNullOrWhiteSpace(itemText)
                 ? null
-                : GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText, itemValue);
+                : GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText, index);
         }
 
         public static TagBuilder GetRadioLabelBuilder(
@@ -66,12 +65,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             ModelExpression aspFor,
             IHtmlGenerator htmlGenerator,
             string display,
-            string value)
+            int index)
         {
             return htmlGenerator.GenerateLabel(
                 viewContext,
                 aspFor.ModelExplorer,
-                $"{aspFor.Name}_{value}",
+                $"{aspFor.Name}_{index}",
                 display,
                 new { @class = TagHelperConstants.RadioLabelClass });
         }
@@ -81,13 +80,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                 ModelExpression aspFor,
                 IHtmlGenerator htmlGenerator,
                 object item,
-                string valueName)
+                string valueName,
+                int index)
         {
             var itemValue = GetGenericValueFromName(item, valueName);
 
             return string.IsNullOrWhiteSpace(itemValue)
                 ? null
-                : GetRadioInputBuilder(viewContext, aspFor, htmlGenerator, itemValue);
+                : GetRadioInputBuilder(viewContext, aspFor, htmlGenerator, itemValue, index);
         }
 
         public static TagBuilder GetRadioInputBuilder(
@@ -95,6 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             ModelExpression aspFor,
             IHtmlGenerator htmlGenerator,
             string value,
+            int index,
             bool? isChecked = null)
         {
             var builder = htmlGenerator.GenerateRadioButton(
@@ -105,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                             isChecked,
                             new { @class = TagHelperConstants.RadioItemInputClass });
 
-            builder.Attributes["id"] = TagBuilder.CreateSanitizedId($"{aspFor.Name}_{value}", "_");
+            builder.Attributes["id"] = TagBuilder.CreateSanitizedId($"{aspFor.Name}_{index}", "_");
 
             return builder;
         }

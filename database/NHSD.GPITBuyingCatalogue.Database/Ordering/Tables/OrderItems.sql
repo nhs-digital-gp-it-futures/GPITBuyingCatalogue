@@ -11,6 +11,6 @@
     CONSTRAINT PK_OrderItem PRIMARY KEY (OrderId, CatalogueItemId),
     CONSTRAINT FK_OrderItem_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders (Id) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItem_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems (Id),
-    CONSTRAINT FK_OrderItem_EstimationPeriod FOREIGN KEY (EstimationPeriodId) REFERENCES catalogue.TimeUnits (TimeUnitId),
+    CONSTRAINT FK_OrderItem_EstimationPeriod FOREIGN KEY (EstimationPeriodId) REFERENCES catalogue.TimeUnits (Id),
     CONSTRAINT FK_OrderItem_PriceId FOREIGN KEY (PriceId) REFERENCES catalogue.CataloguePrices (CataloguePriceId),
 );

@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CataloguePriceType = CataloguePriceType.Flat,
                     PricingUnit = new()
                     {
-                        PricingUnitId = Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         TierName = "patient",
                         Name = "patient",
                         Description = "per patient",
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CataloguePriceType = CataloguePriceType.Flat,
                     PricingUnit = new()
                     {
-                        PricingUnitId = Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         TierName = "thing",
                         Name = "thing",
                         Description = "per thing",
@@ -105,8 +105,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // CataloguePriceType
             List<Database.Models.CataloguePriceType> cataloguePriceTypes = new()
             {
-                new Database.Models.CataloguePriceType { CataloguePriceTypeId = 1, Name = "Flat" },
-                new Database.Models.CataloguePriceType { CataloguePriceTypeId = 2, Name = "Tiered" },
+                new Database.Models.CataloguePriceType { Id = 1, Name = "Flat" },
+                new Database.Models.CataloguePriceType { Id = 2, Name = "Tiered" },
             };
             context.AddRange(cataloguePriceTypes);
 
@@ -685,9 +685,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // ProvisioningType
             List<Database.Models.ProvisioningType> provisioningTypes = new()
             {
-                new Database.Models.ProvisioningType { ProvisioningTypeId = 1, Name = "Patient" },
-                new Database.Models.ProvisioningType { ProvisioningTypeId = 2, Name = "Declarative" },
-                new Database.Models.ProvisioningType { ProvisioningTypeId = 3, Name = "OnDemand" },
+                new Database.Models.ProvisioningType { Id = 1, Name = "Patient" },
+                new Database.Models.ProvisioningType { Id = 2, Name = "Declarative" },
+                new Database.Models.ProvisioningType { Id = 3, Name = "OnDemand" },
             };
             context.AddRange(provisioningTypes);
 
@@ -725,7 +725,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 new()
                 {
-                    Id = "99999",
+                    Id = 99999,
                     Name = "DFOCVC Supplier",
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
@@ -743,14 +743,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         new()
                         {
-                            Id = Guid.NewGuid(),
+                            Id = 1,
                             Email = "test@test.com",
                             FirstName = "Dave",
                             LastName = "Smith",
                             LastUpdated = DateTime.UtcNow,
                             LastUpdatedBy = Guid.Empty,
                             PhoneNumber = "00987654321",
-                            SupplierId = "99999",
+                            SupplierId = 99999,
                         },
                     },
                     Summary = "About this supplier",
@@ -758,7 +758,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = "99998",
+                    Id = 99998,
                     Name = "E2E Test Supplier With Contact",
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
@@ -774,12 +774,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     Summary = "About this Supplier",
                     SupplierUrl = "https://www.e2etest.com",
-                    SupplierContacts = new List<SupplierContact>()
+                    SupplierContacts = new List<SupplierContact>
                     {
                         new()
                         {
-                            Id = new Guid("49a57b7a-5ecf-484f-a4fc-7d2de0c1aa51"),
-                            SupplierId = "99998",
+                            Id = 2,
+                            SupplierId = 99998,
                             FirstName = "Alice",
                             LastName = "Smith",
                             Email = "Alice.Smith@e2etest.com",
@@ -789,7 +789,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 new()
                 {
-                    Id = "99997",
+                    Id = 99997,
                     Name = "E2E Test Supplier",
                     LastUpdated = DateTime.UtcNow,
                     LastUpdatedBy = new Guid("c78ca505-b820-48a4-a0cb-e4b04a6f455c"), // bob smith
@@ -812,8 +812,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // TimeUnit
             List<Database.Models.TimeUnit> timeUnits = new()
             {
-                new Database.Models.TimeUnit { TimeUnitId = 1, Name = "month", Description = "per month" },
-                new Database.Models.TimeUnit { TimeUnitId = 2, Name = "year", Description = "per year" },
+                new Database.Models.TimeUnit { Id = 1, Name = "month", Description = "per month" },
+                new Database.Models.TimeUnit { Id = 2, Name = "year", Description = "per year" },
             };
             context.AddRange(timeUnits);
         }

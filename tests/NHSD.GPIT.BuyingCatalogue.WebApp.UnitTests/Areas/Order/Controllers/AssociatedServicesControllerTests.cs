@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(organisation);
 
             associatedServicesServiceMock
-                .Setup(s => s.GetAssociatedServicesForSupplier(It.IsAny<string>()))
+                .Setup(s => s.GetAssociatedServicesForSupplier(It.IsAny<int>()))
                 .ReturnsAsync(new List<CatalogueItem>());
 
             var actualResult = await controller.SelectAssociatedService(odsCode, order.CallOffId);
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .Returns(state);
 
             associatedServicesServiceMock
-                .Setup(s => s.GetAssociatedServicesForSupplier(It.IsAny<string>()))
+                .Setup(s => s.GetAssociatedServicesForSupplier(It.IsAny<int>()))
                 .ReturnsAsync(associatedServices);
 
             var actualResult = await controller.SelectAssociatedService(odsCode, state.CallOffId);

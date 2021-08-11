@@ -406,14 +406,14 @@ BEGIN
 
     MERGE INTO catalogue.AssociatedServices AS TARGET
     USING #AssociatedService AS SOURCE
-    ON TARGET.AssociatedServiceId = SOURCE.CatalogueItemId 
+    ON TARGET.CatalogueItemId = SOURCE.CatalogueItemId 
     WHEN MATCHED THEN
            UPDATE SET TARGET.[Description] = SOURCE.[Description],
                       TARGET.OrderGuidance = SOURCE.OrderGuidance,
                       TARGET.LastUpdated = SOURCE.LastUpdated,
                       TARGET.LastUpdatedBy = SOURCE.LastUpdatedBy
     WHEN NOT MATCHED BY TARGET THEN
-    INSERT (AssociatedServiceId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+    INSERT (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
     VALUES (SOURCE.CatalogueItemId, SOURCE.[Description], SOURCE.OrderGuidance, SOURCE.LastUpdated, SOURCE.LastUpdatedBy);
 END;
 GO

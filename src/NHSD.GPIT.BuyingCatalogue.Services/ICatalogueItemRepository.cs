@@ -7,8 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services
 {
     public interface ICatalogueItemRepository : IDbRepository<CatalogueItem, BuyingCatalogueDbContext>
     {
-        Task<CatalogueItemId> GetLatestCatalogueItemIdFor(string supplierId);
+        Task<CatalogueItemId> GetLatestCatalogueItemIdFor(int supplierId);
 
-        Task<bool> SupplierHasSolutionName(string supplierId, string solutionName);
+        Task<bool> SupplierHasSolutionName(int supplierId, string solutionName);
     }
 }

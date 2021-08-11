@@ -10,11 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("SupplierContacts", Schemas.Catalogue);
 
-            builder.HasKey(c => c.Id)
-                .IsClustered(false);
+            builder.HasKey(c => c.Id);
 
-            builder.HasIndex(c => c.SupplierId, "IX_SupplierContactSupplierId")
-                .IsClustered();
+            builder.HasIndex(c => c.SupplierId, "IX_SupplierContactSupplierId");
 
             builder.Property(c => c.Id).ValueGeneratedNever();
             builder.Property(c => c.Email)
@@ -30,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(35);
 
             builder.Property(c => c.PhoneNumber).HasMaxLength(35);
+            builder.Property(c => c.Department).HasMaxLength(50);
             builder.Property(c => c.SupplierId)
                 .IsRequired()
                 .HasMaxLength(6);

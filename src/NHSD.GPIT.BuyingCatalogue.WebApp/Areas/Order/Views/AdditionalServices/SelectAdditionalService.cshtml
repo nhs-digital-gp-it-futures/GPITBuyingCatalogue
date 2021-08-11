@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectAdditionalServiceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServices.SelectAdditionalServiceModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -7,7 +8,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
+            <nhs-validation-summary RadioId="SelectedAdditionalServiceId"/>
             <nhs-page-title title="@Model.Title" advice="These are the Additional Services for the Catalogue Solutions you've added to this order. Select the one you want to purchase from the list." />
 
             <form method="post">
@@ -19,8 +20,8 @@
                                          label-text="Select Additional Service">
                     <nhs-radio-buttons asp-for="SelectedAdditionalServiceId"
                                        values="@Model.Solutions"
-                                       value-name="CatalogueItemId"
-                                       display-name="Name" />
+                                       value-name="@nameof(CatalogueItem.Id)"
+                                       display-name="@nameof(CatalogueItem.Name)" />
                 </nhs-fieldset-form-label>
                 <nhs-submit-button text="Continue" />
             </form>

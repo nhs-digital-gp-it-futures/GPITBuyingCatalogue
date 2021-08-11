@@ -15,10 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int Id { get; set; }
 
-        public byte Revision { get; set; }
-
         [NotMapped]
-        public CallOffId CallOffId => new(Id, Revision);
+        public CallOffId CallOffId => new(Id, 1);
 
         public string Description { get; set; }
 
@@ -28,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public int? OrderingPartyContactId { get; set; }
 
         // TODO: remove
-        public string SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
         public int? SupplierContactId { get; set; }
 

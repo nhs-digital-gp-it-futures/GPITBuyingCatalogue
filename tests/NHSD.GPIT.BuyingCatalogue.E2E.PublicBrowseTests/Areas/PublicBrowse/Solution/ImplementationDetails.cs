@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task ImplementationDetails_VerifyContent()
         {
             await using var context = GetEndToEndDbContext();
-            var info = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).ImplementationDetail;
+            var info = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).ImplementationDetail;
 
             var implementationContent = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 

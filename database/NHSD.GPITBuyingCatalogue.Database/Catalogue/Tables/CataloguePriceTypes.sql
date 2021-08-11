@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.CataloguePriceTypes
 (
-    CataloguePriceTypeId int NOT NULL,
+    Id int NOT NULL,
     [Name] nvarchar(10) NOT NULL,
-    CONSTRAINT PK_CataloguePriceType PRIMARY KEY (CataloguePriceTypeId)
+    CONSTRAINT PK_CataloguePriceType PRIMARY KEY (Id),
 );

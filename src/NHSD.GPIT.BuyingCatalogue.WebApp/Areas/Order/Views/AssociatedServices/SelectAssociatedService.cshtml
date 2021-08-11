@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.SelectAssociatedServiceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AssociatedServices.SelectAssociatedServiceModel;
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -7,7 +8,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
+            <nhs-validation-summary RadioId="SelectedSolutionId"/>
             <nhs-page-title title="@Model.Title" advice="These are the Associated Services provided by this supplier. Select the one you want to purchase from the list." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
@@ -18,8 +19,8 @@
                                          label-text="Select Associated Service">
                     <nhs-radio-buttons asp-for="SelectedSolutionId"
                                        values="@Model.Solutions"
-                                       value-name="CatalogueItemId"
-                                       display-name="Name" />
+                                       value-name="@nameof(CatalogueItem.Id)"
+                                       display-name="@nameof(CatalogueItem.Name)" />
                 </nhs-fieldset-form-label>
                 <nhs-submit-button text="Continue" />
             </form>

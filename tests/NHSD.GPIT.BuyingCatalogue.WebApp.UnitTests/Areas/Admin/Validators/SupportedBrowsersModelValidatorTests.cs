@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Browsers)
+            result.ShouldHaveValidationErrorFor("Browsers[0].Checked")
                 .WithErrorMessage(SupportedBrowsersModelValidator.MandatoryRequiredMessage);
         }
 

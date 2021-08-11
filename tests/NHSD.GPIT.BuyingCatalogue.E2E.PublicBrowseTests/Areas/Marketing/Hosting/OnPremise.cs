@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Hosting
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"))).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.OnPremise.Should().BeEquivalentTo(expected, opt => opt.Excluding(o => o.RequiresHscn));

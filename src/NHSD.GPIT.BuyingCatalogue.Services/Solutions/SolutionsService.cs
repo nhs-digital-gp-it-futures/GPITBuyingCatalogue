@@ -261,37 +261,53 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
             await solutionRepository.SaveChangesAsync();
         }
 
+        public async Task SaveInteroperabilityLink(CatalogueItemId solutionId, string link)
+        {
+            link.ValidateNotNullOrWhiteSpace(nameof(link));
+
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            solution.IntegrationsUrl = link;
+            await solutionRepository.SaveChangesAsync();
+        }
+
         public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Features = JsonConvert.SerializeObject(features);
+            await solutionRepository.SaveChangesAsync();
+        }
+
+        public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
+        {
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
+            solution.IntegrationsUrl = integrationLink;
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveImplementationDetail(CatalogueItemId solutionId, string detail)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ImplementationDetail = detail;
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveRoadMap(CatalogueItemId solutionId, string roadMap)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.RoadMap = roadMap;
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             return solution.GetClientApplication();
         }
 
@@ -299,14 +315,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             return solution.GetHosting();
         }
 
@@ -314,22 +330,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             hosting.ValidateNotNull(nameof(hosting));
 
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = JsonConvert.SerializeObject(hosting);
             await solutionRepository.SaveChangesAsync();
         }
 
-        public Task<Supplier> GetSupplier(string supplierId)
+        public Task<Supplier> GetSupplier(int supplierId) => supplierRepository.SingleAsync(s => s.Id == supplierId);
+
+        public async Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link)
         {
-            supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
-
-            return supplierRepository.SingleAsync(s => s.Id == supplierId);
-        }
-
-        public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
-        {
-            supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
-
             var supplier = await supplierRepository.SingleAsync(s => s.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
@@ -367,13 +376,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await marketingContactRepository.SaveChangesAsync();
         }
 
-        public Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
+        public Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId)
         {
             return dbContext.CatalogueItems
                 .Include(i => i.Solution)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier)
-                .Where(i => i.SupplierId == supplierId
+                .Where(i => i.SupplierId == supplierId.GetValueOrDefault()
                     && i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(i => i.Name)
@@ -448,7 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return await dbContext.Frameworks.ToListAsync();
         }
 
-        public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
+        public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
             catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
     }
 }
