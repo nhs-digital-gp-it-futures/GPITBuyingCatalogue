@@ -30,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
-                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -55,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
-                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -80,7 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
-                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -112,7 +109,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
-                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -152,7 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
-                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
@@ -193,13 +188,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
-                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 OrderStatus = OrderStatus.Incomplete,
                 IsDeleted = false,
                 Description = "This is an Order Description",
-                OrderingPartyContact = new()
+                OrderingPartyContact = new Contact
                 {
                     FirstName = "Clark",
                     LastName = "Kent",
@@ -207,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 SupplierId = 99999,
-                SupplierContact = new()
+                SupplierContact = new Contact
                 {
                     FirstName = "Bruce",
                     LastName = "Wayne",
@@ -222,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Single(c => c.Id == new CatalogueItemId(99999, "001"))
                 .CataloguePrices.First();
 
-            var addedSolution = new OrderItem()
+            var addedSolution = new OrderItem
             {
                 CataloguePrice = price,
                 Price = 1.01M,
