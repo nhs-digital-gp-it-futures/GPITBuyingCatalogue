@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             using (var context = new BuyingCatalogueDbContext(options, identityService.Object))
             {
                 var service = new InteroperabilityService(context);
-                await service.SaveIntegrationLink(solution.Id, integrationLink);
+                await service.SaveIntegrationLink(solution.CatalogueItemId, integrationLink);
             }
 
             using (var context = new BuyingCatalogueDbContext(options, identityService.Object))
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             using (var context = new BuyingCatalogueDbContext(options, identityService.Object))
             {
                 var service = new InteroperabilityService(context);
-                await service.AddIntegration(solution.Id, newIntegration);
+                await service.AddIntegration(solution.CatalogueItemId, newIntegration);
             }
 
             using (var context = new BuyingCatalogueDbContext(options, identityService.Object))

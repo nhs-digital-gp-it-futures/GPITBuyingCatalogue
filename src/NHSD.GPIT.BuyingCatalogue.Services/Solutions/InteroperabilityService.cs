@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
         {
-            var solution = await dbContext.Solutions.SingleAsync(s => s.Id == solutionId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.IntegrationsUrl = integrationLink;
             await dbContext.SaveChangesAsync();
         }
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             integration.Id = Guid.NewGuid();
 
-            var solution = await dbContext.Solutions.SingleAsync(s => s.Id == catalogueItemId);
+            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == catalogueItemId);
 
             var integrations = solution.GetIntegrations();
 
