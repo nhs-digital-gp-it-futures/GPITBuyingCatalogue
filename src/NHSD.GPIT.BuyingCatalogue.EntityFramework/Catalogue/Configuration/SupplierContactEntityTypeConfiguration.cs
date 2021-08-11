@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(35);
 
             builder.Property(c => c.PhoneNumber).HasMaxLength(35);
+            builder.Property(c => c.Department).HasMaxLength(50);
             builder.Property(c => c.SupplierId)
                 .IsRequired()
                 .HasMaxLength(6);

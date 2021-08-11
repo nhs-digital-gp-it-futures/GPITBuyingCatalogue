@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string PhoneNumber { get; set; }
 
+        public string Department { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public Guid LastUpdatedBy { get; set; }
