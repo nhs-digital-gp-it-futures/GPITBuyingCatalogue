@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PublicCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.PrivateCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.HybridHostingType.Should().BeEquivalentTo(expected, opt => opt.Excluding(h => h.RequiresHscn));
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var hosting = (await context.Solutions.SingleAsync(s => s.Id == SolutionId)).Hosting;
+            var hosting = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             var actual = JsonConvert.DeserializeObject<ServiceContracts.Solutions.Hosting>(hosting);
             actual.OnPremise.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));

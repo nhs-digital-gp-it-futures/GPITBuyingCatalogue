@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 nameof(CatalogueSolutionsController.BrowserBased)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
 
             var hardwareRequirements = JsonSerializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)?.HardwareRequirements;
 

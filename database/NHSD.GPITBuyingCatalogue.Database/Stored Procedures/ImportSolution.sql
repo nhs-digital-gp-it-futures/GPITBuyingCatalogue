@@ -49,10 +49,10 @@ AS
                FROM @items AS i
               WHERE NOT EXISTS (SELECT * FROM catalogue.CatalogueItems AS c WHERE c.Id = i.Id);
 
-        INSERT INTO catalogue.Solutions(Id, LastUpdated, LastUpdatedBy)
+        INSERT INTO catalogue.Solutions(CatalogueItemId, LastUpdated, LastUpdatedBy)
              SELECT i.Id, @now, @emptyGuid
                FROM @items AS i
-              WHERE NOT EXISTS (SELECT * FROM catalogue.Solutions AS s WHERE s.Id = i.Id);
+              WHERE NOT EXISTS (SELECT * FROM catalogue.Solutions AS s WHERE s.CatalogueItemId = i.Id);
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
              SELECT i.FrameworkId, i.Id, 0, @now, @emptyGuid

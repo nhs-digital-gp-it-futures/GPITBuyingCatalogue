@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
             var features = solution.Features;
 
             features.Should().BeNullOrEmpty();

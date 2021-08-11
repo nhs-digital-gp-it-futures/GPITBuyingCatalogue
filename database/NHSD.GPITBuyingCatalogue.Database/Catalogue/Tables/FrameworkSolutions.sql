@@ -7,5 +7,5 @@
      LastUpdatedBy uniqueidentifier NOT NULL,
      CONSTRAINT PK_FrameworkSolutions PRIMARY KEY CLUSTERED (FrameworkId, SolutionId),
      CONSTRAINT FK_FrameworkSolutions_Framework FOREIGN KEY (FrameworkId) REFERENCES catalogue.Frameworks(Id),
-     CONSTRAINT FK_FrameworkSolutions_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(Id) ON DELETE CASCADE
+     CONSTRAINT FK_FrameworkSolutions_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.Solutions(CatalogueItemId) ON DELETE CASCADE
 );

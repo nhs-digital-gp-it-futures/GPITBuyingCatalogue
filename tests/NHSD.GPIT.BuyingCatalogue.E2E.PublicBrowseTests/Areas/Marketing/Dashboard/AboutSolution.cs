@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
             solution.Summary.Should().Be(summary);
             solution.FullDescription.Should().Be(description);
             solution.AboutUrl.Should().Be(link);
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         public async Task AboutSolution_SectionMarkedAsIncompleteAsync()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
             solution.Summary = string.Empty;
             solution.FullDescription = string.Empty;
             solution.AboutUrl = string.Empty;
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
         public async Task AboutSolution_SummaryLeftEmpty()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
             solution.Summary = string.Empty;
 
             await context.SaveChangesAsync();

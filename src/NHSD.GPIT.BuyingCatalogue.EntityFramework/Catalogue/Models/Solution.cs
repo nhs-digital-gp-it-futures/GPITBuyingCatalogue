@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             MarketingContacts = new HashSet<MarketingContact>();
         }
 
-        public CatalogueItemId Id { get; set; }
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public string Version { get; set; }
 

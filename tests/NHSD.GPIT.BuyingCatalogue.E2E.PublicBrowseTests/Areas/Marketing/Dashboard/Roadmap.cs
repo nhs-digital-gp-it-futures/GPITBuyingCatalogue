@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             : base(factory, "marketing/supplier/solution/99999-002/section/roadmap")
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = context.Solutions.Single(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
             solution.RoadMap = null;
             context.SaveChanges();
 
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Marketing.Dashboard
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"));
+            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "002"));
 
             solution.RoadMap.Should().Be(summary);
         }

@@ -261,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
@@ -272,42 +272,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             link.ValidateNotNullOrWhiteSpace(nameof(link));
 
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.IntegrationsUrl = link;
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Features = JsonConvert.SerializeObject(features);
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.IntegrationsUrl = integrationLink;
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveImplementationDetail(CatalogueItemId solutionId, string detail)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ImplementationDetail = detail;
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task SaveRoadMap(CatalogueItemId solutionId, string roadMap)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.RoadMap = roadMap;
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             return solution.GetClientApplication();
         }
 
@@ -315,14 +315,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
             await solutionRepository.SaveChangesAsync();
         }
 
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             return solution.GetHosting();
         }
 
@@ -330,7 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             hosting.ValidateNotNull(nameof(hosting));
 
-            var solution = await solutionRepository.SingleAsync(s => s.Id == solutionId);
+            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = JsonConvert.SerializeObject(hosting);
             await solutionRepository.SaveChangesAsync();
         }
