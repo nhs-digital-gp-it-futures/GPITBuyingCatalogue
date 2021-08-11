@@ -160,7 +160,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var fixture = new Fixture().Customize(new CompositeCustomization(
                 new AutoMoqCustomization(),
-                new CreateSolutionModelCustomization(),
                 new OrderCustomization(),
                 new CallOffIdCustomization(),
                 new CatalogueItemIdCustomization(),
@@ -236,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(SupplierController.Supplier));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(SupplierController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", callOffId } });
-            supplierServiceMock.Verify(s => s.AddOrderSupplier(callOffId, model.SelectedSupplierId), Times.Once);
+            supplierServiceMock.Verify(s => s.AddOrderSupplier(callOffId, model.SelectedSupplierId.Value), Times.Once);
         }
     }
 }

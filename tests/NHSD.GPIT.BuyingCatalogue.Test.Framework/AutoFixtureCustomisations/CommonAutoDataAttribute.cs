@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             : base(() => new Fixture().Customize(
                 new CompositeCustomization(
                     new AutoMoqCustomization(),
-                    new AddSolutionModelCustomization(),
-                    new CreateSolutionModelCustomization(),
                     new CallOffIdCustomization(),
                     new OrderCustomization(),
                     new CatalogueItemIdCustomization(),

@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             await controller.AboutSupplier(id, new Mock<AboutSupplierModel>().Object);
 
             mockService.Verify(
-                s => s.SaveSupplierDescriptionAndLink(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+                s => s.SaveSupplierDescriptionAndLink(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()),
                 Times.Never);
         }
 

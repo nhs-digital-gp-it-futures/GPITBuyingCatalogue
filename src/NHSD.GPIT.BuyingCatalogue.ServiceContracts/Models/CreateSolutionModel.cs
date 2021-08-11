@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public string Name { get; set; }
 
-        public string SupplierId { get; set; }
+        public int SupplierId { get; set; }
 
         public Guid UserId { get; set; }
     }

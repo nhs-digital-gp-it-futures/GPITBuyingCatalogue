@@ -335,17 +335,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
-        public Task<Supplier> GetSupplier(string supplierId)
+        public Task<Supplier> GetSupplier(int supplierId) => supplierRepository.SingleAsync(s => s.Id == supplierId);
+
+        public async Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link)
         {
-            supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
-
-            return supplierRepository.SingleAsync(s => s.Id == supplierId);
-        }
-
-        public async Task SaveSupplierDescriptionAndLink(string supplierId, string description, string link)
-        {
-            supplierId.ValidateNotNullOrWhiteSpace(nameof(supplierId));
-
             var supplier = await supplierRepository.SingleAsync(s => s.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
@@ -383,13 +376,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await marketingContactRepository.SaveChangesAsync();
         }
 
-        public Task<List<CatalogueItem>> GetSupplierSolutions(string supplierId)
+        public Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId)
         {
             return dbContext.CatalogueItems
                 .Include(i => i.Solution)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier)
-                .Where(i => i.SupplierId == supplierId
+                .Where(i => i.SupplierId == supplierId.GetValueOrDefault()
                     && i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(i => i.Name)
@@ -464,7 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return await dbContext.Frameworks.ToListAsync();
         }
 
-        public Task<bool> SupplierHasSolutionName(string supplierId, string solutionName) =>
+        public Task<bool> SupplierHasSolutionName(int supplierId, string solutionName) =>
             catalogueItemRepository.SupplierHasSolutionName(supplierId, solutionName);
     }
 }

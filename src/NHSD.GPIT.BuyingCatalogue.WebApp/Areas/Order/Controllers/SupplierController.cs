@@ -109,7 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            await supplierService.AddOrderSupplier(callOffId, model.SelectedSupplierId);
+            // Model validation ensures that a supplier is selected
+            await supplierService.AddOrderSupplier(callOffId, model.SelectedSupplierId!.Value);
 
             return RedirectToAction(
                 nameof(Supplier),

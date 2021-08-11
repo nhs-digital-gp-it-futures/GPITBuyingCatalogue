@@ -21,10 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(s => s.SupplierId)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .WithMessage("Select a supplier name")
-                .Must(s => int.TryParse(s, out _))
-                .WithMessage("Supplier Id should be a valid integer");
+                .NotNull()
+                .WithMessage("Select a supplier name");
 
             RuleFor(s => s.Frameworks)
                 .Must(frameworks => frameworks.Any(f => f.Selected))
@@ -32,13 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("Select the framework(s) your solution is available from");
 
             When(
-                s => int.TryParse(s.SupplierId, out _) && !string.IsNullOrWhiteSpace(s.SolutionName),
+                s => s.SupplierId.HasValue && !string.IsNullOrWhiteSpace(s.SolutionName),
                 () =>
                 {
                     RuleFor(s => s.SolutionName)
                         .Cascade(CascadeMode.Stop)
                         .MaximumLength(255)
-                        .WithMessage($"Solution name cannot be more than 255 characters")
+                        .WithMessage("Solution name cannot be more than 255 characters")
                         .MustAsync(NotExistForSupplier)
                         .WithMessage("Solution name already exists. Enter a different solution name");
                 });
@@ -47,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         private async Task<bool> NotExistForSupplier(
             AddSolutionModel model,
             string solutionName,
-            CancellationToken arg3) =>
-            !(await solutionsService.SupplierHasSolutionName(model.SupplierId, solutionName));
+            CancellationToken cancellationToken) =>
+            !await solutionsService.SupplierHasSolutionName(model.SupplierId!.Value, solutionName);
     }
 }

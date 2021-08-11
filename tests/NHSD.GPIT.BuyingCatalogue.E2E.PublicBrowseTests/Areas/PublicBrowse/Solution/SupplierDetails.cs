@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public async Task SupplierDetails_VerifySupplierSummary()
         {
             await using var context = GetEndToEndDbContext();
-            var info = (await context.Suppliers.SingleAsync(s => s.Id == "99999")).Summary;
+            var info = (await context.Suppliers.SingleAsync(s => s.Id == 99999)).Summary;
             var supplierInfo = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 
             supplierInfo.Should().Contain(info);

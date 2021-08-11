@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             await using var context = GetEndToEndDbContext();
 
-            var associatedServicesInDb = await context.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Where(c => c.SupplierId == "99999").ToListAsync();
+            var associatedServicesInDb = await context.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Where(c => c.SupplierId == 99999).ToListAsync();
 
             var associatedServicesInTable = PublicBrowsePages.SolutionAction.GetAssociatedServicesNamesFromTable();
 
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             await using var context = GetEndToEndDbContext();
 
-            var associatedServicesInDb = await context.CatalogueItems.Include(s => s.AssociatedService).Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Where(c => c.SupplierId == "99999").ToListAsync();
+            var associatedServicesInDb = await context.CatalogueItems.Include(s => s.AssociatedService).Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Where(c => c.SupplierId == 99999).ToListAsync();
 
             var associatedServicesOnPage = PublicBrowsePages.SolutionAction.GetAssociatedServicesInfo();
 

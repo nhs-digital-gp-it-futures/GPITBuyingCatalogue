@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CatalogueItem
                 {
                     Id = new CatalogueItemId(99999, "001"),
-                    SupplierId = "99999",
+                    SupplierId = 99999,
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Full",
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CatalogueItem
                 {
                     Id = new CatalogueItemId(99999, "002"),
-                    SupplierId = "99999",
+                    SupplierId = 99999,
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "DFOCVC Solution Empty",
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CatalogueItem
                 {
                     Id = new CatalogueItemId(99999, "003"),
-                    SupplierId = "99999",
+                    SupplierId = 99999,
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full",
@@ -307,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CatalogueItem
                 {
                     Id = new CatalogueItemId(99999, "004"),
-                    SupplierId = "99999",
+                    SupplierId = 99999,
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "GPIT Solution Full 2",
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Id = new CatalogueItemId(99999, "005"),
                     PublishedStatus = PublicationStatus.Draft,
                     CatalogueItemType = CatalogueItemType.Solution,
-                    SupplierId = "99999",
+                    SupplierId = 99999,
                     Name = "Editable Solution",
                     Created = DateTime.UtcNow,
                     Solution = new Solution
@@ -433,7 +433,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CatalogueItem
                 {
                     Id = new CatalogueItemId(99997, "001"),
-                    SupplierId = "99997",
+                    SupplierId = 99997,
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "E2E With No Contact Solution",
@@ -539,7 +539,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CatalogueItem
                 {
                     Id = new CatalogueItemId(99998, "001"),
-                    SupplierId = "99998",
+                    SupplierId = 99998,
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "E2E With Contact Multiple Prices",
@@ -702,7 +702,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CatalogueItem
                 {
                     Id = new CatalogueItemId(99998, "002"),
-                    SupplierId = "99998",
+                    SupplierId = 99998,
                     CatalogueItemType = CatalogueItemType.Solution,
                     Created = DateTime.UtcNow,
                     Name = "E2E With Contact With Single Price",

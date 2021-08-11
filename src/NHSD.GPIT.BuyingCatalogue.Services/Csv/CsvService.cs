@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ServiceRecipientId = recipient.Recipient.OdsCode,
                         ServiceRecipientName = recipient.Recipient.Name,
                         ServiceRecipientItemId = $"{order.CallOffId}-{recipient.Recipient.OdsCode}-{itemId}",
-                        SupplierId = order.Supplier.Id,
+                        SupplierId = order.Supplier.Id.ToString(CultureInfo.InvariantCulture),
                         SupplierName = order.Supplier.Name,
                         ProductId = orderItem.CatalogueItemId.ToString(),
                         ProductName = orderItem.CatalogueItem.Name,

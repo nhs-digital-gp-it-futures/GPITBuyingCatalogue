@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public int? OrderingPartyContactId { get; set; }
 
         // TODO: remove
-        public string SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
         public int? SupplierContactId { get; set; }
 

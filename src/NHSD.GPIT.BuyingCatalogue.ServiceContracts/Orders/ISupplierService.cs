@@ -12,9 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             CatalogueItemType? catalogueItemType,
             PublicationStatus? publicationStatus);
 
-        public Task<Supplier> GetSupplierFromBuyingCatalogue(string id);
+        public Task<Supplier> GetSupplierFromBuyingCatalogue(int id);
 
-        public Task AddOrderSupplier(CallOffId callOffId, string supplierId);
+        public Task AddOrderSupplier(CallOffId callOffId, int supplierId);
 
         public Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, Contact contact);
 

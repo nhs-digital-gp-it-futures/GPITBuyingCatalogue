@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles
                 BackLinkText = "Return to all sections",
                 CatalogueItemName = catalogueItem.Name,
                 SolutionId = catalogueItem.Id,
-                SupplierId = catalogueItem.Supplier?.Id,
+                SupplierId = catalogueItem.Supplier?.Id ?? 0,
                 SupplierName = catalogueItem.Supplier?.Name,
             };
 

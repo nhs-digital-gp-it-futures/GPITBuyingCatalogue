@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     {
         public Guid Id { get; set; }
 
-        public string SupplierId { get; set; }
+        public int SupplierId { get; set; }
 
         public string FirstName { get; set; }
 

@@ -373,22 +373,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockSolutionRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Theory]
-        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static async Task GetSupplier_InvalidSupplierId_ThrowsException(string supplierId)
-        {
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.GetSupplier(supplierId));
-
-            actual.ParamName.Should().Be("supplierId");
-        }
-
         [Fact]
         public static async Task SaveSupplier_CallsSaveChangesAsync_OnRepository()
         {
@@ -403,7 +387,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 mockSupplierRepository.Object,
                 Mock.Of<ICatalogueItemRepository>());
 
-            await service.SaveSupplierDescriptionAndLink("100000-001", "Description", "Link");
+            await service.SaveSupplierDescriptionAndLink(100000, "Description", "Link");
 
             mockSupplierRepository.Verify(r => r.SaveChangesAsync());
         }
@@ -445,7 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             var mockCatalogueItemRepository = new Mock<ICatalogueItemRepository>();
             mockCatalogueItemRepository.Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
-                .ReturnsAsync(new CatalogueItemId(int.Parse(model.SupplierId), "045"));
+                .ReturnsAsync(new CatalogueItemId(model.SupplierId, "045"));
 
             var service = new SolutionsService(
                 Mock.Of<BuyingCatalogueDbContext>(),
@@ -464,7 +448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToRepository(
             CreateSolutionModel model)
         {
-            var catalogueItemId = new CatalogueItemId(int.Parse(model.SupplierId), "045");
+            var catalogueItemId = new CatalogueItemId(model.SupplierId, "045");
             var mockCatalogueItemRepository = new Mock<ICatalogueItemRepository>();
             mockCatalogueItemRepository.Setup(c => c.GetLatestCatalogueItemIdFor(model.SupplierId))
                 .ReturnsAsync(catalogueItemId);
@@ -494,7 +478,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static async Task SupplierHasSolutionName_Returns_FromRepository(
-            string supplierId,
+            int supplierId,
             string solutionName,
             Mock<ICatalogueItemRepository> mockCatalogueItemRepository)
         {
