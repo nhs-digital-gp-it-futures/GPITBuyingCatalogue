@@ -25,11 +25,12 @@ BEGIN
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
                  VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 199.99);
-            INSERT INTO catalogue.CatalogueItemCapabilities
-            VALUES (@additionalServiceId, '21AE013D-42A4-4748-B435-73D5887944C2', 1, '2021-05-10 17:22:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
 
             INSERT INTO catalogue.CatalogueItemCapabilities
-            VALUES (@additionalServiceId, 'EFD93D25-447B-4CA3-9D78-108D42AFEAE0', 1, '2021-07-09 09:54:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
+            VALUES (@additionalServiceId, 1, 1, '2021-05-10 17:22:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
+
+            INSERT INTO catalogue.CatalogueItemCapabilities
+            VALUES (@additionalServiceId, 5, 1, '2021-07-09 09:54:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
         END;
     END;
 

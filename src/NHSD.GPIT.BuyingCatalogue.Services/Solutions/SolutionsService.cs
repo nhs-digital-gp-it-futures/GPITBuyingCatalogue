@@ -108,12 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, Guid capabilityId)
+        public async Task<CatalogueItem> GetSolutionCapability(CatalogueItemId catalogueItemId, int capabilityId)
         {
-            catalogueItemId.ValidateNotNull(nameof(catalogueItemId));
-            if (capabilityId == Guid.Empty)
-                throw new ArgumentException($"{nameof(capabilityId)} is empty");
-
             return await dbContext.CatalogueItems
                 .Include(ci => ci.Solution)
                 .Include(ci => ci.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability).ThenInclude(c => c.Epics)
@@ -194,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<CatalogueItem> GetAdditionalServiceCapability(
             CatalogueItemId catalogueItemId,
-            Guid capabilityId)
+            int capabilityId)
         {
             var catalogueItem = await dbContext.CatalogueItems
                 .Include(i => i.Solution)

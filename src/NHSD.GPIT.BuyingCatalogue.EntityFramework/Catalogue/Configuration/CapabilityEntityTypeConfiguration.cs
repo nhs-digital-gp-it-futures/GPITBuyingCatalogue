@@ -10,11 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("Capabilities", Schemas.Catalogue);
 
-            builder.HasKey(c => c.Id)
-                .IsClustered(false);
+            builder.HasKey(c => c.Id);
 
-            builder.HasIndex(c => c.CapabilityRef, "IX_CapabilityCapabilityRef")
-                .IsClustered();
+            builder.HasIndex(c => c.CapabilityRef, "IX_CapabilityCapabilityRef");
 
             builder.Property(c => c.Id).ValueGeneratedNever();
             builder.Property(c => c.CapabilityRef)

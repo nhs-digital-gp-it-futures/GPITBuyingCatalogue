@@ -1,7 +1,7 @@
 ﻿CREATE TABLE catalogue.CatalogueItemCapabilities
 (
      CatalogueItemId nvarchar(14) NOT NULL,
-     CapabilityId uniqueidentifier NOT NULL,
+     CapabilityId int NOT NULL,
      StatusId int NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy uniqueidentifier NOT NULL,

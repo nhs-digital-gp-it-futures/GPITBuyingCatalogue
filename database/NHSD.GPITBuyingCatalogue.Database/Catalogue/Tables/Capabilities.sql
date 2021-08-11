@@ -1,7 +1,7 @@
 ﻿CREATE TABLE catalogue.Capabilities
 (
-     Id uniqueidentifier NOT NULL,
-     CapabilityRef nvarchar(10) NOT NULL,
+     Id int NOT NULL,
+     CapabilityRef AS 'C' + CAST(Id AS nvarchar(3)),
      [Version] nvarchar(10) NOT NULL,
      PreviousVersion nvarchar(10) NULL,
      StatusId int NOT NULL,
@@ -10,8 +10,8 @@
      SourceUrl nvarchar(1000) NULL,
      EffectiveDate date NOT NULL,
      CategoryId int NOT NULL,
-     CONSTRAINT PK_Capability PRIMARY KEY NONCLUSTERED (Id),
+     CONSTRAINT PK_Capability PRIMARY KEY (Id),
      CONSTRAINT FK_Capability_CapabilityCategory FOREIGN KEY (CategoryId) REFERENCES catalogue.CapabilityCategories(Id),
      CONSTRAINT FK_Capability_CapabilityStatus FOREIGN KEY (StatusId) REFERENCES catalogue.CapabilityStatus(Id),
-     INDEX IX_CapabilityCapabilityRef CLUSTERED (CapabilityRef)
+     INDEX IX_CapabilityCapabilityRef (CapabilityRef),
 );

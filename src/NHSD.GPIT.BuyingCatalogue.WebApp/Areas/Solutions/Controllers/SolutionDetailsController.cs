@@ -72,10 +72,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet("futures/{solutionId}/capability/{capabilityId}")]
-        public async Task<IActionResult> CheckEpics(CatalogueItemId solutionId, Guid capabilityId)
+        public async Task<IActionResult> CheckEpics(CatalogueItemId solutionId, int capabilityId)
         {
             var solution = await solutionsService.GetSolutionCapability(solutionId, capabilityId);
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
             var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(
@@ -88,12 +88,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> CheckEpicsAdditionalServices(
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
-            Guid capabilityId)
+            int capabilityId)
         {
             var solution = await solutionsService.GetAdditionalServiceCapability(
                 additionalServiceId,
                 capabilityId);
-            if (solution == null)
+
+            if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId} with Capability Id: {capabilityId}");
 
             var model = mapper.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(

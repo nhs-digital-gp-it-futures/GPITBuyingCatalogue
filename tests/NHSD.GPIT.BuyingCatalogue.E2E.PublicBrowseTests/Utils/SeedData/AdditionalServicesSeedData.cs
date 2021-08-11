@@ -10,9 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
     {
         public static List<CatalogueItem> GetAdditionalServices(IList<CatalogueItem> catalogueSolutions)
         {
-            return new()
+            return new List<CatalogueItem>
             {
-                new CatalogueItem
+                new()
                 {
                     Id = new CatalogueItemId(99999, "001A999"),
                     Name = "Additional service",
@@ -30,10 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {
-                        new CatalogueItemCapability
+                        new()
                         {
                             CatalogueItemId = new CatalogueItemId(99999, "001A999"),
-                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            CapabilityId = 2,
                             LastUpdated = DateTime.UtcNow,
                             LastUpdatedBy = Guid.Empty,
                             StatusId = 1,
@@ -41,24 +41,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     CatalogueItemEpics = new List<CatalogueItemEpic>
                     {
-                        new CatalogueItemEpic
+                        new()
                         {
                             CatalogueItemId = new CatalogueItemId(99999, "001A999"),
-                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            CapabilityId = 2,
                             EpicId = "C2E1",
                             StatusId = 1,
                         },
-                        new CatalogueItemEpic
+                        new()
                         {
                             CatalogueItemId = new CatalogueItemId(99999, "001A999"),
-                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            CapabilityId = 2,
                             EpicId = "C2E2",
                             StatusId = 1,
                         },
-                        new CatalogueItemEpic
+                        new()
                         {
                             CatalogueItemId = new CatalogueItemId(99999, "001A999"),
-                            CapabilityId = new Guid("4F09E77B-E3A3-4A25-8EC1-815921F83628"),
+                            CapabilityId = 2,
                             EpicId = "E123456",
                             StatusId = 1,
                         },

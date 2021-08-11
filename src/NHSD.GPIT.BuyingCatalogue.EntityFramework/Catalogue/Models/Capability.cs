@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             Epics = new HashSet<Epic>();
         }
 
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public string CapabilityRef { get; set; }
 
