@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         };
 
         public Interoperability(LocalWebApplicationFactory factory)
-            : base(factory, typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.Interoperability), Parameters)
+            : base(factory, typeof(InteroperabilityController), nameof(InteroperabilityController.Interoperability), Parameters)
         {
         }
 

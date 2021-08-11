@@ -194,25 +194,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             mockMarketingContactRepository.Verify(r => r.SaveChangesAsync());
         }
 
-        [Fact]
-        public static async Task SaveIntegrationLink_CallsSaveChangesAsync_OnRepository()
-        {
-            var mockSolutionRepository = new Mock<IDbRepository<Solution, BuyingCatalogueDbContext>>();
-            mockSolutionRepository.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<Solution, bool>>>()))
-                .ReturnsAsync(new Solution());
-
-            var service = new SolutionsService(
-                Mock.Of<BuyingCatalogueDbContext>(),
-                Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
-                mockSolutionRepository.Object,
-                Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
-
-            await service.SaveIntegrationLink(new CatalogueItemId(100000, "001"), "A link");
-
-            mockSolutionRepository.Verify(r => r.SaveChangesAsync());
-        }
-
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static async Task SaveSolutionDescription_InvalidSummary_ThrowsException(string summary)

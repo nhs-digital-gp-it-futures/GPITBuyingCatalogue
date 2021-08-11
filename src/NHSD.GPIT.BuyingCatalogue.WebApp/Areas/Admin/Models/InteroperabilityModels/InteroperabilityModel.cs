@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
 {
-    public class InteroperabilityModel : NavBaseModel
+    public sealed class InteroperabilityModel : NavBaseModel
     {
         public InteroperabilityModel()
         {
@@ -20,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         }
 
         public string SolutionName { get; set; }
+
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public Integration[] IM1Integrations { get; set; }
 
@@ -40,12 +43,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
             var integrations = catalogueItem.Solution?.GetIntegrations();
 
-            IM1Integrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase("IM1")).ToArray();
+            IM1Integrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.IM1IntegrationType)).ToArray();
             IM1IntegrationQualifiers = IM1Integrations.Select(i => i.Qualifier).Distinct().ToArray();
-            GpConnectIntegrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase("GP Connect")).ToArray();
+            GpConnectIntegrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.GpConnectIntegrationType)).ToArray();
             GpConnectIntegrationQualifiers = GpConnectIntegrations.Select(i => i.Qualifier).Distinct().ToArray();
             Link = catalogueItem.Solution?.IntegrationsUrl;
             SolutionName = catalogueItem.Name;
+            CatalogueItemId = catalogueItem.Id;
             BackLinkText = "Go back";
         }
     }

@@ -1,7 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
@@ -32,21 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullMapper_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutSolutionController(
-                        null,
-                        Mock.Of<ISolutionsService>()));
-        }
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(AboutSolutionController).GetConstructors();
 
-        [Fact]
-        public static void Constructor_NullSolutionService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _ = new AboutSolutionController(
-                        Mock.Of<IMapper>(),
-                        null));
+            assertion.Verify(constructors);
         }
 
         [Fact]
@@ -67,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Features(id);
 
@@ -82,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Features(id)).As<BadRequestObjectResult>();
 
@@ -100,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Features(id);
 
@@ -120,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Setup(x => x.Map<CatalogueItem, FeaturesModel>(mockCatalogueItem))
                 .Returns(mockFeaturesModel);
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Features(id)).As<ViewResult>();
 
@@ -147,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             await controller.Features(id, new Mock<FeaturesModel>().Object);
@@ -162,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockFeaturesModel = new Mock<FeaturesModel>().Object;
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var actual = (await controller.Features(id, mockFeaturesModel)).As<ViewResult>();
@@ -179,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockFeaturesModel = new Mock<FeaturesModel>().Object;
             var mockMapper = new Mock<IMapper>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, Mock.Of<ISolutionsService>());
+                mockMapper.Object, Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
 
             await controller.Features(id, mockFeaturesModel);
 
@@ -198,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(features);
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Features(id, model);
 
@@ -217,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .Returns(features);
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Features(id, model)).As<RedirectToActionResult>();
 
@@ -245,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Implementation(id);
 
@@ -261,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Implementation(id)).As<BadRequestObjectResult>();
 
@@ -279,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Implementation(id);
 
@@ -299,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Setup(x => x.Map<CatalogueItem, ImplementationTimescalesModel>(mockCatalogueItem))
                 .Returns(mockImplementationTimescalesModel);
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Implementation(id)).As<ViewResult>();
 
@@ -326,7 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             await controller.Implementation(id, new Mock<ImplementationTimescalesModel>().Object);
@@ -341,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockImplementationTimescalesModel = new Mock<ImplementationTimescalesModel>().Object;
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var actual = (await controller.Implementation(id, mockImplementationTimescalesModel))
@@ -360,7 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Implementation(id, model);
 
@@ -374,7 +368,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             ImplementationTimescalesModel model)
         {
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Implementation(id, model)).As<RedirectToActionResult>();
 
@@ -402,7 +396,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Integrations(id);
 
@@ -417,7 +411,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolution(id)).ReturnsAsync(default(CatalogueItem));
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Integrations(id)).As<BadRequestObjectResult>();
 
@@ -434,7 +428,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id)).ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.Integrations(id);
 
@@ -454,7 +448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Setup(m => m.Map<CatalogueItem, IntegrationsModel>(mockCatalogueItem))
                 .Returns(mockIntegrationsModel);
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Integrations(id)).As<ViewResult>();
 
@@ -481,7 +475,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             await controller.Integrations(id, new Mock<IntegrationsModel>().Object);
@@ -496,7 +490,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockIntegrationsModel = new Mock<IntegrationsModel>().Object;
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var actual = (await controller.Integrations(id, mockIntegrationsModel)).As<ViewResult>();
@@ -512,9 +506,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             [Frozen] CatalogueItemId id,
             IntegrationsModel model)
         {
-            var mockService = new Mock<ISolutionsService>();
+            var mockService = new Mock<IInteroperabilityService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), mockService.Object);
 
             await controller.Integrations(id, model);
 
@@ -528,7 +522,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             IntegrationsModel model)
         {
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.Integrations(id, model)).As<RedirectToActionResult>();
 
@@ -544,7 +538,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.RoadMap(id);
 
@@ -560,7 +554,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.RoadMap(id)).As<BadRequestObjectResult>();
 
@@ -578,7 +572,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.RoadMap(id);
 
@@ -598,7 +592,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Setup(x => x.Map<CatalogueItem, RoadmapModel>(mockCatalogueItem))
                 .Returns(mockRoadmapModel);
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.RoadMap(id)).As<ViewResult>();
 
@@ -613,7 +607,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             await controller.RoadMap(id, new Mock<RoadmapModel>().Object);
@@ -628,7 +622,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockRoadmapModel = new Mock<RoadmapModel>().Object;
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var actual = (await controller.RoadMap(id, mockRoadmapModel)).As<ViewResult>();
@@ -644,7 +638,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.RoadMap(id, model);
 
@@ -658,7 +652,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             RoadmapModel model)
         {
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.RoadMap(id, model)).As<RedirectToActionResult>();
 
@@ -686,7 +680,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.SolutionDescription(id);
 
@@ -701,7 +695,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockService.Setup(s => s.GetSolution(id))
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.SolutionDescription(id)).As<BadRequestObjectResult>();
 
@@ -719,7 +713,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var mockMapper = new Mock<IMapper>();
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.SolutionDescription(id);
 
@@ -739,7 +733,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             mockMapper.Setup(x => x.Map<CatalogueItem, SolutionDescriptionModel>(catalogueItem))
                 .Returns(mockSolutionDescriptionModel);
             var controller = new AboutSolutionController(
-                mockMapper.Object, mockService.Object);
+                mockMapper.Object, mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.SolutionDescription(id)).As<ViewResult>();
 
@@ -766,7 +760,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             await controller.SolutionDescription(id, new Mock<SolutionDescriptionModel>().Object);
@@ -781,7 +775,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockSolutionDescriptionModel = new Mock<SolutionDescriptionModel>().Object;
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>(), Mock.Of<ISolutionsService>(), Mock.Of<IInteroperabilityService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var actual = (await controller.SolutionDescription(id, mockSolutionDescriptionModel)).As<ViewResult>();
@@ -799,7 +793,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             await controller.SolutionDescription(id, model);
 
@@ -814,7 +808,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
         {
             var mockService = new Mock<ISolutionsService>();
             var controller = new AboutSolutionController(
-                Mock.Of<IMapper>(), mockService.Object);
+                Mock.Of<IMapper>(), mockService.Object, Mock.Of<IInteroperabilityService>());
 
             var actual = (await controller.SolutionDescription(id, model)).As<RedirectToActionResult>();
 

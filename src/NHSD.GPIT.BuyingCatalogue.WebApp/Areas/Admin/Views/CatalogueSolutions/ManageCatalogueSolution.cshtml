@@ -1,4 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageCatalogueSolutionModel;
 @section Breadcrumbs {
     <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
@@ -100,7 +102,7 @@
                     <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="Interoperability" asp-controller="CatalogueSolutions"
+                        <a asp-action="@nameof(InteroperabilityController.Interoperability)" asp-controller="@typeof(InteroperabilityController).ControllerName()"
                             asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
