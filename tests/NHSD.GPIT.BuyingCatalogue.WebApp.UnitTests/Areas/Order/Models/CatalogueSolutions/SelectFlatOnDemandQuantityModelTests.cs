@@ -30,17 +30,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             model.EstimationPeriod.Should().Be(estimationPeriod);
         }
 
+        [Fact]
+        public static void GetQuantity_QuantityMustBeANumber()
+        {
+            var model = new SelectFlatOnDemandQuantityModel { Quantity = "ABC" };
+
+            (_, string error) = model.GetQuantity();
+
+            error.Should().Be("Quantity must be a number");
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("ABC")]
-        public static void GetQuantity_QuantityMustBeANumber(string quantity)
+        public static void GetQuantity_ReturnsNullWhenStringIsNullOrEmpty(string quantity)
         {
             var model = new SelectFlatOnDemandQuantityModel { Quantity = quantity };
 
             (_, string error) = model.GetQuantity();
 
-            error.Should().Be("Quantity must be a number");
+            error.Should().BeNull();
         }
 
         [Theory]
