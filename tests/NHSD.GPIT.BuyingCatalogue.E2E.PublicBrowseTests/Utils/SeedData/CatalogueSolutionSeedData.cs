@@ -651,7 +651,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
                             {
-                                Id = Guid.NewGuid(),
+                                Id = 1,
                                 Name = "Test Pricing Patient",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
                             {
-                                Id = Guid.NewGuid(),
+                                Id = 2,
                                 Name = "Test Pricing On Demand",
                                 TierName = "Test Tier",
                                 Description = "per test on demand",
@@ -687,7 +687,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CataloguePriceType = CataloguePriceType.Flat,
                             PricingUnit = new PricingUnit
                             {
-                                Id = Guid.NewGuid(),
+                                Id = 3,
                                 Name = "Test Pricing Declarative",
                                 TierName = "Test Tier",
                                 Description = "per test declarative",
@@ -789,7 +789,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
                         {
-                            new MarketingContact
+                            new()
                             {
                                 FirstName = "Bob",
                                 LastName = "Smith",
@@ -809,9 +809,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99998, "002"),
                             ProvisioningType = ProvisioningType.Declarative,
                             CataloguePriceType = CataloguePriceType.Flat,
-                            PricingUnit = new()
+                            PricingUnit = new PricingUnit
                             {
-                                Id = Guid.NewGuid(),
+                                Id = 4,
                                 Name = "Test Pricing",
                                 TierName = "Test Tier",
                                 Description = "Per Test",

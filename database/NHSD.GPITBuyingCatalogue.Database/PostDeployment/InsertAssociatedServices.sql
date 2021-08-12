@@ -7,9 +7,9 @@ DECLARE @onDemand AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Na
 DECLARE @flat AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Flat');
 DECLARE @tiered AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Tiered');
 
-DECLARE @hour AS uniqueidentifier = (SELECT Id FROM catalogue.PricingUnits WHERE [Name] = 'hour');
-DECLARE @course AS uniqueidentifier = (SELECT Id FROM catalogue.PricingUnits WHERE [Name] = 'course');
-DECLARE @halfDay AS uniqueidentifier = (SELECT Id FROM catalogue.PricingUnits WHERE [Name] = 'halfDay');
+DECLARE @halfDay AS smallint = -6;
+DECLARE @hour AS smallint = -7;
+DECLARE @course AS smallint = -8;
 
 DECLARE @associatedServiceItemType AS int = (SELECT Id FROM catalogue.CatalogueItemTypes WHERE [Name] = 'Associated Service');
 DECLARE @publishedStatus AS int = (SELECT Id FROM catalogue.PublicationStatus WHERE [Name] = 'Published');

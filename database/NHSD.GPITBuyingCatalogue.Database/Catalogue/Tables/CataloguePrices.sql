@@ -4,7 +4,7 @@
     CatalogueItemId nvarchar(14) NOT NULL,
     ProvisioningTypeId int NOT NULL,
     CataloguePriceTypeId int NOT NULL,
-    PricingUnitId uniqueidentifier NOT NULL,
+    PricingUnitId smallint NOT NULL,
     TimeUnitId int NULL,
     CurrencyCode nvarchar(3) NOT NULL,
     LastUpdated datetime2(7) NOT NULL,

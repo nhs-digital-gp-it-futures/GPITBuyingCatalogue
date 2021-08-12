@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public CatalogueItemId CatalogueItemId { get; set; }
 
         // TODO: remove
-        public Guid PricingUnitId { get; set; }
+        public short PricingUnitId { get; set; }
 
         public string CurrencyCode { get; set; }
 

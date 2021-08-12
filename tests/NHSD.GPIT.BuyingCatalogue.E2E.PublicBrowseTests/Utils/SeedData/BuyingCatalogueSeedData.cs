@@ -50,9 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     CatalogueItemId = new CatalogueItemId(99999, "001"),
                     CataloguePriceType = CataloguePriceType.Flat,
-                    PricingUnit = new()
+                    PricingUnit = new PricingUnit
                     {
-                        Id = Guid.NewGuid(),
+                        Id = -1,
                         TierName = "patient",
                         Name = "patient",
                         Description = "per patient",
@@ -67,9 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 {
                     CatalogueItemId = new CatalogueItemId(99999, "-S-999"),
                     CataloguePriceType = CataloguePriceType.Flat,
-                    PricingUnit = new()
+                    PricingUnit = new PricingUnit
                     {
-                        Id = Guid.NewGuid(),
+                        Id = -2,
                         TierName = "thing",
                         Name = "thing",
                         Description = "per thing",
