@@ -79,7 +79,7 @@
 
             <h3>GP Connect integrations</h3>
 
-            <vc:nhs-action-link url="#" text="Add a GP Connect integration" />
+            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddGpConnectIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add a GP Connect integration" />
 
             <p>
                 Use the links to add information on each of the GP Connect integrations your Catalogue Solution works with.
