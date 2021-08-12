@@ -639,28 +639,34 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
     DECLARE @monthTimeUnit AS int = 1;
     DECLARE @yearTimeUnit AS int = 2;
 
+    DECLARE @patient AS smallint = -1;
+    DECLARE @bed AS smallint = -2;
+    DECLARE @consultation AS smallint = -3;
+    DECLARE @licence AS smallint = -4;
+    DECLARE @sms AS smallint = -5;
+
     /* Insert prices */
     IF NOT EXISTS (SELECT * FROM catalogue.CataloguePrices)
     BEGIN
      INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
-          VALUES ('100000-001', @patientProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, 99.99),
-                 ('100000-001', @patientProvisioningType, @tieredPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, NULL),
-                 ('100000-001', @onDemandProvisioningType, @flatPriceType, '774E5A1D-D15C-4A37-9990-81861BEAE42B', NULL, 'GBP', @now, 1001.010),
-                 ('100001-001', @onDemandProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', NULL, 'GBP', @now, 3.142),
-                 ('100002-001', @declarativeProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @monthTimeUnit, 'GBP', @now, 4.85),
-                 ('100002-001', @declarativeProvisioningType, @tieredPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @monthTimeUnit, 'GBP', @now, NULL),
-                 ('100003-001', @declarativeProvisioningType, @flatPriceType, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', @monthTimeUnit, 'GBP', @now, 19.987),
-                 ('100004-001', @declarativeProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @monthTimeUnit, 'GBP', @now, 10101.65),
-                 ('100005-001', @onDemandProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', NULL, 'GBP', @now, 456),
-                 ('100006-001', @declarativeProvisioningType, @flatPriceType, '90119522-D381-4296-82EE-8FE630593B56', @monthTimeUnit, 'GBP', @now, 7),
-                 ('100007-001', @onDemandProvisioningType, @flatPriceType, '90119522-D381-4296-82EE-8FE630593B56', NULL, 'GBP', @now, 0.15),
-                 ('100007-002', @onDemandProvisioningType, @tieredPriceType, '90119522-D381-4296-82EE-8FE630593B56', NULL, 'GBP', @now, NULL),
-                 ('99998-98', @patientProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, 30000),
-                 ('99998-98', @patientProvisioningType, @tieredPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, NULL),
-                 ('99999-01', @patientProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, 1.25),
-                 ('99999-02', @patientProvisioningType, @flatPriceType, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', @yearTimeUnit, 'GBP', @now, 1.55),
-                 ('99999-89', @patientProvisioningType, @flatPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, 500.49),
-                 ('99999-89', @patientProvisioningType, @tieredPriceType, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', @yearTimeUnit, 'GBP', @now, NULL);
+          VALUES ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 99.99),
+                 ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, 'GBP', @now, NULL),
+                 ('100000-001', @onDemandProvisioningType, @flatPriceType, @consultation, NULL, 'GBP', @now, 1001.010),
+                 ('100001-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 3.142),
+                 ('100002-001', @declarativeProvisioningType, @flatPriceType, @patient, @monthTimeUnit, 'GBP', @now, 4.85),
+                 ('100002-001', @declarativeProvisioningType, @tieredPriceType, @patient, @monthTimeUnit, 'GBP', @now, NULL),
+                 ('100003-001', @declarativeProvisioningType, @flatPriceType, @bed, @monthTimeUnit, 'GBP', @now, 19.987),
+                 ('100004-001', @declarativeProvisioningType, @flatPriceType, @licence, @monthTimeUnit, 'GBP', @now, 10101.65),
+                 ('100005-001', @onDemandProvisioningType, @flatPriceType, @licence, NULL, 'GBP', @now, 456),
+                 ('100006-001', @declarativeProvisioningType, @flatPriceType, @sms, @monthTimeUnit, 'GBP', @now, 7),
+                 ('100007-001', @onDemandProvisioningType, @flatPriceType, @sms, NULL, 'GBP', @now, 0.15),
+                 ('100007-002', @onDemandProvisioningType, @tieredPriceType, @sms, NULL, 'GBP', @now, NULL),
+                 ('99998-98', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 30000),
+                 ('99998-98', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, 'GBP', @now, NULL),
+                 ('99999-01', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.25),
+                 ('99999-02', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, 'GBP', @now, 1.55),
+                 ('99999-89', @patientProvisioningType, @flatPriceType, @licence, @yearTimeUnit, 'GBP', @now, 500.49),
+                 ('99999-89', @patientProvisioningType, @tieredPriceType, @licence, @yearTimeUnit, 'GBP', @now, NULL);
 
           -- Tiered price IDs
           DECLARE @priceId1000001 AS int = (SELECT CataloguePriceId from catalogue.CataloguePrices WHERE CatalogueItemId = '100000-001' AND CataloguePriceTypeId = @tieredPriceType);
