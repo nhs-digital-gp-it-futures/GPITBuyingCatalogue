@@ -62,7 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
                 CommencementDate = new System.DateTime(2111, 1, 1),
                 CatalogueItemName = "E2E With Contact Multiple Prices",
                 CataloguePrice = price,
-                ServiceRecipients = new()
+                ServiceRecipients =
+                new List<OrderItemRecipientModel>
                 {
                     new()
                     {
