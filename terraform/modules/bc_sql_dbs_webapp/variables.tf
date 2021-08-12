@@ -25,3 +25,16 @@ variable "sql_edition" {
 variable "sql_size" {
   type = string
 }
+variable "region_replica" {
+  type = string
+}
+variable "rg_replica_name" {
+  type = string
+}
+variable "sqlsvr_replica_name" {
+  type = string
+}
+
+variable "enable_replica" {
+  type = number
+}

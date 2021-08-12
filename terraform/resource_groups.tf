@@ -25,15 +25,14 @@ resource "azurerm_resource_group" "keyvault" {
   }
 }
 
-resource "azurerm_resource_group" "sql-primary" {
-  name           = "${var.project}-${var.environment}-rg-sql-primary"
+resource "azurerm_resource_group" "sql-server" {
+  name           = "${var.project}-${var.environment}-rg-sql-server"
   location       = var.region
   tags = {
     environment  = var.environment,
     architecture = "new"
   }
 }
-
 resource "azurerm_resource_group" "app-insights" {
   name           = "${var.project}-${var.environment}-rg-appinsights"
   location       = var.region
