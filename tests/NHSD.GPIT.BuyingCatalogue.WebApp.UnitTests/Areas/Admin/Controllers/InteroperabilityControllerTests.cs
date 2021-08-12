@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             Integration savedIntegration = null;
             mockInteroperabilityService.Setup(s => s.AddIntegration(It.IsAny<CatalogueItemId>(), It.IsAny<Integration>()))
-                .Callback<CatalogueItemId, Integration>((a1,a2) => { savedIntegration = a2; });
+                .Callback<CatalogueItemId, Integration>((a1, a2) => { savedIntegration = a2; });
 
             var actual = (await controller.AddIm1Integration(catalogueItemId, model)).As<RedirectToActionResult>();
 

@@ -6,8 +6,8 @@
 
         public const string GpConnectIntegrationType = "GP Connect";
 
-        public const string Consumer = "Consumer";
+        public const string Consumer = nameof(Consumer);
 
-        public const string Provider = "Provider";
+        public const string Provider = nameof(Provider);
     }
 }

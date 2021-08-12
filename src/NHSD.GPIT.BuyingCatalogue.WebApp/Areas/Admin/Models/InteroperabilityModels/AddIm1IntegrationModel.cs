@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
@@ -8,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
     {
         public AddIm1IntegrationModel()
         {
-            BackLink = "./";
             BackLinkText = "Go back";
 
             IntegrationTypes = new List<object>
@@ -23,6 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
                 new { Text = Framework.Constants.Interoperability.Provider, Value = Framework.Constants.Interoperability.Provider },
                 new { Text = Framework.Constants.Interoperability.Consumer, Value = Framework.Constants.Interoperability.Consumer },
             };
+        }
+
+        public AddIm1IntegrationModel(CatalogueItemId solutionId)
+            : base()
+        {
+            BackLink = $"/admin/catalogue-solutions/manage/{solutionId}/interoperability";
         }
 
         public IEnumerable<object> IntegrationTypes { get; }

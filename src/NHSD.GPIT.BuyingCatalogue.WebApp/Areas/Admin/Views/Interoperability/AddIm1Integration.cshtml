@@ -11,7 +11,8 @@
             <nhs-page-title title="@ViewData["Title"]"
                             caption="Provide the following information about the NHS assured integrations your Catalogue Solution works with." />
 
-            <form method="post">                
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Integration type">
                     <nhs-radio-buttons asp-for="@Model.SelectedIntegrationType"

@@ -20,12 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveIntegrationLink_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
-            string integrationLink)
+            string integrationLink,
+            InteroperabilityService service)
         {
             context.Solutions.Add(solution);
             context.SaveChanges();
 
-            var service = new InteroperabilityService(context);
             await service.SaveIntegrationLink(solution.CatalogueItemId, integrationLink);
 
             var updatedSolution = await context.Solutions.SingleAsync();
@@ -38,14 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
            [Frozen] BuyingCatalogueDbContext context,
            Solution solution,
            List<Integration> currentIntegrations,
-           Integration newIntegration)
+           Integration newIntegration,
+           InteroperabilityService service)
         {
             solution.Integrations = JsonConvert.SerializeObject(currentIntegrations);
 
             context.Solutions.Add(solution);
             context.SaveChanges();
-
-            var service = new InteroperabilityService(context);
 
             await service.AddIntegration(solution.CatalogueItemId, newIntegration);
             var updatedSolution = await context.Solutions.SingleAsync();
