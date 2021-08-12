@@ -344,7 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
 
-           CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage("PrimaryContact.Email", "The Email field is not a valid e-mail address.").Should().BeTrue();

@@ -1,0 +1,42 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddIm1IntegrationModel;
+@{
+    ViewData["Title"] = "Add an IM1 integration";
+}
+
+<div class="nhsuk-width-container">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@ViewData["Title"]"
+                            caption="Provide the following information about the NHS assured integrations your Catalogue Solution works with." />
+
+            <form method="post">
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Integration type">
+                    <nhs-radio-buttons asp-for="@Model.SelectedIntegrationType"
+                                       values="@Model.IntegrationTypes"
+                                       value-name="Value"
+                                       display-name="Text" />
+                </nhs-fieldset-form-label>
+                
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Provider or consumer">
+                    <nhs-radio-buttons asp-for="@Model.SelectedProviderOrConsumer"
+                                       values="@Model.ProviderConsumerTypes"
+                                       value-name="Value"
+                                       display-name="Text" />
+                </nhs-fieldset-form-label>
+
+                <nhs-input asp-for="IntegratesWith"
+                           label-text="System integrating with" character-count="true" />
+
+                <nhs-textarea asp-for="Description"
+                              label-text="Description" />
+
+                <nhs-submit-button text="Save and continue" />
+            </form>
+        </div>
+    </div>
+</div>

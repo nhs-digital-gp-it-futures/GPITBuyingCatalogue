@@ -18,13 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
     {
         private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
+        private readonly IInteroperabilityService interoperabilityService;
 
         public AboutSolutionController(
             IMapper mapper,
-            ISolutionsService solutionsService)
+            ISolutionsService solutionsService,
+            IInteroperabilityService interoperabilityService)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.interoperabilityService = interoperabilityService ?? throw new ArgumentNullException(nameof(interoperabilityService));
         }
 
         [HttpGet("features")]
@@ -93,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await solutionsService.SaveIntegrationLink(solutionId, model.Link);
+            await interoperabilityService.SaveIntegrationLink(solutionId, model.Link);
 
             return RedirectToAction(
                 nameof(SolutionController.Index),

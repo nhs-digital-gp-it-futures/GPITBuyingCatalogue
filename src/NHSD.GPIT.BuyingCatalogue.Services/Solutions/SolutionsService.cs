@@ -264,26 +264,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await solutionRepository.SaveChangesAsync();
         }
 
-        public async Task SaveInteroperabilityLink(CatalogueItemId solutionId, string link)
-        {
-            link.ValidateNotNullOrWhiteSpace(nameof(link));
-
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.IntegrationsUrl = link;
-            await solutionRepository.SaveChangesAsync();
-        }
-
         public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.Features = JsonConvert.SerializeObject(features);
-            await solutionRepository.SaveChangesAsync();
-        }
-
-        public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
-        {
-            var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
-            solution.IntegrationsUrl = integrationLink;
             await solutionRepository.SaveChangesAsync();
         }
 
