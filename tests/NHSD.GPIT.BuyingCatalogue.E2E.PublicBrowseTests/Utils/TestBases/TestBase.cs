@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Marketing;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using OpenQA.Selenium;
@@ -54,6 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal Actions.Common.CommonActions CommonActions { get; }
 
         internal SessionHandler Session { get; private set; }
+
+        internal MemoryCacheHandler MemoryCache { get; private set; }
 
         internal WebDriverWait Wait { get; }
 
@@ -155,6 +158,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 Factory.GetDistributedCache,
                 Factory.Driver,
                 Factory.GetLoggerFactory);
+        }
+
+        internal void InitializeMemoryCacheHander(string odsCode)
+        {
+            MemoryCache = new MemoryCacheHandler(
+                Factory.GetMemoryCache,
+                odsCode);
         }
 
         internal Task DisposeSession()

@@ -38,6 +38,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutions
 
         public (int? Quantity, string Error) GetQuantity()
         {
+            if (string.IsNullOrEmpty(Quantity))
+                return (null, null);
+
             if (!int.TryParse(Quantity, out int quantity))
                 return (null, "Quantity must be a number");
 

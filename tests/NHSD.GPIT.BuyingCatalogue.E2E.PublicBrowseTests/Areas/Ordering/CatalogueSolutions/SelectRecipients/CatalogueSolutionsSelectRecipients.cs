@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -49,11 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 .Should()
                 .BeTrue();
 
-            Factory.GetMemoryCache.TryGetValue(
-                $"ServiceRecipients-ODS-{OdsCode}",
-                out IEnumerable<ServiceContracts.Models.ServiceRecipient> cachedResults);
+            var serviceRecipients = MemoryCache.GetServiceRecipients();
 
-            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(cachedResults.Count());
+            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(serviceRecipients.Count());
         }
 
         [Fact]
@@ -118,9 +116,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 "Select all").Should().BeTrue();
         }
 
+        [Fact]
+        public void CatalogueSolutionsSelectRecipient_SelectRecipient_ExpectedResult()
+        {
+            CommonActions.ClickFirstCheckbox();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionRecipientsDateController),
+                nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate))
+                .Should()
+                .BeTrue();
+        }
+
         public Task InitializeAsync()
         {
             InitializeSessionHandler();
+
+            InitializeMemoryCacheHander(OdsCode);
 
             using var context = GetEndToEndDbContext();
             var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 1);
@@ -131,6 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 CatalogueItemId = CatalogueItemId,
                 CatalogueItemName = "E2E With Contact Multiple Prices",
                 CataloguePrice = price,
+                IsNewSolution = true,
             };
 
             Session.SetOrderStateToSessionAsync(model);

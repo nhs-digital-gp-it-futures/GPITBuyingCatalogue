@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "bat.man@Gotham.Fake",
                     Phone = "123456789",
                 },
-                CommencementDate = DateTime.UtcNow.AddDays(1),
+                CommencementDate = timeNow.AddDays(1),
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
