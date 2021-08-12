@@ -27,17 +27,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (await organisationRepository.GetAllAsync(o => true)).OrderBy(o => o.Name).ToList();
         }
 
-        public async Task<(Guid OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
+        public async Task<(int OrganisationId, string Error)> AddOdsOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
         {
             var persistedOrganisation = await organisationRepository.GetAllAsync(o => o.OdsCode == odsOrganisation.OdsCode);
 
             if (persistedOrganisation.Any())
-                return (Guid.Empty, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
+                return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
 
             var organisation = new Organisation
             {
                 Address = odsOrganisation.Address,
-                Id = Guid.NewGuid(),
                 CatalogueAgreementSigned = agreementSigned,
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
@@ -52,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (organisation.Id, null);
         }
 
-        public async Task<Organisation> GetOrganisation(Guid id)
+        public async Task<Organisation> GetOrganisation(int id)
         {
             return await organisationRepository.SingleAsync(o => o.Id == id);
         }
@@ -67,14 +66,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (await organisationRepository.GetAllAsync(o => odsCodes.Contains(o.OdsCode))).OrderBy(o => o.Name).ToList();
         }
 
-        public async Task UpdateCatalogueAgreementSigned(Guid organisationId, bool signed)
+        public async Task UpdateCatalogueAgreementSigned(int organisationId, bool signed)
         {
             var organisation = await organisationRepository.SingleAsync(o => o.Id == organisationId);
             organisation.CatalogueAgreementSigned = signed;
             await organisationRepository.SaveChangesAsync();
         }
 
-        public async Task<List<Organisation>> GetUnrelatedOrganisations(Guid organisationId)
+        public async Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId)
         {
             // TODO - should be able to combine this into a single query
             var allOrganisations = await GetAllOrganisations();
@@ -82,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return allOrganisations.Where(o => relatedOrganisations.All(ro => ro.Id != o.Id)).OrderBy(o => o.Name).ToList();
         }
 
-        public async Task<List<Organisation>> GetRelatedOrganisations(Guid organisationId)
+        public async Task<List<Organisation>> GetRelatedOrganisations(int organisationId)
         {
             var organisation = await dbContext.Organisations
                 .Include(o => o.RelatedOrganisationOrganisations)
@@ -92,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return organisation.RelatedOrganisationOrganisations.Select(ro => ro.RelatedOrganisationNavigation).OrderBy(o => o.Name).ToList();
         }
 
-        public async Task AddRelatedOrganisations(Guid organisationId, Guid relatedOrganisationId)
+        public async Task AddRelatedOrganisations(int organisationId, int relatedOrganisationId)
         {
             var organisation = await dbContext.Organisations
                 .Include(o => o.RelatedOrganisationOrganisations)
@@ -107,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveRelatedOrganisations(Guid organisationId, Guid relatedOrganisationId)
+        public async Task RemoveRelatedOrganisations(int organisationId, int relatedOrganisationId)
         {
             var organisation = await dbContext.Organisations
                 .Include(o => o.RelatedOrganisationOrganisations)

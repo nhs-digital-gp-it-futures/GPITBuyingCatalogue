@@ -3,7 +3,7 @@
     Id int IDENTITY(10001, 1) NOT NULL,
     CallOffId AS CONCAT('C', FORMAT(Id, '000000'), '-01'),
     [Description] nvarchar(100) NOT NULL,
-    OrderingPartyId uniqueidentifier NOT NULL,
+    OrderingPartyId int NOT NULL,
     OrderingPartyContactId int NULL,
     SupplierId int NULL,
     SupplierContactId int NULL,

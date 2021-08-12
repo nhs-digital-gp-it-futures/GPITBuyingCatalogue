@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<IList<Order>> GetOrders(Guid organisationId)
+        public async Task<IList<Order>> GetOrders(int organisationId)
         {
             return await dbContext.Organisations
                 .Where(o => o.Id == organisationId)

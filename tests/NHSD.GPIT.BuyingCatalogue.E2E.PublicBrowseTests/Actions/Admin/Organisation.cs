@@ -54,9 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             Driver.FindElement(Objects.Admin.OrganisationObjects.AddRelatedOrgButton).Click();
         }
 
-        internal RelatedOrg GetRelatedOrganisation(Guid orgId)
+        internal RelatedOrg GetRelatedOrganisation(int orgId)
         {
-            var relatedOrg = new RelatedOrg()
+            var relatedOrg = new RelatedOrg
             {
                 OrganisationId = orgId,
                 OrganisationName = Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrgTableOrgName(orgId)).Text,
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             return relatedOrg;
         }
 
-        internal void RemoveRelatedOrganisation(Guid relatedOrgId)
+        internal void RemoveRelatedOrganisation(int relatedOrgId)
         {
             Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrganisationRemove(relatedOrgId)).Click();
 

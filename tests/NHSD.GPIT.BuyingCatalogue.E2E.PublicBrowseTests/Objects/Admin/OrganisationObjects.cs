@@ -20,11 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By RelatedOrganisationRemoveConfirm => ByExtensions.DataTestId("submit-button", "button");
 
-        internal static By RelatedOrgTableOrgName(Guid orgId) => ByExtensions.DataTestId($"related-org-name-{orgId}");
+        internal static By RelatedOrgTableOrgName(int orgId) => ByExtensions.DataTestId($"related-org-name-{orgId}");
 
-        internal static By RelatedOrgTableOdsCode(Guid orgId) => ByExtensions.DataTestId($"related-org-odsCode-{orgId}");
+        internal static By RelatedOrgTableOdsCode(int orgId) => ByExtensions.DataTestId($"related-org-odsCode-{orgId}");
 
-        internal static By RelatedOrganisationRemove(Guid orgId) => ByExtensions.DataTestId($"related-org-remove-{orgId}");
+        internal static By RelatedOrganisationRemove(int orgId) => ByExtensions.DataTestId($"related-org-remove-{orgId}");
 
         internal static By UserName(Guid id) => ByExtensions.DataTestId($"user-name-{id}");
     }

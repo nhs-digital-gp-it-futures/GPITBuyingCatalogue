@@ -15,7 +15,7 @@
      LockoutEnd datetimeoffset(7) NULL,
      LockoutEnabled bit NOT NULL,
      AccessFailedCount int NOT NULL,
-     PrimaryOrganisationId uniqueidentifier NOT NULL, 
+     PrimaryOrganisationId int NOT NULL, 
      OrganisationFunction nvarchar(50) NOT NULL, 
      [Disabled] bit NOT NULL,
      CatalogueAgreementSigned bit CONSTRAINT DF_AspNetUsers_CatalogueAgreementSigned DEFAULT 0 NOT NULL,
@@ -24,4 +24,5 @@
      CONSTRAINT PK_AspNetUsers PRIMARY KEY NONCLUSTERED (Id),
      CONSTRAINT AK_AspNetUsers_NormalizedUserName UNIQUE CLUSTERED (NormalizedUserName),
      CONSTRAINT AK_AspNetUsers_NormalizedEmail UNIQUE NONCLUSTERED (NormalizedEmail),
+     CONSTRAINT FK_AspNetUsers_OrganisationId FOREIGN KEY (PrimaryOrganisationId) REFERENCES organisations.Organisations (Id),
 );
