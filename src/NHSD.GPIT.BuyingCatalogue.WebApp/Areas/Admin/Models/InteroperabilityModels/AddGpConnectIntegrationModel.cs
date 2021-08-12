@@ -5,17 +5,17 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
 {
-    public class AddIm1IntegrationModel : NavBaseModel
+    public class AddGpConnectIntegrationModel : NavBaseModel
     {
-        public AddIm1IntegrationModel()
+        public AddGpConnectIntegrationModel()
         {
             BackLinkText = "Go back";
 
             IntegrationTypes = new List<object>
             {
-                new { Text = "IM1 Bulk", Value = "Bulk" },
-                new { Text = "IM1 Transactional", Value = "Transactional" },
-                new { Text = "IM1 Patient Facing", Value = "Patient Facing" },
+                new { Text = "GP Connect - HTML View", Value = "HTML View" },
+                new { Text = "GP Connect - Appointment Booking", Value = "Appointment Booking" },
+                new { Text = "GP Connect - Structured Record", Value = "Structured Record" },
             };
 
             ProviderConsumerTypes = new List<object>
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             };
         }
 
-        public AddIm1IntegrationModel(CatalogueItemId solutionId)
+        public AddGpConnectIntegrationModel(CatalogueItemId solutionId)
             : this()
         {
             BackLink = $"/admin/catalogue-solutions/manage/{solutionId}/interoperability";
@@ -41,12 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public IEnumerable<object> ProviderConsumerTypes { get; }
 
-        [Required(ErrorMessage = "Enter what system it integrates with")]
-        [StringLength(100)]
-        public string IntegratesWith { get; set; }
-
-        [Required(ErrorMessage = "Enter a description")]
+        [Required(ErrorMessage = "Enter any additional information")]
         [StringLength(1000)]
-        public string Description { get; set; }
+        public string AdditionalInformation { get; set; }
     }
 }

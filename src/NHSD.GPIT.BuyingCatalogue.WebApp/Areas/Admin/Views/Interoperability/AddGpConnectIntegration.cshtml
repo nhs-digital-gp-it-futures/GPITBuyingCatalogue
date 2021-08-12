@@ -1,6 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddIm1IntegrationModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddGpConnectIntegrationModel;
 @{
-    ViewData["Title"] = "Add an IM1 integration";
+    ViewData["Title"] = "Add a GP Connect integration";
 }
 
 <div class="nhsuk-width-container">
@@ -22,12 +22,9 @@
                             asp-items="@(new SelectList(Model.ProviderConsumerTypes, "Value", "Text"))"
                             label-text="Provider or consumer" />
 
-                <nhs-input asp-for="IntegratesWith"
-                           label-text="System integrating with" character-count="true" />
-
-                <nhs-textarea asp-for="Description"
-                              label-text="Description"
-                              label-hint="Describe how your Catalogue Solution integrates with the other system." />
+                <nhs-textarea asp-for="AdditionalInformation"
+                              label-text="Additional Information"
+                              label-hint="Provide additional information about how your Catalogue Solution integrates with the other system." />
 
                 <nhs-submit-button text="Save and continue" />
             </form>

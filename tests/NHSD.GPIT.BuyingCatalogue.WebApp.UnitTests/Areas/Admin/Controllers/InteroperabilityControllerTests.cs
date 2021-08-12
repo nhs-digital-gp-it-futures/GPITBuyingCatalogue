@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolution(catalogueItem.Id));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AddIm1IntegrationModel());
+            actual.Model.Should().BeEquivalentTo(new AddIm1IntegrationModel(catalogueItem.Id));
         }
 
         [Theory]
@@ -150,6 +150,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Callback<CatalogueItemId, Integration>((a1, a2) => { savedIntegration = a2; });
 
             var actual = (await controller.AddIm1Integration(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            mockInteroperabilityService.Verify(s => s.AddIntegration(catalogueItemId, It.IsAny<Integration>()));
+            savedIntegration.Should().BeEquivalentTo(expectedIntegration);
+            actual.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
+            actual.ControllerName.Should().BeNull();
+            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddGpConnectIntegration_ValidId_ReturnsViewWithExpectedModel(
+           CatalogueItem catalogueItem,
+           List<Integration> integrations,
+           [Frozen] Mock<ISolutionsService> mockService,
+           InteroperabilityController controller)
+        {
+            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+
+            mockService.Setup(s => s.GetSolution(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.AddGpConnectIntegration(catalogueItem.Id)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolution(catalogueItem.Id));
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(new AddGpConnectIntegrationModel(catalogueItem.Id));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddGpConnectIntegration_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller)
+        {
+            mockService.Setup(s => s.GetSolution(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var actual = (await controller.AddGpConnectIntegration(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddGpConnectIntegration_Saves_And_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            AddGpConnectIntegrationModel model,
+            [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+            InteroperabilityController controller)
+        {
+            var expectedIntegration = new Integration
+            {
+                IntegrationType = "GP Connect",
+                AdditionalInformation = model.AdditionalInformation,
+                Qualifier = model.SelectedIntegrationType,
+                IsConsumer = model.SelectedProviderOrConsumer == "Consumer",
+            };
+
+            Integration savedIntegration = null;
+            mockInteroperabilityService.Setup(s => s.AddIntegration(It.IsAny<CatalogueItemId>(), It.IsAny<Integration>()))
+                .Callback<CatalogueItemId, Integration>((a1, a2) => { savedIntegration = a2; });
+
+            var actual = (await controller.AddGpConnectIntegration(catalogueItemId, model)).As<RedirectToActionResult>();
 
             mockInteroperabilityService.Verify(s => s.AddIntegration(catalogueItemId, It.IsAny<Integration>()));
             savedIntegration.Should().BeEquivalentTo(expectedIntegration);

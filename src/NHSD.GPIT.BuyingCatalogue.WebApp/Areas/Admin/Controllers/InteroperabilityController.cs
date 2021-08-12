@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new AddIm1IntegrationModel());
+            return View(new AddIm1IntegrationModel(solutionId));
         }
 
         [HttpPost("manage/{solutionId}/interoperability/add-im1-integration")]
@@ -77,6 +77,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 IntegrationType = Framework.Constants.Interoperability.IM1IntegrationType,
                 IntegratesWith = model.IntegratesWith,
                 Description = model.Description,
+                Qualifier = model.SelectedIntegrationType,
+                IsConsumer = model.SelectedProviderOrConsumer == Framework.Constants.Interoperability.Consumer,
+            };
+
+            await interoperabilityService.AddIntegration(solutionId, integration);
+
+            return RedirectToAction(nameof(Interoperability), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/interoperability/add-gp-connect-integration")]
+        public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolution(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            return View(new AddGpConnectIntegrationModel(solutionId));
+        }
+
+        [HttpPost("manage/{solutionId}/interoperability/add-gp-connect-integration")]
+        public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId, AddGpConnectIntegrationModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var integration = new Integration
+            {
+                IntegrationType = Framework.Constants.Interoperability.GpConnectIntegrationType,
+                AdditionalInformation = model.AdditionalInformation,
                 Qualifier = model.SelectedIntegrationType,
                 IsConsumer = model.SelectedProviderOrConsumer == Framework.Constants.Interoperability.Consumer,
             };
