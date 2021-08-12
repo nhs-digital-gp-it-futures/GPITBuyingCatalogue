@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
     public static class ServiceRecipientsSeedData
     {
         public static List<ServiceRecipient> GetServiceRecipients =>
-            new()
+            new List<ServiceRecipient>
             {
                 new()
                 {
