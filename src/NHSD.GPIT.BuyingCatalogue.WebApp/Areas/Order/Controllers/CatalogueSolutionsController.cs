@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -192,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 ModelState.AddModelError(nameof(model.Quantity), error);
 
             if (model.EstimationPeriod is null)
-                ModelState.AddModelError(nameof(model.EstimationPeriod), "Time Unit is Required");
+                ModelState.AddModelError(nameof(model.EstimationPeriod), "Time Unit is required");
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -230,12 +231,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 if (error is not null)
                     ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Day", error);
 
-                if (model.OrderItem.ServiceRecipients[i].Quantity is null or 0)
-                    ModelState.AddModelError($"OrderItem.ServiceRecipients[{i}].Quantity", "Quantity is Required");
+                var quantityModelStateKey = $"OrderItem.ServiceRecipients[{i}].Quantity";
+
+                if (model.OrderItem.ServiceRecipients[i].Quantity is null
+                    && !(ModelState[quantityModelStateKey].ValidationState == ModelValidationState.Invalid))
+                    ModelState.AddModelError(quantityModelStateKey, "Enter a quantity");
+
+                if (model.OrderItem.ServiceRecipients[i].Quantity <= 0
+                    && !(ModelState[quantityModelStateKey].ValidationState == ModelValidationState.Invalid))
+                    ModelState.AddModelError(quantityModelStateKey, "Quantity must be greater than 0");
             }
 
-            if (model.OrderItem.AgreedPrice > state.CataloguePrice.Price)
-                ModelState.AddModelError("OrderItem.Price", "Price cannot be greater than list price");
+            var priceModelStateKey = "OrderItem.AgreedPrice";
+
+            if (model.OrderItem.AgreedPrice > state.CataloguePrice.Price
+                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
+                ModelState.AddModelError(priceModelStateKey, "Price cannot be greater than list price");
+
+            if (model.OrderItem.AgreedPrice is null
+                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
+                ModelState.AddModelError(priceModelStateKey, "Enter an agreed price");
+
+            if (model.OrderItem.AgreedPrice < 0
+                && !(ModelState[priceModelStateKey].ValidationState == ModelValidationState.Invalid))
+                ModelState.AddModelError(priceModelStateKey, "Price cannot be negative");
 
             if (!ModelState.IsValid)
             {
