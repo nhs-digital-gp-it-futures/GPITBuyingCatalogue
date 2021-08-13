@@ -7,7 +7,7 @@ AS
     DECLARE @items AS TABLE
     (
         Id nvarchar(14) NOT NULL,
-        SupplierId nvarchar(6) NULL,
+        SupplierId int NULL,
         [Name] nvarchar(255) NOT NULL,
         [Description] nvarchar(1000) NULL,
         OrderGuidance nvarchar(1000) NULL
@@ -20,7 +20,7 @@ AS
 
     DECLARE @missingSuppliers AS TABLE
     (
-        SupplierId nvarchar(6) PRIMARY KEY
+        SupplierId int PRIMARY KEY
     );
 
     INSERT INTO @missingSuppliers (SupplierId)
@@ -37,7 +37,7 @@ AS
     END;
 
     DECLARE @associatedServiceCatalogueItemType AS int = 3;
-    DECLARE @emptyGuid AS uniqueidentifier = CAST(0x0 AS uniqueidentifier);
+    DECLARE @noUser AS int = 0;
     DECLARE @now AS datetime = GETUTCDATE();
 
     BEGIN TRANSACTION;
@@ -49,7 +49,7 @@ AS
               WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.CatalogueItemId = i.Id);
 
         INSERT INTO catalogue.AssociatedServices(CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
-             SELECT i.Id, i.[Description], i.OrderGuidance, @now, @emptyGuid
+             SELECT i.Id, i.[Description], i.OrderGuidance, @now, @noUser
                FROM @items AS i
               WHERE NOT EXISTS (SELECT * FROM catalogue.AssociatedServices AS a WHERE a.CatalogueItemId = i.Id);
 

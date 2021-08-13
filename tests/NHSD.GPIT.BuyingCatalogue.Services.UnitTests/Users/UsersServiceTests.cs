@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [CommonAutoData]
         public static async Task GetUser_CallsSingleAsync_OnRepository(
             [Frozen] Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>> dbRepositoryMock,
-            Guid userId,
+            int userId,
             UsersService service)
         {
             dbRepositoryMock.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var service = new UsersService(
                 mockUsersRepository.Object);
 
-            await service.EnableOrDisableUser(Guid.NewGuid(), enabled);
+            await service.EnableOrDisableUser(13, enabled);
 
             Assert.Equal(enabled, user.Disabled);
             mockUsersRepository.Verify(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));

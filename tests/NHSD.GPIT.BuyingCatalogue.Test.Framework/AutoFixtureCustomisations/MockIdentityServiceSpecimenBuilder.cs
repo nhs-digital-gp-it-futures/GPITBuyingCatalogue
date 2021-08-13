@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             if (!(request as Type == typeof(IIdentityService)))
                 return new NoSpecimen();
 
-            var userId = context.Create<Guid>();
+            var userId = context.Create<int>();
             var userName = context.Create<string>();
 
             var identityServiceMock = context.Create<Mock<IIdentityService>>();

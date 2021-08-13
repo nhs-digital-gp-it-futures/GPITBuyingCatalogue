@@ -18,14 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        public Task<AspNetUser> GetUser(Guid userId) => userRepository.SingleAsync(u => u.Id == userId);
+        public Task<AspNetUser> GetUser(int userId) => userRepository.SingleAsync(u => u.Id == userId);
 
         public async Task<List<AspNetUser>> GetAllUsersForOrganisation(int organisationId)
         {
             return (await userRepository.GetAllAsync(u => u.PrimaryOrganisationId == organisationId)).ToList();
         }
 
-        public async Task EnableOrDisableUser(Guid userId, bool disabled)
+        public async Task EnableOrDisableUser(int userId, bool disabled)
         {
             var user = await userRepository.SingleAsync(u => u.Id == userId);
             user.Disabled = disabled;

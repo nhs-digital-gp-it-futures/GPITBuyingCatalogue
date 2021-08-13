@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Description = "This is the description of the Associated Service",
                         OrderGuidance = "This is how to order",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = Guid.Empty,
+                        LastUpdatedBy = 0,
                     },
                 },
             };

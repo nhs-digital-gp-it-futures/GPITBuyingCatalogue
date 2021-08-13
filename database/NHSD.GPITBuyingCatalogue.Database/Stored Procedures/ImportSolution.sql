@@ -7,7 +7,7 @@ AS
     DECLARE @items AS TABLE
     (
         Id nvarchar(14) NOT NULL,
-        SupplierId nvarchar(6) NULL,
+        SupplierId int NULL,
         [Name] nvarchar(255) NOT NULL,
         IsFoundation bit DEFAULT 0 NULL,
         FrameworkId nvarchar(10) NOT NULL
@@ -20,7 +20,7 @@ AS
 
     DECLARE @missingSuppliers AS TABLE
     (
-        SupplierId nvarchar(6) PRIMARY KEY
+        SupplierId int PRIMARY KEY
     );
 
     INSERT INTO @missingSuppliers (SupplierId)
@@ -36,7 +36,7 @@ AS
         THROW 51000, @errorMessage, 1;
     END;
 
-    DECLARE @emptyGuid AS uniqueidentifier = CAST(0x0 AS uniqueidentifier);
+    DECLARE @noUser AS int = 0;
     DECLARE @now AS datetime = GETUTCDATE();
     DECLARE @passedFull AS int = 1;
     DECLARE @solutionCatalogueItemType AS int = 1;
@@ -50,12 +50,12 @@ AS
               WHERE NOT EXISTS (SELECT * FROM catalogue.CatalogueItems AS c WHERE c.Id = i.Id);
 
         INSERT INTO catalogue.Solutions(CatalogueItemId, LastUpdated, LastUpdatedBy)
-             SELECT i.Id, @now, @emptyGuid
+             SELECT i.Id, @now, @noUser
                FROM @items AS i
               WHERE NOT EXISTS (SELECT * FROM catalogue.Solutions AS s WHERE s.CatalogueItemId = i.Id);
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
-             SELECT i.FrameworkId, i.Id, 0, @now, @emptyGuid
+             SELECT i.FrameworkId, i.Id, 0, @now, @noUser
                FROM @items AS i
               WHERE NOT EXISTS (SELECT * FROM catalogue.FrameworkSolutions AS f WHERE f.SolutionId = i.Id AND f.FrameworkId = i.FrameworkId);
 
@@ -70,7 +70,7 @@ AS
                     INNER JOIN @items AS i ON i.Id = c.CatalogueItemId;
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT SolutionId, c.Id, @passedFull, @now, @emptyGuid
+             SELECT SolutionId, c.Id, @passedFull, @now, @noUser
                FROM @Capabilities AS cap
                     INNER JOIN catalogue.Capabilities AS c
                     ON c.CapabilityRef = cap.CapabilityRef;

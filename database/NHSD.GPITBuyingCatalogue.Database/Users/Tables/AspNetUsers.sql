@@ -1,6 +1,6 @@
 ﻿CREATE TABLE users.AspNetUsers
 (
-     Id uniqueidentifier NOT NULL,
+     Id int IDENTITY(1, 1) NOT NULL,
      UserName nvarchar(256) NOT NULL,
      NormalizedUserName nvarchar(256) NOT NULL,
      Email nvarchar(256) NOT NULL,
@@ -21,8 +21,8 @@
      CatalogueAgreementSigned bit CONSTRAINT DF_AspNetUsers_CatalogueAgreementSigned DEFAULT 0 NOT NULL,
      FirstName nvarchar(100) NOT NULL, 
      LastName nvarchar(100) NOT NULL, 
-     CONSTRAINT PK_AspNetUsers PRIMARY KEY NONCLUSTERED (Id),
-     CONSTRAINT AK_AspNetUsers_NormalizedUserName UNIQUE CLUSTERED (NormalizedUserName),
-     CONSTRAINT AK_AspNetUsers_NormalizedEmail UNIQUE NONCLUSTERED (NormalizedEmail),
+     CONSTRAINT PK_AspNetUsers PRIMARY KEY (Id),
+     CONSTRAINT AK_AspNetUsers_NormalizedUserName UNIQUE (NormalizedUserName),
+     CONSTRAINT AK_AspNetUsers_NormalizedEmail UNIQUE (NormalizedEmail),
      CONSTRAINT FK_AspNetUsers_OrganisationId FOREIGN KEY (PrimaryOrganisationId) REFERENCES organisations.Organisations (Id),
 );

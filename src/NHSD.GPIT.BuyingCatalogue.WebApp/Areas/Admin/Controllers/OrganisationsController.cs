@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/adduser/confirmation/{userId}")]
-        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, Guid userId)
+        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, int userId)
         {
             var user = await userService.GetUser(userId);
 
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(int organisationId, Guid userId)
+        public async Task<IActionResult> UserDetails(int organisationId, int userId)
         {
             var user = await userService.GetUser(userId);
             var organisation = await organisationsService.GetOrganisation(organisationId);
@@ -221,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}/disable")]
-        public async Task<IActionResult> UserDisabled(int organisationId, Guid userId)
+        public async Task<IActionResult> UserDisabled(int organisationId, int userId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}/enable")]
-        public async Task<IActionResult> UserEnabled(int organisationId, Guid userId)
+        public async Task<IActionResult> UserEnabled(int organisationId, int userId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);

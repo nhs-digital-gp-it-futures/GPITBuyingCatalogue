@@ -10,7 +10,8 @@
      CrmRef uniqueidentifier NULL,
      Deleted bit CONSTRAINT DF_Supplier_Deleted DEFAULT 0 NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
-     LastUpdatedBy uniqueidentifier NOT NULL,
-     CONSTRAINT PK_Supplier PRIMARY KEY CLUSTERED (Id),
+     LastUpdatedBy int NULL,
+     CONSTRAINT PK_Suppliers PRIMARY KEY CLUSTERED (Id),
+     CONSTRAINT FK_Suppliers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
      INDEX IX_SupplierName NONCLUSTERED ([Name])
 );

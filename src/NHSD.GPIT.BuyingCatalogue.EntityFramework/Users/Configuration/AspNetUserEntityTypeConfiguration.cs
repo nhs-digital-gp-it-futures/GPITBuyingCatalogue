@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
             builder.ToTable("AspNetUsers", Schemas.Users);
 
             builder.HasKey(u => u.Id);
+            builder.Property(u => u.Id).ValueGeneratedOnAdd();
 
             builder.Property(u => u.CatalogueAgreementSigned).IsRequired().HasDefaultValue(0);
             builder.Property(u => u.Email).HasMaxLength(256).IsRequired();

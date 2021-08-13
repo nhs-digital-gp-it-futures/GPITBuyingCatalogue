@@ -23,9 +23,9 @@ BEGIN
 
     DECLARE @address AS nchar(108) = N'{ "street_address": "One Hacker Way", "locality": "Heidelberg", "postal_code": 69118, "country": "Germany" }';
 
-    DECLARE @aliceId AS nchar(36) = CAST(NEWID() AS nchar(36));
-    DECLARE @bobId AS nchar(36) = CAST(NEWID() AS nchar(36));
-    DECLARE @sueId AS nchar(36) = CAST(NEWID() AS nchar(36));
+    DECLARE @bobId AS int = 2;
+    DECLARE @sueId AS int = 3;
+    DECLARE @aliceId AS int = 4;
 
     DECLARE @aliceNormalizedEmail AS nvarchar(50) = UPPER(@aliceEmail);
     DECLARE @bobNormalizedEmail AS nvarchar(50) = UPPER(@bobEmail);
@@ -42,6 +42,8 @@ BEGIN
     -- 'Pass123$'
     DECLARE @suePassword AS nvarchar(200) =  N'AQAAAAEAACcQAAAAEBRpg4kCDtF5H4UEgv209hSD0TmaRx9JOYorAzNHxzfyZisIDse2AlTA0oF28HlBhQ==';
 
+    SET IDENTITY_INSERT users.AspNetUsers ON;
+
     INSERT INTO users.AspNetUsers
     (
         Id, UserName, NormalizedUserName, Email, NormalizedEmail, AccessFailedCount, ConcurrencyStamp, PhoneNumber,
@@ -52,6 +54,8 @@ BEGIN
     (@aliceId, @aliceEmail, @aliceNormalizedEmail, @aliceEmail, @aliceNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @alicePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Alice', 'Smith', @aliceOrganisationId, 'Buyer', 0, 1),
     (@bobId, @bobEmail, @bobNormalizedEmail, @bobEmail, @bobNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @bobPassword, 0, 'OBDOPOU5YQ5WQXCR3DITKL6L5IDPYHHJ', 0, 'Bob', 'Smith', @bobOrganisationId, 'Authority', 0, 1),
     (@sueId, @sueEmail, @sueNormalizedEmail, @sueEmail, @sueNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @suePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Sue', 'Smith', @sueOrganisationId, 'Buyer', 0, 1);
+
+    SET IDENTITY_INSERT users.AspNetUsers OFF;
 
     INSERT INTO users.AspNetUserClaims (ClaimType, ClaimValue, UserId)
     VALUES

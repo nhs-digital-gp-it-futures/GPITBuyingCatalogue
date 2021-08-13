@@ -13,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
-    public class BuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, Guid, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>, IDataProtectionKeyContext
+    public class BuyingCatalogueDbContext : IdentityDbContext<AspNetUser, AspNetRole, int, AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserToken>, IDataProtectionKeyContext
     {
         private readonly IIdentityService identityService;
 
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                 if (entry.Entity is not IAudited auditedEntity || identityService is null)
                     continue;
 
-                (Guid userId, string userName) = identityService.GetUserInfo();
+                (int userId, string userName) = identityService.GetUserInfo();
 
                 switch (entry.State)
                 {

@@ -88,31 +88,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [Fact]
         public static void UserId_ValidValueSet_ReturnsValidValue()
         {
-            var expected = Guid.NewGuid();
+            const int expected = 61;
             var user = CreatePrincipal("userId", expected.ToString());
 
             user.UserId().Should().Be(expected);
         }
 
-        [Theory]
-        [InlineData("invalid")]
-        [InlineData("")]
-        [InlineData("   ")]
-        public static void UserId_InvalidValue_ReturnsEmptyGuid(string invalid)
-        {
-            var user = CreatePrincipal("userId", invalid);
-
-            user.UserId().Should().Be(Guid.Empty);
-        }
-
         private static ClaimsPrincipal CreatePrincipal(string claim, string value)
         {
-            return new(new ClaimsIdentity(new Claim[] { new(claim, value) }, "mock"));
+            return new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new(claim, value) }, "mock"));
         }
 
         private static ClaimsPrincipal CreatePrincipal(string claim, IEnumerable<string> values)
         {
-            return new(new ClaimsIdentity(values.Select(s => new Claim(claim, s)), "mock"));
+            return new ClaimsPrincipal(new ClaimsIdentity(values.Select(s => new Claim(claim, s)), "mock"));
         }
     }
 }

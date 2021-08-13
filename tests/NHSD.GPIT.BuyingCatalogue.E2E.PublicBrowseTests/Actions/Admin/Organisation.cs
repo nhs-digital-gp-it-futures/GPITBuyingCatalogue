@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Admin
             Driver.FindElement(Objects.Admin.OrganisationObjects.RelatedOrganisationRemoveConfirm).Click();
         }
 
-        internal void ViewUserDetails(Guid id)
+        internal void ViewUserDetails(int id)
         {
             Driver.FindElement(Objects.Admin.OrganisationObjects.UserName(id)).Click();
         }

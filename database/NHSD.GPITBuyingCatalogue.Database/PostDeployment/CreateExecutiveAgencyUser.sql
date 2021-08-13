@@ -24,7 +24,7 @@ BEGIN
         AccessFailedCount, ConcurrencyStamp, LockoutEnabled, SecurityStamp, TwoFactorEnabled
     )
 	VALUES
-	(CAST(NEWID() AS nchar(36)), @email, @normalizedUserName, @passwordHash,
+	(CAST(1 AS nchar(36)), @email, @normalizedUserName, @passwordHash,
         @firstName, @lastName, @email, @normalizedUserName, 1, @phoneNumber, 1,
         @organisationId, 'Authority', 1, 0,
         0, NEWID(), 1, NEWID(), 0);

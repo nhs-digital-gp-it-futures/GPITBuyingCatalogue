@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         private readonly List<ServiceInstanceItem> serviceInstanceItems = new();
 
         private DateTime lastUpdated;
-        private Guid lastUpdatedBy;
+        private int lastUpdatedBy;
         private string lastUpdatedByName;
         private DateTime? completed;
 
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return result;
         }
 
-        public void SetLastUpdatedBy(Guid userId, string userName)
+        public void SetLastUpdatedBy(int userId, string userName)
         {
             lastUpdatedBy = userId;
             lastUpdatedByName = userName ?? throw new ArgumentNullException(nameof(userName));
