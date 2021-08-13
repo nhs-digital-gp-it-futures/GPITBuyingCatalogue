@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
             CommonActions
-                .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandQuantityInput)
+                .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput)
                 .Should()
                 .BeTrue();
 
@@ -47,9 +47,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
                 .BeTrue();
         }
 
-        [Fact]
-        public void CatalogueSolutionsSelectFlatOnDemandQuantity_NoInput_ThrowsError()
+        [Theory]
+        [InlineData("", "Enter a quantity")]
+        [InlineData("ABC", "Quantity must be a number")]
+        [InlineData("0", "Quantity must be greater than zero")]
+        public void CatalogueSolutionsSelectFlatOnDemandQuantity_IncorrectInput_ThrowsError(
+            string errorValue,
+            string expectedErrorMessage)
         {
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput,
+                errorValue);
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -62,8 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandQuantityInputErrorMessage,
-                "Enter a quantity")
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInputErrorMessage,
+                expectedErrorMessage)
                 .Should()
                 .BeTrue();
 
@@ -75,60 +84,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectFlatOnDemandQuantity_NotANumberInput_ThrowsError()
-        {
-            TextGenerators.TextInputAddText(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandQuantityInput,
-                10);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectFlatOnDemandQuantity))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandQuantityInputErrorMessage,
-                "Quantity must be a number")
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void CatalogueSolutionsSelectFlatOnDemandQuantity_InputZero_ThrowsError()
-        {
-            CommonActions.ElementAddValue(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandQuantityInput,
-                "0");
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectFlatOnDemandQuantity))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandQuantityInputErrorMessage,
-                "Quantity must be greater than zero")
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
         public void CatalogueSolutionsSelectFlatOnDemandQuantity_CorrectInput_ExpectedResult()
         {
             CommonActions.ElementAddValue(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandQuantityInput,
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput,
                 "123");
 
             CommonActions.ClickRadioButtonWithText("per month");
