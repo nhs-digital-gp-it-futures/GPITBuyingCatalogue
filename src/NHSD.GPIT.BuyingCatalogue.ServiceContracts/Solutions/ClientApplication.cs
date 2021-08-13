@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EnumsNET;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -69,6 +70,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
                 return result;
             }
+        }
+
+        public void EnsureClientApplicationTypePresent(ClientApplicationType clientApplicationType)
+        {
+            if (ClientApplicationTypes is null)
+                ClientApplicationTypes = new HashSet<string>();
+
+            if (!ClientApplicationTypes.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
+                ClientApplicationTypes.Add(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
         public bool AdditionalInformationComplete() => !string.IsNullOrWhiteSpace(AdditionalInformation);

@@ -1,6 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels.AdditionalInformationModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels.AdditionalInformationModel;
 @{
-    ViewData["Title"] = "Browser-based application – additional information";
+    ViewData["Title"] = "Mobile or tablet application – additional information";
 }
 
 <div class="nhsuk-width-container">
@@ -11,14 +11,14 @@
 
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
-            <nhs-page-title title="Browser-based application – additional information"
+            <nhs-page-title title="Mobile or tablet application – additional information"
                             advice="Let buyers know any additional information about your Catalogue Solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <nhs-textarea asp-for="AdditionalInformation"
                               label-text="Additional information (optional)"
-                              label-hint="Provide additional information about your browser-based Catalogue Solution." />
+                              label-hint="Provide additional information about your mobile or tablet Catalogue Solution." />
                 <nhs-submit-button />
             </form>
         </div>

@@ -335,19 +335,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new BrowserBasedModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/browser-based")]
-        public async Task<IActionResult> BrowserBased(CatalogueItemId solutionId, BrowserBasedModel model)
-        {
-            var solution = await solutionsService.GetSolution(solutionId);
-
-            if (!ModelState.IsValid)
-            {
-                return View(new BrowserBasedModel(solution));
-            }
-
-            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
-        }
-
         [HttpGet("manage/{solutionId}/client-application-type/browser-based/supported-browser")]
         public async Task<IActionResult> SupportedBrowsers(CatalogueItemId solutionId)
         {
@@ -380,8 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ? null
                 : model.MobileResponsive.EqualsIgnoreCase("Yes");
 
-            // TODO: refactor use of string literal
-            clientApplication.ClientApplicationTypes.Add("browser-based");
+            clientApplication.EnsureClientApplicationTypePresent(ServiceContracts.Solutions.ClientApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -418,6 +404,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     : model.PlugInsRequired.EqualsIgnoreCase("Yes"),
             };
 
+            clientApplication.EnsureClientApplicationTypePresent(ServiceContracts.Solutions.ClientApplicationType.BrowserBased);
+
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
             return RedirectToAction(nameof(BrowserBased), new { solutionId });
@@ -448,6 +436,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
             clientApplication.MinimumDesktopResolution = model.SelectedScreenResolution;
+            clientApplication.EnsureClientApplicationTypePresent(ServiceContracts.Solutions.ClientApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -475,6 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
             clientApplication.HardwareRequirements = model.Description;
+            clientApplication.EnsureClientApplicationTypePresent(ServiceContracts.Solutions.ClientApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -502,6 +492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
             clientApplication.AdditionalInformation = model.AdditionalInformation;
+            clientApplication.EnsureClientApplicationTypePresent(ServiceContracts.Solutions.ClientApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -517,24 +508,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             return View(new ClientApplicationTypeSectionModel(solution));
-        }
-
-        [HttpPost("manage/{solutionId}/client-application-type")]
-        public async Task<IActionResult> ClientApplicationType(CatalogueItemId solutionId, ClientApplicationTypeSectionModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var catalogueItem = await solutionsService.GetSolution(solutionId);
-
-            ClientApplication clientApplication = new ClientApplication
-            {
-                ClientApplicationTypes = catalogueItem.Solution?.GetClientApplication()?.ClientApplicationTypes,
-            };
-
-            await solutionsService.SaveClientApplication(solutionId, clientApplication);
-
-            return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
 
         [HttpGet("manage/{solutionId}/client-application-type/add-application-type")]
@@ -557,9 +530,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(new ClientApplicationTypeSelectionModel(solution));
             }
 
-            return model.SelectedApplicationType is null
-                ? RedirectToAction(nameof(ClientApplicationType), new { solutionId })
-                : RedirectToAction(model.SelectedApplicationType.ToString(), new { solutionId });
+            return model.SelectedApplicationType switch
+            {
+                ServiceContracts.Solutions.ClientApplicationType.BrowserBased => RedirectToAction(
+                    model.SelectedApplicationType.ToString(),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { solutionId }),
+                ServiceContracts.Solutions.ClientApplicationType.MobileTablet => RedirectToAction(
+                    model.SelectedApplicationType.ToString(),
+                    typeof(MobileTabletBasedController).ControllerName(),
+                    new { solutionId }),
+                _ => RedirectToAction(nameof(ClientApplicationType), new { solutionId }),
+            };
         }
     }
 }
