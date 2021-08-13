@@ -18,13 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         public static By CatalogueSolutionsRecipientsDateErrorMessage => By.Id("select-solution-service-recipients-date-error");
 
-        public static By CatalogueSolutionsSelectFlatDeclarativeInput => By.Id("Quantity");
+        public static By CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput => By.Id("Quantity");
 
-        public static By CatalogueSolutionsSelectFlatDeclarativeInputErrorMessage => By.Id("Quantity-error");
-
-        public static By CatalogueSolutionsSelectFlatOnDemandQuantityInput => By.Id("Quantity");
-
-        public static By CatalogueSolutionsSelectFlatOnDemandQuantityInputErrorMessage => By.Id("Quantity-error");
+        public static By CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInputErrorMessage => By.Id("Quantity-error");
 
         public static By CatalogueSolutionsSelectFlatOnDemandRadioInputErrorMessage => By.Id("select-flat-on-demand-quantity-error");
 
