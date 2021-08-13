@@ -256,12 +256,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.Add(order);
         }
 
-        private static Guid GetOrganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")
+        private static int GetOrganisationId(BuyingCatalogueDbContext context, string odsCode = "03F")
         {
             return context.Organisations.First(o => o.OdsCode == odsCode).Id;
         }
 
-        private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, Guid organisationId)
+        private static AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
         {
             return context.Users.FirstOrDefault(u => u.OrganisationFunction == "Buyer" && u.PrimaryOrganisationId == organisationId);
         }

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
             RelatedOrganisationRelatedOrganisationNavigations = new HashSet<RelatedOrganisation>();
         }
 
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
 

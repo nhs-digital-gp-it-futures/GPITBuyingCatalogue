@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
     {
         Task<AspNetUser> GetUser(Guid userId);
 
-        Task<List<AspNetUser>> GetAllUsersForOrganisation(Guid organisationId);
+        Task<List<AspNetUser>> GetAllUsersForOrganisation(int organisationId);
 
         Task EnableOrDisableUser(Guid userId, bool disabled);
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
     {
         public Task<Order> GetOrder(CallOffId callOffId);
 
-        public Task<IList<Order>> GetOrders(Guid organisationId);
+        public Task<IList<Order>> GetOrders(int organisationId);
 
         public Task<Order> GetOrderSummary(CallOffId callOffId);
 

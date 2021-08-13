@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
     public sealed class Organisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private static readonly Guid OrganisationId = Guid.Parse("b7ee5261-43e7-4589-907b-5eef5e98c085");
+        private const int OrganisationId = 2;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -183,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             smtp.Dispose();
         }
 
-        private async Task<Guid> AddRelatedOrganisation()
+        private async Task<int> AddRelatedOrganisation()
         {
             await using var context = GetEndToEndDbContext();
             var organisations = await context.Organisations.Where(o => o.Id != OrganisationId).ToListAsync();

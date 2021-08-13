@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
             AspNetUserTokens = new HashSet<AspNetUserToken>();
         }
 
-        public Guid PrimaryOrganisationId { get; set; }
+        public int PrimaryOrganisationId { get; set; }
 
         public string OrganisationFunction { get; set; }
 

@@ -4,9 +4,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 {
     public sealed class RelatedOrganisation
     {
-        public Guid OrganisationId { get; set; }
+        public int OrganisationId { get; set; }
 
-        public Guid RelatedOrganisationId { get; set; }
+        public int RelatedOrganisationId { get; set; }
 
         public Organisation Organisation { get; set; }
 

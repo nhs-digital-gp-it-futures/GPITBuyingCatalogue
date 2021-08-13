@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             this.aspNetUserValidator = aspNetUserValidator ?? throw new ArgumentNullException(nameof(aspNetUserValidator));
         }
 
-        public async Task<Result<Guid>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
+        public async Task<Result<Guid>> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
         {
             var aspNetUser = new AspNetUser
             {

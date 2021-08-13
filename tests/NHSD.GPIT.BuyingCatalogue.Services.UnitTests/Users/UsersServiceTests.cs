@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -37,17 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Fact]
-        public static async Task GetAllUsersForOrganisation_InvalidId_ThrowsException()
-        {
-            var service = new UsersService(
-                Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>());
-
-            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.GetAllUsersForOrganisation(Guid.Empty));
-
-            actual.ParamName.Should().Be("organisationId");
-        }
-
-        [Fact]
         public static async Task GetAllUsersForOrganisation_CallsGetAllAsync_OnRepository()
         {
             var users = new AspNetUser[]
@@ -63,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var service = new UsersService(
                 mockUsersRepository.Object);
 
-            await service.GetAllUsersForOrganisation(Guid.NewGuid());
+            await service.GetAllUsersForOrganisation(27);
 
             mockUsersRepository.Verify(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
         }
