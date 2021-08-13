@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 {
     public interface IAudited
     {
-        void SetLastUpdatedBy(Guid userId, string userName);
+        void SetLastUpdatedBy(int userId, string userName);
     }
 }

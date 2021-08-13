@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         [InlineData("Authority")]
         public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(string organisationFunction)
         {
-            var user = new AspNetUser { Id = Guid.NewGuid(), UserName = "Foo", OrganisationFunction = organisationFunction, FirstName = "Fred", LastName = "Smith" };
+            var user = new AspNetUser { Id = 97, UserName = "Foo", OrganisationFunction = organisationFunction, FirstName = "Fred", LastName = "Smith" };
             var userManager = MockUserManager();
             userManager.Setup(m => m.GetUserIdAsync(user)).ReturnsAsync(user.Id.ToString());
             userManager.Setup(m => m.GetUserNameAsync(user)).ReturnsAsync(user.UserName);

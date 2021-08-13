@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var actual = await sut.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
 
             actual.IsSuccess.Should().BeTrue();
-            actual.Value.Should().NotBeEmpty();
+            actual.Value.Should().Be(0);
         }
 
         [Fact]
@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var actual = await sut.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
 
-            var expected = Result.Failure<Guid>(new List<ErrorDetails>());
+            var expected = Result.Failure<int>(new List<ErrorDetails>());
             actual.Should().Be(expected);
         }
 

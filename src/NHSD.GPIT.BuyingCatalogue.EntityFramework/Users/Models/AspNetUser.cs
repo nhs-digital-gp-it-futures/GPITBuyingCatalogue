@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
-    public sealed class AspNetUser : IdentityUser<Guid>
+    public sealed class AspNetUser : IdentityUser<int>
     {
         public AspNetUser()
         {

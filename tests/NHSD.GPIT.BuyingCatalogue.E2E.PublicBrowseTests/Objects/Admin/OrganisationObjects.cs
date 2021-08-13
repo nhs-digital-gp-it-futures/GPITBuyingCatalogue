@@ -1,5 +1,4 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
@@ -26,6 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By RelatedOrganisationRemove(int orgId) => ByExtensions.DataTestId($"related-org-remove-{orgId}");
 
-        internal static By UserName(Guid id) => ByExtensions.DataTestId($"user-name-{id}");
+        internal static By UserName(int id) => ByExtensions.DataTestId($"user-name-{id}");
     }
 }

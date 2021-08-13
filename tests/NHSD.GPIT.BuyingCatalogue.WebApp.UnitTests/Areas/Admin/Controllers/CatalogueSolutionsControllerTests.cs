@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_ManageSolution_ReturnsViewWithExpectedModel(
             CatalogueItem expected,
             AspNetUser aspNetUser,
-            Guid userId)
+            int userId)
         {
             expected.Solution.LastUpdatedBy = userId;
             aspNetUser.Id = userId;

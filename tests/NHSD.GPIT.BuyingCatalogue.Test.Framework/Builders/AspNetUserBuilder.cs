@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
                 },
             };
 
-        private Guid userId;
+        private int userId;
         private string firstName;
         private string lastName;
         private string phoneNumber;
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
 
         private AspNetUserBuilder()
         {
-            userId = Guid.NewGuid();
+            userId = 19;
             firstName = "Bob";
             lastName = "Smith";
             phoneNumber = "0123456789";
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
 
         public AspNetUser Build() => CreateUserByOrganisationFunction();
 
-        internal AspNetUserBuilder WithUserId(Guid id)
+        internal AspNetUserBuilder WithUserId(int id)
         {
             userId = id;
             return this;

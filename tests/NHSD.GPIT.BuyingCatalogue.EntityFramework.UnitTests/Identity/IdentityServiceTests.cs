@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
             [Frozen] Mock<IHttpContextAccessor> mockAccessor,
             IdentityService service)
         {
-            var testUserId = Guid.NewGuid();
+            const int testUserId = 67;
 
             var identity = new ClaimsIdentity(
                 new Claim[]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
             mockContext.Setup(c => c.User).Returns(new ClaimsPrincipal(identity));
             mockAccessor.Setup(a => a.HttpContext).Returns(mockContext.Object);
 
-            (Guid userId, string userName) = service.GetUserInfo();
+            (int userId, string userName) = service.GetUserInfo();
 
             userName.Should().Be("Bill Smith");
             userId.Should().Be(testUserId);
