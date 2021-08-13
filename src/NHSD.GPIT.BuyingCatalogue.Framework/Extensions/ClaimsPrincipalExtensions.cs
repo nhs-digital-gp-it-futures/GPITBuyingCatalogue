@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -37,13 +37,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             return GetClaimValue(user, Constants.Claims.OrganisationFunction).Equals(OrganisationFunction.Buyer.DisplayName);
         }
 
-        public static Guid UserId(this ClaimsPrincipal user)
+        public static int UserId(this ClaimsPrincipal user)
         {
             var idValue = GetClaimValue(user, Constants.Claims.UserId);
 
-            Guid.TryParse(idValue, out var result);
-
-            return result;
+            return int.Parse(idValue, NumberStyles.Integer, CultureInfo.InvariantCulture);
         }
 
         private static string GetClaimValue(ClaimsPrincipal user, string claimType)

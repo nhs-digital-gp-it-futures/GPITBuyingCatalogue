@@ -1,4 +1,4 @@
-﻿DECLARE @emptyGuid AS uniqueidentifier = '00000000-0000-0000-0000-000000000000';
+﻿DECLARE @noUser AS int = NULL;
 DECLARE @now AS datetime = GETUTCDATE();
 
 DECLARE @declarative AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Declarative');
@@ -7,9 +7,9 @@ DECLARE @onDemand AS int = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Na
 DECLARE @flat AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Flat');
 DECLARE @tiered AS int = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Tiered');
 
-DECLARE @hour AS uniqueidentifier = (SELECT Id FROM catalogue.PricingUnits WHERE [Name] = 'hour');
-DECLARE @course AS uniqueidentifier = (SELECT Id FROM catalogue.PricingUnits WHERE [Name] = 'course');
-DECLARE @halfDay AS uniqueidentifier = (SELECT Id FROM catalogue.PricingUnits WHERE [Name] = 'halfDay');
+DECLARE @halfDay AS smallint = -6;
+DECLARE @hour AS smallint = -7;
+DECLARE @course AS smallint = -8;
 
 DECLARE @associatedServiceItemType AS int = (SELECT Id FROM catalogue.CatalogueItemTypes WHERE [Name] = 'Associated Service');
 DECLARE @publishedStatus AS int = (SELECT Id FROM catalogue.PublicationStatus WHERE [Name] = 'Published');
@@ -29,7 +29,7 @@ BEGIN
          VALUES (@associatedServiceId, 
                 N'Our practice reorganisation service provides support during practice splits and mergers. When two or more practices decide to split or merge clinical information, our service can target either select patients or the full patient list. It makes organising a change in practice simple. This service is applicable to both implementation and live operations.', 
                 N'The typical unit of order for practice mergers and splits is likely to be on an individual basis (one). This is a fixed fee per practice regardless of size.',
-                @now, @emptyGuid);
+                @now, @noUser);
 
     INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
          VALUES (@associatedServiceId, @declarative, @flat, @course, NULL, @gbp, @now, 99.99),
@@ -44,7 +44,7 @@ BEGIN
          VALUES (@associatedServiceId, 
                 N'This service ensure practice infrastructure is in place and has optimum configuration. This service is applicable to the implementation phase and live operations.', 
                 N'Dependent on the issue, a typical range is 1-7 days. Additional Engineering is available and would be dependant on scale and user needs. This could be one day or purchased in bulk.',
-                @now, @emptyGuid);
+                @now, @noUser);
 
     INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
          VALUES (@associatedServiceId, @onDemand, @tiered, @hour, NULL, @gbp, @now, 595);
@@ -64,7 +64,7 @@ BEGIN
          VALUES (@associatedServiceId, 
                  N'A fully managed, ISO compliant, service for the digitisation of Lloyd George records. We’ll collect your paper records, scan them and upload them into EMIS Web as digital files. Following sign-off paper records are securely destroyed by shredding them and then recycling them in an eco-friendly way.', 
                  N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
-                @now, @emptyGuid);
+                @now, @noUser);
 
     INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
          VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 4.35);
@@ -79,7 +79,7 @@ BEGIN
          VALUES (@associatedServiceId, 
                 N'We will take digitised Lloyd George files and upload them into EMIS Web. This allows for full visibility of a patients medical records from within the clinical system for more informed decisions at the point of care.', 
                 N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
-                @now, @emptyGuid);
+                @now, @noUser);
 
     INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
          VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 1.25);
@@ -94,7 +94,7 @@ BEGIN
          VALUES (@associatedServiceId, 
                  N'Our project management service can help organisations to seamlessly manage end-to-end projects based on their requirements. From initial planning to roll-out and ongoing project management, our team provides tailored support to customers.', 
                  N'Project Management resource is anticipated to be low for standard installations. For more complex deployments it is anticipated to be higher. The minimum is 1 day, maximum is 10 days per practice',
-                @now, @emptyGuid);
+                @now, @noUser);
 
     INSERT INTO catalogue.CataloguePrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price)
          VALUES (@associatedServiceId, @onDemand, @flat, @hour, NULL, @gbp, @now, 205);

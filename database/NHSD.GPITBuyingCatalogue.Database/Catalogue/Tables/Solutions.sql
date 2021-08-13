@@ -15,7 +15,8 @@
      ServiceLevelAgreement nvarchar(1000) NULL,
      WorkOfPlan nvarchar(max) NULL,
      LastUpdated datetime2(7) NOT NULL,
-     LastUpdatedBy uniqueidentifier NOT NULL,
-     CONSTRAINT PK_Solution PRIMARY KEY CLUSTERED (CatalogueItemId),
-     CONSTRAINT FK_Solution_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
+     LastUpdatedBy int NULL,
+     CONSTRAINT PK_Solutions PRIMARY KEY CLUSTERED (CatalogueItemId),
+     CONSTRAINT FK_Solutions_CatalogueItem FOREIGN KEY (CatalogueItemId) REFERENCES catalogue.CatalogueItems(Id) ON DELETE CASCADE,
+     CONSTRAINT FK_Solutions_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
 );

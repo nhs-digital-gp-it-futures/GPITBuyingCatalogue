@@ -102,10 +102,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var sut = context.CreateBuyerService;
 
-            var actual = await sut.Create(Guid.NewGuid(), "Test", "Smith", "0123456789", "a.b@c.com");
+            var actual = await sut.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
 
             actual.IsSuccess.Should().BeTrue();
-            actual.Value.Should().NotBeEmpty();
+            actual.Value.Should().Be(0);
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var context = CreateBuyerServiceTestContext.Setup();
             var sut = context.CreateBuyerService;
 
-            var primaryOrganisationId = Guid.NewGuid();
+            const int primaryOrganisationId = 1;
 
             await sut.Create(primaryOrganisationId, "Test", "Smith", "0123456789", "a.b@c.com");
 
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
             var context = CreateBuyerServiceTestContext.Setup();
             var sut = context.CreateBuyerService;
 
-            var primaryOrganisationId = Guid.NewGuid();
+            const int primaryOrganisationId = 27;
 
             await sut.Create(primaryOrganisationId, "Test", "Smith", "0123456789", "a.b@c.com");
 
@@ -162,9 +162,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
 
             var sut = context.CreateBuyerService;
 
-            var actual = await sut.Create(Guid.NewGuid(), "Test", "Smith", "0123456789", "a.b@c.com");
+            var actual = await sut.Create(1, "Test", "Smith", "0123456789", "a.b@c.com");
 
-            var expected = Result.Failure<Guid>(new List<ErrorDetails>());
+            var expected = Result.Failure<int>(new List<ErrorDetails>());
             actual.Should().Be(expected);
         }
 
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.CreateBuyer
         public static async Task CreateBuyerAsync_NewApplicationUser_SendsEmail()
         {
             const string expectedToken = "TokenMcToken";
-            var primaryOrganisationId = Guid.NewGuid();
+            const int primaryOrganisationId = 27;
 
             var context = CreateBuyerServiceTestContext.Setup();
 

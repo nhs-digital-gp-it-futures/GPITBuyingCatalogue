@@ -34,26 +34,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
                 },
             };
 
-        private Guid userId;
+        private int userId;
         private string firstName;
         private string lastName;
         private string phoneNumber;
         private string emailAddress;
         private string username;
-        private Guid primaryOrganisationId;
+        private int primaryOrganisationId;
         private bool disabled;
         private bool catalogueAgreementSigned;
         private OrganisationFunction organisationFunction;
 
         private AspNetUserBuilder()
         {
-            userId = Guid.NewGuid();
+            userId = 19;
             firstName = "Bob";
             lastName = "Smith";
             phoneNumber = "0123456789";
             emailAddress = "a.b@c.com";
             username = emailAddress;
-            primaryOrganisationId = Guid.NewGuid();
+            primaryOrganisationId = 17;
             catalogueAgreementSigned = false;
             organisationFunction = OrganisationFunction.Buyer;
         }
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             return this;
         }
 
-        public AspNetUserBuilder WithPrimaryOrganisationId(Guid id)
+        public AspNetUserBuilder WithPrimaryOrganisationId(int id)
         {
             primaryOrganisationId = id;
             return this;
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
 
         public AspNetUser Build() => CreateUserByOrganisationFunction();
 
-        internal AspNetUserBuilder WithUserId(Guid id)
+        internal AspNetUserBuilder WithUserId(int id)
         {
             userId = id;
             return this;
@@ -128,9 +128,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             string lastName,
             string phoneNumber,
             string email,
-            Guid primaryOrganisationId)
+            int primaryOrganisationId)
         {
-            return new()
+            return new AspNetUser
             {
                 UserName = userName,
                 NormalizedUserName = userName.ToUpper(),
@@ -150,9 +150,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.Builders
             string lastName,
             string phoneNumber,
             string email,
-            Guid primaryOrganisationId)
+            int primaryOrganisationId)
         {
-            return new()
+            return new AspNetUser
             {
                 UserName = userName,
                 NormalizedUserName = userName.ToUpper(),

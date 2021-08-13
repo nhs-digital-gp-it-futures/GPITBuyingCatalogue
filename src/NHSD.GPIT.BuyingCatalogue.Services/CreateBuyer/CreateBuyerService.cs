@@ -36,11 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
             this.aspNetUserValidator = aspNetUserValidator ?? throw new ArgumentNullException(nameof(aspNetUserValidator));
         }
 
-        public async Task<Result<Guid>> Create(Guid primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
+        public async Task<Result<int>> Create(int primaryOrganisationId, string firstName, string lastName, string phoneNumber, string emailAddress)
         {
             var aspNetUser = new AspNetUser
             {
-                Id = Guid.NewGuid(),
                 FirstName = firstName,
                 LastName = lastName,
                 PhoneNumber = phoneNumber,
@@ -56,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.CreateBuyer
 
             var validationResult = await aspNetUserValidator.ValidateAsync(aspNetUser);
             if (!validationResult.IsSuccess)
-                return Result.Failure<Guid>(validationResult.Errors);
+                return Result.Failure<int>(validationResult.Errors);
 
             userRepository.Add(aspNetUser);
 

@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class PricingUnit
     {
-        public Guid Id { get; set; }
+        public short Id { get; set; }
 
         public string Name { get; set; }
 

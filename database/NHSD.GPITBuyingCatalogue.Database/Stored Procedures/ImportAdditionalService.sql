@@ -7,7 +7,7 @@ AS
     (
         Id nvarchar(14) NOT NULL,
         SolutionId AS SUBSTRING(Id, 1, CHARINDEX('A', Id) - 1),
-        SupplierId nvarchar(6) NULL,
+        SupplierId int NULL,
         [Name] nvarchar(255) NOT NULL,
         Summary nvarchar(300) NULL,
         [Description] nvarchar(3000) NULL
@@ -37,7 +37,7 @@ AS
     END;
         
     DECLARE @additionalServiceCatalogueItemType AS int = 2;
-    DECLARE @emptyGuid AS uniqueidentifier = CAST(0x0 AS uniqueidentifier);
+    DECLARE @noUser AS int = 0;
     DECLARE @now AS datetime = GETUTCDATE();
 
     BEGIN TRANSACTION;
@@ -49,7 +49,7 @@ AS
               WHERE NOT EXISTS (SELECT * FROM catalogue.CatalogueItems AS c WHERE c.Id = i.Id);
 
         INSERT INTO catalogue.AdditionalServices(CatalogueItemId, SolutionId, Summary, FullDescription, LastUpdated, LastUpdatedBy)
-            SELECT i.Id, i.SolutionId, i.Summary, i.[Description], @now, @emptyGuid
+            SELECT i.Id, i.SolutionId, i.Summary, i.[Description], @now, @noUser
                FROM @items AS i
               WHERE NOT EXISTS (SELECT * FROM catalogue.AdditionalServices AS a WHERE a.CatalogueItemId = i.Id);
 

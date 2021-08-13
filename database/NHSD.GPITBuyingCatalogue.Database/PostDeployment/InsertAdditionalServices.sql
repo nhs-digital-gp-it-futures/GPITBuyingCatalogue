@@ -6,7 +6,12 @@ DECLARE @additionalServiceItemType AS int = 2;
 DECLARE @solutionId AS nvarchar(14);
 DECLARE @additionalServiceId AS nvarchar(14);
 DECLARE @additionalServiceId2 AS nvarchar(14);
-DECLARE @emptyGuid AS uniqueidentifier = '00000000-0000-0000-0000-000000000000';
+DECLARE @noUser AS int = NULL;
+
+DECLARE @patient AS smallint = -1;
+DECLARE @bed AS smallint = -2;
+DECLARE @consultation AS smallint = -3;
+DECLARE @licence AS smallint = -4;
 
 IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND EXISTS (SELECT * FROM catalogue.Solutions)
 BEGIN
@@ -21,16 +26,14 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'Write on Time additional service', 100000, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Write on Time', 'Write on time Addttion Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Write on Time', 'Write on time Addttion Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 199.99);
+                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 199.99);
 
-            INSERT INTO catalogue.CatalogueItemCapabilities
-            VALUES (@additionalServiceId, 1, 1, '2021-05-10 17:22:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
-
-            INSERT INTO catalogue.CatalogueItemCapabilities
-            VALUES (@additionalServiceId, 5, 1, '2021-07-09 09:54:10.7066667', '4F222D7A-74AE-4EC7-9062-E4AD07FCD4F7');
+            INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
+                 VALUES (@additionalServiceId, 1, 1, @now, @noUser),
+                        (@additionalServiceId, 5, 1, @now, @noUser);
         END;
     END;
 
@@ -47,13 +50,13 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'Appointment Gateway additional service', 100001, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Appointment Gateway', 'Appointment Gateway Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Appointment Gateway', 'Appointment Gateway Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 1, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', 2, 'GBP', @now, 299.99);
+                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 299.99);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+             SELECT @additionalServiceId, Id, 1, @now, @noUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C1', 'C5');
         END;
@@ -74,14 +77,14 @@ BEGIN
                         (@additionalServiceId2, @additionalServiceItemType, 'Zen Guidance additional service 2', 100002, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Zen Guidance', 'Zen Guidance Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Zen Guidance', 'Zen Guidance Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 1, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', 2, 'GBP', @now, 399.99),
-                        (@additionalServiceId2, 2, 1, '774E5A1D-D15C-4A37-9990-81861BEAE42B', 2, 'GBP', @now, 389.99);
+                 VALUES (@additionalServiceId, 2, 1, @bed, 2, 'GBP', @now, 399.99),
+                        (@additionalServiceId2, 2, 1, @consultation, 2, 'GBP', @now, 389.99);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+             SELECT @additionalServiceId, Id, 1, @now, @noUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C6';
         END;
@@ -100,10 +103,10 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'Diagnostics XYZ additional service', 100004, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Diagnostics XYZ', 'Diagnostics XYZ Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Diagnostics XYZ', 'Diagnostics XYZ Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 2, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', 2, 'GBP', @now, 499.99);
+                 VALUES (@additionalServiceId, 2, 2, @bed, 2, 'GBP', @now, 499.99);
 
             SET @cataloguePriceId = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @additionalServiceId);
 
@@ -113,7 +116,7 @@ BEGIN
                         (@cataloguePriceId, 2000, NULL, 19.99);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+             SELECT @additionalServiceId, Id, 1, @now, @noUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef IN ('C7', 'C15');
         END;
@@ -132,10 +135,10 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'Document Wizard additional service', 100005, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Document Wizard', 'Document Wizard Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Document Wizard', 'Document Wizard Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 2, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 1, 'GBP', @now, 499.99);
+                 VALUES (@additionalServiceId, 1, 2, @patient, 1, 'GBP', @now, 499.99);
 
             SET @cataloguePriceId = (SELECT CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @additionalServiceId);
 
@@ -145,7 +148,7 @@ BEGIN
                         (@cataloguePriceId, 200, NULL,300.99);
                         
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-             SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+             SELECT @additionalServiceId, Id, 1, @now, @noUser
                FROM catalogue.Capabilities
               WHERE CapabilityRef = 'C8';
         END;
@@ -164,13 +167,13 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'Paperlite additional service', 100006, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Paperlite', 'Paperlite Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Paperlite', 'Paperlite Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 3, 1, '8BF9C2F9-2FD7-4A29-8406-3C6B7B2E5D65', null, 'GBP', @now, 499.99);
+                 VALUES (@additionalServiceId, 3, 1, @licence, null, 'GBP', @now, 499.99);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-                 SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+                 SELECT @additionalServiceId, Id, 1, @now, @noUser
                    FROM catalogue.Capabilities
                   WHERE CapabilityRef IN ('C9', 'C19', 'C41');
         END;
@@ -189,13 +192,13 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'Medsort additional service', 100007, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Medsort', 'Medsort Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Medsort', 'Medsort Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 599.99);
+                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 599.99);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-                 SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+                 SELECT @additionalServiceId, Id, 1, @now, @noUser
                    FROM catalogue.Capabilities
                   WHERE CapabilityRef IN ('C9', 'C17');
         END;
@@ -214,13 +217,13 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'Boston Dynamics additional service', 100007, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to Boston Dynamics', 'Boston Dynamics Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to Boston Dynamics', 'Boston Dynamics Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 1, 1, 'F8D06518-1A20-4FBA-B369-AB583F9FA8C0', 2, 'GBP', @now, 599.99);
+                 VALUES (@additionalServiceId, 1, 1, @patient, 2, 'GBP', @now, 599.99);
                  
             INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
-                 SELECT @additionalServiceId, Id, 1, @now, @emptyGuid
+                 SELECT @additionalServiceId, Id, 1, @now, @noUser
                    FROM catalogue.Capabilities
                   WHERE CapabilityRef = 'C30';
         END;
@@ -239,10 +242,10 @@ BEGIN
                  VALUES (@additionalServiceId, @additionalServiceItemType, 'NotEmis Web GP additional service', 99999, @publishedStatus, @now);
 
             INSERT INTO catalogue.AdditionalServices(CatalogueItemId, Summary, FullDescription, LastUpdated, LastUpdatedBy, SolutionId)
-                 VALUES (@additionalServiceId,'Addition to NotEmis Web GP', 'NotEmis Web GP Addition Full Description', @now , @emptyGuid, @solutionId);
+                 VALUES (@additionalServiceId,'Addition to NotEmis Web GP', 'NotEmis Web GP Addition Full Description', @now , @noUser, @solutionId);
 
             INSERT INTO catalogue.CataloguePrices(CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CurrencyCode, LastUpdated, Price) 
-                 VALUES (@additionalServiceId, 2, 1, 'D43C661A-0587-45E1-B315-5E5091D6E9D0', 1, 'GBP', @now, 699.99);
+                 VALUES (@additionalServiceId, 2, 1, @bed, 1, 'GBP', @now, 699.99);
         END;
     END;
 END;

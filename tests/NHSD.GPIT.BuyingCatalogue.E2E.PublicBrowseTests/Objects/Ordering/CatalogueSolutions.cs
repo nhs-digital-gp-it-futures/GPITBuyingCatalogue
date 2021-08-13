@@ -18,8 +18,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         public static By CatalogueSolutionsRecipientsDateErrorMessage => By.Id("select-solution-service-recipients-date-error");
 
-        public static By CatalogueSolutionsSelectFlatOnDemandInput => By.Id("Quantity");
+        public static By CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput => By.Id("Quantity");
 
-        public static By CatalogueSolutionsSelectFlatOnDemandInputErrorMessage => By.Id("Quantity-error");
+        public static By CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInputErrorMessage => By.Id("Quantity-error");
+
+        public static By CatalogueSolutionsSelectFlatOnDemandRadioInputErrorMessage => By.Id("select-flat-on-demand-quantity-error");
+
+        public static By CatalogueSolutionsEditSolutionAgreedPriceInput => By.Id("OrderItem_AgreedPrice");
+
+        public static By CatalogueSolutionsEditSolutionAgreedPriceInputErrorMessage => By.Id("OrderItem_AgreedPrice-error");
+
+        public static By CatalogueSolutionsEditSolutionFirstQuantityInput => By.Id("OrderItem_ServiceRecipients_0__Quantity");
+
+        public static By CatalogueSolutionsEditSolutionFirstQuantityInputErrorMessage => By.Id("OrderItem_ServiceRecipients_0__Quantity-error");
+
+        public static By CatalogueSolutionsEditSolutionFirstDateDayInput => By.Id("OrderItem_ServiceRecipients_0__Day");
+
+        public static By CatalogueSOlutionsEditSolutionFirstDateInputErrorMessage => By.Id("edit-solution-error");
+
+        public static By CatalogueSolutionsEditSolutionFirstDateMonthInput => By.Id("OrderItem_ServiceRecipients_0__Month");
+
+        public static By CatalogueSolutionsEditSolutionFirstDateYearInput => By.Id("OrderItem_ServiceRecipients_0__Year");
+
+        public static By CatalogueSolutionsEditSolutionEditServiceRecipientsButton => By.ClassName("nhsuk-button--secondary");
+
+        public static By CatalogueSolutionsEditSolutionDeleteSolutionLink => By.LinkText("Delete Catalogue Solution");
     }
 }

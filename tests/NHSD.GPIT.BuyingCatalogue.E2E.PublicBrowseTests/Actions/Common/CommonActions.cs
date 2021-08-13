@@ -69,6 +69,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             return selectElement.SelectedOption.GetAttribute("value");
         }
 
+        internal void SelectDropDownItemByValue(By targetField, string value)
+        {
+            var selectElement = new SelectElement(Driver.FindElement(targetField));
+            selectElement.SelectByValue(value);
+        }
+
         internal string SelectRandomDropDownItem(By targetField)
         {
             var selectElement = new SelectElement(Driver.FindElement(targetField));

@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         }
 
         public override bool IsComplete =>
-            ClientApplication is null ? false : BrowserBasedModelComplete();
+            ClientApplication is not null && BrowserBasedModelComplete();
 
         public string SupportedBrowsersStatus => (ClientApplication?.SupportedBrowsersComplete()).ToStatus();
 

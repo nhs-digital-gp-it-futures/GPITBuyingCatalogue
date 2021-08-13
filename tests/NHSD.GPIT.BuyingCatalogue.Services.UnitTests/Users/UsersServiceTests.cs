@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [CommonAutoData]
         public static async Task GetUser_CallsSingleAsync_OnRepository(
             [Frozen] Mock<IDbRepository<AspNetUser, BuyingCatalogueDbContext>> dbRepositoryMock,
-            Guid userId,
+            int userId,
             UsersService service)
         {
             dbRepositoryMock.Setup(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()))
@@ -34,17 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             await service.GetUser(userId);
 
             dbRepositoryMock.Verify(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
-        }
-
-        [Fact]
-        public static async Task GetAllUsersForOrganisation_InvalidId_ThrowsException()
-        {
-            var service = new UsersService(
-                Mock.Of<IDbRepository<AspNetUser, BuyingCatalogueDbContext>>());
-
-            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.GetAllUsersForOrganisation(Guid.Empty));
-
-            actual.ParamName.Should().Be("organisationId");
         }
 
         [Fact]
@@ -63,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var service = new UsersService(
                 mockUsersRepository.Object);
 
-            await service.GetAllUsersForOrganisation(Guid.NewGuid());
+            await service.GetAllUsersForOrganisation(27);
 
             mockUsersRepository.Verify(x => x.GetAllAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));
         }
@@ -82,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var service = new UsersService(
                 mockUsersRepository.Object);
 
-            await service.EnableOrDisableUser(Guid.NewGuid(), enabled);
+            await service.EnableOrDisableUser(13, enabled);
 
             Assert.Equal(enabled, user.Disabled);
             mockUsersRepository.Verify(r => r.SingleAsync(It.IsAny<Expression<Func<AspNetUser, bool>>>()));

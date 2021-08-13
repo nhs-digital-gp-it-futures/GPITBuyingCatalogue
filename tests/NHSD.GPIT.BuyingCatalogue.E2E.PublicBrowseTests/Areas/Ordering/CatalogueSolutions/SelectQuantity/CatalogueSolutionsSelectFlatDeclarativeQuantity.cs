@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -13,7 +12,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.SelectQuantity
 {
     public sealed class CatalogueSolutionsSelectFlatDeclarativeQuantity
-    : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
         private static readonly CallOffId CallOffId = new(90004, 01);
         private static readonly string OdsCode = "03F";
@@ -38,63 +37,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
             CommonActions
-                .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandInput)
+                .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput)
                 .Should()
                 .BeTrue();
         }
 
-        [Fact]
-        public void CatalogueSolutionsSelectFlatDeclarativeQuantity_NoInput_ThrowsError()
-        {
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectFlatDeclarativeQuantity))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandInputErrorMessage,
-                "Enter a quantity")
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void CatalogueSolutionsSelectFlatDeclarativeQuantity_NotANumberInput_ThrowsError()
-        {
-            TextGenerators.TextInputAddText(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandInput,
-                10);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectFlatDeclarativeQuantity))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandInputErrorMessage,
-                "Quantity must be a number")
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void CatalogueSolutionsSelectFlatDeclarativeQuantity_InputZero_ThrowsError()
+        [Theory]
+        [InlineData("", "Enter a quantity")]
+        [InlineData("ABC", "Quantity must be a number")]
+        [InlineData("0", "Quantity must be greater than zero")]
+        public void CatalogueSolutionsSelectFlatDeclarativeQuantity_IncorrectInput_ThrowsError(
+            string errorValue,
+            string expectedErrorMessage)
         {
             CommonActions.ElementAddValue(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandInput,
-                "0");
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput,
+                errorValue);
 
             CommonActions.ClickSave();
 
@@ -108,8 +66,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandInputErrorMessage,
-                "Quantity must be greater than zero")
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInputErrorMessage,
+                expectedErrorMessage)
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectFlatDeclarative_CorrectInput_ExpectedResult()
+        {
+            CommonActions.ElementAddValue(
+                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput,
+                "123");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.EditSolution))
                 .Should()
                 .BeTrue();
         }
@@ -121,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.S
             InitializeMemoryCacheHander(OdsCode);
 
             using var context = GetEndToEndDbContext();
-            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 2);
+            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 3);
 
             var firstServiceRecipient = MemoryCache.GetServiceRecipients().FirstOrDefault();
 

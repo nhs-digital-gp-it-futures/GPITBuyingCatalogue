@@ -13,15 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
         {
             builder.ToTable("Organisations", Schemas.Organisations);
 
-            builder.HasKey(o => o.Id)
-                .IsClustered(false);
+            builder.HasKey(o => o.Id);
 
             builder.Property(o => o.Address)
                 .HasConversion(
                     a => JsonSerializer.Serialize(a, null),
                     a => JsonSerializer.Deserialize<Address>(a, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
 
-            builder.Property(o => o.Id).ValueGeneratedNever();
+            builder.Property(o => o.Id).ValueGeneratedOnAdd();
             builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
             builder.Property(o => o.Name)
                 .IsRequired()
@@ -30,8 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Configuration
             builder.Property(o => o.OdsCode).HasMaxLength(8);
             builder.Property(o => o.PrimaryRoleId).HasMaxLength(8);
 
-            builder.HasIndex(o => o.Name, "IX_OrganisationName")
-                .IsClustered();
+            builder.HasIndex(o => o.Name, "AK_Organisations_Name")
+                .IsUnique();
         }
     }
 }

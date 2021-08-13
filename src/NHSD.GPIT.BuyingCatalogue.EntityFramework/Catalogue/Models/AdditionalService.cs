@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public DateTime? LastUpdated { get; set; }
 
-        public Guid? LastUpdatedBy { get; set; }
+        public int? LastUpdatedBy { get; set; }
 
         public CatalogueItemId SolutionId { get; set; }
 

@@ -21,7 +21,7 @@ module "webapp" {
   sa_connection_string = module.storage_account.primary_connection_string
   aspnet_environment = "Development"
   sqlserver_name = module.sql_server_pri.sql_server_name
-  sqlserver_rg = azurerm_resource_group.sql-primary.name
+  sqlserver_rg = azurerm_resource_group.sql-server.name
   instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
   primary_vpn = var.primary_vpn
   secondary_vpn = var.secondary_vpn

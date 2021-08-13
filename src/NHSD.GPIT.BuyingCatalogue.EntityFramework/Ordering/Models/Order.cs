@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public string Description { get; set; }
 
         // TODO: remove
-        public Guid OrderingPartyId { get; set; }
+        public int OrderingPartyId { get; set; }
 
         public int? OrderingPartyContactId { get; set; }
 
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public DateTime LastUpdated => lastUpdated;
 
-        public Guid LastUpdatedBy => lastUpdatedBy;
+        public int LastUpdatedBy => lastUpdatedBy;
 
         public string LastUpdatedByName => lastUpdatedByName;
 

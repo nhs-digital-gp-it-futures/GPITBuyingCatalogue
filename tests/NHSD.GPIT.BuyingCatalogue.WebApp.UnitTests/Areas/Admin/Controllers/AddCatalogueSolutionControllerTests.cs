@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Index_ModelStateValid_AddsExpectedCatalogueItem(
             AddSolutionModel model,
             Mock<ISolutionsService> mockService,
-            Guid userId)
+            int userId)
         {
             var frameworks = new List<FrameworkModel> { new() { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
 
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
                 .ReturnsAsync((CatalogueItem)null);
 
-            var controller = GetController(mockService, Guid.NewGuid());
+            var controller = GetController(mockService, 17);
 
             var actual = (await controller.Index(model)).As<RedirectToActionResult>();
 
@@ -166,9 +166,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         private static AddCatalogueSolutionController GetController(
             IMock<ISolutionsService> mockService,
-            Guid userId)
+            int userId)
         {
-            return new(mockService.Object)
+            return new AddCatalogueSolutionController(mockService.Object)
             {
                 ControllerContext = new ControllerContext
                 {

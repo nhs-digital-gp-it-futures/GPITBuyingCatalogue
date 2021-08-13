@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}")]
-        public async Task<IActionResult> Details(Guid organisationId)
+        public async Task<IActionResult> Details(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var users = await userService.GetAllUsersForOrganisation(organisationId);
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/edit")]
-        public async Task<IActionResult> EditOrganisation(Guid organisationId)
+        public async Task<IActionResult> EditOrganisation(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{organisationId}/edit")]
-        public async Task<IActionResult> EditOrganisation(Guid organisationId, EditOrganisationModel model)
+        public async Task<IActionResult> EditOrganisation(int organisationId, EditOrganisationModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/edit/confirmation")]
-        public async Task<IActionResult> EditConfirmation(Guid organisationId)
+        public async Task<IActionResult> EditConfirmation(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
@@ -129,11 +129,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var (organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
+            (OdsOrganisation organisation, _) = await odsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
             var (orgId, error) = await organisationsService.AddOdsOrganisation(organisation, model.CatalogueAgreementSigned);
 
-            if (orgId == Guid.Empty)
+            if (orgId == 0)
             {
                 return RedirectToAction(
                     nameof(Error),
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("find/select/create/confirmation")]
-        public async Task<IActionResult> Confirmation(Guid organisationId)
+        public async Task<IActionResult> Confirmation(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/adduser")]
-        public async Task<IActionResult> AddUser(Guid organisationId)
+        public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
 
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{organisationId}/adduser")]
-        public async Task<IActionResult> AddUser(Guid organisationId, AddUserModel model)
+        public async Task<IActionResult> AddUser(int organisationId, AddUserModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/adduser/confirmation/{userId}")]
-        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, Guid userId)
+        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, int userId)
         {
             var user = await userService.GetUser(userId);
 
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(Guid organisationId, Guid userId)
+        public async Task<IActionResult> UserDetails(int organisationId, int userId)
         {
             var user = await userService.GetUser(userId);
             var organisation = await organisationsService.GetOrganisation(organisationId);
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{organisationId}/{userId}")]
-        public async Task<IActionResult> UserDetails(Guid organisationId, string userId, UserDetailsModel model)
+        public async Task<IActionResult> UserDetails(int organisationId, string userId, UserDetailsModel model)
         {
             await userService.EnableOrDisableUser(model.User.Id, !model.User.Disabled);
 
@@ -221,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}/disable")]
-        public async Task<IActionResult> UserDisabled(Guid organisationId, Guid userId)
+        public async Task<IActionResult> UserDisabled(int organisationId, int userId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/{userId}/enable")]
-        public async Task<IActionResult> UserEnabled(Guid organisationId, Guid userId)
+        public async Task<IActionResult> UserEnabled(int organisationId, int userId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var user = await userService.GetUser(userId);
@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("proxy/{organisationId}")]
-        public async Task<IActionResult> AddAnOrganisation(Guid organisationId)
+        public async Task<IActionResult> AddAnOrganisation(int organisationId)
         {
             var organisation = await organisationsService.GetOrganisation(organisationId);
             var availableOrganisations = await organisationsService.GetUnrelatedOrganisations(organisationId);
@@ -248,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("proxy/{organisationId}")]
-        public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model, Guid organisationId)
+        public async Task<IActionResult> AddAnOrganisation(AddAnOrganisationModel model, int organisationId)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("removeproxy/{organisationId}/{relatedOrganisationId}")]
-        public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId)
+        public async Task<IActionResult> RemoveAnOrganisation(int organisationId, int relatedOrganisationId)
         {
             var relatedOrganisation = await organisationsService.GetOrganisation(relatedOrganisationId);
 
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("removeproxy/{organisationId}/{relatedOrganisationId}")]
-        public async Task<IActionResult> RemoveAnOrganisation(Guid organisationId, Guid relatedOrganisationId, RemoveAnOrganisationModel model)
+        public async Task<IActionResult> RemoveAnOrganisation(int organisationId, int relatedOrganisationId, RemoveAnOrganisationModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);

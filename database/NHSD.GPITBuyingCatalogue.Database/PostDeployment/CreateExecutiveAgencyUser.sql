@@ -14,7 +14,7 @@ BEGIN
     DECLARE @phoneNumber AS nvarchar(max) = '$(EA_USER_PHONE)';
 
     DECLARE @executiveAgencyRoleId AS nchar(5) = 'RO116';
-    DECLARE @organisationId AS uniqueidentifier = (SELECT Id FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
+    DECLARE @organisationId AS int = (SELECT Id FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
 
     INSERT INTO users.AspNetUsers
     (
@@ -24,7 +24,7 @@ BEGIN
         AccessFailedCount, ConcurrencyStamp, LockoutEnabled, SecurityStamp, TwoFactorEnabled
     )
 	VALUES
-	(CAST(NEWID() AS nchar(36)), @email, @normalizedUserName, @passwordHash,
+	(CAST(1 AS nchar(36)), @email, @normalizedUserName, @passwordHash,
         @firstName, @lastName, @email, @normalizedUserName, 1, @phoneNumber, 1,
         @organisationId, 'Authority', 1, 0,
         0, NEWID(), 1, NEWID(), 0);

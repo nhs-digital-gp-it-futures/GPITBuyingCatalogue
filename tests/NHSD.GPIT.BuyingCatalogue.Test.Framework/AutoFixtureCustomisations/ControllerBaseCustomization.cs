@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 }
             }
 
-            private static ClaimsPrincipal CreateClaimsPrincipal(Guid organisationId)
+            private static ClaimsPrincipal CreateClaimsPrincipal(int organisationId)
             {
                 var claims = new[]
                 {
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                 return new ClaimsPrincipal(new ClaimsIdentity(claims, "mock"));
             }
 
-            private static Guid GetOrganisationId(ISpecimenContext context)
+            private static int GetOrganisationId(ISpecimenContext context)
             {
                 // Order must be frozen for this to work correctly
                 var order = context.Create<Order>();

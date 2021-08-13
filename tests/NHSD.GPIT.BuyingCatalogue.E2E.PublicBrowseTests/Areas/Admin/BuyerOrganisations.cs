@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -52,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
                 .Should().HaveCount(organisations.Select(o => o.Name).Count())
                 .And.BeEquivalentTo(organisations.Select(o => o.Name));
             actualOrganisationCodes.Should().BeEquivalentTo(organisations.Select(o => o.OdsCode));
-            actualOrganisationIdLinks.Select(o => Guid.Parse(o)).Should().BeEquivalentTo(organisations.Select(o => o.OrganisationId));
+            actualOrganisationIdLinks.Select(o => int.Parse(o, CultureInfo.InvariantCulture)).Should().BeEquivalentTo(organisations.Select(o => o.OrganisationId));
         }
     }
 }

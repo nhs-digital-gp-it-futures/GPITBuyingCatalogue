@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
             builder.ToTable("AspNetRoles", Schemas.Users);
 
             builder.HasKey(r => r.Id);
+            builder.Property(r => r.Id).ValueGeneratedOnAdd();
 
             builder.Property(r => r.Name).HasMaxLength(256).IsRequired();
             builder.Property(r => r.NormalizedName).HasMaxLength(256).IsRequired();

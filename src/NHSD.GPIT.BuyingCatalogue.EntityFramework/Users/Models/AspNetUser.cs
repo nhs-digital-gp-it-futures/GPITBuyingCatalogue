@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
-    public sealed class AspNetUser : IdentityUser<Guid>
+    public sealed class AspNetUser : IdentityUser<int>
     {
         public AspNetUser()
         {
@@ -14,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
             AspNetUserTokens = new HashSet<AspNetUserToken>();
         }
 
-        public Guid PrimaryOrganisationId { get; set; }
+        public int PrimaryOrganisationId { get; set; }
 
         public string OrganisationFunction { get; set; }
 
