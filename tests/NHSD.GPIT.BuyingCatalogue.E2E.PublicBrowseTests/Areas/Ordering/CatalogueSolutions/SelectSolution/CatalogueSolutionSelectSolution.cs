@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
     public sealed class CatalogueSolutionSelectSolution
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private static readonly CallOffId CallOffId = new(90004, 01);
+        private static readonly CallOffId CallOffId = new(90006, 1);
 
         private static readonly Dictionary<string, string> Parameters =
             new() { { "OdsCode", "03F" }, { nameof(CallOffId), CallOffId.ToString() } };
@@ -91,16 +91,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients)).Should().BeTrue();
-
-            CreateOrderItemModel cacheModel = Session.GetOrderStateFromSession(CallOffId.ToString());
-
-            cacheModel.CallOffId.Should().Be(CallOffId);
-            cacheModel.CatalogueItemId.Should().Be(expectedCatalogueItemId);
-            cacheModel.CatalogueItemName.Should().BeEquivalentTo(expectedCatalogueItemName);
-            cacheModel.SkipPriceSelection.Should().BeTrue();
-            cacheModel.AgreedPrice.Should().NotBeNull();
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.EditSolution))
+                .Should()
+                .BeTrue();
         }
 
         public Task DisposeAsync()
