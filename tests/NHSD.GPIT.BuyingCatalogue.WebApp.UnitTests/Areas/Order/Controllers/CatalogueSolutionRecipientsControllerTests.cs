@@ -182,6 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             serviceRecipients.First().Selected = true;
             state.IsNewSolution = false;
+            state.HasHitEditSolution = true;
 
             orderSessionServiceMock.Setup(s => s.GetOrderStateFromSession(state.CallOffId)).Returns(state);
 
