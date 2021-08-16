@@ -13,7 +13,6 @@
      IntegrationsUrl nvarchar(1000) NULL,
      AboutUrl nvarchar(1000) NULL,
      ServiceLevelAgreement nvarchar(1000) NULL,
-     WorkOfPlan nvarchar(max) NULL,
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy int NULL,
      CONSTRAINT PK_Solutions PRIMARY KEY (CatalogueItemId),
