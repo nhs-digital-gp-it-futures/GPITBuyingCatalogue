@@ -537,7 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 5,
-                                Name = "Test Pricing Patient",
+                                Name = "Test Pricing Patient No Contact",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
                             },
