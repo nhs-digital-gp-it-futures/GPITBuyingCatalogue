@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             orderSessionService.SetOrderStateToSession(state);
 
-            if (!state.IsNewSolution)
+            if (state.HasHitEditSolution)
             {
                 return RedirectToAction(
                     nameof(CatalogueSolutionsController.EditSolution),

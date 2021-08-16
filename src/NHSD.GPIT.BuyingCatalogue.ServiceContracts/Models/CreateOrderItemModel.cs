@@ -40,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 
         public bool SkipPriceSelection { get; set; }
 
+        public bool HasHitEditSolution { get; set; }
+
         public string CurrencySymbol { get; set; }
 
         public string TimeUnitDescription

@@ -53,6 +53,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             return Driver.FindElements(targetField)[index].FindElement(By.TagName("label")).Text;
         }
 
+        internal void ClickCheckboxByLabel(string labelText)
+        {
+            var targetId =
+            Driver
+            .FindElements(By.ClassName("nhsuk-checkboxes__label"))
+            .FirstOrDefault(label => label.Text == labelText)
+            .GetAttribute("for");
+
+            Driver.FindElement(By.Id(targetId)).Click();
+        }
+
         internal void ClickRadioButtonWithValue(string value)
         {
             Driver.FindElements(CommonSelectors.RadioButtonItems)
@@ -142,6 +153,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             Driver
             .FindElements(By.ClassName("nhsuk-checkboxes__input"))
             .Count(cb => cb.Selected);
+
+        internal bool CheckBoxSelectedByLabelText(string labelText)
+        {
+            var targetId =
+            Driver
+            .FindElements(By.ClassName("nhsuk-checkboxes__label"))
+            .FirstOrDefault(label => label.Text == labelText)
+            .GetAttribute("for");
+
+            return Driver.FindElement(By.Id(targetId)).Selected;
+        }
 
         internal bool AllCheckBoxesSelected() =>
             Driver
