@@ -74,12 +74,9 @@
     <Folder Include="PostDeployment" />
     <Folder Include="Security\Roles" />
     <Folder Include="PostDeployment\IntegrationTests" />
-    <Folder Include="Types" />
-    <Folder Include="Stored Procedures" />
     <Folder Include="Security\Schemas" />
     <Folder Include="PostDeployment\ProdLikeData" />
     <Folder Include="PreDeployment" />
-    <Folder Include="Functions" />
     <Folder Include="Ordering" />
     <Folder Include="Ordering\Tables" />
     <Folder Include="Ordering\Views" />
@@ -90,6 +87,12 @@
     <Folder Include="Organisations" />
     <Folder Include="Organisations\Tables" />
     <Folder Include="Cache" />
+    <Folder Include="Import" />
+    <Folder Include="Publish" />
+    <Folder Include="Import\Functions" />
+    <Folder Include="Import\Stored Procedures" />
+    <Folder Include="Publish\Stored Procedures" />
+    <Folder Include="Import\Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
@@ -99,10 +102,6 @@
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />
     <None Include="PostDeployment\IntegrationTests\PostDeployment.sql" />
     <None Include="PostDeployment\IntegrationTests\RestoreUserAndLogin.sql" />
-    <Build Include="Types\SolutionCapability.sql" />
-    <Build Include="Stored Procedures\ImportSolution.sql" />
-    <Build Include="Stored Procedures\PublishCatalogueItem.sql" />
-    <Build Include="Stored Procedures\ImportAdditionalService.sql" />
     <Build Include="Security\Schemas\import.sql" />
     <Build Include="Security\Schemas\publish.sql" />
     <Build Include="Security\Roles\Importer.sql" />
@@ -115,12 +114,6 @@
     <None Include="PostDeployment\InsertPricingUnits.sql" />
     <None Include="PostDeployment\InsertAdditionalServices.sql" />
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
-    <Build Include="Stored Procedures\ImportAssociatedService.sql" />
-    <Build Include="Functions\GetSupplierId.sql" />
-    <Build Include="Types\AssociatedCatalogueItems.sql" />
-    <Build Include="Types\Solutions.sql" />
-    <Build Include="Types\AdditionalServices.sql" />
-    <Build Include="Types\AssociatedServices.sql" />
     <None Include="PostDeployment\CreateTestUsers.sql" />
     <None Include="PostDeployment\CreateClinicalCommissioningGroups.sql" />
     <None Include="PostDeployment\CreateCommissioningSupportUnits.sql" />
@@ -178,6 +171,16 @@
     <Build Include="Security\Schemas\cache.sql" />
     <Build Include="Cache\SessionData.sql" />
     <Build Include="Users\Tables\DataProtectionKeys.sql" />
+    <Build Include="Import\Functions\GetSupplierId.sql" />
+    <Build Include="Import\Stored Procedures\ImportAdditionalService.sql" />
+    <Build Include="Import\Stored Procedures\ImportAssociatedService.sql" />
+    <Build Include="Import\Stored Procedures\ImportSolution.sql" />
+    <Build Include="Publish\Stored Procedures\PublishCatalogueItem.sql" />
+    <Build Include="Import\Types\AdditionalServices.sql" />
+    <Build Include="Import\Types\AssociatedCatalogueItems.sql" />
+    <Build Include="Import\Types\AssociatedServices.sql" />
+    <Build Include="Import\Types\SolutionCapability.sql" />
+    <Build Include="Import\Types\Solutions.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
