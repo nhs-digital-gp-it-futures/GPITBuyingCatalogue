@@ -25,10 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public Address Address { get; set; }
 
-        public string OdsCode { get; set; }
-
-        public Guid? CrmRef { get; set; }
-
         public bool Deleted { get; set; }
 
         public DateTime LastUpdated { get; set; }
