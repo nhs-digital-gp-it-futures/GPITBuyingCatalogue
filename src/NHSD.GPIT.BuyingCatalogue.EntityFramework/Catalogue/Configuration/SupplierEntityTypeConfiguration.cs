@@ -31,7 +31,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.Summary).HasMaxLength(1100);
             builder.Property(s => s.SupplierUrl).HasMaxLength(1000);
 
-            builder.HasIndex(s => s.Name, "IX_SupplierName");
+            builder.HasOne(s => s.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(s => s.LastUpdatedBy)
+                .HasConstraintName("FK_Suppliers_LastUpdatedBy");
+
+            builder.HasIndex(s => s.Name, "IX_Suppliers_Name");
         }
     }
 }

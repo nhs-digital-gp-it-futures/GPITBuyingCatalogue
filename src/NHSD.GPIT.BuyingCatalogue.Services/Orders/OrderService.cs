@@ -57,6 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             return await dbContext.Organisations
                 .Where(o => o.Id == organisationId)
+                .Include(o => o.Orders).ThenInclude(o => o.LastUpdatedByUser)
                 .SelectMany(o => o.Orders)
                 .AsNoTracking()
                 .ToListAsync();

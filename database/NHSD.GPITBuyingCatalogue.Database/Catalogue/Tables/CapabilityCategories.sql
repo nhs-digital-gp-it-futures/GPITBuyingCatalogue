@@ -2,6 +2,6 @@
 (
      Id int NOT NULL,
      [Name] nvarchar(50) NOT NULL,
-     CONSTRAINT PK_CapabilityCategory PRIMARY KEY CLUSTERED (Id),
-     CONSTRAINT IX_CapabilityCategoryName UNIQUE NONCLUSTERED ([Name])
+     CONSTRAINT PK_CapabilityCategories_Category PRIMARY KEY (Id),
+     CONSTRAINT AK_CapabilityCategories_Name UNIQUE ([Name]),
 );

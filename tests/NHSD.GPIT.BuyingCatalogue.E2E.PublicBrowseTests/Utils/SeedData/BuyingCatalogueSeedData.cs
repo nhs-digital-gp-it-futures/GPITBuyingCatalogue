@@ -31,14 +31,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "002"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "003"), IsFoundation = true, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "004"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "005"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99997, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "002"), IsFoundation = false, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0 },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "002"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "003"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "004"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "005"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99997, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "002"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
             };
             context.AddRange(frameworkSolutions);
 
@@ -728,7 +728,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Id = 99999,
                     Name = "DFOCVC Supplier",
                     LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = 2, // bob smith
+                    LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
                     Address = new()
@@ -748,7 +748,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             FirstName = "Dave",
                             LastName = "Smith",
                             LastUpdated = DateTime.UtcNow,
-                            LastUpdatedBy = 0,
                             PhoneNumber = "00987654321",
                             SupplierId = 99999,
                         },
@@ -761,7 +760,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Id = 99998,
                     Name = "E2E Test Supplier With Contact",
                     LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = 2, // bob smith
+                    LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier WC",
                     Deleted = false,
                     Address = new()
@@ -792,7 +791,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Id = 99997,
                     Name = "E2E Test Supplier",
                     LastUpdated = DateTime.UtcNow,
-                    LastUpdatedBy = 2, // bob smith
+                    LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier",
                     Deleted = false,
                     Address = new()

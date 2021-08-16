@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -40,7 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int LastUpdatedBy => lastUpdatedBy;
 
-        public string LastUpdatedByName => lastUpdatedByName;
+        public AspNetUser LastUpdatedByUser { get; set; }
+
+        public string LastUpdatedByName => $"{LastUpdatedByUser.FirstName} {LastUpdatedByUser.LastName}";
 
         public DateTime? Completed => completed;
 

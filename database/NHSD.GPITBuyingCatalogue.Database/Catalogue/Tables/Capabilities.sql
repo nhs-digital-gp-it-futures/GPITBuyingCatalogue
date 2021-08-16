@@ -10,8 +10,8 @@
      SourceUrl nvarchar(1000) NULL,
      EffectiveDate date NOT NULL,
      CategoryId int NOT NULL,
-     CONSTRAINT PK_Capability PRIMARY KEY (Id),
-     CONSTRAINT FK_Capability_CapabilityCategory FOREIGN KEY (CategoryId) REFERENCES catalogue.CapabilityCategories(Id),
-     CONSTRAINT FK_Capability_CapabilityStatus FOREIGN KEY (StatusId) REFERENCES catalogue.CapabilityStatus(Id),
-     INDEX IX_CapabilityCapabilityRef (CapabilityRef),
+     CONSTRAINT PK_Capabilities PRIMARY KEY (Id),
+     CONSTRAINT FK_Capabilities_CapabilityCategory FOREIGN KEY (CategoryId) REFERENCES catalogue.CapabilityCategories(Id),
+     CONSTRAINT FK_Capabilities_CapabilityStatus FOREIGN KEY (StatusId) REFERENCES catalogue.CapabilityStatus(Id),
+     INDEX IX_Capabilities_CapabilityRef (CapabilityRef),
 );

@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(c => c.Id);
 
-            builder.HasIndex(c => c.SupplierId, "IX_SupplierContactSupplierId");
-
             builder.Property(c => c.Id).ValueGeneratedNever();
             builder.Property(c => c.Email)
                 .IsRequired()
@@ -36,7 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasOne<Supplier>()
                 .WithMany(s => s.SupplierContacts)
                 .HasForeignKey(c => c.SupplierId)
-                .HasConstraintName("FK_SupplierContact_Supplier");
+                .HasConstraintName("FK_SupplierContacts_Supplier");
+
+            builder.HasOne(c => c.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(c => c.LastUpdatedBy)
+                .HasConstraintName("FK_SupplierContacts_LastUpdatedBy");
+
+            builder.HasIndex(c => c.SupplierId, "IX_SupplierContacts_SupplierId");
         }
     }
 }

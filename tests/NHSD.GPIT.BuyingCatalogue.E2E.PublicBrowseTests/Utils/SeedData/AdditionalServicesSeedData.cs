@@ -25,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "This is the summary of the Additional Service",
                         FullDescription = "This is the description of the Additional Service",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                         Solution = catalogueSolutions.Single(s => s.Id == new CatalogueItemId(99999, "001")).Solution,
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
@@ -35,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             CatalogueItemId = new CatalogueItemId(99999, "001A999"),
                             CapabilityId = 2,
                             LastUpdated = DateTime.UtcNow,
-                            LastUpdatedBy = 0,
                             StatusId = 1,
                         },
                     },

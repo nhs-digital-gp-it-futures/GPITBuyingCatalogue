@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     new SolutionCustomization(),
                     new HostingTypeSectionModelCustomization(),
                     new ClientApplicationTypeSectionModelCustomization(),
+                    new OrganisationCustomization(),
                     new InMemoryDbCustomization(Guid.NewGuid().ToString()))))
         {
         }

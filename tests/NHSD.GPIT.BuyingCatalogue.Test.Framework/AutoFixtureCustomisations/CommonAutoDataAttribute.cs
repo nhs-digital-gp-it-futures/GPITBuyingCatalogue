@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     new IgnoreCircularReferenceCustomisation(),
                     new SolutionCustomization(),
                     new HostingTypeSectionModelCustomization(),
+                    new OrganisationCustomization(),
                     new ClientApplicationTypeSectionModelCustomization())))
         {
         }

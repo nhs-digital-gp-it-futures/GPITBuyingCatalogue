@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 {
@@ -6,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
     {
         public (int UserId, string UserName) GetUserInfo()
         {
-            return (0, "Mr Test");
+            return (UserSeedData.BobId, "Mr Test");
         }
     }
 }

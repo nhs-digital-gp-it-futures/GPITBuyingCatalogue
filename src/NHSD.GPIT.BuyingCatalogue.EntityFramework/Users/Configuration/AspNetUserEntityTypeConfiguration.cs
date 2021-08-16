@@ -34,6 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
             builder.Property(u => u.PhoneNumberConfirmed).IsRequired().HasDefaultValue(0);
             builder.Property(u => u.UserName).HasMaxLength(256).IsRequired();
 
+            builder.HasOne(u => u.PrimaryOrganisation)
+                .WithMany()
+                .HasForeignKey(u => u.PrimaryOrganisationId)
+                .HasConstraintName("FK_AspNetUsers_OrganisationId");
+
             builder.HasIndex(u => u.NormalizedEmail, "AK_AspNetUsers_NormalizedEmail").IsUnique();
             builder.HasIndex(u => u.NormalizedUserName, "AK_AspNetUsers_NormalizedUserName")
                 .IsUnique();
