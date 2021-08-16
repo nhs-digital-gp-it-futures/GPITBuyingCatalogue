@@ -15,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
         public MobileTabletBasedModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
+            if (catalogueItem is null)
+                throw new ArgumentNullException(nameof(catalogueItem));
+
             var clientApplicationTypes = catalogueItem.Solution?.GetClientApplication()?.ClientApplicationTypes;
 
             if (clientApplicationTypes?.Any(type => type.Equals("native-mobile", StringComparison.OrdinalIgnoreCase)) ?? false)
