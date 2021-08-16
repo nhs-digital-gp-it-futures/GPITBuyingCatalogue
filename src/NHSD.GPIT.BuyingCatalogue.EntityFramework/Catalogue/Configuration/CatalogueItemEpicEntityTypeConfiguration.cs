@@ -13,33 +13,38 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(se => new { se.CatalogueItemId, se.CapabilityId, se.EpicId });
 
-            builder.Property(se => se.CatalogueItemId)
+            builder.Property(e => e.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            builder.Property(se => se.EpicId).HasMaxLength(10);
+            builder.Property(e => e.EpicId).HasMaxLength(10);
             builder.HasOne<Capability>()
                 .WithMany()
-                .HasForeignKey(d => d.CapabilityId)
+                .HasForeignKey(e => e.CapabilityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SolutionEpic_Capability");
+                .HasConstraintName("FK_CatalogueItemEpics_Capability");
 
-            builder.HasOne(se => se.Epic)
+            builder.HasOne(e => e.Epic)
                 .WithMany()
-                .HasForeignKey(se => se.EpicId)
+                .HasForeignKey(e => e.EpicId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SolutionEpic_Epic");
+                .HasConstraintName("FK_CatalogueItemEpics_Epic");
 
             builder.HasOne<CatalogueItem>()
-                .WithMany(s => s.CatalogueItemEpics)
-                .HasForeignKey(se => se.CatalogueItemId)
-                .HasConstraintName("FK_SolutionEpic_Solution");
+                .WithMany(i => i.CatalogueItemEpics)
+                .HasForeignKey(e => e.CatalogueItemId)
+                .HasConstraintName("FK_CatalogueItemEpics_CatalogueItem");
 
-            builder.HasOne(se => se.Status)
+            builder.HasOne(e => e.Status)
                 .WithMany()
-                .HasForeignKey(se => se.StatusId)
+                .HasForeignKey(e => e.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SolutionEpic_Status");
+                .HasConstraintName("FK_CatalogueItemEpics_Status");
+
+            builder.HasOne(e => e.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.LastUpdatedBy)
+                .HasConstraintName("FK_CatalogueItemEpics_LastUpdatedBy");
         }
     }
 }

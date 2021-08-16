@@ -8,10 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
     {
         public void Configure(EntityTypeBuilder<DefaultDeliveryDate> builder)
         {
-            builder.ToTable("DefaultDeliveryDates", "ordering");
+            builder.ToTable("DefaultDeliveryDates", Schemas.Ordering);
 
             builder.HasKey(d => new { d.OrderId, d.CatalogueItemId })
-                .HasName("PK_DefaultDeliveryDate");
+                .HasName("PK_DefaultDeliveryDates");
 
             builder.Property(d => d.CatalogueItemId)
                 .HasMaxLength(14)
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasOne(d => d.Order)
                 .WithMany(o => o.DefaultDeliveryDates)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK_DefaultDeliveryDate_Order");
+                .HasConstraintName("FK_DefaultDeliveryDates_Order");
         }
     }
 }

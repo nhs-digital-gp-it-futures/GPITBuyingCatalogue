@@ -11,7 +11,7 @@
      Deleted bit CONSTRAINT DF_Supplier_Deleted DEFAULT 0 NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy int NULL,
-     CONSTRAINT PK_Suppliers PRIMARY KEY CLUSTERED (Id),
+     CONSTRAINT PK_Suppliers PRIMARY KEY (Id),
      CONSTRAINT FK_Suppliers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-     INDEX IX_SupplierName NONCLUSTERED ([Name])
+     INDEX IX_Suppliers_Name ([Name]),
 );

@@ -95,7 +95,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         }",
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -107,13 +106,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 Email = "test@test.com",
                                 Department = "Fruit controller",
                                 LastUpdated = DateTime.UtcNow,
-                                LastUpdatedBy = 0,
                             },
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                         {
-                            new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0, StatusId = 1 },
+                            new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, StatusId = 1 },
                         },
                     CatalogueItemEpics = new List<CatalogueItemEpic>
                         {
@@ -190,7 +188,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         CatalogueItemId = new CatalogueItemId(99999, "002"),
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                     },
                 },
                 new CatalogueItem
@@ -277,7 +274,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         }",
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -289,13 +285,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 Email = "test@test.com",
                                 Department = "Fruit wrangler",
                                 LastUpdated = DateTime.UtcNow,
-                                LastUpdatedBy = 0,
                             },
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                         {
-                            new() { CapabilityId = 1, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0, StatusId = 1 },
+                            new() { CapabilityId = 1, LastUpdated = DateTime.UtcNow, StatusId = 1 },
                         },
                     CatalogueItemEpics = new List<CatalogueItemEpic>
                         {
@@ -388,7 +383,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         }",
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -400,13 +394,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 Email = "test@test.com",
                                 Department = "Fruit wrangler",
                                 LastUpdated = DateTime.UtcNow,
-                                LastUpdatedBy = 0,
                             },
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                         {
-                            new() { CapabilityId = 2, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0, StatusId = 1 },
+                            new() { CapabilityId = 2, LastUpdated = DateTime.UtcNow, StatusId = 1 },
                         },
                     CatalogueItemEpics = new List<CatalogueItemEpic>
                         {
@@ -426,9 +419,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Solution = new Solution
                     {
                         CatalogueItemId = new CatalogueItemId(99999, "005"),
-
-                        // Bob Smith
-                        LastUpdatedBy = 2,
+                        LastUpdatedBy = UserSeedData.BobId,
                         LastUpdated = DateTime.UtcNow,
                     },
                 },
@@ -516,25 +507,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         }",
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
                         {
-                            new MarketingContact
+                            new()
                             {
                                 FirstName = "Bob",
                                 LastName = "Smith",
                                 Email = "test@test.com",
                                 Department = "Fruit controller",
                                 LastUpdated = DateTime.UtcNow,
-                                LastUpdatedBy = 0,
                             },
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                         {
-                            new CatalogueItemCapability { CapabilityId = 43, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0, StatusId = 1 },
+                            new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, StatusId = 1 },
                         },
                     PublishedStatus = PublicationStatus.Published,
                 },
@@ -622,25 +611,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         }",
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
                         {
-                            new MarketingContact
+                            new()
                             {
                                 FirstName = "Bob",
                                 LastName = "Smith",
                                 Email = "test@test.com",
                                 Department = "Fruit controller",
                                 LastUpdated = DateTime.UtcNow,
-                                LastUpdatedBy = 0,
                             },
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {
-                        new CatalogueItemCapability { CapabilityId = 43, LastUpdated = DateTime.UtcNow, LastUpdatedBy = 0, StatusId = 1 },
+                        new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     CataloguePrices = new List<CataloguePrice>
@@ -786,7 +773,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         }",
                         Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
-                        LastUpdatedBy = 0,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
                         MarketingContacts = new List<MarketingContact>
@@ -798,7 +784,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 Email = "test@test.com",
                                 Department = "Fruit controller",
                                 LastUpdated = DateTime.UtcNow,
-                                LastUpdatedBy = 0,
                             },
                         },
                     },

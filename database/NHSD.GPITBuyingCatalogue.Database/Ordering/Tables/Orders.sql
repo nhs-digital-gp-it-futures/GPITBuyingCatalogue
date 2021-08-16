@@ -12,7 +12,6 @@
     Created datetime2 CONSTRAINT DF_Order_Created DEFAULT GETUTCDATE() NOT NULL,
     LastUpdated datetime2 CONSTRAINT DF_Order_LastUpdated DEFAULT GETUTCDATE() NOT NULL CONSTRAINT Order_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
     LastUpdatedBy int NOT NULL,
-    LastUpdatedByName nvarchar(256) NULL,
     Completed datetime2 NULL CONSTRAINT Order_CompletedNotBeforeCreated CHECK (Completed >= LastUpdated AND Completed >= Created),
     OrderStatusId int NOT NULL,
     IsDeleted bit CONSTRAINT DF_Order_IsDeleted DEFAULT 0 NOT NULL,
@@ -23,5 +22,5 @@
     CONSTRAINT FK_Orders_SupplierContact FOREIGN KEY (SupplierContactId) REFERENCES ordering.Contacts (Id),
     CONSTRAINT FK_Orders_OrderStatus FOREIGN KEY (OrderStatusId) REFERENCES ordering.OrderStatus (Id),
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-    INDEX IX_Orders_IsDeleted NONCLUSTERED (IsDeleted),
+    INDEX IX_Orders_IsDeleted (IsDeleted),
 );

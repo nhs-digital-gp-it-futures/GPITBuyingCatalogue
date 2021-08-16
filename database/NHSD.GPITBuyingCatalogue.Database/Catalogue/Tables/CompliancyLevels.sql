@@ -2,6 +2,6 @@
 (
      Id int NOT NULL,
      [Name] nvarchar(16) NOT NULL,
-     CONSTRAINT PK_CompliancyLevel PRIMARY KEY CLUSTERED (Id),
-     CONSTRAINT IX_CompliancyLevelName UNIQUE NONCLUSTERED ([Name])
+     CONSTRAINT PK_CompliancyLevels PRIMARY KEY (Id),
+     CONSTRAINT AK_CompliancyLevels_Name UNIQUE ([Name]),
 );

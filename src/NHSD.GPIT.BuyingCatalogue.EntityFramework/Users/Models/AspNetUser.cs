@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
@@ -14,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
         }
 
         public int PrimaryOrganisationId { get; set; }
+
+        public Organisation PrimaryOrganisation { get; set; }
 
         public string OrganisationFunction { get; set; }
 

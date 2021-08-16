@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
             builder.Property(r => r.Name).HasMaxLength(256).IsRequired();
             builder.Property(r => r.NormalizedName).HasMaxLength(256).IsRequired();
 
-            builder.HasIndex(r => r.NormalizedName, "AK_AspNetRoles")
+            builder.HasIndex(r => r.NormalizedName, "AK_AspNetRoles_NormalizedName")
                 .IsUnique();
         }
     }

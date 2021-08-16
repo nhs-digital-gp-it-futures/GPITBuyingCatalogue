@@ -5,5 +5,5 @@
      NormalizedName nvarchar(256) NOT NULL,
      ConcurrencyStamp nvarchar(max) NULL,
      CONSTRAINT PK_AspNetRoles PRIMARY KEY (Id),
-     CONSTRAINT AK_AspNetRoles UNIQUE (NormalizedName),
+     CONSTRAINT AK_AspNetRoles_NormalizedName UNIQUE (NormalizedName),
 );

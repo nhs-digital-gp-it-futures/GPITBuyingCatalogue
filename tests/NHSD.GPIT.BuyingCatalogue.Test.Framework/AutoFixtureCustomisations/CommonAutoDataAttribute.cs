@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             : base(() => new Fixture().Customize(
                 new CompositeCustomization(
                     new AutoMoqCustomization(),
+                    new AspNetUserCustomization(),
                     new CallOffIdCustomization(),
                     new OrderCustomization(),
                     new CatalogueItemIdCustomization(),
@@ -19,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                     new IgnoreCircularReferenceCustomisation(),
                     new SolutionCustomization(),
                     new HostingTypeSectionModelCustomization(),
+                    new OrganisationCustomization(),
                     new ClientApplicationTypeSectionModelCustomization())))
         {
         }

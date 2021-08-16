@@ -176,8 +176,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 try
                 {
                     ApplyViewsAndTables(bcDb);
-                    BuyingCatalogueSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
+                    BuyingCatalogueSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
                 }
                 catch (Exception ex)

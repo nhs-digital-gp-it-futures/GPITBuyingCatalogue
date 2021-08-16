@@ -10,8 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("Epics", Schemas.Catalogue);
 
-            builder.HasKey(e => e.Id)
-                .IsClustered(false);
+            builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Id).HasMaxLength(10);
             builder.Property(e => e.CompliancyLevel)
@@ -29,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .WithMany(c => c.Epics)
                 .HasForeignKey(e => e.CapabilityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Epic_Capability");
+                .HasConstraintName("FK_Epics_Capability");
         }
     }
 }

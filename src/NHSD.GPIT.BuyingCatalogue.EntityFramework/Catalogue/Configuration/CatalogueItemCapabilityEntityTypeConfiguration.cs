@@ -9,30 +9,35 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<CatalogueItemCapability> builder)
         {
-            builder.HasKey(sc => new { sc.CatalogueItemId, sc.CapabilityId });
+            builder.HasKey(i => new { i.CatalogueItemId, i.CapabilityId });
 
             builder.ToTable("CatalogueItemCapabilities", Schemas.Catalogue);
 
-            builder.Property(sc => sc.CatalogueItemId)
+            builder.Property(i => i.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            builder.HasOne(sc => sc.Capability)
+            builder.HasOne(i => i.Capability)
                 .WithMany()
-                .HasForeignKey(sc => sc.CapabilityId)
+                .HasForeignKey(c => c.CapabilityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SolutionCapability_Capability");
+                .HasConstraintName("FK_CatalogueItemCapabilities_Capability");
 
             builder.HasOne<CatalogueItem>()
-                .WithMany(s => s.CatalogueItemCapabilities)
-                .HasForeignKey(sc => sc.CatalogueItemId)
-                .HasConstraintName("FK_SolutionCapability_Solution");
+                .WithMany(i => i.CatalogueItemCapabilities)
+                .HasForeignKey(c => c.CatalogueItemId)
+                .HasConstraintName("FK_CatalogueItemCapabilities_CatalogueItem");
 
-            builder.HasOne(sc => sc.Status)
+            builder.HasOne(i => i.Status)
                 .WithMany()
-                .HasForeignKey(sc => sc.StatusId)
+                .HasForeignKey(c => c.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SolutionCapability_SolutionCapabilityStatus");
+                .HasConstraintName("FK_CatalogueItemCapabilities_Status");
+
+            builder.HasOne(i => i.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(c => c.LastUpdatedBy)
+                .HasConstraintName("FK_CatalogueItemCapabilities_LastUpdatedBy");
         }
     }
 }

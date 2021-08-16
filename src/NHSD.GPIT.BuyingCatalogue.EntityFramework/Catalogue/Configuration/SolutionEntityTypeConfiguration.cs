@@ -29,7 +29,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasOne(s => s.CatalogueItem)
                 .WithOne(i => i.Solution)
                 .HasForeignKey<Solution>(s => s.CatalogueItemId)
-                .HasConstraintName("FK_Solution_CatalogueItem");
+                .HasConstraintName("FK_Solutions_CatalogueItem");
+
+            builder.HasOne(s => s.LastUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(s => s.LastUpdatedBy)
+                .HasConstraintName("FK_Solutions_LastUpdatedBy");
         }
     }
 }

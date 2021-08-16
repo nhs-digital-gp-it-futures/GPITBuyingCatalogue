@@ -14,8 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
         public InMemoryDbCustomization(string dbName)
         {
             dbContextOptions = new DbContextOptionsBuilder<BuyingCatalogueDbContext>()
-              .UseInMemoryDatabase(dbName)
-              .Options;
+                .EnableSensitiveDataLogging()
+                .UseInMemoryDatabase(dbName)
+                .Options;
         }
 
         public void Customize(IFixture fixture)

@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
     {
         public void Configure(EntityTypeBuilder<ServiceInstanceItem> builder)
         {
-            builder.ToView("ServiceInstanceItems", "ordering");
+            builder.ToView("ServiceInstanceItems", Schemas.Ordering);
             builder.HasKey(i => new { i.OrderId, i.CatalogueItemId, i.OdsCode });
 
             builder.Property(e => e.CatalogueItemId)

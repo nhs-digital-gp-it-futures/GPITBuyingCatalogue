@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
     {
         public void Configure(EntityTypeBuilder<OrderItemRecipient> builder)
         {
-            builder.ToTable("OrderItemRecipients", "ordering");
+            builder.ToTable("OrderItemRecipients", Schemas.Ordering);
 
             builder.HasKey(r => new { r.OrderId, r.CatalogueItemId, r.OdsCode });
 
