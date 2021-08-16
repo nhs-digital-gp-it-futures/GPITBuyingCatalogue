@@ -7,7 +7,7 @@
      CompliancyLevelId int NULL,
      Active bit NOT NULL,
      SupplierDefined bit CONSTRAINT DF_Epic_SupplierDefined DEFAULT 0 NOT NULL,
-     CONSTRAINT PK_Epic PRIMARY KEY NONCLUSTERED (Id),
-     CONSTRAINT FK_Epic_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id),
-     CONSTRAINT FK_Epic_CompliancyLevel FOREIGN KEY (CompliancyLevelId) REFERENCES catalogue.CompliancyLevels(Id)
+     CONSTRAINT PK_Epics PRIMARY KEY (Id),
+     CONSTRAINT FK_Epics_Capability FOREIGN KEY (CapabilityId) REFERENCES catalogue.Capabilities(Id),
+     CONSTRAINT FK_Epics_CompliancyLevel FOREIGN KEY (CompliancyLevelId) REFERENCES catalogue.CompliancyLevels(Id),
 );

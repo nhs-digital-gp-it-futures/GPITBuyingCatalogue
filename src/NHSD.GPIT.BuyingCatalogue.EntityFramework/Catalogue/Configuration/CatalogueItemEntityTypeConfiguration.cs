@@ -38,7 +38,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .WithMany(s => s.CatalogueItems)
                 .HasForeignKey(i => i.SupplierId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CatalogueItem_Supplier");
+                .HasConstraintName("FK_CatalogueItems_Supplier");
+
+            builder.HasIndex(i => new { i.SupplierId, i.Name }, "AK_CatalogueItems_Supplier_Name")
+                .IsUnique();
         }
     }
 }

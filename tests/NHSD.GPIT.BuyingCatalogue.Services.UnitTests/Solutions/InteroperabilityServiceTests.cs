@@ -42,9 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
            InteroperabilityService service)
         {
             solution.Integrations = JsonConvert.SerializeObject(currentIntegrations);
+            solution.AdditionalServices.Clear();
 
             context.Solutions.Add(solution);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             await service.AddIntegration(solution.CatalogueItemId, newIntegration);
             var updatedSolution = await context.Solutions.SingleAsync();

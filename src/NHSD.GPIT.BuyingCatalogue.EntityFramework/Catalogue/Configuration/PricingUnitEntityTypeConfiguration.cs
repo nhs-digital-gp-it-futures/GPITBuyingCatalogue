@@ -24,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(u => u.TierName)
                 .IsRequired()
                 .HasMaxLength(30);
+
+            builder.HasIndex(u => u.Name, "AK_PricingUnits_Name")
+                .IsUnique();
         }
     }
 }

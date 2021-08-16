@@ -7,5 +7,5 @@
      [Owner] nvarchar(100) NULL,
      ActiveDate date NULL,
      ExpiryDate date NULL,
-     CONSTRAINT PK_Framework PRIMARY KEY CLUSTERED (Id)
+     CONSTRAINT PK_Frameworks PRIMARY KEY (Id),
 );

@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(c => c.Id);
 
-            builder.HasIndex(c => c.CapabilityRef, "IX_CapabilityCapabilityRef");
+            builder.HasIndex(c => c.CapabilityRef, "IX_Capabilities_CapabilityRef");
 
             builder.Property(c => c.Id).ValueGeneratedNever();
             builder.Property(c => c.CapabilityRef)
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .WithMany(cc => cc.Capabilities)
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Capability_CapabilityCategory");
+                .HasConstraintName("FK_Capabilities_CapabilityCategory");
         }
     }
 }

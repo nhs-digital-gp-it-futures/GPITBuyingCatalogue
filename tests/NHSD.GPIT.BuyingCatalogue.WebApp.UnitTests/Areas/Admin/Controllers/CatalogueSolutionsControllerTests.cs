@@ -185,8 +185,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ManageSolution_ReturnsViewWithExpectedModel(
+            [Frozen] AspNetUser aspNetUser,
             CatalogueItem expected,
-            AspNetUser aspNetUser,
             int userId)
         {
             expected.Solution.LastUpdatedBy = userId;
@@ -203,7 +203,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.ManageCatalogueSolution(expected.Id)).As<ViewResult>();
 
             mockSolutionService.Verify(s => s.GetSolution(expected.Id));
-            mockUsersService.Verify(u => u.GetUser(aspNetUser.Id));
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             var model = actual.Model.As<ManageCatalogueSolutionModel>();

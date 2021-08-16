@@ -8,9 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
     {
         public void Configure(EntityTypeBuilder<ServiceRecipient> builder)
         {
-            builder.ToTable("ServiceRecipients", "ordering");
+            builder.ToTable("ServiceRecipients", Schemas.Ordering);
 
-            builder.HasKey(r => r.OdsCode).HasName("PK_ServiceRecipient");
+            builder.HasKey(r => r.OdsCode).HasName("PK_ServiceRecipients");
 
             builder.Property(r => r.Name).HasMaxLength(256);
             builder.Property(r => r.OdsCode).HasMaxLength(8);

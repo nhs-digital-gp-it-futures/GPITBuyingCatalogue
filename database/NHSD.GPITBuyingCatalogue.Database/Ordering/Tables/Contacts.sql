@@ -5,5 +5,5 @@
     LastName nvarchar(100) NULL,
     Email nvarchar(256) NULL, 
     Phone nvarchar(35) NULL,
-    CONSTRAINT PK_Contact PRIMARY KEY (Id),
+    CONSTRAINT PK_Contacts PRIMARY KEY (Id),
 );

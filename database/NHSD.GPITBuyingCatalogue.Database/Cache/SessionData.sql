@@ -5,6 +5,6 @@
     ExpiresAtTime datetimeoffset(7) NOT NULL,
     SlidingExpirationInSeconds bigint NULL,
     AbsoluteExpiration datetimeoffset(7) NULL,
-    CONSTRAINT PK_Sessions PRIMARY KEY CLUSTERED (Id),
-    INDEX IX_SessionData_ExpiresAtTime NONCLUSTERED (ExpiresAtTime),
+    CONSTRAINT PK_SessionData PRIMARY KEY (Id),
+    INDEX IX_SessionData_ExpiresAtTime (ExpiresAtTime),
 );

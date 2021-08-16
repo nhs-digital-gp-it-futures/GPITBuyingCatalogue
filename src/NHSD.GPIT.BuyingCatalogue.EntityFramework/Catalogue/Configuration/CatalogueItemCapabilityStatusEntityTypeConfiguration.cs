@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasMaxLength(16);
 
-            builder.HasIndex(s => s.Name, "IX_SolutionCapabilityStatusName")
+            builder.HasIndex(s => s.Name, "AK_CatalogueItemCapabilityStatus_Name")
                 .IsUnique();
         }
     }

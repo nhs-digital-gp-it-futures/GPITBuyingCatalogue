@@ -16,6 +16,8 @@ BEGIN
     DECLARE @executiveAgencyRoleId AS nchar(5) = 'RO116';
     DECLARE @organisationId AS int = (SELECT Id FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
 
+    SET IDENTITY_INSERT users.AspNetUsers ON;
+
     INSERT INTO users.AspNetUsers
     (
         Id, UserName, NormalizedUserName, PasswordHash, 
@@ -23,10 +25,12 @@ BEGIN
         PrimaryOrganisationId, OrganisationFunction, CatalogueAgreementSigned, [Disabled],
         AccessFailedCount, ConcurrencyStamp, LockoutEnabled, SecurityStamp, TwoFactorEnabled
     )
-	VALUES
-	(CAST(1 AS nchar(36)), @email, @normalizedUserName, @passwordHash,
+    VALUES
+    (CAST(1 AS nchar(36)), @email, @normalizedUserName, @passwordHash,
         @firstName, @lastName, @email, @normalizedUserName, 1, @phoneNumber, 1,
         @organisationId, 'Authority', 1, 0,
         0, NEWID(), 1, NEWID(), 0);
+
+    SET IDENTITY_INSERT users.AspNetUsers OFF;
 END;
 GO

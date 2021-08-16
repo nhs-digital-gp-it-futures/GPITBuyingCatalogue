@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("{organisationId}/adduser/confirmation/{userId}")]
-        public async Task<IActionResult> AddUserConfirmation(Guid organisationId, int userId)
+        public async Task<IActionResult> AddUserConfirmation(int organisationId, int userId)
         {
             var user = await userService.GetUser(userId);
 
