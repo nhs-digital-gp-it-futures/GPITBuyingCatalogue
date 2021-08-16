@@ -1,9 +1,12 @@
-﻿using OpenQA.Selenium;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
+using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 {
     public static class CatalogueSolutions
     {
+        public static By CatalogueSolutionsAnySolutionRow => By.ClassName("nhsuk-table__row");
+
         public static By SelectCatalogueSolutionErrorMessage => By.Id("select-solution-error");
 
         public static By SelectCatalogueSolutionPriceErrorMessage => By.Id("select-solution-price-error");
@@ -43,5 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
         public static By CatalogueSolutionsEditSolutionEditServiceRecipientsButton => By.ClassName("nhsuk-button--secondary");
 
         public static By CatalogueSolutionsEditSolutionDeleteSolutionLink => By.LinkText("Delete Catalogue Solution");
+
+        public static By CatalogueSolutionsDeleteSolutionCancelLink => By.LinkText("Cancel delete");
     }
 }

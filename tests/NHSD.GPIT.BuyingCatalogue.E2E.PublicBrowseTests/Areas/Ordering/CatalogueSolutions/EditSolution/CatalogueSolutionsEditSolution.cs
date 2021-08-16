@@ -66,6 +66,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.E
                 .BeTrue();
 
             CommonActions
+                .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionFirstQuantityInput)
+                .Should()
+                .BeTrue();
+
+            CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionFirstDateDayInput)
                 .Should()
                 .BeTrue();

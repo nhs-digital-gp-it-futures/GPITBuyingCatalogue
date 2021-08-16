@@ -83,7 +83,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
             var state = GetOrderStateFromSession(callOffId);
 
             if (state is not null && state.IsNewSolution)
+            {
+                state.HasHitEditSolution = true;
+                SetOrderStateToSession(state);
                 return state;
+            }
 
             var orderItem = await orderItemService.GetOrderItem(callOffId, catalogueItemId);
 
@@ -140,7 +144,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Session
                 }
 
                 serviceRecipient.DeliveryDate ??= orderItem.DefaultDeliveryDate;
+                serviceRecipient.Quantity ??= state.Quantity;
             }
+
+            state.HasHitEditSolution = true;
 
             SetOrderStateToSession(state);
 
