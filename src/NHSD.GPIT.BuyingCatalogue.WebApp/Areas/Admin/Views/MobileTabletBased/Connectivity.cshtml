@@ -1,0 +1,44 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels.ConnectivityModel;
+@{
+    ViewData["Title"] = "Mobile or tablet application ­– connectivity";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="Mobile or tablet application ­– connectivity"
+                            advice="Let buyers know about your Catalogue Solution’s connection requirements." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.SolutionId" />
+                <input type="hidden" asp-for="@Model.BackLink" />
+
+                <nhs-select asp-for="SelectedConnectionSpeed"
+                            asp-items="@(new SelectList(Model.ConnectionSpeeds,"Value","Text"))"
+                            label-text="Connection speed (optional)"
+                            label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Connection types supported (optional)"
+                                         label-hint="Select all of the connection types that will work with your Catalogue Solution.">
+                    <nhs-checkbox-container>
+                        @for (var i = 0; i < Model.ConnectionTypes.Length; i++)
+                        {
+                            <nhs-checkbox asp-for="@Model.ConnectionTypes[i].Checked"
+                                          label-text="@Model.ConnectionTypes[i].ConnectionType"
+                                          hidden-input="@Model.ConnectionTypes[i].ConnectionType" />
+                        }
+                    </nhs-checkbox-container>
+                </nhs-fieldset-form-label>
+                <nhs-textarea asp-for="Description"
+                              label-text="Connection requirements (optional)"
+                              label-hint="Provide information on any connection requirements for your Catalogue Solution." />
+
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>

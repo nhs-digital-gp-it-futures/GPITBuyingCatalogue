@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoFixture.Xunit2;
+using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -421,6 +422,19 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             };
 
             clientApplication.NativeMobileThirdPartyComplete().Should().BeNull();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(ClientApplicationType.BrowserBased)]
+        [CommonInlineAutoData(ClientApplicationType.MobileTablet)]
+        [CommonInlineAutoData(ClientApplicationType.Desktop)]
+        public static void ClientApplicationTypes_IsUpdatedCorrectly(
+            ClientApplicationType clientApplicationType,
+            ClientApplication clientApplication)
+        {
+            clientApplication.EnsureClientApplicationTypePresent(clientApplicationType);
+
+            clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
         private static class ResultSetData
