@@ -2,7 +2,7 @@
 
 SET IDENTITY_INSERT organisations.Organisations ON;
 
-IF NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId)
+IF UPPER('$(SEED_ORGANISATIONS)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId)
     INSERT INTO organisations.Organisations (Id, [Name], [Address], OdsCode, PrimaryRoleId)
     VALUES
     (1, 'NHS Digital', '{"line1":"1 TREVELYAN SQUARE","town":"LEEDS","postcode":"LS1 6AE","country":"ENGLAND"}', 'X26', @executiveAgencyRoleId);

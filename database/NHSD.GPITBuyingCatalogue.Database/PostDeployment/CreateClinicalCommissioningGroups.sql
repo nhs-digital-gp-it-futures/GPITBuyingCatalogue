@@ -2,7 +2,7 @@
 
 SET IDENTITY_INSERT organisations.Organisations ON;
 
-IF NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId)
+IF UPPER('$(SEED_ORGANISATIONS)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId)
     INSERT INTO organisations.Organisations (Id, [Name], [Address], OdsCode, PrimaryRoleId)
     VALUES
     (2, 'Cheshire and Merseyside Commissioning Hub', '{"line1":"C/O NHS ENGLAND, 1W09, 1ST FLOOR","line2":"QUARRY HOUSE","line3":"QUARRY HILL","town":"LEEDS","county":"WEST YORKSHIRE","postcode":"LS2 7UE","country":"ENGLAND"}', '13Y', @ccgRoleId),
