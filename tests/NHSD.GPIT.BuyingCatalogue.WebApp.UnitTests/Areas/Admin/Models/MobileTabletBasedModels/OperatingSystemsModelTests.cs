@@ -41,23 +41,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         }
 
         [Theory]
-        [InlineData("", false, false)]
-        [InlineData(" ", false, false)]
-        [InlineData(null, false, false)]
-        [InlineData("A description", false, false)]
-        [InlineData("A description", true, true)]
-        public static void IsComplete_CorrectlySet(
-            string description,
-            bool hasOperatingSystems,
-            bool expectedCompletionState)
+        [CommonAutoData]
+        public static void IsComplete_CorrectlySet_WhenAnOperatingSystemChecked(
+            OperatingSystemsModel model)
         {
-            var operatingSystems = hasOperatingSystems ? new SupportedOperatingSystemModel[1] { new SupportedOperatingSystemModel() } : Array.Empty<SupportedOperatingSystemModel>();
-
-            var model = new OperatingSystemsModel { Description = description, OperatingSystems = operatingSystems };
+            model.OperatingSystems.First().Checked = true;
 
             var actual = model.IsComplete;
 
-            actual.Should().Be(expectedCompletionState);
+            actual.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsComplete_CorrectlySet_WhenNoConnectionTypeChecked(
+          OperatingSystemsModel model)
+        {
+            Array.ForEach(model.OperatingSystems, c => c.Checked = false);
+
+            var actual = model.IsComplete;
+
+            actual.Should().BeFalse();
         }
     }
 }

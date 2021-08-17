@@ -74,8 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public void EnsureClientApplicationTypePresent(ClientApplicationType clientApplicationType)
         {
-            if (ClientApplicationTypes is null)
-                ClientApplicationTypes = new HashSet<string>();
+            ClientApplicationTypes ??= new HashSet<string>();
 
             if (!ClientApplicationTypes.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
                 ClientApplicationTypes.Add(clientApplicationType.AsString(EnumFormat.EnumMemberValue));

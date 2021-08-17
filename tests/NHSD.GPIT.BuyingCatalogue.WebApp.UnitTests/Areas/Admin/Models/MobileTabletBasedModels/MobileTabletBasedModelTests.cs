@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text.Json;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         {
             clientApplication.ClientApplicationTypes.Clear();
             clientApplication.ClientApplicationTypes.Add("browser-based");
-            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var actual = new MobileTabletBasedModel(catalogueItem);
             actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/add-application-type");
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         {
             clientApplication.ClientApplicationTypes.Clear();
             clientApplication.ClientApplicationTypes.Add("native-mobile");
-            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+            catalogueItem.Solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var actual = new MobileTabletBasedModel(catalogueItem);
 

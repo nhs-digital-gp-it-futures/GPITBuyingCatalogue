@@ -4,10 +4,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
 {
-    public class HardwareRequirementsModel : ApplicationTypeBaseModel
+    public sealed class HardwareRequirementsModel : ApplicationTypeBaseModel
     {
         public HardwareRequirementsModel()
-            : base()
         {
         }
 

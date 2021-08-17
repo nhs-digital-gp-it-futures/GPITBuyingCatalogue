@@ -48,24 +48,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         }
 
         [Theory]
-        [InlineData("2Mbps", false, true)]
-        [InlineData("", false, false)]
-        [InlineData(" ", false, false)]
-        [InlineData(null, false, false)]
-        [InlineData(null, true, true)]
-        [InlineData("2Mbs", true, true)]
-        public static void IsComplete_CorrectlySet(
+        [InlineData("2Mbps", true)]
+        [InlineData("", false)]
+        [InlineData(" ", false)]
+        [InlineData(null, false)]
+        public static void IsComplete_CorrectlySet_WhenConnectionSpeedSet(
             string selectedConnectionSpeed,
-            bool hasConnectionTypes,
             bool expectedCompletionState)
         {
-            var connectionTypes = hasConnectionTypes ? new ConnectionTypeModel[1] { new ConnectionTypeModel() } : Array.Empty<ConnectionTypeModel>();
-
-            var model = new ConnectivityModel { SelectedConnectionSpeed = selectedConnectionSpeed, ConnectionTypes = connectionTypes };
+            var model = new ConnectivityModel { SelectedConnectionSpeed = selectedConnectionSpeed };
 
             var actual = model.IsComplete;
 
             actual.Should().Be(expectedCompletionState);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsComplete_CorrectlySet_WhenAConnectionTypeChecked(
+            ConnectivityModel model)
+        {
+            model.SelectedConnectionSpeed = null;
+            model.ConnectionTypes.First().Checked = true;
+
+            var actual = model.IsComplete;
+
+            actual.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsComplete_CorrectlySet_WhenNoConnectionTypeChecked(
+          ConnectivityModel model)
+        {
+            model.SelectedConnectionSpeed = null;
+            Array.ForEach(model.ConnectionTypes, c => c.Checked = false);
+
+            var actual = model.IsComplete;
+
+            actual.Should().BeFalse();
         }
     }
 }

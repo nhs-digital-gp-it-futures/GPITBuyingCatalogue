@@ -6,10 +6,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
 {
-    public class MemoryAndStorageModel : ApplicationTypeBaseModel
+    public sealed class MemoryAndStorageModel : ApplicationTypeBaseModel
     {
         public MemoryAndStorageModel()
-            : base()
         {
             MemorySizes = Framework.Constants.SelectLists.MemorySizes;
         }

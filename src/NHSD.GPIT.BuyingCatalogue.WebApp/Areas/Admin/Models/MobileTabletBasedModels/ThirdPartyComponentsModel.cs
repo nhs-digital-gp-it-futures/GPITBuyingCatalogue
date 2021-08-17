@@ -4,10 +4,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
 {
-    public class ThirdPartyComponentsModel : ApplicationTypeBaseModel
+    public sealed class ThirdPartyComponentsModel : ApplicationTypeBaseModel
     {
         public ThirdPartyComponentsModel()
-            : base()
         {
         }
 

@@ -55,10 +55,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileOperatingSystems == null)
+            if (clientApplication.MobileOperatingSystems is null)
                 clientApplication.MobileOperatingSystems = new MobileOperatingSystems();
 
-            if (clientApplication.MobileOperatingSystems.OperatingSystems == null)
+            if (clientApplication.MobileOperatingSystems.OperatingSystems is null)
                 clientApplication.MobileOperatingSystems.OperatingSystems = new System.Collections.Generic.HashSet<string>();
 
             clientApplication.MobileOperatingSystems.OperatingSystems.Clear();
@@ -99,13 +99,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileConnectionDetails == null)
+            if (clientApplication.MobileConnectionDetails is null)
                 clientApplication.MobileConnectionDetails = new MobileConnectionDetails();
 
             clientApplication.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
             clientApplication.MobileConnectionDetails.Description = model.Description;
 
-            if (clientApplication.MobileConnectionDetails.ConnectionType == null)
+            if (clientApplication.MobileConnectionDetails.ConnectionType is null)
                 clientApplication.MobileConnectionDetails.ConnectionType = new System.Collections.Generic.HashSet<string>();
 
             clientApplication.MobileConnectionDetails.ConnectionType.Clear();
@@ -144,8 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileMemoryAndStorage is null)
-                clientApplication.MobileMemoryAndStorage = new MobileMemoryAndStorage();
+            clientApplication.MobileMemoryAndStorage ??= new MobileMemoryAndStorage();
 
             clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
             clientApplication.MobileMemoryAndStorage.Description = model.Description;
@@ -179,8 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileThirdParty is null)
-                clientApplication.MobileThirdParty = new MobileThirdParty();
+            clientApplication.MobileThirdParty ??= new MobileThirdParty();
 
             clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;

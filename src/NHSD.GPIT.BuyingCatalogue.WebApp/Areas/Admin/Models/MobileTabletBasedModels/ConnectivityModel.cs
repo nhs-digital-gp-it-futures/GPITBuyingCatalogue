@@ -7,10 +7,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
 {
-    public class ConnectivityModel : ApplicationTypeBaseModel
+    public sealed class ConnectivityModel : ApplicationTypeBaseModel
     {
         public ConnectivityModel()
-            : base()
         {
             ConnectionSpeeds = Framework.Constants.SelectLists.ConnectionSpeeds;
             SetConnectionTypes();
@@ -36,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
 
         public override bool IsComplete =>
             !string.IsNullOrWhiteSpace(SelectedConnectionSpeed) ||
-            ConnectionTypes.Any();
+            ConnectionTypes.Any(c => c.Checked);
 
         public string SelectedConnectionSpeed { get; set; }
 

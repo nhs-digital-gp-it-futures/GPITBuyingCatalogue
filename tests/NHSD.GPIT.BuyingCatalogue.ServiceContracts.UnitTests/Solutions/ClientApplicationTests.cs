@@ -425,13 +425,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased)]
-        [InlineData(ClientApplicationType.MobileTablet)]
-        [InlineData(ClientApplicationType.Desktop)]
-        public static void ClientApplicationTypes_IsUpdatedCorrectly(ClientApplicationType clientApplicationType)
+        [CommonInlineAutoData(ClientApplicationType.BrowserBased)]
+        [CommonInlineAutoData(ClientApplicationType.MobileTablet)]
+        [CommonInlineAutoData(ClientApplicationType.Desktop)]
+        public static void ClientApplicationTypes_IsUpdatedCorrectly(
+            ClientApplicationType clientApplicationType,
+            ClientApplication clientApplication)
         {
-            var clientApplication = new ClientApplication();
-
             clientApplication.EnsureClientApplicationTypePresent(clientApplicationType);
 
             clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));

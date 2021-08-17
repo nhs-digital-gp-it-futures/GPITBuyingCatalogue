@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -10,7 +11,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -27,10 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(MobileTabletBasedController).Should()
-                .BeDecoratedWith<AuthorizeAttribute>(x => x.Policy == "AdminOnly");
-            typeof(MobileTabletBasedController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Admin");
+                .BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
             typeof(MobileTabletBasedController).Should()
-                .BeDecoratedWith<RouteAttribute>(x => x.Template == "admin/catalogue-solutions");
+                .BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
+            typeof(MobileTabletBasedController).Should()
+                .BeDecoratedWith<RouteAttribute>(r => r.Template == "admin/catalogue-solutions");
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
          [Frozen] Mock<ISolutionsService> mockService,
          MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -86,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
            [Frozen] Mock<ISolutionsService> mockService,
            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -149,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
            [Frozen] Mock<ISolutionsService> mockService,
            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -214,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
            [Frozen] Mock<ISolutionsService> mockService,
            MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -273,7 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -332,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
              [Frozen] Mock<ISolutionsService> mockService,
              MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -390,7 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                [Frozen] Mock<ISolutionsService> mockService,
                MobileTabletBasedController controller)
         {
-            catalogueItem.Solution.Integrations = JsonConvert.SerializeObject(integrations);
+            catalogueItem.Solution.Integrations = JsonSerializer.Serialize(integrations);
 
             mockService.Setup(s => s.GetSolution(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);

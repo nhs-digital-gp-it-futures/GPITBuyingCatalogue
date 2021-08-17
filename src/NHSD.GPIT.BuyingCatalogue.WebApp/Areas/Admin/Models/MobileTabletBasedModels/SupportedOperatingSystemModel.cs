@@ -2,8 +2,8 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
 {
-    [ExcludeFromCodeCoverage]
-    public class SupportedOperatingSystemModel
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
+    public sealed class SupportedOperatingSystemModel
     {
         public string OperatingSystemName { get; set; }
 

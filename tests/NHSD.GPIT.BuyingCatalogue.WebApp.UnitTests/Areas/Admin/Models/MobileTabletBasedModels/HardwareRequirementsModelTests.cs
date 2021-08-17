@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
         }
 
         [Theory]
-        [InlineData("Some Hardware Requirments", true)]
+        [InlineData("Some Hardware Requirements", true)]
         [InlineData("", false)]
         [InlineData(" ", false)]
         [InlineData(null, false)]

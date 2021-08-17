@@ -6,10 +6,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
 {
-    public class OperatingSystemsModel : ApplicationTypeBaseModel
+    public sealed class OperatingSystemsModel : ApplicationTypeBaseModel
     {
         public OperatingSystemsModel()
-            : base()
         {
         }
 
@@ -33,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
             Description = ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription;
         }
 
-        public override bool IsComplete => OperatingSystems.Any();
+        public override bool IsComplete => OperatingSystems.Any(o => o.Checked);
 
         public SupportedOperatingSystemModel[] OperatingSystems { get; set; }
 

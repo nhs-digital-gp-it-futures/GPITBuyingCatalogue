@@ -5,10 +5,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
 {
-    public class MobileTabletBasedModel : ApplicationTypeBaseModel
+    public sealed class MobileTabletBasedModel : ApplicationTypeBaseModel
     {
         public MobileTabletBasedModel()
-            : base(null)
         {
         }
 
