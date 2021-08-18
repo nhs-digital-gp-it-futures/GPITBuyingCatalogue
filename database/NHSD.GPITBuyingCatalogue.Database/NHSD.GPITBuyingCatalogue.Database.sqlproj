@@ -223,6 +223,10 @@
       <DefaultValue>DisruptTheMarket1!</DefaultValue>
       <Value>$(SqlCmdVar__1)</Value>
     </SqlCmdVariable>
+    <SqlCmdVariable Include="SEED_ORGANISATIONS">
+      <DefaultValue>True</DefaultValue>
+      <Value>$(SqlCmdVar__11)</Value>
+    </SqlCmdVariable>
   </ItemGroup>
   <ItemGroup>
     <None Include="PostDeployment\InsertEpics.sql" />
