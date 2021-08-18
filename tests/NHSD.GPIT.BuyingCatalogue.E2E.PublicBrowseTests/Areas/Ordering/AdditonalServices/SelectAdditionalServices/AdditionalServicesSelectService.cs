@@ -9,21 +9,21 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 {
-    public sealed class CatalogueSolutionSelectSolution
+    public sealed class AdditionalServicesSelectService
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private static readonly CallOffId CallOffId = new(90006, 1);
+        private static readonly CallOffId CallOffId = new(90007, 1);
 
         private static readonly Dictionary<string, string> Parameters =
             new() { { "OdsCode", "03F" }, { nameof(CallOffId), CallOffId.ToString() } };
 
-        public CatalogueSolutionSelectSolution(LocalWebApplicationFactory factory)
+        public AdditionalServicesSelectService(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.SelectSolution),
+                  typeof(AdditionalServicesController),
+                  nameof(AdditionalServicesController.SelectAdditionalService),
                   Parameters)
         {
         }
@@ -41,14 +41,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectSolution)).Should().BeTrue();
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.SelectAdditionalService)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.SelectCatalogueSolutionErrorMessage, "Error: Select a Catalogue Solution")
+                Objects.Ordering.AdditionalServices.SelectAdditionalServiceErrorMessage, "Error: Select an Additional Service")
                 .Should()
                 .BeTrue();
         }
@@ -58,17 +58,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         {
             InitializeTestSession();
 
-            const string expectedCatalogueItemName = "E2E With Contact Multiple Prices";
+            const string expectedCatalogueItemName = "E2E Multiple Prices Additional Service";
 
-            var expectedCatalogueItemId = new CatalogueItemId(99998, "001");
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "001A999");
 
             CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectSolutionPrice)).Should().BeTrue();
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.SelectAdditionalServicePrice)).Should().BeTrue();
 
             CreateOrderItemModel cacheModel = Session.GetOrderStateFromSession(CallOffId.ToString());
 
@@ -82,17 +82,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         {
             InitializeTestSession();
 
-            const string expectedCatalogueItemName = "E2E With Contact With Single Price";
+            const string expectedCatalogueItemName = "E2E No Contact Single Price Additional Service";
 
-            var expectedCatalogueItemId = new CatalogueItemId(99998, "002");
+            var expectedCatalogueItemId = new CatalogueItemId(99998, "002A999");
 
             CommonActions.ClickRadioButtonWithText(expectedCatalogueItemName);
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.EditSolution))
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalService))
                 .Should()
                 .BeTrue();
         }
