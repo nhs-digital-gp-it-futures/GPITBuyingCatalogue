@@ -33,15 +33,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public IEnumerable<object> IntegrationTypes { get; }
 
-        [Required(ErrorMessage = "Select an integration type")]
+        [Required(ErrorMessage = "Select integration type")]
         public string SelectedIntegrationType { get; set; }
 
-        [Required(ErrorMessage = "Select Provider or Consumer")]
+        [Required(ErrorMessage = "Select if your system is a provider or consumer")]
         public string SelectedProviderOrConsumer { get; set; }
 
         public IEnumerable<object> ProviderConsumerTypes { get; }
 
-        [Required(ErrorMessage = "Enter what system it integrates with")]
+        [Required(ErrorMessage = "Enter the system being integrated with")]
         [StringLength(100)]
         public string IntegratesWith { get; set; }
 
