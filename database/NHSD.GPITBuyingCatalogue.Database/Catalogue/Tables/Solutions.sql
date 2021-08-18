@@ -1,7 +1,6 @@
 ﻿CREATE TABLE catalogue.Solutions
 (
      CatalogueItemId nvarchar(14) NOT NULL,
-     [Version] nvarchar(10) NULL,
      Summary nvarchar(350) NULL,
      FullDescription nvarchar(3000) NULL,
      Features nvarchar(max) NULL,
