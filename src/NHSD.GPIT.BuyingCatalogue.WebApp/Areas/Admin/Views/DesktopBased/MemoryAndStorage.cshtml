@@ -1,0 +1,42 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels.MemoryAndStorageModel;
+@{
+    ViewData["Title"] = "Desktop application – memory, storage, processing and resolution";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="Desktop application – memory, storage, processing and resolution"
+                            advice="Let buyers know the minimum requirements for your Catalogue Solution to function." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.SolutionId" />
+                <input type="hidden" asp-for="@Model.BackLink" />
+
+                <nhs-select asp-for="SelectedMemorySize"
+                            asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
+                            label-text="Memory size"
+                            label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
+
+                <nhs-textarea asp-for="StorageSpace"
+                              label-text="Storage space"
+                              label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution." />
+
+                <nhs-textarea asp-for="ProcessingPower"
+                              label-text="Processing power"
+                              label-hint="Provide information on the minimum CPU power required for your Catalogue Solution to function on desktop." />
+
+                <nhs-select asp-for="SelectedResolution"
+                            asp-items="@(new SelectList(Model.Resolutions, "Value", "Text"))"
+                            label-text="Screen resolution and aspect ratio (optional)"
+                            label-hint="Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function on desktop." />
+
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>

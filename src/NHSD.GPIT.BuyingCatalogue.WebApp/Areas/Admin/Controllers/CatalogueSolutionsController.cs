@@ -540,6 +540,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     model.SelectedApplicationType.ToString(),
                     typeof(MobileTabletBasedController).ControllerName(),
                     new { solutionId }),
+                ServiceContracts.Solutions.ClientApplicationType.Desktop => RedirectToAction(
+                    model.SelectedApplicationType.ToString(),
+                    typeof(DesktopBasedController).ControllerName(),
+                    new { solutionId }),
                 _ => RedirectToAction(nameof(ClientApplicationType), new { solutionId }),
             };
         }
