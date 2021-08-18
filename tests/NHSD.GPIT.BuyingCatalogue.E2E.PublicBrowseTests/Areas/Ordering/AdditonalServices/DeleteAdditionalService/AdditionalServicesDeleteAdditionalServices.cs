@@ -9,15 +9,15 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 {
-    public sealed class CatalogueSolutionsDeleteSolution
+    public sealed class AdditionalServicesDeleteAdditionalServices
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private static readonly CallOffId CallOffId = new(90006, 1);
+        private static readonly CallOffId CallOffId = new(90007, 1);
         private static readonly string OdsCode = "03F";
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "002");
-        private static readonly string CatalogueItemName = "E2E With Contact With Single Price";
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "002A999");
+        private static readonly string CatalogueItemName = "E2E No Contact Single Price Additional Service";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
@@ -28,18 +28,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 { nameof(CatalogueItemName), CatalogueItemName },
             };
 
-        public CatalogueSolutionsDeleteSolution(
+        public AdditionalServicesDeleteAdditionalServices(
             LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.SelectSolution),
+                  typeof(AdditionalServicesController),
+                  nameof(AdditionalServicesController.SelectAdditionalService),
                   Parameters)
         {
         }
 
         [Fact]
-        public void CatalogueSolutionsDeleteSolution_AllSectionsDisplayed()
+        public void AdditionalServicesDeleteAdditionalServices_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
@@ -48,25 +48,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         }
 
         [Fact]
-        public void CatalogueSolutionsDeleteSolution_CancelDelete_ExpectedResult()
+        public void AdditionalServicesDeleteAdditionalServices_CancelDelete_ExpectedResult()
         {
             CommonActions.ClickLinkElement(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsDeleteSolutionCancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.EditSolution))
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalService))
                 .Should()
                 .BeTrue();
         }
 
         [Fact]
-        public void CatalogueSolutionsDeleteSolution_DeleteSolution_ExpectedResult()
+        public void AdditionalServicesDeleteAdditionalServices_DeleteSolution_ExpectedResult()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.Index))
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.Index))
                 .Should()
                 .BeTrue();
 
@@ -86,8 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             InitializeMemoryCacheHander(OdsCode);
 
             NavigateToUrl(
-                typeof(DeleteCatalogueSolutionController),
-                nameof(DeleteCatalogueSolutionController.DeleteSolution),
+                typeof(DeleteAdditionalServiceController),
+                nameof(DeleteAdditionalServiceController.DeleteAdditionalService),
                 Parameters);
 
             return Task.CompletedTask;

@@ -154,6 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 services.AddDbContext<EndToEndDbContext>(options =>
                 {
                     options.UseSqlite(sqliteConnection);
+                    options.EnableSensitiveDataLogging();
                 });
                 services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>();
 

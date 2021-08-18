@@ -12,15 +12,15 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 {
-    public sealed class CatalogueSolutionsEditRecipients
+    public sealed class AdditionalServicesEditRecipients
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private static readonly CallOffId CallOffId = new(90006, 01);
+        private static readonly CallOffId CallOffId = new(90007, 1);
         private static readonly string OdsCode = "03F";
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "002");
-        private static readonly string CatalogueItemName = "E2E With Contact Multiple Prices";
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "002A999");
+        private static readonly string CatalogueItemName = "E2E No Contact Single Price Additional Service";
 
         private static readonly Dictionary<string, string> Parameters =
         new()
@@ -29,18 +29,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             { nameof(CallOffId), CallOffId.ToString() },
         };
 
-        public CatalogueSolutionsEditRecipients(
+        public AdditionalServicesEditRecipients(
             LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.SelectSolution),
+                  typeof(AdditionalServicesController),
+                  nameof(AdditionalServicesController.SelectAdditionalService),
                   Parameters)
         {
         }
 
         [Fact]
-        public void CatalogueSolutionsEditRecipients_AllSectionsDisplayed()
+        public void AdditionalServicesEditRecipients_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
@@ -66,15 +66,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         }
 
         [Fact]
-        public void CatalogueSolutionsEditRecipients_DeselectAll_ThrowsError()
+        public void AdditionalServicesEditRecipients_DeselectAll_ThrowsError()
         {
             CommonActions.ClickFirstCheckbox();
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients)).Should().BeTrue();
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients)).Should().BeTrue();
 
             CommonActions.AllCheckBoxesSelected().Should().BeFalse();
 
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         }
 
         [Fact]
-        public void CatalogueSolutionsEditRecipients_DeselectFirst_SelectAnother_ExpectedResult()
+        public void AdditionalServicesEditRecipients_DeselectFirst_SelectAnother_ExpectedResult()
         {
             CommonActions.ClickFirstCheckbox();
 
@@ -95,8 +95,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.EditSolution)).Should().BeTrue();
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalService)).Should().BeTrue();
 
             var numberOfRecipients =
                 Session
@@ -120,13 +120,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         }
 
         [Fact]
-        public void CatalogueSolutionsEditRecipients_NoChange_ExpectedResult()
+        public void AdditionalServicesEditRecipients_NoChange_ExpectedResult()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.EditSolution)).Should().BeTrue();
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalService)).Should().BeTrue();
 
             var numberOfRecipients =
                 Session
@@ -189,8 +189,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             Session.SetOrderStateToSessionAsync(model);
 
             NavigateToUrl(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
                 Parameters);
 
             return Task.CompletedTask;

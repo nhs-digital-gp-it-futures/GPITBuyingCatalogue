@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Ordering
 
         public static By CatalogueSolutionsEditSolutionFirstDateDayInput => By.Id("OrderItem_ServiceRecipients_0__Day");
 
-        public static By CatalogueSOlutionsEditSolutionFirstDateInputErrorMessage => By.Id("edit-solution-error");
+        public static By CatalogueSolutionsEditSolutionFirstDateInputErrorMessage => By.Id("edit-solution-error");
 
         public static By CatalogueSolutionsEditSolutionFirstDateMonthInput => By.Id("OrderItem_ServiceRecipients_0__Month");
 

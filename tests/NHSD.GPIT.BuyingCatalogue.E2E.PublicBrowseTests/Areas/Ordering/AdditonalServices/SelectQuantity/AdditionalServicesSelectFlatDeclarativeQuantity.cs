@@ -9,9 +9,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 {
-    public sealed class CatalogueSolutionsSelectFlatDeclarativeQuantity
+    public sealed class AdditionalServicesSelectFlatDeclarativeQuantity
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
         private static readonly CallOffId CallOffId = new(90004, 01);
@@ -21,12 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         private static readonly Dictionary<string, string> Parameters =
             new() { { nameof(OdsCode), OdsCode }, { nameof(CallOffId), CallOffId.ToString() } };
 
-        public CatalogueSolutionsSelectFlatDeclarativeQuantity(
+        public AdditionalServicesSelectFlatDeclarativeQuantity(
             LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.SelectSolution),
+                  typeof(AdditionalServicesController),
+                  nameof(AdditionalServicesController.SelectAdditionalService),
                   Parameters)
         {
         }
@@ -57,8 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectFlatDeclarativeQuantity))
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.SelectFlatDeclarativeQuantity))
                 .Should()
                 .BeTrue();
 
@@ -82,8 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.EditSolution))
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalService))
                 .Should()
                 .BeTrue();
         }
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             InitializeMemoryCacheHander(OdsCode);
 
             using var context = GetEndToEndDbContext();
-            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 3);
+            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 7);
 
             var firstServiceRecipient = MemoryCache.GetServiceRecipients().FirstOrDefault();
 
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 CallOffId = CallOffId,
                 CatalogueItemId = CatalogueItemId,
                 CommencementDate = new System.DateTime(2111, 1, 1),
-                CatalogueItemName = "E2E With Contact Multiple Prices",
+                CatalogueItemName = "E2E Multiple Prices Additional Service",
                 CataloguePrice = price,
                 ServiceRecipients = new()
                 {
@@ -119,8 +119,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             Session.SetOrderStateToSessionAsync(model);
 
             NavigateToUrl(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectFlatDeclarativeQuantity),
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.SelectFlatDeclarativeQuantity),
                 Parameters);
 
             return Task.CompletedTask;
