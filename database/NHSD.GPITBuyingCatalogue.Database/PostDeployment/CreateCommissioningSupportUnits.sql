@@ -2,7 +2,7 @@
 
 SET IDENTITY_INSERT organisations.Organisations ON;
 
-IF NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @csuRoleId)
+IF UPPER('$(SEED_ORGANISATIONS)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @csuRoleId)
     INSERT INTO organisations.Organisations (Id, [Name], [Address], OdsCode, PrimaryRoleId)
     VALUES
     (185, 'NHS Anglia Commissioning Support Unit', '{"line1":"LAKESIDE 400","line2":"OLD CHAPEL WAY","line3":"BROADLAND BUSINESS PARK","town":"NORWICH","county":"NORFOLK","postcode":"NR7 0WG","country":"ENGLAND"}', '0AP', @csuRoleId),
