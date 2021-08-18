@@ -62,6 +62,184 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         },
                     },
                 },
+                new()
+                {
+                    Id = new CatalogueItemId(99998, "001A999"),
+                    Name = "E2E Multiple Prices Additional Service",
+                    CatalogueItemType = CatalogueItemType.AdditionalService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = 99998,
+                    AdditionalService = new AdditionalService
+                    {
+                        Summary = "This is the summary of the Additional Service",
+                        FullDescription = "This is the description of the Additional Service",
+                        LastUpdated = DateTime.UtcNow,
+                        Solution = catalogueSolutions.Single(s => s.Id == new CatalogueItemId(99998, "001")).Solution,
+                    },
+                    CatalogueItemCapabilities = new List<CatalogueItemCapability>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CapabilityId = 2,
+                            LastUpdated = DateTime.UtcNow,
+                            StatusId = 1,
+                        },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CapabilityId = 27,
+                            EpicId = "C27E4",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CapabilityId = 27,
+                            EpicId = "C27E5",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            CapabilityId = 27,
+                            EpicId = "C27E6",
+                            StatusId = 1,
+                        },
+                    },
+                    CataloguePrices = new List<CataloguePrice>
+                    {
+                        new()
+                        {
+                            CataloguePriceId = 6,
+                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 6,
+                                Name = "Add Pricing Patient",
+                                TierName = "Test Tier",
+                                Description = "per test patient",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            Price = 999.9999M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                        new()
+                        {
+                            CataloguePriceId = 7,
+                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            ProvisioningType = ProvisioningType.OnDemand,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 7,
+                                Name = "Add Pricing On Demand",
+                                TierName = "Test Tier",
+                                Description = "per test on demand",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            Price = 999.9999M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                        new()
+                        {
+                            CataloguePriceId = 8,
+                            CatalogueItemId = new CatalogueItemId(99998, "001A999"),
+                            ProvisioningType = ProvisioningType.Declarative,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 8,
+                                Name = "Add Pri Declarative",
+                                TierName = "Test Tier",
+                                Description = "per test declarative",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            Price = 999.9999M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
+                },
+                new()
+                {
+                    Id = new CatalogueItemId(99998, "002A999"),
+                    Name = "E2E No Contact Single Price Additional Service",
+                    CatalogueItemType = CatalogueItemType.AdditionalService,
+                    Created = DateTime.UtcNow,
+                    PublishedStatus = PublicationStatus.Published,
+                    SupplierId = 99998,
+                    AdditionalService = new AdditionalService
+                    {
+                        Summary = "This is the summary of the Additional Service",
+                        FullDescription = "This is the description of the Additional Service",
+                        LastUpdated = DateTime.UtcNow,
+                        Solution = catalogueSolutions.Single(s => s.Id == new CatalogueItemId(99998, "002")).Solution,
+                    },
+                    CatalogueItemCapabilities = new List<CatalogueItemCapability>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "002A999"),
+                            CapabilityId = 2,
+                            LastUpdated = DateTime.UtcNow,
+                            StatusId = 1,
+                        },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "002A999"),
+                            CapabilityId = 27,
+                            EpicId = "C27E4",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "002A999"),
+                            CapabilityId = 27,
+                            EpicId = "C27E5",
+                            StatusId = 1,
+                        },
+                        new()
+                        {
+                            CatalogueItemId = new CatalogueItemId(99998, "002A999"),
+                            CapabilityId = 27,
+                            EpicId = "C27E6",
+                            StatusId = 1,
+                        },
+                    },
+                    CataloguePrices = new List<CataloguePrice>
+                    {
+                        new()
+                        {
+                            CataloguePriceId = 9,
+                            CatalogueItemId = new CatalogueItemId(99998, "002A999"),
+                            ProvisioningType = ProvisioningType.Patient,
+                            CataloguePriceType = CataloguePriceType.Flat,
+                            PricingUnit = new PricingUnit
+                            {
+                                Id = 9,
+                                Name = "Add NC Pri Patient",
+                                TierName = "Test Tier",
+                                Description = "per test declarative",
+                            },
+                            TimeUnit = TimeUnit.PerYear,
+                            CurrencyCode = "GBP",
+                            Price = 999.9999M,
+                            LastUpdated = DateTime.UtcNow,
+                        },
+                    },
+                },
             };
         }
     }

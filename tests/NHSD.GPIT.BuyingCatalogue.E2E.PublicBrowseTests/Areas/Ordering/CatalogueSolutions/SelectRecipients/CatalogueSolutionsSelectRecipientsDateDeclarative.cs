@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions.SelectRecipients
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 {
     public sealed class CatalogueSolutionsSelectRecipientsDateDeclarative
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime

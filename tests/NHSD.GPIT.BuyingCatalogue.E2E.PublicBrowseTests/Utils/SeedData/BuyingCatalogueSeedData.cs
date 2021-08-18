@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         {
             AddDefaultData(context);
             AddCatalogueItems(context);
+            AddMockedItems(context);
             context.SaveChanges();
         }
 
@@ -815,6 +816,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Database.Models.TimeUnit { Id = 2, Name = "year", Description = "per year" },
             };
             context.AddRange(timeUnits);
+        }
+
+        private static void AddMockedItems(EndToEndDbContext context)
+        {
+            var serviceRecipients =
+            ServiceRecipientsSeedData
+                .GetServiceRecipients
+                .Select(sr => new ServiceRecipient { Name = sr.Name, OdsCode = sr.OrgId })
+                .ToList();
+
+            context.AddRange(serviceRecipients);
         }
     }
 }

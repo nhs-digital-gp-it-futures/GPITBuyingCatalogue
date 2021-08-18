@@ -9,36 +9,36 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 {
-    public sealed class CatalogueSolutionsSelectRecipientsDateOnDemand
+    public sealed class AdditionalServicesSelectRecipientsDateDeclarative
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
-        private static readonly CallOffId CallOffId = new(90004, 01);
+        private static readonly CallOffId CallOffId = new(90007, 1);
         private static readonly string OdsCode = "03F";
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A999");
 
         private static readonly Dictionary<string, string> Parameters =
             new() { { nameof(OdsCode), OdsCode }, { nameof(CallOffId), CallOffId.ToString() } };
 
-        public CatalogueSolutionsSelectRecipientsDateOnDemand(
+        public AdditionalServicesSelectRecipientsDateDeclarative(
             LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.SelectSolution),
+                  typeof(AdditionalServicesController),
+                  nameof(AdditionalServicesController.SelectAdditionalService),
                   Parameters)
         {
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectRecipientsDate_PatientOnDemand_Expected()
+        public void AdditionalServicesSelectRecipientsDate_PatientDeclarative_Expected()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.SelectFlatOnDemandQuantity))
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.SelectFlatDeclarativeQuantity))
                 .Should()
                 .BeTrue();
         }
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             InitializeMemoryCacheHander(OdsCode);
 
             using var context = GetEndToEndDbContext();
-            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 2);
+            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 8);
 
             var firstServiceRecipient = MemoryCache.GetServiceRecipients().FirstOrDefault();
 
@@ -59,9 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 CallOffId = CallOffId,
                 CatalogueItemId = CatalogueItemId,
                 CommencementDate = new System.DateTime(2111, 1, 1),
-                CatalogueItemName = "E2E With Contact Multiple Prices",
+                CatalogueItemName = "E2E Multiple Prices Additional Service",
                 CataloguePrice = price,
-                ServiceRecipients = new()
+                ServiceRecipients =
+                new List<OrderItemRecipientModel>
                 {
                     new()
                     {
@@ -74,8 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             Session.SetOrderStateToSessionAsync(model);
 
             NavigateToUrl(
-                typeof(CatalogueSolutionRecipientsDateController),
-                nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate),
+                typeof(AdditionalServiceRecipientsDateController),
+                nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate),
                 Parameters);
 
             return Task.CompletedTask;

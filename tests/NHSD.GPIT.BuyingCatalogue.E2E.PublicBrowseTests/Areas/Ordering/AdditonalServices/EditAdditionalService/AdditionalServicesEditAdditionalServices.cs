@@ -12,9 +12,9 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 {
-    public sealed class CatalogueSolutionsEditSolution
+    public sealed class AdditionalServicesEditAdditionalServices
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
         public static readonly object[][] DateIncorrectInputData =
@@ -32,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 },
             };
 
-        private static readonly CallOffId CallOffId = new(90004, 01);
+        private static readonly CallOffId CallOffId = new(90007, 1);
         private static readonly string OdsCode = "03F";
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
-        private static readonly string CatalogueItemName = "E2E With Contact Multiple Prices";
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A999");
+        private static readonly string CatalogueItemName = "E2E Multiple Prices Additional Service";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
@@ -45,18 +45,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 { nameof(CatalogueItemId), CatalogueItemId.ToString() },
             };
 
-        public CatalogueSolutionsEditSolution(
+        public AdditionalServicesEditAdditionalServices(
             LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.SelectSolution),
+                  typeof(AdditionalServicesController),
+                  nameof(AdditionalServicesController.SelectAdditionalService),
                   Parameters)
         {
         }
 
         [Fact]
-        public void CatalogueSolutionsEditSolution_AllSectionsDisplayed()
+        public void AdditionalServicesEditAddtionalService_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 .BeTrue();
 
             CommonActions
-                .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionDeleteSolutionLink)
+                .ElementIsDisplayed(Objects.Ordering.AdditionalServices.AdditionalServicesEditAdditionalServiceDeleteAdditionalServiceLink)
                 .Should()
                 .BeTrue();
         }
@@ -101,7 +101,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [InlineData("1000", "Price cannot be greater than list price")]
         [InlineData("-1", "Price cannot be negative")]
         [InlineData("ABC", "The value 'ABC' is not valid for AgreedPrice.")]
-        public void CatalogueSolutionsEditSolution_AgreedPrice_IncorrectInput_ThrowsErrors(string errorValue, string expectedErrorMessage)
+        public void AdditionalServicesEditAddtionalService_AgreedPrice_IncorrectInput_ThrowsErrors(
+            string errorValue,
+            string expectedErrorMessage)
         {
             CommonActions.ClearInputElement(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput);
 
@@ -113,8 +115,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 
             CommonActions
                 .PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.EditSolution))
+                    typeof(AdditionalServicesController),
+                    nameof(AdditionalServicesController.EditAdditionalService))
                 .Should()
                 .BeTrue();
 
@@ -133,7 +135,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         [InlineData("0", "Quantity must be greater than 0")]
         [InlineData("-1", "Quantity must be greater than 0")]
         [InlineData("ABC", "The value 'ABC' is not valid for Quantity.")]
-        public void CatalogueSolutionsEditSolution_Quantity_IncorrectInput_ThrowsErrors(string errorValue, string expectedErrorMessage)
+        public void AdditionalServicesEditAddtionalService_Quantity_IncorrectInput_ThrowsErrors(
+            string errorValue,
+            string expectedErrorMessage)
         {
             CommonActions.ClearInputElement(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionFirstQuantityInput);
 
@@ -145,8 +149,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 
             CommonActions
                 .PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.EditSolution))
+                    typeof(AdditionalServicesController),
+                    nameof(AdditionalServicesController.EditAdditionalService))
                 .Should()
                 .BeTrue();
 
@@ -162,7 +166,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 
         [Theory]
         [MemberData(nameof(DateIncorrectInputData))]
-        public void CatalogueSolutionsEditSolution_Date_IncorrectInput_ThrowsError(DateTime errorValue, string expectedErrorMessage)
+        public void AdditionalServicesEditAddtionalService_Date_IncorrectInput_ThrowsError(
+            DateTime errorValue,
+            string expectedErrorMessage)
         {
             CommonActions.ElementAddValue(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionFirstDateDayInput,
@@ -180,8 +186,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 
             CommonActions
                 .PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.EditSolution))
+                    typeof(AdditionalServicesController),
+                    nameof(AdditionalServicesController.EditAdditionalService))
                 .Should()
                 .BeTrue();
 
@@ -189,14 +195,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionFirstDateInputErrorMessage,
+                Objects.Ordering.AdditionalServices.AddtionalServiceEditAdditionalServiceFirstDateInputErrorMessage,
                 expectedErrorMessage)
                 .Should()
                 .BeTrue();
         }
 
         [Fact]
-        public void CatalogueSolutionsEditSolution_Date_NoInput_ThrowsError()
+        public void AdditionalServicesEditAddtionalService_Date_NoInput_ThrowsError()
         {
             CommonActions.ClearInputElement(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionFirstDateDayInput);
@@ -211,8 +217,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
 
             CommonActions
                 .PageLoadedCorrectGetIndex(
-                    typeof(CatalogueSolutionsController),
-                    nameof(CatalogueSolutionsController.EditSolution))
+                    typeof(AdditionalServicesController),
+                    nameof(AdditionalServicesController.EditAdditionalService))
                 .Should()
                 .BeTrue();
 
@@ -220,46 +226,46 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionFirstDateInputErrorMessage,
+                Objects.Ordering.AdditionalServices.AddtionalServiceEditAdditionalServiceFirstDateInputErrorMessage,
                 "Error: Planned delivery date must be a real date")
                 .Should()
                 .BeTrue();
         }
 
         [Fact]
-        public void CatalogueSolutionsEditSolution_ClickEditServiceRecipients_ExpectedResult()
+        public void AdditionalServicesEditAddtionalService_ClickEditServiceRecipients_ExpectedResult()
         {
             CommonActions.ClickLinkElement(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionEditServiceRecipientsButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients))
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients))
                 .Should()
                 .BeTrue();
         }
 
         [Fact]
-        public void CatalogueSolutionsEditSolution_ClickDeleteCatalogueSolution_ExpectedResult()
+        public void AdditionalServicesEditAddtionalService_ClickDeleteAdditionalService_ExpectedResult()
         {
             CommonActions.ClickLinkElement(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionDeleteSolutionLink);
+                Objects.Ordering.AdditionalServices.AdditionalServicesEditAdditionalServiceDeleteAdditionalServiceLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DeleteCatalogueSolutionController),
-                nameof(DeleteCatalogueSolutionController.DeleteSolution))
+                typeof(DeleteAdditionalServiceController),
+                nameof(DeleteAdditionalServiceController.DeleteAdditionalService))
                 .Should()
                 .BeTrue();
         }
 
         [Fact]
-        public void CatalogueSolutionsEditSolution_CorrectInput_ExpectedResults()
+        public void AdditionalServicesEditAddtionalService_CorrectInput_ExpectedResults()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.Index))
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.Index))
                 .Should()
                 .BeTrue();
 
@@ -276,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             var price = context
                 .CataloguePrices
                 .Include(cp => cp.PricingUnit)
-                .SingleOrDefault(cp => cp.CataloguePriceId == 3);
+                .SingleOrDefault(cp => cp.CataloguePriceId == 6);
 
             var firstServiceRecipient = MemoryCache.GetServiceRecipients().FirstOrDefault();
 
@@ -308,8 +314,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             Session.SetOrderStateToSessionAsync(model);
 
             NavigateToUrl(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.EditSolution),
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalService),
                 Parameters);
 
             return Task.CompletedTask;
