@@ -36,6 +36,7 @@ services:
             INCLUDE_IMPORT: "TRUE"
             INCLUDE_PUBLISH: "TRUE"
             INSERT_TEST_DATA: "TRUE"
+            SEED_ORGANISATIONS: "TRUE"
             CREATE_EA_USER: "True"
             EA_USER_FIRST_NAME: "Agency"
             EA_USER_LAST_NAME: "User"
