@@ -93,7 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             },
                             ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
                         }",
-                        Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -186,7 +185,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Solution = new Solution
                     {
                         CatalogueItemId = new CatalogueItemId(99999, "002"),
-                        Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                     },
                 },
@@ -272,7 +270,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             },
                             ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
                         }",
-                        Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -381,7 +378,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             },
                             ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
                         }",
-                        Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
                         ImplementationDetail = "Some implementation detail",
@@ -505,7 +501,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             },
                             ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
                         }",
-                        Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -630,7 +625,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             },
                             ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
                         }",
-                        Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -792,7 +786,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             },
                             ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
                         }",
-                        Version = "1.0.0",
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
