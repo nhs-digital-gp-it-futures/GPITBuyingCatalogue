@@ -10,7 +10,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary RadioId="EstimationPeriod"/>
+            <nhs-validation-summary RadioId="EstimationPeriod" />
             <nhs-page-title title="@Model.Title"
                             advice="Provide the price you've agreed with the supplier and the quantity you want to order." />
         </div>
@@ -75,18 +75,14 @@
                 </nhs-table>
 
                 <nhs-submit-button text="Save" /><br />
-
-                @if (!Model.OrderItem.IsNewSolution)
-                {
-                    <vc:nhs-delete-button text="Delete Associated Service"
-                                          url="@Url.Action(
-                                               nameof(DeleteAssociatedServiceController.DeleteAssociatedService), 
-                                               typeof(DeleteAssociatedServiceController).ControllerName(), 
+                <vc:nhs-delete-button text="Delete Associated Service"
+                                      url="@Url.Action(
+                                               nameof(DeleteAssociatedServiceController.DeleteAssociatedService),
+                                               typeof(DeleteAssociatedServiceController).ControllerName(),
                                           new { Model.OdsCode,
                                                 Model.OrderItem.CallOffId,
                                                 Model.OrderItem.CatalogueItemId,
                                                 Model.OrderItem.CatalogueItemName})" />
-                }
             </div>
         </form>
     </div>
