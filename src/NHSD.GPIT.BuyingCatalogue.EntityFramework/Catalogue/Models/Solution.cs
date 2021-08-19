@@ -16,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public string Version { get; set; }
-
         public string Summary { get; set; }
 
         public string FullDescription { get; set; }
