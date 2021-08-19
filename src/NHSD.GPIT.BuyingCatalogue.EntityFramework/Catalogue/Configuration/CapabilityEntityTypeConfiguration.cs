@@ -28,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasMaxLength(255);
 
-            builder.Property(c => c.PreviousVersion).HasMaxLength(10);
             builder.Property(c => c.SourceUrl).HasMaxLength(1000);
             builder.Property(c => c.Status)
                 .HasConversion<int>()
