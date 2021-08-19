@@ -9,7 +9,8 @@
 INSERT INTO @frameworks (Id, [Name], ShortName, [Owner])
 VALUES
 ('NHSDGP001', 'NHS Digital GP IT Futures Framework 1', 'GP IT Futures', 'NHS Digital'),
-('DFOCVC001', 'Digital First Online Consultation and Video Consultation Framework 1', 'DFOCVC', 'NHS England');
+('DFOCVC001', 'Digital First Online Consultation and Video Consultation Framework 1', 'DFOCVC', 'NHS England'),
+('COVID', 'Coronavirus Vaccinations', 'Coronavirus Vaccinations', 'NHS Digital');
 
 MERGE INTO catalogue.Frameworks AS TARGET
      USING @frameworks AS SOURCE ON TARGET.Id = SOURCE.Id
