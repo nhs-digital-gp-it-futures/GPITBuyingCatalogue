@@ -1,13 +1,16 @@
-﻿IF (UPPER('$(INSERT_TEST_DATA)') = 'TRUE')
-BEGIN
-    CREATE TABLE #PricingUnit
-    (
-        Id smallint NOT NULL PRIMARY KEY,
-        [Name] nvarchar(20) NOT NULL UNIQUE,
-        TierName nvarchar(30) NOT NULL,
-        [Description] nvarchar(40) NOT NULL
-    );
+﻿CREATE TABLE #PricingUnit
+(
+    Id smallint NOT NULL PRIMARY KEY,
+    [Name] nvarchar(20) NOT NULL UNIQUE,
+    TierName nvarchar(30) NOT NULL,
+    [Description] nvarchar(40) NOT NULL
+);
 
+INSERT INTO #PricingUnit(Id, [Name], TierName, [Description])
+    VALUES (1, 'patient', 'patients', 'per patient');
+
+IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
+BEGIN
     INSERT INTO #PricingUnit(Id, [Name], TierName, [Description])
     VALUES
         (-1,  'testPatient'         , 'patients'       , 'per patient'),
@@ -42,6 +45,7 @@ BEGIN
         (-27, 'testUnitMerge'       , 'unit merges'    , 'per unit merge'),
         (-28, 'testUnitSplit'       , 'unit splits'    , 'per unit split'),
         (-29, 'testUser'            , 'users'          , 'per user');
+END;
 
     SET IDENTITY_INSERT catalogue.PricingUnits ON;
 
@@ -59,5 +63,4 @@ BEGIN
     SET IDENTITY_INSERT catalogue.PricingUnits OFF;
 
     DROP TABLE #PricingUnit;
-END;
 GO
