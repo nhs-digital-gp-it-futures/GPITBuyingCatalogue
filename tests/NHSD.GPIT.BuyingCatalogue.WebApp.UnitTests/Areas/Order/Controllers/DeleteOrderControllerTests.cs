@@ -72,23 +72,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode } });
             orderServiceMock.Verify(o => o.DeleteOrder(callOffId), Times.Once);
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_DeleteOrderConfirmation_ReturnsExpectedResult(
-            string odsCode,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            DeleteOrderController controller)
-        {
-            var expectedViewData = new DeleteConfirmationModel(odsCode, order);
-
-            orderServiceMock.Setup(s => s.GetOrder(order.CallOffId)).ReturnsAsync(order);
-
-            var actualResult = await controller.DeleteOrderConfirmation(odsCode, order.CallOffId);
-
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData);
-        }
     }
 }
