@@ -181,6 +181,7 @@
     <Build Include="Import\Types\AssociatedServices.sql" />
     <Build Include="Import\Types\SolutionCapability.sql" />
     <Build Include="Import\Types\Solutions.sql" />
+    <Build Include="Catalogue\Tables\CatalogueItemContacts.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="CREATE_EA_USER">
