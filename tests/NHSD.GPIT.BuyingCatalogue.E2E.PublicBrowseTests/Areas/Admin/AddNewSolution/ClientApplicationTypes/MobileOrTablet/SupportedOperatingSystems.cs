@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             mobileOperatingSystems.OperatingSystemsDescription.Should().Be(description);
         }
 
-        [Fact(Skip = "Error response not thrown")]
+        [Fact]
         public void SupportedOperatingSystems_ErrorThrownMissingMandatory()
         {
             CommonActions.ClickSave();

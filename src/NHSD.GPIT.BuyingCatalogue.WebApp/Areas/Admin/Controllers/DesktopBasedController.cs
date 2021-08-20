@@ -1,39 +1,38 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions")]
-    public sealed class MobileTabletBasedController : Controller
+    public sealed class DesktopBasedController : Controller
     {
         private readonly ISolutionsService solutionsService;
 
-        public MobileTabletBasedController(
+        public DesktopBasedController(
             ISolutionsService solutionsService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet")]
-        public async Task<IActionResult> MobileTablet(CatalogueItemId solutionId)
+        [HttpGet("manage/{solutionId}/client-application-type/desktop")]
+        public async Task<IActionResult> Desktop(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return View(new MobileTabletBasedModel(solution));
+            return View(new DesktopBasedModel(solution));
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
+        [HttpGet("manage/{solutionId}/client-application-type/desktop/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -44,12 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new OperatingSystemsModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
+        [HttpPost("manage/{solutionId}/client-application-type/desktop/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId, OperatingSystemsModel model)
         {
-            if (!model.OperatingSystems.Any(o => o.Checked))
-                ModelState.AddModelError("OperatingSystems[0].Checked", "Select at least one supported operating system");
-
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -58,29 +54,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileOperatingSystems is null)
-                clientApplication.MobileOperatingSystems = new MobileOperatingSystems();
+            clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
 
-            if (clientApplication.MobileOperatingSystems.OperatingSystems is null)
-                clientApplication.MobileOperatingSystems.OperatingSystems = new System.Collections.Generic.HashSet<string>();
-
-            clientApplication.MobileOperatingSystems.OperatingSystems.Clear();
-
-            clientApplication.MobileOperatingSystems.OperatingSystems = model.OperatingSystems
-                .Where(o => o.Checked)
-                .Select(o => o.OperatingSystemName)
-                .ToHashSet();
-
-            clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
-
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
-            return RedirectToAction(nameof(MobileTablet), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/connectivity")]
+        [HttpGet("manage/{solutionId}/client-application-type/desktop/connectivity")]
         public async Task<IActionResult> Connectivity(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -91,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new ConnectivityModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/connectivity")]
+        [HttpPost("manage/{solutionId}/client-application-type/desktop/connectivity")]
         public async Task<IActionResult> Connectivity(CatalogueItemId solutionId, ConnectivityModel model)
         {
             if (!ModelState.IsValid)
@@ -102,30 +85,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileConnectionDetails is null)
-                clientApplication.MobileConnectionDetails = new MobileConnectionDetails();
+            clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
-            clientApplication.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
-            clientApplication.MobileConnectionDetails.Description = model.Description;
-
-            if (clientApplication.MobileConnectionDetails.ConnectionType is null)
-                clientApplication.MobileConnectionDetails.ConnectionType = new System.Collections.Generic.HashSet<string>();
-
-            clientApplication.MobileConnectionDetails.ConnectionType.Clear();
-
-            clientApplication.MobileConnectionDetails.ConnectionType = model.ConnectionTypes
-                .Where(o => o.Checked)
-                .Select(o => o.ConnectionType)
-                .ToHashSet();
-
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
-            return RedirectToAction(nameof(MobileTablet), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/memory-and-storage")]
+        [HttpGet("manage/{solutionId}/client-application-type/desktop/memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -136,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new MemoryAndStorageModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/memory-and-storage")]
+        [HttpPost("manage/{solutionId}/client-application-type/desktop/memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId, MemoryAndStorageModel model)
         {
             if (!ModelState.IsValid)
@@ -147,19 +116,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            clientApplication.MobileMemoryAndStorage ??= new MobileMemoryAndStorage();
+            clientApplication.NativeDesktopMemoryAndStorage ??= new NativeDesktopMemoryAndStorage();
 
-            clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
-            clientApplication.MobileMemoryAndStorage.Description = model.Description;
+            clientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
+            clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription = model.StorageSpace;
+            clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
+            clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
-            return RedirectToAction(nameof(MobileTablet), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/third-party-components")]
+        [HttpGet("manage/{solutionId}/client-application-type/desktop/third-party-components")]
         public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -170,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new ThirdPartyComponentsModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/third-party-components")]
+        [HttpPost("manage/{solutionId}/client-application-type/desktop/third-party-components")]
         public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId, ThirdPartyComponentsModel model)
         {
             if (!ModelState.IsValid)
@@ -181,19 +152,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            clientApplication.MobileThirdParty ??= new MobileThirdParty();
+            clientApplication.NativeDesktopThirdParty ??= new NativeDesktopThirdParty();
 
-            clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
-            clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
+            clientApplication.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
+            clientApplication.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
-            return RedirectToAction(nameof(MobileTablet), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/hardware-requirements")]
+        [HttpGet("manage/{solutionId}/client-application-type/desktop/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -204,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new HardwareRequirementsModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/hardware-requirements")]
+        [HttpPost("manage/{solutionId}/client-application-type/desktop/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId, HardwareRequirementsModel model)
         {
             if (!ModelState.IsValid)
@@ -215,16 +186,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            clientApplication.NativeMobileHardwareRequirements = model.Description;
+            clientApplication.NativeDesktopHardwareRequirements = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
-            return RedirectToAction(nameof(MobileTablet), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/additional-information")]
+        [HttpGet("manage/{solutionId}/client-application-type/desktop/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -235,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new AdditionalInformationModel(solution));
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/additional-information")]
+        [HttpPost("manage/{solutionId}/client-application-type/desktop/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId, AdditionalInformationModel model)
         {
             if (!ModelState.IsValid)
@@ -246,13 +217,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (clientApplication is null)
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
-            clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
+            clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
-            return RedirectToAction(nameof(MobileTablet), new { solutionId });
+            return RedirectToAction(nameof(Desktop), new { solutionId });
         }
     }
 }

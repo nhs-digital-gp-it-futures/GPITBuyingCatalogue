@@ -1,0 +1,29 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels.ConnectivityModel;
+@{
+    ViewData["Title"] = "Desktop application ­– connectivity";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+
+        <div class="nhsuk-grid-column-full">
+            <nhs-validation-summary />
+            <nhs-page-title title="Desktop application ­– connectivity"
+                            advice="Let buyers know about your Catalogue Solution’s connection requirements." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.SolutionId" />
+                <input type="hidden" asp-for="@Model.BackLink" />
+
+                <nhs-select asp-for="SelectedConnectionSpeed"
+                            asp-items="@(new SelectList(Model.ConnectionSpeeds,"Value","Text"))"
+                            label-text="Connection speed"
+                            label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
+
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>

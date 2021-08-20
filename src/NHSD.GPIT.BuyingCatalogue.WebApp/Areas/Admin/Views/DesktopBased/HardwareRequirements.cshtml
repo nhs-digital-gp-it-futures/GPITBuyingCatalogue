@@ -1,0 +1,24 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels.HardwareRequirementsModel;
+@{
+    ViewData["Title"] = "Desktop application – hardware requirements";
+}
+
+<div class="nhsuk-width-container">
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full nhsuk-u-margin-bottom-3">
+            <partial name="Partials/_BackLink" model="Model" />
+        </div>
+        <div class="nhsuk-grid-column-full">
+            <nhs-page-title title="Desktop application – hardware requirements"
+                            advice="Let buyers know about any hardware requirements for your Catalogue Solution." />
+            <form method="post">
+                <input type="hidden" asp-for="@Model.SolutionId" />
+                <input type="hidden" asp-for="@Model.BackLink" />
+                <nhs-textarea asp-for="Description"
+                              label-text="Hardware requirements (optional)"
+                              label-hint="Provide information on any additional hardware that is required for your desktop Catalogue Solution to function." />
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>
