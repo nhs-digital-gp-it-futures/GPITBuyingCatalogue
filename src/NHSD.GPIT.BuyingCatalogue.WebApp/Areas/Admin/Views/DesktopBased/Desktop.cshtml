@@ -93,8 +93,8 @@
     NhsTagsTagHelper.TagColour GetTagColour(string status) =>
         status switch
         {
-            "COMPLETE" => NhsTagsTagHelper.TagColour.Green,
-            "INCOMPLETE" => NhsTagsTagHelper.TagColour.Grey,
+            "Complete" => NhsTagsTagHelper.TagColour.Green,
+            "Not Started" => NhsTagsTagHelper.TagColour.Grey,
             _ => NhsTagsTagHelper.TagColour.Grey,
         };
 }
