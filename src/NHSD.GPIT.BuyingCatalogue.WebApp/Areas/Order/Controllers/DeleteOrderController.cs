@@ -39,13 +39,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 typeof(DashboardController).ControllerName(),
                 new { odsCode });
         }
-
-        [HttpGet("confirmation")]
-        public async Task<IActionResult> DeleteOrderConfirmation(string odsCode, CallOffId callOffId)
-        {
-            var order = await orderService.GetOrder(callOffId);
-
-            return View(new DeleteConfirmationModel(odsCode, order));
-        }
     }
 }
