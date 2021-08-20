@@ -28,17 +28,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         {
         }
 
-        // Set as Theory to allow for quick extension when other application type views are developed.
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased, nameof(CatalogueSolutionsController.BrowserBased))]
-        public void AddClientApplicationType_AddApplicationType(ClientApplicationType clientApplicationType, string expectedControllerMethod)
+        [InlineData(ClientApplicationType.BrowserBased, typeof(CatalogueSolutionsController), nameof(CatalogueSolutionsController.BrowserBased))]
+        [InlineData(ClientApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
+        [InlineData(ClientApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
+        public void AddClientApplicationType_AddApplicationType(ClientApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
         {
             CommonActions.ClickRadioButtonWithValue(clientApplicationType.ToString());
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
+                controller,
                 expectedControllerMethod)
                 .Should().BeTrue();
         }
