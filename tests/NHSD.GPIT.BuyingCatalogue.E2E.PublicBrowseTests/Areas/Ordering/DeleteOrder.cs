@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -11,7 +13,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
     public sealed class DeleteOrder
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90009, 1);
@@ -81,6 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             using var context = GetEndToEndDbContext();
 
             var order = context.Orders.Where(o => o.Id == CallOffId.Id).Count().Should().Be(0);
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+
+            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {CallOffId.Id}");
         }
     }
 }

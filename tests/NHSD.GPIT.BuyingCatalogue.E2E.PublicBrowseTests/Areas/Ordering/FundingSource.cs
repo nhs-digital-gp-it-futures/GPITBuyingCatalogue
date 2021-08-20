@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -10,7 +12,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
     public sealed class FundingSource
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CallOffId CallOffId = new(90008, 1);
         private static readonly string OdsCode = "03F";
@@ -71,6 +73,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+            var order = context.Orders
+                .Single(o => o.Id == CallOffId.Id);
+
+            order.FundingSourceOnlyGms = null;
+
+            context.SaveChanges();
         }
     }
 }
