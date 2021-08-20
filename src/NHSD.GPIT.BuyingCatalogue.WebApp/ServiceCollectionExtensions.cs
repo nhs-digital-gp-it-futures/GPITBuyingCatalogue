@@ -134,6 +134,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
         }
 
