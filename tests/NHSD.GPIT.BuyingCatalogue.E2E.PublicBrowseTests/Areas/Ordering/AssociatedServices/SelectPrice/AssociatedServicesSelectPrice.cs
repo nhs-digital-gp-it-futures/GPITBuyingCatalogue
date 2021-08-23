@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         public async Task AssociatedServicesSelectPrice_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtonItems).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
 
@@ -42,6 +43,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
             var numberOfPrices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == CatalogueItemId).CountAsync();
 
             CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Equals(numberOfPrices);
+        }
+
+        [Fact]
+        public void AssociatedServicesSelectPrice_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(AssociatedServicesController),
+            nameof(AssociatedServicesController.SelectAssociatedService)).Should().BeTrue();
         }
 
         [Fact]

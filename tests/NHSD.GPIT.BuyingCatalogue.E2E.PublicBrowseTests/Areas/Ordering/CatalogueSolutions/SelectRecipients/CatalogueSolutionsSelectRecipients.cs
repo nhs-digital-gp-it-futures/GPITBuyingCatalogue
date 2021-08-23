@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         public void CatalogueSolutionsSelectRecipient_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton)
@@ -51,6 +52,33 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             var serviceRecipients = MemoryCache.GetServiceRecipients();
 
             CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(serviceRecipients.Count());
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectRecipient_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(CatalogueSolutionsController),
+            nameof(CatalogueSolutionsController.SelectSolutionPrice)).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task CatalogueSolutionsSelectRecipient_SkipPriceSelection_ClickGoBackLink_ExpectedResult()
+        {
+            await UpdateSessionToSaySkipPriceSelection();
+
+            NavigateToUrl(
+                typeof(CatalogueSolutionRecipientsController),
+                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
+                Parameters);
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(CatalogueSolutionsController),
+            nameof(CatalogueSolutionsController.SelectSolution)).Should().BeTrue();
         }
 
         [Fact]
@@ -160,6 +188,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         public Task DisposeAsync()
         {
             return DisposeSession();
+        }
+
+        private async Task UpdateSessionToSaySkipPriceSelection()
+        {
+            var model = Session.GetOrderStateFromSession(CallOffId.ToString());
+
+            model.SkipPriceSelection = true;
+
+            await Session.SetOrderStateToSessionAsync(model);
         }
     }
 }

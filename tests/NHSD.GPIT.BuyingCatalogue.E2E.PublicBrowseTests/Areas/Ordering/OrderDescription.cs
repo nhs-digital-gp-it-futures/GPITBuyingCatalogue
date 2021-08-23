@@ -42,6 +42,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void OrderDescription_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        [Fact]
         public void OrderDescription_DeletingAndSaving_ShouldError()
         {
             CommonActions.ClearInputElement(Objects.Ordering.OrderDescription.DescriptionInput);
@@ -50,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderDescriptionController),
-                nameof(OrderDescriptionController.OrderDescription));
+                nameof(OrderDescriptionController.OrderDescription)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();

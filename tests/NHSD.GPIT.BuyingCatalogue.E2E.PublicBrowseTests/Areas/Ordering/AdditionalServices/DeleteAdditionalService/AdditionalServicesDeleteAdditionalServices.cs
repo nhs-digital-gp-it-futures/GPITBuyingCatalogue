@@ -42,9 +42,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         public void AdditionalServicesDeleteAdditionalServices_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsDeleteSolutionCancelLink).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AdditionalServicesDeleteAdditionalService_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.EditAdditionalService))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]

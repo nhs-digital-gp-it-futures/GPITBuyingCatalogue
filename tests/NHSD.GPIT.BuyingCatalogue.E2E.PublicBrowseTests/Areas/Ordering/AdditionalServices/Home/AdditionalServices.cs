@@ -35,6 +35,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddItemButton("Additional Service")).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddedItemsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.ContinueButton).Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        public void AdditionalServices_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+            typeof(OrderController),
+            nameof(OrderController.Order))
+            .Should()
+            .BeTrue();
         }
 
         [Fact]

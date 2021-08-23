@@ -52,6 +52,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void OrderSummary_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                  typeof(OrderController),
+                  nameof(OrderController.Order))
+            .Should()
+            .BeTrue();
+        }
+
+        [Fact]
         public void OrderSummary_OrderCompleted_AllSectionsDisplayed()
         {
             RedirectToSummaryForOrder(new CallOffId(90010, 1));

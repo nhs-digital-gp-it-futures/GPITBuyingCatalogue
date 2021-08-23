@@ -59,6 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         public void CatalogueSolutionsEditSolution_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput)
@@ -94,6 +95,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionDeleteSolutionLink)
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutionsEditSolution_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionRecipientsDateController),
+                nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate))
+            .Should()
+            .BeTrue();
         }
 
         [Theory]
@@ -276,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             var price = context
                 .CataloguePrices
                 .Include(cp => cp.PricingUnit)
-                .SingleOrDefault(cp => cp.CataloguePriceId == 3);
+                .SingleOrDefault(cp => cp.CataloguePriceId == 1);
 
             var firstServiceRecipient = MemoryCache.GetServiceRecipients().FirstOrDefault();
 

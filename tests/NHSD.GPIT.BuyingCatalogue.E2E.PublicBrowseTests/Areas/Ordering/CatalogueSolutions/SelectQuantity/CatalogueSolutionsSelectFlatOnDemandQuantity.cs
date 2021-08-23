@@ -36,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         public void CatalogueSolutionsSelectFlatOnDemandQuantity_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput)
@@ -45,6 +46,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtons)
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectFlatOnDemandQuantity_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(CatalogueSolutionRecipientsDateController),
+              nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate)).Should().BeTrue();
         }
 
         [Theory]

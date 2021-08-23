@@ -44,6 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         public void AssociatedServicesEditAssociatedService_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput)
@@ -61,6 +62,39 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
                 .BeTrue();
 
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtonItems).Should().BeFalse();
+        }
+
+        [Fact]
+        public void AssociatedServicesEditAssociatedService_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.SelectAssociatedServicePrice))
+            .Should()
+            .BeTrue();
+        }
+
+        [Fact]
+        public async Task AssociatedServicesEditAssociatedService_SkipPriceSelection_ClickGoBackLink_ExpectedResult()
+        {
+            await UpdateSessionToSaySkipPriceSelection();
+
+            NavigateToUrl(
+            typeof(AssociatedServicesController),
+            nameof(AssociatedServicesController.EditAssociatedService),
+            Parameters);
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                typeof(AssociatedServicesController),
+                nameof(AssociatedServicesController.SelectAssociatedService))
+            .Should()
+            .BeTrue();
         }
 
         [Theory]
@@ -205,6 +239,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         public Task DisposeAsync()
         {
             return DisposeSession();
+        }
+
+        private async Task UpdateSessionToSaySkipPriceSelection()
+        {
+            var model = Session.GetOrderStateFromSession(CallOffId.ToString());
+
+            model.SkipPriceSelection = true;
+
+            await Session.SetOrderStateToSessionAsync(model);
         }
     }
 }

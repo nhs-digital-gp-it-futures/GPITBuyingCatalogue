@@ -32,7 +32,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
         public void AssociatedServicesSelectAssociatedService_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtons).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AssociatedServicesSelectAssociatedService_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(AssociatedServicesController),
+            nameof(AssociatedServicesController.Index)).Should().BeTrue();
         }
 
         [Fact]
