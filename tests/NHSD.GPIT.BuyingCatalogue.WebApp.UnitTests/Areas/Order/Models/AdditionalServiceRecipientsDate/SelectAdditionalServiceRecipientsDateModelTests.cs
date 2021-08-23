@@ -20,23 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
 
             var model = new SelectAdditionalServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price");
-            model.BackLinkText.Should().Be("Go back");
-            model.Title.Should().Be($"Planned delivery date of {state.CatalogueItemName} for {state.CallOffId}");
-            model.CommencementDate.Should().Be(state.CommencementDate);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithValidArguments_AndSkipPrice_PropertiesCorrectlySet(
-            string odsCode,
-            CreateOrderItemModel state,
-            DateTime? defaultDeliveryDate)
-        {
-            state.SkipPriceSelection = true;
-
-            var model = new SelectAdditionalServiceRecipientsDateModel(odsCode, state, defaultDeliveryDate);
-
             model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price/recipients");
             model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Planned delivery date of {state.CatalogueItemName} for {state.CallOffId}");
