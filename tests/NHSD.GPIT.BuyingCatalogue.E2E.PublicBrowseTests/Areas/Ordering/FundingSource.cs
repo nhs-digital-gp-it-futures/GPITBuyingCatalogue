@@ -14,8 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class FundingSource
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90008, 1);
-        private static readonly string OdsCode = "03F";
 
         private static readonly Dictionary<string, string> Parameters =
             new()

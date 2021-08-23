@@ -14,9 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class CallOffPartyInformation
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90001, 1);
 
-        private static readonly Dictionary<string, string> Parameters = new() { { "OdsCode", "03F" }, { "CallOffId", CallOffId.ToString() } };
+        private static readonly Dictionary<string, string> Parameters =
+            new()
+            {
+                { nameof(OdsCode), OdsCode },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
 
         public CallOffPartyInformation(LocalWebApplicationFactory factory)
             : base(

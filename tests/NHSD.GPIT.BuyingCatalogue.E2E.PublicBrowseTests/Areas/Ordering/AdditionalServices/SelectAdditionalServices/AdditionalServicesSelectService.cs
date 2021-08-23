@@ -14,10 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
     public sealed class AdditionalServicesSelectService
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90007, 1);
 
         private static readonly Dictionary<string, string> Parameters =
-            new() { { "OdsCode", "03F" }, { nameof(CallOffId), CallOffId.ToString() } };
+            new() { { nameof(OdsCode), OdsCode }, { nameof(CallOffId), CallOffId.ToString() } };
 
         public AdditionalServicesSelectService(LocalWebApplicationFactory factory)
             : base(

@@ -16,11 +16,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
     public sealed class CatalogueSolutionSelectPrice
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90004, 01);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters =
-            new() { { "OdsCode", "03F" }, { nameof(CallOffId), CallOffId.ToString() } };
+            new()
+            {
+                { nameof(OdsCode), OdsCode },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
 
         // We navigate to the catalogue solution selection page to initialize a session
         // but the InitializeAsync will always redirect us to SelectSolutionPrice

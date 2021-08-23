@@ -14,8 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
     public sealed class AdditionalServicesSelectFlatDeclarativeQuantity
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90004, 01);
-        private static readonly string OdsCode = "03F";
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters =
