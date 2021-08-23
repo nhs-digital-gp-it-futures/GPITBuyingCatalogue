@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         public void AdditionalServicesSelectRecipient_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton)
@@ -54,13 +55,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         }
 
         [Fact]
+        public void AdditionalServicesSelectRecipient_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(AdditionalServicesController),
+            nameof(AdditionalServicesController.SelectAdditionalServicePrice)).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task AdditionalServicesSelectRecipient_SkipPriceSelection_ClickGoBackLink_ExpectedResult()
+        {
+            await UpdateSessionToSaySkipPriceSelection();
+
+            NavigateToUrl(
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
+                Parameters);
+
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.SelectAdditionalService)).Should().BeTrue();
+        }
+
+        [Fact]
         public void AdditionalServicesSelectRecipient_DontSelectRecipients_ThrowsError()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients)).Should().BeTrue();
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -76,8 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
             CommonActions.ClickLinkElement(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients)).Should().BeTrue();
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients)).Should().BeTrue();
 
             CommonActions.AllCheckBoxesSelected().Should().BeTrue();
 
@@ -95,16 +123,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
             };
 
             NavigateToUrl(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
                 Parameters,
                 queryParameters);
 
             CommonActions.ClickLinkElement(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients)).Should().BeTrue();
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients)).Should().BeTrue();
 
             CommonActions.AllCheckBoxesSelected().Should().BeFalse();
 
@@ -123,8 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionRecipientsDateController),
-                nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate))
+                typeof(AdditionalServiceRecipientsDateController),
+                nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate))
                 .Should()
                 .BeTrue();
         }
@@ -136,22 +164,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
             InitializeMemoryCacheHander(OdsCode);
 
             using var context = GetEndToEndDbContext();
-            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 1);
+            var price = context.CataloguePrices.SingleOrDefault(cp => cp.CataloguePriceId == 6);
 
             var model = new CreateOrderItemModel
             {
                 CallOffId = CallOffId,
                 CatalogueItemId = CatalogueItemId,
-                CatalogueItemName = "E2E With Contact Multiple Prices",
+                CommencementDate = new System.DateTime(2111, 1, 1),
+                CatalogueItemName = "E2E Multiple Prices Additional Service",
                 CataloguePrice = price,
+                SkipPriceSelection = false,
                 IsNewSolution = true,
             };
 
             Session.SetOrderStateToSessionAsync(model);
 
             NavigateToUrl(
-                typeof(CatalogueSolutionRecipientsController),
-                nameof(CatalogueSolutionRecipientsController.SelectSolutionServiceRecipients),
+                typeof(AdditionalServiceRecipientsController),
+                nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients),
                 Parameters);
 
             return Task.CompletedTask;
@@ -160,6 +190,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         public Task DisposeAsync()
         {
             return DisposeSession();
+        }
+
+        private async Task UpdateSessionToSaySkipPriceSelection()
+        {
+            var model = Session.GetOrderStateFromSession(CallOffId.ToString());
+
+            model.SkipPriceSelection = true;
+
+            await Session.SetOrderStateToSessionAsync(model);
         }
     }
 }

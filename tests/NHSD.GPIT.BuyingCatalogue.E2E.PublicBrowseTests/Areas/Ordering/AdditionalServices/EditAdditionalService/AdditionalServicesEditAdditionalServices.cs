@@ -59,6 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         public void AdditionalServicesEditAddtionalService_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsEditSolutionAgreedPriceInput)
@@ -94,6 +95,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
                 .ElementIsDisplayed(Objects.Ordering.AdditionalServices.AdditionalServicesEditAdditionalServiceDeleteAdditionalServiceLink)
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void AdditionalServicesEditAdditionalService_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                typeof(AdditionalServiceRecipientsDateController),
+                nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate))
+            .Should()
+            .BeTrue();
         }
 
         [Theory]

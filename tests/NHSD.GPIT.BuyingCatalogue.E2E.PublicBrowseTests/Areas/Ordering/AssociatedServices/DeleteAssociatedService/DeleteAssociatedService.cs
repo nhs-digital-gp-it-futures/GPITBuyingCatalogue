@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices.DeleteAssociatedService
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
 {
     public sealed class DeleteAssociatedService
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
@@ -41,9 +41,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices.D
         public void DeleteAssociatedService_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsDeleteSolutionCancelLink).Should().BeTrue();
+        }
+
+        [Fact]
+        public void DeleteAssociatedServices_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(AssociatedServicesController),
+            nameof(AssociatedServicesController.EditAssociatedService))
+            .Should()
+            .BeTrue();
         }
 
         [Fact]

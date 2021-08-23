@@ -29,14 +29,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectSolution_AllSectionsDisplayed()
+        public void AdditionalServicesSelectService_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtons).Should().BeTrue();
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectSolution_DontSelectSolution_ThrowsError()
+        public void AdditionalServicesSelectService_ClickGoBackButton_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(AdditionalServicesController),
+                nameof(AdditionalServicesController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AdditionalServicesSelectService_DontSelectSolution_ThrowsError()
         {
             CommonActions.ClickSave();
 
@@ -54,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectSolution_SelectSolution_MultiplePrices_ExpectedResult()
+        public void AdditionalServicesSelectService_SelectSolution_MultiplePrices_ExpectedResult()
         {
             InitializeTestSession();
 
@@ -78,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         }
 
         [Fact]
-        public void CatalogueSolutionsSelectSolution_SelectSolution_SingePrice_ExpectedResult()
+        public void AdditionalServicesSelectService_SelectSolution_SingePrice_ExpectedResult()
         {
             InitializeTestSession();
 

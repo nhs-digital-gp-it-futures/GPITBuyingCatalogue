@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CatalogueSolutionR
             CreateOrderItemModel state,
             DateTime? defaultDeliveryDate)
         {
-            BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price{(state.SkipPriceSelection ? "/recipients" : string.Empty)}";
+            BackLink = $"/order/organisation/{odsCode}/order/{state.CallOffId}/catalogue-solutions/select/solution/price/recipients";
             BackLinkText = "Go back";
             Title = $"Planned delivery date of {state.CatalogueItemName} for {state.CallOffId}";
 

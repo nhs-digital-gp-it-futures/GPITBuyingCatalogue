@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         public async Task CatalogueSolutionsSelectPrice_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtonItems).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
 
@@ -45,6 +46,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             var numberOfPrices = await context.CataloguePrices.Where(cp => cp.CatalogueItemId == CatalogueItemId).CountAsync();
 
             CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Equals(numberOfPrices);
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectPrice_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(CatalogueSolutionsController),
+              nameof(CatalogueSolutionsController.SelectSolution)).Should().BeTrue();
         }
 
         [Fact]

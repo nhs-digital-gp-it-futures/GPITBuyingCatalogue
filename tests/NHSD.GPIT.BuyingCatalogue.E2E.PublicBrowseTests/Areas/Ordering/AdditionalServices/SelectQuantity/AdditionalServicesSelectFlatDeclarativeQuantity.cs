@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -12,7 +11,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 {
-    public sealed class AdditionalServicesSelectFlatOnDemandQuantity
+    public sealed class AdditionalServicesSelectFlatDeclarativeQuantity
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
         private static readonly CallOffId CallOffId = new(90004, 01);
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         private static readonly Dictionary<string, string> Parameters =
             new() { { nameof(OdsCode), OdsCode }, { nameof(CallOffId), CallOffId.ToString() } };
 
-        public AdditionalServicesSelectFlatOnDemandQuantity(
+        public AdditionalServicesSelectFlatDeclarativeQuantity(
             LocalWebApplicationFactory factory)
             : base(
                   factory,
@@ -33,25 +32,34 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         }
 
         [Fact]
-        public void AdditionalServicesSelectFlatOnDemandQuantity_AllSectionsDisplayed()
+        public void AdditionalServicesSelectFlatDeclarativeQuantity_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput)
                 .Should()
                 .BeTrue();
+        }
 
-            CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtons)
-                .Should()
-                .BeTrue();
+        [Fact]
+        public void AdditionalServicesSelectFlatDeclarativeQuantity_ClickGoBackButton_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(AdditionalServiceRecipientsDateController),
+            nameof(AdditionalServiceRecipientsDateController.SelectAdditionalServiceRecipientsDate))
+            .Should()
+            .BeTrue();
         }
 
         [Theory]
         [InlineData("", "Enter a quantity")]
         [InlineData("ABC", "Quantity must be a number")]
         [InlineData("0", "Quantity must be greater than zero")]
-        public void AdditionalServicesSelectFlatOnDemandQuantity_IncorrectInput_ThrowsError(
+        public void AdditionalServicesSelectFlatDeclarativeQuantity_IncorrectInput_ThrowsError(
             string errorValue,
             string expectedErrorMessage)
         {
@@ -63,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.SelectFlatOnDemandQuantity))
+                nameof(AdditionalServicesController.SelectFlatDeclarativeQuantity))
                 .Should()
                 .BeTrue();
 
@@ -75,22 +83,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
                 expectedErrorMessage)
                 .Should()
                 .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatOnDemandRadioInputErrorMessage,
-                "Error: Time Unit is required")
-                .Should()
-                .BeTrue();
         }
 
         [Fact]
-        public void AdditionalServicesSelectFlatOnDemandQuantity_CorrectInput_ExpectedResult()
+        public void AdditionalServicesSelectFlatDeclarativeQuantity_CorrectInput_ExpectedResult()
         {
             CommonActions.ElementAddValue(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput,
                 "123");
-
-            CommonActions.ClickRadioButtonWithText("per month");
 
             CommonActions.ClickSave();
 
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 
             NavigateToUrl(
                 typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.SelectFlatOnDemandQuantity),
+                nameof(AdditionalServicesController.SelectFlatDeclarativeQuantity),
                 Parameters);
 
             return Task.CompletedTask;

@@ -46,6 +46,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void OrderingPartyInformation_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(OrderController),
+            nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        [Fact]
         public void OrderingPartyInformation_NoTextThrowsError()
         {
             CommonActions.ClickSave();

@@ -35,6 +35,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void NewOrderDescription_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                  typeof(OrderController),
+                  nameof(OrderController.NewOrder))
+                    .Should().BeTrue();
+        }
+
+        [Fact]
         public void NewOrderDescription_NoTextThrowsError()
         {
             CommonActions.ClickSave();

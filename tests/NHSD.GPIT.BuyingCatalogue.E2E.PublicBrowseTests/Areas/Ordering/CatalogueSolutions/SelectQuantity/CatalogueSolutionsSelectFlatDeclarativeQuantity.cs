@@ -35,11 +35,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         public void CatalogueSolutionsSelectFlatDeclarativeQuantity_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsSelectFlatDeclarativeAndOnDemandQuantityInput)
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutionsSelectFlatDeclarativeQuantity_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(CatalogueSolutionRecipientsDateController),
+              nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate)).Should().BeTrue();
         }
 
         [Theory]

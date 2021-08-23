@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         public void AdditionalServicesEditRecipients_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton)
                 .Should()
@@ -63,6 +63,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
             var selectedRecipientName = model.ServiceRecipients.FirstOrDefault(sr => sr.Selected).Name;
 
             CommonActions.CheckBoxSelectedByLabelText(selectedRecipientName).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AdditionalServicesEditRecipients_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(AdditionalServicesController),
+            nameof(AdditionalServicesController.EditAdditionalService)).Should().BeTrue();
         }
 
         [Fact]

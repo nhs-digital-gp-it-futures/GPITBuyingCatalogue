@@ -17,7 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.AdditionalServiceR
             string selectionMode)
         {
             BackLink = state.IsNewSolution
-                ? $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service"
+                ? state.SkipPriceSelection
+                 ? $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service"
+                 : $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price"
                 : $"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/{state.CatalogueItemId}";
 
             BackLinkText = "Go back";

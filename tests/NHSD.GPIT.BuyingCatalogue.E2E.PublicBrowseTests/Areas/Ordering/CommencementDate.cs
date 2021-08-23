@@ -45,6 +45,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
+        public void CommencementDate_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        [Fact]
         public void CommencementDate_NoInputThrowsError()
         {
             Driver.FindElement(Objects.Ordering.CommencementDate.CommencementDateDayInput).Clear();

@@ -35,6 +35,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddItemButton("Catalogue Solution")).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.AddedItemsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.CatalogueItems.ContinueButton).Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+            typeof(OrderController),
+            nameof(OrderController.Order))
+            .Should()
+            .BeTrue();
         }
 
         [Fact]

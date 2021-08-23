@@ -37,11 +37,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         public void AdditionalServicesSelectRecipientDate_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsDate)
                 .Should()
                 .BeTrue();
+        }
+
+        [Fact]
+        public void AdditionalServicesSelectRecipientDate_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(AdditionalServiceRecipientsController),
+            nameof(AdditionalServiceRecipientsController.SelectAdditionalServiceRecipients))
+            .Should()
+            .BeTrue();
         }
 
         [Fact]
@@ -133,6 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
                         OdsCode = firstServiceRecipient.OrgId,
                     },
                 },
+                SkipPriceSelection = false,
             };
 
             Session.SetOrderStateToSessionAsync(model);

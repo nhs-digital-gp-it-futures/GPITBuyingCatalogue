@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void NewOrderDashboard_AllSectionsDisplayed()
         {
             CommonActions.PageTitle().Should().BeEquivalentTo("New Order".FormatForComparison());
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.TaskList)
                 .Should().BeTrue();
@@ -35,6 +36,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDashboard.OrderDescriptionStatus)
                 .Should().BeTrue();
+        }
+
+        [Fact]
+        public void NewOrderDashboard_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation))
+                    .Should().BeTrue();
         }
 
         [Fact]

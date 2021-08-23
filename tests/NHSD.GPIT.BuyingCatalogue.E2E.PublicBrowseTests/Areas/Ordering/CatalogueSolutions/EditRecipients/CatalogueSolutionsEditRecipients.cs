@@ -43,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
         public void CatalogueSolutionsEditRecipients_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions
                 .ElementIsDisplayed(Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton)
@@ -63,6 +64,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
             var selectedRecipientName = model.ServiceRecipients.FirstOrDefault(sr => sr.Selected).Name;
 
             CommonActions.CheckBoxSelectedByLabelText(selectedRecipientName).Should().BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutionsEditRecipients_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(CatalogueSolutionsController),
+            nameof(CatalogueSolutionsController.EditSolution)).Should().BeTrue();
         }
 
         [Fact]

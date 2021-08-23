@@ -37,8 +37,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void FundingSource_AllSectionsDisplayed()
         {
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(CommonSelectors.RadioButtonItems).Should().BeTrue();
+        }
+
+        [Fact]
+        public void FundingSource_ClickGoBackLink_ExpectedResult()
+        {
+            CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Order))
+            .Should()
+            .BeTrue();
         }
 
         [Fact]
