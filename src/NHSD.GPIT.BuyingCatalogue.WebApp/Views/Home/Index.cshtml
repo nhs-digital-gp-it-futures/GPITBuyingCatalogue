@@ -1,113 +1,44 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers; 
 @{
-    ViewData["Title"] = "About the Buying Catalogue";
+    ViewData["Title"] = "Buying Catalogue";
 }
-
-@section Banner {
-    <div class="nhsuk-hero" data-test-id="homepage-hero">
-        <div class="nhsuk-hero__wrapper">
-            <div class="nhsuk-width-container nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds nhsuk-u-padding-0">
-                    <h1 class="nhsuk-u-margin-bottom-3">Buying Catalogue</h1>
-                    <p class="nhsuk-heading-l nhsuk-u-font-size-22 nhsuk-u-margin-bottom-0 nhsuk-u-font-weight-normal">Find out what clinical information solutions are available from procurement frameworks on the Buying Catalogue.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-<div data-test-id="homepage-promo-group">
-    <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
-
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item" data-test-id="browse-promo">
-            <div class="nhsuk-card nhsuk-card--clickable">
-                <div class="nhsuk-card__content">
-                    <h3 class="nhsuk-card__heading">
-                        <a class="nhsuk-card__link" href="~/solutions/futures">GP IT Futures framework</a>
-                    </h3>
-                    <p class="nhsuk-card__description">Find and compare Catalogue Solutions available on the GP IT Futures framework</p>
-                </div>
-            </div>
-        </li>
-
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item" data-test-id="dfocvc-card">
-            <div class="nhsuk-card nhsuk-card--clickable">
-                <div class="nhsuk-card__content">
-                    <h3 class="nhsuk-card__heading">
-                        <a class="nhsuk-card__link" href="~/solutions/dfocvc">DFOCVC framework</a>
-                    </h3>
-                    <p class="nhsuk-card__description">Find online and video consultation Catalogue Solutions on the DFOCVC framework</p>
-                </div>
-            </div>
-        </li>
-
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item" data-test-id="vaccinations-promo">
-            <div class="nhsuk-card nhsuk-card--clickable">
-                <div class="nhsuk-card__content">
-                    <h3 class="nhsuk-card__heading">
-                        <a class="nhsuk-card__link" href="~/solutions/vaccinations">Coronavirus vaccinations</a>
-                    </h3>
-                    <p class="nhsuk-card__description">Find Catalogue Solutions that help organise coronavirus vaccinations</p>
-                </div>
-            </div>
-        </li>
-
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item" data-test-id="guidance-promo">
-            <div class="nhsuk-card nhsuk-card--clickable">
-                <div class="nhsuk-card__content">
-                    <h3 class="nhsuk-card__heading">
-                        <a class="nhsuk-card__link" href="~/guide">Buyer’s Guide</a>
-                    </h3>
-                    <p class="nhsuk-card__description">Terminology you’ll need to know when procuring Catalogue Solutions</p>
-                </div>
-            </div>
-        </li>
-
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item" data-test-id="proxy-card">
-            <div class="nhsuk-card nhsuk-card--clickable">
-                <div class="nhsuk-card__content">
-                    <h3 class="nhsuk-card__heading">
-                        <a class="nhsuk-card__link" href="~/nominateorganisation">Nominate an organisation</a>
-                    </h3>
-                    <p class="nhsuk-card__description">Allow an organisation to create orders on your behalf</p>
-                </div>
-            </div>
-        </li>
-
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item" data-test-id="order-form-promo">
-            <div class="nhsuk-card nhsuk-card--clickable">
-                <div class="nhsuk-card__content">
-                    <h3 class="nhsuk-card__heading">
-                        <a class="nhsuk-card__link" href="~/order">Create or manage orders</a>
-                    </h3>
-                    <p class="nhsuk-card__description">Place a new order or complete an order you've already started (log in required)</p>
-                </div>
-            </div>
-        </li>
-
-        @if (User.Identity.IsAuthenticated && User.IsAdmin())
-        {
-            <li class="nhsuk-grid-column-one-half nhsuk-card-group__item" data-test-id="admin-promo">
-                <div class="nhsuk-card nhsuk-card--clickable">
-                    <div class="nhsuk-card__content">
-                        <h3 class="nhsuk-card__heading">
-                            <a class="nhsuk-card__link" asp-area="Admin" asp-controller="Home" asp-action="BuyerOrganisations">Manage organisations and users</a>
-                        </h3>
-                        <p class="nhsuk-card__description">Add new organisations and user accounts or edit existing details</p>
-                    </div>
-                </div>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewData["Title"]"
+                        advice="Find out what clinical information solutions are available from procurement frameworks on the Buying Catalogue." />
+        <hr />
+        <h2>About the Buying Catalogue</h2>
+        <p>The NHS Digital Buying Catalogue is an online marketplace where you can purchase clinical information systems that meet digital needs in health and social care.</p>
+        <p>All the listed products – known as Catalogue Solutions – have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.</p>
+        <p>The functionality of the Buying Catalogue will be enhanced and the number of Catalogue Solutions available will increase over time.</p>
+        <vc:nhs-action-link url="/" text="Browse Catalogue Solutions" />
+        <hr />
+        <h2>What would you like to do?</h2>
+        <ul>
+            <li>
+                <a id="manage-orders-link"
+                   asp-area="@typeof(DashboardController).AreaName()"
+                   asp-controller="@typeof(DashboardController).ControllerName()"
+                   asp-action="@nameof(DashboardController.Index)"><strong>Create or manage orders</strong></a>
+                <p>Place a new order or complete an order you've already started (log in required).</p>
             </li>
-        }
-    </ul>
-
-    <div data-test-id="about-us">
-        <div class="nhsuk-grid-row">
-            <div class="nhsuk-grid-column-two-thirds nhsuk-u-margin-top-5">
-                <h3>About the Buying Catalogue</h3>
-                <p>The NHS Digital Buying Catalogue is an online marketplace where you can purchase clinical information systems that meet the digital needs of primary care.</p>
-                <p>All the listed products – known as Catalogue Solutions – have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.</p>
-                <p>The functionality of the Buying Catalogue will be enhanced and the number of Catalogue Solutions available will increase over time.</p>
-            </div>
-        </div>
+            <li>
+                <a id="request-account-link"
+                   asp-area="@typeof(AccountController).AreaName()"
+                   asp-controller="@typeof(AccountController).ControllerName()"
+                   asp-action="@nameof(AccountController.Registration)"><strong>Request an account</strong></a>
+                <p>Get log in credentials so you can create orders on the Buying Catalogue.</p>
+            </li>
+            <li>
+                <a id="nominate-organisation-link"
+                   asp-area="@typeof(NominateOrganisationController).AreaName()"
+                   asp-controller="@typeof(NominateOrganisationController).ControllerName()"
+                   asp-action="@nameof(NominateOrganisationController.Index)"><strong>Nominate an organisation</strong></a>
+                <p>Allow an organisation to create orders on your behalf (user account required).</p>
+            </li>
+        </ul>
     </div>
 </div>

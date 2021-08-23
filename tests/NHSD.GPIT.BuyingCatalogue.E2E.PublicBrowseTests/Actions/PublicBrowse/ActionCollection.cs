@@ -11,7 +11,5 @@
         internal BuyersGuideActions BuyersGuideActions { get; set; }
 
         internal CommonActions CommonActions { get; set; }
-
-        internal HomepageActions HomePageActions { get; set; }
     }
 }

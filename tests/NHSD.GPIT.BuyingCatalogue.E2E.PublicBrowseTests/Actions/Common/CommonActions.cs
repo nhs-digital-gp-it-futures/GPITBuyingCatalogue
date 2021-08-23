@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentNullException(nameof(methodName), $"{nameof(methodName)} should not be null");
 
-            Wait.Until(d => d.FindElement(CommonSelectors.Header1));
+            Wait.Until(d => d.FindElement(CommonSelectors.NhsLogo));
 
             var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template;
 
