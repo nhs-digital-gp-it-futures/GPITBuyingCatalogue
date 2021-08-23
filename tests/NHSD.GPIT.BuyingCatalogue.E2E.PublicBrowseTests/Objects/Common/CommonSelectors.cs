@@ -35,5 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
         internal static By DateMonth => By.Id("Month");
 
         internal static By DateYear => By.Id("Year");
+
+        internal static By ActionLink => By.ClassName("nhsuk-action-link__link");
+
+        internal static By NhsLogo => ByExtensions.DataTestId("nhs-digital-logo");
     }
 }
