@@ -18,10 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
     public sealed class AssociatedServicesEditAssociatedService
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string OdsCode = "03F";
+        private const string CatalogueItemName = "E2E Multiple Prices Associated Service";
         private static readonly CallOffId CallOffId = new(90008, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "-S-997");
-        private static readonly string OdsCode = "03F";
-        private static readonly string CatalogueItemName = "E2E Multiple Prices Associated Service";
 
         private static readonly Dictionary<string, string> Parameters =
             new()

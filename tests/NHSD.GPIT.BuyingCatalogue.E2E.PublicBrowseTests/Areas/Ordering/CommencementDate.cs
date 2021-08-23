@@ -18,9 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         private const string RealDateErrorMessage = "Error: Commencement date must be a real date";
         private const string MustBeInFutureErrorMessage = "Error: Commencement date must be in the future or within the last 60 days";
 
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90003, 1);
 
-        private static readonly Dictionary<string, string> Parameters = new() { { "OdsCode", "03F" }, { "CallOffId", CallOffId.ToString() } };
+        private static readonly Dictionary<string, string> Parameters =
+            new()
+            {
+                { nameof(OdsCode), OdsCode },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
 
         public CommencementDate(LocalWebApplicationFactory factory)
             : base(

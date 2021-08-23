@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class DeleteOrder
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private static readonly string OdsCode = "03F";
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90009, 1);
 
         private static readonly Dictionary<string, string> Parameters =

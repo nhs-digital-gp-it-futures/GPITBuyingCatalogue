@@ -14,7 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class OrganisationDashboard
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private static readonly Dictionary<string, string> Parameters = new() { { "OdsCode", "03F" } };
+        private const string OdsCode = "03F";
+
+        private static readonly Dictionary<string, string> Parameters =
+            new()
+            {
+                { nameof(OdsCode), OdsCode },
+            };
 
         public OrganisationDashboard(LocalWebApplicationFactory factory)
             : base(

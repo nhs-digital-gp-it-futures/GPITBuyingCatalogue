@@ -16,11 +16,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
     public sealed class AssociatedServicesSelectPrice
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string OdsCode = "03F";
         private static readonly CallOffId CallOffId = new(90008, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "-S-997");
 
         private static readonly Dictionary<string, string> Parameters =
-            new() { { "OdsCode", "03F" }, { "CallOffId", CallOffId.ToString() } };
+            new()
+            {
+                { nameof(OdsCode), OdsCode },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
 
         public AssociatedServicesSelectPrice(LocalWebApplicationFactory factory)
         : base(

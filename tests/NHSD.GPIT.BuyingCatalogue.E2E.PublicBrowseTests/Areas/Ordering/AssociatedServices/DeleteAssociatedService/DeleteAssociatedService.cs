@@ -14,10 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AssociatedServices
     public sealed class DeleteAssociatedService
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string OdsCode = "03F";
+        private const string CatalogueItemName = "E2E Single Price Added Associated Service";
         private static readonly CallOffId CallOffId = new(90008, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "-S-999");
-        private static readonly string OdsCode = "03F";
-        private static readonly string CatalogueItemName = "E2E Single Price Added Associated Service";
 
         private static readonly Dictionary<string, string> Parameters =
             new()

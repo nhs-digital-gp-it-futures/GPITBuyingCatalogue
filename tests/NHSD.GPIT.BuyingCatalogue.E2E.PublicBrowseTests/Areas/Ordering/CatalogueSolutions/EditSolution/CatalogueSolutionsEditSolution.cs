@@ -32,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CatalogueSolutions
                 },
             };
 
+        private const string OdsCode = "03F";
+        private const string CatalogueItemName = "E2E With Contact Multiple Prices";
         private static readonly CallOffId CallOffId = new(90004, 01);
-        private static readonly string OdsCode = "03F";
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
-        private static readonly string CatalogueItemName = "E2E With Contact Multiple Prices";
 
         private static readonly Dictionary<string, string> Parameters =
             new()

@@ -16,10 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
     public sealed class AdditionalServicesEditAdditionalServiceDeclarativeGoBackLink
         : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string OdsCode = "03F";
+        private const string CatalogueItemName = "E2E Multiple Prices Additional Service";
         private static readonly CallOffId CallOffId = new(90007, 1);
-        private static readonly string OdsCode = "03F";
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A999");
-        private static readonly string CatalogueItemName = "E2E Multiple Prices Additional Service";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
