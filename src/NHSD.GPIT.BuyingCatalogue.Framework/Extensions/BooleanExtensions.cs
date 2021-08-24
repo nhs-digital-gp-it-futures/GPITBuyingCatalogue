@@ -2,7 +2,7 @@
 {
     public static class BooleanExtensions
     {
-        public static string ToStatus(this bool? value) => value.GetValueOrDefault() ? "COMPLETE" : "INCOMPLETE";
+        public static string ToStatus(this bool? value) => value.GetValueOrDefault() ? "Complete" : "Incomplete";
 
         public static string ToYesNo(this bool? value)
         {

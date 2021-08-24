@@ -7,9 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
     public static class BooleanExtensionsTests
     {
         [Theory]
-        [InlineData(null, "INCOMPLETE")]
-        [InlineData(true, "COMPLETE")]
-        [InlineData(false, "INCOMPLETE")]
+        [InlineData(null, "Incomplete")]
+        [InlineData(true, "Complete")]
+        [InlineData(false, "Incomplete")]
         public static void BooleanExtension_ToStatus_ReturnsCorrectValue(bool? value, string expected)
         {
             var result = value.ToStatus();
