@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
@@ -60,6 +61,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
             var actual = model.StatusRoadmap();
+
+            actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void StatusInteroperability_Returns_FromInteroperabilityModel(CatalogueItem catalogueItem)
+        {
+            var expected = new InteroperabilityModel(catalogueItem).Status();
+            var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
+
+            var actual = model.StatusInteroperability();
 
             actual.Should().Be(expected);
         }

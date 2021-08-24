@@ -166,9 +166,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var actualResult = controller.SelectSolutionServiceRecipients(odsCode, state.CallOffId, model);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionRecipientsDateController.SelectSolutionServiceRecipientsDate));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(CatalogueSolutionRecipientsDateController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId } });
+            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.EditSolution));
+            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
+            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "odsCode", odsCode }, { "callOffId", state.CallOffId }, { "catalogueItemId", state.CatalogueItemId } });
         }
 
         [Theory]

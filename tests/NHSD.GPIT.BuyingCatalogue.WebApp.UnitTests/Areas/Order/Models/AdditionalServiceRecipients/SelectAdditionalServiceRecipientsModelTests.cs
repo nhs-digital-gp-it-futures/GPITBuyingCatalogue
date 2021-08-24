@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Addition
 
             var model = new SelectAdditionalServiceRecipientsModel(odsCode, state, selectionMode);
 
-            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service");
+            model.BackLink.Should().Be($"/order/organisation/{odsCode}/order/{state.CallOffId}/additional-services/select/additional-service/price");
             model.BackLinkText.Should().Be("Go back");
             model.Title.Should().Be($"Service Recipients for {state.CatalogueItemName} for {state.CallOffId}");
             model.OdsCode.Should().Be(odsCode);

@@ -9,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Models.Clie
 {
     public static class NativeDesktopModelTests
     {
-        private const string Incomplete = "INCOMPLETE";
-        private const string Complete = "COMPLETE";
+        private const string Incomplete = "Incomplete";
+        private const string Complete = "Complete";
 
         [Theory]
         [CommonInlineAutoData(null, Incomplete)]
