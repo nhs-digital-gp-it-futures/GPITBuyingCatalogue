@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
 {
     public static class CatalogueItemToSolutionStatusModelConverterTests
     {
-        private const string Complete = "COMPLETE";
-        private const string Incomplete = "INCOMPLETE";
+        private const string Complete = "Complete";
+        private const string Incomplete = "Incomplete";
 
         [Theory]
         [CommonAutoData]
@@ -464,7 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.MappingProf
             {
                 yield return new object[] { null, Incomplete };
                 yield return new object[] { false, Incomplete };
-                yield return new object[] { true, "COMPLETE" };
+                yield return new object[] { true, "Complete" };
             }
         }
     }
