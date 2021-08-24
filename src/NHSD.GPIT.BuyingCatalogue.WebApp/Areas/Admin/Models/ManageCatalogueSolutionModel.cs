@@ -29,5 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public FeatureCompletionStatus StatusHostingType() => new HostingTypeSectionModel(Solution).StatusHostingType();
 
         public FeatureCompletionStatus StatusClientApplicationType() => new ClientApplicationTypeSectionModel(Solution).StatusClientApplicationType();
+
+        public FeatureCompletionStatus StatusInteroperability() => new InteroperabilityModels.InteroperabilityModel(Solution).Status();
     }
 }

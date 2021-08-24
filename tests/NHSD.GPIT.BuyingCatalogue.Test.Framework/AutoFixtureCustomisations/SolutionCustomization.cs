@@ -11,6 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
+            fixture.Customize<Integration>(
+                c => c.With(
+                    i => i.Qualifier,
+                    GetIntegrationQualifier())
+                );
+
             fixture.Customize<Solution>(
                 c => c.With(
                         s => s.ClientApplication,
@@ -42,7 +48,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
                                         .Create())
                                 .Create()))
                     .With(s => s.Features, JsonConvert.SerializeObject(fixture.Create<string[]>()))
-                    .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>())));
+                    .With(s => s.Hosting, JsonConvert.SerializeObject(fixture.Create<Hosting>()))
+                    .With(
+                        s => s.Integrations,
+                        JsonConvert.SerializeObject(
+                            fixture
+                            .Build<Integration[]>()
+                            .CreateMany<Integration>())));
+        }
+
+        private static string GetIntegrationQualifier()
+        {
+            var qualifiers = new List<string>
+            {
+                "IM1",
+                "GP Connect",
+            };
+
+            return qualifiers[new Random().Next(qualifiers.Count)];
         }
 
         private static HashSet<string> GetClientApplicationTypes()
