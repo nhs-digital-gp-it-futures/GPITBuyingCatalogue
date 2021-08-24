@@ -38,3 +38,11 @@ variable "sqlsvr_replica_name" {
 variable "enable_replica" {
   type = number
 }
+
+variable "server_id" {
+  type = string
+}
+
+variable "core_env" {
+  type = string
+}
