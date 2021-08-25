@@ -1,5 +1,8 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Settings
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers 
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers 
 @inject CookieExpirationSettings CookieExpirationSettings
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
 @{
@@ -22,15 +25,26 @@
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link" data-test-id="home-crumb" asp-action="Index" asp-controller="Home">Home</a>
+                    <a class="nhsuk-breadcrumb__link"
+                       data-test-id="home-crumb"
+                       asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       asp-area="@typeof(HomeController).AreaName()">Home</a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link" data-test-id="catalogue-solutions-crumb" asp-action="SearchResults" asp-controller="Futures">Catalogue Solutions</a>
+                    <a class="nhsuk-breadcrumb__link"
+                       data-test-id="catalogue-solutions-crumb"
+                       asp-action="@nameof(SolutionsController.Index)"                       
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>
                 </li>
                 @if (Model.NotFirstSection())
                 {
                     <li class="nhsuk-breadcrumb__item">
-                        <a asp-action="Description" asp-controller="SolutionDetails" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">
+                        <a asp-action="@nameof(SolutionsController.Description)"
+                           asp-controller="@typeof(SolutionsController).ControllerName()"
+                           asp-area="@typeof(SolutionsController).AreaName()"
+                           asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">
                             @Model.SolutionName
                         </a>
                     </li>
@@ -80,7 +94,23 @@
                 Solution information last reviewed: @Model.LastReviewed
             </nhs-endnote>
 
-            <partial name="Footers/_PaginationFooter" model="@Model.PaginationFooter" />
+            <nhs-page-link-pagination
+                next-url="@Url.Action(
+                        Model.PaginationFooter.Next?.Action,
+                        Model.PaginationFooter.Next?.Controller,
+                        new 
+                        { 
+                            solutionId = Model.PaginationFooter?.Next.Id
+                        })"
+                next-subtext="@Model.PaginationFooter.Next?.Name"
+                previous-url="@Url.Action(
+                        Model.PaginationFooter.Previous?.Action,
+                        Model.PaginationFooter.Previous?.Controller,
+                        new 
+                        { 
+                            solutionId = Model.PaginationFooter.Previous?.Id
+                        })"
+                previous-subtext="@Model.PaginationFooter.Previous?.Name"/>
         </main>
     </div>
 

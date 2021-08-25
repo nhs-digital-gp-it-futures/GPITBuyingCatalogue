@@ -1,7 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers; 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @{
     ViewData["Title"] = "Buying Catalogue";
 }
@@ -14,7 +15,11 @@
         <p>The NHS Digital Buying Catalogue is an online marketplace where you can purchase clinical information systems that meet digital needs in health and social care.</p>
         <p>All the listed products – known as Catalogue Solutions – have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.</p>
         <p>The functionality of the Buying Catalogue will be enhanced and the number of Catalogue Solutions available will increase over time.</p>
-        <vc:nhs-action-link url="/" text="Browse Catalogue Solutions" />
+        <vc:nhs-action-link url="@Url.Action(
+                                nameof(SolutionsController.Index),
+                                typeof(SolutionsController).ControllerName(),
+                                new { Area = typeof(SolutionsController).AreaName() })"
+                            text="Browse Catalogue Solutions" />
         <hr />
         <h2>What would you like to do?</h2>
         <ul>
