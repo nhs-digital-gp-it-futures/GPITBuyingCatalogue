@@ -1,0 +1,55 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@model NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.CatalogueItem;
+
+@{ 
+    var orderedCapabilities = Model.CatalogueItemCapabilities.OrderBy(cic => cic.Capability.Name).ToList();
+    var index = orderedCapabilities.FindIndex(oc => oc.Capability.Name == "Productivity");
+    if (index >= 0)
+    {
+        var item = orderedCapabilities.Single(oc => oc.Capability.Name == "Productivity");
+        orderedCapabilities.RemoveAt(index);
+        orderedCapabilities.Add(item);
+    }
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <h2>
+            <a asp-area="@typeof(SolutionsController).AreaName()"
+               asp-controller="@typeof(SolutionsController).ControllerName()"
+               asp-action="@nameof(SolutionsController.Description)"
+               asp-route-solutionId="@Model.Id">
+                @Model.Name
+            </a>
+        </h2>
+        <h3>
+            @Model.Supplier.Name
+        </h3>
+        <p>
+            @Model.Solution.Summary
+        </p>
+    </div>
+    <div class="nhsuk-grid-column-one-third">
+        <div class="category-list">
+            <h3>Capabilities</h3>
+            <ul>
+                    @foreach (var capability in orderedCapabilities.Take(4))
+                    {
+                        <li>@capability.Capability.Name</li>
+                    }
+            </ul>
+            @if (orderedCapabilities.Count > 4)
+            {
+                <a asp-area="@typeof(SolutionsController).AreaName()"
+                   asp-controller="@typeof(SolutionsController).ControllerName()"
+                   asp-action="@nameof(SolutionsController.Capabilities)"
+                   asp-route-solutionId="@Model.Id">
+                    See all @orderedCapabilities.Count Capabilities
+                </a>
+                <div style="margin-bottom:20px" ></div>
+            }
+        </div>
+    </div>
+</div>
+<hr />

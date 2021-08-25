@@ -119,21 +119,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Marketing.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().Be(mockSolutionStatusModel);
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Get_Preview_RedirectsToPreview(CatalogueItemId id)
-        {
-            var controller = new SolutionController(
-                Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
-
-            var result = controller.Preview(id).As<RedirectToActionResult>();
-
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(SolutionDetailsController.PreviewSolutionDetail));
-            result.ControllerName.Should().Be(typeof(SolutionDetailsController).ControllerName());
-            result.RouteValues["solutionId"].Should().Be(id);
-        }
     }
 }

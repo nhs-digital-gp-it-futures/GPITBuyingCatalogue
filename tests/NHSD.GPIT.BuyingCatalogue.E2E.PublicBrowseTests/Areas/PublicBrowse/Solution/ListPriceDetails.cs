@@ -23,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public ListPriceDetails(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(SolutionDetailsController),
-                  nameof(SolutionDetailsController.ListPrice),
+                  typeof(SolutionsController),
+                  nameof(SolutionsController.ListPrice),
                   Parameters)
         {
         }

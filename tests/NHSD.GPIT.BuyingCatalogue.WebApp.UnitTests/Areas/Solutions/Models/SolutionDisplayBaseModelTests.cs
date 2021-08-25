@@ -18,80 +18,80 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Description),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Description",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Features),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Features),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Features",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Capabilities),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Capabilities),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Capabilities",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.ListPrice),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.ListPrice),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "List price",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.AdditionalServices),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.AdditionalServices),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Additional Services",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Description),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Associated Services",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Interoperability),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Interoperability),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Interoperability",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Implementation),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Implementation),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Implementation",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.ClientApplicationTypes),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.ClientApplicationTypes),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Client application type",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.HostingType),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.HostingType),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Hosting type",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Description),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Service Level Agreement",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Description),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Development plans",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
-                Controller = typeof(SolutionDetailsController).ControllerName(),
+                Action = nameof(SolutionsController.Description),
+                Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Supplier details",
             },
         };

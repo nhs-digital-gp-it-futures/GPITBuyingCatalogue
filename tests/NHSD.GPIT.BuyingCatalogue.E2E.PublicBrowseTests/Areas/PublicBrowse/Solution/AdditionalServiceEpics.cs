@@ -31,8 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public AdditionalServiceEpics(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(SolutionDetailsController),
-                  nameof(SolutionDetailsController.CheckEpicsAdditionalServices),
+                  typeof(SolutionsController),
+                  nameof(SolutionsController.CheckEpicsAdditionalServices),
                   Parameters)
         {
         }

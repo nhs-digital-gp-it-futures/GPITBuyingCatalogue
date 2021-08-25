@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public ImplementationDetails(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(SolutionDetailsController),
-                  nameof(SolutionDetailsController.Implementation),
+                  typeof(SolutionsController),
+                  nameof(SolutionsController.Implementation),
                   Parameters)
         {
         }
