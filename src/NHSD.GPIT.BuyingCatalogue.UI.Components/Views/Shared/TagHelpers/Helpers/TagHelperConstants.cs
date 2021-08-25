@@ -19,10 +19,12 @@
         internal const string Legend = "legend";
         internal const string Button = "button";
         internal const string Input = "input";
+        internal const string Nav = "nav";
 
         /* Attributes*/
         internal const string For = "asp-for";
         internal const string Id = "id";
+        internal const string AriaLabel = "aria-label";
         internal const string LabelledBy = "aria-labelledy";
         internal const string Role = "role";
         internal const string Scope = "scope";
@@ -40,6 +42,7 @@
         internal const string AriaExpanded = "aria-expanded";
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
+        internal const string PathD = "d";
 
         /* Attribute Values */
         internal const string AriaLivePolite = "polite";
@@ -71,6 +74,8 @@
         internal const string NhsValidationInputError = "nhsuk-input--error";
         internal const string NhsBackLinkLink = "nhsuk-back-link__link";
         internal const string NhsIcon = "nhsuk-icon";
+        internal const string NhsIconArrowRight = "nhsuk-icon__arrow-right";
+        internal const string NhsIconArrowLeft = "nhsuk-icon__arrow-left";
         internal const string NhsIconChevronLeft = "nhsuk-icon__chevron-left";
         internal const string NhsMarginTop = "nhsuk-u-margin-top";
         internal const string NhsMarginBottom = "nhsuk-u-margin-bottom";
@@ -91,6 +96,15 @@
         internal const string NhsCheckBoxParentConditionalClass = "nhsuk-checkboxes--conditional";
         internal const string NhsCheckBoxChildConditionalClass = "nhsuk-checkboxes__conditional";
         internal const string NhsCheckBoxChildConditionalHiddenClass = "nhsuk-checkboxes__conditional--hidden";
+        internal const string NhsPagination = "nhsuk-pagination";
+        internal const string NhsPaginationList = "nhsuk-pagination__list";
+        internal const string NhsPaginationItemPrevious = "nhsuk-pagination-item--previous";
+        internal const string NhsPaginationItemNext = "nhsuk-pagination-item--next";
+        internal const string NhsPaginationLink = "nhsuk-pagination__link";
+        internal const string NhsPaginationLinkPrevious = "nhsuk-pagination__link--prev";
+        internal const string NhsPaginationLinkNext = "nhsuk-pagination__link--next";
+        internal const string NhsPaginationTitle = "nhsuk-pagination__title";
+        internal const string NhsPaginationPage = "nhsuk-pagination__page";
 
         /* Messages */
         internal const string CharacterCountMessage = "Maximum character length {0}";
