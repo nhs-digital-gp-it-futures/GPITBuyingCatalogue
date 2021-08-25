@@ -1,0 +1,58 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers 
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
+@{
+    Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewData["Title"] = "Find Buying Catalogue Solutions";
+    var backLinkModel = new NavBaseModel { BackLink = "/", BackLinkText = "Go back" };
+
+    string sortText = Model.Options.Sort switch
+    {
+
+        PageOptions.SortOptions.LastUpdated => "last updated.",
+        _ => "A-Z."
+    };
+
+    string sortLinkText = Model.Options.Sort switch
+    {
+
+        PageOptions.SortOptions.LastUpdated => "A-Z",
+        _ => "last updated",
+    };
+
+    string sortQueryParam = Model.Options.Sort switch {
+        PageOptions.SortOptions.LastUpdated => PageOptions.SortOptions.Alphabetical.ToString().ToLower(),
+        _ => PageOptions.SortOptions.LastUpdated.ToString().ToLower(),
+    };
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewData["Title"]"
+                        advice="Search for Catalogue Solutions that match the needs of your organisation." />
+        <p id="sorting">
+            Results sorted by @sortText 
+            <a asp-area="@typeof(SolutionsController).AreaName()"
+               asp-controller="@typeof(SolutionsController).ControllerName()"
+               asp-action="@nameof(SolutionsController.Index)"
+               asp-route-sortBy="@sortQueryParam">
+                Sort by @sortLinkText
+            </a>
+        </p>
+        <hr />
+        <div id="solutions-list">
+            @foreach (var item in Model.CatalogueItems)
+            {
+                <partial name="_SolutionSearchDisplay" model="@item" />
+            }
+        </div>
+        <div id="pagination">
+            <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
+                                        total-number-of-pages="@Model.Options.NumberOfPages" />
+
+        </div>
+    </div>
+</div>
+
