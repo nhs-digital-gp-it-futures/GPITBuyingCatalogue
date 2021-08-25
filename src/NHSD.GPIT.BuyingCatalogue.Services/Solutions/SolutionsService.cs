@@ -369,23 +369,53 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null)
+        public async Task<IList<CatalogueItem>> GetAllSolutions(
+            PublicationStatus? publicationStatus = null)
         {
             var query = dbContext.CatalogueItems
                 .Include(i => i.Solution)
                 .Include(i => i.Supplier)
-                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution)
-                .OrderByDescending(i => i.Created)
-                .ThenBy(i => i.Name);
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution);
 
-            if (publicationStatus == null)
-            {
-                return await query.ToListAsync();
-            }
+            if (publicationStatus != null)
+                query = query.Where(i => i.PublishedStatus == publicationStatus.Value);
 
             return await query
-                .Where(i => i.PublishedStatus == publicationStatus.Value)
+                .OrderByDescending(i => i.Created)
+                .ThenBy(i => i.Name)
                 .ToListAsync();
+        }
+
+        public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
+            PageOptions options = null,
+            EntityFramework.Catalogue.Models.Framework framework = null)
+        {
+            var query = dbContext.CatalogueItems
+            .Include(i => i.Solution)
+            .Include(i => i.Supplier)
+            .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
+            .Where(i => i.CatalogueItemType == CatalogueItemType.Solution);
+
+            // TODO: do some filtering logic here
+
+            options.TotalNumberOfItems = await query.CountAsync();
+
+            if (options.PageNumber != 0 && options.PageSize != 0)
+                query = query.Skip((options.PageNumber - 1) * options.PageSize);
+
+            if (options.PageSize != 0)
+                query = query.Take(options.PageSize);
+
+            query = options.Sort switch
+            {
+                PageOptions.SortOptions.LastUpdated => query.OrderByDescending(ci => ci.Solution.LastUpdated),
+                _ => query.OrderBy(ci => ci.Name),
+            };
+
+            var results = await query.ToListAsync();
+
+            return new PagedList<CatalogueItem>(results, options);
         }
 
         public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)
