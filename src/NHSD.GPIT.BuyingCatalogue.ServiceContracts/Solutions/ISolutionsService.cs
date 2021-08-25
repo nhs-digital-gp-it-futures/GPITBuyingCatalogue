@@ -59,6 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
 
+        Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
+            PageOptions options = null,
+            Framework framework = null);
+
         Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id);
 
         Task<CatalogueItem> GetAdditionalServiceCapability(
