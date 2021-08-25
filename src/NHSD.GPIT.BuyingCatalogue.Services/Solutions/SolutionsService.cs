@@ -398,20 +398,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             .Where(i => i.CatalogueItemType == CatalogueItemType.Solution);
 
             // TODO: do some filtering logic here
-
             options.TotalNumberOfItems = await query.CountAsync();
-
-            if (options.PageNumber != 0 && options.PageSize != 0)
-                query = query.Skip((options.PageNumber - 1) * options.PageSize);
-
-            if (options.PageSize != 0)
-                query = query.Take(options.PageSize);
 
             query = options.Sort switch
             {
                 PageOptions.SortOptions.LastUpdated => query.OrderByDescending(ci => ci.Solution.LastUpdated),
                 _ => query.OrderBy(ci => ci.Name),
             };
+
+            if (options.PageNumber != 0 && options.PageSize != 0)
+                query = query.Skip((options.PageNumber - 1) * options.PageSize);
+
+            if (options.PageSize != 0)
+                query = query.Take(options.PageSize);
 
             var results = await query.ToListAsync();
 

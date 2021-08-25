@@ -14,8 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations
             fixture.Customize<Integration>(
                 c => c.With(
                     i => i.Qualifier,
-                    GetIntegrationQualifier())
-                );
+                    GetIntegrationQualifier()));
 
             fixture.Customize<Solution>(
                 c => c.With(
