@@ -1,7 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers 
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
@@ -22,10 +23,27 @@
         _ => "last updated",
     };
 
-    string sortQueryParam = Model.Options.Sort switch {
+    string sortQueryParam = Model.Options.Sort switch
+    {
         PageOptions.SortOptions.LastUpdated => PageOptions.SortOptions.Alphabetical.ToString().ToLower(),
         _ => PageOptions.SortOptions.LastUpdated.ToString().ToLower(),
     };
+}
+
+@section Breadcrumbs {
+<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+    <div class="nhsuk-width-container">
+        <ol class="nhsuk-breadcrumb__list">
+            <li class="nhsuk-breadcrumb__item">
+                <a class="nhsuk-breadcrumb__link"
+                    data-test-id="home-crumb"
+                    asp-action="@nameof(HomeController.Index)"
+                    asp-controller="@typeof(HomeController).ControllerName()"
+                    asp-area="@typeof(HomeController).AreaName()">Home</a>
+            </li>
+        </ol>
+    </div>
+</nav>
 }
 
 <div class="nhsuk-grid-row">
@@ -33,7 +51,7 @@
         <nhs-page-title title="@ViewData["Title"]"
                         advice="Search for Catalogue Solutions that match the needs of your organisation." />
         <p id="sorting">
-            Results sorted by @sortText 
+            Results sorted by @sortText
             <a asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Index)"

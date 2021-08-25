@@ -40,14 +40,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Controllers
 
             return View(model);
         }
-
-        [HttpGet("preview")]
-        public IActionResult Preview(CatalogueItemId solutionId)
-        {
-            return RedirectToAction(
-                nameof(SolutionDetailsController.PreviewSolutionDetail),
-                typeof(SolutionDetailsController).ControllerName(),
-                new { solutionId });
-        }
     }
 }
