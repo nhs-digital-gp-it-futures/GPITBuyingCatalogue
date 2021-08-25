@@ -138,15 +138,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         FullWidth = true,
                         Next = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.Interoperability),
-                            Controller = typeof(SolutionDetailsController).ControllerName(),
-                            Name = nameof(SolutionDetailsController.Interoperability),
+                            Action = nameof(SolutionsController.Interoperability),
+                            Controller = typeof(SolutionsController).ControllerName(),
+                            Name = nameof(SolutionsController.Interoperability),
                             Show = true,
                         },
                         Previous = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.AdditionalServices),
-                            Controller = typeof(SolutionDetailsController).ControllerName(),
+                            Action = nameof(SolutionsController.AdditionalServices),
+                            Controller = typeof(SolutionsController).ControllerName(),
                             Name = "Additional Services",
                             Show = true,
                         },
@@ -171,20 +171,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 FullWidth = true,
                 Next = new SectionModel
                 {
-                    Action = nameof(SolutionDetailsController.ListPrice),
-                    Controller = typeof(SolutionDetailsController).ControllerName(),
+                    Action = nameof(SolutionsController.ListPrice),
+                    Controller = typeof(SolutionsController).ControllerName(),
                     Name = "List price",
                     Show = true,
                 },
                 Previous = new SectionModel
                 {
-                    Action = nameof(SolutionDetailsController.Features),
-                    Controller = typeof(SolutionDetailsController).ControllerName(),
-                    Name = nameof(SolutionDetailsController.Features),
+                    Action = nameof(SolutionsController.Features),
+                    Controller = typeof(SolutionsController).ControllerName(),
+                    Name = nameof(SolutionsController.Features),
                     Show = true,
                 },
             });
-            actual.Section.Should().Be(nameof(SolutionDetailsController.Capabilities));
+            actual.Section.Should().Be(nameof(SolutionsController.Capabilities));
             actual.SolutionId.Should().Be(catalogueItem.Id);
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
@@ -323,14 +323,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                     {
                         Next = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.ClientApplicationTypes),
+                            Action = nameof(SolutionsController.ClientApplicationTypes),
                             Controller = "SolutionDetails",
                             Name = "Client application type",
                             Show = true,
                         },
                         Previous = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.Interoperability),
+                            Action = nameof(SolutionsController.Interoperability),
                             Controller = "SolutionDetails",
                             Name = "Interoperability",
                             Show = true,
@@ -552,15 +552,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         FullWidth = true,
                         Next = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.AssociatedServices),
-                            Controller = typeof(SolutionDetailsController).ControllerName(),
+                            Action = nameof(SolutionsController.AssociatedServices),
+                            Controller = typeof(SolutionsController).ControllerName(),
                             Name = "Associated Services",
                             Show = true,
                         },
                         Previous = new SectionModel
                         {
-                            Action = nameof(SolutionDetailsController.ListPrice),
-                            Controller = typeof(SolutionDetailsController).ControllerName(),
+                            Action = nameof(SolutionsController.ListPrice),
+                            Controller = typeof(SolutionsController).ControllerName(),
                             Name = "List price",
                             Show = true,
                         },

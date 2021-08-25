@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public AdditionalServicesDetails(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(SolutionDetailsController),
-                  nameof(SolutionDetailsController.AdditionalServices),
+                  typeof(SolutionsController),
+                  nameof(SolutionsController.AdditionalServices),
                   Parameters)
         {
         }

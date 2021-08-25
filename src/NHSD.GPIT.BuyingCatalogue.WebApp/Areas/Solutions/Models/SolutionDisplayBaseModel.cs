@@ -10,85 +10,85 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public abstract class SolutionDisplayBaseModel
     {
         private const string KeyDescription = "Description";
-        private static readonly string ControllerName = typeof(SolutionDetailsController).ControllerName();
+        private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
 
         private readonly IList<SectionModel> sections = new List<SectionModel>
         {
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionsController.Description),
                 Controller = ControllerName,
                 Name = KeyDescription,
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Features),
+                Action = nameof(SolutionsController.Features),
                 Controller = ControllerName,
                 Name = "Features",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Capabilities),
+                Action = nameof(SolutionsController.Capabilities),
                 Controller = ControllerName,
                 Name = "Capabilities",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.ListPrice),
+                Action = nameof(SolutionsController.ListPrice),
                 Controller = ControllerName,
                 Name = "List price",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.AdditionalServices),
+                Action = nameof(SolutionsController.AdditionalServices),
                 Controller = ControllerName,
                 Name = "Additional Services",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.AssociatedServices),
+                Action = nameof(SolutionsController.AssociatedServices),
                 Controller = ControllerName,
                 Name = "Associated Services",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Interoperability),
+                Action = nameof(SolutionsController.Interoperability),
                 Controller = ControllerName,
-                Name = nameof(SolutionDetailsController.Interoperability),
+                Name = nameof(SolutionsController.Interoperability),
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Implementation),
+                Action = nameof(SolutionsController.Implementation),
                 Controller = ControllerName,
                 Name = "Implementation",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.ClientApplicationTypes),
+                Action = nameof(SolutionsController.ClientApplicationTypes),
                 Controller = ControllerName,
                 Name = "Client application type",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.HostingType),
+                Action = nameof(SolutionsController.HostingType),
                 Controller = ControllerName,
                 Name = "Hosting type",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionsController.Description),
                 Controller = ControllerName,
                 Name = "Service Level Agreement",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.Description),
+                Action = nameof(SolutionsController.Description),
                 Controller = ControllerName,
                 Name = "Development plans",
             },
             new()
             {
-                Action = nameof(SolutionDetailsController.SupplierDetails),
+                Action = nameof(SolutionsController.SupplierDetails),
                 Controller = ControllerName,
                 Name = "Supplier details",
             },

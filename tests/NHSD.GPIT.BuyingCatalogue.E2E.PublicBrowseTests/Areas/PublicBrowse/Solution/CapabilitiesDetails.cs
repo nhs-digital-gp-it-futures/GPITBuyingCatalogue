@@ -23,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public CapabilitiesDetails(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(SolutionDetailsController),
-                  nameof(SolutionDetailsController.Capabilities),
+                  typeof(SolutionsController),
+                  nameof(SolutionsController.Capabilities),
                   Parameters)
         {
         }

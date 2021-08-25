@@ -20,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public ApplicationTypeDetails(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(SolutionDetailsController),
-                  nameof(SolutionDetailsController.ClientApplicationTypes),
+                  typeof(SolutionsController),
+                  nameof(SolutionsController.ClientApplicationTypes),
                   Parameters)
         {
         }

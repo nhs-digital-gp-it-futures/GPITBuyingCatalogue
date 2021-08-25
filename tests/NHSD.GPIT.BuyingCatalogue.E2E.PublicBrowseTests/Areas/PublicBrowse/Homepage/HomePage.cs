@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 
@@ -34,17 +35,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             CommonActions.ElementIsDisplayed(Objects.Home.HomeSelectors.NominateOrganisationLink).Should().BeTrue();
         }
 
-        [Fact(Skip = "To Be Turned on when Catalogue Solutions Revamp has been finished")]
+        [Fact]
         public void HomePage_ClickBrowseSolutions_ExpectedResult()
         {
             CommonActions.ClickLinkElement(CommonSelectors.ActionLink);
-            /*
+
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SolutionDetailsController),
-                nameof(SolutionDetailsController.Index))
+                typeof(SolutionsController),
+                nameof(SolutionsController.Index))
                 .Should()
                 .BeTrue();
-            */
         }
 
         [Fact]
