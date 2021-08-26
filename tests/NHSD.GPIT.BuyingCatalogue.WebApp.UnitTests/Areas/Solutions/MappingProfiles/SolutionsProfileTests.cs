@@ -22,7 +22,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProfiles
 {
-    public sealed class SolutionDetailsProfileTests
+    public sealed class SolutionsProfileTests
     {
         private const string LastReviewedDate = "26 Aug 2025";
 
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         private readonly Mock<IConfiguration> configuration;
         private readonly MapperConfiguration mapperConfiguration;
 
-        public SolutionDetailsProfileTests()
+        public SolutionsProfileTests()
         {
             configuration = new Mock<IConfiguration>();
             configuration.Setup(c => c["SolutionsLastReviewedDate"])
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mapperConfiguration = new MapperConfiguration(
                 cfg =>
                 {
-                    cfg.AddProfile<SolutionDetailsProfile>();
+                    cfg.AddProfile<SolutionsProfile>();
                     cfg.CreateMap<CatalogueItem, TestSolutionDisplayBaseModel>()
                         .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
                         .ForAllOtherMembers(opt => opt.Ignore());
@@ -207,14 +207,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         Next = new SectionModel
                         {
                             Action = "HostingType",
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Hosting type",
                             Show = true,
                         },
                         Previous = new SectionModel
                         {
                             Action = "Implementation",
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Implementation",
                             Show = true,
                         },
@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 Previous = new SectionModel
                 {
                     Action = "Capabilities",
-                    Controller = "SolutionDetails",
+                    Controller = "Solutions",
                     Name = "Capabilities",
                     Show = true,
                 },
@@ -250,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                 Next = new SectionModel
                 {
                     Action = "AdditionalServices",
-                    Controller = "SolutionDetails",
+                    Controller = "Solutions",
                     Name = "Additional Services",
                     Show = true,
                 },
@@ -290,14 +290,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         Previous = new SectionModel
                         {
                             Action = "ClientApplicationTypes",
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Client application type",
                             Show = true,
                         },
                         Next = new SectionModel
                         {
                             Action = "Description",
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Service Level Agreement",
                             Show = true,
                         },
@@ -324,14 +324,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         Next = new SectionModel
                         {
                             Action = nameof(SolutionsController.ClientApplicationTypes),
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Client application type",
                             Show = true,
                         },
                         Previous = new SectionModel
                         {
                             Action = nameof(SolutionsController.Interoperability),
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Interoperability",
                             Show = true,
                         },
@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         Next = new SectionModel
                         {
                             Action = "Features",
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Features",
                             Show = true,
                         },
@@ -442,7 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         Previous = new SectionModel
                         {
                             Action = "Description",
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Description",
                             Show = true,
                         },
@@ -451,7 +451,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         Next = new SectionModel
                         {
                             Action = "Capabilities",
-                            Controller = "SolutionDetails",
+                            Controller = "Solutions",
                             Name = "Capabilities",
                             Show = true,
                         },

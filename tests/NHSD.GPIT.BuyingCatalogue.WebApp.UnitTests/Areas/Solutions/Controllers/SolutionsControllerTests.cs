@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .GetMethod(nameof(SolutionsController.CheckEpics))
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
-                .Be("futures/{solutionId}/capability/{capabilityId}");
+                .Be("{solutionId}/capability/{capabilityId}");
         }
 
         [Theory]
@@ -417,7 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
                 .Be(
-                    "futures/{solutionId}/additional-services/{additionalServiceId}/capability/{capabilityId}");
+                    "{solutionId}/additional-services/{additionalServiceId}/capability/{capabilityId}");
         }
 
         [Theory]
@@ -912,23 +912,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Fact]
-        public static void Get_SupplierDetails_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(SolutionsController)
-                .GetMethod(nameof(SolutionsController.SupplierDetails))
-                .GetCustomAttribute<HttpGetAttribute>()
-                .Template.Should()
-                .Be("futures/{solutionId}/supplier-details");
-        }
-
-        [Fact]
         public static void Get_AdditionalServices_RouteAttribute_ExpectedTemplate()
         {
             typeof(SolutionsController)
                 .GetMethod(nameof(SolutionsController.AdditionalServices))
                 .GetCustomAttribute<HttpGetAttribute>()
                 .Template.Should()
-                .Be("futures/{solutionId}/additional-services");
+                .Be("{solutionId}/additional-services");
         }
 
         [Theory]
