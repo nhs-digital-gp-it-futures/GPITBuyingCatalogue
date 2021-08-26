@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 {
-    public sealed class SolutionDetailsProfile : Profile
+    public sealed class SolutionsProfile : Profile
     {
         private const string KeyBrowserBased = "browser-based";
         private const string KeyNativeDesktop = "native-desktop";
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
             { catalogueItem => catalogueItem.HasSupplierDetails() },
         };
 
-        public SolutionDetailsProfile()
+        public SolutionsProfile()
         {
             CreateMap<CatalogueItem, AssociatedServiceModel>()
                 .ForMember(
