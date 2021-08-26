@@ -378,7 +378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
                 .Where(i => i.CatalogueItemType == CatalogueItemType.Solution);
 
-            if (publicationStatus != null)
+            if (publicationStatus is not null)
                 query = query.Where(i => i.PublishedStatus == publicationStatus.Value);
 
             return await query
