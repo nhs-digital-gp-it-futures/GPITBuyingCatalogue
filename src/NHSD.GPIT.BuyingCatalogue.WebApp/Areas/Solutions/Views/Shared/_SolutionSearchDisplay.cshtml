@@ -41,7 +41,8 @@
             </ul>
             @if (orderedCapabilities.Count > 4)
             {
-                <a asp-area="@typeof(SolutionsController).AreaName()"
+                <a data-test-id="capibilities-overcount-link"
+                   asp-area="@typeof(SolutionsController).AreaName()"
                    asp-controller="@typeof(SolutionsController).ControllerName()"
                    asp-action="@nameof(SolutionsController.Capabilities)"
                    asp-route-solutionId="@Model.Id">

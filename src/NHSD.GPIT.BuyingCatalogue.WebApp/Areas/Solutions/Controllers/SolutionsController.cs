@@ -28,14 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string page,
             [FromQuery] string sortBy)
         {
-            var pageNumber = int.TryParse(page, out int pageOut) ? pageOut : 1;
-            _ = Enum.TryParse<PageOptions.SortOptions>(sortBy, true, out var sortOption);
-
-            var options = new PageOptions
-            {
-                PageNumber = pageNumber,
-                Sort = sortOption,
-            };
+            var options = new PageOptions(page, sortBy);
 
             var solutions = await solutionsService.GetAllSolutionsFiltered(
                 options);

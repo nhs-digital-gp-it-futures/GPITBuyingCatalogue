@@ -113,6 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 var options = new DbContextOptionsBuilder<EndToEndDbContext>()
                     .UseSqlite(sqliteConnection)
+                    .EnableSensitiveDataLogging()
                     .Options;
 
                 return new EndToEndDbContext(options);
@@ -186,6 +187,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     // figure out error logging here
                     Trace.WriteLine(ex.Message);
                 }
+
+                bcDb.Dispose();
             });
 
             builder.UseUrls($"{LocalhostBaseAddress}:0");

@@ -388,10 +388,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
-            PageOptions options = null,
+            PageOptions options,
             EntityFramework.Catalogue.Models.Framework framework = null)
         {
-            var query = dbContext.CatalogueItems
+            if (options is null)
+                options = new();
+
+            var query = dbContext.CatalogueItems.AsNoTracking()
             .Include(i => i.Solution)
             .Include(i => i.Supplier)
             .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
@@ -406,11 +409,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 _ => query.OrderBy(ci => ci.Name),
             };
 
-            if (options.PageNumber != 0 && options.PageSize != 0)
+            if (options.PageNumber != 0)
                 query = query.Skip((options.PageNumber - 1) * options.PageSize);
 
-            if (options.PageSize != 0)
-                query = query.Take(options.PageSize);
+            query = query.Take(options.PageSize);
 
             var results = await query.ToListAsync();
 
