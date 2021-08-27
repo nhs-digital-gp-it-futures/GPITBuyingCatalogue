@@ -34,13 +34,13 @@
                 @if (Model.ExistingClientApplicationTypes.Any())
                 {
                     <nhs-table>
-                        <nhs-table-column>Type</nhs-table-column>
+                        <nhs-table-column>Application types added</nhs-table-column>
                         <nhs-table-column> </nhs-table-column>
 
                         @foreach (var applicationType in Model.ExistingClientApplicationTypes)
                         {
                             <nhs-table-row-container>
-                                <nhs-table-cell>@applicationType.AsString(EnumFormat.DisplayName)</nhs-table-cell>
+                                <nhs-table-cell>@FormatApplicationType(applicationType)</nhs-table-cell>
                                 <nhs-table-cell>
                                     @if (applicationType == ClientApplicationType.MobileTablet)
                                     {
@@ -72,3 +72,11 @@
         </div>
     </div>
 </div>
+
+@{ 
+    string FormatApplicationType(ClientApplicationType applicationType) => applicationType switch
+    {
+        ClientApplicationType.MobileTablet => "Mobile application",
+        _ => $"{applicationType.AsString(EnumFormat.DisplayName)} application",
+    };
+}

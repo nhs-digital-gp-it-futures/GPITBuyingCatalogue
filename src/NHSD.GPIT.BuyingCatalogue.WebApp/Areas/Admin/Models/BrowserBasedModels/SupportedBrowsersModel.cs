@@ -4,7 +4,6 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
 {
@@ -25,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         public SupportedBrowsersModel()
             : base()
         {
+            BackLinkText = "Go back";
         }
 
         public SupportedBrowsersModel(CatalogueItem catalogueItem)
@@ -39,11 +39,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
 
             if (ClientApplication.MobileResponsive.HasValue)
                 MobileResponsive = ClientApplication.MobileResponsive.ToYesNo();
+
+            BackLinkText = "Go back";
         }
 
         public SupportedBrowserModel[] Browsers { get; set; }
 
-        [Required(ErrorMessage = "Select mobile responsive")]
+        [Required(ErrorMessage = "Select yes if your Catalogue Solution is mobile responsive")]
         public string MobileResponsive { get; set; }
 
         public override bool IsComplete =>
