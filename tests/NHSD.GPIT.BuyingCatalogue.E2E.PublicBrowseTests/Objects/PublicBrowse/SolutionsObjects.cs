@@ -17,10 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
 
         public static By SolutionCapabilityList => ByExtensions.DataTestId("capability-list");
 
-        public static By SolutionCapabilityName => ByExtensions.DataTestId("capability-list-item");
+        public static By SortByLink => By.Id("sortby-link");
 
-        public static By FoundationSolutionIndicators => ByExtensions.DataTestId("solution-card-foundation");
+        public static By SolutionsLink => By.CssSelector("div.nhsuk-grid-column-two-thirds h2 a");
 
-        public static By CompareSolutions => ByExtensions.DataTestId("compare-button", "a");
+        public static By CapabilitesOverCountLink => ByExtensions.DataTestId("capibilities-overcount-link");
+
     }
 }

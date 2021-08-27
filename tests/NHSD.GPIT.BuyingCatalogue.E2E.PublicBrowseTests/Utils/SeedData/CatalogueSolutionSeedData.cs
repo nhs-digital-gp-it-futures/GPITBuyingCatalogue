@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
     {
         public static List<CatalogueItem> GetCatalogueSolutionItems()
         {
-            return new()
+            var catalogueItems = new List<CatalogueItem>
             {
                 new CatalogueItem
                 {
@@ -643,6 +644,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {
                         new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 44, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 45, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 46, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 47, LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     CataloguePrices = new List<CataloguePrice>
@@ -825,6 +830,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                 },
             };
+
+            catalogueItems.AddRange(GetGeneratedCatalogueSolutionItems());
+
+            return catalogueItems;
+        }
+
+        private static List<CatalogueItem> GetGeneratedCatalogueSolutionItems()
+        {
+            var catalogueItems = new List<CatalogueItem>();
+
+            for (int i = 400; i < 500; i++)
+            {
+                catalogueItems.Add(GenerateCatalogueSolution.Generate(new EntityFramework.Ordering.Models.CatalogueItemId(99998, i.ToString())));
+            }
+
+            return catalogueItems;
         }
     }
 }

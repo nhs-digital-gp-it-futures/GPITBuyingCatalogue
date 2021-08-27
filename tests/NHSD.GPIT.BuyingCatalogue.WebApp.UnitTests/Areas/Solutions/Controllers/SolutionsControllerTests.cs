@@ -10,6 +10,7 @@ using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -44,6 +45,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Assert.Throws<ArgumentNullException>(() => _ = new SolutionsController(Mock.Of<IMapper>(), null))
                 .ParamName.Should()
                 .Be("solutionsService");
+        }
+
+        [Fact]
+        public static async Task Get_Index_GetsSolutionsFromService()
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
+
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
+                .ReturnsAsync(pagedList);
+
+            var controller = new SolutionsController(
+                Mock.Of<IMapper>(),
+                mockService.Object);
+
+            await controller.Index(string.Empty, string.Empty);
+
+            mockService.Verify(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null));
+        }
+
+        [Fact]
+        public static async Task Get_Index_ReturnsExpectedViewResults()
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
+
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
+                .ReturnsAsync(pagedList);
+
+            var controller = new SolutionsController(
+                Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.Index(null, null)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeOfType(typeof(SolutionsModel));
         }
 
         [Theory]

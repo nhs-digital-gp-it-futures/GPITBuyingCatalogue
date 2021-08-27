@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
 
         internal static By Header1 => By.TagName("h1");
 
+        internal static By Header3 => By.TagName("h3");
+
         internal static By GoBackLink => By.ClassName("nhsuk-back-link__link");
 
         internal static By RadioButtonItems => By.CssSelector(".nhsuk-radios__item");
@@ -38,6 +40,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
 
         internal static By ActionLink => By.ClassName("nhsuk-action-link__link");
 
-        internal static By NhsLogo => ByExtensions.DataTestId("nhs-digital-logo");
+        internal static By Pagination => By.CssSelector("nav.nhsuk-pagination");
+
+        internal static By PaginationPrevious => By.ClassName("nhsuk-pagination__link--prev");
+
+        internal static By PaginationNext => By.ClassName("nhsuk-pagination__link--next");
+
+        internal static By PaginationPreviousSubText => By.CssSelector("a.nhsuk-pagination__link--prev span.nhsuk-pagination__page");
+
+        internal static By PaginationNextSubText => By.CssSelector("a.nhsuk-pagination__link--next span.nhsuk-pagination__page");
     }
 }

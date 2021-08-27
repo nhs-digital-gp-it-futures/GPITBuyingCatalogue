@@ -52,7 +52,8 @@
                         advice="Search for Catalogue Solutions that match the needs of your organisation." />
         <p id="sorting">
             Results sorted by @sortText
-            <a asp-area="@typeof(SolutionsController).AreaName()"
+            <a id="sortby-link"
+               asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Index)"
                asp-route-sortBy="@sortQueryParam">
