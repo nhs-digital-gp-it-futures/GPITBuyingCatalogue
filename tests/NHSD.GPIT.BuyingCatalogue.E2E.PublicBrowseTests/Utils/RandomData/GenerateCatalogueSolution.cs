@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.RandomData
                 .RuleFor(ci => ci.SupplierId, _ => id.SupplierId)
                 .RuleFor(ci => ci.CatalogueItemType, _ => CatalogueItemType.Solution)
                 .RuleFor(ci => ci.Created, _ => DateTime.UtcNow)
-                .RuleFor(ci => ci.Name, f => $"{f.Name.JobTitle()}(ノಠ益ಠ)ノ彡┻━┻{id.ItemId}")
+                .RuleFor(ci => ci.Name, f => $"{f.Name.JobTitle()} {id.ItemId}")
                 .RuleFor(ci => ci.PublishedStatus, _ => PublicationStatus.Published)
                 .Generate();
 
