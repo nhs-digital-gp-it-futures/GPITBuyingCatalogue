@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class SupportedBrowsersModelValidator : AbstractValidator<SupportedBrowsersModel>
     {
-        public const string MandatoryRequiredMessage = "Select at least one browser";
+        public const string MandatoryRequiredMessage = "Select at least one browser type";
 
         public SupportedBrowsersModelValidator()
         {
