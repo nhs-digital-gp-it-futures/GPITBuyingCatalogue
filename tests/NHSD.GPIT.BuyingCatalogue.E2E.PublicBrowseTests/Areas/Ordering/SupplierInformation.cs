@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierEmail).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierPhone).Should().BeTrue();
 
-            CommonActions.ElementTextEqualToo(Objects.Ordering.SupplierInformation.SupplierName, order.Supplier.Name).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(Objects.Ordering.SupplierInformation.SupplierName, order.Supplier.Name).Should().BeTrue();
             CommonActions.ElementTextContains(Objects.Ordering.SupplierInformation.SupplierAddress, order.Supplier.Address.Line1).Should().BeTrue();
             CommonActions.InputValueEqualToo(Objects.Ordering.SupplierInformation.SupplierFirstName, order.Supplier.SupplierContacts.First().FirstName).Should().BeTrue();
             CommonActions.InputValueEqualToo(Objects.Ordering.SupplierInformation.SupplierLastName, order.Supplier.SupplierContacts.First().LastName).Should().BeTrue();
@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierEmail).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.SupplierInformation.SupplierPhone).Should().BeTrue();
 
-            CommonActions.ElementTextEqualToo(Objects.Ordering.SupplierInformation.SupplierName, order.Supplier.Name).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(Objects.Ordering.SupplierInformation.SupplierName, order.Supplier.Name).Should().BeTrue();
             CommonActions.ElementTextContains(Objects.Ordering.SupplierInformation.SupplierAddress, order.Supplier.Address.Line1).Should().BeTrue();
             CommonActions.InputElementIsEmpty(Objects.Ordering.SupplierInformation.SupplierFirstName).Should().BeTrue();
             CommonActions.InputElementIsEmpty(Objects.Ordering.SupplierInformation.SupplierLastName).Should().BeTrue();
