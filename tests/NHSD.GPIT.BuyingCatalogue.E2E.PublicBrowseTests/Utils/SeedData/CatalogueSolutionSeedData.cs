@@ -836,11 +836,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             return catalogueItems;
         }
 
-        private static List<CatalogueItem> GetGeneratedCatalogueSolutionItems()
+        private static List<CatalogueItem> GetGeneratedCatalogueSolutionItems(int count = 100)
         {
+            int defaultStart = 400;
+
             var catalogueItems = new List<CatalogueItem>();
 
-            for (int i = 400; i < 500; i++)
+            for (int i = defaultStart; i < (defaultStart + count); i++)
             {
                 catalogueItems.Add(GenerateCatalogueSolution.Generate(new EntityFramework.Ordering.Models.CatalogueItemId(99998, i.ToString())));
             }

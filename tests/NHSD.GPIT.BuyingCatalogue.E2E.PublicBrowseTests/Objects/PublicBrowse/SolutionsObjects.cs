@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
 
         public static By SolutionsLink => By.CssSelector("div.nhsuk-grid-column-two-thirds h2 a");
 
-        public static By CapabilitesOverCountLink => ByExtensions.DataTestId("capibilities-overcount-link");
+        public static By CapabilitesOverCountLink => ByExtensions.DataTestId("capabilities-overcount-link");
 
     }
 }

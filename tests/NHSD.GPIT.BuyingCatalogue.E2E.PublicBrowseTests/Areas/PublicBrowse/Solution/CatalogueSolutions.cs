@@ -6,8 +6,10 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
@@ -143,13 +145,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_ClickIntoSolution_ExpectedResult()
         {
-            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.SolutionsLink).Click();
+            var element = Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.SolutionsLink);
+
+            var solutionIdElements = element.GetAttribute("href").Split("/").Last().Split("-");
+
+            var solutionName = element.Text;
+
+            _ = int.TryParse(solutionIdElements[0], out int result);
+
+            var solutionId = new CatalogueItemId(result, solutionIdElements[1]);
+
+            element.Click();
 
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(SolutionsController),
             nameof(SolutionsController.Description))
             .Should()
             .BeTrue();
+
+            using var context = GetEndToEndDbContext();
+
+            context.CatalogueItems.Where(ci => ci.Id == solutionId).Single();
+
+            CommonActions.ElementTextEqualToo(By.CssSelector("h1 .nhsuk-caption--bottom"), solutionName).Should().BeTrue();
         }
 
         [Fact]
