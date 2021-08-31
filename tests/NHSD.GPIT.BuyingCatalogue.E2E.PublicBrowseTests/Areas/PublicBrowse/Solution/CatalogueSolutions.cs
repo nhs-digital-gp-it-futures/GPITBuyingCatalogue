@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var solutionIdElements = element.GetAttribute("href").Split("/").Last().Split("-");
 
-            var solutionName = element.Text;
+            var solutionName = "-" + element.Text;
 
             _ = int.TryParse(solutionIdElements[0], out int result);
 
