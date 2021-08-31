@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var expectedNumberOfPages = new PageOptions() { TotalNumberOfItems = countOfSolutions }.NumberOfPages;
 
-            CommonActions.ElementTextEqualToo(CommonSelectors.PaginationNextSubText, $"2 of {expectedNumberOfPages}")
+            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationNextSubText, $"2 of {expectedNumberOfPages}")
                 .Should()
                 .BeTrue();
         }
@@ -110,11 +110,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var expectedNumberOfPages = new PageOptions() { TotalNumberOfItems = countOfSolutions }.NumberOfPages;
 
-            CommonActions.ElementTextEqualToo(CommonSelectors.PaginationNextSubText, $"3 of {expectedNumberOfPages}")
+            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationNextSubText, $"3 of {expectedNumberOfPages}")
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementTextEqualToo(CommonSelectors.PaginationPreviousSubText, $"1 of {expectedNumberOfPages}")
+            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"1 of {expectedNumberOfPages}")
             .Should()
             .BeTrue();
         }
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
 
-            CommonActions.ElementTextEqualToo(CommonSelectors.PaginationPreviousSubText, $"{expectedNumberOfPages - 1} of {expectedNumberOfPages}")
+            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"{expectedNumberOfPages - 1} of {expectedNumberOfPages}")
             .Should()
             .BeTrue();
         }
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             context.CatalogueItems.Where(ci => ci.Id == solutionId).Single();
 
-            CommonActions.ElementTextEqualToo(By.CssSelector("h1 .nhsuk-caption--bottom"), solutionName).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(By.CssSelector("h1 .nhsuk-caption--bottom"), solutionName).Should().BeTrue();
         }
 
         [Fact]
@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .Single();
 
             CommonActions
-                .ElementTextEqualToo(
+                .ElementTextEqualTo(
                     Objects.PublicBrowse.SolutionsObjects.CapabilitesOverCountLink,
                     $"See all {catalogueItem.CatalogueItemCapabilities.Count} Capabilities")
                 .Should()

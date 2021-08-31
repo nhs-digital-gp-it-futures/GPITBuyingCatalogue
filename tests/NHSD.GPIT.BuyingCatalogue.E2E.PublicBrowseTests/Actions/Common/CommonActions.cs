@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal bool ElementShowingCorrectErrorMessage(By targetElement, string errorMessage) =>
             Driver.FindElement(targetElement).Text.EqualsIgnoreWhiteSpace(errorMessage);
 
-        internal bool ElementTextEqualToo(By targetElement, string expectedText) =>
+        internal bool ElementTextEqualTo(By targetElement, string expectedText) =>
             Driver.FindElement(targetElement).Text.EqualsIgnoreWhiteSpace(expectedText);
 
         internal bool ElementTextContains(By targetElement, string expectedText) =>

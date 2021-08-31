@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 
             CommonActions.AllCheckBoxesSelected().Should().BeTrue();
 
-            CommonActions.ElementTextEqualToo(
+            CommonActions.ElementTextEqualTo(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton,
                 "Deselect all").Should().BeTrue();
         }
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
 
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
 
-            CommonActions.ElementTextEqualToo(
+            CommonActions.ElementTextEqualTo(
                 Objects.Ordering.CatalogueSolutions.CatalogueSolutionsRecipientsSelectAllButton,
                 "Select all").Should().BeTrue();
         }
