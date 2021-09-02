@@ -1,16 +1,23 @@
-resource "azurerm_sql_database" "sql_main_primary" {
-  name                             = "BuyingCatalogue${var.db_name}${var.environment}"
-  resource_group_name              = var.rg_name 
-  location                         = var.region
-  server_name                      = var.sqlsvr_name 
-  collation                        = var.sql_collation
-  edition                          = var.sql_edition
-  requested_service_objective_name = var.sql_size
+resource "azurerm_mssql_database" "sql_main_primary" {
+  name                             = "BuyingCatalogue${var.db_name}${var.environment}"  
+  server_id                        = var.server_id  
+  collation                        = var.sql_collation  
+  
   tags = {
     environment                    = var.environment,
     architecture                   = "new"
   }
 
+  short_term_retention_policy {
+    retention_days = var.core_env != "dev" ? 30 : 7
+  }
+
+  long_term_retention_policy {
+    weekly_retention = var.core_env != "dev" ? "P12W" : null
+    monthly_retention = var.core_env != "dev" ? "P12M" : null
+    yearly_retention = var.core_env != "dev" ? "P6Y" : null
+    week_of_year = 1
+  }
   lifecycle {
     ignore_changes = [
       create_mode

@@ -3,7 +3,7 @@ locals {
   shortenv = replace(var.environment, "-", "")
 
   # Find Shared components (e.g. key vaults)
-  liveEnv = local.shortenv == "production" ? "prod" : "test"
+  liveEnv = local.shortenv == "production" ? "production" : "preprod"
   coreEnv = local.shortenv != "preprod" && local.shortenv != "production" ? "dev" : local.liveEnv
 
   # Secret name for keys

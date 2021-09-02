@@ -5,6 +5,7 @@ module "sql_databases_pri" {
   region                = var.region
   project               = var.project
   rg_name               = azurerm_resource_group.sql-server.name
+  server_id             = module.sql_server_pri.sql_server_id  
   sqlsvr_name           = "${var.project}-${var.environment}-sql-primary"
   db_name               = "-"
   sql_collation         = "SQL_Latin1_General_CP1_CI_AS"
@@ -15,6 +16,8 @@ module "sql_databases_pri" {
   region_replica        = local.sql_region2
   rg_replica_name       = azurerm_resource_group.sql-server.name
   sqlsvr_replica_name   = "${var.project}-${var.environment}-sql-secondary"
+  
+  core_env              = local.coreEnv
 
   depends_on = [module.sql_server_pri]
 } 

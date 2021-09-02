@@ -147,7 +147,6 @@ jobs:
   
 - job: createBuildArtifact
   displayName: Create Build Artifact
-  dependsOn: dockerBuildAndPush
      
   steps:
   - task: CopyFiles@2
