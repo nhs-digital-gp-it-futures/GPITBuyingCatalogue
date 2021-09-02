@@ -19,5 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public Framework Framework { get; set; }
+
+        public Solution Solution { get; set; }
     }
 }

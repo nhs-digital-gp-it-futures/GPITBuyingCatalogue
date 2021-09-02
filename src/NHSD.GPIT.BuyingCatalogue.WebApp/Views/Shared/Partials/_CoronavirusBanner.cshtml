@@ -6,6 +6,7 @@
         <p>View Catalogue Solutions that help with coronavirus by <a data-test-id="vaccinations"
                                                                      asp-area="@typeof(SolutionsController).AreaName()",
                                                                      asp-controller="@typeof(SolutionsController).ControllerName()"
-                                                                     asp-action="@nameof(SolutionsController.Index)">organising vaccinations</a>.</p>
+                                                                     asp-action="@nameof(SolutionsController.Index)"
+                                                                     asp-route-selectedframework="COVID">organising vaccinations</a>.</p>
     </div>
 </section>

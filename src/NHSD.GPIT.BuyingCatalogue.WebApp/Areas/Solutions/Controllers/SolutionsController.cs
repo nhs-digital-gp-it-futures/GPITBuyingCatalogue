@@ -26,17 +26,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(
             [FromQuery] string page,
-            [FromQuery] string sortBy)
+            [FromQuery] string sortBy,
+            [FromQuery] string selectedFramework)
         {
             var options = new PageOptions(page, sortBy);
 
-            var solutions = await solutionsService.GetAllSolutionsFiltered(
-                options);
+            var solutions = await solutionsService.GetAllSolutionsFiltered(options, selectedFramework);
 
-            return View(new SolutionsModel
+            var frameworks = await solutionsService.GetAllFrameworksAndCountForFilter();
+
+            return View(new SolutionsModel(frameworks)
             {
                 CatalogueItems = solutions.Items,
                 Options = solutions.Options,
+                SelectedFramework = selectedFramework ?? "All",
             });
         }
 

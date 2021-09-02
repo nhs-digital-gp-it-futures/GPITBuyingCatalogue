@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -27,7 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveSupplierContacts(default));
 
@@ -44,7 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveSupplierContacts(mockModel.Object);
 
@@ -148,7 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveSupplierContacts(mockModel.Object);
 
@@ -174,7 +178,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 mockMarketingContactRepository.Object,
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveSupplierContacts(mockModel.Object);
 
@@ -203,7 +208,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(new CatalogueItemId(100000, "001"), summary, "Description", "Link"));
 
@@ -222,7 +228,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object,
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveSolutionDescription(new CatalogueItemId(100000, "001"), "Summary", "Description", "Link");
 
@@ -241,7 +248,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object,
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveSolutionFeatures(new CatalogueItemId(100000, "001"), Array.Empty<string>());
 
@@ -260,7 +268,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object,
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveImplementationDetail(new CatalogueItemId(100000, "001"), "123");
 
@@ -279,7 +288,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object,
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveRoadMap(new CatalogueItemId(100000, "001"), "123");
 
@@ -294,7 +304,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveClientApplication(new CatalogueItemId(100000, "001"), null));
 
@@ -313,7 +324,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object,
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveClientApplication(new CatalogueItemId(100000, "001"), new ClientApplication());
 
@@ -328,7 +340,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveHosting(new CatalogueItemId(100000, "001"), null));
 
@@ -347,7 +360,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 mockSolutionRepository.Object,
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveHosting(new CatalogueItemId(100000, "001"), new Hosting());
 
@@ -366,7 +380,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 mockSupplierRepository.Object,
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             await service.SaveSupplierDescriptionAndLink(100000, "Description", "Link");
 
@@ -381,7 +396,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             (await Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCatalogueSolution(null)))
                 .ParamName.Should().Be(nameof(CreateSolutionModel));
@@ -395,7 +411,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                Mock.Of<ICatalogueItemRepository>());
+                Mock.Of<ICatalogueItemRepository>(),
+                Mock.Of<IMemoryCache>());
 
             (await Assert.ThrowsAsync<ArgumentNullException>(
                     () => service.AddCatalogueSolution(new CreateSolutionModel())))
@@ -417,7 +434,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                mockCatalogueItemRepository.Object);
+                mockCatalogueItemRepository.Object,
+                Mock.Of<IMemoryCache>());
 
             await service.AddCatalogueSolution(model);
 
@@ -439,7 +457,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                mockCatalogueItemRepository.Object);
+                mockCatalogueItemRepository.Object,
+                Mock.Of<IMemoryCache>());
 
             await service.AddCatalogueSolution(model);
 
@@ -471,7 +490,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 Mock.Of<IDbRepository<MarketingContact, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Solution, BuyingCatalogueDbContext>>(),
                 Mock.Of<IDbRepository<Supplier, BuyingCatalogueDbContext>>(),
-                mockCatalogueItemRepository.Object);
+                mockCatalogueItemRepository.Object,
+                Mock.Of<IMemoryCache>());
 
             var actual = await service.SupplierHasSolutionName(supplierId, solutionName);
 

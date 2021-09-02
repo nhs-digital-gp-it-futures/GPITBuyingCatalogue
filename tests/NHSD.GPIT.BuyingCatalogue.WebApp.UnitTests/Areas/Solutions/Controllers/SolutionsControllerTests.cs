@@ -56,11 +56,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
                 .ReturnsAsync(pagedList);
 
+            mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
+                .ReturnsAsync(new Dictionary<EntityFramework.Catalogue.Models.Framework, int>());
+
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
                 mockService.Object);
 
-            await controller.Index(string.Empty, string.Empty);
+            await controller.Index(null, null, null);
 
             mockService.Verify(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null));
         }
@@ -74,15 +77,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
                 .ReturnsAsync(pagedList);
 
+            mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
+                .ReturnsAsync(new Dictionary<EntityFramework.Catalogue.Models.Framework, int>());
+
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
                 mockService.Object);
 
-            var actual = (await controller.Index(null, null)).As<ViewResult>();
+            var actual = (await controller.Index(null, null, null)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().BeOfType(typeof(SolutionsModel));
+        }
+
+        [Fact]
+        public static async Task Get_Index_QueryParameters_CorrectResults()
+        {
+            var mockService = new Mock<ISolutionsService>();
+            var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
+
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
+                .ReturnsAsync(pagedList);
+
+            mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
+                .ReturnsAsync(
+                new Dictionary<EntityFramework.Catalogue.Models.Framework, int>
+                {
+                    { new EntityFramework.Catalogue.Models.Framework { Id = "All", ShortName = "All" }, 10 },
+                });
+
+            var controller = new SolutionsController(
+                Mock.Of<IMapper>(),
+                mockService.Object);
+
+            var actual = (await controller.Index(null, null, null)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeOfType(typeof(SolutionsModel));
+            actual.Model.As<SolutionsModel>().SelectedFramework.Should().Be("All");
+            actual.Model.As<SolutionsModel>().FrameworkFilters.Count.Should().Be(1);
+            actual.Model.As<SolutionsModel>().FrameworkFilters[0].FrameworkId.Should().Be("All");
+            actual.Model.As<SolutionsModel>().FrameworkFilters[0].Count.Should().Be(10);
+            actual.Model.As<SolutionsModel>().FrameworkFilters[0].FrameworkFullName.Should().Be("All frameworks");
         }
 
         [Theory]

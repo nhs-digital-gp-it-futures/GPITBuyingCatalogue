@@ -1,0 +1,25 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
+
+<form method="get">
+    <nhs-expander label-text="Filter Catalogue Solutions">
+        <nhs-details label-text="Filter by framework">
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-hint="See what’s available if you’re using funding from a specific framework.">
+                <nhs-radio-buttons asp-for="SelectedFramework"
+                                   values="@Model.FrameworkFilters"
+                                   value-name="FrameworkId"
+                                   display-name="DisplayText" />
+            </nhs-fieldset-form-label>
+        </nhs-details>
+        <hr style="margin: 0; margin-bottom: 1em;" />
+        <nhs-submit-button text="Apply filters" />
+        <div>
+            <a id="clear-filters"
+               asp-area="@typeof(SolutionsController).AreaName()"
+               asp-controller="@typeof(SolutionsController).ControllerName()"
+               asp-action="@nameof(SolutionsController.Index)">Clear filters</a>
+        </div>
+    </nhs-expander>
+</form>

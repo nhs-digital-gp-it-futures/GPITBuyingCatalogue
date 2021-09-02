@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
@@ -36,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.SortByLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header3).Should().BeTrue();
             CommonActions.ElementExists(CommonSelectors.Pagination).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Should().BeTrue();
+            CommonActions.ElementExists(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Should().BeTrue();
         }
 
         [Fact]
@@ -49,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             .Should()
             .BeTrue();
 
-            Driver.Url.Should().EndWith($"sortBy={PageOptions.SortOptions.LastUpdated.ToString().ToLowerInvariant()}");
+            Driver.Url.Should().Contain($"sortBy={PageOptions.SortOptions.LastUpdated.ToString().ToLowerInvariant()}");
         }
 
         [Fact]
@@ -70,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             .Should()
             .BeTrue();
 
-            Driver.Url.Should().EndWith($"sortBy={PageOptions.SortOptions.Alphabetical.ToString().ToLowerInvariant()}");
+            Driver.Url.Should().Contain($"sortBy={PageOptions.SortOptions.Alphabetical.ToString().ToLowerInvariant()}");
         }
 
         [Fact]
@@ -194,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             _ = int.TryParse(linkUrlStringArray[0], out int supplierId);
 
-            var catalogueItemId = new EntityFramework.Ordering.Models.CatalogueItemId(supplierId, linkUrlStringArray[1]);
+            var catalogueItemId = new CatalogueItemId(supplierId, linkUrlStringArray[1]);
 
             var catalogueItem = context.CatalogueItems.AsNoTracking().Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
                 .Where(ci => ci.Id == catalogueItemId)
@@ -214,6 +217,48 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             nameof(SolutionsController.Capabilities))
             .Should()
             .BeTrue();
+        }
+
+        [Fact]
+        public async void CatalogueSolutions_Filter_AllFrameworksShown()
+        {
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
+
+            using var context = GetEndToEndDbContext();
+
+            var numberOfFrameworkFilters =
+                await context.FrameworkSolutions.AsNoTracking()
+                .Include(fs => fs.Framework)
+                .Where(fs => fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .Select(fs => fs.Framework).Distinct()
+                .CountAsync();
+
+            CommonActions.GetNumberOfRadioButtonsDisplayed().Should().Be(numberOfFrameworkFilters + 1);
+        }
+
+        [Fact]
+        public async void CatalogueSolutions_Filter_FilterByOption_ExpectedNumberOfResults()
+        {
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
+
+            using var context = GetEndToEndDbContext();
+
+            var gpitFramework = await context.Frameworks.Where(f => f.Id == "NHSDGP001").SingleAsync();
+
+            var numberOfSolutionsForGPITFramework =
+                await context.CatalogueItems.AsNoTracking()
+                .Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == gpitFramework.Id))
+                .CountAsync();
+
+            CommonActions.ClickRadioButtonWithValue(gpitFramework.Id);
+
+            CommonActions.ClickSave();
+
+            Driver.FindElements(By.CssSelector("#solutions-list > div")).Count.Should().Be(numberOfSolutionsForGPITFramework);
+
+            Driver.Url.Should().Contain($"SelectedFramework={gpitFramework.Id}");
         }
     }
 }

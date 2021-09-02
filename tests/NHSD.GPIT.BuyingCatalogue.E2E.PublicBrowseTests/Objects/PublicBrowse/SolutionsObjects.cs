@@ -23,5 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
 
         public static By CapabilitesOverCountLink => ByExtensions.DataTestId("capabilities-overcount-link");
 
+        public static By FilterSolutionsExpander => By.Id("nhsuk-details0");
+
+        public static By FilterSolutionsFramework => By.Id("nhsuk-details1");
     }
 }

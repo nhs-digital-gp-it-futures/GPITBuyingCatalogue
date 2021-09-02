@@ -36,11 +36,21 @@
         <ol class="nhsuk-breadcrumb__list">
             <li class="nhsuk-breadcrumb__item">
                 <a class="nhsuk-breadcrumb__link"
-                    data-test-id="home-crumb"
-                    asp-action="@nameof(HomeController.Index)"
-                    asp-controller="@typeof(HomeController).ControllerName()"
-                    asp-area="@typeof(HomeController).AreaName()">Home</a>
+                   data-test-id="home-crumb"
+                   asp-action="@nameof(HomeController.Index)"
+                   asp-controller="@typeof(HomeController).ControllerName()"
+                   asp-area="@typeof(HomeController).AreaName()">Home</a>
             </li>
+            @if (!string.IsNullOrWhiteSpace(Model.SelectedFramework) && Model.SelectedFramework != "All")
+            {
+                <li class="nhsuk-breadcrumb__item">
+                    <a class="nhsuk-breadcrumb__link"
+                       data-test-id="home-crumb"
+                       asp-action="@nameof(SolutionsController.Index)"
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>
+                </li>
+            }
         </ol>
     </div>
 </nav>
@@ -50,17 +60,21 @@
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewData["Title"]"
                         advice="Search for Catalogue Solutions that match the needs of your organisation." />
+        <partial name="_FilterNoJavascript" model="@Model" />
         <p id="sorting">
             Results sorted by @sortText
             <a id="sortby-link"
                asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Index)"
-               asp-route-sortBy="@sortQueryParam">
+               asp-route-sortBy="@sortQueryParam"
+               asp-route-selected-framework="@Model.SelectedFramework">
                 Sort by @sortLinkText
             </a>
         </p>
         <hr />
+        @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count() > 0)
+        {
         <div id="solutions-list">
             @foreach (var item in Model.CatalogueItems)
             {
@@ -72,6 +86,12 @@
                                         total-number-of-pages="@Model.Options.NumberOfPages" />
 
         </div>
+        }
+        else
+        { 
+        <h2>No results found that match your search criteria</h2>
+        <p>Try a different search term or change any filters you've selected.</p>
+        }
     </div>
 </div>
 
