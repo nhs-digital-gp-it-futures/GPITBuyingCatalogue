@@ -61,7 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
             PageOptions options = null,
-            Framework framework = null);
+            string frameworkId = null);
+
+        Task<Dictionary<Framework, int>> GetAllFrameworksAndCountForFilter();
 
         Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id);
 

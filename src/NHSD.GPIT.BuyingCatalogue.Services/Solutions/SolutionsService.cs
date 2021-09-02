@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -17,25 +18,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private const string FuturesFrameworkShortName = "GP IT Futures";
         private const string DfocvcShortName = "DFOCVC";
+        private const string FrameworkCacheKey = "framework-filter";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
         private readonly IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository;
         private readonly IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository;
         private readonly ICatalogueItemRepository catalogueItemRepository;
+        private readonly IMemoryCache memoryCache;
 
         public SolutionsService(
             BuyingCatalogueDbContext dbContext,
             IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository,
             IDbRepository<Solution, BuyingCatalogueDbContext> solutionRepository,
             IDbRepository<Supplier, BuyingCatalogueDbContext> supplierRepository,
-            ICatalogueItemRepository catalogueItemRepository)
+            ICatalogueItemRepository catalogueItemRepository,
+            IMemoryCache memoryCache)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.marketingContactRepository = marketingContactRepository ?? throw new ArgumentNullException(nameof(marketingContactRepository));
             this.solutionRepository = solutionRepository ?? throw new ArgumentNullException(nameof(solutionRepository));
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
-            this.catalogueItemRepository = catalogueItemRepository;
+            this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
+            this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
         public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
@@ -389,7 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
             PageOptions options,
-            EntityFramework.Catalogue.Models.Framework framework = null)
+            string frameworkId = null)
         {
             if (options is null)
                 options = new();
@@ -399,6 +404,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             .Include(i => i.Supplier)
             .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
             .Where(i => i.CatalogueItemType == CatalogueItemType.Solution);
+
+            if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != "All")
+                query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
 
             // TODO: do some filtering logic here
             options.TotalNumberOfItems = await query.CountAsync();
@@ -417,6 +425,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var results = await query.ToListAsync();
 
             return new PagedList<CatalogueItem>(results, options);
+        }
+
+        public async Task<Dictionary<EntityFramework.Catalogue.Models.Framework, int>> GetAllFrameworksAndCountForFilter()
+        {
+            if (memoryCache.TryGetValue(FrameworkCacheKey, out List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>> value))
+                return value.ToDictionary(r => r.Key, r => r.Value);
+
+            var allSolutionsCount = await dbContext.CatalogueItems.AsNoTracking()
+                .Where(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution)
+                .CountAsync();
+
+            var frameworkSolutions = await dbContext.FrameworkSolutions.AsNoTracking()
+                .Include(fs => fs.Framework)
+                .Where(fs => fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .OrderBy(fs => fs.Framework.ShortName)
+                .ToListAsync();
+
+            var results = frameworkSolutions
+                .GroupBy(fs => fs.Framework.Id)
+                .Select(fs => new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(fs.First().Framework, fs.Count())).ToList();
+
+            results.Insert(
+                0,
+                new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(
+                    new EntityFramework.Catalogue.Models.Framework
+                    {
+                        Id = "All",
+                        ShortName = "All",
+                    },
+                    allSolutionsCount));
+
+            memoryCache.Set(FrameworkCacheKey, results);
+
+            return results.ToDictionary(r => r.Key, r => r.Value);
         }
 
         public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)
