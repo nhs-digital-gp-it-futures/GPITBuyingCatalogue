@@ -256,9 +256,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             CommonActions.ClickSave();
 
-            Driver.FindElements(By.CssSelector("#solutions-list > div")).Count.Should().Be(numberOfSolutionsForGPITFramework);
+            Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(numberOfSolutionsForGPITFramework);
 
             Driver.Url.Should().Contain($"SelectedFramework={gpitFramework.Id}");
         }
+
+        [Fact]
+        public async void CatalogueSolutions_Filter_FilterByOption_BreadcrumbsCorrect()
+        {
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
+
+            using var context = GetEndToEndDbContext();
+
+            var gpitFramework = await context.Frameworks.Where(f => f.Id == "NHSDGP001").SingleAsync();
+
+            Driver.FindElements(CommonSelectors.BreadcrumbItem).Count.Should().Be(1);
+
+            CommonActions.ClickRadioButtonWithValue(gpitFramework.Id);
+
+            CommonActions.ClickSave();
+
+            Driver.FindElements(CommonSelectors.BreadcrumbItem).Count.Should().Be(2);
+        }
+
     }
 }

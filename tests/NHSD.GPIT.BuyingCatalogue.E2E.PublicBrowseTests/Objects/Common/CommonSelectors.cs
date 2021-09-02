@@ -16,6 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common
 
         internal static By RadioButtons => By.ClassName("nhsuk-radios");
 
+        internal static By BreadcrumbList => By.ClassName("nhsuk-breadcrumb__list");
+
+        internal static By BreadcrumbItem => By.ClassName("nhsuk-breadcrumb__item");
+
         internal static By CheckboxItem => By.CssSelector(".nhsuk-checkboxes__item");
 
         internal static By NhsErrorSection => By.ClassName("nhsuk-error-summary");
