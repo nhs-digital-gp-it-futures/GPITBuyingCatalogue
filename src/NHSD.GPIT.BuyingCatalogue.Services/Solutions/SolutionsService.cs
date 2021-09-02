@@ -19,6 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const string FuturesFrameworkShortName = "GP IT Futures";
         private const string DfocvcShortName = "DFOCVC";
         private const string FrameworkCacheKey = "framework-filter";
+        private const int DefaultCacheDuration = 60;
+
+        private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
@@ -41,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
             this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+
+            memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DefaultCacheDuration));
         }
 
         public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
@@ -456,7 +461,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     },
                     allSolutionsCount));
 
-            memoryCache.Set(FrameworkCacheKey, results);
+            memoryCache.Set(FrameworkCacheKey, results, memoryCacheOptions);
 
             return results.ToDictionary(r => r.Key, r => r.Value);
         }
