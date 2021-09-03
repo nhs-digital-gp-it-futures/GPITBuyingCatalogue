@@ -24,14 +24,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 {
     public sealed class SolutionsProfileTests
     {
-        private static readonly DateTime LastReviewedDate = DateTime.Parse("26 Aug 2025");
-
         private readonly IMapper mapper;
         private readonly Mock<IConfiguration> configuration;
         private readonly MapperConfiguration mapperConfiguration;
 
         public SolutionsProfileTests()
         {
+            configuration = new Mock<IConfiguration>();
+
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Setup(
                     s =>
@@ -76,7 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
                         .ToList());
             actual.SolutionId.Should().Be(catalogueItemCapability.CatalogueItemId);
             actual.SolutionName.Should().BeNullOrEmpty();
-            actual.LastReviewed.Should().Be(LastReviewedDate);
         }
 
         [Theory]
@@ -123,7 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
 
             var actual = mapper.Map<CatalogueItem, AssociatedServicesModel>(catalogueItem);
 
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.Services.Count.Should().Be(expected);
             actual.Services.Should().BeInAscendingOrder(s => s.Name);
             actual.PaginationFooter.Should()
@@ -158,7 +156,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         {
             var actual = mapper.Map<CatalogueItem, CapabilitiesViewModel>(catalogueItem);
 
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
             {
                 FullWidth = true,
@@ -189,7 +186,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         {
             var actual = mapper.Map<CatalogueItem, ClientApplicationTypesModel>(catalogueItem);
 
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should()
                 .BeEquivalentTo(
                     new PaginationFooterModel
@@ -226,7 +222,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             var actual = mapper.Map<CatalogueItem, ListPriceModel>(catalogueItem);
 
             actual.FlatListPrices.Count.Should().Be(expected);
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should().BeEquivalentTo(new PaginationFooterModel
             {
                 Previous = new SectionModel
@@ -270,8 +265,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             CatalogueItem catalogueItem)
         {
             var actual = mapper.Map<CatalogueItem, HostingTypesModel>(catalogueItem);
-
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should()
                 .BeEquivalentTo(
                     new PaginationFooterModel
@@ -304,7 +297,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             var actual = mapper.Map<CatalogueItem, ImplementationTimescalesModel>(catalogueItem);
 
             actual.Description.Should().Be(catalogueItem.Solution.ImplementationDetail);
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should()
                 .BeEquivalentTo(
                     new PaginationFooterModel
@@ -337,7 +329,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(catalogueItem);
 
             actual.Description.Should().Be(catalogueItem.Solution.FullDescription);
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should()
                 .BeEquivalentTo(
                     new PaginationFooterModel
@@ -420,7 +411,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             var features = JsonConvert.DeserializeObject<string[]>(catalogueItem.Solution.Features);
 
             actual.Features.Should().BeEquivalentTo(features);
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.PaginationFooter.Should()
                 .BeEquivalentTo(
                     new PaginationFooterModel
@@ -528,7 +518,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
         {
             var actual = mapper.Map<CatalogueItem, AdditionalServicesModel>(catalogueItem);
 
-            actual.LastReviewed.Should().Be(LastReviewedDate);
             actual.Services.Should().BeInAscendingOrder(s => s.Name);
             actual.PaginationFooter.Should()
                 .BeEquivalentTo(
