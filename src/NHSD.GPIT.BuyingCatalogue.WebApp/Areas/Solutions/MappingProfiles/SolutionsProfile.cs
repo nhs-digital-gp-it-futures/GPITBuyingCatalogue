@@ -109,10 +109,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
 
             CreateMap<CatalogueItem, SolutionSupplierDetailsModel>()
-                .ForMember(
-                    dest => dest.LastReviewed,
-                    opt => opt.MapFrom<IMemberValueResolver<object, object, string, string>, string>(
-                        x => "SolutionsLastReviewedDate"))
                 .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Summary))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.Name))
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Supplier == null ? null : src.Supplier.SupplierUrl))
@@ -202,10 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                             ? JsonConvert.DeserializeObject<ClientApplication>(src.Solution.ClientApplication)
                             : new ClientApplication())
                 .ForMember(dest => dest.ClientApplication, opt => opt.Ignore())
-                .ForMember(
-                    dest => dest.LastReviewed,
-                    opt => opt.MapFrom<IMemberValueResolver<object, object, string, string>, string>(
-                        x => "SolutionsLastReviewedDate"))
+                .ForMember(dest => dest.LastReviewed, opt => opt.MapFrom(src => src.Solution.LastUpdated))
                 .ForMember(dest => dest.PaginationFooter, opt => opt.Ignore())
                 .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.SolutionName, opt => opt.MapFrom(src => src.Name))
@@ -251,9 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                         (src) =>
                             GetEpics(src.Capability, true)))
                 .ForMember(
-                    dest => dest.LastReviewed,
-                    opt => opt.MapFrom<IMemberValueResolver<object, object, string, string>, string>(
-                        x => "SolutionsLastReviewedDate"));
+                    dest => dest.LastReviewed, opt => opt.MapFrom(src => src.LastUpdated.ToLongDateString()));
 
             CreateMap<CatalogueItem, SolutionDescriptionModel>()
                 .ForMember(

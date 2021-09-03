@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -98,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public abstract int Index { get; }
 
-        public string LastReviewed { get; set; }
+        public DateTime LastReviewed { get; set; }
 
         public PaginationFooterModel PaginationFooter { get; set; } = new();
 

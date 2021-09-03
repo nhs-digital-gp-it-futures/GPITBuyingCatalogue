@@ -91,7 +91,7 @@
             @RenderBody()
 
             <nhs-endnote>
-                Solution information last reviewed: @Model.LastReviewed
+                Solution information last reviewed: @Model.LastReviewed.ToLongDateString()
             </nhs-endnote>
 
             <nhs-page-link-pagination
