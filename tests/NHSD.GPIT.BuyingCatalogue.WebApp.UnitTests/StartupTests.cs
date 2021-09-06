@@ -18,8 +18,6 @@ using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
@@ -55,15 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         [Theory]
         [InlineData(typeof(IEmailService), typeof(MailKitEmailService))]
         [InlineData(typeof(IMailTransport), typeof(SmtpClient))]
-        [InlineData(typeof(IMemberValueResolver<object, object, string, string>), typeof(ConfigSettingResolver))]
-        [InlineData(typeof(IMemberValueResolver<object, object, string, bool?>), typeof(StringToNullableBoolResolver))]
         [InlineData(typeof(IPasswordResetCallback), typeof(PasswordResetCallback))]
         [InlineData(typeof(IPasswordService), typeof(PasswordService))]
         [InlineData(typeof(IPasswordValidator<AspNetUser>), typeof(PasswordValidator))]
-        [InlineData(
-            typeof(ITypeConverter<CatalogueItem, SolutionStatusModel>),
-            typeof(CatalogueItemToSolutionStatusModelConverter))]
-        [InlineData(typeof(ITypeConverter<string, bool?>), typeof(StringToNullableBoolResolver))]
         [InlineData(typeof(IUserClaimsPrincipalFactory<AspNetUser>), typeof(UserClaimsPrincipalFactoryEx))]
         [InlineData(typeof(IValidator<AddSolutionModel>), typeof(AddSolutionModelValidator))]
         public void ContainsTheExpectedServiceInstances_B(Type requiredInterface, Type expectedType)
