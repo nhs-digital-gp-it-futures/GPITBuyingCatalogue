@@ -111,17 +111,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Pagina
 
         private string GenerateLinkHrefForPage(int pageNumber)
         {
-            var queryParams = new QueryBuilder(ViewContext.HttpContext.Request.Query.Where(q => q.Key != "Page"))
+            var builder = new UriBuilder(ViewContext.HttpContext.Request.GetEncodedUrl())
             {
-                { "Page", pageNumber.ToString() },
+                Query = new QueryBuilder(ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page"))
+                {
+                    { "page", pageNumber.ToString() },
+                }.ToString(),
             };
 
-            var baseUri = new Uri(ViewContext.HttpContext.Request.GetDisplayUrl());
-
-            return new Uri(baseUri.GetLeftPart(UriPartial.Path))
-                .MakeRelativeUri(
-                new Uri(baseUri.GetLeftPart(UriPartial.Path) + queryParams.ToString()))
-                .ToString();
+            return builder.Uri.AbsoluteUri;
         }
 
         private string GenerateNumberPageText(int targetPageNumber) => $"{targetPageNumber} of {TotalNumberOfPages}";

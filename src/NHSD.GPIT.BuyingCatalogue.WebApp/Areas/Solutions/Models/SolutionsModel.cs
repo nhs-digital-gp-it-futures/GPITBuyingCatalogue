@@ -29,6 +29,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public IList<FrameworkFilter> FrameworkFilters { get; set; } = new List<FrameworkFilter>();
 
+        public IList<CapabilityCategoryFilter> CategoryFilters { get; set; } = new List<CapabilityCategoryFilter>();
+
+        public IList<CapabilitiesFilter> FoundationCapabilities { get; set; } = new List<CapabilitiesFilter>();
+
+        public int CountOfSolutionsWithFoundationCapability { get; set; }
+
+        public string FoundationCapabilitiesCapabilityRef => "FC";
+
         public PageOptions Options { get; set; }
 
         public string SelectedFramework { get; set; }

@@ -2,8 +2,11 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -16,31 +19,78 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     {
         private readonly IMapper mapper;
         private readonly ISolutionsService solutionsService;
+        private readonly ISolutionsFilterService solutionsFilterService;
+        private readonly IMemoryCache memoryCache;
+        private readonly FilterCacheKeySettings filterCacheKey;
+        private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
-        public SolutionsController(IMapper mapper, ISolutionsService solutionsService)
+        public SolutionsController(
+            IMapper mapper,
+            ISolutionsService solutionsService,
+            IMemoryCache memoryCache,
+            ISolutionsFilterService solutionsFilterService,
+            FilterCacheKeySettings filterCacheKey)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
+            this.filterCacheKey = filterCacheKey ?? throw new ArgumentNullException(nameof(filterCacheKey));
+            memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(60));
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(
             [FromQuery] string page,
             [FromQuery] string sortBy,
-            [FromQuery] string selectedFramework)
+            [FromQuery] string selectedFramework,
+            [FromQuery] string capabilities)
         {
             var options = new PageOptions(page, sortBy);
 
-            var solutions = await solutionsService.GetAllSolutionsFiltered(options, selectedFramework);
+            var solutions = await solutionsFilterService.GetAllSolutionsFiltered(options, selectedFramework, capabilities);
 
-            var frameworks = await solutionsService.GetAllFrameworksAndCountForFilter();
+            var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
+
+            var categories = await solutionsFilterService.GetAllCategoriesAndCountForFilter(selectedFramework);
 
             return View(new SolutionsModel(frameworks)
             {
                 CatalogueItems = solutions.Items,
                 Options = solutions.Options,
                 SelectedFramework = selectedFramework ?? "All",
+                CategoryFilters = categories.CategoryFilters,
+                FoundationCapabilities = categories.FoundationCapabilities,
+                CountOfSolutionsWithFoundationCapability = categories.CountOfCatalogueItemsWithFoundationCapabilities,
             });
+        }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> LoadCatalogueSolutionsFilter([FromQuery] string selectedFramework)
+        {
+            var cacheKey = $"{filterCacheKey.filterCacheKey}{selectedFramework ?? "All"}";
+
+            if (memoryCache.TryGetValue(cacheKey, out string html))
+                return Content(html);
+
+            var frameworks = await solutionsFilterService.GetAllFrameworksAndCountForFilter();
+
+            var categories = await solutionsFilterService.GetAllCategoriesAndCountForFilter(selectedFramework);
+
+            var result = await this.RenderViewAsync(
+                "_FilterJavascript",
+                new SolutionsModel(frameworks)
+                {
+                    SelectedFramework = selectedFramework ?? "All",
+                    CategoryFilters = categories.CategoryFilters,
+                    FoundationCapabilities = categories.FoundationCapabilities,
+                    CountOfSolutionsWithFoundationCapability = categories.CountOfCatalogueItemsWithFoundationCapabilities,
+                },
+                true);
+
+            memoryCache.Set(cacheKey, result, memoryCacheOptions);
+
+            return Content(result);
         }
 
         [HttpGet("{solutionId}/associated-services")]

@@ -33,6 +33,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion<int>()
                 .HasColumnName("StatusId");
 
+            builder.HasMany(c => c.CatalogueItemCapabilities)
+                .WithOne(cic => cic.Capability)
+                .HasForeignKey(c => c.CapabilityId);
+
+            builder.HasMany(c => c.FrameworkCapabilities)
+                .WithOne(f => f.Capability);
+
             builder.Property(c => c.Version)
                 .IsRequired()
                 .HasMaxLength(10);

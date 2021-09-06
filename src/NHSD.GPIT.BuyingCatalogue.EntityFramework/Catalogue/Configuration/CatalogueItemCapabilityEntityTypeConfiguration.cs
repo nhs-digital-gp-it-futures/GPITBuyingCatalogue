@@ -18,12 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
             builder.HasOne(i => i.Capability)
-                .WithMany()
+                .WithMany(c => c.CatalogueItemCapabilities)
                 .HasForeignKey(c => c.CapabilityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CatalogueItemCapabilities_Capability");
 
-            builder.HasOne<CatalogueItem>()
+            builder.HasOne(cic => cic.CatalogueItem)
                 .WithMany(i => i.CatalogueItemCapabilities)
                 .HasForeignKey(c => c.CatalogueItemId)
                 .HasConstraintName("FK_CatalogueItemCapabilities_CatalogueItem");
