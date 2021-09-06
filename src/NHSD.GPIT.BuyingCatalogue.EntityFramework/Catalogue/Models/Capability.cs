@@ -28,7 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CapabilityCategory Category { get; set; }
 
+        public ICollection<FrameworkCapability> FrameworkCapabilities { get; set; }
+
         public ICollection<Epic> Epics { get; set; }
+
+        public ICollection<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
 
         public CapabilityStatus Status { get; set; }
     }

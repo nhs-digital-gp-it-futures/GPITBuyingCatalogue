@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public Capability Capability { get; set; }
 
+        public CatalogueItem CatalogueItem { get; set; }
+
         public CatalogueItemCapabilityStatus Status { get; set; }
     }
 }

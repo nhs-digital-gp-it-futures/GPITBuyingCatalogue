@@ -184,6 +184,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(validationSettings);
         }
 
+        public static void ConfigureCacheKeySettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var filterCacheKeySettings = new FilterCacheKeySettings
+            {
+                filterCacheKey = configuration.GetValue<string>("filterCacheKey"),
+            };
+
+            services.AddSingleton(filterCacheKeySettings);
+        }
+
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, UserClaimsPrincipalFactoryEx>();

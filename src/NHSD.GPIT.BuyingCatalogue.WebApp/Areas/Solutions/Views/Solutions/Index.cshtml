@@ -30,6 +30,10 @@
     };
 }
 
+@section Scripts{ 
+    <script type="text/javascript" src="@Url.Content("~/js/CatalogueSolutionsFilter.min.js")" asp-append-version="true"></script>
+}
+
 @section Breadcrumbs {
 <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
     <div class="nhsuk-width-container">
@@ -60,7 +64,13 @@
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewData["Title"]"
                         advice="Search for Catalogue Solutions that match the needs of your organisation." />
-        <partial name="_FilterNoJavascript" model="@Model" />
+        <div id="filter-container">
+            <partial name="_FilterNoJavascript" model="@Model" />
+        </div>
+        @if (Model.SelectedFramework is not null && Model.SelectedFramework != "All")
+        {
+            <h2>Showing results for selected filters</h2>
+        }
         <p id="sorting">
             Results sorted by @sortText
             <a id="sortby-link"
@@ -68,29 +78,29 @@
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Index)"
                asp-route-sortBy="@sortQueryParam"
-               asp-route-selected-framework="@Model.SelectedFramework">
+               asp-route-selectedframework="@Model.SelectedFramework">
                 Sort by @sortLinkText
             </a>
         </p>
         <hr />
         @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count() > 0)
         {
-        <div id="solutions-list">
-            @foreach (var item in Model.CatalogueItems)
-            {
-                <partial name="_SolutionSearchDisplay" model="@item" />
-            }
-        </div>
-        <div id="pagination">
-            <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
-                                        total-number-of-pages="@Model.Options.NumberOfPages" />
+            <div id="solutions-list">
+                @foreach (var item in Model.CatalogueItems)
+                {
+                    <partial name="_SolutionSearchDisplay" model="@item" />
+                }
+            </div>
+            <div id="pagination">
+                <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
+                                            total-number-of-pages="@Model.Options.NumberOfPages" />
 
-        </div>
+            </div>
         }
         else
-        { 
-        <h2>No results found that match your search criteria</h2>
-        <p>Try a different search term or change any filters you've selected.</p>
+        {
+            <h2>No results found that match your search criteria</h2>
+            <p>Try a different search term or change any filters you've selected.</p>
         }
     </div>
 </div>

@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 
-<form method="get">
+<form method="get" id="filter-form">
     <nhs-expander label-text="Filter Catalogue Solutions">
         <nhs-details label-text="Filter by framework">
             <nhs-fieldset-form-label asp-for="@Model"

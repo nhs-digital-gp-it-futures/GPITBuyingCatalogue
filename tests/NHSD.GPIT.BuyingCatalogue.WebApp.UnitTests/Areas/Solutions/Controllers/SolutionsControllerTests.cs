@@ -6,10 +6,12 @@ using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -34,7 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static void Constructor_NullMapper_ThrowsException()
         {
             Assert.Throws<ArgumentNullException>(
-                    () => _ = new SolutionsController(null, Mock.Of<ISolutionsService>()))
+                    () => _ = new SolutionsController(
+                        null,
+                        Mock.Of<ISolutionsService>(),
+                        Mock.Of<IMemoryCache>(),
+                        Mock.Of<ISolutionsFilterService>(),
+                        new FilterCacheKeySettings()))
                 .ParamName.Should()
                 .Be("mapper");
         }
@@ -42,7 +49,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Fact]
         public static void Constructor_NullService_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new SolutionsController(Mock.Of<IMapper>(), null))
+            Assert.Throws<ArgumentNullException>(() => _ =
+            new SolutionsController(
+                Mock.Of<IMapper>(),
+                null,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings()))
                 .ParamName.Should()
                 .Be("solutionsService");
         }
@@ -50,10 +63,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Fact]
         public static async Task Get_Index_GetsSolutionsFromService()
         {
-            var mockService = new Mock<ISolutionsService>();
+            var mockService = new Mock<ISolutionsFilterService>();
             var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
@@ -61,20 +74,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                Mock.Of<ISolutionsService>(),
+                Mock.Of<IMemoryCache>(),
+                mockService.Object,
+                new FilterCacheKeySettings());
 
-            await controller.Index(null, null, null);
+            await controller.Index(null, null, null, null);
 
-            mockService.Verify(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null));
+            mockService.Verify(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null));
         }
 
         [Fact]
         public static async Task Get_Index_ReturnsExpectedViewResults()
         {
-            var mockService = new Mock<ISolutionsService>();
+            var mockService = new Mock<ISolutionsFilterService>();
             var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
@@ -82,9 +98,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                Mock.Of<ISolutionsService>(),
+                Mock.Of<IMemoryCache>(),
+                mockService.Object,
+                new FilterCacheKeySettings());
 
-            var actual = (await controller.Index(null, null, null)).As<ViewResult>();
+            var actual = (await controller.Index(null, null, null, null)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
@@ -94,10 +113,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Fact]
         public static async Task Get_Index_QueryParameters_CorrectResults()
         {
-            var mockService = new Mock<ISolutionsService>();
+            var mockService = new Mock<ISolutionsFilterService>();
             var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
@@ -109,9 +128,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                Mock.Of<ISolutionsService>(),
+                Mock.Of<IMemoryCache>(),
+                mockService.Object,
+                new FilterCacheKeySettings());
 
-            var actual = (await controller.Index(null, null, null)).As<ViewResult>();
+            var actual = (await controller.Index(null, null, null, null)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
@@ -130,7 +152,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.AssociatedServices(id);
 
@@ -146,7 +171,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.AssociatedServices(id)).As<BadRequestObjectResult>();
 
@@ -165,7 +193,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.AssociatedServices(id);
 
@@ -187,7 +218,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockAssociatedServicesModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.AssociatedServices(id)).As<ViewResult>();
 
@@ -203,7 +237,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Capabilities(id);
 
@@ -219,7 +256,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Capabilities(id)).As<BadRequestObjectResult>();
 
@@ -238,7 +278,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Capabilities(id);
 
@@ -260,7 +303,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockCapabilitiesViewModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Capabilities(id)).As<ViewResult>();
 
@@ -276,7 +322,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.ClientApplicationTypes(id);
 
@@ -292,7 +341,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.ClientApplicationTypes(id)).As<BadRequestObjectResult>();
 
@@ -311,7 +363,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.ClientApplicationTypes(id);
 
@@ -333,7 +388,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockSolutionClientApplicationTypesModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.ClientApplicationTypes(id)).As<ViewResult>();
 
@@ -372,7 +430,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actual = (await new SolutionsController(
                 mockMapper.Object,
-                mockService.Object).CheckEpics(catalogueItemId, capabilityId)).As<ViewResult>();
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings()).CheckEpics(catalogueItemId, capabilityId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolutionCapability(catalogueItemId, capabilityId));
             mockCatalogueItem.Verify(c => c.CatalogueItemCapability(capabilityId));
@@ -398,7 +459,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.CheckEpics(catalogueItemId, capabilityId)).As<BadRequestObjectResult>();
 
@@ -446,7 +510,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockMapper.Setup(m => m.Map<CatalogueItemCapability, SolutionCheckEpicsModel>(itemCapability))
                 .Returns(mockSolutionCheckEpicsModel.Object);
 
-            var solutionDetailsController = new SolutionsController(mockMapper.Object, mockService.Object);
+            var solutionDetailsController =
+                new SolutionsController(
+                    mockMapper.Object,
+                    mockService.Object,
+                    Mock.Of<IMemoryCache>(),
+                    Mock.Of<ISolutionsFilterService>(),
+                    new FilterCacheKeySettings());
 
             await solutionDetailsController
                 .CheckEpicsAdditionalServices(catalogueItemId, catalogueItemIdAdditional, capabilityId);
@@ -476,7 +546,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var solutionDetailsController = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await solutionDetailsController
                     .CheckEpicsAdditionalServices(catalogueItemId, catalogueItemIdAdditional, capabilityId))
@@ -504,7 +577,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Description(id);
 
@@ -520,7 +596,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Description(id)).As<BadRequestObjectResult>();
 
@@ -539,7 +618,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Description(id);
 
@@ -561,7 +643,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockSolutionDescriptionModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Description(id)).As<ViewResult>();
 
@@ -577,7 +662,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Features(id);
 
@@ -593,7 +681,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Features(id)).As<BadRequestObjectResult>();
 
@@ -612,7 +703,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Features(id);
 
@@ -634,7 +728,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockSolutionFeaturesModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Features(id)).As<ViewResult>();
 
@@ -650,7 +747,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.HostingType(id);
 
@@ -666,7 +766,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.HostingType(id)).As<BadRequestObjectResult>();
 
@@ -685,7 +788,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.HostingType(id);
 
@@ -707,7 +813,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockSolutionHostingTypeModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.HostingType(id)).As<ViewResult>();
 
@@ -723,7 +832,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Implementation(id);
 
@@ -739,7 +851,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Implementation(id)).As<BadRequestObjectResult>();
 
@@ -758,7 +873,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Implementation(id);
 
@@ -780,7 +898,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockSolutionImplementationTimescalesModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Implementation(id)).As<ViewResult>();
 
@@ -796,7 +917,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.ListPrice(id);
 
@@ -812,7 +936,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.ListPrice(id)).As<BadRequestObjectResult>();
 
@@ -831,7 +958,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.ListPrice(id);
 
@@ -853,7 +983,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockSolutionListPriceModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.ListPrice(id)).As<ViewResult>();
 
@@ -869,7 +1002,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.Interoperability(id);
 
@@ -885,7 +1021,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.Interoperability(id)).As<BadRequestObjectResult>();
 
@@ -922,7 +1061,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.SupplierDetails(id);
 
@@ -938,7 +1080,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.SupplierDetails(id)).As<BadRequestObjectResult>();
 
@@ -957,7 +1102,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.SupplierDetails(id);
 
@@ -979,7 +1127,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockSolutionDescriptionModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.SupplierDetails(id)).As<ViewResult>();
 
@@ -1005,7 +1156,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var mockService = new Mock<ISolutionsService>();
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.AdditionalServices(id);
 
@@ -1021,7 +1175,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(default(CatalogueItem));
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.AdditionalServices(id)).As<BadRequestObjectResult>();
 
@@ -1040,7 +1197,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(mockCatalogueItem);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             await controller.AdditionalServices(id);
 
@@ -1062,7 +1222,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Returns(mockAdditionalServicesModel);
             var controller = new SolutionsController(
                 mockMapper.Object,
-                mockService.Object);
+                mockService.Object,
+                Mock.Of<IMemoryCache>(),
+                Mock.Of<ISolutionsFilterService>(),
+                new FilterCacheKeySettings());
 
             var actual = (await controller.AdditionalServices(id)).As<ViewResult>();
 
