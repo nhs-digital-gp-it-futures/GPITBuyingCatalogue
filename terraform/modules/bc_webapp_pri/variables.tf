@@ -119,3 +119,7 @@ variable "docker_registry_server_username" {
 variable "docker_registry_server_password" {
   type = string
 }
+
+variable "create_slot" {
+  type = string
+}
