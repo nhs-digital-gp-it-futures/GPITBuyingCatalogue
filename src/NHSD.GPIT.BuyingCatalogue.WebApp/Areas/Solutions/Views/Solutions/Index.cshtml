@@ -28,6 +28,10 @@
         PageOptions.SortOptions.LastUpdated => PageOptions.SortOptions.Alphabetical.ToString().ToLower(),
         _ => PageOptions.SortOptions.LastUpdated.ToString().ToLower(),
     };
+
+    bool showFrameworkAndCapabilitiesitems =
+        (!string.IsNullOrWhiteSpace(Model.SelectedFramework) && Model.SelectedFramework != "All")
+        || !string.IsNullOrWhiteSpace(Model.SelectedCapabilities);
 }
 
 @section Scripts{ 
@@ -45,7 +49,7 @@
                    asp-controller="@typeof(HomeController).ControllerName()"
                    asp-area="@typeof(HomeController).AreaName()">Home</a>
             </li>
-            @if (!string.IsNullOrWhiteSpace(Model.SelectedFramework) && Model.SelectedFramework != "All")
+            @if (showFrameworkAndCapabilitiesitems)
             {
                 <li class="nhsuk-breadcrumb__item">
                     <a class="nhsuk-breadcrumb__link"
@@ -67,7 +71,7 @@
         <div id="filter-container">
             <partial name="_FilterNoJavascript" model="@Model" />
         </div>
-        @if (Model.SelectedFramework is not null && Model.SelectedFramework != "All")
+        @if (showFrameworkAndCapabilitiesitems)
         {
             <h2>Showing results for selected filters</h2>
         }
@@ -78,7 +82,8 @@
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Index)"
                asp-route-sortBy="@sortQueryParam"
-               asp-route-selectedframework="@Model.SelectedFramework">
+               asp-route-selectedframework="@Model.SelectedFramework"
+               asp-route-capabilities ="@Model.SelectedCapabilities">
                 Sort by @sortLinkText
             </a>
         </p>

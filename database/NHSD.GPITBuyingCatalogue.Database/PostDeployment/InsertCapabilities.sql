@@ -15,7 +15,7 @@ DECLARE @gpitFuturesBaseUrl AS char(55) = 'https://gpitbjss.atlassian.net/wiki/s
 
 INSERT INTO @capabilities(Id, [Name], [Description], SourceUrl, IsFoundation, CategoryId)
 VALUES
-(1, 'Appointments Management – Citizen', 'Enables Citizens to manage their Appointments online. Supports the use of Appointment slots that have been configured in Appointments Management – GP.', @gpitFuturesBaseUrl + '1391134205/Appointments+Management+-+Citize', 0, 3),
+(1, 'Appointments Management – Citizen', 'Enables Citizens to manage their Appointments online. Supports the use of Appointment slots that have been configured in Appointments Management – GP.', @gpitFuturesBaseUrl + '1391134205/Appointments+Management+-+Citize', 0, 1),
 (2, 'Communicate With Practice – Citizen', 'Supports secure and trusted electronic communications between Citizens and the Practice. Integrates with Patient Information Maintenance.', @gpitFuturesBaseUrl + '1391134188/Communicate+With+Practice+-+Citize', 0, 3),
 (3, 'Prescription Ordering – Citizen', 'Enables Citizens to request medication online and manage nominated and preferred Pharmacies for Patients.', @gpitFuturesBaseUrl + '1391134214/Prescription+Ordering+-+Citizen', 0, 3),
 (4, 'View Record – Citizen', 'Enables Citizens to view their Patient Record online.', @gpitFuturesBaseUrl + '1391134197/View+Record+-+Citize', 0, 3),
