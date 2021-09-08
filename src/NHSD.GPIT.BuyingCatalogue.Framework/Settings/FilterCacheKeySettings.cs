@@ -2,6 +2,6 @@
 {
     public sealed class FilterCacheKeySettings
     {
-        public string filterCacheKey { get; set; }
+        public string FilterCacheKey { get; set; }
     }
 }

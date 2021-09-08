@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var filterCacheKeySettings = new FilterCacheKeySettings
             {
-                filterCacheKey = configuration.GetValue<string>("filterCacheKey"),
+                FilterCacheKey = configuration.GetValue<string>("filterCacheKey"),
             };
 
             services.AddSingleton(filterCacheKeySettings);

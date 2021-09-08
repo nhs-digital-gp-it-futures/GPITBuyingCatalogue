@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("filter")]
         public async Task<IActionResult> LoadCatalogueSolutionsFilter([FromQuery] string selectedFramework)
         {
-            var cacheKey = $"{filterCacheKey.filterCacheKey}{selectedFramework ?? "All"}";
+            var cacheKey = $"{filterCacheKey.FilterCacheKey}{selectedFramework ?? "All"}";
 
             if (memoryCache.TryGetValue(cacheKey, out string html))
                 return Content(html);
