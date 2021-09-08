@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 
             var result = await storage.DownloadAsync("TheBlob");
 
-            result.Content.Should().Be(expectedStream);
+            result.Content.Should().BeSameAs(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 
             var result = await storage.DownloadAsync("Id", "TheBlob");
 
-            result.Content.Should().Be(expectedStream);
+            result.Content.Should().BeSameAs(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 
