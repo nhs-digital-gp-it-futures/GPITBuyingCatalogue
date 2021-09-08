@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
 
             var document = new AzureBlobDocument(downloadInfo);
 
-            document.Content.Should().Be(downloadInfo.Content);
+            document.Content.Should().BeSameAs(downloadInfo.Content);
         }
 
         [Fact]

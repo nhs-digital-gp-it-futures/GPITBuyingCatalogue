@@ -10,18 +10,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "govuk-frontend": "^3.11.0",
-    "nhsuk-frontend": "5.0.0",
-    "node-sass": "^4.14.1"
+    "govuk-frontend": "^3.13.1",
+    "nhsuk-frontend": "^5.1.0",
+    "node-sass": "^6.0.1"
   },
   "devDependencies": {
-    "clean-css": "^4.2.1",
-    "del": "^4.1.1",
+    "clean-css": "^5.1.5",
+    "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-cssmin": "^0.2.0",
     "gulp-htmlmin": "^5.0.1",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^5.0.0",
     "gulp-uglify": "^3.0.2",
     "merge-stream": "^2.0.0"
   }

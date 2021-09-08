@@ -5,7 +5,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
@@ -64,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             result.Should().NotBeNull();
             result.ContentType.Should().Be(expectedContentType);
-            result.FileStream.IsSameOrEqualTo(expectedStream);
+            result.FileStream.Should().BeSameAs(expectedStream);
         }
     }
 }
