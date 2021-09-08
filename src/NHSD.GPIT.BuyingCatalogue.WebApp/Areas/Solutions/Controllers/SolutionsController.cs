@@ -62,6 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 CategoryFilters = categories.CategoryFilters,
                 FoundationCapabilities = categories.FoundationCapabilities,
                 CountOfSolutionsWithFoundationCapability = categories.CountOfCatalogueItemsWithFoundationCapabilities,
+                SelectedCapabilities = capabilities,
             });
         }
 

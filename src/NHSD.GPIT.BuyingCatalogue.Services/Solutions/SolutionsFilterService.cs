@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedCapabilities))
             {
-                var capabilitiesPredicate = BuildCapabilitiesPredicate(selectedCapabilities);
+                var capabilitiesPredicate = BuildCapabilitiesPredicate(dbContext, selectedCapabilities);
 
                 query = query.AsExpandableEFCore().Where(capabilitiesPredicate);
             }
@@ -160,7 +160,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var countOfCatalogueItemsWithFoundationCapability =
                 results
-                .Where(ci => ci.CatalogueItemCapabilities.Any(cic => foundationCapabilities.Any(fc => fc.CapabilityId == cic.CapabilityId)))
+                .Where(ci => ci.CatalogueItemCapabilities
+                .Where(cic => foundationCapabilities
+                            .Any(fc => fc.CapabilityId == cic.CapabilityId))
+                            .Count() == foundationCapabilities.Count())
                 .Count();
 
             var foundationCapabilitiesFilter =
@@ -249,11 +252,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         /// </summary>
         /// <param name="selectedCapabilities">the pipe-deliminated string of selected capabilities and epics.</param>
         /// <returns>an Expression Starter Containing the Where Clause for the EF Query.</returns>
-        private static ExpressionStarter<CatalogueItem> BuildCapabilitiesPredicate(string selectedCapabilities)
+        private static ExpressionStarter<CatalogueItem> BuildCapabilitiesPredicate(BuyingCatalogueDbContext dbContext, string selectedCapabilities)
         {
             var capabilities = DecodeCapabilitiesFilter(selectedCapabilities);
 
             var predicateBuilder = PredicateBuilder.New<CatalogueItem>();
+
+            var foundationSolutions = dbContext.FrameworkCapabilities.Where(fc => fc.IsFoundation);
 
             foreach (var capability in capabilities)
             {
@@ -261,7 +266,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 capabilityPredicateBuilder = capability.Key == FoundationCapabilitiesKey
                 ? capabilityPredicateBuilder
-                    .Or(ci => ci.CatalogueItemCapabilities.Any(cic => cic.Capability.FrameworkCapabilities.Any(fc => fc.IsFoundation)))
+                    .Or(ci => ci.CatalogueItemCapabilities.Where(cic => cic.Capability.FrameworkCapabilities.Any(fc => fc.IsFoundation)).Count()
+                        == foundationSolutions.Count())
                 : capabilityPredicateBuilder
                 .Or(ci => ci.CatalogueItemCapabilities.Any(cic => cic.Capability.CapabilityRef == capability.Key));
 

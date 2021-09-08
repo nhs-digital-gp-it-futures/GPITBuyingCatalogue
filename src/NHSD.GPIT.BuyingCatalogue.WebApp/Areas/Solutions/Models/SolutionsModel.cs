@@ -40,5 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public PageOptions Options { get; set; }
 
         public string SelectedFramework { get; set; }
+
+        public string SelectedCapabilities { get; set; }
     }
 }
