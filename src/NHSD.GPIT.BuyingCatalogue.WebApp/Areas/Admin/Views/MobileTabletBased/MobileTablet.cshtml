@@ -11,7 +11,7 @@
         <div class="nhsuk-grid-column-full">
             <partial name="Partials/_BackLink" model="Model" />
         </div>
-        <div class="nhsuk-grid-column-full">            
+        <div class="nhsuk-grid-column-full">
             <nhs-page-title title="Mobile or tablet application"
                             advice="Provide information about your mobile or tablet Catalogue Solution." />
 
@@ -83,11 +83,16 @@
                                      url="@Url.Action(
                                      nameof(CatalogueSolutionsController.ClientApplicationType),
                                      typeof(CatalogueSolutionsController).ControllerName(),
-                                     new { Model.SolutionId })" />
+                                     new { Model.SolutionId })" /><br />
+
+            <vc:nhs-delete-button url="@Url.Action(
+                                               nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation),
+                                               typeof(DeleteApplicationTypeController).ControllerName(),
+                                               new { Model.SolutionId, Model.ApplicationType })"
+                                  text="Delete application type" />
         </div>
     </div>
 </div>
-
 
 @{
     NhsTagsTagHelper.TagColour GetTagColour(string status) =>

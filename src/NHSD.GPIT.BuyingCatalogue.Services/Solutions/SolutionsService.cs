@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EnumsNET;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -308,6 +309,50 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var solution = await solutionRepository.SingleAsync(s => s.CatalogueItemId == solutionId);
             solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
             await solutionRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteClientApplication(CatalogueItemId solutionId, ClientApplicationType clientApplicationType)
+        {
+            var clientApplication = await GetClientApplication(solutionId);
+
+            if (clientApplication.ClientApplicationTypes != null)
+            {
+                if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
+                    clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            }
+
+            if (clientApplicationType == ClientApplicationType.BrowserBased)
+            {
+                clientApplication.AdditionalInformation = string.Empty;
+                clientApplication.BrowsersSupported = null;
+                clientApplication.HardwareRequirements = string.Empty;
+                clientApplication.MinimumConnectionSpeed = string.Empty;
+                clientApplication.MinimumDesktopResolution = string.Empty;
+                clientApplication.MobileFirstDesign = null;
+                clientApplication.MobileResponsive = null;
+                clientApplication.Plugins = null;
+            }
+            else if (clientApplicationType == ClientApplicationType.Desktop)
+            {
+                clientApplication.NativeDesktopAdditionalInformation = null;
+                clientApplication.NativeDesktopHardwareRequirements = null;
+                clientApplication.NativeDesktopMemoryAndStorage = null;
+                clientApplication.NativeDesktopMinimumConnectionSpeed = null;
+                clientApplication.NativeDesktopOperatingSystemsDescription = null;
+                clientApplication.NativeDesktopThirdParty = null;
+            }
+            else
+            {
+                clientApplication.MobileConnectionDetails = null;
+                clientApplication.MobileMemoryAndStorage = null;
+                clientApplication.MobileOperatingSystems = null;
+                clientApplication.MobileThirdParty = null;
+                clientApplication.NativeMobileAdditionalInformation = null;
+                clientApplication.NativeMobileFirstDesign = null;
+                clientApplication.NativeMobileHardwareRequirements = null;
+            }
+
+            await SaveClientApplication(solutionId, clientApplication);
         }
 
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
