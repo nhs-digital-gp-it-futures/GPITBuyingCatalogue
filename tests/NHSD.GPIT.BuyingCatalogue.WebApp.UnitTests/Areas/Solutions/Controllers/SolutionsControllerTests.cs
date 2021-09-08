@@ -65,12 +65,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var mockService = new Mock<ISolutionsFilterService>();
             var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
+            var categoryModel = new CategoryFilterModel
+            {
+                CategoryFilters = new List<CapabilityCategoryFilter>(),
+                FoundationCapabilities = new List<CapabilitiesFilter>(),
+            };
 
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
                 .ReturnsAsync(new Dictionary<EntityFramework.Catalogue.Models.Framework, int>());
+
+            mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
+                .ReturnsAsync(categoryModel);
 
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
@@ -89,12 +97,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var mockService = new Mock<ISolutionsFilterService>();
             var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
+            var categoryModel = new CategoryFilterModel
+            {
+                CategoryFilters = new List<CapabilityCategoryFilter>(),
+                FoundationCapabilities = new List<CapabilitiesFilter>(),
+            };
 
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
                 .ReturnsAsync(pagedList);
 
             mockService.Setup(s => s.GetAllFrameworksAndCountForFilter())
                 .ReturnsAsync(new Dictionary<EntityFramework.Catalogue.Models.Framework, int>());
+
+            mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
+                .ReturnsAsync(categoryModel);
 
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
@@ -115,6 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var mockService = new Mock<ISolutionsFilterService>();
             var pagedList = new PagedList<CatalogueItem>(new List<CatalogueItem>(), new PageOptions(string.Empty, string.Empty));
+            var categoryModel = new CategoryFilterModel
+            {
+                CategoryFilters = new List<CapabilityCategoryFilter>(),
+                FoundationCapabilities = new List<CapabilitiesFilter>(),
+            };
 
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null))
                 .ReturnsAsync(pagedList);
@@ -125,6 +146,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 {
                     { new EntityFramework.Catalogue.Models.Framework { Id = "All", ShortName = "All" }, 10 },
                 });
+
+            mockService.Setup(s => s.GetAllCategoriesAndCountForFilter(It.IsAny<string>()))
+                .ReturnsAsync(categoryModel);
 
             var controller = new SolutionsController(
                 Mock.Of<IMapper>(),
