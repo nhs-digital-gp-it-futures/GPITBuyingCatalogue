@@ -25,8 +25,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Document;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.Models.Solution;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -53,17 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureAutoMapper(this IServiceCollection services)
         {
-            services.AddTransient<IMemberValueResolver<object, object, string, string>,
-                ConfigSettingResolver>();
-
-            services
-                .AddTransient<IMemberValueResolver<object, object, string, bool?>,
-                    StringToNullableBoolResolver>();
-            services
-                .AddTransient<ITypeConverter<CatalogueItem, SolutionStatusModel>,
-                    CatalogueItemToSolutionStatusModelConverter>();
-
-            services.AddTransient<ITypeConverter<string, bool?>, StringToNullableBoolResolver>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 

@@ -13,7 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Marketing.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -33,10 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             configuration = new Mock<IConfiguration>();
 
             var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Setup(
-                    s =>
-                        s.GetService(typeof(IMemberValueResolver<object, object, string, string>)))
-                .Returns(new ConfigSettingResolver(configuration.Object));
             mapperConfiguration = new MapperConfiguration(
                 cfg =>
                 {
