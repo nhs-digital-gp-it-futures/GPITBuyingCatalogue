@@ -250,6 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         /// <summary>
         /// loop through the capbilities and epics and generates an EF where clause from the list.
         /// </summary>
+        /// <param name="dbContext">the dbContext.</param>
         /// <param name="selectedCapabilities">the pipe-deliminated string of selected capabilities and epics.</param>
         /// <returns>an Expression Starter Containing the Where Clause for the EF Query.</returns>
         private static ExpressionStarter<CatalogueItem> BuildCapabilitiesPredicate(BuyingCatalogueDbContext dbContext, string selectedCapabilities)
