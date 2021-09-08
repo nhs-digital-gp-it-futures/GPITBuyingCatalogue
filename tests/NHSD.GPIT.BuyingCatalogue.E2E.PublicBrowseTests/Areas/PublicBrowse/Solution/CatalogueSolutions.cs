@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .Should()
                 .BeTrue();
 
-            Driver.Url.Should().EndWith("Page=2");
+            Driver.Url.Should().EndWith("page=2");
 
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
@@ -221,8 +221,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var gpitFramework = await context.Frameworks.Where(f => f.Id == "NHSDGP001").SingleAsync();
 
-            var numberOfSolutionsForGPITFramework = await context.CatalogueItems.AsNoTracking()
-                .Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == gpitFramework.Id))
+            var numberOfSolutionsForGPITFramework =
+                await context.CatalogueItems.AsNoTracking()
+                .Where(ci => ci.PublishedStatus == PublicationStatus.Published
+                            && ci.CatalogueItemType == CatalogueItemType.Solution
+                            && ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == gpitFramework.Id))
                 .CountAsync();
 
             CommonActions.ClickRadioButtonWithValue(gpitFramework.Id);
