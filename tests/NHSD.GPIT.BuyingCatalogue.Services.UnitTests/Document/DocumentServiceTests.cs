@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
@@ -89,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             var result = await controller.DownloadDocumentAsync("directory");
 
             Assert.NotNull(result);
-            result.FileStream.IsSameOrEqualTo(expectedStream);
+            result.FileStream.Should().BeSameAs(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 
@@ -154,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Document
             var result = await controller.DownloadSolutionDocumentAsync("ID", "directory");
 
             Assert.NotNull(result);
-            result.FileStream.IsSameOrEqualTo(expectedStream);
+            result.FileStream.Should().BeSameAs(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 

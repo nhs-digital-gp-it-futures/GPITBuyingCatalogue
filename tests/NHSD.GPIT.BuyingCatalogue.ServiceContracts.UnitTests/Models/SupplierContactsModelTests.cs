@@ -74,12 +74,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             contacts[3].Setup(c => c.IsEmpty()).Returns(true);
             var model = new SupplierContactsModel
             {
-                Contacts = contacts.Select(x => x.Object).ToArray(),
+                Contacts = contacts.Select(c => c.Object).ToArray(),
             };
 
             var actual = model.ValidContacts();
 
-            actual.Should().BeEquivalentTo(contacts[0].Object, contacts[2].Object);
+            actual.Should().BeEquivalentTo(new[] { contacts[0].Object, contacts[2].Object });
         }
 
         [Fact]
@@ -98,12 +98,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             contacts[3].Setup(c => c.NewAndValid()).Returns(true);
             var model = new SupplierContactsModel
             {
-                Contacts = contacts.Select(x => x.Object).ToArray(),
+                Contacts = contacts.Select(c => c.Object).ToArray(),
             };
 
             var actual = model.NewAndValidContacts();
 
-            actual.Should().BeEquivalentTo(contacts[3].Object, contacts[2].Object);
+            actual.Should().BeEquivalentTo(new[] { contacts[3].Object, contacts[2].Object });
         }
 
         [Fact]

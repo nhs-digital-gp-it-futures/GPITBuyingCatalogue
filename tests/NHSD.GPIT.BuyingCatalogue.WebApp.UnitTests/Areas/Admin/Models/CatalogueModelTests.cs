@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var actual = new CatalogueModel(catalogueItem);
 
-            actual.PublishedStatusId.Should().Be((int)catalogueItem.PublishedStatus);
+            actual.PublishedStatusId.Should().Be(catalogueItem.PublishedStatus);
         }
 
         [Theory]

@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
 
-            result.Should().BeEquivalentTo(childOrg);
+            result.Should().BeEquivalentTo(new[] { childOrg });
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
 
@@ -312,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
 
-            result.Should().BeEquivalentTo(childOne, childTwo);
+            result.Should().BeEquivalentTo(new[] { childOne, childTwo });
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
 
@@ -350,7 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             var result = await service.GetServiceRecipientsByParentOdsCode(odsCode);
 
-            result.Should().BeEquivalentTo(childOne);
+            result.Should().BeEquivalentTo(new[] { childOne });
             memoryCacheMock.Verify(v => v.CreateEntry(It.IsAny<object>()), Times.Once);
         }
 

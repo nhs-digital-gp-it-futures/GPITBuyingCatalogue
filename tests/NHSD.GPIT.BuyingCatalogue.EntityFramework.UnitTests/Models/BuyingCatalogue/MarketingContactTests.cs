@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             newContact.Email.Should().Be(marketingContact.Email);
             newContact.FirstName.Should().Be(marketingContact.FirstName);
             newContact.LastName.Should().Be(marketingContact.LastName);
-            newContact.LastUpdated.Should().BeCloseTo(marketingContact.LastUpdated);
+            newContact.LastUpdated.Should().BeCloseTo(marketingContact.LastUpdated, TimeSpan.FromSeconds(5));
             newContact.PhoneNumber.Should().Be(marketingContact.PhoneNumber);
         }
 
