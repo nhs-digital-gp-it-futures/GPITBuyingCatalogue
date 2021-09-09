@@ -51,26 +51,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            var user = await userManager.FindByNameAsync(viewModel.EmailAddress);
-            var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
-
-            if (signinResult.Succeeded)
+            IActionResult BadLogin()
             {
-                if (!user.Disabled)
-                    return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
+                const string message = "The username or password were not recognised. Please try again.";
 
-                var disabledErrorFormat = string.Format(
-                    CultureInfo.CurrentCulture,
-                    UserDisabledErrorMessageTemplate,
-                    disabledErrorMessageSettings.EmailAddress,
-                    disabledErrorMessageSettings.PhoneNumber);
-
-                ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
+                ModelState.AddModelError(nameof(LoginViewModel.EmailAddress), message);
+                ModelState.AddModelError(nameof(LoginViewModel.Password), message);
 
                 return View(viewModel);
             }
 
-            viewModel.Error = "The username or password were not recognised. Please try again.";
+            var user = await userManager.FindByNameAsync(viewModel.EmailAddress);
+            if (user is null)
+                return BadLogin();
+
+            var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
+
+            if (!signinResult.Succeeded)
+                return BadLogin();
+
+            if (!user.Disabled)
+                return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
+
+            var disabledErrorFormat = string.Format(
+                CultureInfo.CurrentCulture,
+                UserDisabledErrorMessageTemplate,
+                disabledErrorMessageSettings.EmailAddress,
+                disabledErrorMessageSettings.PhoneNumber);
+
+            ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
 
             return View(viewModel);
         }

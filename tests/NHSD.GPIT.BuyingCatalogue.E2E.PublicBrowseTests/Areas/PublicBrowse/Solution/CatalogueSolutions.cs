@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
@@ -15,11 +14,9 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public sealed class CatalogueSolutions
-        : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class CatalogueSolutions : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private static readonly Dictionary<string, string> Parameters = new();
-
         private static readonly List<CatalogueItem> CatalogueItems = new();
 
         public CatalogueSolutions(LocalWebApplicationFactory factory)
@@ -46,11 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.SortByLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SolutionsController),
-                nameof(SolutionsController.Index))
-            .Should()
-            .BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index))
+                .Should()
+                .BeTrue();
 
             Driver.Url.Should().Contain($"sortBy={PageOptions.SortOptions.LastUpdated.ToString().ToLowerInvariant()}");
         }
@@ -67,11 +62,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.SortByLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SolutionsController),
-                nameof(SolutionsController.Index))
-            .Should()
-            .BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index))
+                .Should()
+                .BeTrue();
 
             Driver.Url.Should().Contain($"sortBy={PageOptions.SortOptions.Alphabetical.ToString().ToLowerInvariant()}");
         }
@@ -97,11 +90,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             CommonActions.ClickLinkElement(CommonSelectors.PaginationNext);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(SolutionsController),
-            nameof(SolutionsController.Index))
-            .Should()
-            .BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index))
+                .Should()
+                .BeTrue();
 
             Driver.Url.Should().EndWith("Page=2");
 
@@ -118,8 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .BeTrue();
 
             CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"1 of {expectedNumberOfPages}")
-            .Should()
-            .BeTrue();
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -128,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             using var context = GetEndToEndDbContext();
             var countOfSolutions = context.CatalogueItems.AsNoTracking().Count();
 
-            var expectedNumberOfPages = new PageOptions() { TotalNumberOfItems = countOfSolutions }.NumberOfPages;
+            var expectedNumberOfPages = new PageOptions { TotalNumberOfItems = countOfSolutions }.NumberOfPages;
 
             var queryParam = new Dictionary<string, string> { { "Page", expectedNumberOfPages.ToString() } };
 
@@ -141,34 +132,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
 
             CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"{expectedNumberOfPages - 1} of {expectedNumberOfPages}")
-            .Should()
-            .BeTrue();
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void CatalogueSolutions_ClickIntoSolution_ExpectedResult()
         {
             var element = Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.SolutionsLink);
-
-            var solutionIdElements = element.GetAttribute("href").Split("/").Last().Split("-");
-
             var solutionName = "-" + element.Text;
-
-            _ = int.TryParse(solutionIdElements[0], out int result);
-
-            var solutionId = new CatalogueItemId(result, solutionIdElements[1]);
 
             element.Click();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(SolutionsController),
-            nameof(SolutionsController.Description))
-            .Should()
-            .BeTrue();
-
-            using var context = GetEndToEndDbContext();
-
-            context.CatalogueItems.Where(ci => ci.Id == solutionId).Single();
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Description))
+                .Should()
+                .BeTrue();
 
             CommonActions.ElementTextEqualTo(By.CssSelector("h1 .nhsuk-caption--bottom"), solutionName).Should().BeTrue();
         }
@@ -199,12 +177,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var catalogueItemId = new CatalogueItemId(supplierId, linkUrlStringArray[1]);
 
-            var catalogueItem = context.CatalogueItems.AsNoTracking().Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                .Where(ci => ci.Id == catalogueItemId)
-                .Single();
+            var catalogueItem = context.CatalogueItems.AsNoTracking()
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
+                .Single(ci => ci.Id == catalogueItemId);
 
-            CommonActions
-                .ElementTextEqualTo(
+            CommonActions.ElementTextEqualTo(
                     Objects.PublicBrowse.SolutionsObjects.CapabilitesOverCountLink,
                     $"See all {catalogueItem.CatalogueItemCapabilities.Count} Capabilities")
                 .Should()
@@ -212,11 +189,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             CommonActions.ClickLinkElement(Objects.PublicBrowse.SolutionsObjects.CapabilitesOverCountLink);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(SolutionsController),
-            nameof(SolutionsController.Capabilities))
-            .Should()
-            .BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Capabilities))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -225,10 +200,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
-            var numberOfFrameworkFilters =
-                await context.FrameworkSolutions.AsNoTracking()
+            var numberOfFrameworkFilters = await context.FrameworkSolutions.AsNoTracking()
                 .Include(fs => fs.Framework)
                 .Where(fs => fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
                 .Select(fs => fs.Framework).Distinct()
@@ -243,12 +217,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var gpitFramework = await context.Frameworks.Where(f => f.Id == "NHSDGP001").SingleAsync();
 
-            var numberOfSolutionsForGPITFramework =
-                await context.CatalogueItems.AsNoTracking()
+            var numberOfSolutionsForGPITFramework = await context.CatalogueItems.AsNoTracking()
                 .Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == gpitFramework.Id))
                 .CountAsync();
 
@@ -267,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var gpitFramework = await context.Frameworks.Where(f => f.Id == "NHSDGP001").SingleAsync();
 
@@ -279,6 +252,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             Driver.FindElements(CommonSelectors.BreadcrumbItem).Count.Should().Be(2);
         }
-
     }
 }

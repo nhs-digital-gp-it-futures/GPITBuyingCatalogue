@@ -8,11 +8,11 @@
 {
     @if (Model.CatalogueItemIdAdditional.ItemId != null)
     {
-        <vc:nhs-backlink text="Go back" url="@Url.Action("CapabilitiesAdditionalServices", "SolutionDetails", new { id = Model.SolutionId, additionalId = Model.CatalogueItemIdAdditional })"></vc:nhs-backlink>
+        <vc:nhs-backlink text="Go back" url="@Url.Action("CapabilitiesAdditionalServices", "Solutions", new { solutionId = Model.SolutionId, additionalServiceId = Model.CatalogueItemIdAdditional })"></vc:nhs-backlink>
     }
     else
     {
-        <vc:nhs-backlink text="Go back" url="@Url.Action("Capabilities", "SolutionDetails", new { id = Model.SolutionId })"></vc:nhs-backlink>
+        <vc:nhs-backlink text="Go back" url="@Url.Action("Capabilities", "Solutions", new { solutionId = Model.SolutionId })"></vc:nhs-backlink>
     }
 }
 
