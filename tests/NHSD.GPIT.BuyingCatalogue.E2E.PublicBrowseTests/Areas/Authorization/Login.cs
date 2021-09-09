@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         [Theory]
         [InlineData("user", "")]
         [InlineData("user", "falsePassword")]
-        // [InlineData("falseUser@email.com", "password")]
+        [InlineData("falseUser@email.com", "password")]
         [InlineData("", "password")]
         public async Task Login_UnsuccessfulLogin(string user, string password)
         {
