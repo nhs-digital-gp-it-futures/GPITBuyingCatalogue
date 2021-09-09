@@ -315,6 +315,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var clientApplication = await GetClientApplication(solutionId);
 
+            RemoveClientApplicationType(clientApplication, clientApplicationType);
+
+            await SaveClientApplication(solutionId, clientApplication);
+        }
+
+        public ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
+        {
             if (clientApplication.ClientApplicationTypes != null)
             {
                 if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
@@ -323,11 +330,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (clientApplicationType == ClientApplicationType.BrowserBased)
             {
-                clientApplication.AdditionalInformation = string.Empty;
+                clientApplication.AdditionalInformation = null;
                 clientApplication.BrowsersSupported = null;
-                clientApplication.HardwareRequirements = string.Empty;
-                clientApplication.MinimumConnectionSpeed = string.Empty;
-                clientApplication.MinimumDesktopResolution = string.Empty;
+                clientApplication.HardwareRequirements = null;
+                clientApplication.MinimumConnectionSpeed = null;
+                clientApplication.MinimumDesktopResolution = null;
                 clientApplication.MobileFirstDesign = null;
                 clientApplication.MobileResponsive = null;
                 clientApplication.Plugins = null;
@@ -352,7 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 clientApplication.NativeMobileHardwareRequirements = null;
             }
 
-            await SaveClientApplication(solutionId, clientApplication);
+            return clientApplication;
         }
 
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
