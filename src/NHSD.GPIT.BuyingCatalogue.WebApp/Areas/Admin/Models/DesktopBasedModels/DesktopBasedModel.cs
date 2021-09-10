@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
 {
@@ -23,6 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
                 BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type";
             else
                 BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type/add-application-type";
+
+            ApplicationType = ClientApplicationType.Desktop;
         }
 
         public override bool IsComplete =>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.EditSolution;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -40,13 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Fact]
-        public void DesktopDashboard_ClickGoBackLink()
+        public void DesktopDashboard_ClickDeleteLink_NavigatesToDeleteConfirmation()
         {
-            CommonActions.ClickGoBackLink();
+            CommonActions.ClickLinkElement(ClientApplicationObjects.DeleteClientApplicationLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.AddApplicationType))
+                typeof(DeleteApplicationTypeController),
+                nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation))
                 .Should()
                 .BeTrue();
         }

@@ -40,6 +40,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type");
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void FromCatalogueItem_ValidCatalogueItem_ApplicationTypeSetCorrectly(
+            CatalogueItem catalogueItem)
+        {
+            var actual = new MobileTabletBasedModel(catalogueItem);
+
+            actual.ApplicationType.Should().Equals(ClientApplicationType.MobileTablet);
+        }
+
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {

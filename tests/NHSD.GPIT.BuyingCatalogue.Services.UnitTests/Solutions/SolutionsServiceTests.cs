@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
+using EnumsNET;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
@@ -497,6 +498,171 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             mockCatalogueItemRepository.Verify(c => c.SupplierHasSolutionName(supplierId, solutionName));
             actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task DeleteClientApplication_SavesChanges(
+            [Frozen] CatalogueItemId catalogueItemId,
+            Solution catalogueSolution,
+            [Frozen] Mock<IDbRepository<Solution, BuyingCatalogueDbContext>> mockSolutionsRepository,
+            SolutionsService service)
+        {
+            mockSolutionsRepository.Setup(r => r.SingleAsync(s => s.CatalogueItemId == catalogueItemId)).ReturnsAsync(catalogueSolution);
+
+            await service.DeleteClientApplication(catalogueItemId, ClientApplicationType.BrowserBased);
+
+            mockSolutionsRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Remove_BrowserBased_ClientApplication_RemovesBrowserBasedEntries(
+            ClientApplication clientApplication,
+            SolutionsService service)
+        {
+            clientApplication.ClientApplicationTypes = new HashSet<string>
+            {
+                ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
+                ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
+                ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
+            };
+
+            var updatedClientApplication = service.RemoveClientApplicationType(clientApplication, ClientApplicationType.BrowserBased);
+
+            updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
+                    new HashSet<string>
+                    {
+                        ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
+                        ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
+                    });
+
+            // Browser Based
+            updatedClientApplication.AdditionalInformation.Should().BeNull();
+            updatedClientApplication.BrowsersSupported.Should().BeNull();
+            updatedClientApplication.HardwareRequirements.Should().BeNull();
+            updatedClientApplication.MinimumConnectionSpeed.Should().BeNull();
+            updatedClientApplication.MinimumDesktopResolution.Should().BeNull();
+            updatedClientApplication.MobileFirstDesign.Should().BeNull();
+            updatedClientApplication.MobileResponsive.Should().BeNull();
+            updatedClientApplication.Plugins.Should().BeNull();
+
+            // Desktop
+            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Equals(clientApplication.NativeDesktopAdditionalInformation);
+            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Equals(clientApplication.NativeDesktopHardwareRequirements);
+            updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
+            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Equals(clientApplication.NativeDesktopMinimumConnectionSpeed);
+            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Equals(clientApplication.NativeDesktopOperatingSystemsDescription);
+            updatedClientApplication.NativeDesktopThirdParty.Should().BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
+
+            // Mobile or Tablet
+            updatedClientApplication.MobileConnectionDetails.Should().BeEquivalentTo(clientApplication.MobileConnectionDetails);
+            updatedClientApplication.MobileMemoryAndStorage.Should().BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
+            updatedClientApplication.MobileOperatingSystems.Should().BeEquivalentTo(clientApplication.MobileOperatingSystems);
+            updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
+            updatedClientApplication.NativeMobileAdditionalInformation.Should().Equals(clientApplication.NativeMobileAdditionalInformation);
+            updatedClientApplication.NativeMobileFirstDesign.Should().Equals(clientApplication.NativeMobileFirstDesign);
+            updatedClientApplication.NativeMobileHardwareRequirements.Should().Equals(clientApplication.NativeMobileHardwareRequirements);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Remove_Desktop_ClientApplication_RemovesDesktopEntries(
+                  ClientApplication clientApplication,
+                  SolutionsService service)
+        {
+            clientApplication.ClientApplicationTypes = new HashSet<string>
+            {
+                ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
+                ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
+                ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
+            };
+
+            var updatedClientApplication = service.RemoveClientApplicationType(clientApplication, ClientApplicationType.Desktop);
+
+            updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
+                    new HashSet<string>
+                    {
+                        ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
+                        ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
+                    });
+
+            // Browser Based
+            updatedClientApplication.AdditionalInformation.Should().Equals(clientApplication.AdditionalInformation);
+            updatedClientApplication.BrowsersSupported.Should().BeEquivalentTo(clientApplication.BrowsersSupported);
+            updatedClientApplication.HardwareRequirements.Should().Equals(clientApplication.HardwareRequirements);
+            updatedClientApplication.MinimumConnectionSpeed.Should().Equals(clientApplication.MinimumConnectionSpeed);
+            updatedClientApplication.MinimumDesktopResolution.Should().Equals(clientApplication.MinimumDesktopResolution);
+            updatedClientApplication.MobileFirstDesign.Should().Equals(clientApplication.MobileFirstDesign);
+            updatedClientApplication.MobileResponsive.Should().Equals(clientApplication.MobileResponsive);
+            updatedClientApplication.Plugins.Should().BeEquivalentTo(clientApplication.Plugins);
+
+            // Desktop
+            updatedClientApplication.NativeDesktopAdditionalInformation.Should().BeNull();
+            updatedClientApplication.NativeDesktopHardwareRequirements.Should().BeNull();
+            updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeNull();
+            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().BeNull();
+            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().BeNull();
+            updatedClientApplication.NativeDesktopThirdParty.Should().BeNull();
+
+            // Mobile or Tablet
+            updatedClientApplication.MobileConnectionDetails.Should().BeEquivalentTo(clientApplication.MobileConnectionDetails);
+            updatedClientApplication.MobileMemoryAndStorage.Should().BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
+            updatedClientApplication.MobileOperatingSystems.Should().BeEquivalentTo(clientApplication.MobileOperatingSystems);
+            updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
+            updatedClientApplication.NativeMobileAdditionalInformation.Should().Equals(clientApplication.NativeMobileAdditionalInformation);
+            updatedClientApplication.NativeMobileFirstDesign.Should().Equals(clientApplication.NativeMobileFirstDesign);
+            updatedClientApplication.NativeMobileHardwareRequirements.Should().Equals(clientApplication.NativeMobileHardwareRequirements);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Remove_Mobile_ClientApplication_RemovesMobileEntries(
+                         ClientApplication clientApplication,
+                         SolutionsService service)
+        {
+            clientApplication.ClientApplicationTypes = new HashSet<string>
+            {
+                ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
+                ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
+                ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
+            };
+
+            var updatedClientApplication = service.RemoveClientApplicationType(clientApplication, ClientApplicationType.MobileTablet);
+
+            updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
+                    new HashSet<string>
+                    {
+                        ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
+                        ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
+                    });
+
+            // Browser Based
+            updatedClientApplication.AdditionalInformation.Should().Equals(clientApplication.AdditionalInformation);
+            updatedClientApplication.BrowsersSupported.Should().BeEquivalentTo(clientApplication.BrowsersSupported);
+            updatedClientApplication.HardwareRequirements.Should().Equals(clientApplication.HardwareRequirements);
+            updatedClientApplication.MinimumConnectionSpeed.Should().Equals(clientApplication.MinimumConnectionSpeed);
+            updatedClientApplication.MinimumDesktopResolution.Should().Equals(clientApplication.MinimumDesktopResolution);
+            updatedClientApplication.MobileFirstDesign.Should().Equals(clientApplication.MobileFirstDesign);
+            updatedClientApplication.MobileResponsive.Should().Equals(clientApplication.MobileResponsive);
+            updatedClientApplication.Plugins.Should().BeEquivalentTo(clientApplication.Plugins);
+
+            // Desktop
+            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Equals(clientApplication.NativeDesktopAdditionalInformation);
+            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Equals(clientApplication.NativeDesktopHardwareRequirements);
+            updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
+            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Equals(clientApplication.NativeDesktopMinimumConnectionSpeed);
+            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Equals(clientApplication.NativeDesktopOperatingSystemsDescription);
+            updatedClientApplication.NativeDesktopThirdParty.Should().BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
+
+            // Mobile or Tablet
+            updatedClientApplication.MobileConnectionDetails.Should().BeNull();
+            updatedClientApplication.MobileMemoryAndStorage.Should().BeNull();
+            updatedClientApplication.MobileOperatingSystems.Should().BeNull();
+            updatedClientApplication.MobileThirdParty.Should().BeNull();
+            updatedClientApplication.NativeMobileAdditionalInformation.Should().BeNull();
+            updatedClientApplication.NativeMobileFirstDesign.Should().BeNull();
+            updatedClientApplication.NativeMobileHardwareRequirements.Should().BeNull();
         }
     }
 }
