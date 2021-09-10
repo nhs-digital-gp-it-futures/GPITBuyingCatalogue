@@ -1,26 +1,10 @@
-resource "azurerm_app_service_plan" "webapp_sp" {
-  name                = "${var.webapp_name}-service-plan"
-  location            = var.region
-  resource_group_name = var.rg_name
-  kind                = "Linux"
-  reserved            = true
-
-  sku {
-    tier = var.sku_tier
-    size = var.sku_size
-  }
-
-  tags                      = {
-    environment             = var.environment,
-    architecture            = "new"
-  }
-}
-
-resource "azurerm_app_service" "webapp" {
-  name                = var.webapp_name
-  location            = var.region
-  resource_group_name = var.rg_name
-  app_service_plan_id = azurerm_app_service_plan.webapp_sp.id
+resource "azurerm_app_service_slot" "slot" {
+  name                 = "staging"
+  count                = var.create_slot
+  app_service_name     = var.webapp_name
+  location             = var.region
+  resource_group_name  = var.rg_name
+  app_service_plan_id  = azurerm_app_service_plan.webapp_sp.id
   
   app_settings = {
     # Main Settings

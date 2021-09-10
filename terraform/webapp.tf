@@ -35,6 +35,6 @@ module "webapp" {
   docker_registry_server_url = data.azurerm_container_registry.acr.login_server
   docker_registry_server_username = data.azurerm_container_registry.acr.admin_username
   docker_registry_server_password = data.azurerm_container_registry.acr.admin_password
-
+  create_slot = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
   depends_on = [module.sql_server_pri]
 }
