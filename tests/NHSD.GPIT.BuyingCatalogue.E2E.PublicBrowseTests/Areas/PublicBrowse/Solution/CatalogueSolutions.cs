@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(numberOfSolutionsForGPITFramework);
 
-            Driver.Url.Should().Contain($"SelectedFramework={gpitFramework.Id}");
+            Driver.Url.Should().Contain($"selectedframework={gpitFramework.Id}");
         }
 
         [Fact]
