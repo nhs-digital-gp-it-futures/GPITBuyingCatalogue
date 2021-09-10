@@ -15,14 +15,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.Services.Document;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 
@@ -31,8 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     public static class ServiceCollectionExtensions
     {
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
-        private const string BuyingCatalogueBlobConnectionEnvironmentVariable = "BC_BLOB_CONNECTION";
-        private const string BuyingCatalogueBlobContainerEnvironmentVariable = "BC_BLOB_CONTAINER";
         private const string BuyingCatalogueSmtpHostEnvironmentVariable = "BC_SMTP_HOST";
         private const string BuyingCatalogueSmtpPortEnvironmentVariable = "BC_SMTP_PORT";
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
@@ -225,26 +221,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var registrationSettings = configuration.GetSection("Registration").Get<RegistrationSettings>();
             services.AddSingleton(registrationSettings);
-        }
-
-        public static void ConfigureAzureBlobStorage(this IServiceCollection services, IConfiguration configuration)
-        {
-            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueBlobConnectionEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueBlobConnectionEnvironmentVariable}' must be set for the blob connection string");
-
-            var buyingCatalogueContainerString = Environment.GetEnvironmentVariable(BuyingCatalogueBlobContainerEnvironmentVariable);
-
-            if (string.IsNullOrWhiteSpace(buyingCatalogueContainerString))
-                throw new InvalidOperationException($"Environment variable '{BuyingCatalogueBlobContainerEnvironmentVariable}' must be set for the blob container");
-
-            var settings = configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
-            settings.ConnectionString = buyingCatalogueConnectionString;
-            settings.ContainerName = buyingCatalogueContainerString;
-            services.AddSingleton(settings);
-
-            services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
         }
 
         public static void ConfigureDataProtection(this IServiceCollection services, IConfiguration configuration)

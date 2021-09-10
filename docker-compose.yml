@@ -14,13 +14,6 @@ services:
         ports:
         - "1080:80"
         - "1081:25"
-
-    blob.store:
-        image: mcr.microsoft.com/azure-storage/azurite:3.10.0
-        container_name: nhsd_bc_integration_blob_store
-        ports:
-        - "10100:10000"
-        - "10101:10001"
                  
     nhsd_gpitbcdb_deploy:
         image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase
@@ -45,13 +38,4 @@ services:
             EA_USER_PHONE: "01234567890"
 
         depends_on:
-            - "sqlserver"  
-
-    file.upload:
-        image: ${DOCKER_REGISTRY}file-uploader
-        container_name: file_uploader
-        build:
-            context: .
-            dockerfile: azurite/Dockerfile
-        depends_on:
-            - "blob.store"       
+            - "sqlserver"    
