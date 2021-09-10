@@ -13,21 +13,6 @@ resource "azurerm_network_security_rule" "VPN_Access" {
   description                 = "Allow staff access who are connect to the BJSS VPN"
 }
 
-resource "azurerm_network_security_rule" "Mastek_VPN_Access" {
-  name                        = "AllowMastekVpns"
-  resource_group_name         = azurerm_resource_group.app-gateway.name
-  network_security_group_name = azurerm_network_security_group.gateway.name
-  source_address_prefix     = var.secondary_vpn
-  destination_address_prefix  = "*"
-  source_port_range           = "*"
-  destination_port_ranges     = [ "80", "443" ]
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  priority                    = "190"
-  description                 = "Allow staff access who are connect to the Mastek VPNs"
-}
-
 resource "azurerm_network_security_rule" "DevOps" {
   name                        = "AllowAzureDevOps"
   resource_group_name         = azurerm_resource_group.app-gateway.name

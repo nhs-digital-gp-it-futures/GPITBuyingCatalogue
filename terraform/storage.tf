@@ -15,8 +15,6 @@ module "storage_account" {
 
   ip_rules              = [
     var.primary_vpn,
-    var.secondary_vpn,
-    var.tertiary_vpn,
     var.cicd_range
   ]
 

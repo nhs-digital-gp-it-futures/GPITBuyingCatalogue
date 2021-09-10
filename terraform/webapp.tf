@@ -24,8 +24,7 @@ module "webapp" {
   sqlserver_rg = azurerm_resource_group.sql-server.name
   instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
   primary_vpn = var.primary_vpn
-  secondary_vpn = var.secondary_vpn
-  tertiary_vpn = module.appgateway.appgateway_pip_ipaddress
+  app_gateway_ip = module.appgateway.appgateway_pip_ipaddress
   ssl_cert = data.azurerm_key_vault_secret.ssl_cert.value
   customer_network_range = var.nhsd_network_range
   smtp_server_host = var.smtp_server_host

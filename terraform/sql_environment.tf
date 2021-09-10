@@ -11,7 +11,6 @@ module "sql_server_pri" {
   sql_admin_password    = azurerm_key_vault_secret.sqladminpassword.value
   sqladmins             = var.sql_admin_group
   bjssvpn               = var.primary_vpn
-  mastekvpn             = var.secondary_vpn
 }
 
 resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
@@ -40,5 +39,4 @@ resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
   sql_admin_password    = azurerm_key_vault_secret.sqladminpassword.value
   sqladmins             = var.sql_admin_group
   bjssvpn               = var.primary_vpn
-  mastekvpn             = var.secondary_vpn
 }

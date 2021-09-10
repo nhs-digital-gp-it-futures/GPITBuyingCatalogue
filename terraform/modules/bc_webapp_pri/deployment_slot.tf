@@ -38,7 +38,7 @@ resource "azurerm_app_service_slot" "slot" {
     min_tls_version           = "1.2"
     ip_restriction {
       name       = "APP_GATEWAY_ACCESS"
-      ip_address = "${var.tertiary_vpn}/32"
+      ip_address = "${var.app_gateway_ip}/32"
       priority   = 200
       headers    = []
     }
