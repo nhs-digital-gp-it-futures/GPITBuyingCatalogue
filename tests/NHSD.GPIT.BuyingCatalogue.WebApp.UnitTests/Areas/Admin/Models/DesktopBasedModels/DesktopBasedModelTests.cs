@@ -40,6 +40,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             actual.BackLink.Should().Be($"/admin/catalogue-solutions/manage/{catalogueItem.Id}/client-application-type");
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void FromCatalogueItem_ValidCatalogueItem_ApplicationTypeSetCorrectly(
+            CatalogueItem catalogueItem)
+        {
+            var actual = new DesktopBasedModel(catalogueItem);
+
+            actual.ApplicationType.Should().Equals(ClientApplicationType.Desktop);
+        }
+
         [Fact]
         public static void FromCatalogueItem_NullCatalogueItem_ThrowsException()
         {
