@@ -33,12 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         private const string BC_DB_CONNECTION = "Server=localhost,1450;Database=GPITBuyingCatalogue;User=SA;password=8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!;Integrated Security=false";
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_BLOB_CONNECTION = "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_BLOB_CONTAINER = "buyingcatalogue-documents";
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string BC_SMTP_HOST = "localhost";
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
@@ -215,10 +209,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
 
             SetEnvironmentVariable("SMTPSERVER__PORT", BC_SMTP_PORT);
-
-            SetEnvironmentVariable(nameof(BC_BLOB_CONNECTION), BC_BLOB_CONNECTION);
-
-            SetEnvironmentVariable(nameof(BC_BLOB_CONTAINER), BC_BLOB_CONTAINER);
 
             SetEnvironmentVariable(nameof(BC_SMTP_HOST), BC_SMTP_HOST);
 
