@@ -42,9 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IEnumerable<object> ApplicationTypesToAddRadioItems { get; }
 
-        public override bool? IsComplete => ExistingClientApplicationTypes.Any();
+        // mjrxxxx
+        //public override bool? IsComplete => ExistingClientApplicationTypes.Any();
 
-        public FeatureCompletionStatus StatusClientApplicationType() => IsComplete.GetValueOrDefault()
+        // mjrtodo - this needs to be InProgress if any of the client application types are in progress
+        public FeatureCompletionStatus StatusClientApplicationType() => ExistingClientApplicationTypes.Any()
             ? FeatureCompletionStatus.Completed
             : FeatureCompletionStatus.NotStarted;
     }

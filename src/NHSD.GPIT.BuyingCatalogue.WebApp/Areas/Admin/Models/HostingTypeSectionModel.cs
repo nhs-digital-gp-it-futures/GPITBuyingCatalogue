@@ -42,9 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IEnumerable<object> HostingTypesToAddRadioItems { get; }
 
-        public override bool? IsComplete => ExistingHostingTypes.Any();
+        // mjrxxxx
+        //public override bool? IsComplete => ExistingHostingTypes.Any();
 
-        public FeatureCompletionStatus StatusHostingType() => IsComplete.GetValueOrDefault()
+        // mjrtodo - this need to be in progress if any of the hosting types are in progress
+        public FeatureCompletionStatus StatusHostingType() => ExistingHostingTypes.Any()
             ? FeatureCompletionStatus.Completed
             : FeatureCompletionStatus.NotStarted;
     }

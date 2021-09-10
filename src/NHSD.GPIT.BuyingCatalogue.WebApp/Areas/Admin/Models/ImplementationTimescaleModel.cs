@@ -22,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             SolutionName = catalogueItem?.Name;
         }
 
-        public override bool? IsComplete => !string.IsNullOrWhiteSpace(Description);
+        // mjrxxxx
+        //public override bool? IsComplete => !string.IsNullOrWhiteSpace(Description);
 
         [StringLength(1000)]
         public string Description { get; set; }

@@ -26,7 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string SolutionName { get; set; }
 
-        public override bool? IsComplete => !string.IsNullOrWhiteSpace(Summary);
+        // mjrxxxxx
+        //public override bool? IsComplete => !string.IsNullOrWhiteSpace(Summary);
 
         [Required(ErrorMessage = "Enter a summary")]
         [StringLength(350)]
@@ -39,9 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         [Url]
         public string Link { get; set; }
 
-        public FeatureCompletionStatus StatusDescription() =>
-            IsComplete == true
-                ? FeatureCompletionStatus.Completed
-                : FeatureCompletionStatus.NotStarted;
+        public FeatureCompletionStatus StatusDescription()
+        {
+            if (!string.IsNullOrWhiteSpace(Summary))
+                return FeatureCompletionStatus.Completed;
+
+            if (!string.IsNullOrWhiteSpace(Description) || !string.IsNullOrWhiteSpace(Link))
+                return FeatureCompletionStatus.InProgress;
+
+            return FeatureCompletionStatus.NotStarted;
+        }
     }
 }

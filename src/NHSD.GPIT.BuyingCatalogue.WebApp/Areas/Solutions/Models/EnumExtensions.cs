@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             => status switch
             {
                 FeatureCompletionStatus.NotStarted => NhsTagsTagHelper.TagColour.Grey,
+                FeatureCompletionStatus.CannotStartYet => NhsTagsTagHelper.TagColour.Grey,
                 FeatureCompletionStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
                 FeatureCompletionStatus.Completed => NhsTagsTagHelper.TagColour.Green,
                 _ => NhsTagsTagHelper.TagColour.Grey,

@@ -7,6 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         [Display(Name = "Not started")]
         NotStarted,
 
+        [Display(Name = "Cannot start yet")]
+        CannotStartYet,
+
         [Display(Name = "In progress")]
         InProgress,
 
