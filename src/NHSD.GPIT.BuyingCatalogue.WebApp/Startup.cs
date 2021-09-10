@@ -83,8 +83,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureRegistration(Configuration);
 
-            services.ConfigureAzureBlobStorage(Configuration);
-
             services.ConfigureOds(Configuration);
 
             services.ConfigureEmail(Configuration);
