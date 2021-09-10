@@ -9,20 +9,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache
     public sealed class MemoryCacheHandler
     {
         private const int DefaultCacheDuration = 60;
-        private readonly string serviceRecipientCacheKey;
         private readonly IMemoryCache memoryCache;
         private readonly MemoryCacheEntryOptions memoryCacheOptions;
+        private string serviceRecipientCacheKey;
 
         public MemoryCacheHandler(
-            IMemoryCache memoryCache,
-            string odsCode)
+            IMemoryCache memoryCache)
         {
             this.memoryCache = memoryCache;
 
-            serviceRecipientCacheKey = $"ServiceRecipients-ODS-{odsCode}";
-
             memoryCacheOptions =
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DefaultCacheDuration));
+        }
+
+        public void InitialiseServiceRecipients(string odsCode)
+        {
+            serviceRecipientCacheKey = $"ServiceRecipients-ODS-{odsCode}";
 
             SetServiceRecipients(ServiceRecipientsSeedData.GetServiceRecipients);
         }
@@ -42,5 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache
 
             memoryCache.Set(serviceRecipientCacheKey, serviceRecipients, memoryCacheOptions);
         }
+
+        public void Remove(string cacheKey) => memoryCache.Remove(cacheKey);
     }
 }

@@ -158,12 +158,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderBy(fc => fc.Capability.Name)
                 .ToListAsync();
 
-            var countOfCatalogueItemsWithFoundationCapability =
+            var countOfCatalogueItemsWithAllFoundationCapabilities =
                 results
                 .Where(ci => ci.CatalogueItemCapabilities
                 .Where(cic => foundationCapabilities
                             .Any(fc => fc.CapabilityId == cic.CapabilityId))
-                            .Count() == foundationCapabilities.Count())
+                            .Count() == foundationCapabilities.Count)
                 .Count();
 
             var foundationCapabilitiesFilter =
@@ -213,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             {
                 CategoryFilters = categories,
                 FoundationCapabilities = foundationCapabilitiesFilter,
-                CountOfCatalogueItemsWithFoundationCapabilities = countOfCatalogueItemsWithFoundationCapability,
+                CountOfCatalogueItemsWithFoundationCapabilities = countOfCatalogueItemsWithAllFoundationCapabilities,
             };
 
             memoryCache.Set($"{CategoryCacheKey}-{frameworkId ?? AllSolutionsFrameworkKey}", response, memoryCacheOptions);

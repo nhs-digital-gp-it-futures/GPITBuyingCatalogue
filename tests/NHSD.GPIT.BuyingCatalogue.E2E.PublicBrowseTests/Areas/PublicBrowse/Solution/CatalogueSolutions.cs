@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
@@ -8,16 +9,19 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public sealed class CatalogueSolutions : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class CatalogueSolutions
+        : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string FrameworkCacheKey = "framework-filter";
+        private const string CategoryCacheKey = "category-filter";
         private static readonly Dictionary<string, string> Parameters = new();
-        private static readonly List<CatalogueItem> CatalogueItems = new();
 
         public CatalogueSolutions(LocalWebApplicationFactory factory)
             : base(
@@ -36,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.ElementExists(CommonSelectors.Pagination).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Should().BeTrue();
             CommonActions.ElementExists(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Should().BeTrue();
+            CommonActions.ElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Should().BeTrue();
         }
 
         [Fact]
@@ -254,6 +259,97 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.ClickSave();
 
             Driver.FindElements(CommonSelectors.BreadcrumbItem).Count.Should().Be(2);
+        }
+
+        [Fact]
+        public async void CatalogueSolutions_Filter_FilterByFoundationCapability_CorrectResult()
+        {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            Driver.FindElement(By.Id("FoundationCapabilities_0__Selected")).Click();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
+
+            using var context = GetEndToEndDbContext();
+
+            var filterService = new SolutionsFilterService(context, Factory.GetMemoryCache);
+
+            var results = await filterService.GetAllCategoriesAndCountForFilter();
+
+            Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(results.CountOfCatalogueItemsWithFoundationCapabilities);
+
+            MemoryCache.Remove(CategoryCacheKey);
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Filter_FilterByTwoCapabilities_CorrectResults()
+        {
+            const int firstcapabilityId = 46;
+            const int secondcapabilityId = 47;
+
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            Driver.FindElement(By.XPath($"//input[@value='C{firstcapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+            Driver.FindElement(By.XPath($"//input[@value='C{secondcapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
+
+            Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(3);
+        }
+
+        [Theory]
+        [InlineData("C46", "C46E1")]
+        [InlineData("C46", "C46E2")]
+        public void CatalogueSolutions_Filter_FilterByOneCapabilityWithEpic_CorrectResults(string capabilityId, string epicId)
+        {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            Driver.FindElement(By.XPath($"//input[@value='{capabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+            Driver.FindElement(By.XPath($"//input[@value='{epicId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
+
+            Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Filter_IncorrectFilterOptionsInput_CorrectResults()
+        {
+            Dictionary<string, string> queryparams = new()
+            {
+                { "Capabilities", "C999" },
+            };
+
+            NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.Index), queryParameters: queryparams);
+
+            CommonActions.ElementIsDisplayed(By.Id("no-results")).Should().BeTrue();
+        }
+
+        public Task InitializeAsync()
+        {
+            InitializeMemoryCacheHander();
+
+            return Task.CompletedTask;
+        }
+
+        public Task DisposeAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 }

@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         {
             InitializeSessionHandler();
 
-            InitializeMemoryCacheHander(OdsCode);
+            InitializeServiceRecipientMemoryCacheHandler(OdsCode);
 
             NavigateToUrl(
                 typeof(DeleteAdditionalServiceController),
