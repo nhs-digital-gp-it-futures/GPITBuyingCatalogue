@@ -518,9 +518,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
-                        {
-                            new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, StatusId = 1 },
-                        },
+                    {
+                        new() { CapabilityId = 46, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new() { CapabilityId = 46, EpicId = "C46E1", LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                    },
                     PublishedStatus = PublicationStatus.Published,
                     CataloguePrices = new List<CataloguePrice>
                     {
@@ -643,11 +647,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {
-                        new() { CapabilityId = 43, LastUpdated = DateTime.UtcNow, StatusId = 1 },
-                        new() { CapabilityId = 44, LastUpdated = DateTime.UtcNow, StatusId = 1 },
-                        new() { CapabilityId = 45, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 5, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 11, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 12, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 13, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 14, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                        new() { CapabilityId = 15, LastUpdated = DateTime.UtcNow, StatusId = 1 },
                         new() { CapabilityId = 46, LastUpdated = DateTime.UtcNow, StatusId = 1 },
-                        new() { CapabilityId = 47, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new() { CapabilityId = 46, EpicId = "C46E2", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     CataloguePrices = new List<CataloguePrice>
@@ -805,6 +815,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 LastUpdated = DateTime.UtcNow,
                             },
                         },
+                    },
+                    CatalogueItemCapabilities = new List<CatalogueItemCapability>
+                    {
+                        new() { CapabilityId = 47, LastUpdated = DateTime.UtcNow, StatusId = 1 },
+                    },
+                    CatalogueItemEpics = new List<CatalogueItemEpic>
+                    {
+                        new() { CapabilityId = 47, EpicId = "C47E1", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
                     CataloguePrices = new List<CataloguePrice>
