@@ -202,6 +202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async void CatalogueSolutions_Filter_AllFrameworksShown()
         {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
@@ -219,6 +221,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async void CatalogueSolutions_Filter_FilterByOption_ExpectedNumberOfResults()
         {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
@@ -245,6 +249,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async void CatalogueSolutions_Filter_FilterByOption_BreadcrumbsCorrect()
         {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
