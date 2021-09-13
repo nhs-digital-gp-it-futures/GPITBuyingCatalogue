@@ -25,5 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public virtual bool IsComplete { get; set; }
 
         public CatalogueItemId? SolutionId { get; set; }
+
+        public ClientApplicationType ApplicationType { get; set; }
     }
 }

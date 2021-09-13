@@ -45,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication);
 
+        Task DeleteClientApplication(CatalogueItemId solutionId, ClientApplicationType clientApplicationType);
+
         Task<Hosting> GetHosting(CatalogueItemId solutionId);
 
         Task SaveHosting(CatalogueItemId solutionId, Hosting hosting);

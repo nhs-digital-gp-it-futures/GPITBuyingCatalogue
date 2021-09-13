@@ -15,5 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin.EditSolution
         internal static By ResolutionDropdown => By.Id("SelectedResolution");
 
         internal static By StorageSpace => By.Id("StorageSpace");
+
+        internal static By DeleteClientApplicationLink => By.LinkText("Delete application type");
+
+        internal static By DeleteClientApplicationCancelLink => By.LinkText("Cancel");
     }
 }
