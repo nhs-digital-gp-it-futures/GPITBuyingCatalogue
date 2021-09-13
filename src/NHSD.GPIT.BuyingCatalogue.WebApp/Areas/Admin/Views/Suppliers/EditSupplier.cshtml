@@ -1,0 +1,84 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditSupplierModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@Model.Title"
+                        advice="Provide information about the supplier." />
+
+        <nhs-table>
+            <nhs-table-column>Section</nhs-table-column>
+            <nhs-table-column>Mandatory</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            <nhs-table-column></nhs-table-column>
+            <nhs-table-row-container>
+                <nhs-table-cell>Details</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag colour="@GetTagColour(Model.DetailsStatus)"
+                             text="@GetTagText(Model.DetailsStatus)" />
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                       asp-action="@nameof(SuppliersController.EditSupplierDetails)"
+                       asp-route-supplierId="@Model.SupplierId">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell>Address</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag colour="@GetTagColour(Model.AddressStatus)"
+                             text="@GetTagText(Model.AddressStatus)" />
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                       asp-action="@nameof(SuppliersController.EditSupplierAddress)"
+                       asp-route-supplierId="@Model.SupplierId">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell>Contacts</nhs-table-cell>
+                <nhs-table-cell>Yes</nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag colour="@GetTagColour(Model.ContactsStatus)"
+                             text="@GetTagText(Model.ContactsStatus)" />
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                       asp-action="@nameof(SuppliersController.ManageSupplierContacts)"
+                       asp-route-supplierId="@Model.SupplierId">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        </nhs-table>
+        <form method="post">
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Supplier status"
+                                     label-hint="Select one option.">
+                <nhs-radio-buttons asp-for="SupplierStatus"
+                                   values="@Model.EditSupplierRadioOptions"
+                                   display-name="Display"
+                                   value-name="Value" />
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Save and continue" />
+        </form>
+    </div>
+</div>
+
+        @{
+            NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
+                status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+
+            string GetTagText(bool status) => status ? "Completed" : "Not started";
+        }
+

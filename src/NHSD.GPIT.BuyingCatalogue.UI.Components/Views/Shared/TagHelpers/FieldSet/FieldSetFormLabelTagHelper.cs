@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             formGroup.InnerHtml
                 .AppendHtml(fieldset);
 
-            TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, formGroup, true, formName, IsChildInError());
+            TagHelperBuilders.UpdateOutputDiv(output, null, ViewContext, formGroup, false, formName, IsChildInError());
         }
 
         private TagBuilder BuildErrorMessage()

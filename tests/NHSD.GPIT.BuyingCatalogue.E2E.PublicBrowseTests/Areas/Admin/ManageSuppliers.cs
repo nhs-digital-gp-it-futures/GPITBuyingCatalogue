@@ -13,8 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public ManageSuppliers(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(HomeController),
-                  nameof(HomeController.ManageSuppliers),
+                  typeof(SuppliersController),
+                  nameof(SuppliersController.Index),
                   null)
         {
         }

@@ -1,0 +1,33 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.DeleteContactModel
+@{
+    ViewData["Title"] = $"Delete {Model.FirstName} {Model.LastName} contact details?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewData["Title"]"
+                        advice="Confirm you want to delete these contact details." />
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-two-thirds">
+                <form method="post">
+                    <div>
+                        <nhs-submit-button text="Delete" />
+                    </div>
+                    <div>
+                        <vc:nhs-backlink url="@Url.Action(
+                                     nameof(SuppliersController.EditSupplierContact),
+                                     typeof(SuppliersController).ControllerName(),
+                                     new { supplierId = Model.SupplierId, contactId = Model.ContactId })"
+                                         text="Cancel" />
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Id).ValueGeneratedNever();
+            builder.Property(c => c.Id).UseIdentityColumn();
             builder.Property(c => c.Email)
                 .IsRequired()
                 .HasMaxLength(255);
