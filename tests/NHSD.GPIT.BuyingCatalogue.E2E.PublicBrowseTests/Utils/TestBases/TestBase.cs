@@ -160,11 +160,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 Factory.GetLoggerFactory);
         }
 
-        internal void InitializeMemoryCacheHander(string odsCode)
+        internal void InitializeMemoryCacheHandler()
         {
             MemoryCache = new MemoryCacheHandler(
-                Factory.GetMemoryCache,
-                odsCode);
+                Factory.GetMemoryCache);
+        }
+
+        internal void InitializeServiceRecipientMemoryCacheHandler(string odsCode)
+        {
+            MemoryCache = new MemoryCacheHandler(
+                Factory.GetMemoryCache);
+
+            MemoryCache.InitializeServiceRecipients(odsCode);
         }
 
         internal Task DisposeSession()

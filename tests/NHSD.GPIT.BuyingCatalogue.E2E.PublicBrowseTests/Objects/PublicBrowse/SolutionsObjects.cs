@@ -26,5 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.PublicBrowse
         public static By FilterSolutionsExpander => By.Id("nhsuk-details0");
 
         public static By FilterSolutionsFramework => By.Id("nhsuk-details1");
+
+        public static By FilterCapabilities => By.Id("filter-capabilities-details");
     }
 }

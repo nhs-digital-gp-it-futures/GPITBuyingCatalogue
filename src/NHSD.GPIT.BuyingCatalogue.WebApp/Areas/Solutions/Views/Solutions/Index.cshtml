@@ -28,6 +28,14 @@
         PageOptions.SortOptions.LastUpdated => PageOptions.SortOptions.Alphabetical.ToString().ToLower(),
         _ => PageOptions.SortOptions.LastUpdated.ToString().ToLower(),
     };
+
+    bool showFrameworkAndCapabilitiesItems =
+        (!string.IsNullOrWhiteSpace(Model.SelectedFramework) && Model.SelectedFramework != "All")
+        || !string.IsNullOrWhiteSpace(Model.SelectedCapabilities);
+}
+
+@section Scripts{ 
+    <script type="text/javascript" src="@Url.Content("~/js/CatalogueSolutionsFilter.min.js")" asp-append-version="true"></script>
 }
 
 @section Breadcrumbs {
@@ -41,7 +49,7 @@
                    asp-controller="@typeof(HomeController).ControllerName()"
                    asp-area="@typeof(HomeController).AreaName()">Home</a>
             </li>
-            @if (!string.IsNullOrWhiteSpace(Model.SelectedFramework) && Model.SelectedFramework != "All")
+            @if (showFrameworkAndCapabilitiesItems)
             {
                 <li class="nhsuk-breadcrumb__item">
                     <a class="nhsuk-breadcrumb__link"
@@ -60,7 +68,13 @@
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewData["Title"]"
                         advice="Search for Catalogue Solutions that match the needs of your organisation." />
-        <partial name="_FilterNoJavascript" model="@Model" />
+        <div id="filter-container">
+            <partial name="_FilterNoJavascript" model="@Model" />
+        </div>
+        @if (showFrameworkAndCapabilitiesItems)
+        {
+            <h2>Showing results for selected filters</h2>
+        }
         <p id="sorting">
             Results sorted by @sortText
             <a id="sortby-link"
@@ -68,29 +82,30 @@
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Index)"
                asp-route-sortBy="@sortQueryParam"
-               asp-route-selected-framework="@Model.SelectedFramework">
+               asp-route-selectedframework="@Model.SelectedFramework"
+               asp-route-capabilities ="@Model.SelectedCapabilities">
                 Sort by @sortLinkText
             </a>
         </p>
         <hr />
-        @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count() > 0)
+        @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)
         {
-        <div id="solutions-list">
-            @foreach (var item in Model.CatalogueItems)
-            {
-                <partial name="_SolutionSearchDisplay" model="@item" />
-            }
-        </div>
-        <div id="pagination">
-            <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
-                                        total-number-of-pages="@Model.Options.NumberOfPages" />
+            <div id="solutions-list">
+                @foreach (var item in Model.CatalogueItems)
+                {
+                    <partial name="_SolutionSearchDisplay" model="@item" />
+                }
+            </div>
+            <div id="pagination">
+                <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
+                                            total-number-of-pages="@Model.Options.NumberOfPages" />
 
-        </div>
+            </div>
         }
         else
-        { 
-        <h2>No results found that match your search criteria</h2>
-        <p>Try a different search term or change any filters you've selected.</p>
+        {
+            <h2 id="no-results">No results found that match your search criteria</h2>
+            <p>Try a different search term or change any filters you've selected.</p>
         }
     </div>
 </div>

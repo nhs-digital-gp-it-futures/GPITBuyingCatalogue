@@ -290,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.AdditionalServices
         {
             InitializeSessionHandler();
 
-            InitializeMemoryCacheHander(OdsCode);
+            InitializeServiceRecipientMemoryCacheHandler(OdsCode);
 
             using var context = GetEndToEndDbContext();
             var price = context

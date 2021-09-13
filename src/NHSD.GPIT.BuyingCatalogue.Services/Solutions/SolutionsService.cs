@@ -19,10 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private const string FuturesFrameworkShortName = "GP IT Futures";
         private const string DfocvcShortName = "DFOCVC";
-        private const string FrameworkCacheKey = "framework-filter";
-        private const int DefaultCacheDuration = 60;
-
-        private readonly MemoryCacheEntryOptions memoryCacheOptions;
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IDbRepository<MarketingContact, BuyingCatalogueDbContext> marketingContactRepository;
@@ -45,8 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
             this.catalogueItemRepository = catalogueItemRepository ?? throw new ArgumentNullException(nameof(catalogueItemRepository));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-
-            memoryCacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DefaultCacheDuration));
         }
 
         public Task<List<CatalogueItem>> GetFuturesFoundationSolutions()
@@ -447,75 +441,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderByDescending(i => i.Created)
                 .ThenBy(i => i.Name)
                 .ToListAsync();
-        }
-
-        public async Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
-            PageOptions options,
-            string frameworkId = null)
-        {
-            if (options is null)
-                options = new();
-
-            var query = dbContext.CatalogueItems.AsNoTracking()
-            .Include(i => i.Solution)
-            .Include(i => i.Supplier)
-            .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-            .Where(i => i.CatalogueItemType == CatalogueItemType.Solution);
-
-            if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != "All")
-                query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
-
-            // TODO: do some filtering logic here
-            options.TotalNumberOfItems = await query.CountAsync();
-
-            query = options.Sort switch
-            {
-                PageOptions.SortOptions.LastUpdated => query.OrderByDescending(ci => ci.Solution.LastUpdated),
-                _ => query.OrderBy(ci => ci.Name),
-            };
-
-            if (options.PageNumber != 0)
-                query = query.Skip((options.PageNumber - 1) * options.PageSize);
-
-            query = query.Take(options.PageSize);
-
-            var results = await query.ToListAsync();
-
-            return new PagedList<CatalogueItem>(results, options);
-        }
-
-        public async Task<Dictionary<EntityFramework.Catalogue.Models.Framework, int>> GetAllFrameworksAndCountForFilter()
-        {
-            if (memoryCache.TryGetValue(FrameworkCacheKey, out List<KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>> value))
-                return value.ToDictionary(r => r.Key, r => r.Value);
-
-            var allSolutionsCount = await dbContext.CatalogueItems.AsNoTracking()
-                .Where(ci => ci.PublishedStatus == PublicationStatus.Published && ci.CatalogueItemType == CatalogueItemType.Solution)
-                .CountAsync();
-
-            var frameworkSolutions = await dbContext.FrameworkSolutions.AsNoTracking()
-                .Include(fs => fs.Framework)
-                .Where(fs => fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                .OrderBy(fs => fs.Framework.ShortName)
-                .ToListAsync();
-
-            var results = frameworkSolutions
-                .GroupBy(fs => fs.Framework.Id)
-                .Select(fs => new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(fs.First().Framework, fs.Count())).ToList();
-
-            results.Insert(
-                0,
-                new KeyValuePair<EntityFramework.Catalogue.Models.Framework, int>(
-                    new EntityFramework.Catalogue.Models.Framework
-                    {
-                        Id = "All",
-                        ShortName = "All",
-                    },
-                    allSolutionsCount));
-
-            memoryCache.Set(FrameworkCacheKey, results, memoryCacheOptions);
-
-            return results.ToDictionary(r => r.Key, r => r.Value);
         }
 
         public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)

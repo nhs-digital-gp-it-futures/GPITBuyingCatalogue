@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentNullException(nameof(methodName), $"{nameof(methodName)} should not be null");
 
-            Wait.Until(d => d.FindElement(CommonSelectors.Header1));
+            WaitUntilElementExists(CommonSelectors.Header1);
 
             var controllerRoute = controllerType.GetCustomAttribute<RouteAttribute>(false)?.Template;
 
@@ -235,6 +235,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
             return !actionUrl.Segments
                 .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i] != t)
                 .Any();
+        }
+
+        internal void WaitUntilElementExists(By element)
+        {
+            Wait.Until(d => d.FindElement(element));
         }
     }
 }

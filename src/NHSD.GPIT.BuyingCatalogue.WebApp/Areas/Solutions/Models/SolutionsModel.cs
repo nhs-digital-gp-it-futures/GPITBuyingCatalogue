@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -25,12 +26,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                }).ToList();
         }
 
-        public IList<CatalogueItem> CatalogueItems { get; set; }
+        public IList<CatalogueItem> CatalogueItems { get; init; }
 
-        public IList<FrameworkFilter> FrameworkFilters { get; set; } = new List<FrameworkFilter>();
+        public IList<FrameworkFilter> FrameworkFilters { get; init; } = new List<FrameworkFilter>();
 
-        public PageOptions Options { get; set; }
+        public IList<CapabilityCategoryFilter> CategoryFilters { get; init; } = new List<CapabilityCategoryFilter>();
 
-        public string SelectedFramework { get; set; }
+        public IList<CapabilitiesFilter> FoundationCapabilities { get; init; } = new List<CapabilitiesFilter>();
+
+        public int CountOfSolutionsWithFoundationCapability { get; init; }
+
+        public string FoundationCapabilitiesCapabilityRef => "FC";
+
+        public PageOptions Options { get; init; }
+
+        public string SelectedFramework { get; init; }
+
+        public string SelectedCapabilities { get; init; }
     }
 }
