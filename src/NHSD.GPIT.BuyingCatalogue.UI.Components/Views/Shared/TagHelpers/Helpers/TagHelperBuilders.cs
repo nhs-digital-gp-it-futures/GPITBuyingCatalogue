@@ -21,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Content.AppendHtml(htmlContent);
-
             var attributes = new List<TagHelperAttribute>();
 
             if (!TagHelperFunctions.IsCounterDisabled(aspFor, enableCharacterCounter))
@@ -33,12 +31,27 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 attributes.Add(new TagHelperAttribute(TagHelperConstants.DataMaxLength, maxCharacterLength.ToString()));
             }
 
-            attributes.ForEach(a => output.Attributes.Add(a));
-
             if (TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, aspFor, validationName) || isInError)
+                htmlContent.AddCssClass(TagHelperConstants.NhsFormGroupError);
+
+            if (attributes.Count > 0)
             {
-                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.NhsFormGroupError));
+                attributes.ForEach(a => output.Attributes.Add(a));
             }
+            else
+            {
+                foreach (var attribute in output.Attributes)
+                {
+                    if (attribute.Name == "class")
+                        htmlContent.AddCssClass(attribute.Value.ToString());
+                    else
+                        htmlContent.Attributes.Add(new(attribute.Name, attribute.Value.ToString()));
+                }
+
+                output.TagName = string.Empty;
+            }
+
+            output.Content.AppendHtml(htmlContent);
         }
 
         public static TagBuilder GetFormGroupBuilder()

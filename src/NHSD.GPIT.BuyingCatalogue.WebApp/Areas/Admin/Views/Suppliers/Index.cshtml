@@ -1,0 +1,58 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.ManageSuppliersModel
+@{
+    ViewData["Title"] = "Manage Suppliers";
+}
+
+@section Scripts{
+    <script type="text/javascript" src="@Url.Content("~/js/SupplierManagement.min.js")" asp-append-version="true"></script>
+}
+
+<nhs-page-title title="Manage supplier organisations"
+                advice="Add a new supplier organisation or edit the details for one that's already been created." />
+
+<vc:nhs-action-link url="@Url.Action(
+                        nameof(SuppliersController.AddSupplierDetails),
+                        typeof(SuppliersController).ControllerName())"
+                    text="Add a supplier"
+                    data-test-id="add-supplier" />
+
+<nhs-checkbox-container Id="inactive-supplier-checkbox" style="display:none;">
+    <nhs-checkbox asp-for="ShowInactiveSuppliers"
+                  label-text="Show inactive suppliers" />
+</nhs-checkbox-container>
+
+@if (Model.Suppliers?.Count > 0)
+{
+    <nhs-table data-test-id="manage-suppliers-table">
+        <nhs-table-column> Supplier name </nhs-table-column>
+        <nhs-table-column> Supplier ID </nhs-table-column>
+        <nhs-table-column></nhs-table-column>
+        <nhs-table-column></nhs-table-column>
+        @foreach (var supplierModel in Model.Suppliers)
+        {
+            <nhs-table-row-container class="@(!supplierModel.Active ? "inactive" : null)">
+                <nhs-table-cell>
+                    @supplierModel.Name
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    @supplierModel.Id
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    @if (!supplierModel.Active)
+                    {
+                        <nhs-tag colour="Grey" text="Inactive" />
+                    }
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                       asp-action="@nameof(SuppliersController.EditSupplier)"
+                       asp-route-supplierId="@supplierModel.Id"
+                       data-test-id="edit-link">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+}

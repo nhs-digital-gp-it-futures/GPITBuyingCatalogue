@@ -1,0 +1,43 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditContactModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <form method="post">
+            <nhs-fieldset-form-container asp-for="@Model"
+                                         label-text="@Model.Title"
+                                         label-hint="Provide information for this contact."
+                                         size="ExtraLarge">
+                <nhs-input asp-for="FirstName"
+                           label-text="First name" />
+                <nhs-input asp-for="LastName"
+                           label-text="Last name" />
+                <nhs-input asp-for="Department"
+                           label-text="Department name" />
+                <nhs-input asp-for="PhoneNumber"
+                           label-text="Telephone number" />
+                <nhs-input asp-for="Email"
+                           label-text="Email address" />
+            </nhs-fieldset-form-container>
+            <br />
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <nhs-submit-button text="Save and continue" />
+        </form>
+        @if (Model.ContactId > 0)
+        {
+        <vc:nhs-delete-button url="@Url.Action(
+                nameof(SuppliersController.DeleteSupplierContact),
+                typeof(SuppliersController).ControllerName(),
+                new { supplierId = Model.SupplierId, contactId = Model.ContactId })"
+                              text="Delete contact" />
+        }
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditSupplierDetailsModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@Model.Title"
+                        advice="Provide the following details about the supplier." />
+
+        <form method="post">
+            <nhs-input asp-for="SupplierName"
+                       label-text="Supplier name"
+                       label-hint="This is the supplier name as you would like it to appear on the Buying Catalogue."/>
+            <nhs-input asp-for="SupplierLegalName"
+                       label-text="Supplier legal name"
+                       label-hint="This is the full supplier name that was submitted in the tender response to the GP IT Futures Framework 1 competition."/>
+            <nhs-textarea asp-for="AboutSupplier"
+                       label-text="About supplier (optional)"
+                       label-hint="Provide information about your organisation, for example its ethos, experience and plans for the future." />
+            <nhs-input asp-for="SupplierWebsite"
+                       label-text="Supplier website (optional)"
+                       label-hint="Provide a link to your organisation's website."/>
+
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="BackLinkText" />
+
+            <nhs-submit-button text="Save and continue"/>
+        </form>
+    </div>
+</div>

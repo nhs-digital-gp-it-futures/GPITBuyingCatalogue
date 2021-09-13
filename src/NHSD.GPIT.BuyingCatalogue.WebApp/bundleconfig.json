@@ -10,5 +10,11 @@
     "inputFiles": [
       "wwwroot/js/CatalogueSolutionsFilter.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/SupplierManagement.min.js",
+    "inputFiles": [
+      "wwwroot/js/SupplierManagement.js"
+    ]
   }
 ]

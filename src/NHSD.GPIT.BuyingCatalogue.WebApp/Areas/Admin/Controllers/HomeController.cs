@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly IOrganisationsService organisationsService;
         private readonly IMapper mapper;
-        private readonly ISolutionsService solutionsService;
 
         public HomeController(
             IOrganisationsService organisationsService,
@@ -27,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
         [HttpGet("buyer-organisations")]
@@ -37,13 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var organisationModel = mapper.Map<IList<Organisation>, IList<OrganisationModel>>(organisations);
 
             return View(new ListOrganisationsModel(organisationModel));
-        }
-
-        [HttpGet("manage-suppliers")]
-        public async Task<IActionResult> ManageSuppliers()
-        {
-            var suppliers = await solutionsService.GetAllSuppliers();
-            return View(suppliers);
         }
 
         public IActionResult Index()

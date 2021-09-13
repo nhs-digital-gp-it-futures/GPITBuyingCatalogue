@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -16,16 +17,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class AddCatalogueSolutionController : Controller
     {
         private readonly ISolutionsService solutionsService;
+        private readonly ISuppliersService suppliersService;
 
-        public AddCatalogueSolutionController(ISolutionsService solutionsService)
+        public AddCatalogueSolutionController(ISolutionsService solutionsService, ISuppliersService suppliersService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var suppliers = await solutionsService.GetAllSuppliers();
+            var suppliers = await suppliersService.GetAllSuppliers();
 
             var model = new AddSolutionModel().WithSelectListItems(suppliers);
 
@@ -43,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                var suppliers = await solutionsService.GetAllSuppliers();
+                var suppliers = await suppliersService.GetAllSuppliers();
 
                 return View(model.WithSelectListItems(suppliers));
             }
