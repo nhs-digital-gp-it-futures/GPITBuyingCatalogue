@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 {
     public static class DetailsAndExpanderTagHelperBuilders
     {

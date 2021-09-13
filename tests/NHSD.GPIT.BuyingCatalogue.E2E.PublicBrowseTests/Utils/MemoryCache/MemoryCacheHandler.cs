@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(DefaultCacheDuration));
         }
 
-        public void InitialiseServiceRecipients(string odsCode)
+        public void InitializeServiceRecipients(string odsCode)
         {
             serviceRecipientCacheKey = $"ServiceRecipients-ODS-{odsCode}";
 
@@ -38,13 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache
             return cachedResults;
         }
 
-        public void SetServiceRecipients(IEnumerable<ServiceRecipient> serviceRecipients)
+        public void Remove(string cacheKey) => memoryCache.Remove(cacheKey);
+
+        private void SetServiceRecipients(IEnumerable<ServiceRecipient> serviceRecipients)
         {
             memoryCache.Remove(serviceRecipientCacheKey);
 
             memoryCache.Set(serviceRecipientCacheKey, serviceRecipients, memoryCacheOptions);
         }
-
-        public void Remove(string cacheKey) => memoryCache.Remove(cacheKey);
     }
 }

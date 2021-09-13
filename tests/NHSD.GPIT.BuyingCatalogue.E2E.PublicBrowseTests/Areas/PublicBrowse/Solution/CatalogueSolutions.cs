@@ -281,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var filterService = new SolutionsFilterService(context, Factory.GetMemoryCache);
 
@@ -295,16 +295,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_Filter_FilterByTwoCapabilities_CorrectResults()
         {
-            const int firstcapabilityId = 46;
-            const int secondcapabilityId = 47;
+            const int firstCapabilityId = 46;
+            const int secondCapabilityId = 47;
 
             CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
 
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
 
-            Driver.FindElement(By.XPath($"//input[@value='C{firstcapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
-            Driver.FindElement(By.XPath($"//input[@value='C{secondcapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+            Driver.FindElement(By.XPath($"//input[@value='C{firstCapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+            Driver.FindElement(By.XPath($"//input[@value='C{secondCapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
 
             CommonActions.ClickSave();
 
@@ -336,19 +336,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_Filter_IncorrectFilterOptionsInput_CorrectResults()
         {
-            Dictionary<string, string> queryparams = new()
+            Dictionary<string, string> queryParams = new()
             {
                 { "Capabilities", "C999" },
             };
 
-            NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.Index), queryParameters: queryparams);
+            NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.Index), queryParameters: queryParams);
 
             CommonActions.ElementIsDisplayed(By.Id("no-results")).Should().BeTrue();
         }
 
         public Task InitializeAsync()
         {
-            InitializeMemoryCacheHander();
+            InitializeMemoryCacheHandler();
 
             return Task.CompletedTask;
         }

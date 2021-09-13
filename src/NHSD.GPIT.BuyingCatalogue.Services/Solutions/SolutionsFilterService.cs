@@ -9,6 +9,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -45,14 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string frameworkId = null,
             string selectedCapabilities = null)
         {
-            if (options is null)
-                options = new();
+            options ??= new PageOptions();
 
             var query = dbContext.CatalogueItems.AsNoTracking()
-            .Include(i => i.Solution)
-            .Include(i => i.Supplier)
-            .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-            .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.PublishedStatus == PublicationStatus.Published);
+                .Include(i => i.Solution)
+                .Include(i => i.Supplier)
+                .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
+                .Where(i => i.CatalogueItemType == CatalogueItemType.Solution && i.PublishedStatus == PublicationStatus.Published);
 
             if (!string.IsNullOrWhiteSpace(frameworkId) && frameworkId != AllSolutionsFrameworkKey)
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == frameworkId));
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     CategoryId = c.Id,
                 }).ToList();
 
-            var capabilites = results.SelectMany(ci => ci.CatalogueItemCapabilities)
+            var capabilities = results.SelectMany(ci => ci.CatalogueItemCapabilities)
                 .Select(cic => cic.Capability)
                 .DistinctBy(c => c.Id)
                 .Where(c => c.Id != ProductivityCapability)
@@ -158,13 +158,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderBy(fc => fc.Capability.Name)
                 .ToListAsync();
 
-            var countOfCatalogueItemsWithAllFoundationCapabilities =
-                results
-                .Where(ci => ci.CatalogueItemCapabilities
-                .Where(cic => foundationCapabilities
-                            .Any(fc => fc.CapabilityId == cic.CapabilityId))
-                            .Count() == foundationCapabilities.Count)
-                .Count();
+            bool MeetsAllFoundationCapabilities(CatalogueItem item) => foundationCapabilities
+                .All(fc => item.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == fc.CapabilityId));
+
+            var countOfCatalogueItemsWithAllFoundationCapabilities = results.Count(MeetsAllFoundationCapabilities);
 
             var foundationCapabilitiesFilter =
                 foundationCapabilities
@@ -182,20 +179,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToList();
 
             // for each category, add to its list of capabilities the capabilities that reference that category, and count how many
-            // catalogue items reference that capabilitiy
+            // catalogue items reference that capability
             categories.ForEach(c =>
             c.Capabilities.AddRange(
-                capabilites.Where(cap => cap.CategoryId == c.CategoryId)
+                capabilities.Where(cap => cap.CategoryId == c.CategoryId)
                            .Select(cap =>
                             new CapabilitiesFilter
                             {
                                 CapabilityId = cap.Id,
                                 Name = cap.Name,
                                 CapabilityRef = cap.CapabilityRef,
-                                Count = results.Where(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == cap.Id)).Count(),
+                                Count = results.Count(ci => ci.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == cap.Id)),
                             })));
 
-            // for each category, then each capability in that cateogry, add to its list of epics the epics that reference that capability, and count how many
+            // for each category, then each capability in that category, add to its list of epics the epics that reference that capability, and count how many
             // catalogue items reference that epic
             categories.ForEach(
                 c => c.Capabilities.ForEach(
@@ -206,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                              {
                                  Id = e.Id,
                                  Name = e.Name,
-                                 Count = results.Where(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)).Count(),
+                                 Count = results.Count(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == e.Id)),
                              }))));
 
             var response = new CategoryFilterModel
@@ -248,10 +245,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         /// <summary>
-        /// loop through the capbilities and epics and generates an EF where clause from the list.
+        /// loop through the capabilities and epics and generates an EF where clause from the list.
         /// </summary>
         /// <param name="dbContext">the dbContext.</param>
-        /// <param name="selectedCapabilities">the pipe-deliminated string of selected capabilities and epics.</param>
+        /// <param name="selectedCapabilities">the pipe-delimited string of selected capabilities and epics.</param>
         /// <returns>an Expression Starter Containing the Where Clause for the EF Query.</returns>
         private static ExpressionStarter<CatalogueItem> BuildCapabilitiesPredicate(BuyingCatalogueDbContext dbContext, string selectedCapabilities)
         {
@@ -259,22 +256,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var predicateBuilder = PredicateBuilder.New<CatalogueItem>();
 
-            var foundationSolutions = dbContext.FrameworkCapabilities.Where(fc => fc.IsFoundation);
+            var foundationSolutionsCount = dbContext.FrameworkCapabilities.Count(fc => fc.IsFoundation);
 
-            foreach (var capability in capabilities)
+            foreach ((var capabilityId, List<string> epicIds) in capabilities)
             {
                 var capabilityPredicateBuilder = PredicateBuilder.New<CatalogueItem>();
 
-                capabilityPredicateBuilder = capability.Key == FoundationCapabilitiesKey
-                ? capabilityPredicateBuilder
-                    .Or(ci => ci.CatalogueItemCapabilities.Where(cic => cic.Capability.FrameworkCapabilities.Any(fc => fc.IsFoundation)).Count()
-                        == foundationSolutions.Count())
-                : capabilityPredicateBuilder
-                .Or(ci => ci.CatalogueItemCapabilities.Any(cic => cic.Capability.CapabilityRef == capability.Key));
+                capabilityPredicateBuilder = capabilityId == FoundationCapabilitiesKey
+                ? capabilityPredicateBuilder.Or(
+                    ci => ci.CatalogueItemCapabilities.Count(
+                        cic => cic.Capability.FrameworkCapabilities.Any(fc => fc.IsFoundation)) == foundationSolutionsCount)
+                : capabilityPredicateBuilder.Or(ci => ci.CatalogueItemCapabilities.Any(cic => cic.Capability.CapabilityRef == capabilityId));
 
-                if (capability.Value.Any())
+                if (epicIds.Any())
                 {
-                    var epicPredicateBuilder = BuildEpicsPredicate(capability.Value);
+                    var epicPredicateBuilder = BuildEpicsPredicate(epicIds);
 
                     capabilityPredicateBuilder = capabilityPredicateBuilder.Extend(epicPredicateBuilder, PredicateOperator.And);
                 }
@@ -285,16 +281,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return predicateBuilder;
         }
 
-        private static ExpressionStarter<CatalogueItem> BuildEpicsPredicate(List<string> selectedEpics)
+        private static ExpressionStarter<CatalogueItem> BuildEpicsPredicate(IEnumerable<string> selectedEpics)
         {
             var epicPredicateBuilder = PredicateBuilder.New<CatalogueItem>();
 
-            foreach (var epic in selectedEpics)
-            {
-                epicPredicateBuilder = epicPredicateBuilder.And(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == epic));
-            }
-
-            return epicPredicateBuilder;
+            return selectedEpics.Aggregate(epicPredicateBuilder, (current, epic) => current.And(ci => ci.CatalogueItemEpics.Any(cie => cie.EpicId == epic)));
         }
     }
 }

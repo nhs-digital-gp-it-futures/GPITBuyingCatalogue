@@ -19,7 +19,6 @@ VALUES
 (9, 'Patient care management', 'Find solutions that support the maintenance and sharing of patient information.'),
 (10, 'Reporting and data analytics', 'Find solutions that allow local data analysis across all aspects of a GP practice.');
 
-
 MERGE INTO catalogue.CapabilityCategories AS TARGET
      USING @capabilityCategories AS SOURCE
         ON TARGET.Id = SOURCE.Id
