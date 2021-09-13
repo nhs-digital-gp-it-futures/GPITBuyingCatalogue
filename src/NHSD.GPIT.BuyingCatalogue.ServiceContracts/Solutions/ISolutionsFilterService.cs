@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -10,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
             PageOptions options = null,
             string frameworkId = null,
-            string selectedCapabilites = null);
+            string selectedCapabilities = null);
 
         Task<Dictionary<Framework, int>> GetAllFrameworksAndCountForFilter();
 

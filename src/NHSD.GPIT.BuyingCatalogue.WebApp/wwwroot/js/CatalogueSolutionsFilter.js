@@ -4,7 +4,7 @@ const querySelectedFramework = "selectedframework";
 const filterContainer = "filter-container";
 const filterCapabilitiesDetails = "filter-capabilities-details";
 const filterDetailsText = ".nhsuk-details__text";
-const EpicSplitCharater = "E";
+const EpicSplitCharacter = "E";
 const InputTypeHidden = "input[type='hidden']";
 const NhsukCheckboxesInput = ".nhsuk-checkboxes__input";
 const NhsukCheckboxesItem = ".nhsuk-checkboxes__item";
@@ -12,11 +12,11 @@ const NhsRadiosInput = ".nhsuk-radios__input";
 const CapabilitiesDelimiter = '|';
 
 window.onload = function () {
-    let xhttp = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function () {
-        if (xhttp.readyState == 4) {
-            if (xhttp.status == 200) {
+        if (xhttp.readyState === 4) {
+            if (xhttp.status === 200) {
                 ReplaceFilterAndAddBinders(xhttp.responseText);
             }
             else {
@@ -25,34 +25,34 @@ window.onload = function () {
         }
     }
 
-    var targetUrl = new URL(window.location.href);
+    const targetUrl = new URL(window.location.href);
 
     targetUrl.pathname += filterUrl;
 
-    let url = new URLSearchParams(window.location.search);
+    const url = new URLSearchParams(window.location.search);
 
-    let framework = url.get(querySelectedFramework);
+    const framework = url.get(querySelectedFramework);
 
-    if (framework != null && framework.length > 0)
+    if (framework && framework.length > 0)
         targetUrl.searchParams.append(querySelectedFramework, framework);
 
     xhttp.open("GET", targetUrl.toString(), true);
 
     xhttp.send();
-};
+}
 
 function ReplaceFilterAndAddBinders(html) {
     const filterForm = "filter-form";
     const SubmitButtonId = "Submit";
 
-    let formContainer = document.getElementById(filterContainer);
-    let form = document.getElementById(filterForm);
+    const formContainer = document.getElementById(filterContainer);
+    const form = document.getElementById(filterForm);
 
     form.parentNode.removeChild(form);
 
     formContainer.innerHTML = html;
 
-    let submitButton = document.getElementById(SubmitButtonId);
+    const submitButton = document.getElementById(SubmitButtonId);
 
     submitButton.removeAttribute("type");
     submitButton.addEventListener('click', generateQueryParam);
@@ -64,7 +64,7 @@ function ReplaceFilterAndAddBinders(html) {
     RefireDomContentLoadedEvent();
 
     reselectCapabilityAndEpicsFiltersAndFrameworkFilter();
-};
+}
 
 function generateQueryParam() {
     const queryPage = "page";
@@ -73,10 +73,10 @@ function generateQueryParam() {
 
     document.querySelectorAll(query).forEach(checkbox => {
         if (checkbox.checked) {
-            let value = checkbox.parentNode.querySelector(InputTypeHidden).getAttribute("value");
+            const value = checkbox.parentNode.querySelector(InputTypeHidden).getAttribute("value");
 
-            if (value.includes(EpicSplitCharater))
-                output += value.substring(value.indexOf(EpicSplitCharater));
+            if (value.includes(EpicSplitCharacter))
+                output += value.substring(value.indexOf(EpicSplitCharacter));
             else
                 if (output.length > 1)
                     output += CapabilitiesDelimiter + value;
@@ -85,7 +85,7 @@ function generateQueryParam() {
         }
     });
 
-    let url = new URL(window.location.href);
+    const url = new URL(window.location.href);
 
     url.searchParams.delete(queryPage);
 
@@ -103,9 +103,9 @@ function generateQueryParam() {
 }
 
 function reload() {
-    let selectedFramework = GetSelectedFramework();
+    const selectedFramework = GetSelectedFramework();
 
-    let targetUrl = new URL(window.location.href);
+    const targetUrl = new URL(window.location.href);
 
     targetUrl.pathname += filterUrl;
 
@@ -113,12 +113,12 @@ function reload() {
 
     targetUrl.searchParams.append(querySelectedFramework, selectedFramework);
 
-    let xhttp = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function () {
-        if (xhttp.readyState == 4) {
-            if (xhttp.status == 200) {
-                refreshCapabilitesAndEpics(xhttp.responseText);
+        if (xhttp.readyState === 4) {
+            if (xhttp.status === 200) {
+                refreshCapabilitiesAndEpics(xhttp.responseText);
             }
             else {
                 console.log('Error: ' + xhttp.status);
@@ -129,62 +129,62 @@ function reload() {
     xhttp.open("GET", targetUrl.toString(), true);
 
     xhttp.send();
-};
+}
 
-function refreshCapabilitesAndEpics(html) {
-    let filterHtml = new DOMParser().parseFromString(html, "text/html");
+function refreshCapabilitiesAndEpics(html) {
+    const filterHtml = new DOMParser().parseFromString(html, "text/html");
 
-    let newCapabilites = filterHtml.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
+    const newCapabilities = filterHtml.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
 
-    let currentCapabilites = document.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
+    const currentCapabilities = document.getElementById(filterCapabilitiesDetails).querySelector(filterDetailsText);
 
-    currentCapabilites.parentNode.removeChild(currentCapabilites);
+    currentCapabilities.parentNode.removeChild(currentCapabilities);
 
-    document.getElementById(filterCapabilitiesDetails).appendChild(newCapabilites);
+    document.getElementById(filterCapabilitiesDetails).appendChild(newCapabilities);
 
     RefireDomContentLoadedEvent();
-};
+}
 
 function reselectCapabilityAndEpicsFiltersAndFrameworkFilter() {
     const FoundationCapabilitiesId = "FC";
     const CapabilitiesSplitCharacter = "C";
 
-    let url = new URLSearchParams(window.location.search);
+    const url = new URLSearchParams(window.location.search);
 
-    let capabilities = url.get(queryCapabilities);
+    const capabilities = url.get(queryCapabilities);
 
-    let framework = url.get(querySelectedFramework);
+    const framework = url.get(querySelectedFramework);
 
-    if (capabilities != null && capabilities.length > 0) {
-        //rebuild the id's and then click the corresponding checkbox
+    if (capabilities && capabilities.length > 0) {
+        // Rebuild the id's and then click the corresponding checkbox
 
-        var splitCapabilities = capabilities.split(CapabilitiesDelimiter);
+        const splitCapabilities = capabilities.split(CapabilitiesDelimiter);
 
         splitCapabilities.forEach(capability => {
-            if (capability == FoundationCapabilitiesId || !capability.includes(EpicSplitCharater)) {
+            if (capability === FoundationCapabilitiesId || !capability.includes(EpicSplitCharacter)) {
                 CheckCheckboxWithHiddenInputValue(capability);
             }
             else {
-                let epics = capability.split(EpicSplitCharater);
+                const epics = capability.split(EpicSplitCharacter);
 
                 epics.forEach(epic => {
                     if (epic.startsWith(CapabilitiesSplitCharacter))
                         CheckCheckboxWithHiddenInputValue(epic);
                     else
-                        CheckCheckboxWithHiddenInputValue(epics[0] + EpicSplitCharater + epic);
+                        CheckCheckboxWithHiddenInputValue(epics[0] + EpicSplitCharacter + epic);
                 });
             }
         });
     }
 
-    if (framework != null && framework.length > 0) {
-        let selector = NhsRadiosInput + "[value='" + framework + "']";
+    if (framework && framework.length > 0) {
+        const selector = NhsRadiosInput + "[value='" + framework + "']";
         document.querySelector(selector).checked = true;
     }
 }
 
 function CheckCheckboxWithHiddenInputValue(value) {
-    let selector = "#" + filterContainer + " " + NhsukCheckboxesItem + " " + InputTypeHidden + "[value='" + value + "']";
+    const selector = "#" + filterContainer + " " + NhsukCheckboxesItem + " " + InputTypeHidden + "[value='" + value + "']";
 
     document
         .querySelector(selector)
@@ -193,11 +193,11 @@ function CheckCheckboxWithHiddenInputValue(value) {
 }
 
 function GetSelectedFramework() {
-    let radioInputs = document.querySelectorAll(NhsRadiosInput);
+    const radioInputs = document.querySelectorAll(NhsRadiosInput);
 
     let selectedFramework = "All";
 
-    for (var i = 0; i < radioInputs.length; i++) {
+    for (let i = 0; i < radioInputs.length; i++) {
         if (radioInputs[i].checked) {
             selectedFramework = radioInputs[i].value;
             break;
@@ -221,4 +221,4 @@ function RefireDomContentLoadedEvent() {
         event.eventType = DomContentLoaded;
         document.fireEvent("on" + event.eventType, event);
     }
-};
+}

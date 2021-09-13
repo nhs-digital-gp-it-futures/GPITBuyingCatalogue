@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
@@ -18,17 +19,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
             controller.ViewData.Model = model;
 
-            using var writer = new StringWriter();
+            await using var writer = new StringWriter();
 
-            IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
-            ViewEngineResult viewResult = viewEngine.FindView(controller.ControllerContext, viewName, !partial);
+            var viewEngine = controller.HttpContext.RequestServices.GetService<ICompositeViewEngine>();
+            var viewResult = viewEngine.FindView(controller.ControllerContext, viewName, !partial);
 
-            if (viewResult.Success == false)
+            if (!viewResult.Success)
             {
                 return $"A view with the name {viewName} could not be found";
             }
 
-            ViewContext viewContext = new ViewContext(
+            var viewContext = new ViewContext(
                 controller.ControllerContext,
                 viewResult.View,
                 controller.ViewData,

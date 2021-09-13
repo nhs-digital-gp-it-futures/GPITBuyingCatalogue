@@ -29,7 +29,7 @@
         _ => PageOptions.SortOptions.LastUpdated.ToString().ToLower(),
     };
 
-    bool showFrameworkAndCapabilitiesitems =
+    bool showFrameworkAndCapabilitiesItems =
         (!string.IsNullOrWhiteSpace(Model.SelectedFramework) && Model.SelectedFramework != "All")
         || !string.IsNullOrWhiteSpace(Model.SelectedCapabilities);
 }
@@ -49,7 +49,7 @@
                    asp-controller="@typeof(HomeController).ControllerName()"
                    asp-area="@typeof(HomeController).AreaName()">Home</a>
             </li>
-            @if (showFrameworkAndCapabilitiesitems)
+            @if (showFrameworkAndCapabilitiesItems)
             {
                 <li class="nhsuk-breadcrumb__item">
                     <a class="nhsuk-breadcrumb__link"
@@ -71,7 +71,7 @@
         <div id="filter-container">
             <partial name="_FilterNoJavascript" model="@Model" />
         </div>
-        @if (showFrameworkAndCapabilitiesitems)
+        @if (showFrameworkAndCapabilitiesItems)
         {
             <h2>Showing results for selected filters</h2>
         }
@@ -88,7 +88,7 @@
             </a>
         </p>
         <hr />
-        @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count() > 0)
+        @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)
         {
             <div id="solutions-list">
                 @foreach (var item in Model.CatalogueItems)
