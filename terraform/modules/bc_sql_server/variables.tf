@@ -28,6 +28,3 @@ variable "sqladmins" {
 variable "bjssvpn" {
   type = string
 }
-variable "mastekvpn" {
-  type = string
-}
