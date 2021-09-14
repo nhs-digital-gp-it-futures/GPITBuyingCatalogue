@@ -10,7 +10,7 @@
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy int NULL,
      [Active] BIT NOT NULL DEFAULT 0, 
-    CONSTRAINT PK_Suppliers PRIMARY KEY (Id),
+     CONSTRAINT PK_Suppliers PRIMARY KEY (Id),
      CONSTRAINT FK_Suppliers_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
      INDEX IX_Suppliers_Name ([Name]),
 );

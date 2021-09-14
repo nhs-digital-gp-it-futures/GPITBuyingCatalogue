@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -250,12 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
 
-            if (supplier.SupplierContacts.Any(sc =>
-                    sc.FirstName.Trim().ToLowerInvariant() == model.FirstName.Trim().ToLowerInvariant()
-                    && sc.LastName.Trim().ToLowerInvariant() == model.LastName.Trim().ToLowerInvariant()
-                    && sc.Email.Trim().ToLowerInvariant() == model.Email.Trim().ToLowerInvariant()
-                    && sc.PhoneNumber.Trim().ToLowerInvariant() == model.PhoneNumber.Trim().ToLowerInvariant()
-                    && sc.Department.Trim().ToLowerInvariant() == model.Department.Trim().ToLowerInvariant()))
+            if (IsContactDuplicateOfExistingContact(supplier.SupplierContacts, model))
                 ModelState.AddModelError("edit-contact", "A contact with these contact details already exists for this supplier");
 
             if (!ModelState.IsValid)
@@ -304,12 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
 
-            if (supplier.SupplierContacts.Any(sc =>
-            sc.FirstName.Trim().ToLowerInvariant() == model.FirstName.Trim().ToLowerInvariant()
-            && sc.LastName.Trim().ToLowerInvariant() == model.LastName.Trim().ToLowerInvariant()
-            && sc.Email.Trim().ToLowerInvariant() == model.Email.Trim().ToLowerInvariant()
-            && sc.PhoneNumber.Trim().ToLowerInvariant() == model.PhoneNumber.Trim().ToLowerInvariant()
-            && sc.Department.Trim().ToLowerInvariant() == model.Department.Trim().ToLowerInvariant()))
+            if (IsContactDuplicateOfExistingContact(supplier.SupplierContacts, model))
                 ModelState.AddModelError("edit-contact", "A contact with these contact details already exists for this supplier");
 
             if (!ModelState.IsValid)
@@ -363,6 +354,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 nameof(ManageSupplierContacts),
                 typeof(SuppliersController).ControllerName(),
                 new { supplierId = supplier.Id });
+        }
+
+        private static bool IsContactDuplicateOfExistingContact(ICollection<SupplierContact> existingContacts, EditContactModel model)
+        {
+            return existingContacts.Any(sc =>
+            sc.FirstName.Trim().ToLowerInvariant() == model.FirstName.Trim().ToLowerInvariant()
+            && sc.LastName.Trim().ToLowerInvariant() == model.LastName.Trim().ToLowerInvariant()
+            && sc.Email.Trim().ToLowerInvariant() == model.Email.Trim().ToLowerInvariant()
+            && sc.PhoneNumber.Trim().ToLowerInvariant() == model.PhoneNumber.Trim().ToLowerInvariant()
+            && sc.Department.Trim().ToLowerInvariant() == model.Department.Trim().ToLowerInvariant());
         }
     }
 }
