@@ -30,6 +30,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
             return await dbContext.Suppliers.OrderBy(s => s.Name).ToListAsync();
         }
 
+        public async Task<IList<Supplier>> GetAllActiveSuppliers()
+        {
+            return await dbContext.Suppliers.Where(s => s.Active).OrderBy(s => s.Name).ToListAsync();
+        }
+
         public async Task<Supplier> GetSupplier(int supplierId)
         {
             return await dbContext.Suppliers

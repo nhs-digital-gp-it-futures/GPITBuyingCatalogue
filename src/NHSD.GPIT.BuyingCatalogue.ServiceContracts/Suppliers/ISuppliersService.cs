@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers
 
         Task<IList<Supplier>> GetAllSuppliers();
 
+        Task<IList<Supplier>> GetAllActiveSuppliers();
+
         Task<Supplier> UpdateSupplierActiveStatus(int supplierId, bool newStatus);
 
         Task<Supplier> EditSupplierAddress(int supplierId, Address newAddress);
