@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var suppliers = await suppliersService.GetAllSuppliers();
+            var suppliers = await suppliersService.GetAllActiveSuppliers();
 
             var model = new AddSolutionModel().WithSelectListItems(suppliers);
 
