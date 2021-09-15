@@ -40,8 +40,6 @@ resource "azurerm_app_service" "webapp" {
     
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
-    BC_BLOB_CONNECTION                  = var.sa_connection_string
-    BC_BLOB_CONTAINER                   = "documents"
     
     WEBSITE_HTTPLOGGING_RETENTION_DAYS  = "2"
   }
@@ -54,7 +52,7 @@ resource "azurerm_app_service" "webapp" {
     min_tls_version           = "1.2"
     ip_restriction {
       name       = "APP_GATEWAY_ACCESS"
-      ip_address = "${var.tertiary_vpn}/32"
+      ip_address = "${var.app_gateway_ip}/32"
       priority   = 200
       headers    = []
     }
@@ -72,8 +70,8 @@ resource "azurerm_app_service" "webapp" {
 
   lifecycle {
     ignore_changes = [
-      app_settings
-      #,site_config[0].ip_restriction[0]
+      app_settings,
+      site_config[0].linux_fx_version
     ]
   }
 }

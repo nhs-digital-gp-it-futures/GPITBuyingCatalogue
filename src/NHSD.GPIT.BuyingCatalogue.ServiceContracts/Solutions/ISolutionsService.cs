@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -60,12 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId);
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
-
-        Task<PagedList<CatalogueItem>> GetAllSolutionsFiltered(
-            PageOptions options = null,
-            string frameworkId = null);
-
-        Task<Dictionary<Framework, int>> GetAllFrameworksAndCountForFilter();
 
         Task<CatalogueItem> GetSolutionAdditionalServiceCapabilities(CatalogueItemId id);
 

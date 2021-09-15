@@ -1,0 +1,77 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
+
+<nhs-expander label-text="Filter Catalogue Solutions">
+    <nhs-details label-text="Filter by framework">
+        <nhs-fieldset-form-label asp-for="@Model"
+                                 label-hint="See what’s available if you’re using funding from a specific framework.">
+            <nhs-radio-buttons asp-for="SelectedFramework"
+                               values="@Model.FrameworkFilters"
+                               value-name="FrameworkId"
+                               display-name="DisplayText" />
+        </nhs-fieldset-form-label>
+    </nhs-details>
+    <nhs-details label-text="Filter by Capabilities and Epics" id="filter-capabilities-details">
+        <p class="nhsuk-hint">Search for a Catalogue Solution based on the business needs of your organisation. </p>
+        @if (Model.CountOfSolutionsWithFoundationCapability > 0)
+        {
+        <nhs-fieldset-form-label asp-for="@Model.FoundationCapabilities"
+                                 label-text="Foundation Solutions"
+                                 label-hint="Find solutions that meet all @Model.FoundationCapabilities.Count Foundation Capabilities which are the minimum requirement to enable a GP practice to operate.">
+            <nhs-details label-text="What are the @Model.FoundationCapabilities.Count Foundation Capabilities?">
+                <p>The 6 Foundation Capabilities are:</p>
+                <ul>
+                    @foreach (var capability in Model.FoundationCapabilities)
+                    {
+                        <li>@capability.Name</li>
+                    }
+                </ul>
+            </nhs-details>
+            <nhs-checkbox-container>
+                <nhs-checkbox asp-for="@Model.FoundationCapabilities[0].Selected"
+                              label-text="Foundation Capabilities (@Model.CountOfSolutionsWithFoundationCapability)"
+                              hidden-input="FoundationCapabilitiesCapabilityRef"/>
+            </nhs-checkbox-container>
+        </nhs-fieldset-form-label>
+        }
+        @for (int i = 0; i < Model.CategoryFilters.Count; i++)
+        {
+            <nhs-fieldset-form-label asp-for="@Model.CategoryFilters[i]"
+                                     label-text="@Model.CategoryFilters[i].Name"
+                                     label-hint="@Model.CategoryFilters[i].Description">
+                <nhs-checkbox-container>
+                    @for (int j = 0; j < Model.CategoryFilters[i].Capabilities.Count; j++)
+                    {
+                        <nhs-checkbox asp-for="@Model.CategoryFilters[i].Capabilities[j].Selected"
+                                      label-text="@Model.CategoryFilters[i].Capabilities[j].DisplayText"
+                                      hidden-input="@Model.CategoryFilters[i].Capabilities[j].CapabilityRef">
+                            @if (Model.CategoryFilters[i].Capabilities[j].Epics.Any())
+                            {
+                                <nhs-fieldset-form-label asp-for="@Model.CategoryFilters[i].Capabilities[j]">
+                                    <nhs-checkbox-container>
+                                        @for (int k = 0; k < Model.CategoryFilters[i].Capabilities[j].Epics.Count; k++)
+                                        {
+                                            <nhs-checkbox asp-for="@Model.CategoryFilters[i].Capabilities[j].Epics[k].Selected"
+                                                          label-text="@Model.CategoryFilters[i].Capabilities[j].Epics[k].DisplayText"
+                                                          hidden-input="@Model.CategoryFilters[i].Capabilities[j].Epics[k].Id" />
+                                        }
+                                    </nhs-checkbox-container>
+                                </nhs-fieldset-form-label>
+                            }
+                        </nhs-checkbox>
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+        }
+    </nhs-details>
+    <hr style="margin: 0; margin-bottom: 1em;" />
+    <nhs-submit-button text="Apply filters" />
+    <div>
+        <a id="clear-filters"
+           asp-area="@typeof(SolutionsController).AreaName()"
+           asp-controller="@typeof(SolutionsController).ControllerName()"
+           asp-action="@nameof(SolutionsController.Index)">Clear filters</a>
+    </div>
+</nhs-expander>

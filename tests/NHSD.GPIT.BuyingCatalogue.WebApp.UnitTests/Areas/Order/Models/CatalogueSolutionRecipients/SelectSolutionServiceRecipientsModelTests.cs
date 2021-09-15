@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Catalogu
             CreateOrderItemModel state)
         {
             state.IsNewSolution = true;
+            state.SkipPriceSelection = false;
 
             var model = new SelectSolutionServiceRecipientsModel(odsCode, state, selectionMode);
 

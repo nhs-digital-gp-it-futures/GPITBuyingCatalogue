@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(f => f.FrameworkId).HasMaxLength(10);
 
             builder.HasOne(f => f.Capability)
-                .WithMany()
+                .WithMany(c => c.FrameworkCapabilities)
                 .HasForeignKey(d => d.CapabilityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FrameworkCapabilities_Capability");

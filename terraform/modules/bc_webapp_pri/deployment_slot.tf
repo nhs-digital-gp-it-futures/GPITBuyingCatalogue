@@ -24,8 +24,6 @@ resource "azurerm_app_service_slot" "slot" {
     
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
-    BC_BLOB_CONNECTION                  = var.sa_connection_string
-    BC_BLOB_CONTAINER                   = "documents"
     
     WEBSITE_HTTPLOGGING_RETENTION_DAYS  = "2"
   }
@@ -38,7 +36,7 @@ resource "azurerm_app_service_slot" "slot" {
     min_tls_version           = "1.2"
     ip_restriction {
       name       = "APP_GATEWAY_ACCESS"
-      ip_address = "${var.tertiary_vpn}/32"
+      ip_address = "${var.app_gateway_ip}/32"
       priority   = 200
       headers    = []
     }

@@ -48,14 +48,6 @@ variable "primary_vpn" {
   type = string
 }
 
-variable "secondary_vpn" {
-  type = string
-}
-
-variable "tertiary_vpn" {
-  type = string
-}
-
 variable "nhsd_network_range" {
   type = string
 }

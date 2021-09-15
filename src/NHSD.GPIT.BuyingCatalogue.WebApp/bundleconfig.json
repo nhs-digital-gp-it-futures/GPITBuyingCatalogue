@@ -4,5 +4,11 @@
     "inputFiles": [
       "wwwroot/css/main.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/CatalogueSolutionsFilter.min.js",
+    "inputFiles": [
+      "wwwroot/js/CatalogueSolutionsFilter.js"
+    ]
   }
 ]

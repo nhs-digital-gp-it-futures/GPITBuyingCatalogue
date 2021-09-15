@@ -63,11 +63,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Scripts\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\css\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\CatalogueSolutionsFilter.js" />
   </ItemGroup>
 
   <ItemGroup>

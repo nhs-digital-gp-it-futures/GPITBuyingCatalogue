@@ -73,6 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureValidationSettings(Configuration);
 
+            services.ConfigureCacheKeySettings(Configuration);
+
             services.ConfigureOrderMessageSettings(Configuration);
 
             services.ConfigureConsentCookieSettings(Configuration);

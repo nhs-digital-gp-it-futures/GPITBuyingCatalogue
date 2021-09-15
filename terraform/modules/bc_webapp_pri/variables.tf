@@ -52,11 +52,6 @@ variable "cert_name" {
 variable "webapp_cname_url" {
   type      = string
 }
-variable "sa_connection_string" {
-  type = string
-  sensitive = true
-}
-
 variable "aspnet_environment" {
   type = string
 }
@@ -76,11 +71,7 @@ variable "primary_vpn" {
   type = string
 }
 
-variable "secondary_vpn" {
-  type = string
-}
-
-variable "tertiary_vpn" {
+variable "app_gateway_ip" {
   type = string
 }
 

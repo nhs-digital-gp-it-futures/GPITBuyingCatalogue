@@ -1,21 +1,20 @@
 ﻿/// <binding AfterBuild='min' />
 "use strict";
-
-var gulp = require("gulp"),
+const gulp = require("gulp"),
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     htmlmin = require("gulp-htmlmin"),
-    uglify = require("gulp-uglify"),
+    terser = require('gulp-terser'),
     merge = require("merge-stream"),
     del = require("del"),
     sass = require("gulp-sass"),
     bundleconfig = require("./bundleconfig.json");
-
-var paths = {
+const gutil = require('gulp-util');
+const paths = {
     scss: 'wwwroot/scss/'
 };
 
-var regex = {
+const regex = {
     css: /\.css$/,
     html: /\.(html|htm)$/,
     js: /\.js$/
@@ -28,17 +27,18 @@ gulp.task("sass", function () {
 });
 
 gulp.task("min:js", async function () {
-    var tasks = getBundles(regex.js).map(function (bundle) {
+    const tasks = getBundles(regex.js).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
-            .pipe(uglify())
+            .pipe(terser())
+            .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
             .pipe(gulp.dest("."));
     });
     return merge(tasks);
 });
 
 gulp.task("min:css", function () {
-    var tasks = getBundles(regex.css).map(function (bundle) {
+    const tasks = getBundles(regex.css).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
             .pipe(cssmin())
@@ -48,7 +48,7 @@ gulp.task("min:css", function () {
 });
 
 gulp.task("min:html", function () {
-    var tasks = getBundles(regex.html).map(function (bundle) {
+    const tasks = getBundles(regex.html).map(function (bundle) {
         return gulp.src(bundle.inputFiles, { base: "." })
             .pipe(concat(bundle.outputFileName))
             .pipe(htmlmin({ collapseWhitespace: true, minifyCSS: true, minifyJS: true }))
@@ -58,10 +58,9 @@ gulp.task("min:html", function () {
 });
 
 gulp.task("clean", function () {
-    var files = bundleconfig.map(function (bundle) {
+    const files = bundleconfig.map(function (bundle) {
         return bundle.outputFileName;
     });
-
     return del(files);
 });
 

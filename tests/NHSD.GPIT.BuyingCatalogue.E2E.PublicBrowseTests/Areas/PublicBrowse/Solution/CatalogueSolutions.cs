@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
@@ -8,16 +9,19 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public sealed class CatalogueSolutions : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class CatalogueSolutions
+        : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
     {
+        private const string FrameworkCacheKey = "framework-filter";
+        private const string CategoryCacheKey = "category-filter";
         private static readonly Dictionary<string, string> Parameters = new();
-        private static readonly List<CatalogueItem> CatalogueItems = new();
 
         public CatalogueSolutions(LocalWebApplicationFactory factory)
             : base(
@@ -36,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.ElementExists(CommonSelectors.Pagination).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Should().BeTrue();
             CommonActions.ElementExists(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Should().BeTrue();
+            CommonActions.ElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Should().BeTrue();
         }
 
         [Fact]
@@ -94,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 .Should()
                 .BeTrue();
 
-            Driver.Url.Should().EndWith("Page=2");
+            Driver.Url.Should().EndWith("page=2");
 
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
@@ -197,6 +202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async void CatalogueSolutions_Filter_AllFrameworksShown()
         {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
@@ -214,6 +221,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public async void CatalogueSolutions_Filter_FilterByOption_ExpectedNumberOfResults()
         {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
@@ -221,8 +230,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             var gpitFramework = await context.Frameworks.Where(f => f.Id == "NHSDGP001").SingleAsync();
 
-            var numberOfSolutionsForGPITFramework = await context.CatalogueItems.AsNoTracking()
-                .Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == gpitFramework.Id))
+            var numberOfSolutionsForGPITFramework =
+                await context.CatalogueItems.AsNoTracking()
+                .Where(ci => ci.PublishedStatus == PublicationStatus.Published
+                            && ci.CatalogueItemType == CatalogueItemType.Solution
+                            && ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == gpitFramework.Id))
                 .CountAsync();
 
             CommonActions.ClickRadioButtonWithValue(gpitFramework.Id);
@@ -231,12 +243,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(numberOfSolutionsForGPITFramework);
 
-            Driver.Url.Should().Contain($"SelectedFramework={gpitFramework.Id}");
+            Driver.Url.Should().Contain($"selectedframework={gpitFramework.Id}");
         }
 
         [Fact]
         public async void CatalogueSolutions_Filter_FilterByOption_BreadcrumbsCorrect()
         {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
             Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsFramework).Click();
 
@@ -251,6 +265,97 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             CommonActions.ClickSave();
 
             Driver.FindElements(CommonSelectors.BreadcrumbItem).Count.Should().Be(2);
+        }
+
+        [Fact]
+        public async void CatalogueSolutions_Filter_FilterByFoundationCapability_CorrectResult()
+        {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            Driver.FindElement(By.Id("FoundationCapabilities_0__Selected")).Click();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
+
+            await using var context = GetEndToEndDbContext();
+
+            var filterService = new SolutionsFilterService(context, Factory.GetMemoryCache);
+
+            var results = await filterService.GetAllCategoriesAndCountForFilter();
+
+            Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(results.CountOfCatalogueItemsWithFoundationCapabilities);
+
+            MemoryCache.Remove(CategoryCacheKey);
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Filter_FilterByTwoCapabilities_CorrectResults()
+        {
+            const int firstCapabilityId = 46;
+            const int secondCapabilityId = 47;
+
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            Driver.FindElement(By.XPath($"//input[@value='C{firstCapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+            Driver.FindElement(By.XPath($"//input[@value='C{secondCapabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
+
+            Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(3);
+        }
+
+        [Theory]
+        [InlineData("C46", "C46E1")]
+        [InlineData("C46", "C46E2")]
+        public void CatalogueSolutions_Filter_FilterByOneCapabilityWithEpic_CorrectResults(string capabilityId, string epicId)
+        {
+            CommonActions.WaitUntilElementExists(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities);
+
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterSolutionsExpander).Click();
+            Driver.FindElement(Objects.PublicBrowse.SolutionsObjects.FilterCapabilities).Click();
+
+            Driver.FindElement(By.XPath($"//input[@value='{capabilityId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+            Driver.FindElement(By.XPath($"//input[@value='{epicId}']/../input[contains(@class, 'nhsuk-checkboxes__input')]")).Click();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index)).Should().BeTrue();
+
+            Driver.FindElements(ByExtensions.DataTestId("solutions-card")).Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void CatalogueSolutions_Filter_IncorrectFilterOptionsInput_CorrectResults()
+        {
+            Dictionary<string, string> queryParams = new()
+            {
+                { "Capabilities", "C999" },
+            };
+
+            NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.Index), queryParameters: queryParams);
+
+            CommonActions.ElementIsDisplayed(By.Id("no-results")).Should().BeTrue();
+        }
+
+        public Task InitializeAsync()
+        {
+            InitializeMemoryCacheHandler();
+
+            return Task.CompletedTask;
+        }
+
+        public Task DisposeAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 }

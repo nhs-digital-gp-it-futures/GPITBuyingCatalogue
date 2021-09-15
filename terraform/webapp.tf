@@ -17,15 +17,13 @@ module "webapp" {
   db_name_main     = module.sql_databases_pri.sql_main_dbname # in cluster "bc-${var.environment}-bapi"  
   auth_pwd         = azurerm_key_vault_secret.sqladminpassword.value
   cert_name        = var.certname
-  webapp_cname_url = local.gw_webappURL
-  sa_connection_string = module.storage_account.primary_connection_string
+  webapp_cname_url = local.gw_webappURL  
   aspnet_environment = "Development"
   sqlserver_name = module.sql_server_pri.sql_server_name
   sqlserver_rg = azurerm_resource_group.sql-server.name
   instrumentation_key = azurerm_application_insights.appinsights.instrumentation_key
   primary_vpn = var.primary_vpn
-  secondary_vpn = var.secondary_vpn
-  tertiary_vpn = module.appgateway.appgateway_pip_ipaddress
+  app_gateway_ip = module.appgateway.appgateway_pip_ipaddress
   ssl_cert = data.azurerm_key_vault_secret.ssl_cert.value
   customer_network_range = var.nhsd_network_range
   smtp_server_host = var.smtp_server_host
