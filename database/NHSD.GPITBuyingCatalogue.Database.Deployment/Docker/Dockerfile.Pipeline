@@ -8,7 +8,7 @@ RUN pwsh -ExecutionPolicy Bypass -NoProfile -NonInteractive -File ./BuildUtils/S
     && rm -rf PostDeployment && rm -rf PreDeployment \
     && dotnet build "NHSD.GPITBuyingCatalogue.Database.Deployment.csproj" -c Release -o build 
 
-RUN apk add --update nodejs nodejs-npm
+RUN apk add --update nodejs npm
 
 RUN apk add --no-cache --virtual .pipeline-deps readline linux-pam \
   && apk add bash sudo shadow \
