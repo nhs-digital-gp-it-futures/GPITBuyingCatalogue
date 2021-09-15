@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class CataloguePrice
+    public sealed partial class CataloguePrice
     {
         public CataloguePrice()
         {

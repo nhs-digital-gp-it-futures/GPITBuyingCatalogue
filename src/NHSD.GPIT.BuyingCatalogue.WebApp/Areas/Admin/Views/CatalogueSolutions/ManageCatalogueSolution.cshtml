@@ -85,7 +85,9 @@
                     <nhs-table-cell>List Price</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell><nhs-tag colour="Green" text="Completed" /></nhs-table-cell>
-                    <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                    <nhs-table-cell><a asp-controller="@typeof(ListPriceController).ControllerName()"
+                                       asp-action="@nameof(ListPriceController.Index)"
+                                       asp-route-solutionId="@Model.Solution.Id">Edit</a></nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Additional Services</nhs-table-cell>
@@ -106,7 +108,8 @@
                         <nhs-tag status-enum="@Model.InteroperabilityStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-action="@nameof(InteroperabilityController.Interoperability)" asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                        <a asp-action="@nameof(InteroperabilityController.Interoperability)"
+                           asp-controller="@typeof(InteroperabilityController).ControllerName()"
                            asp-route-solutionId="@Model.Solution.Id">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
