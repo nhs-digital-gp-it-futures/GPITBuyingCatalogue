@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using Xunit;
 
@@ -37,44 +38,18 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 .Be(500);
         }
 
-        [Fact]
-        public static void IsValid_LinkHasValue_ReturnsTrue()
+        [Theory]
+        [InlineData("", "", "", TaskProgress.NotStarted)]
+        [InlineData("some-link", "", "", TaskProgress.NotStarted)]
+        [InlineData("", "requires-hscn", "", TaskProgress.NotStarted)]
+        [InlineData("", "", "summary", TaskProgress.Completed)]
+        public static void Status_ReturnsExpected(string link, string requiresHscn, string summary, TaskProgress expected)
         {
-            var model = new PublicCloud { Link = "some-value" };
+            var model = new PublicCloud { Link = link, RequiresHscn = requiresHscn, Summary = summary };
 
-            var actual = model.IsValid();
+            var actual = model.Status();
 
-            actual.Should().BeTrue();
-        }
-
-        [Fact]
-        public static void IsValid_RequiresHscnHasValue_ReturnsTrue()
-        {
-            var model = new PublicCloud { RequiresHscn = "some-value" };
-
-            var actual = model.IsValid();
-
-            actual.Should().BeTrue();
-        }
-
-        [Fact]
-        public static void IsValid_SummaryHasValue_ReturnsTrue()
-        {
-            var model = new PublicCloud { Summary = "some-value" };
-
-            var actual = model.IsValid();
-
-            actual.Should().BeTrue();
-        }
-
-        [Fact]
-        public static void IsValid_NoPropertyHasValue_ReturnsFalse()
-        {
-            var model = new PublicCloud();
-
-            var actual = model.IsValid();
-
-            actual.Should().BeFalse();
+            actual.Should().Be(expected);
         }
     }
 }

@@ -46,47 +46,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [InlineData("2Mbps", true)]
-        [InlineData("", false)]
-        [InlineData(" ", false)]
-        [InlineData(null, false)]
-        public static void IsComplete_CorrectlySet_WhenConnectionSpeedSet(
-            string selectedConnectionSpeed,
-            bool expectedCompletionState)
-        {
-            var model = new ConnectivityModel { SelectedConnectionSpeed = selectedConnectionSpeed };
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void IsComplete_CorrectlySet_WhenAConnectionTypeChecked(
-            ConnectivityModel model)
-        {
-            model.SelectedConnectionSpeed = null;
-            model.ConnectionTypes.First().Checked = true;
-
-            var actual = model.IsComplete;
-
-            actual.Should().BeTrue();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void IsComplete_CorrectlySet_WhenNoConnectionTypeChecked(
-          ConnectivityModel model)
-        {
-            model.SelectedConnectionSpeed = null;
-            Array.ForEach(model.ConnectionTypes, c => c.Checked = false);
-
-            var actual = model.IsComplete;
-
-            actual.Should().BeFalse();
-        }
     }
 }

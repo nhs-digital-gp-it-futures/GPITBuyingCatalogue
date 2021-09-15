@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
@@ -28,21 +29,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
             ApplicationType = ClientApplicationType.Desktop;
         }
 
-        public override bool IsComplete =>
-            (ClientApplication?.NativeDesktopSupportedOperatingSystemsComplete() ?? false) &&
-            (ClientApplication?.NativeDesktopMemoryAndStorageComplete() ?? false) &&
-            (ClientApplication?.NativeDesktopConnectivityComplete() ?? false);
+        public TaskProgress SupportedOperatingSystemsStatus() => ClientApplication.NativeDesktopSupportedOperatingSystemsStatus();
 
-        public string SupportedOperatingSystemsStatus => (ClientApplication?.NativeDesktopSupportedOperatingSystemsComplete()).ToStatus();
+        public TaskProgress ConnectivityStatus() => ClientApplication.NativeDesktopConnectivityStatus();
 
-        public string MemoryAndStorageStatus => (ClientApplication?.NativeDesktopMemoryAndStorageComplete()).ToStatus();
+        public TaskProgress MemoryAndStorageStatus() => ClientApplication.NativeDesktopMemoryAndStorageStatus();
 
-        public string ConnectivityStatus => (ClientApplication?.NativeDesktopConnectivityComplete()).ToStatus();
+        public TaskProgress StatusThirdParty() => ClientApplication.NativeDesktopThirdPartyStatus();
 
-        public string ThirdPartyStatus => (ClientApplication?.NativeDesktopThirdPartyComplete()).ToStatus();
+        public TaskProgress StatusHardware() => ClientApplication.NativeDesktopHardwareRequirementsStatus();
 
-        public string HardwareRequirementsStatus => (ClientApplication?.NativeDesktopHardwareRequirementsComplete()).ToStatus();
-
-        public string AdditionalInformationStatus => (ClientApplication?.NativeDesktopAdditionalInformationComplete()).ToStatus();
+        public TaskProgress StatusAdditionalInformation() => ClientApplication.NativeDesktopAdditionalInformationStatus();
     }
 }

@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
             BackLinkText = "Go back";
         }
 
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(SelectedConnectionSpeed);
-
         [Required(ErrorMessage = "Select a connection speed")]
         public string SelectedConnectionSpeed { get; set; }
 

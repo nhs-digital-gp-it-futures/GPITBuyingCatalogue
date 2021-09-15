@@ -33,10 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
             Description = ClientApplication?.MobileConnectionDetails?.Description;
         }
 
-        public override bool IsComplete =>
-            !string.IsNullOrWhiteSpace(SelectedConnectionSpeed) ||
-            ConnectionTypes.Any(c => c.Checked);
-
         public string SelectedConnectionSpeed { get; set; }
 
         public List<SelectListItem> ConnectionSpeeds { get; set; }

@@ -56,10 +56,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Description</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    @{ var descriptionStatus = Model.StatusDescription(); }
+                    <nhs-table-cell>Yes</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag colour="@descriptionStatus.TagColour()" text="@descriptionStatus.Name()" />
+                        <nhs-tag status-enum="@Model.DescriptionStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Description" asp-controller="CatalogueSolutions"
@@ -68,10 +67,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Features</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    @{ var featuresStatus = Model.StatusFeatures(); }
+                    <nhs-table-cell>No</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag colour="@featuresStatus.TagColour()" text="@featuresStatus.Name()" />
+                        <nhs-tag status-enum="@Model.FeaturesStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Features" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -103,10 +101,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Interoperability</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    @{ var interoperabilityStatus = Model.StatusInteroperability(); }
+                    <nhs-table-cell>No</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag colour="@interoperabilityStatus.TagColour()" text="@interoperabilityStatus.Name()" />
+                        <nhs-tag status-enum="@Model.InteroperabilityStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(InteroperabilityController.Interoperability)" asp-controller="@typeof(InteroperabilityController).ControllerName()"
@@ -115,10 +112,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Implementation</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    @{ var implementationStatus = Model.StatusImplementation(); }
+                    <nhs-table-cell>No</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag colour="@implementationStatus.TagColour()" text="@implementationStatus.Name()" />
+                        <nhs-tag status-enum="@Model.ImplementationStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Implementation" asp-controller="CatalogueSolutions"
@@ -127,10 +123,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Client Application Type</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    @{ var clientApplicationTypeStatus = Model.StatusClientApplicationType(); }
+                    <nhs-table-cell>Yes</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag colour="@clientApplicationTypeStatus.TagColour()" text="@clientApplicationTypeStatus.Name()" />
+                        <nhs-tag status-enum="@Model.ClientApplicationTypeStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="ClientApplicationType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -138,10 +133,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Hosting Type</nhs-table-cell>
-                    <nhs-table-cell>Yes</nhs-table-cell>
-                    @{ var hostingTypeStatus = Model.StatusHostingType(); }
+                    <nhs-table-cell>Yes</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag colour="@hostingTypeStatus.TagColour()" text="@hostingTypeStatus.Name()" />
+                        <nhs-tag status-enum="@Model.HostingTypeStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="HostingType" asp-controller="CatalogueSolutions" asp-route-solutionId="@Model.Solution.Id">Edit</a>
@@ -155,10 +149,9 @@
                 </nhs-table-row-container>
                 <nhs-table-row-container>
                     <nhs-table-cell>Development plans</nhs-table-cell>
-                    <nhs-table-cell>No</nhs-table-cell>
-                    @{ var roadMapStatus = Model.StatusRoadmap(); }
+                    <nhs-table-cell>No</nhs-table-cell>                    
                     <nhs-table-cell>
-                        <nhs-tag colour="@roadMapStatus.TagColour()" text="@roadMapStatus.Name()" />
+                        <nhs-tag status-enum="@Model.RoadmapStatus()"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Roadmap" asp-route-solutionId="@Model.Solution.Id">Edit</a>

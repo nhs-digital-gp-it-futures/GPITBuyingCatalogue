@@ -26,10 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
             Description = ClientApplication?.MobileMemoryAndStorage?.Description;
         }
 
-        public override bool IsComplete =>
-            !string.IsNullOrWhiteSpace(SelectedMemorySize) &&
-            !string.IsNullOrWhiteSpace(Description);
-
         [Required(ErrorMessage = "Select a minimum memory size")]
         public string SelectedMemorySize { get; set; }
 

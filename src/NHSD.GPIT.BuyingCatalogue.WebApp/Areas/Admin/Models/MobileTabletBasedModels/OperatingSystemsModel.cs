@@ -32,8 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
             Description = ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription;
         }
 
-        public override bool IsComplete => OperatingSystems.Any(o => o.Checked);
-
         public SupportedOperatingSystemModel[] OperatingSystems { get; set; }
 
         [StringLength(1000)]

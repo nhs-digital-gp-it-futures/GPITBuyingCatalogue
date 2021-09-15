@@ -17,9 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             SupplierId = CatalogueItem?.Supplier?.Id ?? 0;
         }
 
-        // mjrxxxx
-        //public abstract bool? IsComplete { get; }
-
         public CatalogueItemId? SolutionId { get; set; }
 
         public int SupplierId { get; set; }
@@ -27,9 +24,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public ClientApplication ClientApplication { get; set; }
 
         protected CatalogueItem CatalogueItem { get; set; }
-
-        // mjrxxxx
-        //protected string GetStatus(MarketingBaseModel model) =>
-        //    model.IsComplete.GetValueOrDefault() ? "COMPLETE" : "INCOMPLETE";
     }
 }

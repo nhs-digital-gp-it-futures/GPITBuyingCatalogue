@@ -5,7 +5,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
@@ -55,11 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
         }
 
-        public FeatureCompletionStatus Status() =>
+        public TaskProgress Status() =>
             !string.IsNullOrWhiteSpace(Link)
             || IM1Integrations.Any()
             || GpConnectIntegrations.Any()
-            ? FeatureCompletionStatus.Completed
-            : FeatureCompletionStatus.NotStarted;
+            ? TaskProgress.Completed
+            : TaskProgress.NotStarted;
     }
 }

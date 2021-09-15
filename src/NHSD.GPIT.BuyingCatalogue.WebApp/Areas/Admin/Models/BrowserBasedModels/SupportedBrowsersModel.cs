@@ -48,10 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         [Required(ErrorMessage = "Select yes if your Catalogue Solution is mobile responsive")]
         public string MobileResponsive { get; set; }
 
-        public override bool IsComplete =>
-            ClientApplication?.BrowsersSupported is not null && ClientApplication.BrowsersSupported.Any() &&
-            ClientApplication.MobileResponsive.HasValue;
-
         private void CheckBrowsers()
         {
             foreach (var browser in Browsers)

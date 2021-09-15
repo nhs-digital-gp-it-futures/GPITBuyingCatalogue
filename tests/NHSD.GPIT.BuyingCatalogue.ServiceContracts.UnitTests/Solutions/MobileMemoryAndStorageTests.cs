@@ -13,33 +13,33 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
         [Theory]
         [AutoData]
-        public static void IsValid_BothPropertiesValid_ReturnsTrue(MobileMemoryAndStorage mobileMemoryAndStorage)
+        public static void Status_BothPropertiesValid_ReturnsCompleted(MobileMemoryAndStorage mobileMemoryAndStorage)
         {
             mobileMemoryAndStorage.Description.Should().NotBeNullOrWhiteSpace();
             mobileMemoryAndStorage.MinimumMemoryRequirement.Should().NotBeNullOrWhiteSpace();
 
-            mobileMemoryAndStorage.IsValid().Should().BeTrue();
+            mobileMemoryAndStorage.Status().Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void IsValid_DescriptionIsInvalid_ReturnsFalse(string invalid)
+        public static void Status_DescriptionIsInvalid_ReturnsNotStarted(string invalid)
         {
             var mobileMemoryAndStorage = Fixture.Build<MobileMemoryAndStorage>().Without(m => m.Description).Create();
             mobileMemoryAndStorage.Description = invalid;
 
-            mobileMemoryAndStorage.IsValid().Should().BeFalse();
+            mobileMemoryAndStorage.Status().Should().Be(Enums.TaskProgress.NotStarted);
         }
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void IsValid_MinimumMemoryRequirementIsInvalid_ReturnsFalse(string invalid)
+        public static void Status_MinimumMemoryRequirementIsInvalid_ReturnsNotStarted(string invalid)
         {
             var mobileMemoryAndStorage =
                 Fixture.Build<MobileMemoryAndStorage>().Without(m => m.MinimumMemoryRequirement).Create();
             mobileMemoryAndStorage.MinimumMemoryRequirement = invalid;
 
-            mobileMemoryAndStorage.IsValid().Should().BeFalse();
+            mobileMemoryAndStorage.Status().Should().Be(Enums.TaskProgress.NotStarted);
         }
     }
 }

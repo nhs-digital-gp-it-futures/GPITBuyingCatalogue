@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public sealed class MobileMemoryAndStorage
     {
@@ -6,8 +8,12 @@
 
         public string MinimumMemoryRequirement { get; set; }
 
-        public bool IsValid() =>
-            !string.IsNullOrWhiteSpace(Description) &&
-            !string.IsNullOrWhiteSpace(MinimumMemoryRequirement);
+        public TaskProgress Status()
+        {
+            if (!string.IsNullOrWhiteSpace(Description) && !string.IsNullOrWhiteSpace(MinimumMemoryRequirement))
+                return TaskProgress.Completed;
+
+            return TaskProgress.NotStarted;
+        }
     }
 }

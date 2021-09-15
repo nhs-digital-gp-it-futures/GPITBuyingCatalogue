@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public sealed class Hosting
     {
-        public PublicCloud PublicCloud { get; set; }
+        public PublicCloud PublicCloud { get; set; } = new();
 
-        public PrivateCloud PrivateCloud { get; set; }
+        public PrivateCloud PrivateCloud { get; set; } = new();
 
-        public HybridHostingType HybridHostingType { get; set; }
+        public HybridHostingType HybridHostingType { get; set; } = new();
 
-        public OnPremise OnPremise { get; set; }
+        public OnPremise OnPremise { get; set; } = new();
 
         public IReadOnlyList<HostingType> AvailableHosting
         {
@@ -18,20 +19,32 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             {
                 var result = new List<HostingType>(4);
 
-                if (PublicCloud?.IsValid() ?? false)
+                if (PublicCloud.Status() == TaskProgress.Completed)
                     result.Add(HostingType.PublicCloud);
 
-                if (PrivateCloud?.IsValid() ?? false)
+                if (PrivateCloud.Status() == TaskProgress.Completed)
                     result.Add(HostingType.PrivateCloud);
 
-                if (HybridHostingType?.IsValid() ?? false)
+                if (HybridHostingType.Status() == TaskProgress.Completed)
                     result.Add(HostingType.Hybrid);
 
-                if (OnPremise?.IsValid() ?? false)
+                if (OnPremise.Status() == TaskProgress.Completed)
                     result.Add(HostingType.OnPremise);
 
                 return result;
             }
+        }
+
+        public TaskProgress HostingTypeStatus(HostingType hostingType)
+        {
+            return hostingType switch
+            {
+                HostingType.Hybrid => HybridHostingType.Status(),
+                HostingType.OnPremise => PrivateCloud.Status(),
+                HostingType.PrivateCloud => PrivateCloud.Status(),
+                HostingType.PublicCloud => PublicCloud.Status(),
+                _ => TaskProgress.NotStarted,
+            };
         }
     }
 }

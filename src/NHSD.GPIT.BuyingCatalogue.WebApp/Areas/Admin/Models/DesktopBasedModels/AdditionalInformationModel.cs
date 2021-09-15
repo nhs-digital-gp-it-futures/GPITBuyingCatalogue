@@ -20,8 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
             AdditionalInformation = ClientApplication?.NativeDesktopAdditionalInformation;
         }
 
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(AdditionalInformation);
-
         [StringLength(500)]
         public string AdditionalInformation { get; set; }
     }

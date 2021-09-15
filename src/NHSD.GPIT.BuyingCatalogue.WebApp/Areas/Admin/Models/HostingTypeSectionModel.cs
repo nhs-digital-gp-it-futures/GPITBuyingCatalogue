@@ -4,8 +4,8 @@ using System.Linq;
 using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
@@ -22,15 +22,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            var hosting = catalogueItem.Solution?.GetHosting();
+            Hosting = catalogueItem.Solution?.GetHosting() ?? new Hosting();
 
             SolutionName = catalogueItem.Name;
-            ExistingHostingTypes = hosting?.AvailableHosting ?? Array.Empty<HostingType>();
+            ExistingHostingTypes = Hosting?.AvailableHosting ?? Array.Empty<HostingType>();
             HostingTypesToAdd = Enum.GetValues<HostingType>().Except(ExistingHostingTypes).ToList();
             HostingTypesToAddRadioItems = HostingTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingHostingTypesCount = ExistingHostingTypes.Count;
             BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
         }
+
+        public Hosting Hosting { get; set; }
 
         public IReadOnlyList<HostingType> ExistingHostingTypes { get; } = Array.Empty<HostingType>();
 
@@ -42,12 +44,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IEnumerable<object> HostingTypesToAddRadioItems { get; }
 
-        // mjrxxxx
-        //public override bool? IsComplete => ExistingHostingTypes.Any();
+        public TaskProgress HostingTypeStatus()
+        {
+            if (!ExistingHostingTypes.Any())
+                return TaskProgress.NotStarted;
 
-        // mjrtodo - this need to be in progress if any of the hosting types are in progress
-        public FeatureCompletionStatus StatusHostingType() => ExistingHostingTypes.Any()
-            ? FeatureCompletionStatus.Completed
-            : FeatureCompletionStatus.NotStarted;
+            var statuses = ExistingHostingTypes.Select(c => Hosting.HostingTypeStatus(c));
+
+            if (statuses.All(s => s == TaskProgress.Completed))
+                return TaskProgress.Completed;
+
+            if (statuses.Any(s => s == TaskProgress.InProgress))
+                return TaskProgress.InProgress;
+
+            return TaskProgress.NotStarted;
+        }
     }
 }

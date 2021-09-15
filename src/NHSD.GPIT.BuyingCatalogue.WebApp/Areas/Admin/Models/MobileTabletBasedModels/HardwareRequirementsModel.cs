@@ -22,7 +22,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
 
         [StringLength(500)]
         public string Description { get; set; }
-
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(Description);
     }
 }

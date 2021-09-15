@@ -34,11 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
             BackLinkText = "Go back";
         }
 
-        public override bool IsComplete =>
-            !string.IsNullOrWhiteSpace(SelectedMemorySize) &&
-            !string.IsNullOrWhiteSpace(StorageSpace) &&
-            !string.IsNullOrWhiteSpace(ProcessingPower);
-
         [Required(ErrorMessage = "Select a minimum memory size")]
         public string SelectedMemorySize { get; set; }
 

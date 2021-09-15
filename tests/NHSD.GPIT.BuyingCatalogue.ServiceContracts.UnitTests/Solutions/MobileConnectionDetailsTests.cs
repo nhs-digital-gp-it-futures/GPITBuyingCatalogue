@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void IsValid_DescriptionHasValidValue_ReturnsTrue(string invalid)
+        public static void Status_DescriptionHasValidValue_ReturnsCompleted(string invalid)
         {
             var mobileConnectionDetails = Fixture.Build<MobileConnectionDetails>()
                 .With(m => m.MinimumConnectionSpeed, invalid)
@@ -21,12 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 .Create();
             mobileConnectionDetails.Description.Should().NotBeNullOrWhiteSpace();
 
-            mobileConnectionDetails.IsValid().Should().BeTrue();
+            mobileConnectionDetails.Status().Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void IsValid_MinimumConnectionSpeedHasValidValue_ReturnsTrue(string invalid)
+        public static void Status_MinimumConnectionSpeedHasValidValue_ReturnsCompleted(string invalid)
         {
             var mobileConnectionDetails = Fixture.Build<MobileConnectionDetails>()
                 .With(m => m.Description, invalid)
@@ -34,11 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 .Create();
             mobileConnectionDetails.MinimumConnectionSpeed.Should().NotBeNullOrWhiteSpace();
 
-            mobileConnectionDetails.IsValid().Should().BeTrue();
+            mobileConnectionDetails.Status().Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Fact]
-        public static void IsValid_ConnectionTypeHasValidValue_ReturnsTrue()
+        public static void Status_ConnectionTypeHasValidValue_ReturnsCompleted()
         {
             var mobileConnectionDetails = new MobileConnectionDetails
             {
@@ -47,22 +47,22 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileConnectionDetails.Description.Should().BeNullOrEmpty();
             mobileConnectionDetails.MinimumConnectionSpeed.Should().BeNullOrEmpty();
 
-            mobileConnectionDetails.IsValid().Should().BeTrue();
+            mobileConnectionDetails.Status().Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Fact]
-        public static void IsValid_AllPropertiesInvalid_ConnectionTypeNull_ReturnsNull()
+        public static void Status_AllPropertiesInvalid_ConnectionTypeNull_ReturnsNotStarted()
         {
             var mobileConnectionDetails = new MobileConnectionDetails();
             mobileConnectionDetails.ConnectionType.Should().BeNull();
             mobileConnectionDetails.Description.Should().BeNullOrEmpty();
             mobileConnectionDetails.MinimumConnectionSpeed.Should().BeNullOrEmpty();
 
-            mobileConnectionDetails.IsValid().Should().BeNull();
+            mobileConnectionDetails.Status().Should().Be(Enums.TaskProgress.NotStarted);
         }
 
         [Fact]
-        public static void IsValid_AllPropertiesInvalid_ConnectionTypeEmpty_ReturnsFalse()
+        public static void Status_AllPropertiesInvalid_ConnectionTypeEmpty_ReturnsNotStarted()
         {
             var mobileConnectionDetails = new MobileConnectionDetails
             {
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             mobileConnectionDetails.Description.Should().BeNullOrEmpty();
             mobileConnectionDetails.MinimumConnectionSpeed.Should().BeNullOrEmpty();
 
-            mobileConnectionDetails.IsValid().Should().BeFalse();
+            mobileConnectionDetails.Status().Should().Be(Enums.TaskProgress.NotStarted);
         }
     }
 }

@@ -22,20 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             model.OrderingPartyStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.OrderingPartyComplete) => TaskListStatuses.Completed,
-                _ => TaskListStatuses.Incomplete,
+                _ => TaskListStatuses.NotStarted,
             };
 
             model.SupplierStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskListStatuses.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.OrderingPartyComplete) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.OrderingPartyComplete) => TaskListStatuses.NotStarted,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.CommencementDateStatus = completedSections switch
             {
                 var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.Completed,
-                var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.SupplierComplete) => TaskListStatuses.NotStarted,
                 _ => TaskListStatuses.CannotStart,
             };
 
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             {
                 var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskListStatuses.Completed,
                 var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.Optional,
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.NotStarted,
                 _ => TaskListStatuses.CannotStart,
             };
 
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             {
                 var cs when cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.Completed,
                 var cs when cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete) => TaskListStatuses.Optional,
-                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.CommencementDateComplete) => TaskListStatuses.NotStarted,
                 _ => TaskListStatuses.CannotStart,
             };
 
@@ -67,13 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskListStatuses.Completed,
                 var cs when
                 cs.HasFlag(TaskListOrderSections.CatalogueSolutionsComplete)
-                || cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.Incomplete,
+                || cs.HasFlag(TaskListOrderSections.AssociatedServicesComplete) => TaskListStatuses.NotStarted,
                 _ => TaskListStatuses.CannotStart,
             };
 
             model.ReviewAndCompleteStatus = completedSections switch
             {
-                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskListStatuses.Incomplete,
+                var cs when cs.HasFlag(TaskListOrderSections.FundingSourceComplete) => TaskListStatuses.NotStarted,
                 _ => TaskListStatuses.CannotStart,
             };
 
