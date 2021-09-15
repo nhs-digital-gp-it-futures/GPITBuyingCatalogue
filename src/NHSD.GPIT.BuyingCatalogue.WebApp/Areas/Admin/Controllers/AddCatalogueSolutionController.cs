@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                var suppliers = await suppliersService.GetAllSuppliers();
+                var suppliers = await suppliersService.GetAllActiveSuppliers();
 
                 return View(model.WithSelectListItems(suppliers));
             }

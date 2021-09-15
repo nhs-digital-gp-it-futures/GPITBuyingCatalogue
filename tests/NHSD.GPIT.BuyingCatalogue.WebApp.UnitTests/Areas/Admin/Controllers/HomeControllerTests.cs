@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             Assert.Throws<ArgumentNullException>(
                     () =>
-                        _ = new HomeController(null, Mock.Of<IMapper>(), Mock.Of<ISolutionsService>()))
+                        _ = new HomeController(null, Mock.Of<IMapper>()))
                 .ParamName.Should()
                 .Be("organisationsService");
         }
@@ -43,23 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     () =>
                         _ = new HomeController(
                             Mock.Of<IOrganisationsService>(),
-                            null,
-                            Mock.Of<ISolutionsService>()))
-                .ParamName.Should()
-                .Be("mapper");
-        }
-
-        [Fact]
-        public static void Constructor_NullSolutionsService_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new HomeController(
-                            Mock.Of<IOrganisationsService>(),
-                            Mock.Of<IMapper>(),
                             null))
                 .ParamName.Should()
-                .Be("solutionsService");
+                .Be("mapper");
         }
 
         [Fact]
@@ -78,8 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockOrganisationService = new Mock<IOrganisationsService>();
             var controller = new HomeController(
                 mockOrganisationService.Object,
-                Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>());
 
             await controller.BuyerOrganisations();
 
@@ -97,8 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var controller = new HomeController(
                 mockOrganisationService.Object,
-                mockMapper.Object,
-                Mock.Of<ISolutionsService>());
+                mockMapper.Object);
 
             await controller.BuyerOrganisations();
 
@@ -118,8 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Returns(mockOrganisationModels);
             var controller = new HomeController(
                 mockOrganisationService.Object,
-                mockMapper.Object,
-                Mock.Of<ISolutionsService>());
+                mockMapper.Object);
 
             var actual = (await controller.BuyerOrganisations()).As<ViewResult>();
 
@@ -133,8 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var controller = new HomeController(
                 Mock.Of<IOrganisationsService>(),
-                Mock.Of<IMapper>(),
-                Mock.Of<ISolutionsService>());
+                Mock.Of<IMapper>());
 
             var result = controller.Index().As<ViewResult>();
 

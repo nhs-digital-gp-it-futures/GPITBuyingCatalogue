@@ -50,15 +50,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_Index_SuppliersInDatabase_ReturnsViewWithExpectedModel(
             List<Supplier> suppliers,
-            Mock<ISuppliersService> mockService)
+            Mock<ISuppliersService> mockService,
+            Mock<ISolutionsService> mockSolutions)
         {
-            mockService.Setup(s => s.GetAllSuppliers())
+            mockService.Setup(s => s.GetAllActiveSuppliers())
                 .ReturnsAsync(suppliers);
-            var controller = new AddCatalogueSolutionController(Mock.Of<ISolutionsService>(), mockService.Object);
+            var controller = new AddCatalogueSolutionController(mockSolutions.Object, mockService.Object);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
-            mockService.Verify(s => s.GetAllSuppliers());
+            mockService.Verify(s => s.GetAllActiveSuppliers());
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.As<AddSolutionModel>()
@@ -112,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
                 .ReturnsAsync(existingSolution);
 
-            mockSuppliersService.Setup(s => s.GetAllSuppliers())
+            mockSuppliersService.Setup(s => s.GetAllActiveSuppliers())
                 .ReturnsAsync(suppliers);
 
             var controller = new AddCatalogueSolutionController(mockService.Object, mockSuppliersService.Object);
@@ -152,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Mock<ISuppliersService> mockSuppliersService,
             List<Supplier> suppliers)
         {
-            mockSuppliersService.Setup(s => s.GetAllSuppliers())
+            mockSuppliersService.Setup(s => s.GetAllActiveSuppliers())
                 .ReturnsAsync(suppliers);
 
             mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
@@ -163,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.Index(model)).As<ViewResult>();
 
-            mockSuppliersService.Verify(s => s.GetAllSuppliers());
+            mockSuppliersService.Verify(s => s.GetAllActiveSuppliers());
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(model.WithSelectListItems(suppliers));
