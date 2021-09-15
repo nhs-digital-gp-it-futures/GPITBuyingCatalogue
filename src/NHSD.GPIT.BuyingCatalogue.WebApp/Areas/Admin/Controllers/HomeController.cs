@@ -21,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
         public HomeController(
             IOrganisationsService organisationsService,
-            IMapper mapper,
-            ISolutionsService solutionsService)
+            IMapper mapper)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

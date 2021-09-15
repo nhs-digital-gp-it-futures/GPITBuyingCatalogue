@@ -6,6 +6,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -30,6 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockSuppliers = new Mock<IList<Supplier>>().Object;
             var mockSolutionService = new Mock<ISuppliersService>();
 
+            var expectedResult = new ManageSuppliersModel(mockSuppliers);
+
             mockSolutionService.Setup(o => o.GetAllSuppliers()).ReturnsAsync(mockSuppliers);
 
             var controller = new SuppliersController(
@@ -39,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            Assert.Same(mockSuppliers, actual.Model);
+            actual.Model.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

@@ -755,6 +755,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     Summary = "About this supplier",
                     SupplierUrl = "https://www.e2etest.com",
+                    Active = true,
                 },
                 new()
                 {
@@ -786,6 +787,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PhoneNumber = "123456789",
                         },
                     },
+                    Active = true,
                 },
                 new()
                 {
@@ -805,6 +807,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     Summary = "About this Supplier",
                     SupplierUrl = "https://www.e2etest.com",
+                    Active = true,
                 },
             };
             context.AddRange(suppliers);
