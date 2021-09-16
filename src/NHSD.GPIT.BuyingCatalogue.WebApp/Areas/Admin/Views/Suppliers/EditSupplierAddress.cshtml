@@ -1,0 +1,45 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditSupplierAddressModel
+@{
+    ViewData["Title"] = "Supplier Registered Address";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <form method="post">
+            <nhs-fieldset-form-container asp-for="@Model"
+                                         label-text="@ViewData["Title"]"
+                                         label-hint="Provide the registered address that was submitted in the tender response to the GP IT Futures Framework 1 competition."
+                                         size="ExtraLarge">
+                <nhs-input asp-for="AddressLine1"
+                           label-text="Address Line 1" />
+                <nhs-input asp-for="AddressLine2"
+                           label-text="Address Line 2 (optional)"/>
+                <nhs-input asp-for="AddressLine3"
+                           label-text="Address Line 3 (optional)"/>
+                <nhs-input asp-for="AddressLine4"
+                           label-text="Address Line 4 (optional)"/>
+                <nhs-input asp-for="AddressLine5"
+                           label-text="Address Line 5 (optional)"/>
+                <nhs-input asp-for="Town"
+                           label-text="Town or city"
+                           class="nhsuk-u-width-two-thirds" />
+                <nhs-input asp-for="County"
+                           label-text="County (optional)"
+                           class="nhsuk-u-width-two-thirds" />
+                <nhs-input asp-for="PostCode"
+                           label-text="Postcode"
+                           class="nhsuk-input--width-10" />
+                <nhs-input asp-for="Country"
+                           label-text="Country"
+                           class="nhsuk-input--width-20" />
+            </nhs-fieldset-form-container>
+
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <br />
+            <nhs-submit-button text="Save and continue" />
+        </form>
+    </div>
+</div>

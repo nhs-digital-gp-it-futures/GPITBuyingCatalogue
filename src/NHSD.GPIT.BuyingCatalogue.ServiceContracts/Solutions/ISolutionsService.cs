@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<List<Capability>> GetFuturesCapabilities();
 
-        Task<IList<Supplier>> GetAllSuppliers();
-
         Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link);
 
         Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features);

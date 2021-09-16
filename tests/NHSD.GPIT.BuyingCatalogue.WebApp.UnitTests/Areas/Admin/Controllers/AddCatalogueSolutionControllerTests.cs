@@ -4,6 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
@@ -36,28 +41,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new AddCatalogueSolutionController(null))
-                .ParamName.Should()
-                .Be("solutionsService");
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(AddCatalogueSolutionController).GetConstructors();
+
+            assertion.Verify(constructors);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_Index_SuppliersInDatabase_ReturnsViewWithExpectedModel(
             List<Supplier> suppliers,
-            Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISuppliersService> mockService,
+            AddCatalogueSolutionController controller)
         {
-            mockService.Setup(s => s.GetAllSuppliers())
+            mockService.Setup(s => s.GetAllActiveSuppliers())
                 .ReturnsAsync(suppliers);
-            var controller = new AddCatalogueSolutionController(mockService.Object);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
-            mockService.Verify(s => s.GetAllSuppliers());
+            mockService.Verify(s => s.GetAllActiveSuppliers());
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.As<AddSolutionModel>()
@@ -70,6 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Index_ModelStateValid_AddsExpectedCatalogueItem(
             AddSolutionModel model,
             Mock<ISolutionsService> mockService,
+            Mock<ISuppliersService> mockSuppliersService,
             int userId)
         {
             var frameworks = new List<FrameworkModel> { new() { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
@@ -79,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
                 .ReturnsAsync((CatalogueItem)null);
 
-            var controller = GetController(mockService, userId);
+            var controller = GetController(mockService, mockSuppliersService, userId);
 
             await controller.Index(model);
 
@@ -98,7 +104,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AddSolutionModel model,
             CatalogueItem existingSolution,
             List<Supplier> suppliers,
-            Mock<ISolutionsService> mockService)
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            AddCatalogueSolutionController controller)
         {
             var frameworks = new List<FrameworkModel> { new() { Name = "DFOCVC", Selected = true, FrameworkId = "DFOCVC001" } };
 
@@ -109,10 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
                 .ReturnsAsync(existingSolution);
 
-            mockService.Setup(s => s.GetAllSuppliers())
+            mockSuppliersService.Setup(s => s.GetAllActiveSuppliers())
                 .ReturnsAsync(suppliers);
-
-            var controller = new AddCatalogueSolutionController(mockService.Object);
 
             var actual = (await controller.Index(model)).As<ViewResult>();
 
@@ -126,12 +132,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_Index_ModelStateValid_RedirectsToManageCatalogueSolutions(
             AddSolutionModel model,
-            Mock<ISolutionsService> mockService)
+            Mock<ISolutionsService> mockService,
+            Mock<ISuppliersService> mockSuppliersService)
         {
             mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
                 .ReturnsAsync((CatalogueItem)null);
 
-            var controller = GetController(mockService, 17);
+            var controller = GetController(mockService, mockSuppliersService, 17);
 
             var actual = (await controller.Index(model)).As<RedirectToActionResult>();
 
@@ -144,21 +151,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_Index_ModelStateNotValid_GetsSuppliers_ReturnsViewWithModel(
             AddSolutionModel model,
-            Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            AddCatalogueSolutionController controller,
             List<Supplier> suppliers)
         {
-            mockService.Setup(s => s.GetAllSuppliers())
+            mockSuppliersService.Setup(s => s.GetAllActiveSuppliers())
                 .ReturnsAsync(suppliers);
 
             mockService.Setup(s => s.GetSolutionByName(It.IsAny<string>()))
                 .ReturnsAsync((CatalogueItem)null);
 
-            var controller = new AddCatalogueSolutionController(mockService.Object);
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var actual = (await controller.Index(model)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetAllSuppliers());
+            mockSuppliersService.Verify(s => s.GetAllActiveSuppliers());
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(model.WithSelectListItems(suppliers));
@@ -166,9 +174,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         private static AddCatalogueSolutionController GetController(
             IMock<ISolutionsService> mockService,
+            IMock<ISuppliersService> mockSuppliersService,
             int userId)
         {
-            return new AddCatalogueSolutionController(mockService.Object)
+            return new AddCatalogueSolutionController(mockService.Object, mockSuppliersService.Object)
             {
                 ControllerContext = new ControllerContext
                 {

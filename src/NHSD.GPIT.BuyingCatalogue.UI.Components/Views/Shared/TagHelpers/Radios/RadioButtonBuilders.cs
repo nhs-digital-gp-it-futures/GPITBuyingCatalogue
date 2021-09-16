@@ -39,8 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             var input = GetRadioInputBuilder(viewcontext, aspFor, htmlGenerator, item, valueName, index);
             var label = GetRadioLabelBuilder(viewcontext, aspFor, htmlGenerator, item, displayName, index);
 
-            builder.InnerHtml.AppendHtml(input);
-            builder.InnerHtml.AppendHtml(label);
+            builder.InnerHtml
+                .AppendHtml(input)
+                .AppendHtml(label);
 
             return builder;
         }
@@ -55,9 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         {
             var itemText = GetGenericValueFromName(item, displayName);
 
-            return string.IsNullOrWhiteSpace(itemText)
+            return itemText is null
                 ? null
-                : GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText, index);
+                : GetRadioLabelBuilder(viewContext, aspFor, htmlGenerator, itemText.ToString(), index);
         }
 
         public static TagBuilder GetRadioLabelBuilder(
@@ -85,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         {
             var itemValue = GetGenericValueFromName(item, valueName);
 
-            return string.IsNullOrWhiteSpace(itemValue)
+            return itemValue is null
                 ? null
                 : GetRadioInputBuilder(viewContext, aspFor, htmlGenerator, itemValue, index);
         }
@@ -94,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             ViewContext viewContext,
             ModelExpression aspFor,
             IHtmlGenerator htmlGenerator,
-            string value,
+            object value,
             int index,
             bool? isChecked = null)
         {
@@ -111,17 +112,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             return builder;
         }
 
-        private static string GetGenericValueFromName(object item, string targetName)
+        private static object GetGenericValueFromName(object item, string targetName)
         {
             var propertyInfo = item.GetType().GetProperty(targetName);
 
             if (propertyInfo is not null)
-                return propertyInfo.GetValue(item)?.ToString();
+                return propertyInfo.GetValue(item);
 
             var methodInfo = item.GetType().GetExtensionMethod(Assembly.GetAssembly(item.GetType()), targetName);
 
             return methodInfo is not null
-                ? methodInfo.Invoke(item, new[] { item })?.ToString()
+                ? methodInfo.Invoke(item, new[] { item })
                 : string.Empty;
         }
     }

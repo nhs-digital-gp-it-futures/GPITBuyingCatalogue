@@ -6,6 +6,7 @@
 <html lang="en">
 <head>
     <partial name="Partials/_HeadIncludes" />
+    @await RenderSectionAsync("Scripts", false)
 </head>
 <body>
     @if ((bool?)Context.Items[Cookies.ShowConsentCookie] == true)

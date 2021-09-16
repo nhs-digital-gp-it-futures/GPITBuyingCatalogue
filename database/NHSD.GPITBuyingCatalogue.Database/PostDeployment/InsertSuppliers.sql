@@ -3,7 +3,7 @@ DECLARE @now AS datetime = GETUTCDATE();
 
 IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM catalogue.Suppliers)
 BEGIN
-    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy, IsActive)
     VALUES (
         100000,
         'Really Kool Corporation',
@@ -11,32 +11,33 @@ BEGIN
         'Really Kool Corporation is a fictious UK based IT company but that''s not going to stop us making Really Kool products!',
         '{"line1": "The Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}',
         @now,
-        @noUser);
+        @noUser,
+        1);
 
-    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, [Address], LastUpdated, LastUpdatedBy, IsActive)
     VALUES
-    (100001, 'Remedical Software', 'Remedical Limited', 'The Remedical Software', '{"line1": "Remedical Software Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100002, 'CareShare', 'CareShare Limited', 'The CareShare', '{"line1": "CareShare Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100003, 'Avatar Solutions', 'Avatar Solutions Plc', 'Avatar Solutions', '{"line1": "Avatar Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100004, 'Catterpillar Medworks', 'Catterpillar Medworks Ltd', 'Catterpillar Medworks', '{"line1": "Medworks Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100005, 'Curtis Systems', 'Curtis Systems Ltd', 'Curtis Systems', '{"line1": "Curtis Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100006, 'Clinical Raptor', 'Clinical Raptor Ltd', 'Clinical Raptor', '{"line1": "Raptor Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100007, 'Doc Lightning', 'Doc Lightning Ltd', 'Doc Lightning', '{"line1": "Doc Lightning Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100008, 'Docability Software', 'Docability Ltd', 'Docability Software', '{"line1": "Docability Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100009, 'Empire Softworks',  'Empire Softworks Plc', 'Empire Softworks', '{"line1": "Empire Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100010, 'Cure Forward', 'Cure Forward Ltd', 'Cure Forward', '{"line1": "Cure Forward Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100011, 'Hansa Healthcare', 'Hansa Healthcare Plc', 'Hansa Healthcare', '{"line1": "Hansa Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100012, 'Moonlight Intercare', 'Moonlight Intercare', 'Moonlight Intercare', '{"line1": "Moonlight Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100013, 'eHealth Development', 'eHealth Development', 'eHealth Development', '{"line1": "eHealth Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100014, 'Dr. Nick', 'Dr. Nick', 'Dr. Nick', '{"line1": "Simpson Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100015, 'Testproof Technology',  'Testproof Technology', 'Testproof Technology', '{"line1": "Testproof Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100016, 'Hojo Health', 'Hojo Health Ltd', 'Hojo Health', '{"line1": "Hojo Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100017, 'Jericho Healthcare', 'Jericho Ltd', 'Jericho Healthcare', '{"line1": "Jericho Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100018, 'Mana Systems', 'Mana Systems', 'Mana Systems', '{"line1": "Mana Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100019, 'Sunhealth Nanosystems', 'Sunhealth Nanosystems', 'Sunhealth Nanosystems', '{"line1": "Sunhealth Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser),
-    (100020, 'Oakwood', 'Oakwood Ltd', 'Oakwood', '{"line1": "Oakwood Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser);
+    (100001, 'Remedical Software', 'Remedical Limited', 'The Remedical Software', '{"line1": "Remedical Software Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100002, 'CareShare', 'CareShare Limited', 'The CareShare', '{"line1": "CareShare Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100003, 'Avatar Solutions', 'Avatar Solutions Plc', 'Avatar Solutions', '{"line1": "Avatar Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100004, 'Catterpillar Medworks', 'Catterpillar Medworks Ltd', 'Catterpillar Medworks', '{"line1": "Medworks Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100005, 'Curtis Systems', 'Curtis Systems Ltd', 'Curtis Systems', '{"line1": "Curtis Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100006, 'Clinical Raptor', 'Clinical Raptor Ltd', 'Clinical Raptor', '{"line1": "Raptor Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100007, 'Doc Lightning', 'Doc Lightning Ltd', 'Doc Lightning', '{"line1": "Doc Lightning Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100008, 'Docability Software', 'Docability Ltd', 'Docability Software', '{"line1": "Docability Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100009, 'Empire Softworks',  'Empire Softworks Plc', 'Empire Softworks', '{"line1": "Empire Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100010, 'Cure Forward', 'Cure Forward Ltd', 'Cure Forward', '{"line1": "Cure Forward Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100011, 'Hansa Healthcare', 'Hansa Healthcare Plc', 'Hansa Healthcare', '{"line1": "Hansa Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100012, 'Moonlight Intercare', 'Moonlight Intercare', 'Moonlight Intercare', '{"line1": "Moonlight Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100013, 'eHealth Development', 'eHealth Development', 'eHealth Development', '{"line1": "eHealth Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100014, 'Dr. Nick', 'Dr. Nick', 'Dr. Nick', '{"line1": "Simpson Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100015, 'Testproof Technology',  'Testproof Technology', 'Testproof Technology', '{"line1": "Testproof Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100016, 'Hojo Health', 'Hojo Health Ltd', 'Hojo Health', '{"line1": "Hojo Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100017, 'Jericho Healthcare', 'Jericho Ltd', 'Jericho Healthcare', '{"line1": "Jericho Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100018, 'Mana Systems', 'Mana Systems', 'Mana Systems', '{"line1": "Mana Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100019, 'Sunhealth Nanosystems', 'Sunhealth Nanosystems', 'Sunhealth Nanosystems', '{"line1": "Sunhealth Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1),
+    (100020, 'Oakwood', 'Oakwood Ltd', 'Oakwood', '{"line1": "Oakwood Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}', @now, @noUser, 1);
 
-    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, SupplierUrl, [Address], LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.Suppliers(Id, [Name], LegalName, Summary, SupplierUrl, [Address], LastUpdated, LastUpdatedBy, IsActive)
     VALUES
     (
         99999,
@@ -54,7 +55,8 @@ BEGIN
         'www.emishealth.com',
         '{"line1": "NotEmis Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}',
         @now,
-        @noUser),
+        @noUser,
+        1),
     (
         99998,
         'NotTPP',
@@ -63,7 +65,8 @@ BEGIN
         'https://www.tpp-uk.com/',
         '{"line1": "NotTPP Tower", "line2": "High Street", "city": "Leeds", "county": "West Yorkshire", "postcode": "LS1 1BB", "country": "UK"}',
         @now,
-        @noUser);
+        @noUser,
+        1);
 
 
     INSERT INTO catalogue.SupplierContacts (SupplierId, FirstName, LastName, Email, PhoneNumber, LastUpdated, LastUpdatedBy)

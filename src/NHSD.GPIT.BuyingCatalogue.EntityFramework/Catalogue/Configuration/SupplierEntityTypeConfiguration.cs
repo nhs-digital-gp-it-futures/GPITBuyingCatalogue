@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.Summary).HasMaxLength(1100);
             builder.Property(s => s.SupplierUrl).HasMaxLength(1000);
 
+            builder.Property(s => s.IsActive).HasDefaultValue(0);
+
             builder.HasOne(s => s.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(s => s.LastUpdatedBy)
