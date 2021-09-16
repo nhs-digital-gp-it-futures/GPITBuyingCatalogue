@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             {
                 foreach (var attribute in output.Attributes)
                 {
-                    if (attribute.Name.Equals("class", System.StringComparison.InvariantCultureIgnoreCase))
+                    if (attribute.Name.Equals("class", StringComparison.OrdinalIgnoreCase))
                         htmlContent.AddCssClass(attribute.Value.ToString());
                     else
                         htmlContent.Attributes.Add(new KeyValuePair<string, string>(attribute.Name, attribute.Value.ToString()));
