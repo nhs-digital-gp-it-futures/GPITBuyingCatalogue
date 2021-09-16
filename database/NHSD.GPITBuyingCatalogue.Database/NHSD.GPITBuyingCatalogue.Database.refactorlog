@@ -7,11 +7,4 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="IsActive" />
   </Operation>
-  <Operation Name="Rename Refactor" Key="11333913-96d8-49a6-bc56-2899ef3ced26" ChangeDateTime="09/16/2021 09:38:55">
-    <Property Name="ElementName" Value="[catalogue].[Epics].[Active]" />
-    <Property Name="ElementType" Value="SqlSimpleColumn" />
-    <Property Name="ParentElementName" Value="[catalogue].[Epics]" />
-    <Property Name="ParentElementType" Value="SqlTable" />
-    <Property Name="NewName" Value="IsActive" />
-  </Operation>
 </Operations>

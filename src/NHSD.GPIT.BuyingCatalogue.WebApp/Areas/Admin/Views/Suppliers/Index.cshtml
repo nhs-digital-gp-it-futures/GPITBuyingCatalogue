@@ -33,7 +33,7 @@
         <nhs-table-column></nhs-table-column>
         @foreach (var supplierModel in Model.Suppliers)
         {
-            <nhs-table-row-container class="@(!supplierModel.Active ? "inactive" : null)">
+            <nhs-table-row-container class="@(!supplierModel.IsActive ? "inactive" : null)">
                 <nhs-table-cell>
                     @supplierModel.Name
                 </nhs-table-cell>
@@ -41,7 +41,7 @@
                     @supplierModel.Id
                 </nhs-table-cell>
                 <nhs-table-cell>
-                    @if (!supplierModel.Active)
+                    @if (!supplierModel.IsActive)
                     {
                         <nhs-tag colour="Grey" text="Inactive" />
                     }

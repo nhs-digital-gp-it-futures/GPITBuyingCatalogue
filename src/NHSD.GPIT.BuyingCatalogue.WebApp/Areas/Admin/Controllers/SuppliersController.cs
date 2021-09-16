@@ -82,10 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }
 
             if (!ModelState.IsValid)
-            {
-                supplierStatus.SupplierStatus = supplier.IsActive;
                 return View(supplierStatus);
-            }
 
             await suppliersService.UpdateSupplierActiveStatus(supplierId, model.SupplierStatus);
 

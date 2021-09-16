@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
             this.supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         }
 
-        public async Task<IList<Supplier>> GetAllSuppliers()
+        public async Task<IReadOnlyList<Supplier>> GetAllSuppliers()
         {
             return await dbContext.Suppliers.OrderBy(s => s.Name).ToListAsync();
         }

@@ -4,27 +4,27 @@
     [Name] nvarchar(150) NOT NULL,
     CapabilityId int NOT NULL,
     CompliancyLevelId int NULL,
-    Active bit NOT NULL,
+    IsActive bit NOT NULL,
     SupplierDefined bit DEFAULT 0 NOT NULL
 );
 
 DECLARE @capabilityId AS int = 1;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive, SupplierDefined)
 VALUES
 ('C1E1', 'Manage Appointments', @capabilityId, 1, 1, 0),
 ('C1E2', 'Manage Appointments by Proxy', @capabilityId, 3, 1, 0);
 
 SET @capabilityId = 2;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C2E1', 'Manage communications – Patient', @capabilityId, 1, 1),
 ('C2E2', 'Manage communications – Proxy', @capabilityId, 3, 1);
 
 SET @capabilityId = 3;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C3E1', 'Manage Repeat Medications – Patient', @capabilityId, 1, 1),
 ('C3E2', 'Manage my nominated EPS pharmacy', @capabilityId, 1, 1),
@@ -39,14 +39,14 @@ VALUES
 
 SET @capabilityId = 4;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C4E1', 'View Patient Record – Patient', @capabilityId, 1, 1),
 ('C4E2', 'View Patient Record – Proxy', @capabilityId, 3, 1);
 
 SET @capabilityId = 5;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C5E1', 'Manage Session templates', @capabilityId, 1, 1),
 ('C5E2', 'Manage Sessions', @capabilityId, 1, 1),
@@ -58,7 +58,7 @@ VALUES
 
 SET @capabilityId = 6;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C6E1', 'Access to Clinical Decision Support', @capabilityId, 1, 1),
 ('C6E2', 'Local configuration for Clinical Decision Support triggering', @capabilityId, 1, 1),
@@ -67,7 +67,7 @@ VALUES
 
 SET @capabilityId = 7;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C7E1', 'Manage communication consents for a Patient', @capabilityId, 1, 1),
 ('C7E2', 'Manage communication preferences for a Patient', @capabilityId, 1, 1),
@@ -82,7 +82,7 @@ VALUES
 
 SET @capabilityId = 8;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C8E1', 'Manage Requests for Investigations', @capabilityId, 1, 1),
 ('C8E2', 'View Requests for Investigations reports', @capabilityId, 1, 1),
@@ -91,7 +91,7 @@ VALUES
 
 SET @capabilityId = 9;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C9E1', 'Manage document classifications', @capabilityId, 1, 1),
 ('C9E2', 'Manage document properties', @capabilityId, 1, 1),
@@ -113,21 +113,21 @@ VALUES
 
 SET @capabilityId = 10;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C10E1', 'View GPES payment extract reports', @capabilityId, 1, 1),
 ('C10E2', 'View national GPES non-payment extract reports', @capabilityId, 3, 1);
 
 SET @capabilityId = 11;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C11E1', 'Manage Referrals', @capabilityId, 1, 1),
 ('C11E2', 'View Referral reports', @capabilityId, 1, 1);
 
 SET @capabilityId = 12;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C12E1', 'Manage General Practice and Branch site information', @capabilityId, 1, 1),
 ('C12E2', 'Manage General Practice Staff Members', @capabilityId, 1, 1),
@@ -139,7 +139,7 @@ VALUES
 
 SET @capabilityId = 13;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C13E1', 'Manage Patients ', @capabilityId, 1, 1),
 ('C13E2', 'Access Patient Record', @capabilityId, 1, 1),
@@ -165,7 +165,7 @@ VALUES
 
 SET @capabilityId = 14;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C14E1', 'Access prescribable items', @capabilityId, 1, 1),
 ('C14E2', 'Manage Formularies', @capabilityId, 1, 1),
@@ -186,7 +186,7 @@ VALUES
 
 SET @capabilityId = 15;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C15E1', 'Record Consultation information', @capabilityId, 1, 1),
 ('C15E2', 'View report on calls and recalls', @capabilityId, 1, 1),
@@ -199,20 +199,20 @@ VALUES
 
 SET @capabilityId = 16;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C16E1', 'Report data from other Capabilities', @capabilityId, 1, 1);
 
 SET @capabilityId = 17;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C17E1', 'Scan documents', @capabilityId, 1, 1),
 ('C17E2', 'Image enhancement', @capabilityId, 3, 1);
 
 SET @capabilityId = 18;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C18E1', 'Share monitoring data with my General Practice', @capabilityId, 1, 1),
 ('C18E2', 'Configure Telehealth for the Practice', @capabilityId, 1, 1),
@@ -221,7 +221,7 @@ VALUES
 
 SET @capabilityId = 19;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C19E1', 'Document classification', @capabilityId, 1, 1),
 ('C19E2', 'Manage Document Classification rules', @capabilityId, 1, 1),
@@ -229,7 +229,7 @@ VALUES
 
 SET @capabilityId = 20;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C20E1', 'Manage Task templates', @capabilityId, 1, 1),
 ('C20E2', 'Manage Workflow templates', @capabilityId, 1, 1),
@@ -247,7 +247,7 @@ VALUES
 
 SET @capabilityId = 21;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C21E1', 'Maintain Resident''s Care Home Record', @capabilityId, 1, 1),
 ('C21E2', 'Maintain Resident Proxy preferences', @capabilityId, 3, 1),
@@ -260,7 +260,7 @@ VALUES
 
 SET @capabilityId = 22;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C22E1', 'Manage Cases', @capabilityId, 1, 1),
 ('C22E2', 'Maintain Caseloads', @capabilityId, 1, 1),
@@ -274,7 +274,7 @@ VALUES
 
 SET @capabilityId = 23;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C23E1', 'Make Appointments available to external organisations', @capabilityId, 1, 1),
 ('C23E2', 'Search externally bookable Appointment slots', @capabilityId, 1, 1),
@@ -288,7 +288,7 @@ VALUES
 
 SET @capabilityId = 24;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C24E1', 'Use Workflow to run a Cross-organisational Process', @capabilityId, 1, 1),
 ('C24E2', 'Maintain cross-organisational workflows', @capabilityId, 1, 1),
@@ -300,7 +300,7 @@ VALUES
 
 SET @capabilityId = 25;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C25E1', 'Maintain service schedule', @capabilityId, 1, 1),
 ('C25E2', 'Share service schedule', @capabilityId, 1, 1),
@@ -308,7 +308,7 @@ VALUES
 
 SET @capabilityId = 26;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C26E1', 'Analyse data across multiple organisations within the Integrated/Federated Care Setting (Federation)', @capabilityId, 1, 1),
 ('C26E2', 'Analyse data across different datasets', @capabilityId, 1, 1),
@@ -323,7 +323,7 @@ VALUES
 
 SET @capabilityId = 27;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C27E1', 'Maintain Domiciliary Care schedules', @capabilityId, 1, 1),
 ('C27E2', 'Share Domiciliary Care schedules', @capabilityId, 1, 1),
@@ -337,7 +337,7 @@ VALUES
 
 SET @capabilityId = 29;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C29E1', 'Health or Care Professional requests support', @capabilityId, 1, 1),
 ('C29E2', 'Respond to request for support from another Health or Care Professional', @capabilityId, 1, 1),
@@ -348,7 +348,7 @@ VALUES
 
 SET @capabilityId = 30;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C30E1', 'Single unified medication view', @capabilityId, 1, 1),
 ('C30E2', 'Request medication changes', @capabilityId, 1, 1),
@@ -367,7 +367,7 @@ VALUES
 
 SET @capabilityId = 32;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C32E1', 'Manage Personal Health Budget', @capabilityId, 1, 1),
 ('C32E2', 'Record Personal Health Budget purchases', @capabilityId, 1, 1),
@@ -387,7 +387,7 @@ VALUES
 
 SET @capabilityId = 33;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C33E1', 'Maintain Personal Health Record content', @capabilityId, 1, 1),
 ('C33E2', 'Organise Personal Health Record', @capabilityId, 3, 1),
@@ -396,7 +396,7 @@ VALUES
 
 SET @capabilityId = 34;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C34E1', 'Access healthcare data', @capabilityId, 1, 1),
 ('C34E2', 'Maintain cohorts', @capabilityId, 1, 1),
@@ -407,13 +407,13 @@ VALUES
 
 SET @capabilityId = 35;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C35E1', 'Run Risk Stratification algorithms', @capabilityId, 1, 1);
 
 SET @capabilityId = 36;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C36E1', 'Create Shared Care Plan', @capabilityId, 1, 1),
 ('C36E2', 'View Shared Care Plan', @capabilityId, 1, 1),
@@ -430,7 +430,7 @@ VALUES
 
 SET @capabilityId = 37;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C37E1', 'Assess wellness or well-being of the Patient or Service User', @capabilityId, 1, 1),
 ('C37E2', 'Search the directory', @capabilityId, 1, 1),
@@ -451,7 +451,7 @@ VALUES
 
 SET @capabilityId = 38;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C38E1', 'Define response to event', @capabilityId, 1, 1),
 ('C38E2', 'Monitor and alert', @capabilityId, 1, 1),
@@ -467,7 +467,7 @@ VALUES
 
 SET @capabilityId = 39;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C39E1', 'View Unified Care Record', @capabilityId, 1, 1),
 ('C39E2', 'Patient/Service User views the Unified Care Record', @capabilityId, 3, 1),
@@ -475,7 +475,7 @@ VALUES
 
 SET @capabilityId = 40;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C40E1', 'Verify Medicinal Product Unique Identifiers', @capabilityId, 1, 1),
 ('C40E2', 'Decommission Medicinal Products', @capabilityId, 1, 1),
@@ -483,7 +483,7 @@ VALUES
 
 SET @capabilityId = 42;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C42E1', 'Manage Stock in a Dispensary', @capabilityId, 1, 1),
 ('C42E2', 'Manage Stock Orders', @capabilityId, 1, 1),
@@ -496,7 +496,7 @@ VALUES
 
 SET @capabilityId = 45;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C45E1', 'Identify COVID-19 vaccination cohorts', @capabilityId, 1, 1),
 ('C45E2', 'Verify Patient information using Personal Demographics Service (PDS)', @capabilityId, 1, 1),
@@ -510,7 +510,7 @@ VALUES
 
 SET @capabilityId = 46;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C46E1', 'Define appointment availability for COVID-19 vaccination site', @capabilityId, 1, 1),
 ('C46E2', 'Book COVID-19 vaccination appointments for eligible Patients registered across different GP Practices', @capabilityId, 1, 1),
@@ -548,7 +548,7 @@ VALUES
 
 SET @capabilityId = 47;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('C47E1', 'Record structured COVID-19 vaccination data at the point of care for Patients registered at different GP Practices', @capabilityId, 1, 1),
 ('C47E2', 'Record structured COVID-19 adverse reaction data at the point of care for Patients registered at different GP Practices', @capabilityId, 1, 1),
@@ -573,7 +573,7 @@ VALUES
 
 SET @capabilityId = 43;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('E00001', 'conduct Online Consultation', @capabilityId, 1, 1),
 ('E00002', 'conduct Online Consultation with a Proxy', @capabilityId, 3, 1),
@@ -633,7 +633,7 @@ VALUES
 
 SET @capabilityId = 44;
 
-INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active)
+INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive)
 VALUES
 ('E00039', 'conduct Video Consultation', @capabilityId, 1, 1),
 ('E00040', 'conduct Video Consultation with a Proxy', @capabilityId, 3, 1),
@@ -669,7 +669,7 @@ IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
 BEGIN
     SET @capabilityId = 1;
 
-    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
+    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive, SupplierDefined)
     VALUES
     ('S020X01E05', 'Supplier-defined epic 5', @capabilityId, 3, 1, 1),
     ('S020X01E06', 'Supplier-defined epic 6', @capabilityId, 3, 1, 1),
@@ -678,14 +678,14 @@ BEGIN
 
     SET @capabilityId = 43;
 
-    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
+    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive, SupplierDefined)
     VALUES
     ('S020X01E01', 'Supplier-defined epic 1', @capabilityId, 3, 1, 1),
     ('S020X01E02', 'Supplier-defined epic 2', @capabilityId, 3, 1, 1);
 
     SET @capabilityId = 44;
 
-    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
+    INSERT INTO #Epics(Id, [Name], CapabilityId, CompliancyLevelId, IsActive, SupplierDefined)
     VALUES
     ('S020X01E03', 'Supplier-defined epic 3', @capabilityId, 3, 1, 1),
     ('S020X01E04', 'Supplier-defined epic 4', @capabilityId, 3, 1, 1);
@@ -697,10 +697,10 @@ ON TARGET.Id = SOURCE.Id
 WHEN MATCHED THEN
     UPDATE SET TARGET.[Name] = SOURCE.[Name],
                TARGET.CompliancyLevelId = SOURCE.CompliancyLevelId,
-               TARGET.Active = SOURCE.Active
+               TARGET.IsActive = SOURCE.IsActive
 WHEN NOT MATCHED BY TARGET THEN
-    INSERT (Id, [Name], CapabilityId, CompliancyLevelId, Active, SupplierDefined)
-    VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.CapabilityId, SOURCE.CompliancyLevelId, Active, SOURCE.SupplierDefined);
+    INSERT (Id, [Name], CapabilityId, CompliancyLevelId, IsActive, SupplierDefined)
+    VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.CapabilityId, SOURCE.CompliancyLevelId, IsActive, SOURCE.SupplierDefined);
 
 DROP TABLE #Epics;
 GO

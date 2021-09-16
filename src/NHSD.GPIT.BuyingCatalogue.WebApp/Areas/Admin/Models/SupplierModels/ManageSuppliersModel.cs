@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         {
         }
 
-        public ManageSuppliersModel(List<Supplier> suppliers)
+        public ManageSuppliersModel(IReadOnlyList<Supplier> suppliers)
         {
             Suppliers = suppliers;
         }
