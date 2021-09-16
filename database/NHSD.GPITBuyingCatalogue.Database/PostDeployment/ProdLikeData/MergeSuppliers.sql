@@ -14,7 +14,8 @@ BEGIN
         [Address] nvarchar(500) NULL,
         Deleted bit NOT NULL,
         LastUpdated datetime2(7) NOT NULL,
-        LastUpdatedBy int NULL
+        LastUpdatedBy int NULL,
+        IsActive bit NOT NULL DEFAULT 1,
     );
 
     DECLARE @noUser AS int = NULL;
@@ -190,9 +191,10 @@ WHEN MATCHED THEN
                   TARGET.[Address] = SOURCE.[Address],
                   TARGET.Deleted = SOURCE.Deleted,
                   TARGET.LastUpdated = SOURCE.LastUpdated,
-                  TARGET.LastUpdatedBy = SOURCE.LastUpdatedBy
+                  TARGET.LastUpdatedBy = SOURCE.LastUpdatedBy,
+                  TARGET.IsActive = SOURCE.IsActive
 WHEN NOT MATCHED BY TARGET THEN  
-        INSERT (Id, [Name], LegalName, Summary, SupplierUrl, [Address], Deleted, LastUpdated, LastUpdatedBy)
-        VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.LegalName, SOURCE.Summary, SOURCE.SupplierUrl, SOURCE.[Address], SOURCE.Deleted, SOURCE.LastUpdated, SOURCE.LastUpdatedBy);
+        INSERT (Id, [Name], LegalName, Summary, SupplierUrl, [Address], Deleted, LastUpdated, LastUpdatedBy, IsActive)
+        VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.LegalName, SOURCE.Summary, SOURCE.SupplierUrl, SOURCE.[Address], SOURCE.Deleted, SOURCE.LastUpdated, SOURCE.LastUpdatedBy, SOURCE.IsActive);
 END;
 GO

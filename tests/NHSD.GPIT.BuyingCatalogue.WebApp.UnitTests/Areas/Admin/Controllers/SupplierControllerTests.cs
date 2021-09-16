@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static async Task Get_Index_ReturnsViewWithExpectedViewModel()
         {
-            var mockSuppliers = new Mock<IList<Supplier>>().Object;
+            var mockSuppliers = new Mock<IReadOnlyList<Supplier>>().Object;
             var mockSolutionService = new Mock<ISuppliersService>();
 
             var expectedResult = new ManageSuppliersModel(mockSuppliers);
