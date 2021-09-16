@@ -4,6 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
@@ -38,13 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new AddCatalogueSolutionController(null, null))
-                .ParamName.Should()
-                .Be("solutionsService");
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(AddCatalogueSolutionController).GetConstructors();
+
+            assertion.Verify(constructors);
         }
 
         [Theory]

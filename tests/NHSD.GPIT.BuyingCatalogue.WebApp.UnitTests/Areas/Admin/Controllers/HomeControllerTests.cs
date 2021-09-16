@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
@@ -26,25 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullOrganisationService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new HomeController(null, Mock.Of<IMapper>()))
-                .ParamName.Should()
-                .Be("organisationsService");
-        }
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(HomeController).GetConstructors();
 
-        [Fact]
-        public static void Constructor_NullMapper_ThrowsException()
-        {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new HomeController(
-                            Mock.Of<IOrganisationsService>(),
-                            null))
-                .ParamName.Should()
-                .Be("mapper");
+            assertion.Verify(constructors);
         }
 
         [Fact]
