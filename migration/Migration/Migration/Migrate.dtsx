@@ -12,8 +12,8 @@
   DTS:ObjectName="Migrate"
   DTS:PackageType="5"
   DTS:ProtectionLevel="0"
-  DTS:VersionBuild="294"
-  DTS:VersionGUID="{6712AC1F-0ABE-4D77-9028-EB5028D0D2B8}">
+  DTS:VersionBuild="296"
+  DTS:VersionGUID="{B9048340-F19F-417D-8BF2-75DA71ABED25}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -10457,12 +10457,12 @@ ORDER BY ContactId;</property>
                   name="Merge Join Output"
                   startId="Package\Migrate Orders\Migrate Contacts\Inner Join.Outputs[Merge Join Output]" />
                 <path
-                  refId="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output1]"
+                  refId="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output]"
                   endId="Package\Migrate Orders\Migrate Contacts\Inner Join.Inputs[Merge Join Right Input]"
                   name="OLE DB Source Output"
                   startId="Package\Migrate Orders\Migrate Contacts\Get Order Contacts.Outputs[OLE DB Source Output]" />
                 <path
-                  refId="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output]"
+                  refId="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output1]"
                   endId="Package\Migrate Orders\Migrate Contacts\Inner Join.Inputs[Merge Join Left Input]"
                   name="OLE DB Source Output"
                   startId="Package\Migrate Orders\Migrate Contacts\Get Contacts.Outputs[OLE DB Source Output]" />
@@ -11006,12 +11006,12 @@ ORDER BY ContactId;</property>
                   name="Merge Join Output"
                   startId="Package\Migrate Orders\Migrate Default Delivery Dates\Inner Join.Outputs[Merge Join Output]" />
                 <path
-                  refId="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output1]"
+                  refId="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output]"
                   endId="Package\Migrate Orders\Migrate Default Delivery Dates\Inner Join.Inputs[Merge Join Right Input]"
                   name="OLE DB Source Output"
                   startId="Package\Migrate Orders\Migrate Default Delivery Dates\Get Order IDs.Outputs[OLE DB Source Output]" />
                 <path
-                  refId="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output]"
+                  refId="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output1]"
                   endId="Package\Migrate Orders\Migrate Default Delivery Dates\Inner Join.Inputs[Merge Join Left Input]"
                   name="OLE DB Source Output"
                   startId="Package\Migrate Orders\Migrate Default Delivery Dates\Get Default Delivery Dates.Outputs[OLE DB Source Output]" />
@@ -11654,12 +11654,12 @@ ORDER BY ContactId;</property>
                   name="Merge Join Output"
                   startId="Package\Migrate Orders\Migrate Order Item Recipients\Inner Join.Outputs[Merge Join Output]" />
                 <path
-                  refId="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output1]"
+                  refId="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output]"
                   endId="Package\Migrate Orders\Migrate Order Item Recipients\Inner Join.Inputs[Merge Join Right Input]"
                   name="OLE DB Source Output"
                   startId="Package\Migrate Orders\Migrate Order Item Recipients\Get Order IDs.Outputs[OLE DB Source Output]" />
                 <path
-                  refId="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output]"
+                  refId="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output1]"
                   endId="Package\Migrate Orders\Migrate Order Item Recipients\Inner Join.Inputs[Merge Join Left Input]"
                   name="OLE DB Source Output"
                   startId="Package\Migrate Orders\Migrate Order Item Recipients\Get Order Item Recipients.Outputs[OLE DB Source Output]" />
@@ -22203,12 +22203,6 @@ WHERE e.Id LIKE 'S%';</property>
                       externalMetadataColumnId="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics.Inputs[OLE DB Destination Input].ExternalColumns[CompliancyLevelId]"
                       lineageId="Package\Migrate Supplier-Defined Epics\Get Supplier-Defined Epics.Outputs[OLE DB Source Output].Columns[CompliancyLevelId]" />
                     <inputColumn
-                      refId="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics.Inputs[OLE DB Destination Input].Columns[Active]"
-                      cachedDataType="bool"
-                      cachedName="Active"
-                      externalMetadataColumnId="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics.Inputs[OLE DB Destination Input].ExternalColumns[Active]"
-                      lineageId="Package\Migrate Supplier-Defined Epics\Get Supplier-Defined Epics.Outputs[OLE DB Source Output].Columns[Active]" />
-                    <inputColumn
                       refId="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics.Inputs[OLE DB Destination Input].Columns[SupplierDefined]"
                       cachedDataType="i4"
                       cachedName="SupplierDefined"
@@ -22240,13 +22234,13 @@ WHERE e.Id LIKE 'S%';</property>
                       dataType="i4"
                       name="CompliancyLevelId" />
                     <externalMetadataColumn
-                      refId="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics.Inputs[OLE DB Destination Input].ExternalColumns[Active]"
-                      dataType="bool"
-                      name="Active" />
-                    <externalMetadataColumn
                       refId="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics.Inputs[OLE DB Destination Input].ExternalColumns[SupplierDefined]"
                       dataType="bool"
                       name="SupplierDefined" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics.Inputs[OLE DB Destination Input].ExternalColumns[IsActive]"
+                      dataType="bool"
+                      name="IsActive" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -22300,6 +22294,79 @@ WHERE e.Id LIKE 'S%';</property>
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\Migrate Suppliers\Add IsActive"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Add IsActive"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Migrate Suppliers\Add IsActive.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\Migrate Suppliers\Add IsActive.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Output].Columns[IsActive]"
+                      dataType="bool"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Output].Columns[IsActive]"
+                      name="IsActive"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_BOOL)1</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_BOOL)1</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\Migrate Suppliers\Add IsActive.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\Migrate Suppliers\Add NewLastUpdatedBy As Integer"
               componentClassID="Microsoft.DerivedColumn"
@@ -22937,6 +23004,12 @@ where [refTable].[OriginalId] = ?</property>
                       cachedName="NewLastUpdatedBy"
                       externalMetadataColumnId="Package\Migrate Suppliers\Save Suppliers.Inputs[OLE DB Destination Input].ExternalColumns[LastUpdatedBy]"
                       lineageId="Package\Migrate Suppliers\Union All.Outputs[Union All Output 1].Columns[NewLastUpdatedBy]" />
+                    <inputColumn
+                      refId="Package\Migrate Suppliers\Save Suppliers.Inputs[OLE DB Destination Input].Columns[IsActive]"
+                      cachedDataType="bool"
+                      cachedName="IsActive"
+                      externalMetadataColumnId="Package\Migrate Suppliers\Save Suppliers.Inputs[OLE DB Destination Input].ExternalColumns[IsActive]"
+                      lineageId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Output].Columns[IsActive]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -22982,6 +23055,10 @@ where [refTable].[OriginalId] = ?</property>
                       refId="Package\Migrate Suppliers\Save Suppliers.Inputs[OLE DB Destination Input].ExternalColumns[LastUpdatedBy]"
                       dataType="i4"
                       name="LastUpdatedBy" />
+                    <externalMetadataColumn
+                      refId="Package\Migrate Suppliers\Save Suppliers.Inputs[OLE DB Destination Input].ExternalColumns[IsActive]"
+                      dataType="bool"
+                      name="IsActive" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -23449,6 +23526,11 @@ where [refTable].[OriginalId] = ?</property>
               name="Derived Column Output"
               startId="Package\Migrate Suppliers\Add NewLastUpdatedBy As Integer.Outputs[Derived Column Output]" />
             <path
+              refId="Package\Migrate Suppliers.Paths[Derived Column Output1]"
+              endId="Package\Migrate Suppliers\Save Suppliers.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\Migrate Suppliers\Add IsActive.Outputs[Derived Column Output]" />
+            <path
               refId="Package\Migrate Suppliers.Paths[LastUpdatedBy Is NULL]"
               endId="Package\Migrate Suppliers\Add NewLastUpdatedBy As Integer.Inputs[Derived Column Input]"
               name="LastUpdatedBy Is NULL"
@@ -23465,7 +23547,7 @@ where [refTable].[OriginalId] = ?</property>
               startId="Package\Migrate Suppliers\Get Suppliers.Outputs[OLE DB Source Output]" />
             <path
               refId="Package\Migrate Suppliers.Paths[Union All Output 1]"
-              endId="Package\Migrate Suppliers\Save Suppliers.Inputs[OLE DB Destination Input]"
+              endId="Package\Migrate Suppliers\Add IsActive.Inputs[Derived Column Input]"
               name="Union All Output 1"
               startId="Package\Migrate Suppliers\Union All.Outputs[Union All Output 1]" />
             <path
@@ -24283,7 +24365,7 @@ where [refTable].[OriginalId] = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\Migrate Users\372:invalid};</property>
+                  name="ParameterMap">#{Package\Migrate Users\271:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -25084,6 +25166,28 @@ where [refTable].[OriginalId] = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\Migrate Orders.PrecedenceConstraints[Constraint 1]"
+          TopLeft="149.25,150">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51"
+              Start="0,0"
+              End="0,43.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\Migrate Orders.PrecedenceConstraints[Constraint 2]"
           TopLeft="153.75,243">
           <EdgeLayout.Curve>
@@ -25141,28 +25245,6 @@ where [refTable].[OriginalId] = ?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,31.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Migrate Orders.PrecedenceConstraints[Constraint 1]"
-          TopLeft="149.25,150">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,51"
-              Start="0,0"
-              End="0,43.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,43.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -28106,7 +28188,7 @@ where [refTable].[OriginalId] = ?</property>
           Id="Package\Migrate Orders\Migrate Contacts\Inner Join"
           TopLeft="142,109.5" />
         <EdgeLayout
-          Id="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output]"
+          Id="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output1]"
           TopLeft="311.5,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -28140,7 +28222,7 @@ where [refTable].[OriginalId] = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output1]"
+          Id="Package\Migrate Orders\Migrate Contacts.Paths[OLE DB Source Output]"
           TopLeft="92.5,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -28199,7 +28281,15 @@ where [refTable].[OriginalId] = ?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Contacts\Save Contacts">
+    design-time-name="Package\Migrate Orders\Migrate Contacts\Get Order Contacts">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Migrate Orders\Migrate Contacts\Get Contacts">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -28212,15 +28302,7 @@ where [refTable].[OriginalId] = ?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Contacts\Get Order Contacts">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Contacts\Get Contacts">
+    design-time-name="Package\Migrate Orders\Migrate Contacts\Save Contacts">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -28254,7 +28336,7 @@ where [refTable].[OriginalId] = ?</property>
           Id="Package\Migrate Orders\Migrate Default Delivery Dates\Inner Join"
           TopLeft="170.5,111.5" />
         <EdgeLayout
-          Id="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output]"
+          Id="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output1]"
           TopLeft="110,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -28288,7 +28370,7 @@ where [refTable].[OriginalId] = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output1]"
+          Id="Package\Migrate Orders\Migrate Default Delivery Dates.Paths[OLE DB Source Output]"
           TopLeft="349,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -28347,7 +28429,7 @@ where [refTable].[OriginalId] = ?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Default Delivery Dates\Get Default Delivery Dates">
+    design-time-name="Package\Migrate Orders\Migrate Default Delivery Dates\Save Default Delivery Dates">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -28360,7 +28442,7 @@ where [refTable].[OriginalId] = ?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Default Delivery Dates\Save Default Delivery Dates">
+    design-time-name="Package\Migrate Orders\Migrate Default Delivery Dates\Get Default Delivery Dates">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -28394,7 +28476,7 @@ where [refTable].[OriginalId] = ?</property>
           Id="Package\Migrate Orders\Migrate Order Item Recipients\Inner Join"
           TopLeft="169,106.5" />
         <EdgeLayout
-          Id="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output]"
+          Id="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output1]"
           TopLeft="108.5,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -28428,7 +28510,7 @@ where [refTable].[OriginalId] = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output1]"
+          Id="Package\Migrate Orders\Migrate Order Item Recipients.Paths[OLE DB Source Output]"
           TopLeft="345.5,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -28509,6 +28591,14 @@ where [refTable].[OriginalId] = ?</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Migrate Orders\Migrate Order Item Recipients\Get Order IDs">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -28793,25 +28883,12 @@ where [refTable].[OriginalId] = ?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Order Items\Get Order Items">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\Migrate Orders\Migrate Order Items\Look up Price ID">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -28829,6 +28906,19 @@ where [refTable].[OriginalId] = ?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
+    design-time-name="Package\Migrate Orders\Migrate Order Items\Get Order Items">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\Migrate Orders\Migrate Order Items\Get Order IDs">
     <Properties>
       <Property>
@@ -28842,7 +28932,7 @@ where [refTable].[OriginalId] = ?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -29259,6 +29349,22 @@ where [refTable].[OriginalId] = ?</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Migrate Orders\Migrate Service Recipients\Get Order Items">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Migrate Orders\Migrate Service Recipients\Get Order IDs">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -29737,6 +29843,14 @@ where [refTable].[OriginalId] = ?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
+    design-time-name="Package\Migrate Pricing Units\Get Production Pricing Units">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\Migrate Pricing Units\Lookup Existing Pricing Units">
     <Properties>
       <Property>
@@ -29754,14 +29868,6 @@ where [refTable].[OriginalId] = ?</property>
         <Value
           type="q4:string">0</Value>
       </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Migrate Pricing Units\Get Production Pricing Units">
-    <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
       </Property>
@@ -30827,7 +30933,7 @@ where [refTable].[OriginalId] = ?</property>
     design-time-name="Package\Migrate Supplier-Defined Epics">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="219,42"
           Id="Package\Migrate Supplier-Defined Epics\Save Supplier-Defined Epics"
@@ -30855,9 +30961,7 @@ where [refTable].[OriginalId] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -30900,7 +31004,7 @@ where [refTable].[OriginalId] = ?</property>
         <NodeLayout
           Size="153,42"
           Id="Package\Migrate Suppliers\Save Suppliers"
-          TopLeft="223.5,414.5" />
+          TopLeft="221.5,491.5" />
         <NodeLayout
           Size="123,42"
           Id="Package\Migrate Suppliers\Union All"
@@ -30947,28 +31051,6 @@ where [refTable].[OriginalId] = ?</property>
             <mssgm:EdgeLabel
               BoundingBox="-128.6765234375,28.4435695538058,118.353046875,11.609375"
               RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Migrate Suppliers.Paths[Union All Output 1]"
-          TopLeft="300,354.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -31091,6 +31173,54 @@ where [refTable].[OriginalId] = ?</property>
                     Point3="-132.833333333333,37.760834670947" />
                   <mssgle:LineSegment
                     End="-132.833333333333,49.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="140,42"
+          Id="Package\Migrate Suppliers\Add IsActive"
+          TopLeft="229,398" />
+        <EdgeLayout
+          Id="Package\Migrate Suppliers.Paths[Union All Output 1]"
+          TopLeft="299.5,354.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43.5"
+              Start="0,0"
+              End="0,36">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Migrate Suppliers.Paths[Derived Column Output1]"
+          TopLeft="298.5,440">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51.5"
+              Start="0,0"
+              End="0,44">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -31344,30 +31474,6 @@ where [refTable].[OriginalId] = ?</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Service Recipients\Get Order IDs">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Service Recipients\Get Order Items">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Migrate Orders\Migrate Order Item Recipients\Get Order IDs">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
