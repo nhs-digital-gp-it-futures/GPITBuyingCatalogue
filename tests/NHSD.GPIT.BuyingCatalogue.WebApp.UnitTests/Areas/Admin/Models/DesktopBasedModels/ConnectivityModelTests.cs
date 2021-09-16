@@ -29,21 +29,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [InlineData("2Mbps", true)]
-        [InlineData("", false)]
-        [InlineData(" ", false)]
-        [InlineData(null, false)]
-        public static void IsComplete_CorrectlySet_WhenConnectionSpeedSet(
-            string selectedConnectionSpeed,
-            bool expectedCompletionState)
-        {
-            var model = new ConnectivityModel { SelectedConnectionSpeed = selectedConnectionSpeed };
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
     }
 }

@@ -21,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels
             Description = ClientApplication?.NativeDesktopOperatingSystemsDescription;
         }
 
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(Description);
-
         [Required(ErrorMessage = "Enter supported operating systems information")]
         [StringLength(1000)]
         public string Description { get; set; }

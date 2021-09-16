@@ -39,29 +39,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static void IsComplete_CorrectlySet_WhenAnOperatingSystemChecked(
-            OperatingSystemsModel model)
-        {
-            model.OperatingSystems.First().Checked = true;
-
-            var actual = model.IsComplete;
-
-            actual.Should().BeTrue();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void IsComplete_CorrectlySet_WhenNoConnectionTypeChecked(
-          OperatingSystemsModel model)
-        {
-            Array.ForEach(model.OperatingSystems, c => c.Checked = false);
-
-            var actual = model.IsComplete;
-
-            actual.Should().BeFalse();
-        }
     }
 }

@@ -67,8 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
             ScreenResolutions = screenResolutions;
         }
 
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(ClientApplication?.MinimumConnectionSpeed);
-
         [Required(ErrorMessage = "Select a connection speed")]
         public string SelectedConnectionSpeed { get; set; }
 

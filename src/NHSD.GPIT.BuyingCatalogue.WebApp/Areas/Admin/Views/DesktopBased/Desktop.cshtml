@@ -1,6 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions; 
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers; 
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DesktopBasedModels.DesktopBasedModel
 @{
     ViewData["Title"] = "Desktop application";
@@ -25,7 +24,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Supported operating systems</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag text="@Model.SupportedOperatingSystemsStatus" colour="@GetTagColour(Model.SupportedOperatingSystemsStatus)" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.SupportedOperatingSystemsStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="OperatingSystems" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -34,7 +33,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Connectivity</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag text="@Model.ConnectivityStatus" colour="@GetTagColour(Model.ConnectivityStatus)" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ConnectivityStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="Connectivity" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -43,7 +42,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Memory, storage, processing and resolution</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag text="@Model.MemoryAndStorageStatus" colour="@GetTagColour(Model.MemoryAndStorageStatus)" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.MemoryAndStorageStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="MemoryAndStorage" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -52,7 +51,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Third-party components and device capabilities</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag text="@Model.ThirdPartyStatus" colour="@GetTagColour(Model.ThirdPartyStatus)" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.StatusThirdParty()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="ThirdPartyComponents" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -61,7 +60,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Hardware requirements</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag text="@Model.HardwareRequirementsStatus" colour="@GetTagColour(Model.HardwareRequirementsStatus)" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.StatusHardware()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="HardwareRequirements" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -70,7 +69,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Additional information</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag text="@Model.AdditionalInformationStatus" colour="@GetTagColour(Model.AdditionalInformationStatus)" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.StatusAdditionalInformation()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="AdditionalInformation" asp-controller="DesktopBased" asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">Edit</a>
                     </nhs-table-cell>
@@ -93,13 +92,3 @@
         </div>
     </div>
 </div>
-
-@{
-    NhsTagsTagHelper.TagColour GetTagColour(string status) =>
-        status.ToLower() switch
-        {
-            "complete" => NhsTagsTagHelper.TagColour.Green,
-            "not started" => NhsTagsTagHelper.TagColour.Grey,
-            _ => NhsTagsTagHelper.TagColour.Grey,
-        };
-}

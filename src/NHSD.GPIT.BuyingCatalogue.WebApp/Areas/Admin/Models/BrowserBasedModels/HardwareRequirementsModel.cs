@@ -18,7 +18,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
 
         [StringLength(500)]
         public string Description { get; set; }
-
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(Description);
     }
 }

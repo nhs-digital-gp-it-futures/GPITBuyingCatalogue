@@ -21,11 +21,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels
         [Required]
         [StringLength(1000)]
         public string HostingModel { get; set; }
-
-        public override bool IsValid() =>
-            !string.IsNullOrWhiteSpace(Summary) ||
-            !string.IsNullOrWhiteSpace(Link) ||
-            !string.IsNullOrWhiteSpace(RequiresHscn) ||
-            !string.IsNullOrWhiteSpace(HostingModel);
     }
 }

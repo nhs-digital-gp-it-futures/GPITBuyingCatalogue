@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             var expected = new FeaturesModel().FromCatalogueItem(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
-            var actual = model.StatusFeatures();
+            var actual = model.FeaturesStatus();
 
             actual.Should().Be(expected);
         }
@@ -33,10 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void StatusDescription_Returns_FromDescriptionModel(CatalogueItem catalogueItem)
         {
-            var expected = new DescriptionModel(catalogueItem).StatusDescription();
+            var expected = new DescriptionModel(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
-            var actual = model.StatusDescription();
+            var actual = model.DescriptionStatus();
 
             actual.Should().Be(expected);
         }
@@ -45,10 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void StatusImplementation_Returns_FromImplementationTimescaleModel(CatalogueItem catalogueItem)
         {
-            var expected = new ImplementationTimescaleModel(catalogueItem).StatusImplementation();
+            var expected = new ImplementationTimescaleModel(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
-            var actual = model.StatusImplementation();
+            var actual = model.ImplementationStatus();
 
             actual.Should().Be(expected);
         }
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             var expected = new RoadmapModel().FromCatalogueItem(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
-            var actual = model.StatusRoadmap();
+            var actual = model.RoadmapStatus();
 
             actual.Should().Be(expected);
         }
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             var expected = new InteroperabilityModel(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
-            var actual = model.StatusInteroperability();
+            var actual = model.InteroperabilityStatus();
 
             actual.Should().Be(expected);
         }

@@ -12,17 +12,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
         [Theory]
         [AutoData]
-        public static void IsValid_AllPropertiesValid_ReturnsTrue(
+        public static void Status_AllPropertiesValid_ReturnsCompleted(
             NativeDesktopMemoryAndStorage model)
         {
-            var actual = model.IsValid();
+            var actual = model.Status();
 
-            actual.Should().BeTrue();
+            actual.Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Theory]
         [AutoData]
-        public static void IsValid_MinimumCpuNotValid_ReturnsFalse(
+        public static void Status_MinimumCpuNotValid_ReturnsNotStarted(
             NativeDesktopMemoryAndStorage model)
         {
             InvalidStrings.ForEach(
@@ -30,15 +30,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 {
                     model.MinimumCpu = invalid;
 
-                    var actual = model.IsValid();
+                    var actual = model.Status();
 
-                    actual.Should().BeFalse();
+                    actual.Should().Be(Enums.TaskProgress.NotStarted);
                 });
         }
 
         [Theory]
         [AutoData]
-        public static void IsValid_MinimumMemoryRequirementNotValid_ReturnsFalse(
+        public static void Status_MinimumMemoryRequirementNotValid_ReturnsNotStarted(
             NativeDesktopMemoryAndStorage model)
         {
             InvalidStrings.ForEach(
@@ -46,15 +46,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 {
                     model.MinimumMemoryRequirement = invalid;
 
-                    var actual = model.IsValid();
+                    var actual = model.Status();
 
-                    actual.Should().BeFalse();
+                    actual.Should().Be(Enums.TaskProgress.NotStarted);
                 });
         }
 
         [Theory]
         [AutoData]
-        public static void IsValid_StorageRequirementsDescriptionNotValid_ReturnsFalse(
+        public static void Status_StorageRequirementsDescriptionNotValid_ReturnsNotStarted(
             NativeDesktopMemoryAndStorage model)
         {
             InvalidStrings.ForEach(
@@ -62,9 +62,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 {
                     model.StorageRequirementsDescription = invalid;
 
-                    var actual = model.IsValid();
+                    var actual = model.Status();
 
-                    actual.Should().BeFalse();
+                    actual.Should().Be(Enums.TaskProgress.NotStarted);
                 });
         }
     }

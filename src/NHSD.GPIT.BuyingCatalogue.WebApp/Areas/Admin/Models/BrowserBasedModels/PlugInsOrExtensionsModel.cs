@@ -23,8 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
         [StringLength(500)]
         public string AdditionalInformation { get; set; }
 
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(PlugInsRequired);
-
         [Required(ErrorMessage = "Select yes if any plug-ins or extensions are required")]
         public string PlugInsRequired { get; set; }
     }

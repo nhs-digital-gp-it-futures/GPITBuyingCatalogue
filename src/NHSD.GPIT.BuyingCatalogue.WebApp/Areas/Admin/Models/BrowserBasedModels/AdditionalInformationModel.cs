@@ -16,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels
             AdditionalInformation = ClientApplication?.AdditionalInformation;
         }
 
-        public override bool IsComplete => !string.IsNullOrWhiteSpace(AdditionalInformation);
-
         [StringLength(500)]
         public string AdditionalInformation { get; set; }
     }

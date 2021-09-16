@@ -4,6 +4,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -108,9 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             return this;
         }
 
-        public FeatureCompletionStatus Status() =>
+        public TaskProgress Status() =>
             AllFeatures.Any()
-                ? FeatureCompletionStatus.Completed
-                : FeatureCompletionStatus.NotStarted;
+                ? TaskProgress.Completed
+                : TaskProgress.NotStarted;
     }
 }

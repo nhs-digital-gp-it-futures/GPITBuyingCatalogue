@@ -2,6 +2,7 @@
 using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -12,306 +13,234 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     {
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void AdditionalInformationComplete_DifferentInputs_ResultAsExpected(
+        public static void AdditionalInformationStatus_DifferentInputs_ResultAsExpected(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 AdditionalInformation = input,
             };
 
-            clientApplication.AdditionalInformationComplete().Should().Be(expected);
-        }
-
-        [Theory]
-        [AutoData]
-        public static void BrowserBasedModelComplete_AllChecksTrue_ReturnsTrue(
-            ClientApplication clientApplication)
-        {
-            clientApplication.BrowserBasedModelComplete().Should().BeTrue();
-        }
-
-        [Theory]
-        [AutoData]
-        public static void BrowserBasedModelComplete_SupportedBrowsersCompleteReturnsFalse_ReturnsFalse(
-            ClientApplication clientApplication)
-        {
-            clientApplication.BrowsersSupported?.Clear();
-
-            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
-        }
-
-        [Theory]
-        [AutoData]
-        public static void BrowserBasedModelComplete_ConnectivityAndResolutionCompleteReturnsFalse_ReturnsFalse(
-            ClientApplication clientApplication)
-        {
-            clientApplication.MinimumConnectionSpeed = null;
-
-            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
-        }
-
-        [Theory]
-        [AutoData]
-        public static void BrowserBasedModelComplete_MobileFirstDesignCompleteReturnsFalse_ReturnsFalse(
-            ClientApplication clientApplication)
-        {
-            clientApplication.MobileFirstDesign = null;
-
-            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
-        }
-
-        [Theory]
-        [AutoData]
-        public static void BrowserBasedModelComplete_PlugInsOrExtensionsCompleteReturnsFalse_ReturnsFalse(
-            ClientApplication clientApplication)
-        {
-            clientApplication.Plugins.Required = null;
-
-            clientApplication.BrowserBasedModelComplete().Should().BeFalse();
+            clientApplication.AdditionalInformationStatus().Should().Be(expected);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void ConnectivityAndResolutionComplete_DifferentInputs_ResultAsExpected(
+        public static void ConnectivityStatus_DifferentInputs_ResultAsExpected(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 MinimumConnectionSpeed = input,
             };
 
-            clientApplication.ConnectivityAndResolutionComplete().Should().Be(expected);
+            clientApplication.ConnectivityStatus().Should().Be(expected);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void HardwareRequirementsComplete_DifferentInputs_ResultAsExpected(
+        public static void HardwareRequirementsStatus_DifferentInputs_ResultAsExpected(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 HardwareRequirements = input,
             };
 
-            clientApplication.HardwareRequirementsComplete().Should().Be(expected);
+            clientApplication.HardwareRequirementsStatus().Should().Be(expected);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void NativeDesktopAdditionalInformationComplete_DifferentInputs_ResultAsExpected(
+        public static void NativeDesktopAdditionalInformationStatus_DifferentInputs_ResultAsExpected(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 NativeDesktopAdditionalInformation = input,
             };
 
-            clientApplication.NativeDesktopAdditionalInformationComplete().Should().Be(expected);
+            clientApplication.NativeDesktopAdditionalInformationStatus().Should().Be(expected);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void NativeDesktopConnectivityComplete_DifferentInputs_ResultAsExpected(
+        public static void NativeDesktopConnectivityStatus_DifferentInputs_ResultAsExpected(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 NativeDesktopMinimumConnectionSpeed = input,
             };
 
-            clientApplication.NativeDesktopConnectivityComplete().Should().Be(expected);
+            clientApplication.NativeDesktopConnectivityStatus().Should().Be(expected);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void NativeDesktopHardwareRequirementsComplete_DifferentInputs_ResultAsExpected(
+        public static void NativeDesktopHardwareRequirementsStatus_DifferentInputs_ResultAsExpected(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 NativeDesktopHardwareRequirements = input,
             };
 
-            clientApplication.NativeDesktopHardwareRequirementsComplete().Should().Be(expected);
+            clientApplication.NativeDesktopHardwareRequirementsStatus().Should().Be(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageValid_ReturnsTrue(
+        public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageValid_ReturnsCompleted(
             ClientApplication clientApplication)
         {
-            clientApplication.NativeDesktopMemoryAndStorageComplete().Should().BeTrue();
+            clientApplication.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageInvalid_ReturnsFalse(
+        public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageInvalid_ReturnsNotStarted(
             [Frozen] NativeDesktopMemoryAndStorage storage,
             ClientApplication clientApplication)
         {
             storage.MinimumCpu = null;
 
-            clientApplication.NativeDesktopMemoryAndStorageComplete().Should().BeFalse();
+            clientApplication.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
-        public static void NativeDesktopMemoryComplete_NativeDesktopMemoryAndStorageIsNull_ReturnsNull()
+        public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageIsNull_ReturnsNotStarted()
         {
             var clientApplication = new ClientApplication
             {
                 NativeDesktopMemoryAndStorage = null,
             };
 
-            clientApplication.NativeDesktopMemoryAndStorageComplete().Should().BeNull();
+            clientApplication.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageValid_ReturnsTrue(
+        public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageValid_ReturnsCompleted(
             ClientApplication clientApplication)
         {
-            clientApplication.NativeMobileMemoryAndStorageComplete().Should().BeTrue();
+            clientApplication.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageInvalid_ReturnsFalse(
+        public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageInvalid_ReturnsNotStarted(
             [Frozen] MobileMemoryAndStorage storage,
             ClientApplication clientApplication)
         {
             storage.Description = null;
 
-            clientApplication.NativeMobileMemoryAndStorageComplete().Should().BeFalse();
+            clientApplication.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
-        public static void NativeMobileMemoryAndStorageComplete_MobileMemoryAndStorageIsNull_ReturnsNull()
+        public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageIsNull_ReturnsNotStarted()
         {
             var clientApplication = new ClientApplication
             {
                 MobileMemoryAndStorage = null,
             };
 
-            clientApplication.NativeMobileMemoryAndStorageComplete().Should().BeNull();
+            clientApplication.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void NativeDesktopSupportedOperatingSystemsComplete_DifferentInputs_ResultAsExpected(
+        public static void NativeDesktopSupportedOperatingSystemsStatus_DifferentInputs_ResultAsExpected(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 NativeDesktopOperatingSystemsDescription = input,
             };
 
-            clientApplication.NativeDesktopSupportedOperatingSystemsComplete().Should().Be(expected);
-        }
-
-        [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public static void NativeMobileFirstApproachComplete_MobileFirstDesignHasValue_ReturnsTrue(bool value)
-        {
-            var clientApplication = new ClientApplication
-            {
-                NativeMobileFirstDesign = value,
-            };
-
-            clientApplication.NativeMobileFirstApproachComplete().Should().BeTrue();
-        }
-
-        [Fact]
-        public static void NativeMobileFirstApproachComplete_MobileFirstDesignHasNoValue_ReturnsFalse()
-        {
-            var clientApplication = new ClientApplication
-            {
-                MobileFirstDesign = null,
-            };
-
-            clientApplication.NativeMobileFirstApproachComplete().Should().BeFalse();
+            clientApplication.NativeDesktopSupportedOperatingSystemsStatus().Should().Be(expected);
         }
 
         [Theory]
         [AutoData]
-        public static void NativeMobileSupportedOperatingSystemsComplete_ValidMobileOperatingSystems_ReturnsTrue(
+        public static void NativeMobileSupportedOperatingSystemsStatus_ValidMobileOperatingSystems_ReturnsCompleted(
             ClientApplication clientApplication)
         {
             clientApplication.MobileOperatingSystems.OperatingSystems.Should().NotBeNullOrEmpty();
 
-            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeTrue();
+            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [AutoData]
-        public static void NativeMobileSupportedOperatingSystemsComplete_OperatingSystemsEmpty_ReturnsFalse(
+        public static void NativeMobileSupportedOperatingSystemsStatus_OperatingSystemsEmpty_ReturnsNotStarted(
             ClientApplication clientApplication)
         {
             clientApplication.MobileOperatingSystems.OperatingSystems = new HashSet<string>();
 
-            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeFalse();
+            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
-        public static void NativeMobileSupportedOperatingSystemsComplete_OperatingSystemsNull_ReturnsFalse(
+        public static void NativeMobileSupportedOperatingSystemsStatus_OperatingSystemsNull_ReturnsNotStarted(
             ClientApplication clientApplication)
         {
             clientApplication.MobileOperatingSystems.OperatingSystems = null;
 
-            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeFalse();
+            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
-        public static void NativeMobileSupportedOperatingSystemsComplete_MobileOperatingSystemsNull_ReturnsFalse(
+        public static void NativeMobileSupportedOperatingSystemsStatus_MobileOperatingSystemsNull_ReturnsNotStarted(
             ClientApplication clientApplication)
         {
             clientApplication.MobileOperatingSystems = null;
 
-            clientApplication.NativeMobileSupportedOperatingSystemsComplete().Should().BeFalse();
+            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void NativeMobileAdditionalInformationComplete_ValidNativeMobileAdditionalInformation_ReturnsTrue(
+        public static void NativeMobileAdditionalInformationStatus_ValidNativeMobileAdditionalInformation_ReturnsTrue(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 NativeMobileAdditionalInformation = input,
             };
 
-            clientApplication.NativeMobileAdditionalInformationComplete().Should().Be(expected);
+            clientApplication.NativeMobileAdditionalInformationStatus().Should().Be(expected);
         }
 
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
-        public static void NativeMobileHardwareRequirementsComplete_ValidNativeMobileHardwareRequirements_ReturnsTrue(
+        public static void NativeMobileHardwareRequirementsStatus_ValidNativeMobileHardwareRequirements_ReturnsTrue(
             string input,
-            bool expected)
+            TaskProgress expected)
         {
             var clientApplication = new ClientApplication
             {
                 NativeMobileHardwareRequirements = input,
             };
 
-            clientApplication.NativeMobileHardwareRequirementsComplete().Should().Be(expected);
+            clientApplication.NativeMobileHardwareRequirementsStatus().Should().Be(expected);
         }
 
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public static void PlugInsComplete_PluginsRequiredHasValue_ReturnsTrue(bool value)
+        public static void PluginsStatus_PluginsRequiredHasValue_ReturnsCompleted(bool value)
         {
             var clientApplication = new ClientApplication
             {
@@ -321,11 +250,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 },
             };
 
-            clientApplication.PlugInsComplete().Should().BeTrue();
+            clientApplication.PluginsStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Fact]
-        public static void PlugInsComplete_PluginsRequiredHasNoValue_ReturnsFalse()
+        public static void PluginsStatus_PluginsRequiredHasNoValue_ReturnsNotStarted()
         {
             var clientApplication = new ClientApplication
             {
@@ -335,93 +264,93 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 },
             };
 
-            clientApplication.PlugInsComplete().Should().BeFalse();
+            clientApplication.PluginsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
-        public static void PlugInsComplete_PluginsIsNull_ReturnsNull()
+        public static void PluginsStatus_PluginsIsNull_ReturnsNotStarted()
         {
             var clientApplication = new ClientApplication
             {
                 Plugins = null,
             };
 
-            clientApplication.PlugInsComplete().Should().BeNull();
+            clientApplication.PluginsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
-        public static void SupportedBrowsersComplete_ValidValues_ReturnsTrue(
+        public static void SupportedBrowsersStatus_ValidValues_ReturnsCompleted(
             ClientApplication clientApplication)
         {
             clientApplication.BrowsersSupported.Should().NotBeNullOrEmpty();
             clientApplication.MobileResponsive.HasValue.Should().BeTrue();
 
-            clientApplication.SupportedBrowsersComplete().Should().BeTrue();
+            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [AutoData]
-        public static void SupportedBrowsersComplete_BrowsersSupportedIsEmpty_ReturnsFalse(
+        public static void SupportedBrowsersStatus_BrowsersSupportedIsEmpty_ReturnsNotStarted(
             ClientApplication clientApplication)
         {
             clientApplication.BrowsersSupported = new HashSet<string>();
             clientApplication.MobileResponsive.HasValue.Should().BeTrue();
 
-            clientApplication.SupportedBrowsersComplete().Should().BeFalse();
+            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
-        public static void SupportedBrowsersComplete_BrowsersSupportedIsNull_ReturnsFalse(
+        public static void SupportedBrowsersStatus_BrowsersSupportedIsNull_ReturnsNotStarted(
             ClientApplication clientApplication)
         {
             clientApplication.BrowsersSupported = null;
             clientApplication.MobileResponsive.HasValue.Should().BeTrue();
 
-            clientApplication.SupportedBrowsersComplete().Should().BeFalse();
+            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
-        public static void SupportedBrowsersComplete_MobileResponsiveIsNull_ReturnsFalse(
+        public static void SupportedBrowsersStatus_MobileResponsiveIsNull_ReturnsNotStarted(
             ClientApplication clientApplication)
         {
             clientApplication.BrowsersSupported.Should().NotBeNullOrEmpty();
             clientApplication.MobileResponsive = null;
 
-            clientApplication.SupportedBrowsersComplete().Should().BeFalse();
+            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void ThirdPartyComplete_MobileThirdPartyValid_ReturnsTrue(
+        public static void NativeMobileThirdPartyStatus_MobileThirdPartyValid_ReturnsCompleted(
             ClientApplication clientApplication)
         {
-            clientApplication.NativeMobileThirdPartyComplete().Should().BeTrue();
+            clientApplication.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void ThirdPartyComplete_MobileThirdPartyInvalid_ReturnsFalse(
+        public static void TNativeMobileThirdPartyStatus_MobileThirdPartyInvalid_ReturnsNotStarted(
             [Frozen] MobileThirdParty thirdParty,
             ClientApplication clientApplication)
         {
             thirdParty.DeviceCapabilities = null;
             thirdParty.ThirdPartyComponents = null;
 
-            clientApplication.NativeMobileThirdPartyComplete().Should().BeFalse();
+            clientApplication.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
-        public static void ThirdPartyComplete_MobileThirdPartyNull_ReturnsNull()
+        public static void NativeMobileThirdPartyStatus_MobileThirdPartyNull_ReturnsNotStarted()
         {
             var clientApplication = new ClientApplication
             {
                 MobileThirdParty = null,
             };
 
-            clientApplication.NativeMobileThirdPartyComplete().Should().BeNull();
+            clientApplication.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -437,14 +366,119 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
+        [Theory]
+        [CommonInlineAutoData(ClientApplicationType.BrowserBased)]
+        [CommonInlineAutoData(ClientApplicationType.MobileTablet)]
+        [CommonInlineAutoData(ClientApplicationType.Desktop)]
+        public static void ApplicationTypeStatus_ReturnsComplete(
+            ClientApplicationType clientApplicationType,
+            ClientApplication clientApplication)
+        {
+            clientApplication.ApplicationTypeStatus(clientApplicationType).Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_BrowserBased_NoPlugins_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.Plugins = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_BrowserBased_NoSupportedBrowsers_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.BrowsersSupported = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Fact]
+        public static void ApplicationTypeStatus_BrowserBased_NothingComplete_ReturnsNotStarted()
+        {
+            var clientApplication = new ClientApplication();
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_DesktopBased_NoOperatingSystemDescription_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.NativeDesktopOperatingSystemsDescription = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMinimumConnectionSpeed_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.NativeDesktopMinimumConnectionSpeed = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMemoryAndStorage_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.NativeDesktopMemoryAndStorage = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Fact]
+        public static void ApplicationTypeStatus_DesktopBased_NothingComplete_ReturnsNotStarted()
+        {
+            var clientApplication = new ClientApplication();
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_MobileTablet_NoMobileOperatingSystems_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.MobileOperatingSystems = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_MobileTablet_NoMobileMemoryAndStorage_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.MobileMemoryAndStorage = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Fact]
+        public static void ApplicationTypeStatus_MobileTablet_NothingComplete_ReturnsNotStarted()
+        {
+            var clientApplication = new ClientApplication();
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+        }
+
         private static class ResultSetData
         {
             public static IEnumerable<object[]> TestData()
             {
-                yield return new object[] { "some-value", true };
-                yield return new object[] { null, false };
-                yield return new object[] { string.Empty, false };
-                yield return new object[] { "     ", false };
+                yield return new object[] { "some-value", TaskProgress.Completed };
+                yield return new object[] { null, TaskProgress.NotStarted };
+                yield return new object[] { string.Empty, TaskProgress.NotStarted };
+                yield return new object[] { "     ", TaskProgress.NotStarted };
             }
         }
     }

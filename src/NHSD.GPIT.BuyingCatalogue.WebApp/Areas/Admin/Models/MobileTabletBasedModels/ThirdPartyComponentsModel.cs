@@ -22,10 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
             DeviceCapabilities = ClientApplication?.MobileThirdParty?.DeviceCapabilities;
         }
 
-        public override bool IsComplete =>
-            !string.IsNullOrWhiteSpace(ThirdPartyComponents) ||
-            !string.IsNullOrWhiteSpace(DeviceCapabilities);
-
         [StringLength(500)]
         public string ThirdPartyComponents { get; set; }
 

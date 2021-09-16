@@ -13,47 +13,47 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
         [Theory]
         [AutoData]
-        public static void IsValid_BothPropertiesValid_ReturnsTrue(NativeDesktopThirdParty nativeDesktopThirdParty)
+        public static void Status_BothPropertiesValid_ReturnsCompleted(NativeDesktopThirdParty nativeDesktopThirdParty)
         {
             nativeDesktopThirdParty.DeviceCapabilities.Should().NotBeNullOrWhiteSpace();
             nativeDesktopThirdParty.ThirdPartyComponents.Should().NotBeNullOrWhiteSpace();
 
-            nativeDesktopThirdParty.IsValid().Should().BeTrue();
+            nativeDesktopThirdParty.Status().Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void IsValid_DeviceCapabilitiesIsInvalid_ReturnsTrue(string invalid)
+        public static void Status_DeviceCapabilitiesIsInvalid_ReturnsCompleted(string invalid)
         {
-            var mobileMemoryAndStorage =
+            var nativeDesktopThirdParty =
                 Fixture.Build<NativeDesktopThirdParty>().Without(m => m.DeviceCapabilities).Create();
-            mobileMemoryAndStorage.DeviceCapabilities = invalid;
+            nativeDesktopThirdParty.DeviceCapabilities = invalid;
 
-            mobileMemoryAndStorage.IsValid().Should().BeTrue();
+            nativeDesktopThirdParty.Status().Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void IsValid_ThirdPartyComponentsIsInvalid_ReturnsTrue(string invalid)
+        public static void Status_ThirdPartyComponentsIsInvalid_ReturnsCompleted(string invalid)
         {
-            var mobileMemoryAndStorage =
+            var nativeDesktopThirdParty =
                 Fixture.Build<NativeDesktopThirdParty>().Without(m => m.ThirdPartyComponents).Create();
-            mobileMemoryAndStorage.ThirdPartyComponents = invalid;
+            nativeDesktopThirdParty.ThirdPartyComponents = invalid;
 
-            mobileMemoryAndStorage.IsValid().Should().BeTrue();
+            nativeDesktopThirdParty.Status().Should().Be(Enums.TaskProgress.Completed);
         }
 
         [Theory]
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
-        public static void IsValid_BothPropertiesInvalid_ReturnsFalse(string invalid)
+        public static void Status_BothPropertiesInvalid_ReturnsNotStarted(string invalid)
         {
-            var mobileMemoryAndStorage = new NativeDesktopThirdParty
+            var nativeDesktopThirdParty = new NativeDesktopThirdParty
             {
                 DeviceCapabilities = invalid,
                 ThirdPartyComponents = invalid,
             };
 
-            mobileMemoryAndStorage.IsValid().Should().BeFalse();
+            nativeDesktopThirdParty.Status().Should().Be(Enums.TaskProgress.NotStarted);
         }
     }
 }

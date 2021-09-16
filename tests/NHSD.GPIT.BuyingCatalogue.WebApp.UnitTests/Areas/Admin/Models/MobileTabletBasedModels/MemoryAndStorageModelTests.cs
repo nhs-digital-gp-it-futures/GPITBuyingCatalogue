@@ -33,25 +33,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [InlineData("", "", false)]
-        [InlineData(" ", "", false)]
-        [InlineData(null, "", false)]
-        [InlineData("2Gb", "", false)]
-        [InlineData("2Gb", " ", false)]
-        [InlineData("2Gb", null, false)]
-        [InlineData("2Gb", "A Description", true)]
-        public static void IsComplete_CorrectlySet(
-            string selectedMemorySize,
-            string description,
-            bool expectedCompletionState)
-        {
-            var model = new MemoryAndStorageModel { SelectedMemorySize = selectedMemorySize, Description = description };
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
     }
 }

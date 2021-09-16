@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedModels
@@ -28,20 +29,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.MobileTabletBasedM
             ApplicationType = ClientApplicationType.MobileTablet;
         }
 
-        public override bool IsComplete =>
-            (ClientApplication?.NativeMobileSupportedOperatingSystemsComplete() ?? false) &&
-            (ClientApplication?.NativeMobileMemoryAndStorageComplete() ?? false);
+        public TaskProgress SupportedOperatingSystemsStatus() => ClientApplication.NativeMobileSupportedOperatingSystemsStatus();
 
-        public string SupportedOperatingSystemsStatus => (ClientApplication?.NativeMobileSupportedOperatingSystemsComplete()).ToStatus();
+        public TaskProgress ConnectivityStatus() => ClientApplication.NativeMobileConnectivityStatus();
 
-        public string MemoryAndStorageStatus => (ClientApplication?.NativeMobileMemoryAndStorageComplete()).ToStatus();
+        public TaskProgress MemoryStatus() => ClientApplication.NativeMobileMemoryAndStorageStatus();
 
-        public string ConnectivityStatus => (ClientApplication?.NativeMobileConnectivityComplete()).ToStatus();
+        public TaskProgress ThirdPartyStatus() => ClientApplication.NativeMobileThirdPartyStatus();
 
-        public string ThirdPartyStatus => (ClientApplication?.NativeMobileThirdPartyComplete()).ToStatus();
+        public TaskProgress HardwareStatus() => ClientApplication.NativeMobileHardwareRequirementsStatus();
 
-        public string HardwareRequirementsStatus => (ClientApplication?.NativeMobileHardwareRequirementsComplete()).ToStatus();
-
-        public string AdditionalInformationStatus => (ClientApplication?.NativeMobileAdditionalInformationComplete()).ToStatus();
+        public TaskProgress AdditionalInformationStatus() => ClientApplication.NativeMobileAdditionalInformationStatus();
     }
 }

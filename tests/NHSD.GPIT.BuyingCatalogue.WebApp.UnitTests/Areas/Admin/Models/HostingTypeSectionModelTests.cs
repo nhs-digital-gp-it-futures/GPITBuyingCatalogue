@@ -2,9 +2,9 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
@@ -36,9 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         public static void StatusHostingType_AvailableHosting_ReturnsCompleted(
             HostingTypeSectionModel model)
         {
-            var actual = model.StatusHostingType();
+            var actual = model.Status();
 
-            actual.Should().Be(FeatureCompletionStatus.Completed);
+            actual.Should().Be(TaskProgress.Completed);
         }
 
         [Fact]
@@ -46,9 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var model = new HostingTypeSectionModel();
 
-            var actual = model.StatusHostingType();
+            var actual = model.Status();
 
-            actual.Should().Be(FeatureCompletionStatus.NotStarted);
+            actual.Should().Be(TaskProgress.NotStarted);
         }
     }
 }

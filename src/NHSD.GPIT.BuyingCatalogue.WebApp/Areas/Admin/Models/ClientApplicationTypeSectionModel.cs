@@ -4,8 +4,8 @@ using System.Linq;
 using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
@@ -42,10 +42,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IEnumerable<object> ApplicationTypesToAddRadioItems { get; }
 
-        public override bool? IsComplete => ExistingClientApplicationTypes.Any();
+        public TaskProgress Status()
+        {
+            var existingClientApplicationTypes = ExistingClientApplicationTypes.ToList();
 
-        public FeatureCompletionStatus StatusClientApplicationType() => IsComplete.GetValueOrDefault()
-            ? FeatureCompletionStatus.Completed
-            : FeatureCompletionStatus.NotStarted;
+            if (!existingClientApplicationTypes.Any())
+                return TaskProgress.NotStarted;
+
+            var statuses = existingClientApplicationTypes.Select(c => ClientApplication.ApplicationTypeStatus(c));
+
+            if (statuses.All(s => s == TaskProgress.Completed))
+                return TaskProgress.Completed;
+
+            return statuses.Any(s => s == TaskProgress.InProgress) ? TaskProgress.InProgress : TaskProgress.NotStarted;
+        }
     }
 }

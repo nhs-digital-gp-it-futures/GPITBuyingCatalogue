@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -18,18 +19,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public IList<PublicationStatus> PublicationStatuses { get; }
             = Enum.GetValues<PublicationStatus>().ToList();
 
-        public FeatureCompletionStatus StatusDescription() => new DescriptionModel(Solution).StatusDescription();
+        public TaskProgress DescriptionStatus() => new DescriptionModel(Solution).Status();
 
-        public FeatureCompletionStatus StatusFeatures() => new FeaturesModel().FromCatalogueItem(Solution).Status();
+        public TaskProgress FeaturesStatus() => new FeaturesModel().FromCatalogueItem(Solution).Status();
 
-        public FeatureCompletionStatus StatusImplementation() => new ImplementationTimescaleModel(Solution).StatusImplementation();
+        public TaskProgress ImplementationStatus() => new ImplementationTimescaleModel(Solution).Status();
 
-        public FeatureCompletionStatus StatusRoadmap() => new RoadmapModel().FromCatalogueItem(Solution).Status();
+        public TaskProgress RoadmapStatus() => new RoadmapModel().FromCatalogueItem(Solution).Status();
 
-        public FeatureCompletionStatus StatusHostingType() => new HostingTypeSectionModel(Solution).StatusHostingType();
+        public TaskProgress HostingTypeStatus() => new HostingTypeSectionModel(Solution).Status();
 
-        public FeatureCompletionStatus StatusClientApplicationType() => new ClientApplicationTypeSectionModel(Solution).StatusClientApplicationType();
+        public TaskProgress ClientApplicationTypeStatus() => new ClientApplicationTypeSectionModel(Solution).Status();
 
-        public FeatureCompletionStatus StatusInteroperability() => new InteroperabilityModels.InteroperabilityModel(Solution).Status();
+        public TaskProgress InteroperabilityStatus() => new InteroperabilityModels.InteroperabilityModel(Solution).Status();
     }
 }

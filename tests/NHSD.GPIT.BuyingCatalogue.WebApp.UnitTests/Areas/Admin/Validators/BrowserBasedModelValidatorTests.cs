@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BrowserBasedModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
@@ -14,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             BrowserBasedModel model,
             BrowserBasedModelValidator validator)
         {
-            model.ClientApplication = null;
+            model.ClientApplication.Plugins = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.IsComplete)
+            result.ShouldHaveValidationErrorFor(m => m.SupportedBrowsersStatus() == TaskProgress.Completed && m.PluginsStatus() == TaskProgress.Completed)
                 .WithErrorMessage(BrowserBasedModelValidator.MandatoryRequiredMessage);
         }
 
@@ -30,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var result = validator.TestValidate(model);
 
-            result.ShouldNotHaveValidationErrorFor(m => m.IsComplete);
+            result.ShouldNotHaveValidationErrorFor(m => m.SupportedBrowsersStatus() == TaskProgress.Completed && m.PluginsStatus() == TaskProgress.Completed);
         }
     }
 }

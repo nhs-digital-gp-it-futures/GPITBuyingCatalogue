@@ -2,7 +2,9 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -42,19 +44,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var model = new ImplementationTimescaleModel { Description = description };
 
-            var actual = model.StatusImplementation();
+            var actual = model.Status();
 
-            actual.Should().Be(FeatureCompletionStatus.Completed);
+            actual.Should().Be(TaskProgress.Completed);
         }
 
-        [Fact]
-        public static void StatusImplementation_NoDescriptionAdded_ReturnsNotStarted()
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
+        public static void StatusImplementation_NoDescriptionAdded_ReturnsNotStarted(string invalid)
         {
-            var model = new ImplementationTimescaleModel { Description = null };
+            var model = new ImplementationTimescaleModel { Description = invalid };
 
-            var actual = model.StatusImplementation();
+            var actual = model.Status();
 
-            actual.Should().Be(FeatureCompletionStatus.NotStarted);
+            actual.Should().Be(TaskProgress.NotStarted);
         }
     }
 }

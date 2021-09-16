@@ -29,26 +29,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [InlineData("", "", false)]
-        [InlineData(" ", "", false)]
-        [InlineData(null, "", false)]
-        [InlineData("", " ", false)]
-        [InlineData("", null, false)]
-        [InlineData("Component", null, true)]
-        [InlineData("Component", "Capability", true)]
-        [InlineData(null, "Capability", true)]
-        public static void IsComplete_CorrectlySet(
-            string components,
-            string capabilities,
-            bool expectedCompletionState)
-        {
-            var model = new ThirdPartyComponentsModel { ThirdPartyComponents = components, DeviceCapabilities = capabilities };
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
     }
 }

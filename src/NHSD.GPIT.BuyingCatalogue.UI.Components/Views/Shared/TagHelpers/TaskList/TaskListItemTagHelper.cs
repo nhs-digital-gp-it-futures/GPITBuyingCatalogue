@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                     TaskListStatuses.CannotStart => "Cannot Start Yet",
                     TaskListStatuses.Optional => "Optional",
                     TaskListStatuses.InProgress => "In Progress",
-                    TaskListStatuses.Incomplete => "Incomplete",
+                    TaskListStatuses.NotStarted => "Not Started",
                     _ => "Completed",
                 },
             };

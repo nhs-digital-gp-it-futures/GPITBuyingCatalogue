@@ -2,7 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
@@ -27,9 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
             return this;
         }
 
-        public FeatureCompletionStatus Status() =>
+        public TaskProgress Status() =>
             string.IsNullOrWhiteSpace(Link)
-                ? FeatureCompletionStatus.NotStarted
-                : FeatureCompletionStatus.Completed;
+                ? TaskProgress.NotStarted
+                : TaskProgress.Completed;
     }
 }

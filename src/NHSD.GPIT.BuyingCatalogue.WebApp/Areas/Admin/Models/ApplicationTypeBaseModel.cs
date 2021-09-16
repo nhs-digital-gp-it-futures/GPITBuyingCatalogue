@@ -16,13 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         {
             BackLink = "./";
             BackLinkText = "Go back";
-            ClientApplication = catalogueItem?.Solution?.GetClientApplication();
+            ClientApplication = catalogueItem?.Solution?.GetClientApplication() ?? new ClientApplication();
             SolutionId = catalogueItem?.Id;
         }
 
         public ClientApplication ClientApplication { get; set; }
-
-        public virtual bool IsComplete { get; set; }
 
         public CatalogueItemId? SolutionId { get; set; }
 

@@ -2,7 +2,7 @@
 {
     public sealed class OrderTaskList
     {
-        public TaskListStatuses DescriptionStatus { get; set; } = TaskListStatuses.Incomplete;
+        public TaskListStatuses DescriptionStatus { get; set; } = TaskListStatuses.NotStarted;
 
         public TaskListStatuses OrderingPartyStatus { get; set; }
 

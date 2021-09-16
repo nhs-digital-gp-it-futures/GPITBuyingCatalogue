@@ -268,12 +268,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                 .BeforeMap(
                 (src, dest) =>
                 {
-                    var hosting = src.Solution.GetHosting();
-
-                    dest.PublicCloud = hosting?.PublicCloud;
-                    dest.PrivateCloud = hosting?.PrivateCloud;
-                    dest.HybridHostingType = hosting?.HybridHostingType;
-                    dest.OnPremise = hosting?.OnPremise;
+                    var hosting = src.Solution.GetHosting() ?? new Hosting();
+                    dest.PublicCloud = hosting.PublicCloud;
+                    dest.PrivateCloud = hosting.PrivateCloud;
+                    dest.HybridHostingType = hosting.HybridHostingType;
+                    dest.OnPremise = hosting.OnPremise;
                 })
                 .ForMember(dest => dest.PublicCloud, opt => opt.Ignore())
                 .ForMember(dest => dest.PrivateCloud, opt => opt.Ignore())

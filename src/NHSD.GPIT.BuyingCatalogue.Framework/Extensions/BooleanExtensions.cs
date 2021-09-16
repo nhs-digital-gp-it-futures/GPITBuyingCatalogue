@@ -2,8 +2,6 @@
 {
     public static class BooleanExtensions
     {
-        public static string ToStatus(this bool? value) => value.GetValueOrDefault() ? "Complete" : "Incomplete";
-
         public static string ToYesNo(this bool? value)
         {
             if (value == null) return string.Empty;

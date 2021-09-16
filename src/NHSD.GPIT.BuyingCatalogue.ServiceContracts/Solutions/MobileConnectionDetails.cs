@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -11,10 +12,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string MinimumConnectionSpeed { get; set; }
 
-        public bool? IsValid() =>
-            !string.IsNullOrWhiteSpace(MinimumConnectionSpeed) ||
-            !string.IsNullOrWhiteSpace(Description)
-                ? true
-                : ConnectionType?.Any();
+        public TaskProgress Status()
+        {
+            if (!string.IsNullOrWhiteSpace(MinimumConnectionSpeed) ||
+                !string.IsNullOrWhiteSpace(Description) ||
+                (ConnectionType?.Any() ?? false))
+            {
+                return TaskProgress.Completed;
+            }
+
+            return TaskProgress.NotStarted;
+        }
     }
 }

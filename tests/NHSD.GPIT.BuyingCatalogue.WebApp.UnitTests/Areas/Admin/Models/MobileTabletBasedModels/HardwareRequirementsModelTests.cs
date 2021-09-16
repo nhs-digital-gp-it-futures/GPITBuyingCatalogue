@@ -28,21 +28,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [InlineData("Some Hardware Requirements", true)]
-        [InlineData("", false)]
-        [InlineData(" ", false)]
-        [InlineData(null, false)]
-        public static void IsComplete_CorrectlySet(
-            string description,
-            bool expectedCompletionState)
-        {
-            var model = new HardwareRequirementsModel { Description = description };
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
     }
 }

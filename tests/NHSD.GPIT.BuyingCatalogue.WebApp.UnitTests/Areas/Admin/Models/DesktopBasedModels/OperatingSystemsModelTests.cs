@@ -29,21 +29,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [InlineData("", false)]
-        [InlineData(" ", false)]
-        [InlineData(null, false)]
-        [InlineData("A Description", true)]
-        public static void IsComplete_CorrectlySet(
-            string description,
-            bool expected)
-        {
-            var model = new OperatingSystemsModel { Description = description };
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expected);
-        }
     }
 }

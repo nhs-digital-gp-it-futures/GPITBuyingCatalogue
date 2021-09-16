@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public sealed class NativeDesktopThirdParty
     {
@@ -6,8 +8,12 @@
 
         public string ThirdPartyComponents { get; set; }
 
-        public bool IsValid() =>
-            !string.IsNullOrWhiteSpace(DeviceCapabilities) ||
-            !string.IsNullOrWhiteSpace(ThirdPartyComponents);
+        public TaskProgress Status()
+        {
+            if (!string.IsNullOrWhiteSpace(DeviceCapabilities) || !string.IsNullOrWhiteSpace(ThirdPartyComponents))
+                return TaskProgress.Completed;
+
+            return TaskProgress.NotStarted;
+        }
     }
 }

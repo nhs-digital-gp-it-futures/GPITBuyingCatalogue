@@ -35,56 +35,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
 
             actual.ParamName.Should().Be("catalogueItem");
         }
-
-        [Theory]
-        [CommonInlineAutoData("", false)]
-        [CommonInlineAutoData(" ", false)]
-        [CommonInlineAutoData(null, false)]
-        [CommonInlineAutoData("2Gb", true)]
-        public static void IsComplete_CorrectlySet_WhenMemorySizeSet(
-            string selectedMemorySize,
-            bool expectedCompletionState,
-            MemoryAndStorageModel model)
-        {
-            model.SelectedMemorySize = selectedMemorySize;
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
-
-        [Theory]
-        [CommonInlineAutoData("", false)]
-        [CommonInlineAutoData(" ", false)]
-        [CommonInlineAutoData(null, false)]
-        [CommonInlineAutoData("Storage Space", true)]
-        public static void IsComplete_CorrectlySet_WhenStorageSpaceSet(
-            string storageSpace,
-            bool expectedCompletionState,
-            MemoryAndStorageModel model)
-        {
-            model.StorageSpace = storageSpace;
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
-
-        [Theory]
-        [CommonInlineAutoData("", false)]
-        [CommonInlineAutoData(" ", false)]
-        [CommonInlineAutoData(null, false)]
-        [CommonInlineAutoData("Processing Power", true)]
-        public static void IsComplete_CorrectlySet_WhenProcessingPowerSet(
-            string processingPower,
-            bool expectedCompletionState,
-            MemoryAndStorageModel model)
-        {
-            model.ProcessingPower = processingPower;
-
-            var actual = model.IsComplete;
-
-            actual.Should().Be(expectedCompletionState);
-        }
     }
 }

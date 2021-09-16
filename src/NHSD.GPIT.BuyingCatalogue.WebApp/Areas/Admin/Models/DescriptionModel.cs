@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 {
@@ -26,8 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string SolutionName { get; set; }
 
-        public override bool? IsComplete => !string.IsNullOrWhiteSpace(Summary);
-
         [Required(ErrorMessage = "Enter a summary")]
         [StringLength(350)]
         public string Summary { get; set; }
@@ -39,9 +37,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         [Url]
         public string Link { get; set; }
 
-        public FeatureCompletionStatus StatusDescription() =>
-            IsComplete == true
-                ? FeatureCompletionStatus.Completed
-                : FeatureCompletionStatus.NotStarted;
+        public TaskProgress Status()
+        {
+            if (!string.IsNullOrWhiteSpace(Summary))
+                return TaskProgress.Completed;
+
+            if (!string.IsNullOrWhiteSpace(Description) || !string.IsNullOrWhiteSpace(Link))
+                return TaskProgress.InProgress;
+
+            return TaskProgress.NotStarted;
+        }
     }
 }
