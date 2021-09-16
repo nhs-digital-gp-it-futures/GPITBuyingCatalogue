@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void PopulateEpics(CatalogueItem catalogueItem)
         {
-            foreach (var solutionEpic in catalogueItem.CatalogueItemEpics.Where(cie => cie.CapabilityId == Id && cie.Epic.Active))
+            foreach (var solutionEpic in catalogueItem.CatalogueItemEpics.Where(cie => cie.CapabilityId == Id && cie.Epic.IsActive))
             {
                 var epicLabel = $"{solutionEpic.Epic.Name} ({solutionEpic.Epic.Id})";
 

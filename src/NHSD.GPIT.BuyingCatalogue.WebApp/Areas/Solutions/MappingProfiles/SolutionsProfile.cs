@@ -331,7 +331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
         private static List<string> GetEpics(Capability capability, bool supplierDefined) =>
             capability?.Epics == null ?
                 new List<string>() :
-                capability.Epics.Where(e => e.Active && e.SupplierDefined == supplierDefined).Select(epic => epic.Name).ToList();
+                capability.Epics.Where(e => e.IsActive && e.SupplierDefined == supplierDefined).Select(epic => epic.Name).ToList();
 
         private static IDictionary<string, ListViewModel> GetBrowserBasedItems(ClientApplication clientApplication)
         {

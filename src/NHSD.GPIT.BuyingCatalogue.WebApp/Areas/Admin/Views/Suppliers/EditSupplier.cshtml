@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditSupplierModel
 @{
@@ -65,7 +65,7 @@
                                      label-text="Supplier status"
                                      label-hint="Select one option.">
                 <nhs-radio-buttons asp-for="SupplierStatus"
-                                   values="@Model.EditSupplierRadioOptions"
+                                   values="@EditSupplierModel.EditSupplierRadioOptions"
                                    display-name="Display"
                                    value-name="Value" />
             </nhs-fieldset-form-label>
@@ -75,10 +75,9 @@
     </div>
 </div>
 
-        @{
-            NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
-                status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+@{
+    NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
+        status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
 
-            string GetTagText(bool status) => status ? "Completed" : "Not started";
-        }
-
+    string GetTagText(bool status) => status ? "Completed" : "Not started";
+}

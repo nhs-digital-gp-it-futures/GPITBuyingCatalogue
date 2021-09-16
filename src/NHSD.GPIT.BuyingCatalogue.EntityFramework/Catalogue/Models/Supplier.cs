@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
 
         public ICollection<CatalogueItem> CatalogueItems { get; set; }
 

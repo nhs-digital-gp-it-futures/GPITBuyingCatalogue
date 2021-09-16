@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasMaxLength(150);
 
-            builder.Property(e => e.Active).IsRequired();
+            builder.Property(e => e.IsActive).IsRequired();
             builder.Property(e => e.SupplierDefined).IsRequired().HasDefaultValue(false);
 
             builder.HasOne<Capability>()

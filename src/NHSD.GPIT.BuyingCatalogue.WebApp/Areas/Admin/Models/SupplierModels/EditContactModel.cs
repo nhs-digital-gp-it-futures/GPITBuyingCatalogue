@@ -24,9 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             Title = $"{FirstName} {LastName} details";
         }
 
-        public int ContactId { get; init; }
+        public int ContactId { get; }
 
-        public int SupplierId { get; init; }
+        public int SupplierId { get; }
 
         [StringLength(35)]
         [Required(ErrorMessage = "Enter a first name")]
@@ -49,6 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         [Required(ErrorMessage = "Enter a department name")]
         public string Department { get; init; }
 
-        public string Title { get; init; }
+        public string Title { get; }
     }
 }

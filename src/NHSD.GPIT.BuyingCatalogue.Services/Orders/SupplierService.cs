@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             return query.Select(ci => ci.Supplier)
                 .Distinct()
-                .Where(s => s.Active)
+                .Where(s => s.IsActive)
                 .OrderBy(s => s.Name)
                 .AsNoTracking()
                 .ToListAsync();
