@@ -14,12 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         [StringLength(500)]
         public string Summary { get; set; }
 
-        public TaskProgress Status()
-        {
-            if (string.IsNullOrEmpty(Summary))
-                return TaskProgress.NotStarted;
-
-            return TaskProgress.Completed;
-        }
+        public TaskProgress Status() => string.IsNullOrEmpty(Summary)
+            ? TaskProgress.NotStarted
+            : TaskProgress.Completed;
     }
 }

@@ -89,6 +89,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 
         private (TagColour SelectedColourClass, string TagText) GetStatusFromEnum()
         {
+            if (TagStatus is null)
+                return (TagColour.Grey, "Not started");
+
             var selectedColourClass = TagStatus.Value switch
             {
                 TaskProgress.NotStarted => TagColour.Grey,

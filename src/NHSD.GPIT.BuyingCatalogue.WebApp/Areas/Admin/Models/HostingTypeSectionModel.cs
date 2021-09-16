@@ -51,10 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
             var statuses = ExistingHostingTypes.Select(c => Hosting.HostingTypeStatus(c));
 
-            if (statuses.All(s => s == TaskProgress.Completed))
-                return TaskProgress.Completed;
-
-            return TaskProgress.NotStarted;
+            return statuses.All(s => s == TaskProgress.Completed) ? TaskProgress.Completed : TaskProgress.NotStarted;
         }
     }
 }

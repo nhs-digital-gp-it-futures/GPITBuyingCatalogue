@@ -50,8 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
             InteroperabilityModel model)
         {
             model.Link = null;
-            model.IM1Integrations = new Integration[0];
-            model.GpConnectIntegrations = new Integration[0];
+            model.IM1Integrations = Array.Empty<Integration>();
+            model.GpConnectIntegrations = Array.Empty<Integration>();
 
             model.Status().Should().Be(TaskProgress.NotStarted);
         }
@@ -61,8 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
         public static void Status_LinkOnly_ShouldBeComplete(
             InteroperabilityModel model)
         {
-            model.IM1Integrations = new Integration[0];
-            model.GpConnectIntegrations = new Integration[0];
+            model.IM1Integrations = Array.Empty<Integration>();
+            model.GpConnectIntegrations = Array.Empty<Integration>();
 
             model.Status().Should().Be(TaskProgress.Completed);
         }
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
             InteroperabilityModel model)
         {
             model.Link = null;
-            model.GpConnectIntegrations = new Integration[0];
+            model.GpConnectIntegrations = Array.Empty<Integration>();
 
             model.Status().Should().Be(TaskProgress.Completed);
         }
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
             InteroperabilityModel model)
         {
             model.Link = null;
-            model.IM1Integrations = new Integration[0];
+            model.IM1Integrations = Array.Empty<Integration>();
 
             model.Status().Should().Be(TaskProgress.Completed);
         }

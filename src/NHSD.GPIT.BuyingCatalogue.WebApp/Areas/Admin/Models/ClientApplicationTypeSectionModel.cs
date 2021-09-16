@@ -44,18 +44,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public TaskProgress Status()
         {
-            if (!ExistingClientApplicationTypes.Any())
+            var existingClientApplicationTypes = ExistingClientApplicationTypes.ToList();
+
+            if (!existingClientApplicationTypes.Any())
                 return TaskProgress.NotStarted;
 
-            var statuses = ExistingClientApplicationTypes.Select(c => ClientApplication.ApplicationTypeStatus(c));
+            var statuses = existingClientApplicationTypes.Select(c => ClientApplication.ApplicationTypeStatus(c));
 
             if (statuses.All(s => s == TaskProgress.Completed))
                 return TaskProgress.Completed;
 
-            if (statuses.Any(s => s == TaskProgress.InProgress))
-                return TaskProgress.InProgress;
-
-            return TaskProgress.NotStarted;
+            return statuses.Any(s => s == TaskProgress.InProgress) ? TaskProgress.InProgress : TaskProgress.NotStarted;
         }
     }
 }
