@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IEnumerable<object> ApplicationTypesToAddRadioItems { get; }
 
-        public TaskProgress ClientApplicationTypeStatus()
+        public TaskProgress Status()
         {
             if (!ExistingClientApplicationTypes.Any())
                 return TaskProgress.NotStarted;

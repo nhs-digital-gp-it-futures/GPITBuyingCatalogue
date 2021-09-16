@@ -19,17 +19,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public IList<PublicationStatus> PublicationStatuses { get; }
             = Enum.GetValues<PublicationStatus>().ToList();
 
-        public TaskProgress DescriptionStatus() => new DescriptionModel(Solution).DescriptionStatus();
+        public TaskProgress DescriptionStatus() => new DescriptionModel(Solution).Status();
 
         public TaskProgress FeaturesStatus() => new FeaturesModel().FromCatalogueItem(Solution).Status();
 
-        public TaskProgress ImplementationStatus() => new ImplementationTimescaleModel(Solution).ImplementationStatus();
+        public TaskProgress ImplementationStatus() => new ImplementationTimescaleModel(Solution).Status();
 
         public TaskProgress RoadmapStatus() => new RoadmapModel().FromCatalogueItem(Solution).Status();
 
-        public TaskProgress HostingTypeStatus() => new HostingTypeSectionModel(Solution).HostingTypeStatus();
+        public TaskProgress HostingTypeStatus() => new HostingTypeSectionModel(Solution).Status();
 
-        public TaskProgress ClientApplicationTypeStatus() => new ClientApplicationTypeSectionModel(Solution).ClientApplicationTypeStatus();
+        public TaskProgress ClientApplicationTypeStatus() => new ClientApplicationTypeSectionModel(Solution).Status();
 
         public TaskProgress InteroperabilityStatus() => new InteroperabilityModels.InteroperabilityModel(Solution).Status();
     }

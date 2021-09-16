@@ -39,10 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         {
             return hostingType switch
             {
-                HostingType.Hybrid => HybridHostingType.Status(),
-                HostingType.OnPremise => PrivateCloud.Status(),
-                HostingType.PrivateCloud => PrivateCloud.Status(),
-                HostingType.PublicCloud => PublicCloud.Status(),
+                HostingType.Hybrid => HybridHostingType?.Status() ?? TaskProgress.NotStarted,
+                HostingType.OnPremise => OnPremise?.Status() ?? TaskProgress.NotStarted,
+                HostingType.PrivateCloud => PrivateCloud?.Status() ?? TaskProgress.NotStarted,
+                HostingType.PublicCloud => PublicCloud?.Status() ?? TaskProgress.NotStarted,
                 _ => TaskProgress.NotStarted,
             };
         }

@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         [Url]
         public string Link { get; set; }
 
-        public TaskProgress DescriptionStatus()
+        public TaskProgress Status()
         {
             if (!string.IsNullOrWhiteSpace(Summary))
                 return TaskProgress.Completed;

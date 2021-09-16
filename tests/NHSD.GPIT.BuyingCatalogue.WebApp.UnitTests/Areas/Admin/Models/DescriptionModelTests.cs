@@ -4,10 +4,9 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
-using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
@@ -46,19 +45,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         {
             var model = new DescriptionModel { Summary = summary };
 
-            var actual = model.DescriptionStatus();
+            var actual = model.Status();
 
             actual.Should().Be(TaskProgress.Completed);
         }
 
-        [Fact]
-        public static void StatusDescription_NoSummaryAdded_ReturnsNotStarted()
+        [Theory]
+        [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
+        public static void StatusDescription_NoSummaryAdded_ReturnsNotStarted(string invalid)
         {
-            var model = new DescriptionModel { Summary = null };
+            var model = new DescriptionModel { Summary = invalid };
 
-            var actual = model.DescriptionStatus();
+            var actual = model.Status();
 
             actual.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [AutoData]
+        public static void StatusDescription_LinkAdded_ReturnsInProgress(string link)
+        {
+            var model = new DescriptionModel { Link = link };
+
+            var actual = model.Status();
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [AutoData]
+        public static void StatusDescription_DescriptionAdded_ReturnsInProgress(string description)
+        {
+            var model = new DescriptionModel { Description = description };
+
+            var actual = model.Status();
+
+            actual.Should().Be(TaskProgress.InProgress);
         }
     }
 }

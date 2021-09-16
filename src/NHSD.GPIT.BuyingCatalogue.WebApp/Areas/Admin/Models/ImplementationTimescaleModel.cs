@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public string SolutionName { get; set; }
 
-        public TaskProgress ImplementationStatus() =>
+        public TaskProgress Status() =>
             !string.IsNullOrWhiteSpace(Description)
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;

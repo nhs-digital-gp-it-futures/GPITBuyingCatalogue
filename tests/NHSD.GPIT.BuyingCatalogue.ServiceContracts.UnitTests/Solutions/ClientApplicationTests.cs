@@ -366,6 +366,111 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
+        [Theory]
+        [CommonInlineAutoData(ClientApplicationType.BrowserBased)]
+        [CommonInlineAutoData(ClientApplicationType.MobileTablet)]
+        [CommonInlineAutoData(ClientApplicationType.Desktop)]
+        public static void ApplicationTypeStatus_ReturnsComplete(
+            ClientApplicationType clientApplicationType,
+            ClientApplication clientApplication)
+        {
+            clientApplication.ApplicationTypeStatus(clientApplicationType).Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_BrowserBased_NoPlugins_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.Plugins = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_BrowserBased_NoSupportedBrowsers_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.BrowsersSupported = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Fact]
+        public static void ApplicationTypeStatus_BrowserBased_NothingComplete_ReturnsNotStarted()
+        {
+            var clientApplication = new ClientApplication();
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_DesktopBased_NoOperatingSystemDescription_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.NativeDesktopOperatingSystemsDescription = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMinimumConnectionSpeed_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.NativeDesktopMinimumConnectionSpeed = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMemoryAndStorage_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.NativeDesktopMemoryAndStorage = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Fact]
+        public static void ApplicationTypeStatus_DesktopBased_NothingComplete_ReturnsNotStarted()
+        {
+            var clientApplication = new ClientApplication();
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_MobileTablet_NoMobileOperatingSystems_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.MobileOperatingSystems = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData]
+        public static void ApplicationTypeStatus_MobileTablet_NoMobileMemoryAndStorage_ReturnsInProgress(
+            ClientApplication clientApplication)
+        {
+            clientApplication.MobileMemoryAndStorage = null;
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+        }
+
+        [Fact]
+        public static void ApplicationTypeStatus_MobileTablet_NothingComplete_ReturnsNotStarted()
+        {
+            var clientApplication = new ClientApplication();
+
+            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+        }
+
         private static class ResultSetData
         {
             public static IEnumerable<object[]> TestData()

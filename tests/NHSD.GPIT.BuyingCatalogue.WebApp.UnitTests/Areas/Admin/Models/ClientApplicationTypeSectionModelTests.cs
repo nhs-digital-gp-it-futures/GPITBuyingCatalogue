@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
         [Theory]
         [CommonAutoData]
-        public static void StatusClientApplicationType_AvailableType_ReturnsCompleted(
+        public static void Status_AvailableType_ReturnsCompleted(
             CatalogueItem catalogueItem,
             ClientApplication clientApplication)
         {
@@ -45,19 +45,92 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 
             var model = new ClientApplicationTypeSectionModel(catalogueItem);
 
-            var actual = model.ClientApplicationTypeStatus();
+            var actual = model.Status();
 
             actual.Should().Be(TaskProgress.Completed);
         }
 
         [Fact]
-        public static void StatusClientApplicationType_NoApplicationTypeAdded_ReturnsNotStarted()
+        public static void Status_NoApplicationTypeAdded_ReturnsNotStarted()
         {
             var model = new ClientApplicationTypeSectionModel();
 
-            var actual = model.ClientApplicationTypeStatus();
+            var actual = model.Status();
 
             actual.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Status_NothingComplete_ReturnsInProgress(
+                   CatalogueItem catalogueItem,
+                   ClientApplication clientApplication)
+        {
+            clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
+            clientApplication.BrowsersSupported = null;
+            clientApplication.NativeDesktopOperatingSystemsDescription = null;
+            clientApplication.MobileConnectionDetails = null;
+            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+
+            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+
+            var actual = model.Status();
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Status_BrowserOnlyComplete_ReturnsInProgress(
+                   CatalogueItem catalogueItem,
+                   ClientApplication clientApplication)
+        {
+            clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
+            clientApplication.NativeDesktopOperatingSystemsDescription = null;
+            clientApplication.MobileConnectionDetails = null;
+            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+
+            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+
+            var actual = model.Status();
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Status_DesktopOnlyComplete_ReturnsInProgress(
+                   CatalogueItem catalogueItem,
+                   ClientApplication clientApplication)
+        {
+            clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
+            clientApplication.BrowsersSupported = null;
+            clientApplication.MobileConnectionDetails = null;
+            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+
+            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+
+            var actual = model.Status();
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Status_MobileOnlyComplete_ReturnsInProgress(
+                   CatalogueItem catalogueItem,
+                   ClientApplication clientApplication)
+        {
+            clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
+            clientApplication.BrowsersSupported = null;
+            clientApplication.NativeDesktopOperatingSystemsDescription = null;
+            catalogueItem.Solution.ClientApplication = JsonConvert.SerializeObject(clientApplication);
+
+            var model = new ClientApplicationTypeSectionModel(catalogueItem);
+
+            var actual = model.Status();
+
+            actual.Should().Be(TaskProgress.InProgress);
         }
     }
 }

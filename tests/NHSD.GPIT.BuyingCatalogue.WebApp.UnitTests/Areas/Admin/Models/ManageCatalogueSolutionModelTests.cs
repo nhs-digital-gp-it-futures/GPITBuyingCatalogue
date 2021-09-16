@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void StatusDescription_Returns_FromDescriptionModel(CatalogueItem catalogueItem)
         {
-            var expected = new DescriptionModel(catalogueItem).DescriptionStatus();
+            var expected = new DescriptionModel(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
             var actual = model.DescriptionStatus();
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         [CommonAutoData]
         public static void StatusImplementation_Returns_FromImplementationTimescaleModel(CatalogueItem catalogueItem)
         {
-            var expected = new ImplementationTimescaleModel(catalogueItem).ImplementationStatus();
+            var expected = new ImplementationTimescaleModel(catalogueItem).Status();
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
             var actual = model.ImplementationStatus();

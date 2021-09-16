@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
         public IEnumerable<object> HostingTypesToAddRadioItems { get; }
 
-        public TaskProgress HostingTypeStatus()
+        public TaskProgress Status()
         {
             if (!ExistingHostingTypes.Any())
                 return TaskProgress.NotStarted;
@@ -53,9 +53,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
 
             if (statuses.All(s => s == TaskProgress.Completed))
                 return TaskProgress.Completed;
-
-            if (statuses.Any(s => s == TaskProgress.InProgress))
-                return TaskProgress.InProgress;
 
             return TaskProgress.NotStarted;
         }
