@@ -61,12 +61,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.Name.Should().Be(catalogueItemCapability.Capability?.Name);
             actual.NhsDefined.Should()
                 .BeEquivalentTo(
-                    catalogueItemCapability.Capability?.Epics?.Where(e => e.Active && !e.SupplierDefined)
+                    catalogueItemCapability.Capability?.Epics?.Where(e => e.IsActive && !e.SupplierDefined)
                         .Select(epic => epic.Name)
                         .ToList());
             actual.SupplierDefined.Should()
                 .BeEquivalentTo(
-                    catalogueItemCapability.Capability?.Epics?.Where(e => e.Active && e.SupplierDefined)
+                    catalogueItemCapability.Capability?.Epics?.Where(e => e.IsActive && e.SupplierDefined)
                         .Select(epic => epic.Name)
                         .ToList());
             actual.SolutionId.Should().Be(catalogueItemCapability.CatalogueItemId);

@@ -28,34 +28,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         // All in all the below gives us 405 characters max, with the DB column only taking 500 including the JSON notation. should help us not blow the buffers.
         [Required(ErrorMessage = "Enter a building or street")]
-        [StringLength(50)] // longest road name in the uk is 39 chracters = Queen Margaret’s Road Industrial Estate.
-        public string AddressLine1 { get; set; }
+        [StringLength(50)] // longest road name in the uk is 39 characters = Queen Margaret’s Road Industrial Estate.
+        public string AddressLine1 { get; init; }
 
         [StringLength(50)]
-        public string AddressLine2 { get; set; }
+        public string AddressLine2 { get; init; }
 
         [StringLength(50)]
-        public string AddressLine3 { get; set; }
+        public string AddressLine3 { get; init; }
 
         [StringLength(50)]
-        public string AddressLine4 { get; set; }
+        public string AddressLine4 { get; init; }
 
         [StringLength(50)]
-        public string AddressLine5 { get; set; }
+        public string AddressLine5 { get; init; }
 
         [Required(ErrorMessage = "Enter a town or city")]
         [StringLength(60)] // longest town name in the uk is 58 characters = Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.
-        public string Town { get; set; }
+        public string Town { get; init; }
 
         [StringLength(25)] // longest county name in the UK is 20 characters - Llanfairpwllgwyngyll.
-        public string County { get; set; }
+        public string County { get; init; }
 
         [StringLength(10)] // postcode is up to 7 characters, so put in 10 just for safety.
         [Required(ErrorMessage = "Enter a postcode")]
-        public string PostCode { get; set; }
+        public string PostCode { get; init; }
 
         [Required(ErrorMessage = "Enter a country")]
         [StringLength(60)]// longest country name in the world is 56 characters - The United Kingdom of Great Britain and Northern Ireland.
-        public string Country { get; set; }
+        public string Country { get; init; }
     }
 }

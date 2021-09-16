@@ -42,10 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             {
                 foreach (var attribute in output.Attributes)
                 {
-                    if (attribute.Name == "class")
+                    if (attribute.Name.Equals("class", System.StringComparison.InvariantCultureIgnoreCase))
                         htmlContent.AddCssClass(attribute.Value.ToString());
                     else
-                        htmlContent.Attributes.Add(new(attribute.Name, attribute.Value.ToString()));
+                        htmlContent.Attributes.Add(new KeyValuePair<string, string>(attribute.Name, attribute.Value.ToString()));
                 }
 
                 output.TagName = string.Empty;

@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("{supplierId:int}")]
+        [HttpGet("{supplierId}")]
         public async Task<IActionResult> EditSupplier(int supplierId)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -50,12 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("{supplierId:int}")]
+        [HttpPost("{supplierId}")]
         public async Task<IActionResult> EditSupplier(int supplierId, EditSupplierModel model)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
 
-            if (supplier.Active == model.SupplierStatus) // status hasn't changed
+            if (supplier.IsActive == model.SupplierStatus) // status hasn't changed
                 RedirectToAction(nameof(Index), typeof(SuppliersController).ControllerName());
 
             var supplierStatus = new EditSupplierModel(supplier)
@@ -83,11 +83,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                supplierStatus.SupplierStatus = supplier.Active;
+                supplierStatus.SupplierStatus = supplier.IsActive;
                 return View(supplierStatus);
             }
 
-            supplier = await suppliersService.UpdateSupplierActiveStatus(supplierId, model.SupplierStatus);
+            await suppliersService.UpdateSupplierActiveStatus(supplierId, model.SupplierStatus);
 
             return RedirectToAction(nameof(Index), typeof(SuppliersController).ControllerName());
         }
@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { supplierId = supplier.Id });
         }
 
-        [HttpGet("{supplierId:int}/details")]
+        [HttpGet("{supplierId}/details")]
         public async Task<IActionResult> EditSupplierDetails(int supplierId)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("{supplierId:int}/details")]
+        [HttpPost("{supplierId}/details")]
         public async Task<IActionResult> EditSupplierDetails(int supplierId, EditSupplierDetailsModel model)
         {
             var supplierByName = await suppliersService.GetSupplierByName(model.SupplierName);
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { supplierId = supplier.Id });
         }
 
-        [HttpGet("{supplierId:int}/address")]
+        [HttpGet("{supplierId}/address")]
         public async Task<IActionResult> EditSupplierAddress(int supplierId)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("{supplierId:int}/address")]
+        [HttpPost("{supplierId}/address")]
         public async Task<IActionResult> EditSupplierAddress(int supplierId, EditSupplierAddressModel model)
         {
             if (!ModelState.IsValid)
@@ -212,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { supplierId = supplier.Id });
         }
 
-        [HttpGet("{supplierId:int}/contacts")]
+        [HttpGet("{supplierId}/contacts")]
         public async Task<IActionResult> ManageSupplierContacts(int supplierId)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -229,12 +229,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("{supplierId:int}/contacts/add-contact")]
+        [HttpGet("{supplierId}/contacts/add-contact")]
         public async Task<IActionResult> AddSupplierContact(int supplierId)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
 
-            var model = new EditContactModel()
+            var model = new EditContactModel
             {
                 BackLinkText = "Go back",
                 BackLink = Url.Action(
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View("EditSupplierContact", model);
         }
 
-        [HttpPost("{supplierId:int}/contacts/add-contact")]
+        [HttpPost("{supplierId}/contacts/add-contact")]
         public async Task<IActionResult> AddSupplierContact(int supplierId, EditContactModel model)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -257,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("EditSupplierContact", model);
 
-            var newContact = new SupplierContact()
+            var newContact = new SupplierContact
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { supplierId = supplier.Id });
         }
 
-        [HttpGet("{supplierId:int}/contacts/{contactId:int}")]
+        [HttpGet("{supplierId}/contacts/{contactId}")]
         public async Task<IActionResult> EditSupplierContact(int supplierId, int contactId)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -295,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("{supplierId:int}/contacts/{contactId:int}")]
+        [HttpPost("{supplierId}/contacts/{contactId}")]
         public async Task<IActionResult> EditSupplierContact(int supplierId, int contactId, EditContactModel model)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -306,7 +306,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var updatedContact = new SupplierContact()
+            var updatedContact = new SupplierContact
             {
                 Id = model.ContactId,
                 FirstName = model.FirstName,
@@ -326,7 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { supplierId = supplier.Id });
         }
 
-        [HttpGet("{supplierId:int}/contacts/{contactId:int}/delete")]
+        [HttpGet("{supplierId}/contacts/{contactId}/delete")]
         public async Task<IActionResult> DeleteSupplierContact(int supplierId, int contactId)
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLinkText = "Go back",
                 BackLink = Url.Action(
-                    nameof(SuppliersController.EditSupplierContact),
+                    nameof(EditSupplierContact),
                     typeof(SuppliersController).ControllerName(),
                     new { supplierId = supplier.Id, contactId = contact.Id }),
             };
@@ -345,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("{supplierId:int}/contacts/{contactId:int}/delete")]
+        [HttpPost("{supplierId}/contacts/{contactId}/delete")]
         public async Task<IActionResult> DeleteSupplierContact(int supplierId, int contactId, DeleteContactModel model)
         {
             var supplier = await suppliersService.DeleteSupplierContact(supplierId, contactId);
@@ -356,14 +356,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { supplierId = supplier.Id });
         }
 
-        private static bool IsContactDuplicateOfExistingContact(ICollection<SupplierContact> existingContacts, EditContactModel model)
+        private static bool IsContactDuplicateOfExistingContact(IEnumerable<SupplierContact> existingContacts, EditContactModel model)
         {
             return existingContacts.Any(sc =>
-            sc.FirstName.Trim().ToLowerInvariant() == model.FirstName.Trim().ToLowerInvariant()
-            && sc.LastName.Trim().ToLowerInvariant() == model.LastName.Trim().ToLowerInvariant()
-            && sc.Email.Trim().ToLowerInvariant() == model.Email.Trim().ToLowerInvariant()
-            && sc.PhoneNumber.Trim().ToLowerInvariant() == model.PhoneNumber.Trim().ToLowerInvariant()
-            && sc.Department.Trim().ToLowerInvariant() == model.Department.Trim().ToLowerInvariant());
+            string.Equals(sc.FirstName.Trim(), model.FirstName.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            && string.Equals(sc.LastName.Trim(), model.LastName.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            && string.Equals(sc.Email.Trim(), model.Email.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            && string.Equals(sc.PhoneNumber.Trim(), model.PhoneNumber.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            && string.Equals(sc.Department.Trim(), model.Department.Trim(), StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

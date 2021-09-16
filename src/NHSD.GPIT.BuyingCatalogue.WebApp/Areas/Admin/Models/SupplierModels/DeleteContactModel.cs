@@ -18,14 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             SupplierName = supplierName;
         }
 
-        public int SupplierId { get; init; }
+        public int SupplierId { get; }
 
-        public int ContactId { get; init; }
+        public int ContactId { get; }
 
-        public string FirstName { get; init; }
+        public string FirstName { get; }
 
-        public string LastName { get; init; }
+        public string LastName { get; }
 
-        public string SupplierName { get; init; }
+        public string SupplierName { get; }
     }
 }

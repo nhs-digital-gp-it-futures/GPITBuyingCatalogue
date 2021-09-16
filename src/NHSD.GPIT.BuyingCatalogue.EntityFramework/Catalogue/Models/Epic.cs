@@ -10,7 +10,7 @@
 
         public string SourceUrl { get; set; }
 
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
 
         public bool SupplierDefined { get; set; }
 

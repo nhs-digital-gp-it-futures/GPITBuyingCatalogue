@@ -17,10 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             Contacts = supplier.SupplierContacts;
         }
 
-        public string SupplierName { get; init; }
+        public string SupplierName { get; }
 
-        public int SupplierId { get; init; }
+        public int SupplierId { get; }
 
-        public ICollection<SupplierContact> Contacts { get; init; }
+        public ICollection<SupplierContact> Contacts { get; }
     }
 }

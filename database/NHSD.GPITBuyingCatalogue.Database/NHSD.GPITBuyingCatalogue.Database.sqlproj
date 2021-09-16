@@ -259,6 +259,9 @@
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="NHSD.GPITBuyingCatalogue.Database.refactorlog" />
+  </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

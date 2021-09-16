@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
         public async Task<IList<Supplier>> GetAllActiveSuppliers()
         {
-            return await dbContext.Suppliers.Where(s => s.Active).OrderBy(s => s.Name).ToListAsync();
+            return await dbContext.Suppliers.Where(s => s.IsActive).OrderBy(s => s.Name).ToListAsync();
         }
 
         public async Task<Supplier> GetSupplier(int supplierId)
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
                 LegalName = model.SupplierLegalName,
                 Summary = model.AboutSupplier,
                 SupplierUrl = model.SupplierWebsite,
-                Active = false,
+                IsActive = false,
             };
 
             dbContext.Suppliers.Add(supplier);
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
         {
             var supplier = await GetSupplier(supplierId);
 
-            supplier.Active = newStatus;
+            supplier.IsActive = newStatus;
 
             await dbContext.SaveChangesAsync();
 
