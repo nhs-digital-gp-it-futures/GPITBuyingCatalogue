@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
 
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
         public string Url { get; set; }
 
         [HtmlAttributeName(ItemStatusName)]
-        public TaskListStatuses Status { get; set; }
+        public TaskProgress Status { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
             var taskNameSpan = GetTaskNameSpanBuilder();
 
-            if (Status == TaskListStatuses.CannotStart)
+            if (Status == TaskProgress.CannotStart)
             {
                 taskNameSpan.InnerHtml.Append(LabelText);
             }
@@ -86,18 +86,18 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             {
                 ChosenTagColour = Status switch
                 {
-                    TaskListStatuses.Completed => NhsTagsTagHelper.TagColour.Green,
-                    TaskListStatuses.InProgress => NhsTagsTagHelper.TagColour.Yellow,
-                    TaskListStatuses.Optional => NhsTagsTagHelper.TagColour.White,
+                    TaskProgress.Completed => NhsTagsTagHelper.TagColour.Green,
+                    TaskProgress.InProgress => NhsTagsTagHelper.TagColour.Yellow,
+                    TaskProgress.Optional => NhsTagsTagHelper.TagColour.White,
                     _ => NhsTagsTagHelper.TagColour.Grey,
                 },
 
                 TagText = Status switch
                 {
-                    TaskListStatuses.CannotStart => "Cannot Start Yet",
-                    TaskListStatuses.Optional => "Optional",
-                    TaskListStatuses.InProgress => "In Progress",
-                    TaskListStatuses.NotStarted => "Not Started",
+                    TaskProgress.CannotStart => "Cannot Start Yet",
+                    TaskProgress.Optional => "Optional",
+                    TaskProgress.InProgress => "In Progress",
+                    TaskProgress.NotStarted => "Not Started",
                     _ => "Completed",
                 },
             };
