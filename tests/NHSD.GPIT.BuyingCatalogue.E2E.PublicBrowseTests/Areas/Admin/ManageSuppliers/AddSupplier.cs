@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async void AddSupplier_SupplierName_AddDuplicateName_ThrowsError()
+        public async void AddSupplier_AddDuplicateName_ThrowsError()
         {
             var expectedNameErrorMessage = "Supplier name already exists. Enter a different name";
             var expectedLegalNameErrorMessage = "Supplier legal name already exists. Enter a different name";
