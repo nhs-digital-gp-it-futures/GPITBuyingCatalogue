@@ -45,36 +45,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public void AddSupplier_SupplierName_NoInput_ThrowsError()
+        public void AddSupplier_NoInput_ThrowsError()
         {
-            var expectedErrorMessage = "Enter a supplier name";
+            var expectedNameErrorMessage = "Enter a supplier name";
+            var expectedLegalNameErrorMessage = "Enter a supplier legal name";
 
             CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierName);
-
-            CommonActions.ClickSave();
-
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SuppliersController),
-                    nameof(SuppliersController.AddSupplierDetails))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierNameErrorMessage,
-                expectedErrorMessage)
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void AddSupplier_SupplierLegalName_NoInput_ThrowsError()
-        {
-            var expectedErrorMessage = "Enter a supplier legal name";
-
             CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName);
 
             CommonActions.ClickSave();
@@ -90,8 +66,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
+                Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierNameErrorMessage,
+                expectedNameErrorMessage)
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalNameErrorMessage,
-                expectedErrorMessage)
+                expectedLegalNameErrorMessage)
                 .Should()
                 .BeTrue();
         }
@@ -99,17 +81,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         [Fact]
         public async void AddSupplier_SupplierName_AddDuplicateName_ThrowsError()
         {
-            var expectedErrorMessage = "Supplier name already exists. Enter a different name";
+            var expectedNameErrorMessage = "Supplier name already exists. Enter a different name";
+            var expectedLegalNameErrorMessage = "Supplier legal name already exists. Enter a different name";
 
             using var context = GetEndToEndDbContext();
 
             var existingSupplier = await context.Suppliers.FirstAsync(s => s.Id == TargetSupplierId);
 
             CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierName);
+            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName);
 
             CommonActions.ElementAddValue(
                 Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierName,
                 existingSupplier.Name);
+
+            CommonActions.ElementAddValue(
+                Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName,
+                existingSupplier.LegalName);
 
             CommonActions.ClickSave();
 
@@ -125,41 +113,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierNameErrorMessage,
-                expectedErrorMessage)
+                expectedNameErrorMessage)
                 .Should()
                 .BeTrue();
-        }
-
-        [Fact]
-        public async void AddSupplier_SupplierLegalName_AddDuplicateName_ThrowsError()
-        {
-            var expectedErrorMessage = "Supplier legal name already exists. Enter a different name";
-
-            using var context = GetEndToEndDbContext();
-
-            var existingSupplier = await context.Suppliers.FirstAsync(s => s.Id == TargetSupplierId);
-
-            CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName);
-
-            CommonActions.ElementAddValue(
-            Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName,
-            existingSupplier.LegalName);
-
-            CommonActions.ClickSave();
-
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SuppliersController),
-                    nameof(SuppliersController.AddSupplierDetails))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalNameErrorMessage,
-                expectedErrorMessage)
+                expectedLegalNameErrorMessage)
                 .Should()
                 .BeTrue();
         }
