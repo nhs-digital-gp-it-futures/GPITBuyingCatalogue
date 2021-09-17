@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Constants
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.ManageListPricesModel
@@ -30,7 +31,7 @@
             {
             <nhs-table-row-container>
                 <nhs-table-cell>@cataloguePrice.CataloguePriceType</nhs-table-cell>
-                <nhs-table-cell>@cataloguePrice.GetCurrencySymbol()@cataloguePrice.Price</nhs-table-cell>
+                <nhs-table-cell>@CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode]@cataloguePrice.Price</nhs-table-cell>
                 <nhs-table-cell>@cataloguePrice.PricingUnit.Description</nhs-table-cell>
                 <nhs-table-cell>N/A</nhs-table-cell>
                 <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
