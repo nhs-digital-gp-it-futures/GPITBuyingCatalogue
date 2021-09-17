@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         public static IEnumerable<object> EditSupplierRadioOptions =>
             new List<object> { new { Display = "Active", Value = true }, new { Display = "Inactive", Value = false } };
 
-        public bool SupplierStatus { get; }
+        public bool SupplierStatus { get; init; }
 
         public bool DetailsStatus { get; }
 
