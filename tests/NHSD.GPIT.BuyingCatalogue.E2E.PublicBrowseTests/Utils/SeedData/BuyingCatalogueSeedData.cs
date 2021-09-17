@@ -748,6 +748,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Email = "test@test.com",
                             FirstName = "Dave",
                             LastName = "Smith",
+                            Department = "Test Department",
                             LastUpdated = DateTime.UtcNow,
                             PhoneNumber = "00987654321",
                             SupplierId = 99999,
@@ -783,7 +784,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             SupplierId = 99998,
                             FirstName = "Alice",
                             LastName = "Smith",
+                            Department = "Test Department",
                             Email = "Alice.Smith@e2etest.com",
+                            PhoneNumber = "123456789",
+                        },
+                        new()
+                        {
+                            Id = 3,
+                            SupplierId = 99998,
+                            FirstName = "Clark",
+                            LastName = "Kent",
+                            Department = "Reporter",
+                            Email = "Clark.Kent@TheDailyPlanet.Test",
                             PhoneNumber = "123456789",
                         },
                     },
@@ -808,6 +820,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Summary = "About this Supplier",
                     SupplierUrl = "https://www.e2etest.com",
                     IsActive = true,
+                },
+                new()
+                {
+                    Id = 99996,
+                    Name = "Inactive Supplier",
+                    LastUpdated = DateTime.UtcNow,
+                    LastUpdatedBy = UserSeedData.BobId,
+                    LegalName = "Inactive Supplier",
+                    Deleted = false,
+                    IsActive = false,
                 },
             };
             context.AddRange(suppliers);

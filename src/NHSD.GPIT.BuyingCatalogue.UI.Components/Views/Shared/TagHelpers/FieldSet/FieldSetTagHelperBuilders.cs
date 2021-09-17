@@ -27,6 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
         {
             var builder = new TagBuilder(TagHelperConstants.FieldSet);
 
+            builder.GenerateId(formName, "_");
+
             builder.AddCssClass(NhsFieldset);
 
             if (!string.IsNullOrWhiteSpace(labelHint))
