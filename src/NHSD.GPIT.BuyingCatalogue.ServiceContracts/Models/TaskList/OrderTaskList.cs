@@ -1,23 +1,25 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.TaskList
 {
     public sealed class OrderTaskList
     {
-        public TaskListStatuses DescriptionStatus { get; set; } = TaskListStatuses.NotStarted;
+        public TaskProgress DescriptionStatus { get; set; } = TaskProgress.NotStarted;
 
-        public TaskListStatuses OrderingPartyStatus { get; set; }
+        public TaskProgress OrderingPartyStatus { get; set; }
 
-        public TaskListStatuses SupplierStatus { get; set; }
+        public TaskProgress SupplierStatus { get; set; }
 
-        public TaskListStatuses CommencementDateStatus { get; set; }
+        public TaskProgress CommencementDateStatus { get; set; }
 
-        public TaskListStatuses CatalogueSolutionsStatus { get; set; }
+        public TaskProgress CatalogueSolutionsStatus { get; set; }
 
-        public TaskListStatuses AdditionalServiceStatus { get; set; }
+        public TaskProgress AdditionalServiceStatus { get; set; }
 
-        public TaskListStatuses AssociatedServiceStatus { get; set; }
+        public TaskProgress AssociatedServiceStatus { get; set; }
 
-        public TaskListStatuses FundingSourceStatus { get; set; }
+        public TaskProgress FundingSourceStatus { get; set; }
 
-        public TaskListStatuses ReviewAndCompleteStatus { get; set; }
+        public TaskProgress ReviewAndCompleteStatus { get; set; }
     }
 }
