@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -43,7 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
                 .BeTrue();
 
             CommonActions
-                .ElementIsDisplayed(CommonSelectors.ContinueLink)
+                .ElementIsDisplayed(ManageListPricesObjects.ContinueLink)
+                .Should()
+                .BeTrue();
+
+            CommonActions
+                .ElementIsDisplayed(ManageListPricesObjects.ListPriceTable)
                 .Should()
                 .BeTrue();
         }
@@ -52,6 +58,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public void Index_ClickGoBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+            .Should()
+            .BeTrue();
+        }
+
+        [Fact]
+        public void Index_ClickContinue_ExpectedResult()
+        {
+            CommonActions
+                .ClickLinkElement(ManageListPricesObjects.ContinueLink);
 
             CommonActions
             .PageLoadedCorrectGetIndex(
