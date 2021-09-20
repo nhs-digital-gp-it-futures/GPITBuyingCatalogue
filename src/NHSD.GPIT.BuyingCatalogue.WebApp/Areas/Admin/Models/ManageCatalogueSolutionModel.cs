@@ -32,5 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public TaskProgress ClientApplicationTypeStatus() => new ClientApplicationTypeSectionModel(Solution).Status();
 
         public TaskProgress InteroperabilityStatus() => new InteroperabilityModels.InteroperabilityModel(Solution).Status();
+
+        public TaskProgress ListPriceStatus() => new ListPriceModels.ManageListPricesModel(Solution).Status();
     }
 }

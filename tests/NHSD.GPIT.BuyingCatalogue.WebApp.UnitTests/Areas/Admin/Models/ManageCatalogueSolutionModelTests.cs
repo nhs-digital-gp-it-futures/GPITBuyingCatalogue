@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
@@ -73,6 +74,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
 
             var actual = model.InteroperabilityStatus();
+
+            actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void StatusListPrice_Returns_FromManageListPricesModel(CatalogueItem catalogueItem)
+        {
+            var expected = new ManageListPricesModel(catalogueItem).Status();
+            var model = new ManageCatalogueSolutionModel { Solution = catalogueItem };
+
+            var actual = model.ListPriceStatus();
 
             actual.Should().Be(expected);
         }
