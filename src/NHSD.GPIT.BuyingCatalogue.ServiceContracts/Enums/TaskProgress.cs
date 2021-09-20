@@ -3,7 +3,7 @@
     public enum TaskProgress
     {
         NotStarted,
-        CannotStartYet,
+        CannotStart,
         Optional,
         InProgress,
         Completed,
