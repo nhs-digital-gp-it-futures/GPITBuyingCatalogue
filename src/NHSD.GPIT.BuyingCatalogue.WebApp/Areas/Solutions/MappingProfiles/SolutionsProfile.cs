@@ -37,36 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
         public SolutionsProfile()
         {
-            CreateMap<CatalogueItem, AssociatedServiceModel>()
-                .ForMember(
-                    dest => dest.Description,
-                    opt => opt.MapFrom(src => src.AssociatedService == null ? null : src.AssociatedService.Description))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(
-                    dest => dest.OrderGuidance,
-                    opt => opt.MapFrom(
-                        src => src.AssociatedService == null ? null : src.AssociatedService.OrderGuidance))
-                .ForMember(
-                    dest => dest.Prices,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.CataloguePrices != null);
-                        opt.MapFrom(src => src.CataloguePrices.Where(x => x != null && x.Price != null));
-                    });
-
-            CreateMap<CatalogueItem, AssociatedServicesModel>()
-                .ForMember(
-                    dest => dest.Services,
-                    opt => opt.MapFrom(
-                        src => src.Supplier == null ? new List<CatalogueItem>() :
-                            src.Supplier.CatalogueItems == null ? new List<CatalogueItem>() :
-                            src.Supplier.CatalogueItems
-                                .Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService)
-                                .OrderBy(c => c.Name)
-                                .ToList()))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
-                .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
-
             CreateMap<CatalogueItem, AdditionalServiceModel>()
                 .ForMember(
                     dest => dest.Description,

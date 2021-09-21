@@ -97,11 +97,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/associated-services")]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionWithAllAssociatedServices(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionWithAllAssociatedServices(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(mapper.Map<CatalogueItem, AssociatedServicesModel>(solution));
+            return View(new AssociatedServicesModel(item.Solution));
         }
 
         [HttpGet("{solutionId}/additional-services")]
