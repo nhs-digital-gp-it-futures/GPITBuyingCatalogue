@@ -27,6 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
             SupplierId = supplier.Id;
 
             SupplierStatus = supplier.IsActive;
+
+            SupplierName = supplier.Name;
         }
 
         public static IEnumerable<object> EditSupplierRadioOptions =>
@@ -43,5 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         public string Title { get; }
 
         public int SupplierId { get; }
+
+        public string SupplierName { get; }
     }
 }

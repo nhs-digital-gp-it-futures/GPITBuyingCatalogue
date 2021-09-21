@@ -10,12 +10,13 @@
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary RadioId="SupplierStatus"/>
 
         <nhs-page-title title="@Model.Title"
+                        caption="@Model.SupplierName"
                         advice="Provide information about the supplier." />
 
-        <nhs-table>
+        <nhs-table data-test-id="edit-supplier-table">
             <nhs-table-column>Section</nhs-table-column>
             <nhs-table-column>Mandatory</nhs-table-column>
             <nhs-table-column>Status</nhs-table-column>
@@ -28,7 +29,8 @@
                              text="@GetTagText(Model.DetailsStatus)" />
                 </nhs-table-cell>
                 <nhs-table-cell>
-                    <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                    <a id="EditSupplierDetailsLink"
+                       asp-controller="@typeof(SuppliersController).ControllerName()"
                        asp-action="@nameof(SuppliersController.EditSupplierDetails)"
                        asp-route-supplierId="@Model.SupplierId">Edit</a>
                 </nhs-table-cell>
@@ -37,11 +39,12 @@
                 <nhs-table-cell>Address</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell>
-                    <nhs-tag colour="@GetTagColour(Model.AddressStatus)"
+                    <nhs-tag data-test-id="address-status" colour="@GetTagColour(Model.AddressStatus)"
                              text="@GetTagText(Model.AddressStatus)" />
                 </nhs-table-cell>
                 <nhs-table-cell>
-                    <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                    <a id="EditSupplierAddressLink"
+                       asp-controller="@typeof(SuppliersController).ControllerName()"
                        asp-action="@nameof(SuppliersController.EditSupplierAddress)"
                        asp-route-supplierId="@Model.SupplierId">Edit</a>
                 </nhs-table-cell>
@@ -50,11 +53,12 @@
                 <nhs-table-cell>Contacts</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell>
-                    <nhs-tag colour="@GetTagColour(Model.ContactsStatus)"
+                    <nhs-tag data-test-id="contact-status" colour="@GetTagColour(Model.ContactsStatus)"
                              text="@GetTagText(Model.ContactsStatus)" />
                 </nhs-table-cell>
                 <nhs-table-cell>
-                    <a asp-controller="@typeof(SuppliersController).ControllerName()"
+                    <a id="EditSupplierContactsLink"
+                       asp-controller="@typeof(SuppliersController).ControllerName()"
                        asp-action="@nameof(SuppliersController.ManageSupplierContacts)"
                        asp-route-supplierId="@Model.SupplierId">Edit</a>
                 </nhs-table-cell>

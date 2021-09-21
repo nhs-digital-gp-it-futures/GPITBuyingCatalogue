@@ -24,6 +24,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         internal void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
 
+        internal void ClickLinkElement(By targetElement, string hrefContains)
+        {
+            Driver.FindElements(targetElement)
+                .Single(s => s.GetAttribute("href").Contains(hrefContains))
+                .Click();
+        }
+
         internal void ClickSave() =>
             Driver.FindElement(CommonSelectors.SubmitButton).Click();
 
@@ -108,6 +115,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
         // Element Displayed
         internal bool ElementIsDisplayed(By targetElement) =>
             ElementExists(targetElement) && Driver.FindElement(targetElement).Displayed;
+
+        internal bool ElementIsNotDisplayed(By targetElement) =>
+            ElementExists(targetElement) && !Driver.FindElement(targetElement).Displayed;
 
         internal bool SaveButtonDisplayed() =>
             ElementIsDisplayed(CommonSelectors.SubmitButton);
@@ -237,9 +247,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Actions.Common
                 .Any();
         }
 
-        internal void WaitUntilElementExists(By element)
-        {
-            Wait.Until(d => d.FindElement(element));
-        }
+        internal void WaitUntilElementExists(By element) => Wait.Until(d => d.FindElement(element));
+
+        internal void WaitUntilElementIsDisplayed(By element) => Wait.Until(d => d.FindElement(element).Displayed);
     }
 }

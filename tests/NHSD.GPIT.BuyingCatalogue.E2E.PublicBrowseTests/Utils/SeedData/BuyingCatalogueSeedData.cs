@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -724,7 +725,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // Suppliers
             List<Supplier> suppliers = new()
             {
-                new()
+                new Supplier
                 {
                     Id = 99999,
                     Name = "DFOCVC Supplier",
@@ -732,7 +733,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
-                    Address = new()
+                    Address = new Address
                     {
                         Line1 = "DFOCVC Supplier Tower",
                         Line2 = "High Street",
@@ -748,6 +749,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             Email = "test@test.com",
                             FirstName = "Dave",
                             LastName = "Smith",
+                            Department = "Test Department",
                             LastUpdated = DateTime.UtcNow,
                             PhoneNumber = "00987654321",
                             SupplierId = 99999,
@@ -757,7 +759,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     SupplierUrl = "https://www.e2etest.com",
                     IsActive = true,
                 },
-                new()
+                new Supplier
                 {
                     Id = 99998,
                     Name = "E2E Test Supplier With Contact",
@@ -765,7 +767,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier WC",
                     Deleted = false,
-                    Address = new()
+                    Address = new Address
                     {
                         Line1 = "E2E Test Supplier",
                         Line2 = "High Street",
@@ -783,13 +785,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             SupplierId = 99998,
                             FirstName = "Alice",
                             LastName = "Smith",
+                            Department = "Test Department",
                             Email = "Alice.Smith@e2etest.com",
+                            PhoneNumber = "123456789",
+                        },
+                        new()
+                        {
+                            Id = 3,
+                            SupplierId = 99998,
+                            FirstName = "Clark",
+                            LastName = "Kent",
+                            Department = "Reporter",
+                            Email = "Clark.Kent@TheDailyPlanet.Test",
                             PhoneNumber = "123456789",
                         },
                     },
                     IsActive = true,
                 },
-                new()
+                new Supplier
                 {
                     Id = 99997,
                     Name = "E2E Test Supplier",
@@ -797,7 +810,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier",
                     Deleted = false,
-                    Address = new()
+                    Address = new Address
                     {
                         Line1 = "E2E Test Supplier",
                         Line2 = "High Street",
@@ -808,6 +821,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Summary = "About this Supplier",
                     SupplierUrl = "https://www.e2etest.com",
                     IsActive = true,
+                },
+                new Supplier
+                {
+                    Id = 99996,
+                    Name = "Inactive Supplier",
+                    LastUpdated = DateTime.UtcNow,
+                    LastUpdatedBy = UserSeedData.BobId,
+                    LegalName = "Inactive Supplier",
+                    Deleted = false,
+                    IsActive = false,
                 },
             };
             context.AddRange(suppliers);
