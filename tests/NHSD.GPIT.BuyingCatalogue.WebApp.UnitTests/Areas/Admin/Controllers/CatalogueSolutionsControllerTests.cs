@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
@@ -37,13 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public static void Constructor_NullService_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(
-                    () =>
-                        _ = new CatalogueSolutionsController(null, null))
-                .ParamName.Should()
-                .Be("solutionsService");
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(CatalogueSolutionsController).GetConstructors();
+
+            assertion.Verify(constructors);
         }
 
         [Theory]
@@ -54,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(new CatalogueItem());
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.Features(catalogueItemId);
 
@@ -70,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
 
@@ -87,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Features(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -101,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             FeaturesModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.Features(catalogueItemId, model);
 
@@ -115,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             FeaturesModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Features(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -133,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Features(catalogueItemId)).As<ViewResult>();
 
@@ -151,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetAllSolutions(null))
                 .ReturnsAsync(solutions);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Index()).As<ViewResult>();
 
@@ -172,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = new CatalogueSolutionsModel { SelectedPublicationStatus = status.ToString() };
             mockService.Setup(s => s.GetAllSolutions(status))
                 .ReturnsAsync(solutions);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Index(model)).As<ViewResult>();
 
@@ -198,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var mockUsersService = new Mock<IUsersService>();
             mockUsersService.Setup(u => u.GetUser(aspNetUser.Id))
                 .ReturnsAsync(aspNetUser);
-            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUsersService.Object);
+            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUsersService.Object, Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ManageCatalogueSolution(expected.Id)).As<ViewResult>();
 
@@ -230,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockSolutionService.Setup(s => s.GetSolution(It.IsAny<CatalogueItemId>()))
                 .ReturnsAsync(expected);
 
-            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object);
+            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object, Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Description(expected.Id)).As<ViewResult>();
 
@@ -250,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DescriptionModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Description(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -265,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var mockSolutionService = new Mock<ISolutionsService>();
             var mockUserService = new Mock<IUsersService>();
-            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object);
+            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object, Mock.Of<IAssociatedServicesService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             await controller.Description(id, new Mock<DescriptionModel>().Object);
@@ -279,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditDescription_InvalidModel_ReturnsViewWithModel([Frozen] CatalogueItemId id)
         {
             var mockEditDescriptionModel = new Mock<DescriptionModel>().Object;
-            var controller = new CatalogueSolutionsController(Mock.Of<ISolutionsService>(), Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(Mock.Of<ISolutionsService>(), Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var actual = (await controller.Description(id, mockEditDescriptionModel)).As<ViewResult>();
@@ -297,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var mockSolutionService = new Mock<ISolutionsService>();
             var mockUserService = new Mock<IUsersService>();
-            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object);
+            var controller = new CatalogueSolutionsController(mockSolutionService.Object, mockUserService.Object, Mock.Of<IAssociatedServicesService>());
 
             await controller.Description(id, model);
 
@@ -310,7 +314,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] CatalogueItemId id,
             DescriptionModel model)
         {
-            var controller = new CatalogueSolutionsController(Mock.Of<ISolutionsService>(), Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(Mock.Of<ISolutionsService>(), Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Description(id, model)).As<RedirectToActionResult>();
 
@@ -328,7 +332,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(new CatalogueItem());
 
-            await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>()).Implementation(
+            await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>()).Implementation(
                 catalogueItemId);
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
@@ -343,7 +347,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Implementation(catalogueItemId)).As<ViewResult>();
 
@@ -360,7 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Implementation(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -374,7 +378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ImplementationTimescaleModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.Implementation(catalogueItemId, model);
 
@@ -388,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ImplementationTimescaleModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Implementation(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -406,7 +410,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Implementation(catalogueItemId)).As<ViewResult>();
 
@@ -423,7 +427,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(new CatalogueItem());
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.Roadmap(catalogueItemId);
 
@@ -439,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
 
@@ -456,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Roadmap(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -470,7 +474,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             RoadmapModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.Roadmap(catalogueItemId, model);
 
@@ -484,7 +488,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             RoadmapModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Roadmap(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -502,7 +506,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Roadmap(catalogueItemId)).As<ViewResult>();
 
@@ -521,7 +525,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>()).HostingType(
+            await new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>()).HostingType(
                 catalogueItemId);
 
             mockService.Verify(s => s.GetSolution(catalogueItemId));
@@ -536,7 +540,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.HostingType(catalogueItemId)).As<ViewResult>();
 
@@ -553,7 +557,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.HostingType(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -567,7 +571,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             HostingTypeSectionModel model = new HostingTypeSectionModel(catalogueItem);
 
@@ -585,7 +589,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             HostingTypeSectionModel model = new HostingTypeSectionModel(catalogueItem);
 
@@ -608,7 +612,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.HostingType(catalogueItemId)).As<ViewResult>();
 
@@ -626,7 +630,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.AddHostingType(catalogueItemId);
 
@@ -642,7 +646,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AddHostingType(catalogueItemId)).As<ViewResult>();
 
@@ -659,7 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AddHostingType(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -673,7 +677,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypeSelectionModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             model.SelectedHostingType = HostingType.PublicCloud;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -690,7 +694,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypeSelectionModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             model.SelectedHostingType = HostingType.PrivateCloud;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -707,7 +711,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypeSelectionModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             model.SelectedHostingType = HostingType.Hybrid;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -724,7 +728,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HostingTypeSelectionModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             model.SelectedHostingType = HostingType.OnPremise;
             var actual = (await controller.AddHostingType(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -743,7 +747,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.PublicCloud(catalogueItemId);
 
@@ -759,7 +763,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
 
@@ -777,7 +781,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PublicCloud(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -792,7 +796,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -811,7 +815,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             PublicCloudModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -832,7 +836,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PublicCloud(catalogueItemId)).As<ViewResult>();
 
@@ -852,7 +856,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.PrivateCloud(catalogueItemId);
 
@@ -868,7 +872,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
 
@@ -886,7 +890,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PrivateCloud(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -901,7 +905,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -920,7 +924,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             PrivateCloudModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -941,7 +945,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PrivateCloud(catalogueItemId)).As<ViewResult>();
 
@@ -961,7 +965,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.Hybrid(catalogueItemId);
 
@@ -977,7 +981,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
 
@@ -995,7 +999,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Hybrid(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1010,7 +1014,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -1029,7 +1033,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             HybridModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -1050,7 +1054,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.Hybrid(catalogueItemId)).As<ViewResult>();
 
@@ -1070,7 +1074,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.OnPremise(catalogueItemId);
 
@@ -1086,7 +1090,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
 
@@ -1104,7 +1108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.OnPremise(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1119,7 +1123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -1138,7 +1142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             OnPremiseModel model,
             [Frozen] Mock<ISolutionsService> mockService)
         {
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             mockService.Setup(s => s.GetHosting(catalogueItemId))
                 .ReturnsAsync(hosting);
@@ -1159,7 +1163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.OnPremise(catalogueItemId)).As<ViewResult>();
 
@@ -1178,7 +1182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(new CatalogueItem());
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.BrowserBased(catalogueItemId);
 
@@ -1193,7 +1197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.BrowserBased(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1209,7 +1213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.BrowserBased(catalogueItemId)).As<ViewResult>();
 
@@ -1227,7 +1231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.SupportedBrowsers(catalogueItemId);
 
@@ -1242,7 +1246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.SupportedBrowsers(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1258,7 +1262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.SupportedBrowsers(catalogueItemId)).As<ViewResult>();
 
@@ -1282,7 +1286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.SupportedBrowsers(catalogueItemId, model);
 
@@ -1304,7 +1308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.SupportedBrowsers(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -1322,7 +1326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.SupportedBrowsers(catalogueItemId)).As<ViewResult>();
 
@@ -1340,7 +1344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.PlugInsOrExtensions(catalogueItemId);
 
@@ -1355,7 +1359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PlugInsOrExtensions(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1371,7 +1375,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PlugInsOrExtensions(catalogueItemId)).As<ViewResult>();
 
@@ -1395,7 +1399,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.PlugInsOrExtensions(catalogueItemId, model);
 
@@ -1417,7 +1421,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PlugInsOrExtensions(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -1435,7 +1439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.PlugInsOrExtensions(catalogueItemId)).As<ViewResult>();
 
@@ -1453,7 +1457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.ConnectivityAndResolution(catalogueItemId);
 
@@ -1468,7 +1472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ConnectivityAndResolution(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1484,7 +1488,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ConnectivityAndResolution(catalogueItemId)).As<ViewResult>();
 
@@ -1508,7 +1512,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.ConnectivityAndResolution(catalogueItemId, model);
 
@@ -1530,7 +1534,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ConnectivityAndResolution(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -1548,7 +1552,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ConnectivityAndResolution(catalogueItemId)).As<ViewResult>();
 
@@ -1566,7 +1570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.HardwareRequirements(catalogueItemId);
 
@@ -1581,7 +1585,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.HardwareRequirements(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1597,7 +1601,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.HardwareRequirements(catalogueItemId)).As<ViewResult>();
 
@@ -1621,7 +1625,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.HardwareRequirements(catalogueItemId, model);
 
@@ -1643,7 +1647,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -1661,7 +1665,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.HardwareRequirements(catalogueItemId)).As<ViewResult>();
 
@@ -1679,7 +1683,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.AdditionalInformation(catalogueItemId);
 
@@ -1694,7 +1698,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AdditionalInformation(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1710,7 +1714,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AdditionalInformation(catalogueItemId)).As<ViewResult>();
 
@@ -1734,7 +1738,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.AdditionalInformation(catalogueItemId, model);
 
@@ -1756,7 +1760,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetClientApplication(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -1774,7 +1778,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AdditionalInformation(catalogueItemId)).As<ViewResult>();
 
@@ -1807,7 +1811,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ClientApplicationType(catalogueItemId)).As<ViewResult>();
 
@@ -1824,7 +1828,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ClientApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -1840,7 +1844,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.ClientApplicationType(catalogueItemId)).As<ViewResult>();
 
@@ -1858,7 +1862,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             await controller.AddApplicationType(catalogueItemId);
 
@@ -1874,7 +1878,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AddApplicationType(catalogueItemId)).As<ViewResult>();
 
@@ -1891,7 +1895,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             mockService.Setup(s => s.GetSolution(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
-            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>());
+            var controller = new CatalogueSolutionsController(mockService.Object, Mock.Of<IUsersService>(), Mock.Of<IAssociatedServicesService>());
 
             var actual = (await controller.AddApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
 

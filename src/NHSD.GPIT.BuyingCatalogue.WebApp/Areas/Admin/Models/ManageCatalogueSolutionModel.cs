@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
     public sealed class ManageCatalogueSolutionModel : NavBaseModel
     {
         public CatalogueItem Solution { get; set; }
+
+        public List<CatalogueItem> AssociatedServices { get; set; }
 
         public string LastUpdatedByName { get; set; }
 
@@ -34,5 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
         public TaskProgress InteroperabilityStatus() => new InteroperabilityModels.InteroperabilityModel(Solution).Status();
 
         public TaskProgress ListPriceStatus() => new ListPriceModels.ManageListPricesModel(Solution).Status();
+
+        public TaskProgress AssociatedServicesStatus() =>
+            new AssociatedServicesModel(Solution, AssociatedServices).Status();
     }
 }

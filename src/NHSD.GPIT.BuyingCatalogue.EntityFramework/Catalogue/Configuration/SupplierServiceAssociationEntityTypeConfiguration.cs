@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("SupplierServiceAssociations", Schemas.Catalogue);
 
-            builder.HasNoKey();
+            builder.HasKey(e => new { e.AssociatedServiceId, e.CatalogueItemId });
 
             builder.Property(ssa => ssa.AssociatedServiceId)
                 .IsRequired()
@@ -23,16 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            builder.HasOne(ssa => ssa.AssociatedService)
-                .WithMany()
-                .HasForeignKey(ssa => ssa.AssociatedServiceId)
-                .HasConstraintName("FK_SupplierServiceAssociation_AssociatedService");
-
-            builder.HasOne(ssa => ssa.CatalogueItem)
-                .WithMany()
-                .HasForeignKey(ssa => ssa.CatalogueItemId)
+            builder.HasOne(d => d.CatalogueItem)
+                .WithMany(p => p.SupplierServiceAssociations)
+                .HasForeignKey(d => d.CatalogueItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SupplierServiceAssociation_CatalogueItem");
+                .HasConstraintName("FK_SupplierServiceAssociations_CatalogueItem");
         }
     }
 }

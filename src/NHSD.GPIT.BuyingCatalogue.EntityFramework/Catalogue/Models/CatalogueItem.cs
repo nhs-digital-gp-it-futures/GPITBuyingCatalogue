@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public CatalogueItem()
         {
             CataloguePrices = new HashSet<CataloguePrice>();
+            SupplierServiceAssociations = new HashSet<SupplierServiceAssociation>();
         }
 
         public CatalogueItemId Id { get; set; }
@@ -36,5 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
 
         public ICollection<CatalogueItemEpic> CatalogueItemEpics { get; set; }
+
+        public ICollection<SupplierServiceAssociation> SupplierServiceAssociations { get; set; }
     }
 }

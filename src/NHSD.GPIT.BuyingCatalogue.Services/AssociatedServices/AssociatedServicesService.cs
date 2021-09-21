@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
@@ -31,6 +32,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                         && c.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
+        }
+
+        public async Task RelateAssociatedServicesToSolution(
+            CatalogueItemId solutionId,
+            IEnumerable<CatalogueItemId> associatedServices)
+        {
+            var solution = await dbContext.CatalogueItems
+                .Include(i => i.SupplierServiceAssociations)
+                .Where(i => i.Id == solutionId)
+                .SingleAsync();
+
+            solution.SupplierServiceAssociations.Clear();
+
+            solution.SupplierServiceAssociations = associatedServices.Select(a => new SupplierServiceAssociation
+                {
+                    CatalogueItemId = solutionId,
+                    AssociatedServiceId = a,
+                }).ToList();
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
