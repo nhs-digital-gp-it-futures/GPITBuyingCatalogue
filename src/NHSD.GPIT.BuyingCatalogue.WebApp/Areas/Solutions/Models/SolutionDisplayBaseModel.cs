@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,7 +13,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public abstract class SolutionDisplayBaseModel
     {
         private const string KeyDescription = "Description";
+
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
+        private static readonly List<Func<CatalogueItem, bool>> ShowSectionFunctions = new()
+        {
+            { _ => true },
+            { catalogueItem => catalogueItem.HasFeatures() },
+            { catalogueItem => catalogueItem.HasCapabilities() },
+            { catalogueItem => catalogueItem.HasListPrice() },
+            { catalogueItem => catalogueItem.HasAdditionalServices() },
+            { catalogueItem => catalogueItem.HasAssociatedServices() },
+            { catalogueItem => catalogueItem.HasInteroperability() },
+            { catalogueItem => catalogueItem.HasImplementationDetail() },
+            { catalogueItem => catalogueItem.HasClientApplication() },
+            { catalogueItem => catalogueItem.HasHosting() },
+            { catalogueItem => catalogueItem.HasServiceLevelAgreement() },
+            { catalogueItem => catalogueItem.HasDevelopmentPlans() },
+            { catalogueItem => catalogueItem.HasSupplierDetails() },
+        };
 
         private readonly IList<SectionModel> sections = new List<SectionModel>
         {
@@ -95,6 +114,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             },
         };
 
+        protected SolutionDisplayBaseModel()
+        {
+        }
+
+        protected SolutionDisplayBaseModel(Solution solution)
+            : this(solution.CatalogueItem)
+        {
+            ClientApplication = solution.ClientApplication == null
+                ? new ClientApplication()
+                : JsonSerializer.Deserialize<ClientApplication>(
+                    solution.ClientApplication,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            LastReviewed = solution.LastUpdated;
+        }
+
+        private SolutionDisplayBaseModel(CatalogueItem catalogueItem)
+        {
+            SolutionId = catalogueItem.Id;
+            SolutionName = catalogueItem.Name;
+
+            SetVisibleSections(catalogueItem);
+            SetPaginationFooter();
+        }
+
         public ClientApplication ClientApplication { get; set; }
 
         public abstract int Index { get; }
@@ -137,5 +181,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         }
 
         public void SetShowTrue(int index) => sections[index].Show = true;
+
+        private void SetVisibleSections(CatalogueItem solution)
+        {
+            for (var i = 0; i < ShowSectionFunctions.Count; i++)
+            {
+                if (ShowSectionFunctions[i](solution))
+                    SetShowTrue(i);
+            }
+        }
     }
 }
