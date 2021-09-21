@@ -47,8 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.EditSupplier))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.EditSupplier))
                 .Should()
                 .BeTrue();
         }
@@ -59,8 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.EditSupplierAddress))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.EditSupplierAddress))
                 .Should()
                 .BeTrue();
 
@@ -94,15 +94,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.EditSupplier))
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SuppliersController), nameof(SuppliersController.EditSupplier))
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressStatus,
-                "Completed")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressStatus,
+                    "Completed")
                 .Should()
                 .BeTrue();
         }

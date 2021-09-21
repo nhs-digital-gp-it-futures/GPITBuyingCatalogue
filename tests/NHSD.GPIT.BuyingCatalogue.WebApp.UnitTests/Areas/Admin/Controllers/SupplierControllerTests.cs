@@ -67,7 +67,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
             SuppliersController controller)
         {
-            var expectedResult = new EditSupplierModel(supplier);
+            var expectedResult = new EditSupplierModel(supplier)
+            {
+                BackLink = "testUrl",
+                BackLinkText = "Go back",
+            };
 
             mockSuppliersService.Setup(s => s.GetSupplier(It.IsAny<int>())).ReturnsAsync(supplier);
 
@@ -75,9 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeEquivalentTo(expectedResult);
 
-            mockSuppliersService.Verify(
-                s => s.GetSupplier(It.IsAny<int>()));
+            mockSuppliersService.Verify(s => s.GetSupplier(It.IsAny<int>()));
         }
     }
 }

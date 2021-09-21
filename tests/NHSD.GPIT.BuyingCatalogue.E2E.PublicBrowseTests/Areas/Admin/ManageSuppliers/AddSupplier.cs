@@ -40,15 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(typeof(SuppliersController), nameof(SuppliersController.Index))
-            .Should()
-            .BeTrue();
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void AddSupplier_NoInput_ThrowsError()
         {
-            var expectedNameErrorMessage = "Enter a supplier name";
-            var expectedLegalNameErrorMessage = "Enter a supplier legal name";
+            const string expectedNameErrorMessage = "Enter a supplier name";
+            const string expectedLegalNameErrorMessage = "Enter a supplier legal name";
 
             CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierName);
             CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName);
@@ -56,9 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(SuppliersController),
-                    nameof(SuppliersController.AddSupplierDetails))
+                .PageLoadedCorrectGetIndex(typeof(SuppliersController), nameof(SuppliersController.AddSupplierDetails))
                 .Should()
                 .BeTrue();
 
@@ -66,14 +64,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierNameErrorMessage,
-                expectedNameErrorMessage)
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierNameErrorMessage,
+                    expectedNameErrorMessage)
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalNameErrorMessage,
-                expectedLegalNameErrorMessage)
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalNameErrorMessage,
+                    expectedLegalNameErrorMessage)
                 .Should()
                 .BeTrue();
         }
@@ -81,10 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         [Fact]
         public async void AddSupplier_AddDuplicateName_ThrowsError()
         {
-            var expectedNameErrorMessage = "Supplier name already exists. Enter a different name";
-            var expectedLegalNameErrorMessage = "Supplier legal name already exists. Enter a different name";
+            const string expectedNameErrorMessage = "Supplier name already exists. Enter a different name";
+            const string expectedLegalNameErrorMessage = "Supplier legal name already exists. Enter a different name";
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var existingSupplier = await context.Suppliers.FirstAsync(s => s.Id == TargetSupplierId);
 
@@ -130,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierName);
             CommonActions.ClearInputElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName);
 
-            var suppliername = TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierName, 255);
+            TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierName, 255);
             TextGenerators.TextInputAddText(Objects.Admin.ManageSuppliers.ManageSuppliers.SupplierDetailsSupplierLegalName, 255);
 
             CommonActions.ClickSave();

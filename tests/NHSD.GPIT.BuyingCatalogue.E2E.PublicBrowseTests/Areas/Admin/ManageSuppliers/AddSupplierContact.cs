@@ -50,8 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.ManageSupplierContacts))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.ManageSupplierContacts))
                 .Should()
                 .BeTrue();
         }
@@ -62,8 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.AddSupplierContact))
                 .Should()
                 .BeTrue();
 
@@ -71,32 +71,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstNameError,
-                "Enter a first name")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactFirstNameError,
+                    "Enter a first name")
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastNameError,
-                "Enter a last name")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactLastNameError,
+                    "Enter a last name")
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartmentError,
-                "Enter a department name")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactDepartmentError,
+                    "Enter a department name")
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumberError,
-                "Enter a phone number")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactPhoneNumberError,
+                    "Enter a phone number")
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmailError,
-                "Enter an email address")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmailError,
+                    "Enter an email address")
                 .Should()
                 .BeTrue();
         }
@@ -109,8 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.AddSupplierContact))
                 .Should()
                 .BeTrue();
 
@@ -118,8 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmailError,
-                "Enter an email address in the correct format, like name@example.com")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactEmailError,
+                    "Enter an email address in the correct format, like name@example.com")
                 .Should()
                 .BeTrue();
         }
@@ -127,9 +127,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         [Fact]
         public async void AddSupplierContact_DuplicateDetails_ThrowsError()
         {
-            NavigateToUrl(typeof(SuppliersController), nameof(SuppliersController.AddSupplierContact), parameters: DuplicateParameters);
+            NavigateToUrl(typeof(SuppliersController), nameof(SuppliersController.AddSupplierContact), DuplicateParameters);
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var contact = await context.SupplierContacts.FirstAsync(sc => sc.SupplierId == DuplicateSupplierId);
 
@@ -142,8 +142,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.AddSupplierContact))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.AddSupplierContact))
                 .Should()
                 .BeTrue();
 
@@ -151,8 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactContainerError,
-                "Error: A contact with these contact details already exists for this supplier")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactContainerError,
+                    "Error: A contact with these contact details already exists for this supplier")
                 .Should()
                 .BeTrue();
         }
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             Driver.FindElements(CommonSelectors.TableRow).Count.Should().Be(1);
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var contact = await context.SupplierContacts.OrderByDescending(sc => sc.Id).FirstAsync();
 
@@ -189,14 +189,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.ManageSupplierContinueButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.EditSupplier))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.EditSupplier))
                 .Should()
                 .BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactStatus,
-                "Completed")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactStatus,
+                    "Completed")
                 .Should()
                 .BeTrue();
         }

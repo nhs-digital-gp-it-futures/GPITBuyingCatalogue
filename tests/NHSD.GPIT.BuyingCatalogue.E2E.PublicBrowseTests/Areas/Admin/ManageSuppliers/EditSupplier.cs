@@ -57,8 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierDetailsLink);
 
             CommonActions.PageLoadedCorrectGetIndex(typeof(SuppliersController), nameof(SuppliersController.EditSupplierDetails))
-            .Should()
-            .BeTrue();
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -67,8 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierAddressLink);
 
             CommonActions.PageLoadedCorrectGetIndex(typeof(SuppliersController), nameof(SuppliersController.EditSupplierAddress))
-            .Should()
-            .BeTrue();
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -77,14 +77,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactsLink);
 
             CommonActions.PageLoadedCorrectGetIndex(typeof(SuppliersController), nameof(SuppliersController.ManageSupplierContacts))
-            .Should()
-            .BeTrue();
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public async void EditSupplier_SupplierHasPublishedSolutions_TryToSetInactive_ThrowsError()
         {
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var countOfSupplierPublishedSolutions = await context.CatalogueItems
                 .CountAsync(s =>
@@ -108,8 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierSupplierStatusErrorMessage,
-                expectedErrorMessage)
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierSupplierStatusErrorMessage,
+                    expectedErrorMessage)
                 .Should()
                 .BeTrue();
         }
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         [Fact]
         public void EditSupplier_InactiveSupplier_TryToSetActive_NotAllMandatoryFieldsCompleted_ThrowsError()
         {
-            var expectedErrorMessage = "Error: Mandatory section incomplete";
+            const string expectedErrorMessage = "Error: Mandatory section incomplete";
 
             NavigateToUrl(typeof(SuppliersController), nameof(SuppliersController.EditSupplier), parameters: InactiveSupplierParameters);
 

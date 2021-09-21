@@ -54,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.EditSupplierContact))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.EditSupplierContact))
                 .Should()
                 .BeTrue();
         }
@@ -66,8 +66,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.DeleteSupplierContactCancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.EditSupplierContact))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.EditSupplierContact))
                 .Should()
                 .BeTrue();
         }
@@ -80,10 +80,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-            typeof(SuppliersController),
-            nameof(SuppliersController.ManageSupplierContacts))
-            .Should()
-            .BeTrue();
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.ManageSupplierContacts))
+                .Should()
+                .BeTrue();
 
             using var context = GetEndToEndDbContext();
 

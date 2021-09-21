@@ -51,8 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.ManageSupplierContacts))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.ManageSupplierContacts))
                 .Should()
                 .BeTrue();
         }
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         [Fact]
         public async void EditSupplierContact_DuplicateDetails_ThrowsError()
         {
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var contact = await context.SupplierContacts.FirstAsync(sc => sc.Id == OtherContactId);
 
@@ -73,8 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.EditSupplierContact))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.EditSupplierContact))
                 .Should()
                 .BeTrue();
 
@@ -82,8 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactContainerError,
-                "Error: A contact with these contact details already exists for this supplier")
+                    Objects.Admin.ManageSuppliers.ManageSuppliers.EditSupplierContactContainerError,
+                    "Error: A contact with these contact details already exists for this supplier")
                 .Should()
                 .BeTrue();
         }
@@ -100,12 +100,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SuppliersController),
-                nameof(SuppliersController.ManageSupplierContacts))
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.ManageSupplierContacts))
                 .Should()
                 .BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             var contact = await context.SupplierContacts.SingleAsync(sc => sc.Id == ContactId);
 

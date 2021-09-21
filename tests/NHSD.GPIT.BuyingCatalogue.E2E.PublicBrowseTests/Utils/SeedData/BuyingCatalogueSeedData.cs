@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -724,7 +725,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // Suppliers
             List<Supplier> suppliers = new()
             {
-                new()
+                new Supplier
                 {
                     Id = 99999,
                     Name = "DFOCVC Supplier",
@@ -732,7 +733,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "DFOCVC Supplier",
                     Deleted = false,
-                    Address = new()
+                    Address = new Address
                     {
                         Line1 = "DFOCVC Supplier Tower",
                         Line2 = "High Street",
@@ -758,7 +759,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     SupplierUrl = "https://www.e2etest.com",
                     IsActive = true,
                 },
-                new()
+                new Supplier
                 {
                     Id = 99998,
                     Name = "E2E Test Supplier With Contact",
@@ -766,7 +767,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier WC",
                     Deleted = false,
-                    Address = new()
+                    Address = new Address
                     {
                         Line1 = "E2E Test Supplier",
                         Line2 = "High Street",
@@ -801,7 +802,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     IsActive = true,
                 },
-                new()
+                new Supplier
                 {
                     Id = 99997,
                     Name = "E2E Test Supplier",
@@ -809,7 +810,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     LastUpdatedBy = UserSeedData.BobId,
                     LegalName = "E2E Supplier",
                     Deleted = false,
-                    Address = new()
+                    Address = new Address
                     {
                         Line1 = "E2E Test Supplier",
                         Line2 = "High Street",
@@ -821,7 +822,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     SupplierUrl = "https://www.e2etest.com",
                     IsActive = true,
                 },
-                new()
+                new Supplier
                 {
                     Id = 99996,
                     Name = "Inactive Supplier",
