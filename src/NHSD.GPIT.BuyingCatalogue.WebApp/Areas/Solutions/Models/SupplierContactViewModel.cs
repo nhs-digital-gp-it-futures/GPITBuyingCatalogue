@@ -1,13 +1,23 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class SupplierContactViewModel
+    public sealed class SupplierContactViewModel
     {
-        public string FullName { get; set; }
+        public SupplierContactViewModel(MarketingContact contact)
+        {
+            FullName = $"{contact.FirstName} {contact.LastName}";
+            PhoneNumber = contact.PhoneNumber;
+            Department = contact.Department;
+            Email = contact.Email;
+        }
 
-        public string PhoneNumber { get; set; }
+        public string FullName { get; }
 
-        public string Department { get; set; }
+        public string PhoneNumber { get; }
 
-        public string Email { get; set; }
+        public string Department { get; }
+
+        public string Email { get; }
     }
 }
