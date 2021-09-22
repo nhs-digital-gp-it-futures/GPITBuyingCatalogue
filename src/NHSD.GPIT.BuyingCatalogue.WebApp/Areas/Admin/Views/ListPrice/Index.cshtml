@@ -17,8 +17,9 @@
                         advice="Provide details of how much your Catalogue Solution costs. You must add at least one price type." />
 
         <vc:nhs-action-link text="Add a price" url="@Url.Action(
-                                                   nameof(ListPriceController.Index),
-                                                   typeof(ListPriceController).ControllerName())" />
+                                                   nameof(ListPriceController.AddListPrice),
+                                                   typeof(ListPriceController).ControllerName(),
+                                                   new { solutionId = Model.CatalogueItemId })" />
 
         <nhs-table data-test-id="solution-list-prices">
             <nhs-table-column>Type</nhs-table-column>
@@ -34,7 +35,9 @@
                 <nhs-table-cell>@CurrencyCodeSigns.Code[cataloguePrice.CurrencyCode]@cataloguePrice.Price</nhs-table-cell>
                 <nhs-table-cell>@cataloguePrice.PricingUnit.Description</nhs-table-cell>
                 <nhs-table-cell>N/A</nhs-table-cell>
-                <nhs-table-cell><a href="#">Edit</a></nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-action="EditListPrice" asp-controller="ListPrice" asp-route-solutionId="@Model.CatalogueItemId" asp-route-listPriceId="@cataloguePrice.CataloguePriceId">Edit</a>
+                </nhs-table-cell>
             </nhs-table-row-container>
             }
         </nhs-table>

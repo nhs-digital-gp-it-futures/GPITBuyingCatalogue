@@ -16,8 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
             var manageListPricesModel = new ManageListPricesModel(catalogueItem);
 
             manageListPricesModel.CataloguePrices.Should().BeEquivalentTo(catalogueItem.CataloguePrices);
-            manageListPricesModel.CatalogueItemId.Should().BeEquivalentTo(catalogueItem.Id);
-            manageListPricesModel.CatalogueName.Should().BeEquivalentTo(catalogueItem.Name);
+            manageListPricesModel.CatalogueItemId.Should().Be(catalogueItem.Id);
+            manageListPricesModel.CatalogueName.Should().Be(catalogueItem.Name);
         }
     }
 }

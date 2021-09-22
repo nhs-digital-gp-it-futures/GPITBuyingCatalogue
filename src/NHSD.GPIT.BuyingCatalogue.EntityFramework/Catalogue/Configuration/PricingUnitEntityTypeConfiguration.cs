@@ -12,10 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(u => u.Id);
 
-            builder.Property(u => u.Id).ValueGeneratedNever();
+            builder.Property(u => u.Id);
             builder.Property(u => u.Description)
                 .IsRequired()
-                .HasMaxLength(40);
+                .HasMaxLength(100);
+
+            builder.Property(u => u.Definition)
+                .HasMaxLength(1000);
 
             builder.Property(u => u.Name)
                 .IsRequired()
@@ -24,9 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(u => u.TierName)
                 .IsRequired()
                 .HasMaxLength(30);
-
-            builder.HasIndex(u => u.Name, "AK_PricingUnits_Name")
-                .IsUnique();
         }
     }
 }

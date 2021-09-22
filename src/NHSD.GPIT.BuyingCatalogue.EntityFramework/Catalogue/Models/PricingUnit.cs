@@ -9,5 +9,7 @@
         public string TierName { get; set; }
 
         public string Description { get; set; }
+
+        public string Definition { get; set; }
     }
 }

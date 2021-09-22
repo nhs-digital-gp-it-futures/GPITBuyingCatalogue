@@ -1,0 +1,80 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.EditListPriceModel
+
+@{
+    ViewData["Title"] = "Edit List Price";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@Model.SolutionName list price"
+                        advice="Provide the following information about the pricing model for your Catalogue Solution." />
+
+        <form method="post">
+            <input type="hidden" asp-for="CataloguePriceId" />
+            <input type="hidden" asp-for="SolutionName" />
+            <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="BackLinkText" />
+            <input type="hidden" asp-for="BackLink" />
+            <nhs-fieldset-form-label asp-for="@Model" label-text="Provisioning Type">
+                <nhs-radio-button-container>
+                    @{
+                        SelectListItem[] provisioningTypes = new SelectList(Model.ProvisioningTypeListItems, "Value", "Text").ToArray();
+                        SelectList timeUnitsSelectList = new SelectList(Model.TimeUnitSelectListItems, "Value", "Text");
+                    }
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[0]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="0" />
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[1]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="1">
+                        <nhs-select asp-for="DeclarativeTimeUnit"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Time unit"
+                                    label-hint="Provide the time unit for how this Catalogue Solution will be billed." />
+                    </nhs-radio-button>
+
+                    <nhs-radio-button asp-for="SelectedProvisioningType"
+                                      value="provisioningTypes[2]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="2">
+                        <nhs-select asp-for="OnDemandTimeUnit"
+                                    asp-items="timeUnitsSelectList"
+                                    label-text="Time unit"
+                                    label-hint="Provide the time unit for how this Catalogue Solution will be billed." />
+                    </nhs-radio-button>
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
+            <nhs-input asp-for="Price"
+                       label-text="Price"
+                       label-hint="Provide the list price in £s to a maximum of 4 decimal places."
+                       character-count="true" />
+            <nhs-input asp-for="Unit"
+                       label-text="Unit"
+                       label-hint="For example, per day, per practice, per patient per year."
+                       character-count="true" />
+            <nhs-textarea asp-for="UnitDefinition"
+                          label-text="Unit definition (optional)"
+                          label-hint="For example, if the unit is per day, between what hours?"
+                          number-of-rows="5" />
+            <nhs-submit-button text="Save and continue" />
+        </form>
+        @if (Model.CataloguePriceId is not null)
+        {
+            <vc:nhs-delete-button url="@Url.Action(
+                                          nameof(ListPriceController.DeleteListPrice),
+                                          typeof(ListPriceController).ControllerName(),
+                                          new {solutionId = Model.SolutionId, listPriceId = Model.CataloguePriceId})"
+                                  text="Delete price" />
+        }
+    </div>
+</div>
