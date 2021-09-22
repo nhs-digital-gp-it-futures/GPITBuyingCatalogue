@@ -517,7 +517,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .CataloguePrices
                 .Include(p => p.CatalogueItem)
                 .Include(p => p.PricingUnit)
-                .SingleAsync(p => p.PricingUnitId == model.CataloguePriceId && p.CatalogueItemId == solutionId);
+                .SingleAsync(p => p.CataloguePriceId == model.CataloguePriceId && p.CatalogueItemId == solutionId);
 
             solutionPrice.Price = model.Price;
             solutionPrice.ProvisioningType = model.ProvisioningType;

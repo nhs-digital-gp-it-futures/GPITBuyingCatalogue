@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -50,12 +53,33 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
             if (!childContent.IsEmptyOrWhiteSpace)
             {
+                bool IsTheCurrentItemChecked()
+                {
+                    var radioCheckedValue = Value
+                        .GetType()
+                        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        .Where(p => string.Equals(p.Name, ValueName))
+                        .Select(p => p.GetValue(Value, null))
+                        .FirstOrDefault();
+
+                    return radioCheckedValue != null && Equals(radioCheckedValue, For.Model);
+                }
+
+                List<string> tags = new List<string>
+                {
+                    TagHelperConstants.NhsRadiosChildConditional,
+                    TagHelperConstants.NhsRadiosChildConditionalHidden,
+                };
+
+                if (IsTheCurrentItemChecked())
+                    tags.Remove(TagHelperConstants.NhsRadiosChildConditionalHidden);
+
                 TagHelperFunctions.ProcessOutputForConditionalContent(
                     output,
                     context,
                     input,
                     childContent,
-                    new[] { TagHelperConstants.NhsRadiosChildConditional, TagHelperConstants.NhsRadiosChildConditionalHidden });
+                    tags);
             }
 
             output.Content

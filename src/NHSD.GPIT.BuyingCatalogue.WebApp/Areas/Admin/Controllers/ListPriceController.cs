@@ -182,18 +182,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!model.TryGetProvisioningType(out provisioningType))
                 ModelState.AddModelError("edit-list-price", "A provisioning type must be selected.");
 
+            if (model.DeclarativeTimeUnit == null && provisioningType == ProvisioningType.Declarative)
+            {
+                ModelState.AddModelError(nameof(model.DeclarativeTimeUnit), "A time unit must be specified when using a Declarative Provisioning type.");
+                return;
+            }
+
+            if (model.OnDemandTimeUnit == null && provisioningType == ProvisioningType.OnDemand)
+            {
+                ModelState.AddModelError(nameof(model.OnDemandTimeUnit), "A time unit must be specified when using an On-Demand Provisioning type.");
+                return;
+            }
+
             if (IsPricingUnitDuplicateOfExistingPricingUnit(
                 solution.CataloguePrices,
                 price,
                 provisioningType,
                 model))
                 ModelState.AddModelError("duplicate", "A list price with these details already exists for this Catalogue Solution.");
-
-            if (model.DeclarativeTimeUnit == null && provisioningType == ProvisioningType.Declarative)
-                ModelState.AddModelError(nameof(model.DeclarativeTimeUnit), "A time unit must be specified when using a Declarative Provisioning type.");
-
-            if (model.OnDemandTimeUnit == null && provisioningType == ProvisioningType.OnDemand)
-                ModelState.AddModelError(nameof(model.OnDemandTimeUnit), "A time unit must be specified when using an On-Demand Provisioning type.");
         }
     }
 }
