@@ -112,22 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            var additionalServices = item.Supplier.CatalogueItems
-                .Where(ci => ci.CatalogueItemType == CatalogueItemType.AdditionalService)
-                .OrderBy(ci => ci.Name)
-                .Select(ci => new AdditionalServiceModel
-                {
-                    Name = ci.Name,
-                    Description = ci.AdditionalService.FullDescription,
-                    Prices = ci.CataloguePrices.Select(cp => cp.ToString()).ToList(),
-                    SolutionId = ci.Id,
-                })
-                .ToList();
-
-            return View(new AdditionalServicesModel(item.Solution)
-            {
-                Services = additionalServices,
-            });
+            return View(new AdditionalServicesModel(item));
         }
 
         [HttpGet("{solutionId}/capabilities")]
