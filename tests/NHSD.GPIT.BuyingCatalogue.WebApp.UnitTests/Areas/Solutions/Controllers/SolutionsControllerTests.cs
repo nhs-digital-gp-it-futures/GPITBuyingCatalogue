@@ -831,8 +831,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             await controller.Implementation(id);
@@ -843,8 +843,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ImplementationTimescales_NullSolutionForId_ReturnsBadRequestResult(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             mockService.Setup(s => s.GetSolutionOverview(id))
@@ -907,8 +907,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ListPrice_ValidId_GetsSolutionFromService(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             await controller.ListPrice(id);
@@ -919,8 +919,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ListPrice_NullSolutionForId_ReturnsBadRequestResult(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             mockService.Setup(s => s.GetSolutionOverview(id))
@@ -983,8 +983,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_ValidId_GetsSolutionFromService(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             await controller.Interoperability(id);
@@ -995,8 +995,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_NullSolutionForId_ReturnsBadRequestResult(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             mockService.Setup(s => s.GetSolutionOverview(id))
@@ -1011,10 +1011,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_Interoperability_ValidSolutionForId_ReturnsExpectedViewResult(
-            CatalogueItemId id,
-            CatalogueItem catalogueItem,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
-            SolutionsController controller)
+            SolutionsController controller,
+            CatalogueItemId id,
+            CatalogueItem catalogueItem)
         {
             catalogueItem.Solution.Integrations = GetIntegrationsJson();
 
@@ -1033,8 +1033,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierDetails_ValidId_GetsSolutionFromService(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             await controller.SupplierDetails(id);
@@ -1045,8 +1045,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierDetails_NullSolutionForId_ReturnsBadRequestResult(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             mockService.Setup(s => s.GetSolutionOverview(id))
@@ -1061,8 +1061,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_SupplierDetails_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id,
             CatalogueItem item)
         {
@@ -1092,8 +1092,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AdditionalServices_ValidId_InvokesGetSolution(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             await controller.AdditionalServices(id);
@@ -1104,8 +1104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AdditionalServices_NullSolutionForId_ReturnsBadRequestResult(
-            [Frozen] SolutionsController controller,
             [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
             CatalogueItemId id)
         {
             mockService.Setup(s => s.GetSolutionWithAllAdditionalServices(id))
