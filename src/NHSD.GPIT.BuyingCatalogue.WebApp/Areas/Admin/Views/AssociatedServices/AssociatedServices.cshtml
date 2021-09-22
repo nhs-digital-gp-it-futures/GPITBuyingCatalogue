@@ -1,0 +1,78 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.AssociatedServicesModel;
+@{
+    Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
+    ViewData["Title"] = "Associated Services";
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <nhs-validation-summary RadioId="Frameworks[0].Selected" />
+
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="Associated Services"
+                        caption="@Model.Solution.Name"
+                        advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
+
+        <vc:nhs-action-link url="@Url.Action(
+            nameof(AssociatedServicesController.AddAssociatedServices),
+            typeof(AssociatedServicesController).ControllerName(),
+            new { SolutionId = Model.Solution.Id })" text=" Add Associated Services" />
+
+        <p>
+            If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection on all your Catalogue Solutions.
+        </p>
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.BackLinkText" />
+
+            @if (Model.AssociatedServices.Any())
+            {
+                <nhs-table label-text="Associated Services available">
+                    <nhs-table-column>
+
+                    </nhs-table-column>
+                    <nhs-table-column>
+                        Associated Service
+                    </nhs-table-column>
+                    <nhs-table-column>
+                        Description
+                    </nhs-table-column>
+                    <nhs-table-column>
+                        Order guidance
+                    </nhs-table-column>
+                    <nhs-table-column></nhs-table-column>
+                    @for (int i = 0; i < Model.SelectableAssociatedServices.Count; i++)
+                    {                        
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <nhs-checkbox-container>
+                                    <nhs-checkbox asp-for="@Model.SelectableAssociatedServices[i].Selected"
+                                                  hidden-input="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
+                                </nhs-checkbox-container>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @Model.SelectableAssociatedServices[i].Name
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @Model.SelectableAssociatedServices[i].Description
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @Model.SelectableAssociatedServices[i].OrderGuidance
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <a href="#">
+                                    Edit
+                                </a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            }
+
+            <nhs-submit-button text="Save and continue" />
+
+        </form>
+    </div>
+</div>
