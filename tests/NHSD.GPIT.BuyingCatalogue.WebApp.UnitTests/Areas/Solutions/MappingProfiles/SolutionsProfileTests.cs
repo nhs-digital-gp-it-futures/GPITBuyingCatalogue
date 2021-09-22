@@ -375,25 +375,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.Features.Should().BeEquivalentTo(expected);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public void Map_CataloguePriceToString_ValidSource_ResultAsExpected(CataloguePrice cataloguePrice)
-        {
-            var actual = mapper.Map<CataloguePrice, string>(cataloguePrice);
-
-            actual.Should().Be($"£{cataloguePrice.Price.Value:F} {cataloguePrice.PricingUnit.Description}");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Map_CataloguePriceToString_PricingUnitIsNull_ReturnsPriceOnly(CataloguePrice cataloguePrice)
-        {
-            cataloguePrice.PricingUnit = null;
-
-            var actual = mapper.Map<CataloguePrice, string>(cataloguePrice);
-
-            actual.Should().Be($"£{cataloguePrice.Price.Value:F}");
-        }
 
         private static IList<CatalogueItem> GetAllCatalogueItems()
         {
