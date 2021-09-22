@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
@@ -22,14 +23,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class CatalogueSolutionsController : Controller
     {
         private readonly ISolutionsService solutionsService;
-        private readonly IUsersService usersService;
+        private readonly IAssociatedServicesService associatedServicesService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
-            IUsersService usersService)
+            IAssociatedServicesService associatedServicesService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
+            this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         }
 
         [HttpGet("manage/{solutionId}/features")]
@@ -75,8 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> ManageCatalogueSolution(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
+            var associatedServices = await associatedServicesService.GetAssociatedServicesForSupplier(solution.SupplierId);
 
-            var model = new ManageCatalogueSolutionModel { Solution = solution };
+            var model = new ManageCatalogueSolutionModel { Solution = solution, AssociatedServices = associatedServices };
 
             if (!solution.Solution.LastUpdatedBy.HasValue)
                 return View(model);
