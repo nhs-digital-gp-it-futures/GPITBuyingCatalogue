@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -107,11 +108,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/additional-services")]
         public async Task<IActionResult> AdditionalServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionWithAllAdditionalServices(solutionId);
-            if (solution is null)
+            var item = await solutionsService.GetSolutionWithAllAdditionalServices(solutionId);
+            if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            return View(mapper.Map<CatalogueItem, AdditionalServicesModel>(solution));
+            var additionalServices = item.Supplier.CatalogueItems
+                .Where(ci => ci.CatalogueItemType == CatalogueItemType.AdditionalService)
+                .OrderBy(ci => ci.Name)
+                .Select(ci => new AdditionalServiceModel
+                {
+                    Name = ci.Name,
+                    Description = ci.AdditionalService.FullDescription,
+                    Prices = ci.CataloguePrices.Select(cp => cp.ToString()).ToList(),
+                    SolutionId = ci.Id,
+                })
+                .ToList();
+
+            return View(new AdditionalServicesModel(item.Solution)
+            {
+                Services = additionalServices,
+            });
         }
 
         [HttpGet("{solutionId}/capabilities")]

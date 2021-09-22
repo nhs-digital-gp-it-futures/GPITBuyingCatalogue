@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Name = associatedService.CatalogueItem.Name;
             OrderGuidance = associatedService.OrderGuidance;
             Prices = associatedService.CatalogueItem.CataloguePrices
-                .Select(p => $"£{p.Price.GetValueOrDefault():F} {p.PricingUnit.Description}").ToList();
+                .Select(p => p.ToString()).ToList();
         }
 
         public string Description { get; }

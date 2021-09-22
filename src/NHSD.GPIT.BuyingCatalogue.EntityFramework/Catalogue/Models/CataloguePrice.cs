@@ -35,5 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public TimeUnit? TimeUnit { get; set; }
 
         public ICollection<CataloguePriceTier> CataloguePriceTiers { get; set; }
+
+        public override string ToString()
+        {
+            return $"£{Price.Value:F} {PricingUnit?.Description}".Trim();
+        }
     }
 }
