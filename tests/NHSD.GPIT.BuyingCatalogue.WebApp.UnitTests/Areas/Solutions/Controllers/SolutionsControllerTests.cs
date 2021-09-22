@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
@@ -209,50 +210,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AssociatedServices_ValidSolutionForId_MapsToModel(CatalogueItemId id)
+        public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(
+            [Frozen] CatalogueItemId id,
+            [Frozen] ClientApplication clientApplication,
+            [Frozen] Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsServiceMock,
+            SolutionsController controller)
         {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.CatalogueItem.Solution = solution;
 
-            await controller.AssociatedServices(id);
+            // TODO: add AutoFixture customization (exclude certain base properties)
+            var associatedServicesModel = new AssociatedServicesModel(solution);
 
-            mockMapper.Verify(m => m.Map<CatalogueItem, AssociatedServicesModel>(mockCatalogueItem));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
-        {
-            var mockAssociatedServicesModel = new Mock<AssociatedServicesModel>().Object;
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
-                .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, AssociatedServicesModel>(mockCatalogueItem))
-                .Returns(mockAssociatedServicesModel);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
+            solutionsServiceMock.Setup(s => s.GetSolutionWithAllAssociatedServices(id))
+                .ReturnsAsync(solution.CatalogueItem);
 
             var actual = (await controller.AssociatedServices(id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockAssociatedServicesModel);
+            actual.Model.Should().BeEquivalentTo(associatedServicesModel);
         }
 
         [Theory]

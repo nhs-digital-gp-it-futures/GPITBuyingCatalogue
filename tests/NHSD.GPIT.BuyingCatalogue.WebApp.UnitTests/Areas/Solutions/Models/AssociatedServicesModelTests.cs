@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -18,27 +19,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
         [Theory]
         [CommonAutoData]
-        public static void HasServices_ValidServices_ReturnsTrue(AssociatedServicesModel model)
+        public static void HasServices_ValidServices_ReturnsTrue(
+            [Frozen] AssociatedService service,
+            Solution solution)
         {
-            model.Services.Count.Should().BeGreaterThan(0);
+            service.CatalogueItem.AssociatedService = service;
+            service.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            solution.CatalogueItem.Supplier.CatalogueItems.Add(service.CatalogueItem);
 
+            var model = new AssociatedServicesModel(solution);
+
+            model.Services.Count.Should().BeGreaterThan(0);
             model.HasServices().Should().BeTrue();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void HasServices_NoService_ReturnsFalse(AssociatedServicesModel model)
+        public static void HasServices_NoService_ReturnsFalse(Solution solution)
         {
-            model.Services = new List<AssociatedServiceModel>();
+            solution.CatalogueItem.Supplier.CatalogueItems.Clear();
 
-            model.HasServices().Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void HasServices_NullService_ReturnsFalse(AssociatedServicesModel model)
-        {
-            model.Services = null;
+            var model = new AssociatedServicesModel(solution);
 
             model.HasServices().Should().BeFalse();
         }
