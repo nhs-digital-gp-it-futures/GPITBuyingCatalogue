@@ -37,33 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
 
         public SolutionsProfile()
         {
-            CreateMap<CatalogueItem, AdditionalServiceModel>()
-                .ForMember(
-                    dest => dest.Description,
-                    opt => opt.MapFrom(src => src.AdditionalService == null ? null : src.AdditionalService.FullDescription))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(
-                    dest => dest.Prices,
-                    opt =>
-                    {
-                        opt.PreCondition(src => src.CataloguePrices != null);
-                        opt.MapFrom(src => src.CataloguePrices.Where(x => x != null && x.Price != null));
-                    })
-                .ForMember(dest => dest.SolutionId, opt => opt.MapFrom(src => src.Id));
-
-            CreateMap<CatalogueItem, AdditionalServicesModel>()
-                .ForMember(
-                    dest => dest.Services,
-                    opt => opt.MapFrom(
-                        src => src.Supplier == null ? new List<CatalogueItem>() :
-                            src.Supplier.CatalogueItems == null ? new List<CatalogueItem>() :
-                            src.Supplier.CatalogueItems
-                                .Where(c => c.CatalogueItemType == CatalogueItemType.AdditionalService)
-                                .OrderBy(c => c.Name)
-                                .ToList()))
-                .IncludeBase<CatalogueItem, SolutionDisplayBaseModel>()
-                .AfterMap((_, dest) => dest.PaginationFooter.FullWidth = true);
-
             CreateMap<CatalogueItem, CapabilitiesViewModel>()
                 .ForMember(dest => dest.CapabilitiesHeading, opt => opt.MapFrom(src => "Capabilities met"))
                 .ForMember(dest => dest.Name, opt => opt.Ignore())
@@ -279,13 +252,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles
                     opt => opt.MapFrom(
                         src =>
                             $"{(src.PricingUnit == null ? string.Empty : src.PricingUnit.Description)} {(src.TimeUnit == null ? string.Empty : src.TimeUnit.Value.Description())}"));
-
-            CreateMap<CataloguePrice, string>()
-                .ConstructUsing(
-                    src => src.Price == null
-                        ? null
-                        : $"£{src.Price.Value:F} {(src.PricingUnit != null ? src.PricingUnit.Description : null)}"
-                            .Trim());
 
             CreateMap<CatalogueItemCapability, RowViewModel>()
                 .ForMember(
