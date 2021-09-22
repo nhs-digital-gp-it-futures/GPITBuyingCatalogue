@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             typeof(AssociatedServicesController).Should()
                 .BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
             typeof(AssociatedServicesController).Should()
-                .BeDecoratedWith<RouteAttribute>(r => r.Template == "admin/catalogue-solutions");
+                .BeDecoratedWith<RouteAttribute>(r => r.Template == "admin/catalogue-solutions/manage/{solutionId}/associated-services");
         }
 
         [Fact]

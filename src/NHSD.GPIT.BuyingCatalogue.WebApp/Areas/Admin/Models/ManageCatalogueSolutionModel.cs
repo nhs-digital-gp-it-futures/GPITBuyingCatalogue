@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models
     {
         public CatalogueItem Solution { get; set; }
 
-        public List<CatalogueItem> AssociatedServices { get; set; }
+        public IReadOnlyList<CatalogueItem> AssociatedServices { get; init; }
 
         public string LastUpdatedByName { get; set; }
 

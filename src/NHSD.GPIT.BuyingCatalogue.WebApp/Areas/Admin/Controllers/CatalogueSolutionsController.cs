@@ -23,16 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class CatalogueSolutionsController : Controller
     {
         private readonly ISolutionsService solutionsService;
-        private readonly IUsersService usersService;
         private readonly IAssociatedServicesService associatedServicesService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
-            IUsersService usersService,
             IAssociatedServicesService associatedServicesService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         }
 

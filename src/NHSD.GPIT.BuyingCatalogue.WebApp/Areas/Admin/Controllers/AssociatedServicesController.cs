@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions")]
+    [Route("admin/catalogue-solutions/manage/{solutionId}/associated-services")]
     public sealed class AssociatedServicesController : Controller
     {
         private readonly ISolutionsService solutionsService;
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         }
 
-        [HttpGet("manage/{solutionId}/associated-services")]
+        [HttpGet]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
@@ -39,12 +39,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(new AssociatedServicesModel(solution, associatedServices));
         }
 
-        [HttpPost("manage/{solutionId}/associated-services")]
+        [HttpPost]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, AssociatedServicesModel model)
         {
-            var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
-
-            await associatedServicesService.RelateAssociatedServicesToSolution(solutionId, associatedServices);
+            if (model.SelectableAssociatedServices is not null)
+            {
+                var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
+                await associatedServicesService.RelateAssociatedServicesToSolution(solutionId, associatedServices);
+            }
 
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution),
@@ -52,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/associated-services/add-associated-service")]
+        [HttpGet("add-associated-service")]
         public IActionResult AddAssociatedServices(CatalogueItemId solutionId)
         {
             throw new NotImplementedException("To be implemented in Story 15028");

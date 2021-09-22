@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             context.Solutions.Add(solution);
             context.AssociatedServices.AddRange(associatedServices);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             await service.RelateAssociatedServicesToSolution(solution.CatalogueItemId, associatedServices.Select(a => a.CatalogueItem.Id));
 

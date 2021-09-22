@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -54,8 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution))
                 .Should()
                 .BeTrue();
         }
@@ -68,13 +69,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             solution.SupplierServiceAssociations.Clear();
             await context.SaveChangesAsync();
 
+            NavigateToUrl(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AssociatedServices), parameters: Parameters);
+
             CommonActions.ClickFirstCheckbox();
 
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution))
                 .Should()
                 .BeTrue();
 
@@ -83,6 +86,41 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var savedRelatedService = solution.SupplierServiceAssociations.Single();
 
             savedRelatedService.AssociatedServiceId.Should().BeEquivalentTo(CatalogueItemId.ParseExact("99999--S-999"));
+        }
+
+        [Fact]
+        public async Task AssociatedServices_NoServices_Save_Saves_And_NavigatesToCorrectPage()
+        {
+            await using var context = GetEndToEndDbContext();
+            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            solution.SupplierServiceAssociations.Clear();
+
+            var associatedServices = await context.CatalogueItems
+                .Include(c => c.Supplier)
+                .Include(c => c.AssociatedService)
+                .Where(
+                    c => c.SupplierId == solution.SupplierId
+                        && c.CatalogueItemType == CatalogueItemType.AssociatedService)
+                .ToListAsync();
+
+            foreach (var associatedService in associatedServices)
+                context.CatalogueItems.Remove(associatedService);
+
+            await context.SaveChangesAsync();
+
+            NavigateToUrl(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AssociatedServices), parameters: Parameters);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                .Should()
+                .BeTrue();
+
+            solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+
+            solution.SupplierServiceAssociations.Should().BeEmpty();
         }
     }
 }

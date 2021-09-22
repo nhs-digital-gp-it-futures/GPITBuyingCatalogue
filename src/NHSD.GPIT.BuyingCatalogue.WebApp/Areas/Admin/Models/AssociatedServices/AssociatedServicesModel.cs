@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -13,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public AssociatedServicesModel(CatalogueItem catalogueItem, List<CatalogueItem> associatedServices)
+        public AssociatedServicesModel(CatalogueItem catalogueItem, IReadOnlyList<CatalogueItem> associatedServices)
         {
             BackLink = $"/admin/catalogue-solutions/manage/{catalogueItem.Id}";
             BackLinkText = "Go back";
@@ -29,18 +28,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             AssociatedServices = associatedServices;
         }
 
-        public CatalogueItem Solution { get; set; }
+        public CatalogueItem Solution { get; }
 
-        public List<SelectableAssociatedService> SelectableAssociatedServices { get; set; }
+        public List<SelectableAssociatedService> SelectableAssociatedServices { get; } = new();
 
-        public List<CatalogueItem> AssociatedServices { get; set; }
+        public IReadOnlyList<CatalogueItem> AssociatedServices { get; }
 
         public TaskProgress Status()
         {
             if (!AssociatedServices.Any())
                 return TaskProgress.Optional;
 
-            var statuses = AssociatedServices.Select(c => Status(c));
+            var statuses = AssociatedServices.Select(Status).ToList();
 
             if (statuses.All(s => s == TaskProgress.Completed))
                 return TaskProgress.Completed;
@@ -52,19 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
             // TODO - Easier to do this once Details and Price pages are done
             return TaskProgress.Completed;
-        }
-
-        public sealed class SelectableAssociatedService
-        {
-            public string Name { get; set; }
-
-            public CatalogueItemId CatalogueItemId { get; set; }
-
-            public string Description { get; set; }
-
-            public string OrderGuidance { get; set; }
-
-            public bool Selected { get; set; }
         }
     }
 }
