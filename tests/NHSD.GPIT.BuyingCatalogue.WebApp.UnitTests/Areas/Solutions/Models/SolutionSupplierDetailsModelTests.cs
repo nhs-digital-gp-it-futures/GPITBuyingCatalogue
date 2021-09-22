@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -15,6 +16,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             typeof(SolutionSupplierDetailsModel)
                 .Should()
                 .BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructor_PopulatesAllProperties(CatalogueItem item)
+        {
+            var model = new SolutionSupplierDetailsModel(item);
+
+            model.Name.Should().Be(item.Supplier.Name);
+            model.Url.Should().Be(item.Supplier.SupplierUrl);
+            model.Summary.Should().Be(item.Supplier.Summary);
+            model.Contacts.Any().Should().BeTrue();
         }
 
         [Theory]

@@ -255,7 +255,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var solution = await solutionsService.GetSolutionOverview(solutionId);
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
-            return View(mapper.Map<CatalogueItem, SolutionSupplierDetailsModel>(solution));
+
+            return View(new SolutionSupplierDetailsModel(solution));
         }
     }
 }
