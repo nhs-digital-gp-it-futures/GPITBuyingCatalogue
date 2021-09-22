@@ -94,11 +94,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         [Fact]
         public async Task AddListPrice_ClickGoBackLink_DoesNotSavePrice()
         {
+            var expectedNumberOfListPrices = (await GetCataloguePrice()).Count;
+
             CommonActions.ClickGoBackLink();
 
             var actualNumberOfListPrices = (await GetCataloguePrice()).Count;
 
-            actualNumberOfListPrices.Should().Be(1);
+            actualNumberOfListPrices.Should().Be(expectedNumberOfListPrices);
         }
 
         [Fact]
