@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Globalization;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
@@ -15,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
         {
             var editListPriceModel = new EditListPriceModel(catalogueItem);
 
-            editListPriceModel.SolutionId.Should().Be(catalogueItem.Id);
             editListPriceModel.SolutionName.Should().Be(catalogueItem.Name);
         }
 
@@ -24,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
         public static void GetPricingUnit_SetsDetailsAsExpected(
             CatalogueItem catalogueItem)
         {
-            const string expectedUnitName = "patient";
-            const string expectedUnitTierName = "patient";
             const string expectedUnitDefinition = "definition";
             const string expectedUnitDescription = "per patient";
 
@@ -38,28 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
             var actualUnit = editListPriceModel.GetPricingUnit();
 
             actualUnit.Should().NotBeNull();
-            actualUnit.Name.Should().Be(expectedUnitName);
-            actualUnit.TierName.Should().Be(expectedUnitTierName);
             actualUnit.Definition.Should().Be(expectedUnitDefinition);
-            actualUnit.Description.Should().Be(expectedUnitDescription);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void GetPricingUnit_UnitDescriptionDoesNotStartWithPer_PrependsPerToDescription(
-            CatalogueItem catalogueItem)
-        {
-            const string unitDescription = "patient";
-            const string expectedUnitDescription = "per patient";
-
-            var editListPriceModel = new EditListPriceModel(catalogueItem)
-            {
-                Unit = unitDescription,
-            };
-
-            var actualUnit = editListPriceModel.GetPricingUnit();
-
-            actualUnit.Should().NotBeNull();
             actualUnit.Description.Should().Be(expectedUnitDescription);
         }
 
@@ -113,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
 
             var editListPriceModel = new EditListPriceModel(catalogueItem)
             {
-                Price = expectedPrice.ToString(),
+                Price = expectedPrice.ToString(CultureInfo.CurrentCulture),
             };
 
             var result = editListPriceModel.TryParsePrice(out var actualPrice);
@@ -124,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
 
         [Theory]
         [CommonAutoData]
-        public static void TryParsePrice_WithInalidPrice_DoesNotParse(
+        public static void TryParsePrice_WithInvalidPrice_DoesNotParse(
             CatalogueItem catalogueItem)
         {
             var invalidPrice = string.Empty;
@@ -134,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
                 Price = invalidPrice,
             };
 
-            var result = editListPriceModel.TryParsePrice(out var actualPrice);
+            var result = editListPriceModel.TryParsePrice(out _);
 
             result.Should().BeFalse();
         }

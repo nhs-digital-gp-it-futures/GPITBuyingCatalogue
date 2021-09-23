@@ -537,7 +537,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 5,
-                                Name = "Test Pricing Patient No Contact",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
                             },
@@ -671,7 +670,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 1,
-                                Name = "Test Pricing Patient",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
                             },
@@ -689,7 +687,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 2,
-                                Name = "Test Pricing On Demand",
                                 TierName = "Test Tier",
                                 Description = "per test on demand",
                             },
@@ -707,7 +704,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 3,
-                                Name = "Test Pricing Declarative",
                                 TierName = "Test Tier",
                                 Description = "per test declarative",
                             },
@@ -836,7 +832,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 4,
-                                Name = "Test Pricing",
                                 TierName = "Test Tier",
                                 Description = "Per Test",
                             },

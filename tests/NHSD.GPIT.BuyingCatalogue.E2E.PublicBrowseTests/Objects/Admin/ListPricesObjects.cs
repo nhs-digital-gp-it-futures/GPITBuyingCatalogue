@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Objects.Admin
 
         internal static By PriceSummaryError => By.Id("Price-error");
 
-        internal static By UnitSummaryERror => By.Id("Unit-error");
+        internal static By UnitSummaryError => By.Id("Unit-error");
 
         internal static By DeleteListPriceCancelLink => By.LinkText("Cancel");
     }

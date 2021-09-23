@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions")]
+    [Route("admin/catalogue-solutions/manage/{solutionId}/list-prices")]
     public sealed class ListPriceController : Controller
     {
         private readonly ISolutionsService solutionsService;
@@ -26,12 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("manage/{solutionId}/list-prices")]
+        [HttpGet()]
         public async Task<IActionResult> Index(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             var model = new ManageListPricesModel(solution)
@@ -46,29 +46,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("manage/{solutionId}/list-prices/add-list-price")]
+        [HttpGet("add-list-price")]
         public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            if (solution == null)
+            if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             var model = new EditListPriceModel(solution)
             {
-                BackLink = Url.Action(
-                    nameof(Index),
-                    new { solutionId }),
+                BackLink = Url.Action(nameof(Index), new { solutionId }),
                 BackLinkText = "Go back",
             };
 
             return View("EditListPrice", model);
         }
 
-        [HttpPost("manage/{solutionId}/list-prices/add-list-price")]
-        public async Task<IActionResult> AddListPrice(EditListPriceModel model)
+        [HttpPost("add-list-price")]
+        public async Task<IActionResult> AddListPrice(CatalogueItemId solutionId, EditListPriceModel model)
         {
-            var solution = await solutionsService.GetSolution(model.SolutionId);
+            var solution = await solutionsService.GetSolution(solutionId);
 
             DoModelStateValidation(solution, model, out var price, out var provisioningType);
 
@@ -78,41 +76,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var saveSolutionListPriceModel = new SaveSolutionListPriceModel
             {
                 Price = price,
-                UnitDescription = model.Unit,
-                UnitDefinition = model.UnitDefinition,
                 ProvisioningType = provisioningType,
                 PricingUnit = model.GetPricingUnit(),
                 TimeUnit = model.GetTimeUnit(provisioningType),
             };
 
-            await solutionsService.SaveSolutionListPrice(model.SolutionId, saveSolutionListPriceModel);
+            await solutionsService.SaveSolutionListPrice(solutionId, saveSolutionListPriceModel);
 
-            return RedirectToAction(nameof(Index), new { solutionId = model.SolutionId });
+            return RedirectToAction(nameof(Index), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/list-prices/{listPriceId}")]
+        [HttpGet("{listPriceId}")]
         public async Task<IActionResult> EditListPrice(CatalogueItemId solutionId, int listPriceId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
             var cataloguePrice = solution.CataloguePrices.FirstOrDefault(cp => cp.CataloguePriceId == listPriceId);
-            if (cataloguePrice == null)
+            if (cataloguePrice is null)
                 return RedirectToAction(nameof(Index), new { solutionId });
 
             var editListPriceModel = new EditListPriceModel(solution, cataloguePrice)
             {
-                BackLink = Url.Action(
-                    nameof(Index),
-                    new { solutionId }),
+                BackLink = Url.Action(nameof(Index), new { solutionId }),
                 BackLinkText = "Go back",
             };
 
             return View("EditListPrice", editListPriceModel);
         }
 
-        [HttpPost("manage/{solutionId}/list-prices/{listPriceId}")]
-        public async Task<IActionResult> EditListPrice(int listPriceId, EditListPriceModel model)
+        [HttpPost("{listPriceId}")]
+        public async Task<IActionResult> EditListPrice(CatalogueItemId solutionId, int listPriceId, EditListPriceModel model)
         {
-            var solution = await solutionsService.GetSolution(model.SolutionId);
+            var solution = await solutionsService.GetSolution(solutionId);
 
             DoModelStateValidation(solution, model, out var price, out var provisioningType);
 
@@ -123,38 +117,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 CataloguePriceId = listPriceId,
                 Price = price,
-                UnitDescription = model.Unit,
-                UnitDefinition = model.UnitDefinition,
                 ProvisioningType = provisioningType,
                 PricingUnit = model.GetPricingUnit(),
                 TimeUnit = model.GetTimeUnit(provisioningType),
             };
 
-            await solutionsService.UpdateSolutionListPrice(model.SolutionId, saveSolutionListPriceModel);
+            await solutionsService.UpdateSolutionListPrice(solutionId, saveSolutionListPriceModel);
 
-            return RedirectToAction(nameof(Index), new { solutionId = model.SolutionId });
+            return RedirectToAction(nameof(Index), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/list-prices/{listPriceId}/delete")]
+        [HttpGet("{listPriceId}/delete")]
         public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, int listPriceId)
         {
             var solution = await solutionsService.GetSolution(solutionId);
 
-            var model = new DeleteListPriceModel(solution, listPriceId)
+            var model = new DeleteListPriceModel(solution)
             {
-                BackLink = Url.Action(
-                    nameof(EditListPrice),
-                    new { solutionId, listPriceId }),
+                BackLink = Url.Action(nameof(EditListPrice), new { solutionId, listPriceId }),
                 BackLinkText = "Go back",
             };
 
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/list-prices/{listPriceId}/delete")]
-        public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, DeleteListPriceModel model)
+        [HttpPost("{listPriceId}/delete")]
+        public async Task<IActionResult> DeleteListPrice(CatalogueItemId solutionId, int listPriceId, DeleteListPriceModel model)
         {
-            await solutionsService.DeleteSolutionListPrice(solutionId, model.CataloguePriceId);
+            await solutionsService.DeleteSolutionListPrice(solutionId, listPriceId);
 
             return RedirectToAction(nameof(Index), new { solutionId });
         }
@@ -166,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             EditListPriceModel model)
             => cataloguePrices.Any(cp =>
                 cp.PricingUnit.Description == model.Unit
-                && cp.Price == price.Value
+                && cp.Price == price
                 && cp.ProvisioningType == provisioningType
                 && cp.TimeUnit == model.GetTimeUnit(provisioningType));
 
@@ -182,13 +172,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!model.TryGetProvisioningType(out provisioningType))
                 ModelState.AddModelError("edit-list-price", "A provisioning type must be selected.");
 
-            if (model.DeclarativeTimeUnit == null && provisioningType == ProvisioningType.Declarative)
+            if (model.DeclarativeTimeUnit is null && provisioningType == ProvisioningType.Declarative)
             {
                 ModelState.AddModelError(nameof(model.DeclarativeTimeUnit), "A time unit must be specified when using a Declarative Provisioning type.");
                 return;
             }
 
-            if (model.OnDemandTimeUnit == null && provisioningType == ProvisioningType.OnDemand)
+            if (model.OnDemandTimeUnit is null && provisioningType == ProvisioningType.OnDemand)
             {
                 ModelState.AddModelError(nameof(model.OnDemandTimeUnit), "A time unit must be specified when using an On-Demand Provisioning type.");
                 return;

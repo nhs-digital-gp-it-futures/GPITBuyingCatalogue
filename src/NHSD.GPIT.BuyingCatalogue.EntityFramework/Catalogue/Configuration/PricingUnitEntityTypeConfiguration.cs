@@ -12,7 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(u => u.Id);
 
-            builder.Property(u => u.Id);
+            builder.Property(u => u.Id)
+                .UseIdentityColumn();
+
             builder.Property(u => u.Description)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -20,12 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(u => u.Definition)
                 .HasMaxLength(1000);
 
-            builder.Property(u => u.Name)
-                .IsRequired()
-                .HasMaxLength(20);
-
             builder.Property(u => u.TierName)
-                .IsRequired()
                 .HasMaxLength(30);
         }
     }

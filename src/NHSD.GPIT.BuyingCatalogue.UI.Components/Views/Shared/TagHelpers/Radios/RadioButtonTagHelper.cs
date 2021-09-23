@@ -62,10 +62,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                         .Select(p => p.GetValue(Value, null))
                         .FirstOrDefault();
 
-                    return radioCheckedValue != null && Equals(radioCheckedValue, For.Model);
+                    return radioCheckedValue is not null && Equals(radioCheckedValue, For.Model);
                 }
 
-                List<string> tags = new List<string>
+                var tags = new List<string>(2)
                 {
                     TagHelperConstants.NhsRadiosChildConditional,
                     TagHelperConstants.NhsRadiosChildConditionalHidden,

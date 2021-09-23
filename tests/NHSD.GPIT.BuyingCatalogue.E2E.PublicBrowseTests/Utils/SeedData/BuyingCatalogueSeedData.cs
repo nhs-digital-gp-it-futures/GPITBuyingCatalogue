@@ -57,7 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         Id = -1,
                         TierName = "patient",
-                        Name = "patient",
                         Description = "per patient",
                     },
                     CurrencyCode = "GBP",
@@ -74,7 +73,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     {
                         Id = -2,
                         TierName = "thing",
-                        Name = "thing",
                         Description = "per thing",
                     },
                     CurrencyCode = "GBP",

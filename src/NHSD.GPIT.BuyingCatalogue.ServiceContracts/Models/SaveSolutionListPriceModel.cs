@@ -4,18 +4,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
     public sealed class SaveSolutionListPriceModel
     {
-        public int CataloguePriceId { get; set; }
+        public int CataloguePriceId { get; init; }
 
-        public decimal Price { get; set; }
+        public decimal Price { get; init; }
 
-        public string UnitDescription { get; set; }
+        public ProvisioningType ProvisioningType { get; init; }
 
-        public string UnitDefinition { get; set; }
+        public TimeUnit? TimeUnit { get; init; }
 
-        public ProvisioningType ProvisioningType { get; set; }
-
-        public TimeUnit? TimeUnit { get; set; }
-
-        public PricingUnit PricingUnit { get; set; }
+        public PricingUnit PricingUnit { get; init; }
     }
 }

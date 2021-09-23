@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
 
             CommonActions
                 .ElementShowingCorrectErrorMessage(
-                    ListPricesObjects.UnitSummaryERror,
+                    ListPricesObjects.UnitSummaryError,
                     expectedUnitSummaryErrorMessage)
                 .Should()
                 .BeTrue();

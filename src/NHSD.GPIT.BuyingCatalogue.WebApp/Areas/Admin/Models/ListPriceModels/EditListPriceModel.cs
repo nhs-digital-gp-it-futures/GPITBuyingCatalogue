@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -39,24 +40,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             }
         }
 
+        public static IEnumerable<SelectListItem> TimeUnitSelectListItems => new SelectListItem[]
+        {
+            new("per month", TimeUnit.PerMonth.ToString()),
+            new("per year", TimeUnit.PerYear.ToString()),
+        };
+
+        public static IEnumerable<SelectListItem> ProvisioningTypeListItems => new SelectListItem[]
+        {
+            new("Patient", ProvisioningType.Patient.ToString()),
+            new("Declarative", ProvisioningType.Declarative.ToString()),
+            new("On Demand", ProvisioningType.OnDemand.ToString()),
+        };
+
         public int? CataloguePriceId { get; init; }
 
         public CatalogueItemId SolutionId { get; init; }
 
         public string SolutionName { get; init; }
-
-        public IEnumerable<SelectListItem> TimeUnitSelectListItems => new SelectListItem[]
-        {
-            new SelectListItem("per month", TimeUnit.PerMonth.ToString()),
-            new SelectListItem("per year", TimeUnit.PerYear.ToString()),
-        };
-
-        public IEnumerable<SelectListItem> ProvisioningTypeListItems => new SelectListItem[]
-        {
-            new SelectListItem("Patient", ProvisioningType.Patient.ToString()),
-            new SelectListItem("Declarative", ProvisioningType.Declarative.ToString()),
-            new SelectListItem("On Demand", ProvisioningType.OnDemand.ToString()),
-        };
 
         [StringLength(100)]
         [RegularExpression(@"^\d+.?\d{0,4}$", ErrorMessage = "Price must be a number and supports a max of up to 4 decimal places.")]
@@ -76,19 +77,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public TimeUnit? OnDemandTimeUnit { get; init; }
 
         public PricingUnit GetPricingUnit()
-        {
-            var localUnitDescription = Unit;
-            if (!localUnitDescription.StartsWith("per"))
-                localUnitDescription = string.Format("per {0}", localUnitDescription);
-
-            return new PricingUnit
+            => new()
             {
-                Name = localUnitDescription.Replace("per", string.Empty).Replace(" ", string.Empty),
-                TierName = localUnitDescription.Replace("per ", string.Empty),
-                Description = localUnitDescription,
+                Description = Unit,
                 Definition = UnitDefinition,
             };
-        }
 
         public bool TryGetProvisioningType(out ProvisioningType provisioningType)
         {
@@ -108,14 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                 : OnDemandTimeUnit.Value;
         }
 
-        public bool TryParsePrice(out decimal price)
-        {
-            if (!decimal.TryParse(Price, out price))
-            {
-                return false;
-            }
-
-            return true;
-        }
+        public bool TryParsePrice(out decimal price) => decimal.TryParse(Price, NumberStyles.Currency, CultureInfo.CurrentCulture, out price);
     }
 }

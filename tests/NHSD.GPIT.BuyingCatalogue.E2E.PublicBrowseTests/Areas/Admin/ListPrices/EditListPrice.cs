@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -116,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices
         public async Task EditListPrice_Submit_UpdatesListPrice()
         {
             const string unitDescription = "per Lorem ipsum";
-            var price = 52.3M;
+            const decimal price = 52.3M;
 
             CommonActions
                 .ElementAddValue(ListPricesObjects.PriceInput, price.ToString());

@@ -1,6 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels.EditListPriceModel
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
+@model EditListPriceModel
 
 @{
     ViewData["Title"] = "Edit List Price";
@@ -16,14 +17,13 @@
         <form method="post">
             <input type="hidden" asp-for="CataloguePriceId" />
             <input type="hidden" asp-for="SolutionName" />
-            <input type="hidden" asp-for="SolutionId" />
             <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="BackLink" />
             <nhs-fieldset-form-label asp-for="@Model" label-text="Provisioning Type">
                 <nhs-radio-button-container>
                     @{
-                        SelectListItem[] provisioningTypes = new SelectList(Model.ProvisioningTypeListItems, "Value", "Text").ToArray();
-                        SelectList timeUnitsSelectList = new SelectList(Model.TimeUnitSelectListItems, "Value", "Text");
+                        var provisioningTypes = new SelectList(EditListPriceModel.ProvisioningTypeListItems, "Value", "Text").ToList();
+                        var timeUnitsSelectList = new SelectList(EditListPriceModel.TimeUnitSelectListItems, "Value", "Text");
                     }
                     <nhs-radio-button asp-for="SelectedProvisioningType"
                                       value="provisioningTypes[0]"

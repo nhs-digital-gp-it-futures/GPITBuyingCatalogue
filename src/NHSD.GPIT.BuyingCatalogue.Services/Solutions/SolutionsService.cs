@@ -504,7 +504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 ProvisioningType = model.ProvisioningType,
                 TimeUnit = model.TimeUnit,
                 CurrencyCode = "GBP",
-                LastUpdated = DateTime.Now,
+                LastUpdated = DateTime.UtcNow,
             };
 
             solution.CataloguePrices.Add(cataloguePrice);
@@ -522,8 +522,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             solutionPrice.Price = model.Price;
             solutionPrice.ProvisioningType = model.ProvisioningType;
             solutionPrice.TimeUnit = model.TimeUnit;
-            solutionPrice.LastUpdated = DateTime.Now;
-            solutionPrice.PricingUnit.Name = model.PricingUnit.Name;
+            solutionPrice.LastUpdated = DateTime.UtcNow;
             solutionPrice.PricingUnit.TierName = model.PricingUnit.TierName;
             solutionPrice.PricingUnit.Description = model.PricingUnit.Description;
             solutionPrice.PricingUnit.Definition = model.PricingUnit.Definition;

@@ -51,7 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 10,
-                                Name = "Asoc Price Patient",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
                             },
@@ -69,7 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 11,
-                                Name = "Asoc Price On Demand",
                                 TierName = "Test Tier",
                                 Description = "per test on demand",
                             },
@@ -87,7 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 12,
-                                Name = "Asoc Pri Declarative",
                                 TierName = "Test Tier",
                                 Description = "per test declarative",
                             },
@@ -123,7 +120,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 13,
-                                Name = "Asoc Price Patient 1",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
                             },
@@ -159,7 +155,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             PricingUnit = new PricingUnit
                             {
                                 Id = 14,
-                                Name = "Asoc Price Patient 2",
                                 TierName = "Test Tier",
                                 Description = "per test patient",
                             },
