@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Pagina
                 }.ToString(),
             };
 
-            return builder.Uri.AbsoluteUri;
+            return builder.Uri.PathAndQuery;
         }
 
         private string GenerateNumberPageText(int targetPageNumber) => $"{targetPageNumber} of {TotalNumberOfPages}";
