@@ -111,13 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Pagina
 
         private string GenerateLinkHrefForPage(int pageNumber)
         {
-            var domain = Environment.GetEnvironmentVariable("DOMAIN_NAME");
-
-            var url = !string.IsNullOrEmpty(domain)
-                ? $"{ViewContext.HttpContext.Request.Scheme}://{domain}{ViewContext.HttpContext.Request.Path}"
-                : ViewContext.HttpContext.Request.GetEncodedUrl();
-
-            var builder = new UriBuilder(url)
+            var builder = new UriBuilder(ViewContext.HttpContext.Request.GetEncodedUrl())
             {
                 Query = new QueryBuilder(ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page"))
                 {
@@ -125,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Pagina
                 }.ToString(),
             };
 
-            return builder.Uri.AbsoluteUri;
+            return builder.Uri.PathAndQuery;
         }
 
         private string GenerateNumberPageText(int targetPageNumber) => $"{targetPageNumber} of {TotalNumberOfPages}";
