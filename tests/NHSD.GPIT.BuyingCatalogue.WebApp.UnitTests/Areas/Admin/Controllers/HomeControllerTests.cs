@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
@@ -47,40 +49,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Be("buyer-organisations");
         }
 
-        [Fact]
-        public static async Task Get_BuyerOrganisations_GetsAllOrganisations()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_BuyerOrganisations_GetsAllOrganisations(
+            IList<Organisation> organisations,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
+            HomeController controller)
         {
-            var mockOrganisationService = new Mock<IOrganisationsService>();
-            var mockOrganisations = new Mock<IList<Organisation>>().Object;
             mockOrganisationService.Setup(o => o.GetAllOrganisations())
-                .ReturnsAsync(mockOrganisations);
-
-            var controller = new HomeController(
-                mockOrganisationService.Object);
+                .ReturnsAsync(organisations);
 
             await controller.BuyerOrganisations();
 
             mockOrganisationService.Verify(o => o.GetAllOrganisations());
         }
 
-        [Fact]
-        public static async Task Get_BuyerOrganisations_ReturnsViewWithExpectedViewModel()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_BuyerOrganisations_ReturnsViewWithExpectedViewModel(
+            IList<Organisation> organisations,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
+            HomeController controller)
         {
-            var mockOrganisationService = new Mock<IOrganisationsService>();
-            var mockOrganisations = new Mock<IList<Organisation>>().Object;
             mockOrganisationService.Setup(o => o.GetAllOrganisations())
-                .ReturnsAsync(mockOrganisations);
+                .ReturnsAsync(organisations);
 
-            var expectedOrganisationModels = mockOrganisations.Select(
+            var expectedOrganisationModels = organisations.Select(
                 o => new OrganisationModel
                 {
                     Id = o.Id,
                     Name = o.Name,
                     OdsCode = o.OdsCode,
                 }).ToList();
-
-            var controller = new HomeController(
-                mockOrganisationService.Object);
 
             var actual = (await controller.BuyerOrganisations()).As<ViewResult>();
 
@@ -89,12 +89,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Model.As<ListOrganisationsModel>().Organisations.Should().BeEquivalentTo(expectedOrganisationModels);
         }
 
-        [Fact]
-        public static void Get_Index_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Index_ReturnsDefaultView(
+            HomeController controller)
         {
-            var controller = new HomeController(
-                Mock.Of<IOrganisationsService>());
-
             var result = controller.Index().As<ViewResult>();
 
             result.Should().NotBeNull();
