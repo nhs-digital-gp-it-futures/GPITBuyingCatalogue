@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
-using AutoMapper;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models;
 using Xunit;
@@ -48,66 +49,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Be("buyer-organisations");
         }
 
-        [Fact]
-        public static async Task Get_BuyerOrganisations_GetsAllOrganisations()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_BuyerOrganisations_GetsAllOrganisations(
+            IList<Organisation> organisations,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
+            HomeController controller)
         {
-            var mockOrganisationService = new Mock<IOrganisationsService>();
-            var controller = new HomeController(
-                mockOrganisationService.Object,
-                Mock.Of<IMapper>());
+            mockOrganisationService.Setup(o => o.GetAllOrganisations())
+                .ReturnsAsync(organisations);
 
             await controller.BuyerOrganisations();
 
             mockOrganisationService.Verify(o => o.GetAllOrganisations());
         }
 
-        [Fact]
-        public static async Task Get_BuyerOrganisations_MapsOrganisationsToModels()
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_BuyerOrganisations_ReturnsViewWithExpectedViewModel(
+            IList<Organisation> organisations,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
+            HomeController controller)
         {
-            var mockOrganisationService = new Mock<IOrganisationsService>();
-            var mockOrganisations = new Mock<IList<Organisation>>().Object;
             mockOrganisationService.Setup(o => o.GetAllOrganisations())
-                .ReturnsAsync(mockOrganisations);
-            var mockMapper = new Mock<IMapper>();
+                .ReturnsAsync(organisations);
 
-            var controller = new HomeController(
-                mockOrganisationService.Object,
-                mockMapper.Object);
-
-            await controller.BuyerOrganisations();
-
-            mockMapper.Verify(m => m.Map<IList<Organisation>, IList<OrganisationModel>>(mockOrganisations));
-        }
-
-        [Fact]
-        public static async Task Get_BuyerOrganisations_ReturnsViewWithExpectedViewModel()
-        {
-            var mockOrganisationService = new Mock<IOrganisationsService>();
-            var mockOrganisations = new Mock<IList<Organisation>>().Object;
-            mockOrganisationService.Setup(o => o.GetAllOrganisations())
-                .ReturnsAsync(mockOrganisations);
-            var mockMapper = new Mock<IMapper>();
-            var mockOrganisationModels = new Mock<IList<OrganisationModel>>().Object;
-            mockMapper.Setup(m => m.Map<IList<Organisation>, IList<OrganisationModel>>(mockOrganisations))
-                .Returns(mockOrganisationModels);
-            var controller = new HomeController(
-                mockOrganisationService.Object,
-                mockMapper.Object);
+            var expectedOrganisationModels = organisations.Select(
+                o => new OrganisationModel
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    OdsCode = o.OdsCode,
+                }).ToList();
 
             var actual = (await controller.BuyerOrganisations()).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            Assert.Same(mockOrganisationModels, actual.Model.As<ListOrganisationsModel>().Organisations);
+            actual.Model.As<ListOrganisationsModel>().Organisations.Should().BeEquivalentTo(expectedOrganisationModels);
         }
 
-        [Fact]
-        public static void Get_Index_ReturnsDefaultView()
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Index_ReturnsDefaultView(
+            HomeController controller)
         {
-            var controller = new HomeController(
-                Mock.Of<IOrganisationsService>(),
-                Mock.Of<IMapper>());
-
             var result = controller.Index().As<ViewResult>();
 
             result.Should().NotBeNull();
