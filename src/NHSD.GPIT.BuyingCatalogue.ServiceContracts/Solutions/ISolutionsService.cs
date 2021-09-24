@@ -8,10 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public interface ISolutionsService
     {
-        Task<List<CatalogueItem>> GetFuturesFoundationSolutions();
-
-        Task<List<CatalogueItem>> GetFuturesSolutionsByCapabilities(string[] capabilities);
-
         Task<CatalogueItem> GetSolutionListPrices(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolution(CatalogueItemId solutionId);
@@ -25,10 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<CatalogueItem> GetSolutionOverview(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionWithAllAdditionalServices(CatalogueItemId solutionId);
-
-        Task<List<CatalogueItem>> GetDFOCVCSolutions();
-
-        Task<List<Capability>> GetFuturesCapabilities();
 
         Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link);
 
@@ -47,8 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<Hosting> GetHosting(CatalogueItemId solutionId);
 
         Task SaveHosting(CatalogueItemId solutionId, Hosting hosting);
-
-        Task<Supplier> GetSupplier(int supplierId);
 
         Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link);
 

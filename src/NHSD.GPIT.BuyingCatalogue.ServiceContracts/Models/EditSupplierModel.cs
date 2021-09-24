@@ -1,5 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
+    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class EditSupplierModel
     {
         public string SupplierName { get; set; }

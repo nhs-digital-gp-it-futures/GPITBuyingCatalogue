@@ -16,8 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        // TODO: remove orderingParty
-        public Task SetOrderingParty(Order order, Contact contact)
+        public Task SetOrderingPartyContact(Order order, Contact contact)
         {
             order.ValidateNotNull(nameof(order));
             contact.ValidateNotNull(nameof(contact));
