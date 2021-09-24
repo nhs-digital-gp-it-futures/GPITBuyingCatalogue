@@ -493,15 +493,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Description_ValidId_GetsSolutionFromService(CatalogueItemId id)
+        public static async Task Get_Description_ValidId_GetsSolutionFromService(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            CatalogueItemId id)
         {
-            var mockService = new Mock<ISolutionsService>();
-            var controller = new SolutionsController(
-                Mock.Of<IMapper>(),
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
+            mockService.Setup(s => s.GetSolutionOverview(id)).ReturnsAsync((CatalogueItem)null);
 
             await controller.Description(id);
 
@@ -510,17 +507,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Description_NullSolutionForId_ReturnsBadRequestResult(CatalogueItemId id)
+        public static async Task Get_Description_NullSolutionForId_ReturnsBadRequestResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            CatalogueItemId id)
         {
-            var mockService = new Mock<ISolutionsService>();
             mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(default(CatalogueItem));
-            var controller = new SolutionsController(
-                Mock.Of<IMapper>(),
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
+                .ReturnsAsync((CatalogueItem)null);
 
             var actual = (await controller.Description(id)).As<BadRequestObjectResult>();
 
@@ -530,50 +523,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Description_ValidSolutionForId_MapsToModel(CatalogueItemId id)
+        public static async Task Get_Description_ValidSolutionForId_ReturnsExpectedViewResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            CatalogueItem solution)
         {
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
+            var solutionDescriptionModel = new SolutionDescriptionModel(solution);
 
-            await controller.Description(id);
+            mockService.Setup(s => s.GetSolutionOverview(solution.Id))
+                .ReturnsAsync(solution);
 
-            mockMapper.Verify(m => m.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Description_ValidSolutionForId_ReturnsExpectedViewResult(CatalogueItemId id)
-        {
-            var mockSolutionDescriptionModel = new Mock<SolutionDescriptionModel>().Object;
-            var mockCatalogueItem = new Mock<CatalogueItem>().Object;
-
-            var mockService = new Mock<ISolutionsService>();
-            var mockMapper = new Mock<IMapper>();
-            mockService.Setup(s => s.GetSolutionOverview(id))
-                .ReturnsAsync(mockCatalogueItem);
-            mockMapper.Setup(m => m.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem))
-                .Returns(mockSolutionDescriptionModel);
-            var controller = new SolutionsController(
-                mockMapper.Object,
-                mockService.Object,
-                Mock.Of<IMemoryCache>(),
-                Mock.Of<ISolutionsFilterService>(),
-                new FilterCacheKeySettings());
-
-            var actual = (await controller.Description(id)).As<ViewResult>();
+            var actual = (await controller.Description(solution.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().Be(mockSolutionDescriptionModel);
+            actual.Model.Should().BeEquivalentTo(solutionDescriptionModel);
         }
 
         [Theory]

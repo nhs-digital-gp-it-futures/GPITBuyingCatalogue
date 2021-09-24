@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using AutoFixture;
-using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Test.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.MappingProfiles;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models;
@@ -22,13 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
     public sealed class SolutionsProfileTests
     {
         private readonly IMapper mapper;
-        private readonly Mock<IConfiguration> configuration;
         private readonly MapperConfiguration mapperConfiguration;
 
         public SolutionsProfileTests()
         {
-            configuration = new Mock<IConfiguration>();
-
             var serviceProvider = new Mock<IServiceProvider>();
             mapperConfiguration = new MapperConfiguration(
                 cfg =>
@@ -157,65 +150,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             actual.SolutionName.Should().Be(catalogueItem.Name);
         }
 
-        [Theory]
-        [CommonAutoData]
-        public void Map_CatalogueItemToSolutionDescriptionModel_ResultAsExpected(
-            CatalogueItem catalogueItem)
-        {
-            var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(catalogueItem);
-
-            actual.Description.Should().Be(catalogueItem.Solution.FullDescription);
-            actual.PaginationFooter.Should()
-                .BeEquivalentTo(
-                    new PaginationFooterModel
-                    {
-                        Next = new SectionModel
-                        {
-                            Action = "Features",
-                            Controller = "Solutions",
-                            Name = "Features",
-                            Show = true,
-                        },
-                    });
-            actual.Section.Should().Be("Description");
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SolutionName.Should().Be(catalogueItem.Name);
-            actual.Summary.Should().Be(catalogueItem.Solution.Summary);
-            actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
-        }
-
-        [Theory]
-        [InlineData(false, "No")]
-        [InlineData(null, "")]
-        [InlineData(true, "Yes")]
-        public void Map_CatalogueItemToSolutionDescriptionModel_SetsIsFoundationAsExpected(
-            bool? isFoundation,
-            string expected)
-        {
-            var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.Setup(c => c.IsFoundation())
-                .Returns(isFoundation);
-
-            var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem.Object);
-
-            mockCatalogueItem.Verify(c => c.IsFoundation());
-            actual.IsFoundation.Should().Be(expected);
-        }
-
-        [Theory]
-        [AutoData]
-        public void Map_CatalogueItemToSolutionDescriptionModel_SetsFrameworkAsExpected(List<string> expected)
-        {
-            var mockCatalogueItem = new Mock<CatalogueItem>();
-            mockCatalogueItem.Setup(c => c.Frameworks())
-                .Returns(expected);
-
-            var actual = mapper.Map<CatalogueItem, SolutionDescriptionModel>(mockCatalogueItem.Object);
-
-            mockCatalogueItem.Verify(c => c.Frameworks());
-            actual.Frameworks.Should().BeEquivalentTo(expected);
-        }
-
         [Fact]
         public void Map_CatalogueItemToSolutionDisplayBaseModel_ShowFunctionsCalled()
         {
@@ -235,30 +169,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.MappingProf
             mockCatalogueItem.Verify(c => c.HasServiceLevelAgreement());
             mockCatalogueItem.Verify(c => c.HasDevelopmentPlans());
             mockCatalogueItem.Verify(c => c.HasSupplierDetails());
-        }
-
-        private static IList<CatalogueItem> GetAllCatalogueItems()
-        {
-            var fixture = new Fixture();
-            var items = Enumerable.Range(1, 5)
-                .ToList()
-                .Select(_ => new CatalogueItem
-                {
-                    CatalogueItemType = CatalogueItemType.AssociatedService,
-                    Name = fixture.Create<string>(),
-                })
-                .ToList();
-            items.AddRange(Enumerable.Range(1, 3).ToList().Select(_ => new CatalogueItem
-            {
-                CatalogueItemType = CatalogueItemType.Solution,
-                Name = fixture.Create<string>(),
-            }));
-            items.AddRange(Enumerable.Range(1, 8).ToList().Select(_ => new CatalogueItem
-            {
-                CatalogueItemType = CatalogueItemType.AdditionalService,
-                Name = fixture.Create<string>(),
-            }));
-            return items;
         }
     }
 }
